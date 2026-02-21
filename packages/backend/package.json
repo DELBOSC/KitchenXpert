@@ -29,7 +29,7 @@
     "@anthropic-ai/sdk": "^0.74.0",
     "@aws-sdk/client-s3": "^3.500.0",
     "@aws-sdk/s3-request-presigner": "^3.500.0",
-    "@google/genai": "^1.41.0",
+    "@google/genai": "^1.42.0",
     "@kitchenxpert/common": "workspace:*",
     "@prisma/client": "^5.10.0",
     "@sendgrid/mail": "^8.1.0",
