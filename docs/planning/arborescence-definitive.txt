@@ -1,0 +1,3169 @@
+KitchenXpert/
+│
+├── .github/
+│   ├── workflows/
+│   │   ├── frontend-ci.yml                    # CI pour le frontend
+│   │   ├── backend-ci.yml                     # CI pour le backend
+│   │   ├── ai-modules-ci.yml                  # CI pour les modules IA
+│   │   ├── deploy-prod.yml                    # Déploiement production
+│   │   ├── deploy-staging.yml                 # Déploiement staging
+│   │   └── data-pipeline-ci.yml               # CI pour les pipelines de données
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug-report.md                      # Template rapport de bug
+│   │   ├── feature-request.md                 # Template demande fonctionnalité
+│   │   ├── documentation-update.md            # Template mise à jour doc
+│   │   └── catalog-integration-request.md     # Template intégration catalogue
+│   ├── PULL_REQUEST_TEMPLATE.md               # Template PR
+│   └── dependabot.yml                         # Configuration Dependabot
+│
+├── docs/
+│   ├── architecture/
+│   │   ├── overview.md                        # Vue d'ensemble
+│   │   ├── frontend.md                        # Architecture frontend
+│   │   ├── backend.md                         # Architecture backend
+│   │   ├── ai-modules.md                      # Architecture modules IA
+│   │   ├── data-flow.md                       # Flux de données
+│   │   ├── security.md                        # Sécurité
+│   │   ├── scalability.md                     # Évolutivité
+│   │   ├── version-management.md              # Gestion des versions
+│   │   ├── diagrams/
+│   │   │   ├── architecture-overview.png      # Diagramme vue d'ensemble
+│   │   │   ├── data-flow.png                  # Diagramme flux données
+│   │   │   ├── component-diagram.png          # Diagramme composants
+│   │   │   ├── database-schema.png            # Schéma base de données
+│   │   │   └── deployment-diagram.png         # Diagramme déploiement
+│   │   └── performance.md                     # Performance
+│   ├── api/
+│   │   ├── swagger.json                       # Spécification Swagger
+│   │   ├── openapi.yaml                       # Spécification OpenAPI
+│   │   ├── postman-collection.json            # Collection Postman
+│   │   ├── api-overview.md                    # Vue d'ensemble API
+│   │   ├── webhooks/                          # Documentation webhooks
+│   │   │   ├── overview.md                    # Vue d'ensemble des webhooks
+│   │   │   ├── events.md                      # Types d'événements
+│   │   │   ├── payloads.md                    # Format des payloads
+│   │   │   ├── integration-guide.md           # Guide d'intégration
+│   │   │   ├── best-practices.md              # Bonnes pratiques
+│   │   │   ├── security.md                    # Sécurité des webhooks
+│   │   │   ├── rate-limits.md                 # Limites de taux
+│   │   │   ├── troubleshooting.md             # Résolution de problèmes
+│   │   │   └── examples/
+│   │   │       ├── design-updated.json        # Exemple design mis à jour
+│   │   │       ├── catalog-imported.json      # Exemple catalogue importé
+│   │   │       ├── order-completed.json       # Exemple commande terminée
+│   │   │       └── project-shared.json        # Exemple projet partagé
+│   │   └── endpoints/
+│   │       ├── auth/
+│   │       │   ├── login.md                   # Endpoint login
+│   │       │   ├── register.md                # Endpoint register
+│   │       │   └── refresh-token.md           # Endpoint refresh token
+│   │       ├── user/
+│   │       │   ├── user-profile.md            # Endpoint profil utilisateur
+│   │       │   ├── user-preferences.md        # Endpoint préférences utilisateur
+│   │       │   └── user-projects.md           # Endpoint projets utilisateur
+│   │       ├── kitchen/
+│   │       │   ├── kitchen-designs.md         # Endpoint designs cuisine
+│   │       │   ├── kitchen-components.md      # Endpoint composants cuisine
+│   │       │   └── kitchen-validation.md      # Endpoint validation cuisine
+│   │       ├── catalog/
+│   │       │   ├── catalog-products.md        # Endpoint produits catalogue
+│   │       │   ├── catalog-search.md          # Endpoint recherche catalogue
+│   │       │   └── catalog-filters.md         # Endpoint filtres catalogue
+│   │       ├── partners/
+│   │       │   ├── partner-onboarding.md      # Endpoint intégration partenaire
+│   │       │   ├── catalog-upload.md          # Endpoint upload catalogue
+│   │       │   └── partner-analytics.md       # Endpoint analytique partenaire
+│   │       └── ai/
+│   │           ├── design-generation.md       # Endpoint génération design
+│   │           ├── compatibility-check.md     # Endpoint vérification compatibilité
+│   │           └── appliance-recommendation.md # Endpoint recommandation appareils
+│   ├── development/
+│   │   ├── getting-started.md                 # Démarrage
+│   │   ├── setup.md                           # Installation environnement
+│   │   ├── coding-standards.md                # Standards de code
+│   │   ├── git-workflow.md                    # Workflow Git
+│   │   ├── testing.md                         # Guides de test
+│   │   ├── deployment.md                      # Guides déploiement
+│   │   ├── debugging.md                       # Débogage
+│   │   ├── performance-optimization.md        # Optimisation performance
+│   │   ├── catalog-integration.md             # Intégration catalogue
+│   │   ├── security/                          # Documentation sécurité
+│   │   │   ├── best-practices.md              # Bonnes pratiques
+│   │   │   ├── authentication.md              # Authentification
+│   │   │   ├── authorization.md               # Autorisation
+│   │   │   ├── data-protection.md             # Protection des données
+│   │   │   ├── encryption.md                  # Chiffrement
+│   │   │   ├── secure-coding.md               # Développement sécurisé
+│   │   │   ├── penetration-testing.md         # Tests de pénétration
+│   │   │   ├── security-headers.md            # En-têtes de sécurité
+│   │   │   ├── csp-configuration.md           # Configuration CSP
+│   │   │   └── security-testing.md            # Tests de sécurité
+│   │   ├── internationalization/              # Documentation i18n
+│   │   │   ├── overview.md                    # Vue d'ensemble i18n
+│   │   │   ├── translation-workflow.md        # Workflow de traduction
+│   │   │   ├── adding-new-language.md         # Ajout d'une nouvelle langue
+│   │   │   ├── translation-guidelines.md      # Directives de traduction
+│   │   │   ├── currency-handling.md           # Gestion des devises
+│   │   │   ├── date-time-formatting.md        # Formatage date/heure
+│   │   │   ├── number-formatting.md           # Formatage des nombres
+│   │   │   ├── right-to-left-support.md       # Support des langues RTL
+│   │   │   ├── pluralization.md               # Pluralisation
+│   │   │   └── translation-keys.md            # Clés de traduction
+│   │   └── integration-testing/               # Tests d'intégration
+│   │       ├── overview.md                    # Vue d'ensemble des tests
+│   │       ├── setup.md                       # Configuration des tests
+│   │       ├── frontend-backend-integration.md # Intégration frontend-backend
+│   │       ├── ai-modules-integration.md      # Intégration modules AI
+│   │       ├── third-party-integration.md     # Intégration tiers
+│   │       ├── e2e-testing.md                 # Tests end-to-end
+│   │       ├── mocking-strategies.md          # Stratégies de mock
+│   │       └── ci-integration.md              # Intégration CI
+│   ├── user/
+│   │   ├── getting-started.md                 # Guide démarrage
+│   │   ├── user-guide.pdf                     # Guide utilisateur complet
+│   │   ├── quick-reference.pdf                # Référence rapide
+│   │   ├── features/
+│   │   │   ├── kitchen-designer.md            # Guide concepteur cuisine
+│   │   │   ├── adaptive-surfaces.md           # Guide surfaces adaptatives
+│   │   │   ├── evolutionary-design.md         # Guide design évolutif
+│   │   │   ├── local-manufacturing.md         # Guide fabrication locale
+│   │   │   ├── vr-experience.md               # Guide expérience VR
+│   │   │   ├── ai-generation.md               # Guide génération IA
+│   │   │   ├── appliance-advisor.md           # Guide conseiller électroménager
+│   │   │   └── questionnaire.md               # Guide questionnaire
+│   │   ├── tutorials/
+│   │   │   ├── beginner/
+│   │   │   │   ├── first-design.md            # Premier design
+│   │   │   │   ├── using-questionnaire.md     # Utilisation questionnaire
+│   │   │   │   └── exploring-catalogs.md      # Exploration catalogues
+│   │   │   ├── intermediate/
+│   │   │   │   ├── custom-surfaces.md         # Surfaces personnalisées
+│   │   │   │   ├── multi-brand-design.md      # Design multi-marques
+│   │   │   │   └── budget-optimization.md     # Optimisation budget
+│   │   │   └── advanced/
+│   │   │       ├── vr-collaboration.md        # Collaboration VR
+│   │   │       ├── custom-manufacturing.md    # Fabrication personnalisée
+│   │   │       └── phased-implementation.md   # Implémentation par phases
+│   │   └── faq.md                             # FAQ
+│   ├── partner/
+│   │   ├── onboarding/
+│   │   │   ├── onboarding-guide.md            # Guide intégration
+│   │   │   ├── api-integration.md             # Intégration API
+│   │   │   ├── catalog-requirements.md        # Exigences catalogues
+│   │   │   └── technical-specifications.md    # Spécifications techniques
+│   │   ├── catalog-management/
+│   │   │   ├── product-specifications.md      # Spécifications produits
+│   │   │   ├── image-requirements.md          # Exigences images
+│   │   │   ├── metadata-guidelines.md         # Directives métadonnées
+│   │   │   └── pricing-information.md         # Informations tarification
+│   │   ├── analytics/
+│   │   │   ├── usage-analytics.md             # Analytique usage
+│   │   │   ├── user-insights.md               # Insights utilisateurs
+│   │   │   └── performance-metrics.md         # Métriques performance
+│   │   ├── marketing/
+│   │   │   ├── co-marketing.md                # Co-marketing
+│   │   │   ├── brand-guidelines.md            # Directives marque
+│   │   │   └── promotional-assets.md          # Ressources promotionnelles
+│   │   └── legal/
+│   │       ├── terms-of-service.md            # Conditions d'utilisation
+│   │       ├── data-sharing-agreement.md      # Accord partage données
+│   │       ├── privacy-policy.md              # Politique confidentialité
+│   │       └── intellectual-property.md       # Propriété intellectuelle
+│   ├── compliance/                            # Documentation compliance
+│   │   ├── gdpr/                              # RGPD
+│   │   │   ├── overview.md                    # Vue d'ensemble RGPD
+│   │   │   ├── data-processing.md             # Traitement des données
+│   │   │   ├── data-subject-rights.md         # Droits des personnes
+│   │   │   ├── consent-management.md          # Gestion du consentement
+│   │   │   ├── data-breach-protocol.md        # Protocole violation données
+│   │   │   └── dpia.md                        # Analyse d'impact
+│   │   ├── ccpa/                              # CCPA
+│   │   │   ├── overview.md                    # Vue d'ensemble CCPA
+│   │   │   ├── consumer-rights.md             # Droits des consommateurs
+│   │   │   └── opt-out-mechanism.md           # Mécanisme d'opt-out
+│   │   ├── accessibility/                     # Accessibilité
+│   │   │   ├── wcag-compliance.md             # Conformité WCAG
+│   │   │   ├── screen-readers.md              # Lecteurs d'écran
+│   │   │   ├── keyboard-navigation.md         # Navigation clavier
+│   │   │   └── aria-guidelines.md             # Directives ARIA
+│   │   ├── data-retention/                    # Rétention des données
+│   │   │   ├── policy.md                      # Politique de rétention
+│   │   │   ├── implementation.md              # Implémentation
+│   │   │   └── archiving.md                   # Archivage
+│   │   └── audit/                             # Audit
+│   │       ├── audit-log-structure.md         # Structure journal d'audit
+│   │       ├── event-types.md                 # Types d'événements
+│   │       ├── compliance-reporting.md        # Rapports de conformité
+│   │       └── log-retention.md               # Rétention des journaux
+│   └── monitoring/                            # Documentation monitoring
+│       ├── overview.md                        # Vue d'ensemble monitoring
+│       ├── metrics/                           # Métriques
+│       │   ├── system-metrics.md              # Métriques système
+│       │   ├── business-metrics.md            # Métriques métier
+│       │   ├── user-experience-metrics.md     # Métriques UX
+│       │   └── error-metrics.md               # Métriques d'erreur
+│       ├── alerting/                          # Alertes
+│       │   ├── alert-rules.md                 # Règles d'alerte
+│       │   ├── notification-channels.md       # Canaux de notification
+│       │   ├── escalation-policies.md         # Politiques d'escalade
+│       │   └── on-call-rotation.md            # Rotation d'astreinte
+│       ├── dashboards/                        # Tableaux de bord
+│       │   ├── system-dashboard.md            # Tableau système
+│       │   ├── business-dashboard.md          # Tableau métier
+│       │   ├── user-experience-dashboard.md   # Tableau UX
+│       │   └── error-dashboard.md             # Tableau d'erreurs
+│       └── logging/                           # Journalisation
+│           ├── log-structure.md               # Structure des logs
+│           ├── log-levels.md                  # Niveaux de log
+│           ├── centralized-logging.md         # Journalisation centralisée
+│           └── log-analysis.md                # Analyse des logs
+│
+├── config/
+│   ├── webpack/
+│   │   ├── webpack.common.js                  # Configuration commune
+│   │   ├── webpack.dev.js                     # Configuration développement
+│   │   ├── webpack.prod.js                    # Configuration production
+│   │   ├── webpack.analyze.js                 # Configuration analyse bundle
+│   │   └── webpack.parts.js                   # Parties réutilisables
+│   ├── jest/
+│   │   ├── jest.config.js                     # Configuration commune
+│   │   ├── jest.frontend.js                   # Configuration frontend
+│   │   ├── jest.backend.js                    # Configuration backend
+│   │   ├── jest.ai-modules.js                 # Configuration modules IA
+│   │   ├── jest.integration.js                # Configuration tests intégration
+│   │   ├── setup-tests.js                     # Configuration tests
+│   │   └── mocks/
+│   │       ├── file-mock.js                   # Mock fichiers
+│   │       ├── style-mock.js                  # Mock styles
+│   │       └── svg-mock.js                    # Mock SVG
+│   ├── docker/
+│   │   ├── Dockerfile.frontend                # Dockerfile frontend
+│   │   ├── Dockerfile.backend                 # Dockerfile backend
+│   │   ├── Dockerfile.ai                      # Dockerfile modules AI
+│   │   ├── Dockerfile.partner-portal          # Dockerfile portail partenaires
+│   │   ├── Dockerfile.data-exchange           # Dockerfile échange données
+│   │   ├── docker-compose.yml                 # Composition services
+│   │   ├── docker-compose.dev.yml             # Composition développement
+│   │   ├── docker-compose.prod.yml            # Composition production
+│   │   └── docker-compose.test.yml            # Composition tests
+│   ├── nginx/
+│   │   ├── nginx.conf                         # Configuration principale
+│   │   ├── nginx.dev.conf                     # Configuration développement
+│   │   ├── nginx.prod.conf                    # Configuration production
+│   │   ├── mime.types                         # Types MIME
+│   │   └── sites-available/
+│   │       ├── app.conf                       # Configuration app principale
+│   │       ├── partner-portal.conf            # Configuration portail partenaires
+│   │       ├── api.conf                       # Configuration API
+│   │       └── documentation.conf             # Configuration documentation
+│   ├── database/
+│   │   ├── mongodb/
+│   │   │   ├── mongod.conf                    # Configuration MongoDB
+│   │   │   └── init-mongo.js                  # Initialisation MongoDB
+│   │   ├── postgresql/
+│   │   │   ├── postgresql.conf                # Configuration PostgreSQL
+│   │   │   └── init-postgres.sql              # Initialisation PostgreSQL
+│   │   └── redis/
+│   │       ├── redis.conf                     # Configuration Redis
+│   │       └── sentinel.conf                  # Configuration Sentinel
+│   ├── linters/
+│   │   ├── eslintrc.js                        # Configuration ESLint
+│   │   ├── prettierrc.js                      # Configuration Prettier
+│   │   ├── stylelintrc.js                     # Configuration Stylelint
+│   │   └── commitlintrc.js                    # Configuration Commitlint
+│   ├── i18n/                                  # Configuration i18n
+│   │   ├── i18next.config.js                  # Configuration i18next
+│   │   ├── supported-locales.js               # Locales supportées
+│   │   ├── format-options.js                  # Options de formatage
+│   │   ├── date-formats.js                    # Formats de date
+│   │   ├── number-formats.js                  # Formats de nombre
+│   │   └── currency-formats.js                # Formats de devise
+│   ├── security/                              # Configuration sécurité
+│   │   ├── csp.js                             # Content Security Policy
+│   │   ├── cors.js                            # Configuration CORS
+│   │   ├── rate-limiter.js                    # Limiteur de taux
+│   │   ├── auth-config.js                     # Auth avancée
+│   │   ├── jwt-config.js                      # Config JWT
+│   │   ├── oauth-config.js                    # Config OAuth
+│   │   ├── api-keys-config.js                 # Config clés API
+│   │   ├── encryption-config.js               # Config chiffrement
+│   │   └── security-headers.js                # En-têtes de sécurité
+│   ├── monitoring/                            # Configuration monitoring
+│   │   ├── prometheus/                        # Config Prometheus
+│   │   │   ├── prometheus.yml                 # Fichier principal
+│   │   │   ├── rules.yml                      # Règles d'alerte
+│   │   │   └── targets.yml                    # Cibles de scraping
+│   │   ├── grafana/                           # Config Grafana
+│   │   │   ├── grafana.ini                    # Config principale
+│   │   │   ├── datasources.yml                # Sources de données
+│   │   │   └── dashboards.yml                 # Tableaux de bord
+│   │   ├── elastic/                           # Config Elastic Stack
+│   │   │   ├── elasticsearch.yml              # Config Elasticsearch
+│   │   │   ├── logstash.conf                  # Config Logstash
+│   │   │   └── kibana.yml                     # Config Kibana
+│   │   ├── apm.js                             # Application Performance Monitoring
+│   │   ├── logging-config.js                  # Configuration journalisation
+│   │   ├── tracing-config.js                  # Configuration tracing
+│   │   └── alerts.js                          # Configuration alertes
+│   ├── webhooks/                              # Configuration webhooks
+│   │   ├── events-config.js                   # Config événements
+│   │   ├── delivery-config.js                 # Config livraison
+│   │   ├── retry-config.js                    # Config retentatives
+│   │   └── security-config.js                 # Config sécurité
+│   └── env/
+│       ├── env.example                        # Exemple de variables
+│       ├── env.development                    # Variables développement
+│       ├── env.test                           # Variables test
+│       ├── env.staging                        # Variables staging
+│       └── env.production                     # Variables production
+│
+├── scripts/
+│   ├── setup/
+│   │   ├── install-dependencies.sh            # Installation dépendances
+│   │   ├── setup-db.sh                        # Configuration base de données
+│   │   ├── setup-dev-env.sh                   # Configuration env développement
+│   │   ├── setup-certificates.sh              # Configuration certificats
+│   │   └── init-project.sh                    # Initialisation projet
+│   ├── build/
+│   │   ├── build-frontend.sh                  # Build frontend
+│   │   ├── build-backend.sh                   # Build backend
+│   │   ├── build-ai-modules.sh                # Build modules IA
+│   │   ├── build-partner-portal.sh            # Build portail partenaires
+│   │   ├── build-all.sh                       # Build complet
+│   │   └── analyze-bundle.sh                  # Analyse bundle
+│   ├── deploy/
+│   │   ├── deploy-frontend.sh                 # Déploiement frontend
+│   │   ├── deploy-backend.sh                  # Déploiement backend
+│   │   ├── deploy-ai-modules.sh               # Déploiement modules IA
+│   │   ├── deploy-partner-portal.sh           # Déploiement portail partenaires
+│   │   ├── deploy-all.sh                      # Déploiement complet
+│   │   └── rollback.sh                        # Rollback déploiement
+│   ├── database/
+│   │   ├── backup/
+│   │   │   ├── backup-mongodb.sh              # Sauvegarde MongoDB
+│   │   │   ├── backup-postgresql.sh           # Sauvegarde PostgreSQL
+│   │   │   └── backup-all.sh                  # Sauvegarde complète
+│   │   ├── restore/
+│   │   │   ├── restore-mongodb.sh             # Restauration MongoDB
+│   │   │   ├── restore-postgresql.sh          # Restauration PostgreSQL
+│   │   │   └── restore-all.sh                 # Restauration complète
+│   │   └── seed/
+│   │       ├── seed-users.js                  # Données utilisateurs test
+│   │       ├── seed-kitchens.js               # Données cuisines test
+│   │       ├── seed-catalogs.js               # Données catalogues test
+│   │       ├── seed-partners.js               # Données partenaires test
+│   │       └── seed-all.js                    # Toutes données test
+│   ├── analyze/
+│   │   ├── analyze-code-quality.sh            # Analyse qualité code
+│   │   ├── analyze-dependencies.sh            # Analyse dépendances
+│   │   ├── analyze-performance.sh             # Analyse performance
+│   │   └── generate-reports.sh                # Génération rapports
+│   ├── maintenance/
+│   │   ├── clean-logs.sh                      # Nettoyage logs
+│   │   ├── clean-temp.sh                      # Nettoyage fichiers temporaires
+│   │   ├── update-dependencies.sh             # Mise à jour dépendances
+│   │   └── health-check.sh                    # Vérification santé
+│   ├── i18n/                                  # Scripts i18n
+│   │   ├── extract-translations.js            # Extraction des traductions
+│   │   ├── import-translations.js             # Import des traductions
+│   │   ├── validate-translations.js           # Validation des traductions
+│   │   ├── sync-translations.js               # Synchronisation des traductions
+│   │   ├── update-translations.js             # Mise à jour des traductions
+│   │   ├── export-translations.js             # Export des traductions
+│   │   ├── compile-translations.js            # Compilation des traductions
+│   │   └── translation-stats.js               # Statistiques de traduction
+│   ├── security/                              # Scripts sécurité
+│   │   ├── audit.sh                           # Audit de sécurité
+│   │   ├── penetration-test.sh                # Test de pénétration
+│   │   ├── dependency-check.sh                # Vérification des dépendances
+│   │   ├── encryption-key-rotation.sh         # Rotation des clés
+│   │   ├── security-scan.sh                   # Scan de sécurité
+│   │   ├── ssl-cert-check.sh                  # Vérification certificats SSL
+│   │   ├── permissions-audit.sh               # Audit des permissions
+│   │   └── security-report.sh                 # Rapport de sécurité
+│   ├── integration-tests/                     # Scripts tests d'intégration
+│   │   ├── run-integration-tests.sh           # Exécution tests intégration
+│   │   ├── setup-test-environment.sh          # Préparation environnement test
+│   │   ├── cleanup-test-environment.sh        # Nettoyage environnement test
+│   │   ├── generate-test-data.js              # Génération données test
+│   │   └── report-test-results.js             # Rapport résultats tests
+│   ├── webhooks/                              # Scripts webhooks
+│   │   ├── test-webhooks.js                   # Test webhooks
+│   │   ├── simulate-events.js                 # Simulation événements
+│   │   ├── verify-signatures.js               # Vérification signatures
+│   │   └── monitor-deliveries.js              # Surveillance livraisons
+│   ├── version/                               # Scripts gestion des versions
+│   │   ├── bump-version.sh                    # Incrémentation version
+│   │   ├── generate-changelog.sh              # Génération changelog
+│   │   ├── tag-release.sh                     # Création tag release
+│   │   └── publish-release.sh                 # Publication release
+│   └── monitoring/                            # Scripts monitoring
+│       ├── generate-dashboard.js              # Génération tableaux de bord
+│       ├── performance-benchmark.sh           # Benchmark performance
+│       ├── setup-monitoring.sh                # Configuration monitoring
+│       ├── alert-test.sh                      # Test alertes
+│       ├── generate-sla-report.js             # Rapport SLA
+│       ├── error-analysis.js                  # Analyse des erreurs
+│       ├── system-health-check.sh             # Vérification santé système
+│       └── user-experience-metrics.js         # Métriques expérience utilisateur
+│
+├── packages/
+│   ├── common/
+│   │   ├── package.json                       # Configuration package
+│   │   ├── tsconfig.json                      # Configuration TypeScript
+│   │   ├── jest.config.js                     # Configuration Jest
+│   │   ├── README.md                          # Documentation
+│   │   ├── src/
+│   │   │   ├── index.ts                       # Point d'entrée
+│   │   │   ├── types/
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── user.types.ts              # Types utilisateurs
+│   │   │   │   ├── kitchen.types.ts           # Types cuisines
+│   │   │   │   ├── catalog.types.ts           # Types catalogues
+│   │   │   │   ├── product.types.ts           # Types produits
+│   │   │   │   ├── api.types.ts               # Types API
+│   │   │   │   ├── partner.types.ts           # Types partenaires
+│   │   │   │   ├── storage.types.ts           # Types stockage
+│   │   │   │   ├── permission.types.ts        # Types permissions
+│   │   │   │   ├── role.types.ts              # Types rôles
+│   │   │   │   ├── audit.types.ts             # Types audit
+│   │   │   │   ├── webhook.types.ts           # Types webhooks
+│   │   │   │   └── monitoring.types.ts        # Types monitoring
+│   │   │   ├── utils/
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── validation/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── string-validation.ts   # Validation chaînes
+│   │   │   │   │   ├── number-validation.ts   # Validation nombres
+│   │   │   │   │   ├── object-validation.ts   # Validation objets
+│   │   │   │   │   └── schema-validation.ts   # Validation schémas
+│   │   │   │   ├── formatting/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── date-formatting.ts     # Formatage dates
+│   │   │   │   │   ├── number-formatting.ts   # Formatage nombres
+│   │   │   │   │   ├── string-formatting.ts   # Formatage chaînes
+│   │   │   │   │   └── currency-formatting.ts # Formatage monnaies
+│   │   │   │   ├── transformation/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── array-transformation.ts # Transformation tableaux
+│   │   │   │   │   ├── object-transformation.ts # Transformation objets
+│   │   │   │   │   └── text-transformation.ts # Transformation texte
+│   │   │   │   ├── date/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── date-comparison.ts     # Comparaison dates
+│   │   │   │   │   ├── date-conversion.ts     # Conversion dates
+│   │   │   │   │   └── date-manipulation.ts   # Manipulation dates
+│   │   │   │   ├── file/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── file-conversion.ts     # Conversion fichiers
+│   │   │   │   │   ├── file-validation.ts     # Validation fichiers
+│   │   │   │   │   └── mime-types.ts          # Types MIME
+│   │   │   │   ├── helpers/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── random-generator.ts    # Génération aléatoire
+│   │   │   │   │   ├── logger.ts              # Logger
+│   │   │   │   │   └── profiler.ts            # Profilage
+│   │   │   │   ├── hooks/                     # Hooks communs
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── use-debounce.ts        # Hook debounce
+│   │   │   │   │   ├── use-throttle.ts        # Hook throttle
+│   │   │   │   │   ├── use-local-storage.ts   # Hook localStorage
+│   │   │   │   │   └── use-on-click-outside.ts # Hook clic extérieur
+│   │   │   │   └── security/                  # Utilitaires sécurité
+│   │   │   │       ├── index.ts               # Export principal
+│   │   │   │       ├── encryption.ts          # Chiffrement
+│   │   │   │       ├── hash.ts                # Hachage
+│   │   │   │       └── token.ts               # Gestion token
+│   │   │   ├── constants/
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── api.constants.ts           # Constantes API
+│   │   │   │   ├── error-codes.ts             # Codes d'erreur
+│   │   │   │   ├── units.ts                   # Unités de mesure
+│   │   │   │   ├── dimensions.ts              # Dimensions standard
+│   │   │   │   ├── materials.ts               # Matériaux
+│   │   │   │   ├── colors.ts                  # Couleurs
+│   │   │   │   ├── product-categories.ts      # Catégories produits
+│   │   │   │   ├── permission-constants.ts    # Constantes permissions
+│   │   │   │   ├── role-constants.ts          # Constantes rôles
+│   │   │   │   ├── audit-constants.ts         # Constantes audit
+│   │   │   │   ├── webhook-events.ts          # Événements webhook
+│   │   │   │   └── monitoring-constants.ts    # Constantes monitoring
+│   │   │   ├── models/
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── kitchen.model.ts           # Modèle cuisine
+│   │   │   │   ├── user.model.ts              # Modèle utilisateur
+│   │   │   │   ├── product.model.ts           # Modèle produit
+│   │   │   │   ├── catalog.model.ts           # Modèle catalogue
+│   │   │   │   ├── partner.model.ts           # Modèle partenaire
+│   │   │   │   ├── project.model.ts           # Modèle projet
+│   │   │   │   ├── permission.model.ts        # Modèle permission
+│   │   │   │   ├── role.model.ts              # Modèle rôle
+│   │   │   │   ├── audit.model.ts             # Modèle audit
+│   │   │   │   └── webhook.model.ts           # Modèle webhook
+│   │   │   ├── interfaces/
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── api.interface.ts           # Interface API
+│   │   │   │   ├── storage.interface.ts       # Interface stockage
+│   │   │   │   ├── catalog.interface.ts       # Interface catalogue
+│   │   │   │   ├── provider.interface.ts      # Interface fournisseur
+│   │   │   │   ├── permission.interface.ts    # Interface permission
+│   │   │   │   ├── role.interface.ts          # Interface rôle
+│   │   │   │   ├── audit.interface.ts         # Interface audit
+│   │   │   │   ├── webhook.interface.ts       # Interface webhook
+│   │   │   │   └── monitoring.interface.ts    # Interface monitoring
+│   │   │   ├── errors/
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── api-error.ts               # Erreur API
+│   │   │   │   ├── validation-error.ts        # Erreur validation
+│   │   │   │   ├── not-found-error.ts         # Erreur non trouvé
+│   │   │   │   ├── authorization-error.ts     # Erreur autorisation
+│   │   │   │   ├── permission-error.ts        # Erreur permission
+│   │   │   │   ├── rate-limit-error.ts        # Erreur limite de taux
+│   │   │   │   ├── webhook-error.ts           # Erreur webhook
+│   │   │   │   └── monitoring-error.ts        # Erreur monitoring
+│   │   │   └── i18n/                          # Internationalisation
+│   │   │       ├── index.ts                   # Export principal
+│   │   │       ├── translate.ts               # Utilitaire de traduction
+│   │   │       ├── date-locale.ts             # Localisation des dates
+│   │   │       ├── number-locale.ts           # Localisation des nombres
+│   │   │       ├── currency-locale.ts         # Localisation des devises
+│   │   │       ├── rtl-helper.ts              # Aide RTL
+│   │   │       ├── plural-rules.ts            # Règles de pluralisation
+│   │   │       └── locale-detection.ts        # Détection de locale
+│   │   └── tests/
+│   │       ├── setup.ts                       # Configuration tests
+│   │       ├── utils/
+│   │       │   ├── validation.test.ts         # Tests validation
+│   │       │   ├── formatting.test.ts         # Tests formatage
+│   │       │   ├── date.test.ts               # Tests date
+│   │       │   ├── security.test.ts           # Tests sécurité
+│   │       │   └── i18n.test.ts               # Tests i18n
+│   │       ├── models/
+│   │       │   ├── kitchen.model.test.ts      # Tests modèle cuisine
+│   │       │   ├── user.model.test.ts         # Tests modèle utilisateur
+│   │       │   ├── permission.model.test.ts   # Tests modèle permission
+│   │       │   └── role.model.test.ts         # Tests modèle rôle
+│   │       ├── integration/                   # Tests d'intégration
+│   │       │   ├── api.integration.test.ts    # Tests intégration API
+│   │       │   ├── auth.integration.test.ts   # Tests intégration auth
+│   │       │   └── webhook.integration.test.ts # Tests intégration webhook
+│   │       └── mocks/
+│   │           ├── user.mock.ts               # Mock utilisateur
+│   │           ├── kitchen.mock.ts            # Mock cuisine
+│   │           ├── product.mock.ts            # Mock produit
+│   │           ├── permission.mock.ts         # Mock permission
+│   │           ├── role.mock.ts               # Mock rôle
+│   │           └── webhook.mock.ts            # Mock webhook
+│   │
+│   ├── api-client/                            # Client API
+│   │   ├── package.json                       # Configuration package
+│   │   ├── tsconfig.json                      # Configuration TypeScript
+│   │   ├── README.md                          # Documentation
+│   │   ├── src/
+│   │   │   ├── index.ts                       # Point d'entrée
+│   │   │   ├── client.ts                      # Client principal
+│   │   │   ├── config.ts                      # Configuration
+│   │   │   ├── endpoints/                     # Points de terminaison
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── auth-endpoints.ts          # Endpoints auth
+│   │   │   │   ├── kitchen-endpoints.ts       # Endpoints cuisine
+│   │   │   │   ├── user-endpoints.ts          # Endpoints utilisateur
+│   │   │   │   ├── catalog-endpoints.ts       # Endpoints catalogue
+│   │   │   │   └── project-endpoints.ts       # Endpoints projet
+│   │   │   ├── interceptors/                  # Intercepteurs
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── auth-interceptor.ts        # Intercepteur auth
+│   │   │   │   ├── error-interceptor.ts       # Intercepteur erreur
+│   │   │   │   └── logger-interceptor.ts      # Intercepteur logger
+│   │   │   └── adapters/                      # Adaptateurs
+│   │   │       ├── index.ts                   # Export principal
+│   │   │       ├── axios-adapter.ts           # Adaptateur Axios
+│   │   │       └── fetch-adapter.ts           # Adaptateur Fetch
+│   │   └── tests/
+│   │       ├── setup.ts                       # Configuration tests
+│   │       ├── client.test.ts                 # Tests client
+│   │       ├── endpoints/                     # Tests endpoints
+│   │       │   ├── auth-endpoints.test.ts     # Tests endpoints auth
+│   │       │   └── kitchen-endpoints.test.ts  # Tests endpoints cuisine
+│   │       └── mocks/                         # Mocks
+│   │           ├── api-responses.mock.ts      # Mock réponses API
+│   │           └── request.mock.ts            # Mock requêtes
+│   │
+│   ├── design-system/                         # Système de design
+│   │   ├── package.json                       # Configuration package
+│   │   ├── tsconfig.json                      # Configuration TypeScript
+│   │   ├── README.md                          # Documentation
+│   │   ├── src/
+│   │   │   ├── index.ts                       # Point d'entrée
+│   │   │   ├── foundations/                   # Fondations
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── colors.ts                  # Couleurs
+│   │   │   │   ├── typography.ts              # Typographie
+│   │   │   │   ├── spacing.ts                 # Espacement
+│   │   │   │   ├── breakpoints.ts             # Points de rupture
+│   │   │   │   ├── elevation.ts               # Élévation
+│   │   │   │   └── motion.ts                  # Animation
+│   │   │   ├── tokens/                        # Tokens
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── color-tokens.ts            # Tokens couleur
+│   │   │   │   ├── typography-tokens.ts       # Tokens typographie
+│   │   │   │   ├── spacing-tokens.ts          # Tokens espacement
+│   │   │   │   ├── elevation-tokens.ts        # Tokens élévation
+│   │   │   │   └── motion-tokens.ts           # Tokens animation
+│   │   │   ├── themes/                        # Thèmes
+│   │   │   │   ├── index.ts                   # Export principal
+│   │   │   │   ├── light-theme.ts             # Thème clair
+│   │   │   │   ├── dark-theme.ts              # Thème sombre
+│   │   │   │   ├── high-contrast-theme.ts     # Thème contraste élevé
+│   │   │   │   └── theme-utils.ts             # Utilitaires thèmes
+│   │   │   └── icons/                         # Icônes
+│   │   │       ├── index.ts                   # Export principal
+│   │   │       ├── kitchen/                   # Icônes cuisine
+│   │   │       │   ├── index.ts               # Export principal
+│   │   │       │   ├── cabinet-icon.ts        # Icône meuble
+│   │   │       │   ├── oven-icon.ts           # Icône four
+│   │   │       │   ├── fridge-icon.ts         # Icône réfrigérateur
+│   │   │       │   └── sink-icon.ts           # Icône évier
+│   │   │       ├── navigation/                # Icônes navigation
+│   │   │       │   ├── index.ts               # Export principal
+│   │   │       │   ├── home-icon.ts           # Icône accueil
+│   │   │       │   ├── menu-icon.ts           # Icône menu
+│   │   │       │   ├── search-icon.ts         # Icône recherche
+│   │   │       │   └── settings-icon.ts       # Icône paramètres
+│   │   │       ├── actions/                   # Icônes actions
+│   │   │       │   ├── index.ts               # Export principal
+│   │   │       │   ├── add-icon.ts            # Icône ajouter
+│   │   │       │   ├── edit-icon.ts           # Icône éditer
+│   │   │       │   ├── delete-icon.ts         # Icône supprimer
+│   │   │       │   └── save-icon.ts           # Icône sauvegarder
+│   │   │       └── social/                    # Icônes sociales
+│   │   │           ├── index.ts               # Export principal
+│   │   │           ├── facebook-icon.ts       # Icône Facebook
+│   │   │           ├── twitter-icon.ts        # Icône Twitter
+│   │   │           ├── instagram-icon.ts      # Icône Instagram
+│   │   │           └── linkedin-icon.ts       # Icône LinkedIn
+│   │   └── storybook/                         # Storybook
+│   │       ├── preview.js                     # Prévisualisation
+│   │       ├── theme.js                       # Thème
+│   │       └── stories/                       # Stories
+│   │           ├── foundations/               # Stories fondations
+│   │           │   ├── colors.stories.js      # Stories couleurs
+│   │           │   ├── typography.stories.js  # Stories typographie
+│   │           │   ├── spacing.stories.js     # Stories espacement
+│   │           │   └── motion.stories.js      # Stories animation
+│   │           ├── tokens/                    # Stories tokens
+│   │           │   ├── color-tokens.stories.js # Stories tokens couleur
+│   │           │   └── typography-tokens.stories.js # Stories tokens typographie
+│   │           └── themes/                    # Stories thèmes
+│   │               ├── light-theme.stories.js # Stories thème clair
+│   │               └── dark-theme.stories.js  # Stories thème sombre
+│   │
+│   ├── ui-components/
+│   │   ├── package.json                       # Configuration package
+│   │   ├── tsconfig.json                      # Configuration TypeScript
+│   │   ├── README.md                          # Documentation
+│   │   ├── rollup.config.js                   # Configuration Rollup
+│   │   ├── src/
+│   │   │   ├── index.ts                       # Point d'entrée
+│   │   │   ├── components/
+│   │   │   │   ├── buttons/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── Button/
+│   │   │   │   │   │   ├── Button.tsx         # Composant
+│   │   │   │   │   │   ├── Button.test.tsx    # Tests
+│   │   │   │   │   │   ├── Button.stories.tsx # Stories Storybook
+│   │   │   │   │   │   ├── Button.module.css  # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── IconButton/
+│   │   │   │   │   │   ├── IconButton.tsx     # Composant
+│   │   │   │   │   │   ├── IconButton.test.tsx # Tests
+│   │   │   │   │   │   ├── IconButton.stories.tsx # Stories
+│   │   │   │   │   │   ├── IconButton.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── ActionButton/
+│   │   │   │   │   │   ├── ActionButton.tsx   # Composant
+│   │   │   │   │   │   ├── ActionButton.test.tsx # Tests
+│   │   │   │   │   │   ├── ActionButton.stories.tsx # Stories
+│   │   │   │   │   │   ├── ActionButton.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── ToggleButton/
+│   │   │   │   │       ├── ToggleButton.tsx   # Composant
+│   │   │   │   │       ├── ToggleButton.test.tsx # Tests
+│   │   │   │   │       ├── ToggleButton.stories.tsx # Stories
+│   │   │   │   │       ├── ToggleButton.module.css # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   ├── forms/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── Input/
+│   │   │   │   │   │   ├── Input.tsx          # Composant
+│   │   │   │   │   │   ├── Input.test.tsx     # Tests
+│   │   │   │   │   │   ├── Input.stories.tsx  # Stories
+│   │   │   │   │   │   ├── Input.module.css   # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Select/
+│   │   │   │   │   │   ├── Select.tsx         # Composant
+│   │   │   │   │   │   ├── Select.test.tsx    # Tests
+│   │   │   │   │   │   ├── Select.stories.tsx # Stories
+│   │   │   │   │   │   ├── Select.module.css  # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Checkbox/
+│   │   │   │   │   │   ├── Checkbox.tsx       # Composant
+│   │   │   │   │   │   ├── Checkbox.test.tsx  # Tests
+│   │   │   │   │   │   ├── Checkbox.stories.tsx # Stories
+│   │   │   │   │   │   ├── Checkbox.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── RadioButton/
+│   │   │   │   │   │   ├── RadioButton.tsx    # Composant
+│   │   │   │   │   │   ├── RadioButton.test.tsx # Tests
+│   │   │   │   │   │   ├── RadioButton.stories.tsx # Stories
+│   │   │   │   │   │   ├── RadioButton.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Form/
+│   │   │   │   │   │   ├── Form.tsx           # Composant
+│   │   │   │   │   │   ├── Form.test.tsx      # Tests
+│   │   │   │   │   │   ├── Form.stories.tsx   # Stories
+│   │   │   │   │   │   ├── Form.module.css    # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── FormField/
+│   │   │   │   │       ├── FormField.tsx      # Composant
+│   │   │   │   │       ├── FormField.test.tsx # Tests
+│   │   │   │   │       ├── FormField.stories.tsx # Stories
+│   │   │   │   │       ├── FormField.module.css # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   ├── navigation/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── Navbar/
+│   │   │   │   │   │   ├── Navbar.tsx         # Composant
+│   │   │   │   │   │   ├── Navbar.test.tsx    # Tests
+│   │   │   │   │   │   ├── Navbar.stories.tsx # Stories
+│   │   │   │   │   │   ├── Navbar.module.css  # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Sidebar/
+│   │   │   │   │   │   ├── Sidebar.tsx        # Composant
+│   │   │   │   │   │   ├── Sidebar.test.tsx   # Tests
+│   │   │   │   │   │   ├── Sidebar.stories.tsx # Stories
+│   │   │   │   │   │   ├── Sidebar.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Tabs/
+│   │   │   │   │   │   ├── Tabs.tsx           # Composant
+│   │   │   │   │   │   ├── Tabs.test.tsx      # Tests
+│   │   │   │   │   │   ├── Tabs.stories.tsx   # Stories
+│   │   │   │   │   │   ├── Tabs.module.css    # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── Breadcrumbs/
+│   │   │   │   │       ├── Breadcrumbs.tsx    # Composant
+│   │   │   │   │       ├── Breadcrumbs.test.tsx # Tests
+│   │   │   │   │       ├── Breadcrumbs.stories.tsx # Stories
+│   │   │   │   │       ├── Breadcrumbs.module.css # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   ├── feedback/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── Alert/
+│   │   │   │   │   │   ├── Alert.tsx          # Composant
+│   │   │   │   │   │   ├── Alert.test.tsx     # Tests
+│   │   │   │   │   │   ├── Alert.stories.tsx  # Stories
+│   │   │   │   │   │   ├── Alert.module.css   # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Toast/
+│   │   │   │   │   │   ├── Toast.tsx          # Composant
+│   │   │   │   │   │   ├── Toast.test.tsx     # Tests
+│   │   │   │   │   │   ├── Toast.stories.tsx  # Stories
+│   │   │   │   │   │   ├── Toast.module.css   # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Modal/
+│   │   │   │   │   │   ├── Modal.tsx          # Composant
+│   │   │   │   │   │   ├── Modal.test.tsx     # Tests
+│   │   │   │   │   │   ├── Modal.stories.tsx  # Stories
+│   │   │   │   │   │   ├── Modal.module.css   # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── ProgressBar/
+│   │   │   │   │   │   ├── ProgressBar.tsx    # Composant
+│   │   │   │   │   │   ├── ProgressBar.test.tsx # Tests
+│   │   │   │   │   │   ├── ProgressBar.stories.tsx # Stories
+│   │   │   │   │   │   ├── ProgressBar.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── Skeleton/
+│   │   │   │   │       ├── Skeleton.tsx       # Composant
+│   │   │   │   │       ├── Skeleton.test.tsx  # Tests
+│   │   │   │   │       ├── Skeleton.stories.tsx # Stories
+│   │   │   │   │       ├── Skeleton.module.css # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   ├── layout/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── Grid/
+│   │   │   │   │   │   ├── Grid.tsx           # Composant
+│   │   │   │   │   │   ├── Grid.test.tsx      # Tests
+│   │   │   │   │   │   ├── Grid.stories.tsx   # Stories
+│   │   │   │   │   │   ├── Grid.module.css    # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Container/
+│   │   │   │   │   │   ├── Container.tsx      # Composant
+│   │   │   │   │   │   ├── Container.test.tsx # Tests
+│   │   │   │   │   │   ├── Container.stories.tsx # Stories
+│   │   │   │   │   │   ├── Container.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Card/
+│   │   │   │   │   │   ├── Card.tsx           # Composant
+│   │   │   │   │   │   ├── Card.test.tsx      # Tests
+│   │   │   │   │   │   ├── Card.stories.tsx   # Stories
+│   │   │   │   │   │   ├── Card.module.css    # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── Divider/
+│   │   │   │   │       ├── Divider.tsx        # Composant
+│   │   │   │   │       ├── Divider.test.tsx   # Tests
+│   │   │   │   │       ├── Divider.stories.tsx # Stories
+│   │   │   │   │       ├── Divider.module.css # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   ├── data-display/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── Table/
+│   │   │   │   │   │   ├── Table.tsx          # Composant
+│   │   │   │   │   │   ├── Table.test.tsx     # Tests
+│   │   │   │   │   │   ├── Table.stories.tsx  # Stories
+│   │   │   │   │   │   ├── Table.module.css   # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Badge/
+│   │   │   │   │   │   ├── Badge.tsx          # Composant
+│   │   │   │   │   │   ├── Badge.test.tsx     # Tests
+│   │   │   │   │   │   ├── Badge.stories.tsx  # Stories
+│   │   │   │   │   │   ├── Badge.module.css   # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── Chip/
+│   │   │   │   │   │   ├── Chip.tsx           # Composant
+│   │   │   │   │   │   ├── Chip.test.tsx      # Tests
+│   │   │   │   │   │   ├── Chip.stories.tsx   # Stories
+│   │   │   │   │   │   ├── Chip.module.css    # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── List/
+│   │   │   │   │       ├── List.tsx           # Composant
+│   │   │   │   │       ├── List.test.tsx      # Tests
+│   │   │   │   │       ├── List.stories.tsx   # Stories
+│   │   │   │   │       ├── List.module.css    # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   ├── specialized/
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── KitchenDesigner/
+│   │   │   │   │   │   ├── KitchenDesigner.tsx # Composant
+│   │   │   │   │   │   ├── KitchenDesigner.test.tsx # Tests
+│   │   │   │   │   │   ├── KitchenDesigner.stories.tsx # Stories
+│   │   │   │   │   │   ├── KitchenDesigner.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── CatalogBrowser/
+│   │   │   │   │   │   ├── CatalogBrowser.tsx # Composant
+│   │   │   │   │   │   ├── CatalogBrowser.test.tsx # Tests
+│   │   │   │   │   │   ├── CatalogBrowser.stories.tsx # Stories
+│   │   │   │   │   │   ├── CatalogBrowser.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── VRViewer/
+│   │   │   │   │       ├── VRViewer.tsx       # Composant
+│   │   │   │   │       ├── VRViewer.test.tsx  # Tests
+│   │   │   │   │       ├── VRViewer.stories.tsx # Stories
+│   │   │   │   │       ├── VRViewer.module.css # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   ├── a11y/                      # Composants d'accessibilité
+│   │   │   │   │   ├── index.ts               # Export principal
+│   │   │   │   │   ├── ScreenReader/          # Pour lecteurs d'écran
+│   │   │   │   │   │   ├── ScreenReader.tsx   # Composant
+│   │   │   │   │   │   ├── ScreenReader.test.tsx # Tests
+│   │   │   │   │   │   ├── ScreenReader.stories.tsx # Stories
+│   │   │   │   │   │   ├── ScreenReader.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── FocusTrap/             # Pour piéger le focus
+│   │   │   │   │   │   ├── FocusTrap.tsx      # Composant
+│   │   │   │   │   │   ├── FocusTrap.test.tsx # Tests
+│   │   │   │   │   │   ├── FocusTrap.stories.tsx # Stories
+│   │   │   │   │   │   ├── FocusTrap.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   ├── SkipNav/               # Pour sauter la navigation
+│   │   │   │   │   │   ├── SkipNav.tsx        # Composant
+│   │   │   │   │   │   ├── SkipNav.test.tsx   # Tests
+│   │   │   │   │   │   ├── SkipNav.stories.tsx # Stories
+│   │   │   │   │   │   ├── SkipNav.module.css # Styles
+│   │   │   │   │   │   └── index.ts           # Export
+│   │   │   │   │   └── LiveRegion/            # Pour les régions en direct
+│   │   │   │   │       ├── LiveRegion.tsx     # Composant
+│   │   │   │   │       ├── LiveRegion.test.tsx # Tests
+│   │   │   │   │       ├── LiveRegion.stories.tsx # Stories
+│   │   │   │   │       ├── LiveRegion.module.css # Styles
+│   │   │   │   │       └── index.ts           # Export
+│   │   │   │   └── permission/                # Composants de gestion des permissions
+│   │   │   │       ├── index.ts               # Export principal
+│   │   │   │       ├── PermissionGuard/       # Garde de permission
+│   │   │   │       │   ├── PermissionGuard.tsx # Composant
+│   │   │   │       │   ├── PermissionGuard.test.tsx # Tests
+│   │   │   │       │   ├── PermissionGuard.stories.tsx # Stories
+│   │   │   │       │   ├── PermissionGuard.module.css # Styles
+│   │   │   │       │   └── index.ts           # Export
+│   │   │   │       ├── RoleBasedContent/       # Contenu basé sur rôle
+│   │   │   │       │   ├── RoleBasedContent.tsx # Composant
+│   │   │   │       │   ├── RoleBasedContent.test.tsx # Tests
+│   │   │   │       │   ├── RoleBasedContent.stories.tsx # Stories
+│   │   │   │       │   ├── RoleBasedContent.module.css # Styles
+│   │   │   │       │   └── index.ts           # Export
+│   │   │   │       └── PermissionBadge/        # Badge de permission
+│   │   │   │           ├── PermissionBadge.tsx # Composant
+│   │   │   │           ├── PermissionBadge.test.tsx # Tests
+│   │   │   │           ├── PermissionBadge.stories.tsx # Stories
+│   │   │   │           ├── PermissionBadge.module.css # Styles
+│   │   │   │           └── index.ts           # Export
+│   │   │   └── i18n/                          # Composants d'internationalisation
+│   │   │       ├── index.ts                   # Export principal
+│   │   │       ├── LanguageSwitcher/          # Sélecteur de langue
+│   │   │       │   ├── LanguageSwitcher.tsx   # Composant
+│   │   │       │   ├── LanguageSwitcher.test.tsx # Tests
+│   │   │       │   ├── LanguageSwitcher.stories.tsx # Stories
+│   │   │       │   ├── LanguageSwitcher.module.css # Styles
+│   │   │       │   └── index.ts               # Export
+│   │   │       ├── FormatCurrency/            # Formatteur de devise
+│   │   │       │   ├── FormatCurrency.tsx     # Composant
+│   │   │       │   ├── FormatCurrency.test.tsx # Tests
+│   │   │       │   ├── FormatCurrency.stories.tsx # Stories
+│   │   │       │   ├── FormatCurrency.module.css # Styles
+│   │   │       │   └── index.ts               # Export
+│   │   │       └── FormatDate/                # Formatteur de date
+│   │   │           ├── FormatDate.tsx         # Composant
+│   │   │           ├── FormatDate.test.tsx    # Tests
+│   │   │           ├── FormatDate.stories.tsx # Stories
+│   │   │           ├── FormatDate.module.css  # Styles
+│   │   │           └── index.ts               # Export
+│   │   ├── theme/
+│   │   │   ├── index.ts                       # Export principal
+│   │   │   ├── ThemeProvider/                 # Fournisseur de thème
+│   │   │   │   ├── ThemeProvider.tsx          # Composant
+│   │   │   │   ├── ThemeProvider.test.tsx     # Tests
+│   │   │   │   ├── ThemeProvider.stories.tsx  # Stories
+│   │   │   │   └── index.ts                   # Export
+│   │   │   ├── ThemeSwitcher/                 # Sélecteur de thème
+│   │   │   │   ├── ThemeSwitcher.tsx          # Composant
+│   │   │   │   ├── ThemeSwitcher.test.tsx     # Tests
+│   │   │   │   ├── ThemeSwitcher.stories.tsx  # Stories
+│   │   │   │   ├── ThemeSwitcher.module.css   # Styles
+│   │   │   │   └── index.ts                   # Export
+│   │   │   ├── themes/                        # Définitions de thèmes
+│   │   │   │   ├── light-theme.ts             # Thème clair
+│   │   │   │   ├── dark-theme.ts              # Thème sombre
+│   │   │   │   ├── custom-theme.ts            # Thème personnalisable
+│   │   │   │   └── index.ts                   # Export
+│   │   │   └── contexts/                      # Contextes
+│   │   │       ├── ThemeContext.tsx           # Contexte de thème
+│   │   │       ├── LocaleContext.tsx          # Contexte de localisation
+│   │   │       └── index.ts                   # Export
+│   │   ├── storybook/
+│   │   │   ├── main.js                        # Config principale
+│   │   │   ├── preview.js                     # Config prévisualisation
+│   │   │   ├── theme.js                       # Thème Storybook
+│   │   │   ├── addons.js                      # Addons Storybook
+│   │   │   ├── a11y.js                        # Config accessibilité
+│   │   │   ├── i18n.js                        # Config i18n
+│   │   │   ├── decorators/                    # Décorateurs
+│   │   │   │   ├── theme-decorator.js         # Décorateur de thème
+│   │   │   │   ├── i18n-decorator.js          # Décorateur d'i18n
+│   │   │   │   └── layout-decorator.js        # Décorateur de mise en page
+│   │   │   └── docs/                          # Documentation
+│   │   │       ├── introduction.stories.mdx   # Introduction
+│   │   │       ├── theming.stories.mdx        # Guide de thème
+│   │   │       ├── i18n.stories.mdx           # Guide d'i18n
+│   │   │       └── accessibility.stories.mdx  # Guide d'accessibilité
+│   │   └── tests/
+│   │       ├── setup.ts                       # Configuration tests
+│   │       ├── utils.ts                       # Utilitaires tests
+│   │       ├── mocks/
+│   │       │   ├── handlers.ts                # Gestionnaires mocks
+│   │       │   ├── server.ts                  # Serveur mock
+│   │       │   ├── permission-mock.ts         # Mock permissions
+│   │       │   ├── i18n-mock.ts               # Mock i18n
+│   │       │   ├── theme-mock.ts              # Mock thème
+│   │       │   └── store-mock.ts              # Mock store
+│   │       ├── integration/                   # Tests d'intégration
+│   │       │   ├── setup.ts                   # Configuration
+│   │       │   ├── component-integration.test.ts # Tests composants
+│   │       │   ├── accessibility.test.ts      # Tests accessibilité
+│   │       │   ├── i18n.test.ts               # Tests i18n
+│   │       │   └── store.test.ts              # Tests store
+│   │       └── e2e/                           # Tests end-to-end
+│   │           ├── setup.ts                   # Configuration
+│   │           ├── user-flows/                # Flux utilisateur
+│   │           │   ├── kitchen-design.test.ts # Test conception cuisine
+│   │           │   ├── catalog-browsing.test.ts # Test navigation catalogue
+│   │           │   ├── user-auth.test.ts      # Test authentification
+│   │           │   └── checkout.test.ts       # Test paiement
+│   │           └── page-objects/              # Page objects
+│   │               ├── home-page.ts           # Page d'accueil
+│   │               ├── catalog-page.ts        # Page catalogue
+│   │               ├── designer-page.ts       # Page designer
+│   │               └── checkout-page.ts       # Page paiement
+│   │
+│   ├── frontend/
+│   │   ├── package.json                       # Configuration package
+│   │   ├── tsconfig.json                      # Configuration TypeScript
+│   │   ├── eslintrc.js                        # Configuration ESLint
+│   │   ├── prettierrc.js                      # Configuration Prettier
+│   │   ├── README.md                          # Documentation
+│   │   ├── public/
+│   │   │   ├── index.html                     # HTML principal
+│   │   │   ├── favicon.ico                    # Favicon
+│   │   │   ├── logo.svg                       # Logo
+│   │   │   ├── manifest.json                  # Manifest web
+│   │   │   ├── robots.txt                     # Robots.txt
+│   │   │   ├── sitemap.xml                    # Sitemap
+│   │   │   └── assets/
+│   │   │       ├── images/
+│   │   │       │   ├── logo.svg               # Logo
+│   │   │       │   ├── hero-banner.jpg        # Bannière héros
+│   │   │       │   └── kitchen-samples/
+│   │   │       │       ├── sample1.jpg        # Exemple 1
+│   │   │       │       ├── sample2.jpg        # Exemple 2
+│   │   │       │       └── sample3.jpg        # Exemple 3
+│   │   │       ├── fonts/
+│   │   │       │   ├── nunito/
+│   │   │       │   │   ├── nunito-regular.woff2 # Police Nunito régulière
+│   │   │       │   │   ├── nunito-bold.woff2  # Police Nunito gras
+│   │   │       │   │   └── nunito-light.woff2 # Police Nunito légère
+│   │   │       │   └── roboto/
+│   │   │       │       ├── roboto-regular.woff2 # Police Roboto régulière
+│   │   │       │       ├── roboto-bold.woff2  # Police Roboto gras
+│   │   │       │       └── roboto-light.woff2 # Police Roboto légère
+│   │   │       └── videos/
+│   │   │           ├── intro.mp4              # Vidéo intro
+│   │   │           └── tutorials/
+│   │   │               ├── tutorial1.mp4      # Tutoriel 1
+│   │   │               ├── tutorial2.mp4      # Tutoriel 2
+│   │   │               └── tutorial3.mp4      # Tutoriel 3
+│   │   └── src/
+│   │       ├── index.tsx                      # Point d'entrée
+│   │       ├── App.tsx                        # Composant principal
+│   │       ├── router.tsx                     # Configuration router
+│   │       ├── setupTests.ts                  # Configuration tests
+│   │       ├── types/
+│   │       │   ├── index.ts                   # Export principal
+│   │       │   ├── kitchen.types.ts           # Types cuisine
+│   │       │   ├── user.types.ts              # Types utilisateur
+│   │       │   ├── catalog.types.ts           # Types catalogue
+│   │       │   ├── project.types.ts           # Types projet
+│   │       │   ├── declarations.d.ts          # Déclarations types
+│   │       │   ├── permission.types.ts        # Types permission
+│   │       │   ├── role.types.ts              # Types rôle
+│   │       │   ├── audit.types.ts             # Types audit
+│   │       │   └── webhook.types.ts           # Types webhook
+│   │       ├── components/
+│   │       │   ├── common/
+│   │       │   │   ├── Header/
+│   │       │   │   │   ├── Header.tsx         # Composant
+│   │       │   │   │   ├── Header.test.tsx    # Tests
+│   │       │   │   │   ├── Header.module.css  # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── Footer/
+│   │       │   │   │   ├── Footer.tsx         # Composant
+│   │       │   │   │   ├── Footer.test.tsx    # Tests
+│   │       │   │   │   ├── Footer.module.css  # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── Sidebar/
+│   │       │   │   │   ├── Sidebar.tsx        # Composant
+│   │       │   │   │   ├── Sidebar.test.tsx   # Tests
+│   │       │   │   │   ├── Sidebar.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── ErrorBoundary/
+│   │       │   │       ├── ErrorBoundary.tsx  # Composant
+│   │       │   │       ├── ErrorBoundary.test.tsx # Tests
+│   │       │   │       ├── ErrorBoundary.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── shared/
+│   │       │   │   ├── LoadingSpinner/
+│   │       │   │   │   ├── LoadingSpinner.tsx # Composant
+│   │       │   │   │   ├── LoadingSpinner.test.tsx # Tests
+│   │       │   │   │   ├── LoadingSpinner.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── ErrorMessage/
+│   │       │   │   │   ├── ErrorMessage.tsx   # Composant
+│   │       │   │   │   ├── ErrorMessage.test.tsx # Tests
+│   │       │   │   │   ├── ErrorMessage.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── EmptyState/
+│   │       │   │       ├── EmptyState.tsx     # Composant
+│   │       │   │       ├── EmptyState.test.tsx # Tests
+│   │       │   │       ├── EmptyState.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── permissions/               # Composants permissions
+│   │       │   │   ├── PermissionGuard/
+│   │       │   │   │   ├── PermissionGuard.tsx # Composant
+│   │       │   │   │   ├── PermissionGuard.test.tsx # Tests
+│   │       │   │   │   ├── PermissionGuard.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── RoleIndicator/
+│   │       │   │   │   ├── RoleIndicator.tsx  # Composant
+│   │       │   │   │   ├── RoleIndicator.test.tsx # Tests
+│   │       │   │   │   ├── RoleIndicator.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── AccessControl/
+│   │       │   │       ├── AccessControl.tsx  # Composant
+│   │       │   │       ├── AccessControl.test.tsx # Tests
+│   │       │   │       ├── AccessControl.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   └── a11y/                      # Composants accessibilité
+│   │       │       ├── SkipToContent/
+│   │       │       │   ├── SkipToContent.tsx  # Composant
+│   │       │       │   ├── SkipToContent.test.tsx # Tests
+│   │       │       │   ├── SkipToContent.module.css # Styles
+│   │       │       │   └── index.ts           # Export
+│   │       │       ├── A11ySettings/
+│   │       │       │   ├── A11ySettings.tsx   # Composant
+│   │       │       │   ├── A11ySettings.test.tsx # Tests
+│   │       │       │   ├── A11ySettings.module.css # Styles
+│   │       │       │   └── index.ts           # Export
+│   │       │       └── LiveAnnouncer/
+│   │       │           ├── LiveAnnouncer.tsx  # Composant
+│   │       │           ├── LiveAnnouncer.test.tsx # Tests
+│   │       │           ├── LiveAnnouncer.module.css # Styles
+│   │       │           └── index.ts           # Export
+│   │       ├── pages/
+│   │       │   ├── Home/
+│   │       │   │   ├── Home.tsx               # Composant
+│   │       │   │   ├── Home.test.tsx          # Tests
+│   │       │   │   ├── Home.module.css        # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── Auth/
+│   │       │   │   ├── Login/
+│   │       │   │   │   ├── Login.tsx          # Composant
+│   │       │   │   │   ├── Login.test.tsx     # Tests
+│   │       │   │   │   ├── Login.module.css   # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── Register/
+│   │       │   │   │   ├── Register.tsx       # Composant
+│   │       │   │   │   ├── Register.test.tsx  # Tests
+│   │       │   │   │   ├── Register.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── ForgotPassword/
+│   │       │   │       ├── ForgotPassword.tsx # Composant
+│   │       │   │       ├── ForgotPassword.test.tsx # Tests
+│   │       │   │       ├── ForgotPassword.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── Dashboard/
+│   │       │   │   ├── Dashboard.tsx          # Composant
+│   │       │   │   ├── Dashboard.test.tsx     # Tests
+│   │       │   │   ├── Dashboard.module.css   # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── Profile/
+│   │       │   │   ├── Profile.tsx            # Composant
+│   │       │   │   ├── Profile.test.tsx       # Tests
+│   │       │   │   ├── Profile.module.css     # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── Projects/
+│   │       │   │   ├── ProjectsList/
+│   │       │   │   │   ├── ProjectsList.tsx   # Composant
+│   │       │   │   │   ├── ProjectsList.test.tsx # Tests
+│   │       │   │   │   ├── ProjectsList.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── ProjectDetail/
+│   │       │   │   │   ├── ProjectDetail.tsx  # Composant
+│   │       │   │   │   ├── ProjectDetail.test.tsx # Tests
+│   │       │   │   │   ├── ProjectDetail.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── CreateProject/
+│   │       │   │       ├── CreateProject.tsx  # Composant
+│   │       │   │       ├── CreateProject.test.tsx # Tests
+│   │       │   │       ├── CreateProject.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── KitchenDesigner/
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── DesignerCanvas/
+│   │       │   │   │   ├── DesignerCanvas.tsx # Composant
+│   │       │   │   │   ├── DesignerCanvas.test.tsx # Tests
+│   │       │   │   │   ├── DesignerCanvas.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── ToolPanel/
+│   │       │   │   │   ├── ToolPanel.tsx      # Composant
+│   │       │   │   │   ├── ToolPanel.test.tsx # Tests
+│   │       │   │   │   ├── ToolPanel.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── PropertyPanel/
+│   │       │   │   │   ├── PropertyPanel.tsx  # Composant
+│   │       │   │   │   ├── PropertyPanel.test.tsx # Tests
+│   │       │   │   │   ├── PropertyPanel.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── CatalogPanel/
+│   │       │   │       ├── CatalogPanel.tsx   # Composant
+│   │       │   │       ├── CatalogPanel.test.tsx # Tests
+│   │       │   │       ├── CatalogPanel.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── VirtualReality/
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── VRViewer/
+│   │       │   │   │   ├── VRViewer.tsx       # Composant
+│   │       │   │   │   ├── VRViewer.test.tsx  # Tests
+│   │       │   │   │   ├── VRViewer.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── ControlPanel/
+│   │       │   │   │   ├── ControlPanel.tsx   # Composant
+│   │       │   │   │   ├── ControlPanel.test.tsx # Tests
+│   │       │   │   │   ├── ControlPanel.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── CollaborationView/
+│   │       │   │       ├── CollaborationView.tsx # Composant
+│   │       │   │       ├── CollaborationView.test.tsx # Tests
+│   │       │   │       ├── CollaborationView.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── AIGenerator/
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── PreferenceForm/
+│   │       │   │   │   ├── PreferenceForm.tsx # Composant
+│   │       │   │   │   ├── PreferenceForm.test.tsx # Tests
+│   │       │   │   │   ├── PreferenceForm.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── GeneratedDesigns/
+│   │       │   │   │   ├── GeneratedDesigns.tsx # Composant
+│   │       │   │   │   ├── GeneratedDesigns.test.tsx # Tests
+│   │       │   │   │   ├── GeneratedDesigns.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── ComparisonView/
+│   │       │   │       ├── ComparisonView.tsx # Composant
+│   │       │   │       ├── ComparisonView.test.tsx # Tests
+│   │       │   │       ├── ComparisonView.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── Questionnaire/
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── UserProfile/
+│   │       │   │   │   ├── UserProfile.tsx    # Composant
+│   │       │   │   │   ├── UserProfile.test.tsx # Tests
+│   │       │   │   │   ├── UserProfile.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── SpatialConstraints/
+│   │       │   │   │   ├── SpatialConstraints.tsx # Composant
+│   │       │   │   │   ├── SpatialConstraints.test.tsx # Tests
+│   │       │   │   │   ├── SpatialConstraints.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── StylePreferences/
+│   │       │   │   │   ├── StylePreferences.tsx # Composant
+│   │       │   │   │   ├── StylePreferences.test.tsx # Tests
+│   │       │   │   │   ├── StylePreferences.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── BudgetPlanning/
+│   │       │   │       ├── BudgetPlanning.tsx # Composant
+│   │       │   │       ├── BudgetPlanning.test.tsx # Tests
+│   │       │   │       ├── BudgetPlanning.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── Admin/                     # Section administration
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── UserManagement/        # Gestion utilisateurs
+│   │       │   │   │   ├── UserManagement.tsx # Composant
+│   │       │   │   │   ├── UserManagement.test.tsx # Tests
+│   │       │   │   │   ├── UserManagement.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── RoleManagement/        # Gestion rôles
+│   │       │   │   │   ├── RoleManagement.tsx # Composant
+│   │       │   │   │   ├── RoleManagement.test.tsx # Tests
+│   │       │   │   │   ├── RoleManagement.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── PermissionManagement/  # Gestion permissions
+│   │       │   │   │   ├── PermissionManagement.tsx # Composant
+│   │       │   │   │   ├── PermissionManagement.test.tsx # Tests
+│   │       │   │   │   ├── PermissionManagement.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── AuditLogs/             # Journaux d'audit
+│   │       │   │   │   ├── AuditLogs.tsx      # Composant
+│   │       │   │   │   ├── AuditLogs.test.tsx # Tests
+│   │       │   │   │   ├── AuditLogs.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── WebhookManagement/     # Gestion webhooks
+│   │       │   │       ├── WebhookManagement.tsx # Composant
+│   │       │   │       ├── WebhookManagement.test.tsx # Tests
+│   │       │   │       ├── WebhookManagement.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   └── Monitoring/                # Page monitoring
+│   │       │       ├── index.ts               # Export principal
+│   │       │       ├── SystemHealth/          # Santé système
+│   │       │       │   ├── SystemHealth.tsx   # Composant
+│   │       │       │   ├── SystemHealth.test.tsx # Tests
+│   │       │       │   ├── SystemHealth.module.css # Styles
+│   │       │       │   └── index.ts           # Export
+│   │       │       ├── UserActivity/          # Activité utilisateurs
+│   │       │       │   ├── UserActivity.tsx   # Composant
+│   │       │       │   ├── UserActivity.test.tsx # Tests
+│   │       │       │   ├── UserActivity.module.css # Styles
+│   │       │       │   └── index.ts           # Export
+│   │       │       └── PerformanceMetrics/    # Métriques performance
+│   │       │           ├── PerformanceMetrics.tsx # Composant
+│   │       │           ├── PerformanceMetrics.test.tsx # Tests
+│   │       │           ├── PerformanceMetrics.module.css # Styles
+│   │       │           └── index.ts           # Export
+│   │       ├── layouts/
+│   │       │   ├── MainLayout/
+│   │       │   │   ├── MainLayout.tsx         # Composant
+│   │       │   │   ├── MainLayout.test.tsx    # Tests
+│   │       │   │   ├── MainLayout.module.css  # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── AuthLayout/
+│   │       │   │   ├── AuthLayout.tsx         # Composant
+│   │       │   │   ├── AuthLayout.test.tsx    # Tests
+│   │       │   │   ├── AuthLayout.module.css  # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── DesignerLayout/
+│   │       │   │   ├── DesignerLayout.tsx     # Composant
+│   │       │   │   ├── DesignerLayout.test.tsx # Tests
+│   │       │   │   ├── DesignerLayout.module.css # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── DashboardLayout/
+│   │       │   │   ├── DashboardLayout.tsx    # Composant
+│   │       │   │   ├── DashboardLayout.test.tsx # Tests
+│   │       │   │   ├── DashboardLayout.module.css # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── AdminLayout/               # Layout administration
+│   │       │   │   ├── AdminLayout.tsx        # Composant
+│   │       │   │   ├── AdminLayout.test.tsx   # Tests
+│   │       │   │   ├── AdminLayout.module.css # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   └── MonitoringLayout/          # Layout monitoring
+│   │       │       ├── MonitoringLayout.tsx   # Composant
+│   │       │       ├── MonitoringLayout.test.tsx # Tests
+│   │       │       ├── MonitoringLayout.module.css # Styles
+│   │       │       └── index.ts               # Export
+│   │       ├── features/
+│   │       │   ├── auth/
+│   │       │   │   ├── auth-slice.ts          # Slice Redux auth
+│   │       │   │   ├── auth-selectors.ts      # Sélecteurs
+│   │       │   │   ├── auth-service.ts        # Service
+│   │       │   │   ├── auth-hooks.ts          # Hooks personnalisés
+│   │       │   │   └── auth-utils.ts          # Utilitaires
+│   │       │   ├── kitchen/
+│   │       │   │   ├── kitchen-slice.ts       # Slice Redux cuisine
+│   │       │   │   ├── kitchen-selectors.ts   # Sélecteurs
+│   │       │   │   ├── kitchen-service.ts     # Service
+│   │       │   │   ├── kitchen-hooks.ts       # Hooks personnalisés
+│   │       │   │   └── kitchen-utils.ts       # Utilitaires
+│   │       │   ├── catalog/
+│   │       │   │   ├── catalog-slice.ts       # Slice Redux catalogue
+│   │       │   │   ├── catalog-selectors.ts   # Sélecteurs
+│   │       │   │   ├── catalog-service.ts     # Service
+│   │       │   │   ├── catalog-hooks.ts       # Hooks personnalisés
+│   │       │   │   └── catalog-utils.ts       # Utilitaires
+│   │       │   ├── user/
+│   │       │   │   ├── user-slice.ts          # Slice Redux utilisateur
+│   │       │   │   ├── user-selectors.ts      # Sélecteurs
+│   │       │   │   ├── user-service.ts        # Service
+│   │       │   │   ├── user-hooks.ts          # Hooks personnalisés
+│   │       │   │   └── user-utils.ts          # Utilitaires
+│   │       │   ├── project/
+│   │       │   │   ├── project-slice.ts       # Slice Redux projet
+│   │       │   │   ├── project-selectors.ts   # Sélecteurs
+│   │       │   │   ├── project-service.ts     # Service
+│   │       │   │   ├── project-hooks.ts       # Hooks personnalisés
+│   │       │   │   └── project-utils.ts       # Utilitaires
+│   │       │   ├── ai-generator/
+│   │       │   │   ├── ai-generator-slice.ts  # Slice Redux générateur IA
+│   │       │   │   ├── ai-generator-selectors.ts # Sélecteurs
+│   │       │   │   ├── ai-generator-service.ts # Service
+│   │       │   │   ├── ai-generator-hooks.ts  # Hooks personnalisés
+│   │       │   │   └── ai-generator-utils.ts  # Utilitaires
+│   │       │   ├── virtual-reality/
+│   │       │   │   ├── vr-slice.ts            # Slice Redux VR
+│   │       │   │   ├── vr-selectors.ts        # Sélecteurs
+│   │       │   │   ├── vr-service.ts          # Service
+│   │       │   │   ├── vr-hooks.ts            # Hooks personnalisés
+│   │       │   │   └── vr-utils.ts            # Utilitaires
+│   │       │   ├── adaptive-surfaces/
+│   │       │   │   ├── adaptive-surfaces-slice.ts # Slice Redux surfaces adaptatives
+│   │       │   │   ├── adaptive-surfaces-selectors.ts # Sélecteurs
+│   │       │   │   ├── adaptive-surfaces-service.ts # Service
+│   │       │   │   ├── adaptive-surfaces-hooks.ts # Hooks personnalisés
+│   │       │   │   └── adaptive-surfaces-utils.ts # Utilitaires
+│   │       │   ├── questionnaire/
+│   │       │   │   ├── questionnaire-slice.ts # Slice Redux questionnaire
+│   │       │   │   ├── questionnaire-selectors.ts # Sélecteurs
+│   │       │   │   ├── questionnaire-service.ts # Service
+│   │       │   │   ├── questionnaire-hooks.ts # Hooks personnalisés
+│   │       │   │   └── questionnaire-utils.ts # Utilitaires
+│   │       │   ├── permissions/               # Gestion des permissions
+│   │       │   │   ├── permissions-slice.ts   # Slice Redux permissions
+│   │       │   │   ├── permissions-selectors.ts # Sélecteurs
+│   │       │   │   ├── permissions-service.ts # Service
+│   │       │   │   ├── permissions-hooks.ts   # Hooks
+│   │       │   │   └── permissions-utils.ts   # Utilitaires
+│   │       │   ├── roles/                     # Gestion des rôles
+│   │       │   │   ├── roles-slice.ts         # Slice Redux rôles
+│   │       │   │   ├── roles-selectors.ts     # Sélecteurs
+│   │       │   │   ├── roles-service.ts       # Service
+│   │       │   │   ├── roles-hooks.ts         # Hooks
+│   │       │   │   └── roles-utils.ts         # Utilitaires
+│   │       │   ├── audit/                     # Audit et journalisation
+│   │       │   │   ├── audit-slice.ts         # Slice Redux audit
+│   │       │   │   ├── audit-selectors.ts     # Sélecteurs
+│   │       │   │   ├── audit-service.ts       # Service
+│   │       │   │   ├── audit-hooks.ts         # Hooks
+│   │       │   │   └── audit-utils.ts         # Utilitaires
+│   │       │   └── webhooks/                  # Webhooks
+│   │       │       ├── webhooks-slice.ts      # Slice Redux webhooks
+│   │       │       ├── webhooks-selectors.ts  # Sélecteurs
+│   │       │       ├── webhooks-service.ts    # Service
+│   │       │       ├── webhooks-hooks.ts      # Hooks
+│   │       │       └── webhooks-utils.ts      # Utilitaires
+│   │       ├── hooks/
+│   │       │   ├── use-auth.ts                # Hook auth
+│   │       │   ├── use-user.ts                # Hook utilisateur
+│   │       │   ├── use-kitchen.ts             # Hook cuisine
+│   │       │   ├── use-catalog.ts             # Hook catalogue
+│   │       │   ├── use-project.ts             # Hook projet
+│   │       │   ├── use-vr.ts                  # Hook VR
+│   │       │   ├── use-ai-generator.ts        # Hook générateur IA
+│   │       │   ├── use-questionnaire.ts       # Hook questionnaire
+│   │       │   ├── use-permission.ts          # Hook permission
+│   │       │   ├── use-role.ts                # Hook rôle
+│   │       │   ├── use-audit.ts               # Hook audit
+│   │       │   ├── use-webhook.ts             # Hook webhook
+│   │       │   ├── use-translation.ts         # Hook traduction
+│   │       │   ├── use-locale.ts              # Hook locale
+│   │       │   ├── use-rtl.ts                 # Hook RTL
+│   │       │   └── use-monitoring.ts          # Hook monitoring
+│   │       ├── services/
+│   │       │   ├── api/
+│   │       │   │   ├── api.ts                 # Service API
+│   │       │   │   ├── interceptors.ts        # Intercepteurs
+│   │       │   │   └── endpoints.ts           # Endpoints
+│   │       │   ├── storage/
+│   │       │   │   ├── local-storage.ts       # Service localStorage
+│   │       │   │   └── session-storage.ts     # Service sessionStorage
+│   │       │   ├── analytics/
+│   │       │   │   ├── analytics.ts           # Service analytics
+│   │       │   │   └── tracking.ts            # Service tracking
+│   │       │   ├── notification/
+│   │       │   │   ├── notification.ts        # Service notification
+│   │       │   │   └── toast.ts               # Service toast
+│   │       │   ├── permission/                # Service permission
+│   │       │   │   ├── permission-service.ts  # Service
+│   │       │   │   ├── role-service.ts        # Service rôle
+│   │       │   │   └── access-control-service.ts # Service contrôle d'accès
+│   │       │   ├── audit/                     # Service audit
+│   │       │   │   ├── audit-service.ts       # Service
+│   │       │   │   ├── log-service.ts         # Service journalisation
+│   │       │   │   └── trail-service.ts       # Service piste d'audit
+│   │       │   ├── webhook/                   # Service webhook
+│   │       │   │   ├── webhook-service.ts     # Service
+│   │       │   │   ├── event-service.ts       # Service événement
+│   │       │   │   └── delivery-service.ts    # Service livraison
+│   │       │   ├── i18n/                      # Service i18n
+│   │       │   │   ├── i18n-service.ts        # Service principal
+│   │       │   │   ├── translation-service.ts # Service traduction
+│   │       │   │   ├── localization-service.ts # Service localisation
+│   │       │   │   └── rtl-service.ts         # Service RTL
+│   │       │   └── monitoring/                # Service monitoring
+│   │       │       ├── monitoring-service.ts  # Service principal
+│   │       │       ├── metrics-service.ts     # Service métriques
+│   │       │       ├── health-service.ts      # Service santé
+│   │       │       └── alert-service.ts       # Service alertes
+│   │       ├── store/
+│   │       │   ├── store.ts                   # Configuration store
+│   │       │   ├── root-reducer.ts            # Réducteur racine
+│   │       │   ├── middleware.ts              # Middleware
+│   │       │   ├── hooks.ts                   # Hooks Redux
+│   │       │   ├── initial-state.ts           # État initial
+│   │       │   ├── enhancers/                 # Enhancers
+│   │       │   │   ├── monitoring-enhancer.ts # Enhancer monitoring
+│   │       │   │   ├── logging-enhancer.ts    # Enhancer logging
+│   │       │   │   └── persistence-enhancer.ts # Enhancer persistence
+│   │       │   ├── middleware/                # Middlewares 
+│   │       │   │   ├── api-middleware.ts      # Middleware API
+│   │       │   │   ├── logger-middleware.ts   # Middleware logger
+│   │       │   │   ├── audit-middleware.ts    # Middleware audit
+│   │       │   │   ├── permission-middleware.ts # Middleware permission
+│   │       │   │   └── monitoring-middleware.ts # Middleware monitoring
+│   │       │   └── selectors/
+│   │       │       ├── kitchen-selectors.ts   # Sélecteurs cuisine
+│   │       │       ├── user-selectors.ts      # Sélecteurs utilisateur
+│   │       │       ├── catalog-selectors.ts   # Sélecteurs catalogue
+│   │       │       ├── project-selectors.ts   # Sélecteurs projet
+│   │       │       ├── common-selectors.ts    # Sélecteurs communs
+│   │       │       ├── permission-selectors.ts # Sélecteurs permission
+│   │       │       ├── role-selectors.ts      # Sélecteurs rôle
+│   │       │       ├── audit-selectors.ts     # Sélecteurs audit
+│   │       │       └── webhook-selectors.ts   # Sélecteurs webhook
+│   │       ├── assets/
+│   │       │   ├── images/
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── logos/
+│   │       │   │   │   ├── logo-full.svg      # Logo complet
+│   │       │   │   │   ├── logo-icon.svg      # Icône logo
+│   │       │   │   │   └── logo-text.svg      # Texte logo
+│   │       │   │   ├── illustrations/
+│   │       │   │   │   ├── empty-state.svg    # État vide
+│   │       │   │   │   ├── error.svg          # Erreur
+│   │       │   │   │   └── success.svg        # Succès
+│   │       │   │   └── backgrounds/
+│   │       │   │       ├── pattern.svg        # Motif
+│   │       │   │       ├── gradient.svg       # Dégradé
+│   │       │   │       └── texture.svg        # Texture
+│   │       │   ├── icons/
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── common/
+│   │       │   │   │   ├── home.svg           # Accueil
+│   │       │   │   │   ├── settings.svg       # Paramètres
+│   │       │   │   │   ├── user.svg           # Utilisateur
+│   │       │   │   │   └── search.svg         # Recherche
+│   │       │   │   ├── kitchen/
+│   │       │   │   │   ├── cabinet.svg        # Meuble
+│   │       │   │   │   ├── counter.svg        # Comptoir
+│   │       │   │   │   ├── appliance.svg      # Appareil
+│   │       │   │   │   └── sink.svg           # Évier
+│   │       │   │   ├── actions/
+│   │       │   │   │   ├── add.svg            # Ajouter
+│   │       │   │   │   ├── edit.svg           # Éditer
+│   │       │   │   │   ├── delete.svg         # Supprimer
+│   │       │   │   │   └── share.svg          # Partager
+│   │       │   │   ├── permissions/           # Icônes permissions
+│   │       │   │   │   ├── role.svg           # Rôle
+│   │       │   │   │   ├── permission.svg     # Permission
+│   │       │   │   │   ├── lock.svg           # Verrouillage
+│   │       │   │   │   └── unlock.svg         # Déverrouillage
+│   │       │   │   └── a11y/                  # Icônes accessibilité
+│   │       │   │       ├── screen-reader.svg  # Lecteur d'écran
+│   │       │   │       ├── keyboard.svg       # Clavier
+│   │       │   │       ├── contrast.svg       # Contraste
+│   │       │   │       └── font-size.svg      # Taille police
+│   │       │   └── styles/
+│   │       │       ├── global.css             # Styles globaux
+│   │       │       ├── variables.css          # Variables CSS
+│   │       │       ├── reset.css              # Reset CSS
+│   │       │       ├── typography.css         # Typographie
+│   │       │       ├── animations.css         # Animations
+│   │       │       ├── rtl.css                # Styles RTL
+│   │       │       ├── a11y.css               # Styles accessibilité
+│   │       │       └── dark-mode.css          # Styles mode sombre
+│   │       ├── utils/
+│   │       │   ├── api-utils.ts               # Utilitaires API
+│   │       │   ├── formatting-utils.ts        # Utilitaires formatage
+│   │       │   ├── validation-utils.ts        # Utilitaires validation
+│   │       │   ├── testing-utils.ts           # Utilitaires test
+│   │       │   ├── math-utils.ts              # Utilitaires mathématiques
+│   │       │   ├── file-utils.ts              # Utilitaires fichiers
+│   │       │   ├── date-utils.ts              # Utilitaires dates
+│   │       │   ├── string-utils.ts            # Utilitaires chaînes
+│   │       │   ├── permission-utils.ts        # Utilitaires permission
+│   │       │   ├── audit-utils.ts             # Utilitaires audit
+│   │       │   ├── webhook-utils.ts           # Utilitaires webhook
+│   │       │   ├── i18n-utils.ts              # Utilitaires i18n
+│   │       │   └── monitoring-utils.ts        # Utilitaires monitoring
+│   │       ├── config/
+│   │       │   ├── env-config.ts              # Config environnement
+│   │       │   ├── api-config.ts              # Config API
+│   │       │   ├── theme-config.ts            # Config thème
+│   │       │   ├── analytics-config.ts        # Config analytics
+│   │       │   ├── features-config.ts         # Config fonctionnalités
+│   │       │   ├── permission-config.ts       # Config permission
+│   │       │   ├── audit-config.ts            # Config audit
+│   │       │   ├── webhook-config.ts          # Config webhook
+│   │       │   ├── i18n-config.ts             # Config i18n
+│   │       │   ├── monitoring-config.ts       # Config monitoring
+│   │       │   └── version-config.ts          # Config gestion des versions
+│   │       └── i18n/                          # Internationalisation
+│   │           ├── config.ts                  # Configuration i18n
+│   │           ├── translations/              # Traductions
+│   │           │   ├── en.json                # Anglais
+│   │           │   ├── fr.json                # Français
+│   │           │   ├── de.json                # Allemand
+│   │           │   ├── es.json                # Espagnol
+│   │           │   └── ar.json                # Arabe (RTL)
+│   │           ├── formatters/                # Formateurs
+│   │           │   ├── date.ts                # Formattage des dates
+│   │           │   ├── number.ts              # Formattage des nombres
+│   │           │   └── currency.ts            # Formattage des devises
+│   │           └── helpers/                   # Helpers
+│   │               ├── rtl.ts                 # Helper RTL
+│   │               ├── pluralization.ts       # Helper pluralisation
+│   │               └── locale-detection.ts    # Détection locale
+│   │
+│   ├── backend/
+│   │   ├── package.json                       # Configuration package
+│   │   ├── tsconfig.json                      # Configuration TypeScript
+│   │   ├── eslintrc.js                        # Configuration ESLint
+│   │   ├── prettierrc.js                      # Configuration Prettier
+│   │   ├── nodemon.json                       # Configuration Nodemon
+│   │   ├── README.md                          # Documentation
+│   │   └── src/
+│   │       ├── index.ts                       # Point d'entrée
+│   │       ├── server.ts                      # Configuration serveur
+│   │       ├── app.ts                         # Application Express
+│   │       ├── types/
+│   │       │   ├── index.ts                   # Export principal
+│   │       │   ├── express.d.ts               # Types Express
+│   │       │   ├── kitchen.types.ts           # Types cuisines
+│   │       │   ├── user.types.ts              # Types utilisateur
+│   │       │   ├── catalog.types.ts           # Types catalogue
+│   │       │   ├── schemas.ts                 # Schémas validation
+│   │       │   ├── permission.types.ts        # Types permission
+│   │       │   ├── role.types.ts              # Types rôle
+│   │       │   ├── audit.types.ts             # Types audit
+│   │       │   ├── webhook.types.ts           # Types webhook
+│   │       │   └── monitoring.types.ts        # Types monitoring
+│   │       ├── config/
+│   │       │   ├── env-config.ts              # Variables environnement
+│   │       │   ├── db-config.ts               # Config base données
+│   │       │   ├── auth-config.ts             # Config authentification
+│   │       │   ├── logger-config.ts           # Config logger
+│   │       │   ├── storage-config.ts          # Config stockage
+│   │       │   ├── email-config.ts            # Config email
+│   │       │   ├── scheduler-config.ts        # Config planificateur
+│   │       │   ├── permission-config.ts       # Config permission
+│   │       │   ├── role-config.ts             # Config rôle
+│   │       │   ├── audit-config.ts            # Config audit
+│   │       │   ├── webhook-config.ts          # Config webhook
+│   │       │   ├── monitoring-config.ts       # Config monitoring
+│   │       │   └── i18n-config.ts             # Config i18n
+│   │       ├── api/
+│   │       │   ├── routes/
+│   │       │   │   ├── index.ts               # Export principal
+│   │       │   │   ├── auth-routes.ts         # Routes auth
+│   │       │   │   ├── user-routes.ts         # Routes utilisateur
+│   │       │   │   ├── kitchen-routes.ts      # Routes cuisine
+│   │       │   │   ├── catalog-routes.ts      # Routes catalogue
+│   │       │   │   ├── project-routes.ts      # Routes projet
+│   │       │   │   ├── partner-routes.ts      # Routes partenaire
+│   │       │   │   ├── admin-routes.ts        # Routes admin
+│   │       │   │   ├── permission-routes.ts   # Routes permission
+│   │       │   │   ├── role-routes.ts         # Routes rôle
+│   │       │   │   ├── audit-routes.ts        # Routes audit
+│   │       │   │   ├── webhook-routes.ts      # Routes webhook
+│   │       │   │   ├── monitoring-routes.ts   # Routes monitoring
+│   │       │   │   └── i18n-routes.ts         # Routes i18n
+│   │       │   ├── controllers/
+│   │       │   │   ├── auth-controller.ts     # Contrôleur auth
+│   │       │   │   ├── user-controller.ts     # Contrôleur utilisateur
+│   │       │   │   ├── kitchen-controller.ts  # Contrôleur cuisine
+│   │       │   │   ├── catalog-controller.ts  # Contrôleur catalogue
+│   │       │   │   ├── project-controller.ts  # Contrôleur projet
+│   │       │   │   ├── partner-controller.ts  # Contrôleur partenaire
+│   │       │   │   ├── admin-controller.ts    # Contrôleur admin
+│   │       │   │   ├── permission-controller.ts # Contrôleur permission
+│   │       │   │   ├── role-controller.ts     # Contrôleur rôle
+│   │       │   │   ├── audit-controller.ts    # Contrôleur audit
+│   │       │   │   ├── webhook-controller.ts  # Contrôleur webhook
+│   │       │   │   ├── monitoring-controller.ts # Contrôleur monitoring
+│   │       │   │   └── i18n-controller.ts     # Contrôleur i18n
+│   │       │   ├── middleware/
+│   │       │   │   ├── auth-middleware.ts     # Middleware auth
+│   │       │   │   ├── validation-middleware.ts # Validation
+│   │       │   │   ├── error-middleware.ts    # Gestion erreurs
+│   │       │   │   ├── logging-middleware.ts  # Logging
+│   │       │   │   ├── rate-limit-middleware.ts # Limite de taux
+│   │       │   │   ├── cors-middleware.ts     # CORS
+│   │       │   │   ├── permission-middleware.ts # Middleware permission
+│   │       │   │   ├── audit-middleware.ts    # Middleware audit
+│   │       │   │   ├── webhook-middleware.ts  # Middleware webhook
+│   │       │   │   ├── monitoring-middleware.ts # Middleware monitoring
+│   │       │   │   └── i18n-middleware.ts     # Middleware i18n
+│   │       │   └── validators/
+│   │       │       ├── auth-validator.ts      # Validateur auth
+│   │       │       ├── user-validator.ts      # Validateur utilisateur
+│   │       │       ├── kitchen-validator.ts   # Validateur cuisine
+│   │       │       ├── catalog-validator.ts   # Validateur catalogue
+│   │       │       ├── project-validator.ts   # Validateur projet
+│   │       │       ├── partner-validator.ts   # Validateur partenaire
+│   │       │       ├── permission-validator.ts # Validateur permission
+│   │       │       ├── role-validator.ts      # Validateur rôle
+│   │       │       ├── audit-validator.ts     # Validateur audit
+│   │       │       ├── webhook-validator.ts   # Validateur webhook
+│   │       │       ├── monitoring-validator.ts # Validateur monitoring
+│   │       │       └── i18n-validator.ts      # Validateur i18n
+│   │       ├── services/
+│   │       │   ├── auth-service.ts            # Service auth
+│   │       │   ├── user-service.ts            # Service utilisateur
+│   │       │   ├── kitchen-service.ts         # Service cuisine
+│   │       │   ├── catalog-service.ts         # Service catalogue
+│   │       │   ├── project-service.ts         # Service projet
+│   │       │   ├── partner-service.ts         # Service partenaire
+│   │       │   ├── mail-service.ts            # Service mail
+│   │       │   ├── storage-service.ts         # Service stockage
+│   │       │   ├── analytics-service.ts       # Service analytics
+│   │       │   ├── notification-service.ts    # Service notification
+│   │       │   ├── logger-service.ts          # Service logging
+│   │       │   ├── permission-service.ts      # Service permission
+│   │       │   ├── role-service.ts            # Service rôle
+│   │       │   ├── audit-service.ts           # Service audit
+│   │       │   ├── webhook-service.ts         # Service webhook
+│   │       │   ├── monitoring-service.ts      # Service monitoring
+│   │       │   └── i18n-service.ts            # Service i18n
+│   │       ├── models/
+│   │       │   ├── user-model.ts              # Modèle utilisateur
+│   │       │   ├── kitchen-model.ts           # Modèle cuisine
+│   │       │   ├── product-model.ts           # Modèle produit
+│   │       │   ├── project-model.ts           # Modèle projet
+│   │       │   ├── catalog-model.ts           # Modèle catalogue
+│   │       │   ├── partner-model.ts           # Modèle partenaire
+│   │       │   ├── material-model.ts          # Modèle matériau
+│   │       │   ├── appliance-model.ts         # Modèle appareil
+│   │       │   ├── dimension-model.ts         # Modèle dimension
+│   │       │   ├── permission-model.ts        # Modèle permission
+│   │       │   ├── role-model.ts              # Modèle rôle
+│   │       │   ├── audit-log-model.ts         # Modèle journal d'audit
+│   │       │   ├── webhook-model.ts           # Modèle webhook
+│   │       │   ├── metric-model.ts            # Modèle métrique
+│   │       │   └── locale-model.ts            # Modèle locale
+│   │       ├── repositories/
+│   │       │   ├── user-repository.ts         # Repository utilisateur
+│   │       │   ├── kitchen-repository.ts      # Repository cuisine
+│   │       │   ├── product-repository.ts      # Repository produit
+│   │       │   ├── project-repository.ts      # Repository projet
+│   │       │   ├── catalog-repository.ts      # Repository catalogue
+│   │       │   ├── partner-repository.ts      # Repository partenaire
+│   │       │   ├── material-repository.ts     # Repository matériau
+│   │       │   ├── appliance-repository.ts    # Repository appareil
+│   │       │   ├── permission-repository.ts   # Repository permission
+│   │       │   ├── role-repository.ts         # Repository rôle
+│   │       │   ├── audit-log-repository.ts    # Repository journal d'audit
+│   │       │   ├── webhook-repository.ts      # Repository webhook
+│   │       │   ├── metric-repository.ts       # Repository métrique
+│   │       │   └── locale-repository.ts       # Repository locale
+│   │       ├── database/
+│   │       │   ├── connection.ts              # Connexion BD
+│   │       │   ├── transactions.ts            # Transactions
+│   │       │   ├── migrations/
+│   │       │   │   ├── migration-runner.ts    # Exécuteur migrations
+│   │       │   │   ├── 20240501-init.ts       # Migration initiale
+│   │       │   │   ├── 20240502-users.ts      # Migration utilisateurs
+│   │       │   │   ├── 20240503-kitchens.ts   # Migration cuisines
+│   │       │   │   ├── 20240504-projects.ts   # Migration projets
+│   │       │   │   ├── 20240505-catalogs.ts   # Migration catalogues
+│   │       │   │   ├── 20240506-permissions.ts # Migration permissions
+│   │       │   │   ├── 20240507-roles.ts      # Migration rôles
+│   │       │   │   ├── 20240508-audit.ts      # Migration audit
+│   │       │   │   ├── 20240509-webhooks.ts   # Migration webhooks
+│   │       │   │   ├── 20240510-monitoring.ts # Migration monitoring
+│   │       │   │   └── 20240511-i18n.ts       # Migration i18n
+│   │       │   └── seeds/
+│   │       │       ├── seed-runner.ts         # Exécuteur seeds
+│   │       │       ├── users-seed.ts          # Seed utilisateurs
+│   │       │       ├── kitchens-seed.ts       # Seed cuisines
+│   │       │       ├── projects-seed.ts       # Seed projets
+│   │       │       ├── catalogs-seed.ts       # Seed catalogues
+│   │       │       ├── permissions-seed.ts    # Seed permissions
+│   │       │       ├── roles-seed.ts          # Seed rôles
+│   │       │       ├── audit-seed.ts          # Seed audit
+│   │       │       ├── webhooks-seed.ts       # Seed webhooks
+│   │       │       ├── monitoring-seed.ts     # Seed monitoring
+│   │       │       └── i18n-seed.ts           # Seed i18n
+│   │       ├── integrations/
+│   │       │   ├── storage-providers/
+│   │       │   │   ├── provider.interface.ts  # Interface
+│   │       │   │   ├── s3-provider.ts         # Provider S3
+│   │       │   │   ├── azure-provider.ts      # Provider Azure
+│   │       │   │   ├── gcp-provider.ts        # Provider GCP
+│   │       │   │   └── local-provider.ts      # Provider local
+│   │       │   ├── payment-providers/
+│   │       │   │   ├── provider.interface.ts  # Interface
+│   │       │   │   ├── stripe-provider.ts     # Provider Stripe
+│   │       │   │   ├── paypal-provider.ts     # Provider PayPal
+│   │       │   │   ├── adyen-provider.ts      # Provider Adyen
+│   │       │   │   └── google-pay-provider.ts # Provider Google Pay
+│   │       │   ├── notification-providers/
+│   │       │   │   ├── provider.interface.ts  # Interface
+│   │       │   │   ├── email-provider.ts      # Provider email
+│   │       │   │   ├── sms-provider.ts        # Provider SMS
+│   │       │   │   ├── push-provider.ts       # Provider push
+│   │       │   │   └── websocket-provider.ts  # Provider websocket
+│   │       │   ├── monitoring-providers/      # Providers monitoring
+│   │       │   │   ├── provider.interface.ts  # Interface
+│   │       │   │   ├── prometheus-provider.ts # Provider Prometheus
+│   │       │   │   ├── grafana-provider.ts    # Provider Grafana
+│   │       │   │   ├── elastic-provider.ts    # Provider Elastic
+│   │       │   │   └── datadog-provider.ts    # Provider Datadog
+│   │       │   └── i18n-providers/            # Providers i18n
+│   │       │       ├── provider.interface.ts  # Interface
+│   │       │       ├── i18next-provider.ts    # Provider i18next
+│   │       │       ├── google-translate-provider.ts # Provider Google Translate
+│   │       │       └── locale-services-provider.ts # Provider services locaux
+│   │       ├── auth/                          # Module d'authentification complet
+│   │       │   ├── strategies/                # Stratégies d'authentification
+│   │       │   │   ├── jwt-strategy.ts        # Stratégie JWT
+│   │       │   │   ├── oauth-strategy.ts      # Stratégie OAuth
+│   │       │   │   ├── local-strategy.ts      # Stratégie locale
+│   │       │   │   └── social-strategy.ts     # Stratégies réseaux sociaux
+│   │       │   ├── guards/                    # Gardes d'authentification
+│   │       │   │   ├── jwt-guard.ts           # Garde JWT
+│   │       │   │   ├── oauth-guard.ts         # Garde OAuth
+│   │       │   │   ├── role-guard.ts          # Garde rôle
+│   │       │   │   └── permission-guard.ts    # Garde permission
+│   │       │   ├── decorators/                # Décorateurs d'authentification
+│   │       │   │   ├── current-user-decorator.ts # Décorateur utilisateur actuel
+│   │       │   │   ├── roles-decorator.ts     # Décorateur rôles
+│   │       │   │   └── permissions-decorator.ts # Décorateur permissions
+│   │       │   └── policies/                  # Politiques d'authentification
+│   │       │       ├── password-policy.ts     # Politique mot de passe
+│   │       │       ├── account-lockout-policy.ts # Politique verrouillage compte
+│   │       │       ├── token-rotation-policy.ts # Politique rotation token
+│   │       │       └── multi-factor-policy.ts # Politique authentification multifacteur
+│   │       ├── audit/                         # Module d'audit
+│   │       │   ├── models/                    # Modèles d'audit
+│   │       │   │   ├── audit-log-model.ts     # Modèle journal d'audit
+│   │       │   │   ├── audit-event-model.ts   # Modèle événement d'audit
+│   │       │   │   └── audit-trail-model.ts   # Modèle piste d'audit
+│   │       │   ├── services/                  # Services d'audit
+│   │       │   │   ├── audit-log-service.ts   # Service journal d'audit
+│   │       │   │   ├── audit-event-service.ts # Service événement d'audit
+│   │       │   │   └── audit-trail-service.ts # Service piste d'audit
+│   │       │   ├── controllers/               # Contrôleurs d'audit
+│   │       │   │   ├── audit-log-controller.ts # Contrôleur journal d'audit
+│   │       │   │   └── audit-report-controller.ts # Contrôleur rapport d'audit
+│   │       │   ├── repositories/              # Repositories d'audit
+│   │       │   │   ├── audit-log-repository.ts # Repository journal d'audit
+│   │       │   │   ├── audit-event-repository.ts # Repository événement d'audit
+│   │       │   │   └── audit-trail-repository.ts # Repository piste d'audit
+│   │       │   ├── middleware/                # Middleware d'audit
+│   │       │   │   ├── audit-log-middleware.ts # Middleware journal d'audit
+│   │       │   │   └── audit-trail-middleware.ts # Middleware piste d'audit
+│   │       │   └── reporters/                 # Rapporteurs d'audit
+│   │       │       ├── audit-log-reporter.ts  # Rapporteur journal d'audit
+│   │       │       ├── audit-summary-reporter.ts # Rapporteur résumé d'audit
+│   │       │       └── compliance-reporter.ts # Rapporteur conformité
+│   │       ├── i18n/                          # Module d'internationalisation
+│   │       │   ├── models/                    # Modèles d'i18n
+│   │       │   │   ├── locale-model.ts        # Modèle locale
+│   │       │   │   ├── translation-model.ts   # Modèle traduction
+│   │       │   │   └── currency-model.ts      # Modèle devise
+│   │       │   ├── services/                  # Services d'i18n
+│   │       │   │   ├── locale-service.ts      # Service locale
+│   │       │   │   ├── translation-service.ts # Service traduction
+│   │       │   │   └── formatting-service.ts  # Service formatage
+│   │       │   ├── controllers/               # Contrôleurs d'i18n
+│   │       │   │   ├── locale-controller.ts   # Contrôleur locale
+│   │       │   │   └── translation-controller.ts # Contrôleur traduction
+│   │       │   ├── repositories/              # Repositories d'i18n
+│   │       │   │   ├── locale-repository.ts   # Repository locale
+│   │       │   │   └── translation-repository.ts # Repository traduction
+│   │       │   ├── middleware/                # Middleware d'i18n
+│   │       │   │   ├── locale-middleware.ts   # Middleware locale
+│   │       │   │   └── translation-middleware.ts # Middleware traduction
+│   │       │   └── formatters/                # Formateurs
+│   │       │       ├── date-formatter.ts      # Formateur date
+│   │       │       ├── number-formatter.ts    # Formateur nombre
+│   │       │       └── currency-formatter.ts  # Formateur devise
+│   │       ├── monitoring/                    # Module de monitoring
+│   │       │   ├── models/                    # Modèles de monitoring
+│   │       │   │   ├── metric-model.ts        # Modèle métrique
+│   │       │   │   ├── alert-model.ts         # Modèle alerte
+│   │       │   │   └── health-model.ts        # Modèle santé
+│   │       │   ├── services/                  # Services de monitoring
+│   │       │   │   ├── metric-service.ts      # Service métrique
+│   │       │   │   ├── alert-service.ts       # Service alerte
+│   │       │   │   └── health-service.ts      # Service santé
+│   │       │   ├── controllers/               # Contrôleurs de monitoring
+│   │       │   │   ├── metric-controller.ts   # Contrôleur métrique
+│   │       │   │   ├── alert-controller.ts    # Contrôleur alerte
+│   │       │   │   └── health-controller.ts   # Contrôleur santé
+│   │       │   ├── repositories/              # Repositories de monitoring
+│   │       │   │   ├── metric-repository.ts   # Repository métrique
+│   │       │   │   ├── alert-repository.ts    # Repository alerte
+│   │       │   │   └── health-repository.ts   # Repository santé
+│   │       │   ├── collectors/                # Collecteurs de métriques
+│   │       │   │   ├── system-collector.ts    # Collecteur système
+│   │       │   │   ├── user-collector.ts      # Collecteur utilisateur
+│   │       │   │   ├── api-collector.ts       # Collecteur API
+│   │       │   │   └── database-collector.ts  # Collecteur base de données
+│   │       │   └── exporters/                 # Exportateurs de métriques
+│   │       │       ├── prometheus-exporter.ts # Exportateur Prometheus
+│   │       │       ├── grafana-exporter.ts    # Exportateur Grafana
+│   │       │       └── dashboard-exporter.ts  # Exportateur tableau de bord
+│   │       ├── webhooks/                      # Module de webhooks
+│   │       │   ├── models/                    # Modèles de webhooks
+│   │       │   │   ├── webhook-model.ts       # Modèle webhook
+│   │       │   │   ├── event-model.ts         # Modèle événement
+│   │       │   │   └── delivery-model.ts      # Modèle livraison
+│   │       │   ├── services/                  # Services de webhooks
+│   │       │   │   ├── webhook-service.ts     # Service webhook
+│   │       │   │   ├── event-service.ts       # Service événement
+│   │       │   │   └── delivery-service.ts    # Service livraison
+│   │       │   ├── controllers/               # Contrôleurs de webhooks
+│   │       │   │   ├── webhook-controller.ts  # Contrôleur webhook
+│   │       │   │   └── event-controller.ts    # Contrôleur événement
+│   │       │   ├── repositories/              # Repositories de webhooks
+│   │       │   │   ├── webhook-repository.ts  # Repository webhook
+│   │       │   │   ├── event-repository.ts    # Repository événement
+│   │       │   │   └── delivery-repository.ts # Repository livraison
+│   │       │   └── handlers/                  # Gestionnaires d'événements
+│   │       │       ├── kitchen-handlers.ts    # Gestionnaires cuisine
+│   │       │       ├── user-handlers.ts       # Gestionnaires utilisateur
+│   │       │       ├── catalog-handlers.ts    # Gestionnaires catalogue
+│   │       │       └── project-handlers.ts    # Gestionnaires projet
+│   │       ├── permissions/                   # Système de permissions
+│   │       │   ├── models/                    # Modèles de permissions
+│   │       │   │   ├── role-model.ts          # Modèle rôle
+│   │       │   │   ├── permission-model.ts    # Modèle permission
+│   │       │   │   └── permission-group-model.ts # Modèle groupe de permissions
+│   │       │   ├── services/                  # Services de permissions
+│   │       │   │   ├── role-service.ts        # Service rôle
+│   │       │   │   ├── permission-service.ts  # Service permission
+│   │       │   │   └── access-control-service.ts # Service contrôle d'accès
+│   │       │   ├── guards/                    # Gardes de permissions
+│   │       │   │   ├── role-guard.ts          # Garde rôle
+│   │       │   │   └── permission-guard.ts    # Garde permission
+│   │       │   ├── decorators/                # Décorateurs de permissions
+│   │       │   │   ├── roles-decorator.ts     # Décorateur rôles
+│   │       │   │   └── permissions-decorator.ts # Décorateur permissions
+│   │       │   ├── controllers/               # Contrôleurs de permissions
+│   │       │   │   ├── role-controller.ts     # Contrôleur rôle
+│   │       │   │   └── permission-controller.ts # Contrôleur permission
+│   │       │   └── repositories/              # Repositories de permissions
+│   │       │       ├── role-repository.ts     # Repository rôle
+│   │       │       └── permission-repository.ts # Repository permission
+│   │       ├── utils/
+│   │       │   ├── api-utils.ts               # Utilitaires API
+│   │       │   ├── formatting-utils.ts        # Utilitaires formatage
+│   │       │   ├── validation-utils.ts        # Utilitaires validation
+│   │       │   ├── testing-utils.ts           # Utilitaires test
+│   │       │   ├── math-utils.ts              # Utilitaires mathématiques
+│   │       │   ├── file-utils.ts              # Utilitaires fichiers
+│   │       │   ├── date-utils.ts              # Utilitaires dates
+│   │       │   ├── string-utils.ts            # Utilitaires chaînes
+│   │       │   ├── permission-utils.ts        # Utilitaires permission
+│   │       │   ├── role-utils.ts              # Utilitaires rôle
+│   │       │   ├── audit-utils.ts             # Utilitaires audit
+│   │       │   ├── webhook-utils.ts           # Utilitaires webhook
+│   │       │   ├── monitoring-utils.ts        # Utilitaires monitoring
+│   │       │   └── i18n-utils.ts              # Utilitaires i18n
+│   │       └── jobs/
+│   │           ├── scheduler.ts               # Planificateur
+│   │           ├── catalog-sync-job.ts        # Synchro catalogues
+│   │           ├── email-digest-job.ts        # Digest email
+│   │           ├── cleanup-job.ts             # Nettoyage
+│   │           ├── analytics-processing-job.ts # Traitement analytics
+│   │           ├── backup-job.ts              # Sauvegarde
+│   │           ├── permission-sync-job.ts     # Synchronisation permissions
+│   │           ├── audit-retention-job.ts     # Rétention audit
+│   │           ├── webhook-retry-job.ts       # Tentatives webhook
+│   │           ├── monitoring-aggregation-job.ts # Agrégation monitoring
+│   │           ├── i18n-update-job.ts         # Mise à jour i18n
+│   │           └── integrity-check-job.ts     # Vérification intégrité
+│   │
+│   ├── partner-portal/
+│   │   ├── package.json                       # Configuration package
+│   │   ├── tsconfig.json                      # Configuration TypeScript
+│   │   ├── README.md                          # Documentation
+│   │   └── src/
+│   │       ├── index.tsx                      # Point d'entrée
+│   │       ├── App.tsx                        # Composant principal
+│   │       ├── router.tsx                     # Configuration router
+│   │       ├── pages/
+│   │       │   ├── Dashboard/
+│   │       │   │   ├── Dashboard.tsx          # Composant
+│   │       │   │   ├── Dashboard.test.tsx     # Tests
+│   │       │   │   ├── Dashboard.module.css   # Styles
+│   │       │   │   └── index.ts               # Export
+│   │       │   ├── CatalogManagement/
+│   │       │   │   ├── CatalogList/
+│   │       │   │   │   ├── CatalogList.tsx    # Composant
+│   │       │   │   │   ├── CatalogList.test.tsx # Tests
+│   │       │   │   │   ├── CatalogList.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── CatalogDetail/
+│   │       │   │   │   ├── CatalogDetail.tsx  # Composant
+│   │       │   │   │   ├── CatalogDetail.test.tsx # Tests
+│   │       │   │   │   ├── CatalogDetail.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── CatalogUpload/
+│   │       │   │       ├── CatalogUpload.tsx  # Composant
+│   │       │   │       ├── CatalogUpload.test.tsx # Tests
+│   │       │   │       ├── CatalogUpload.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── ProductManagement/
+│   │       │   │   ├── ProductList/
+│   │       │   │   │   ├── ProductList.tsx    # Composant
+│   │       │   │   │   ├── ProductList.test.tsx # Tests
+│   │       │   │   │   ├── ProductList.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── ProductDetail/
+│   │       │   │   │   ├── ProductDetail.tsx  # Composant
+│   │       │   │   │   ├── ProductDetail.test.tsx # Tests
+│   │       │   │   │   ├── ProductDetail.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── ProductCreate/
+│   │       │   │       ├── ProductCreate.tsx  # Composant
+│   │       │   │       ├── ProductCreate.test.tsx # Tests
+│   │       │   │       ├── ProductCreate.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   ├── Analytics/
+│   │       │   │   ├── UsageAnalytics/
+│   │       │   │   │   ├── UsageAnalytics.tsx # Composant
+│   │       │   │   │   ├── UsageAnalytics.test.tsx # Tests
+│   │       │   │   │   ├── UsageAnalytics.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   ├── ProductPerformance/
+│   │       │   │   │   ├── ProductPerformance.tsx # Composant
+│   │       │   │   │   ├── ProductPerformance.test.tsx # Tests
+│   │       │   │   │   ├── ProductPerformance.module.css # Styles
+│   │       │   │   │   └── index.ts           # Export
+│   │       │   │   └── UserFeedback/
+│   │       │   │       ├── UserFeedback.tsx   # Composant
+│   │       │   │       ├── UserFeedback.test.tsx # Tests
+│   │       │   │       ├── UserFeedback.module.css # Styles
+│   │       │   │       └── index.ts           # Export
+│   │       │   └── Settings/
+│   │       │       ├── Profile/
+│   │       │       │   ├── Profile.tsx        # Composant
+│   │       │       │   ├── Profile.test.tsx   # Tests
+│   │       │       │   ├── Profile.module.css # Styles
+│   │       │       │   └── index.ts           # Export
+│   │       │       ├── APIKeys/
+│   │       │       │   ├── APIKeys.tsx        # Composant
+│   │       │       │   ├── APIKeys.test.tsx   # Tests
+│   │       │       │   ├── APIKeys.module.css # Styles
+│   │       │       │   └── index.ts           # Export
+│   │       │       └── Billing/
+│   │       │           ├── Billing.tsx        # Composant
+│   │       │           ├── Billing.test.tsx   # Tests
+│   │       │           ├── Billing.module.css # Styles
+│   │       │           └── index.ts           # Export
+│   │       └── components/
+│   │           ├── CatalogTools/
+│   │           │   ├── ImportWizard/
+│   │           │   │   ├── ImportWizard.tsx   # Composant
+│   │           │   │   ├── ImportWizard.test.tsx # Tests
+│   │           │   │   ├── ImportWizard.module.css # Styles
+│   │           │   │   └── index.ts           # Export
+│   │           │   ├── ValidationFeedback/
+│   │           │   │   ├── ValidationFeedback.tsx # Composant
+│   │           │   │   ├── ValidationFeedback.test.tsx # Tests
+│   │           │   │   ├── ValidationFeedback.module.css # Styles
+│   │           │   │   └── index.ts           # Export
+│   │           │   └── MappingEditor/
+│   │           │       ├── MappingEditor.tsx  # Composant
+│   │           │       ├── MappingEditor.test.tsx # Tests
+│   │           │       ├── MappingEditor.module.css # Styles
+│   │           │       └── index.ts           # Export
+│   │           ├── DataVisualizations/
+│   │           │   ├── UsageChart/
+│   │           │   │   ├── UsageChart.tsx     # Composant
+│   │           │   │   ├── UsageChart.test.tsx # Tests
+│   │           │   │   ├── UsageChart.module.css # Styles
+│   │           │   │   └── index.ts           # Export
+│   │           │   ├── PerformanceMetrics/
+│   │           │   │   ├── PerformanceMetrics.tsx # Composant
+│   │           │   │   ├── PerformanceMetrics.test.tsx # Tests
+│   │           │   │   ├── PerformanceMetrics.module.css # Styles
+│   │           │   │   └── index.ts           # Export
+│   │           │   └── FeedbackSummary/
+│   │           │       ├── FeedbackSummary.tsx # Composant
+│   │           │       ├── FeedbackSummary.test.tsx # Tests
+│   │           │       ├── FeedbackSummary.module.css # Styles
+│   │           │       └── index.ts           # Export
+│   │           └── APIDocumentation/
+│   │               ├── APIReference/
+│   │               │   ├── APIReference.tsx   # Composant
+│   │               │   ├── APIReference.test.tsx # Tests
+│   │               │   ├── APIReference.module.css # Styles
+│   │               │   └── index.ts           # Export
+│   │               ├── EndpointExample/
+│   │               │   ├── EndpointExample.tsx # Composant
+│   │               │   ├── EndpointExample.test.tsx # Tests
+│   │               │   ├── EndpointExample.module.css # Styles
+│   │               │   └── index.ts           # Export
+│   │               └── SchemaViewer/
+│   │                   ├── SchemaViewer.tsx   # Composant
+│   │                   ├── SchemaViewer.test.tsx # Tests
+│   │                   ├── SchemaViewer.module.css # Styles
+│   │                   └── index.ts           # Export
+│   │
+│   ├── ai-modules/
+│   │   ├── kitchen-generator/
+│   │   │   ├── package.json                   # Configuration package
+│   │   │   ├── tsconfig.json                  # Configuration TypeScript
+│   │   │   ├── README.md                      # Documentation
+│   │   │   └── src/
+│   │   │       ├── index.ts                   # Point d'entrée
+│   │   │       ├── models/
+│   │   │       │   ├── generator-model.ts     # Modèle générateur
+│   │   │       │   ├── preference-model.ts    # Modèle préférences
+│   │   │       │   └── constraint-model.ts    # Modèle contraintes
+│   │   │       ├── services/
+│   │   │       │   ├── generator-service.ts   # Service générateur
+│   │   │       │   ├── optimization-service.ts # Service optimisation
+│   │   │       │   └── evaluation-service.ts  # Service évaluation
+│   │   │       ├── algorithms/
+│   │   │       │   ├── layout-algorithm.ts    # Algo disposition
+│   │   │       │   ├── style-algorithm.ts     # Algo style
+│   │   │       │   └── budget-algorithm.ts    # Algo budget
+│   │   │       ├── training/
+│   │   │       │   ├── dataset.ts             # Jeu de données
+│   │   │       │   ├── trainer.ts             # Entraîneur
+│   │   │       │   └── evaluator.ts           # Évaluateur
+│   │   │       └── api/
+│   │   │           ├── routes.ts              # Routes
+│   │   │           └── controllers.ts         # Contrôleurs
+│   │   │
+│   │   ├── compatibility-engine/
+│   │   │   ├── package.json                   # Configuration package
+│   │   │   ├── tsconfig.json                  # Configuration TypeScript
+│   │   │   ├── README.md                      # Documentation
+│   │   │   └── src/
+│   │   │       ├── index.ts                   # Point d'entrée
+│   │   │       ├── models/
+│   │   │       │   ├── compatibility-model.ts # Modèle compatibilité
+│   │   │       │   └── product-model.ts       # Modèle produit
+│   │   │       ├── services/
+│   │   │       │   ├── compatibility-service.ts # Service compatibilité
+│   │   │       │   ├── analyzer-service.ts    # Service analyseur
+│   │   │       │   └── resolver-service.ts    # Service résolveur
+│   │   │       ├── algorithms/
+│   │   │       │   ├── dimensional-algorithm.ts # Algo dimensions
+│   │   │       │   ├── technical-algorithm.ts # Algo technique
+│   │   │       │   └── aesthetic-algorithm.ts # Algo esthétique
+│   │   │       └── api/
+│   │   │           ├── routes.ts              # Routes
+│   │   │           └── controllers.ts         # Contrôleurs
+│   │   │
+│   │   ├── appliance-advisor/
+│   │   │   ├── package.json                   # Configuration package
+│   │   │   ├── tsconfig.json                  # Configuration TypeScript
+│   │   │   ├── README.md                      # Documentation
+│   │   │   └── src/
+│   │   │       ├── index.ts                   # Point d'entrée
+│   │   │       ├── models/
+│   │   │       │   ├── appliance-model.ts     # Modèle appareil
+│   │   │       │   └── preference-model.ts    # Modèle préférences
+│   │   │       ├── services/
+│   │   │       │   ├── advisor-service.ts     # Service conseiller
+│   │   │       │   ├── comparison-service.ts  # Service comparaison
+│   │   │       │   └── rating-service.ts      # Service notation
+│   │   │       ├── data/
+│   │   │       │   ├── appliances/
+│   │   │       │   │   ├── refrigerators-data.ts # Données réfrigérateurs
+│   │   │       │   │   ├── ovens-data.ts      # Données fours
+│   │   │       │   │   ├── dishwashers-data.ts # Données lave-vaisselle
+│   │   │       │   │   ├── cooktops-data.ts   # Données plaques cuisson
+│   │   │       │   │   └── microwaves-data.ts # Données micro-ondes
+│   │   │       │   ├── features/
+│   │   │       │   │   ├── energy-features.ts # Caract. énergie
+│   │   │       │   │   ├── tech-features.ts   # Caract. technologie
+│   │   │       │   │   ├── design-features.ts # Caract. design
+│   │   │       │   │   └── function-features.ts # Caract. fonction
+│   │   │       │   └── ratings/
+│   │   │       │       ├── user-ratings.ts    # Notations utilisateur
+│   │   │       │       ├── expert-ratings.ts  # Notations expert
+│   │   │       │       └── certification-ratings.ts # Notations certification
+│   │   │       ├── algorithms/
+│   │   │       │   ├── recommendation-algorithm.ts # Algo recommandation
+│   │   │       │   ├── matching-algorithm.ts  # Algo correspondance
+│   │   │       │   └── value-algorithm.ts     # Algo valeur
+│   │   │       └── api/
+│   │   │           ├── routes.ts              # Routes
+│   │   │           └── controllers.ts         # Contrôleurs
+│   │   │
+│   │   └── style-analyzer/
+│   │       ├── package.json                   # Configuration package
+│   │       ├── tsconfig.json                  # Configuration TypeScript
+│   │       ├── README.md                      # Documentation
+│   │       └── src/
+│   │           ├── index.ts                   # Point d'entrée
+│   │           ├── models/
+│   │           │   ├── style-model.ts         # Modèle style
+│   │           │   └── trend-model.ts         # Modèle tendance
+│   │           ├── services/
+│   │           │   ├── analyzer-service.ts    # Service analyseur
+│   │           │   ├── trend-service.ts       # Service tendance
+│   │           │   └── prediction-service.ts  # Service prédiction
+│   │           ├── data/
+│   │           │   ├── styles/
+│   │           │   │   ├── contemporary-style.ts # Style contemporain
+│   │           │   │   ├── modern-style.ts    # Style moderne
+│   │           │   │   ├── traditional-style.ts # Style traditionnel
+│   │           │   │   ├── rustic-style.ts    # Style rustique
+│   │           │   │   ├── industrial-style.ts # Style industriel
+│   │           │   │   ├── scandinavian-style.ts # Style scandinave
+│   │           │   │   ├── minimalist-style.ts # Style minimaliste
+│   │           │   │   └── classic-style.ts   # Style classique
+│   │           │   └── trends/
+│   │           │       ├── color-trends.ts    # Tendances couleur
+│   │           │       ├── material-trends.ts # Tendances matériau
+│   │           │       ├── texture-trends.ts  # Tendances texture
+│   │           │       └── shape-trends.ts    # Tendances forme
+│   │           ├── algorithms/
+│   │           │   ├── style-recognition-algorithm.ts # Algo reconnaissance
+│   │           │   ├── trend-analysis-algorithm.ts # Algo analyse tendances
+│   │           │   └── prediction-algorithm.ts # Algo prédiction
+│   │           └── api/
+│   │               ├── routes.ts              # Routes
+│   │               └── controllers.ts         # Contrôleurs
+│   │
+│   └── 3d-engine/
+│       ├── package.json                       # Configuration package
+│       ├── tsconfig.json                      # Configuration TypeScript
+│       ├── README.md                          # Documentation
+│       └── src/
+│           ├── index.ts                       # Point d'entrée
+│           ├── engine/
+│           │   ├── renderer.ts                # Rendu
+│           │   ├── scene.ts                   # Scène
+│           │   ├── camera.ts                  # Caméra
+│           │   └── lighting.ts                # Éclairage
+│           ├── models/
+│           │   ├── object-model.ts            # Modèle objet
+│           │   ├── material-model.ts          # Modèle matériau
+│           │   └── texture-model.ts           # Modèle texture
+│           ├── loaders/
+│           │   ├── model-loader.ts            # Chargeur modèle
+│           │   ├── texture-loader.ts          # Chargeur texture
+│           │   └── scene-loader.ts            # Chargeur scène
+│           ├── physics/
+│           │   ├── collision.ts               # Collision
+│           │   └── constraints.ts             # Contraintes
+│           ├── interaction/
+│           │   ├── controls.ts                # Contrôles
+│           │   ├── selection.ts               # Sélection
+│           │   └── manipulation.ts            # Manipulation
+│           ├── vr/
+│           │   ├── vr-renderer.ts             # Rendu VR
+│           │   ├── vr-controls.ts             # Contrôles VR
+│           │   └── vr-interaction.ts          # Interaction VR
+│           └── api/
+│               ├── routes.ts                  # Routes
+│               └── controllers.ts             # Contrôleurs
+│
+├── catalog-providers/
+│   ├── common/
+│   │   ├── schema/
+│   │   │   ├── unified-schema.json            # Schéma unifié
+│   │   │   ├── validation-rules.json          # Règles validation
+│   │   │   └── mapping-templates.json         # Templates mapping
+│   │   ├── transformers/
+│   │   │   ├── base-transformer.ts            # Transformateur base
+│   │   │   ├── image-processor.ts             # Processeur images
+│   │   │   └── metadata-enricher.ts           # Enrichisseur métadonnées
+│   │   └── validators/
+│   │       ├── product-validator.ts           # Validateur produit
+│   │       ├── dimensional-validator.ts       # Validateur dimensions
+│   │       └── price-validator.ts             # Validateur prix
+│   │
+│   ├── furniture-providers/                   # Fournisseurs de meubles
+│   │   ├── ikea/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── schmidt/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── leroy-merlin/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── mobalpa/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── cuisinella/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── bulthaup/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── nobilia/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── hygena/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── ixina/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── lapeyre/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── socoo-c/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── arthur-bonnet/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── cuisine-plus/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── perene/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── teisseire/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── aviva/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── comera/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── darty/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── but/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── conforama/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── castorama/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── kvik/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── hacker/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── nolte/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── poggenpohl/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── rational/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── pedini/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── siematic/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   ├── snaidero/
+│   │   │   ├── api-client.ts                  # Client API
+│   │   │   ├── schema-mapper.ts               # Mappeur schéma
+│   │   │   ├── transformer.ts                 # Transformateur
+│   │   │   ├── validator.ts                   # Validateur
+│   │   │   ├── model/
+│   │   │   │   ├── product-model.ts           # Modèle produit
+│   │   │   │   ├── category-model.ts          # Modèle catégorie
+│   │   │   │   └── dimension-model.ts         # Modèle dimension
+│   │   │   └── credentials.example.json       # Exemple identifiants
+│   │   └── scavolini/
+│   │       ├── api-client.ts                  # Client API
+│   │       ├── schema-mapper.ts               # Mappeur schéma
+│   │       ├── transformer.ts                 # Transformateur
+│   │       ├── validator.ts                   # Validateur
+│   │       ├── model/
+│   │       │   ├── product-model.ts           # Modèle produit
+│   │       │   ├── category-model.ts          # Modèle catégorie
+│   │       │   └── dimension-model.ts         # Modèle dimension
+│   │       └── credentials.example.json       # Exemple identifiants
+│   │
+│   └── appliance-providers/                   # Fournisseurs d'électroménager
+│       ├── haier-group/                       # Groupe Haier
+│       │   ├── haier/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── ge-appliances/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── fisher-paykel/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── candy/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── hoover/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── bsh-group/                         # Groupe BSH
+│       │   ├── bosch/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── siemens/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── gaggenau/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── neff/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── whirlpool-group/                   # Groupe Whirlpool
+│       │   ├── whirlpool/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── kitchenaid/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── maytag/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── indesit/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── hotpoint/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── bauknecht/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── laden/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── electrolux-group/                  # Groupe Electrolux
+│       │   ├── electrolux/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── aeg/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── faure/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── arthur-martin/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── frigidaire/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── zanussi/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── midea-group/                       # Groupe Midea
+│       │   ├── midea/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── toshiba-lifestyle/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── eureka/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── comfee/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── samsung/
+│       │   ├── api-client.ts                  # Client API
+│       │   ├── schema-mapper.ts               # Mappeur schéma
+│       │   ├── transformer.ts                 # Transformateur
+│       │   ├── validator.ts                   # Validateur
+│       │   ├── model/
+│       │   │   ├── product-model.ts           # Modèle produit
+│       │   │   ├── category-model.ts          # Modèle catégorie
+│       │   │   └── specifications-model.ts    # Modèle spécifications
+│       │   └── credentials.example.json       # Exemple identifiants
+│       ├── lg/
+│       │   ├── api-client.ts                  # Client API
+│       │   ├── schema-mapper.ts               # Mappeur schéma
+│       │   ├── transformer.ts                 # Transformateur
+│       │   ├── validator.ts                   # Validateur
+│       │   ├── model/
+│       │   │   ├── product-model.ts           # Modèle produit
+│       │   │   ├── category-model.ts          # Modèle catégorie
+│       │   │   └── specifications-model.ts    # Modèle spécifications
+│       │   └── credentials.example.json       # Exemple identifiants
+│       ├── brandt-group/                      # Groupe Brandt
+│       │   ├── brandt/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── de-dietrich/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   ├── sauter/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── vedette/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── miele/
+│       │   ├── api-client.ts                  # Client API
+│       │   ├── schema-mapper.ts               # Mappeur schéma
+│       │   ├── transformer.ts                 # Transformateur
+│       │   ├── validator.ts                   # Validateur
+│       │   ├── model/
+│       │   │   ├── product-model.ts           # Modèle produit
+│       │   │   ├── category-model.ts          # Modèle catégorie
+│       │   │   └── specifications-model.ts    # Modèle spécifications
+│       │   └── credentials.example.json       # Exemple identifiants
+│       ├── arcelik-group/                     # Groupe Arçelik
+│       │   ├── beko/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── grundig/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── hisense-group/                     # Groupe Hisense
+│       │   ├── hisense/
+│       │   │   ├── api-client.ts              # Client API
+│       │   │   ├── schema-mapper.ts           # Mappeur schéma
+│       │   │   ├── transformer.ts             # Transformateur
+│       │   │   ├── validator.ts               # Validateur
+│       │   │   ├── model/
+│       │   │   │   ├── product-model.ts       # Modèle produit
+│       │   │   │   ├── category-model.ts      # Modèle catégorie
+│       │   │   │   └── specifications-model.ts # Modèle spécifications
+│       │   │   └── credentials.example.json   # Exemple identifiants
+│       │   └── gorenje/
+│       │       ├── api-client.ts              # Client API
+│       │       ├── schema-mapper.ts           # Mappeur schéma
+│       │       ├── transformer.ts             # Transformateur
+│       │       ├── validator.ts               # Validateur
+│       │       ├── model/
+│       │       │   ├── product-model.ts       # Modèle produit
+│       │       │   ├── category-model.ts      # Modèle catégorie
+│       │       │   └── specifications-model.ts # Modèle spécifications
+│       │       └── credentials.example.json   # Exemple identifiants
+│       ├── ariston/
+│       │   ├── api-client.ts                  # Client API
+│       │   ├── schema-mapper.ts               # Mappeur schéma
+│       │   ├── transformer.ts                 # Transformateur
+│       │   ├── validator.ts                   # Validateur
+│       │   ├── model/
+│       │   │   ├── product-model.ts           # Modèle produit
+│       │   │   ├── category-model.ts          # Modèle catégorie
+│       │   │   └── specifications-model.ts    # Modèle spécifications
+│       │   └── credentials.example.json       # Exemple identifiants
+│       ├── smeg/
+│       │   ├── api-client.ts                  # Client API
+│       │   ├── schema-mapper.ts               # Mappeur schéma
+│       │   ├── transformer.ts                 # Transformateur
+│       │   ├── validator.ts                   # Validateur
+│       │   ├── model/
+│       │   │   ├── product-model.ts           # Modèle produit
+│       │   │   ├── category-model.ts          # Modèle catégorie
+│       │   │   └── specifications-model.ts    # Modèle spécifications
+│       │   └── credentials.example.json       # Exemple identifiants
+│       ├── liebherr/
+│       │   ├── api-client.ts                  # Client API
+│       │   ├── schema-mapper.ts               # Mappeur schéma
+│       │   ├── transformer.ts                 # Transformateur
+│       │   ├── validator.ts                   # Validateur
+│       │   ├── model/
+│       │   │   ├── product-model.ts           # Modèle produit
+│       │   │   ├── category-model.ts          # Modèle catégorie
+│       │   │   └── specifications-model.ts    # Modèle spécifications
+│       │   └── credentials.example.json       # Exemple identifiants
+│       └── french-brands/                      # Marques françaises
+│           ├── seb-group/                     # Groupe SEB
+│           │   ├── seb/
+│           │   │   ├── api-client.ts          # Client API
+│           │   │   ├── schema-mapper.ts       # Mappeur schéma
+│           │   │   ├── transformer.ts         # Transformateur
+│           │   │   ├── validator.ts           # Validateur
+│           │   │   ├── model/
+│           │   │   │   ├── product-model.ts   # Modèle produit
+│           │   │   │   ├── category-model.ts  # Modèle catégorie
+│           │   │   │   └── specifications-model.ts # Modèle spécifications
+│           │   │   └── credentials.example.json # Exemple identifiants
+│           │   ├── tefal/
+│           │   │   ├── api-client.ts          # Client API
+│           │   │   ├── schema-mapper.ts       # Mappeur schéma
+│           │   │   ├── transformer.ts         # Transformateur
+│           │   │   ├── validator.ts           # Validateur
+│           │   │   ├── model/
+│           │   │   │   ├── product-model.ts   # Modèle produit
+│           │   │   │   ├── category-model.ts  # Modèle catégorie
+│           │   │   │   └── specifications-model.ts # Modèle spécifications
+│           │   │   └── credentials.example.json # Exemple identifiants
+│           │   ├── moulinex/
+│           │   │   ├── api-client.ts          # Client API
+│           │   │   ├── schema-mapper.ts       # Mappeur schéma
+│           │   │   ├── transformer.ts         # Transformateur
+│           │   │   ├── validator.ts           # Validateur
+│           │   │   ├── model/
+│           │   │   │   ├── product-model.ts   # Modèle produit
+│           │   │   │   ├── category-model.ts  # Modèle catégorie
+│           │   │   │   └── specifications-model.ts # Modèle spécifications
+│           │   │   └── credentials.example.json # Exemple identifiants
+│           │   ├── krups/
+│           │   │   ├── api-client.ts          # Client API
+│           │   │   ├── schema-mapper.ts       # Mappeur schéma
+│           │   │   ├── transformer.ts         # Transformateur
+│           │   │   ├── validator.ts           # Validateur
+│           │   │   ├── model/
+│           │   │   │   ├── product-model.ts   # Modèle produit
+│           │   │   │   ├── category-model.ts  # Modèle catégorie
+│           │   │   │   └── specifications-model.ts # Modèle spécifications
+│           │   │   └── credentials.example.json # Exemple identifiants
+│           │   └── rowenta/
+│           │       ├── api-client.ts          # Client API
+│           │       ├── schema-mapper.ts       # Mappeur schéma
+│           │       ├── transformer.ts         # Transformateur
+│           │       ├── validator.ts           # Validateur
+│           │       ├── model/
+│           │       │   ├── product-model.ts   # Modèle produit
+│           │       │   ├── category-model.ts  # Modèle catégorie
+│           │       │   └── specifications-model.ts # Modèle spécifications
+│           │       └── credentials.example.json # Exemple identifiants
+│           ├── vorwerk/
+│           │   ├── api-client.ts              # Client API
+│           │   ├── schema-mapper.ts           # Mappeur schéma
+│           │   ├── transformer.ts             # Transformateur
+│           │   ├── validator.ts               # Validateur
+│           │   ├── model/
+│           │   │   ├── product-model.ts       # Modèle produit
+│           │   │   ├── category-model.ts      # Modèle catégorie
+│           │   │   └── specifications-model.ts # Modèle spécifications
+│           │   └── credentials.example.json   # Exemple identifiants
+│           ├── magimix/
+│           │   ├── api-client.ts              # Client API
+│           │   ├── schema-mapper.ts           # Mappeur schéma
+│           │   ├── transformer.ts             # Transformateur
+│           │   ├── validator.ts               # Validateur
+│           │   ├── model/
+│           │   │   ├── product-model.ts       # Modèle produit
+│           │   │   ├── category-model.ts      # Modèle catégorie
+│           │   │   └── specifications-model.ts # Modèle spécifications
+│           │   └── credentials.example.json   # Exemple identifiants
+│           ├── lagrange/
+│           │   ├── api-client.ts              # Client API
+│           │   ├── schema-mapper.ts           # Mappeur schéma
+│           │   ├── transformer.ts             # Transformateur
+│           │   ├── validator.ts               # Validateur
+│           │   ├── model/
+│           │   │   ├── product-model.ts       # Modèle produit
+│           │   │   ├── category-model.ts      # Modèle catégorie
+│           │   │   └── specifications-model.ts # Modèle spécifications
+│           │   └── credentials.example.json   # Exemple identifiants
+│           ├── beaba/
+│           │   ├── api-client.ts              # Client API
+│           │   ├── schema-mapper.ts           # Mappeur schéma
+│           │   ├── transformer.ts             # Transformateur
+│           │   ├── validator.ts               # Validateur
+│           │   ├── model/
+│           │   │   ├── product-model.ts       # Modèle produit
+│           │   │   ├── category-model.ts      # Modèle catégorie
+│           │   │   └── specifications-model.ts # Modèle spécifications
+│           │   └── credentials.example.json   # Exemple identifiants
+│           ├── eno/
+│           │   ├── api-client.ts              # Client API
+│           │   ├── schema-mapper.ts           # Mappeur schéma
+│           │   ├── transformer.ts             # Transformateur
+│           │   ├── validator.ts               # Validateur
+│           │   ├── model/
+│           │   │   ├── product-model.ts       # Modèle produit
+│           │   │   ├── category-model.ts      # Modèle catégorie
+│           │   │   └── specifications-model.ts # Modèle spécifications
+│           │   └── credentials.example.json   # Exemple identifiants
+│           ├── krampouz/
+│           │   ├── api-client.ts              # Client API
+│           │   ├── schema-mapper.ts           # Mappeur schéma
+│           │   ├── transformer.ts             # Transformateur
+│           │   ├── validator.ts               # Validateur
+│           │   ├── model/
+│           │   │   ├── product-model.ts       # Modèle produit
+│           │   │   ├── category-model.ts      # Modèle catégorie
+│           │   │   └── specifications-model.ts # Modèle spécifications
+│           │   └── credentials.example.json   # Exemple identifiants
+│           ├── malongo/
+│           │   ├── api-client.ts              # Client API
+│           │   ├── schema-mapper.ts           # Mappeur schéma
+│           │   ├── transformer.ts             # Transformateur
+│           │   ├── validator.ts               # Validateur
+│           │   ├── model/
+│           │   │   ├── product-model.ts       # Modèle produit
+│           │   │   ├── category-model.ts      # Modèle catégorie
+│           │   │   └── specifications-model.ts # Modèle spécifications
+│           │   └── credentials.example.json   # Exemple identifiants
+│           └── kippit/
+│               ├── api-client.ts              # Client API
+│               ├── schema-mapper.ts           # Mappeur schéma
+│               ├── transformer.ts             # Transformateur
+│               ├── validator.ts               # Validateur
+│               ├── model/
+│               │   ├── product-model.ts       # Modèle produit
+│               │   ├── category-model.ts      # Modèle catégorie
+│               │   └── specifications-model.ts # Modèle spécifications
+│               └── credentials.example.json   # Exemple identifiants
+│
+├── questionnaire/
+│   ├── schema/
+│   │   ├── questionnaire-schema.json          # Schéma questionnaire
+│   │   └── response-schema.json               # Schéma réponses
+│   ├── sections/
+│   │   ├── user-profile/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   └── scoring.js                     # Notation
+│   │   ├── cooking-habits/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   └── scoring.js                     # Notation
+│   │   ├── aesthetic-preferences/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   ├── scoring.js                     # Notation
+│   │   │   └── style-matrix.json              # Matrice styles
+│   │   ├── spatial-constraints/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   ├── scoring.js                     # Notation
+│   │   │   └── dimension-calculator.js        # Calculateur dimensions
+│   │   ├── social-usage/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   └── scoring.js                     # Notation
+│   │   ├── budget-constraints/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   ├── scoring.js                     # Notation
+│   │   │   └── budget-calculator.js           # Calculateur budget
+│   │   ├── environmental-concerns/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   └── scoring.js                     # Notation
+│   │   ├── technology-preferences/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   └── scoring.js                     # Notation
+│   │   ├── future-needs/
+│   │   │   ├── questions.json                 # Questions
+│   │   │   ├── logic.json                     # Logique
+│   │   │   ├── validation.js                  # Validation
+│   │   │   └── scoring.js                     # Notation
+│   │   └── maintenance-preferences/
+│   │       ├── questions.json                 # Questions
+│   │       ├── logic.json                     # Logique
+│   │       ├── validation.js                  # Validation
+│   │       └── scoring.js                     # Notation
+│   ├── analysis/
+│   │   ├── preference-analyzer.js             # Analyseur préférences
+│   │   ├── constraint-analyzer.js             # Analyseur contraintes
+│   │   ├── recommendation-generator.js        # Générateur recommandations
+│   │   ├── budget-analyzer.js                 # Analyseur budget
+│   │   ├── spatial-analyzer.js                # Analyseur spatial
+│   │   └── style-matcher.js                   # Correspondance style
+│   └── ui/
+│       ├── components/
+│       │   ├── questionnaire-section.js       # Section questionnaire
+│       │   ├── question-renderer.js           # Rendu question
+│       │   ├── progress-indicator.js          # Indicateur progression
+│       │   ├── multi-choice-question.js       # Question choix multiple
+│       │   ├── slider-question.js             # Question curseur
+│       │   ├── text-question.js               # Question texte
+│       │   ├── image-choice-question.js       # Question choix image
+│       │   └── dimension-input.js             # Saisie dimension
+│       ├── styles/
+│       │   ├── questionnaire.css              # Styles questionnaire
+│       │   └── themes/
+│       │       ├── light.css                  # Thème clair
+│       │       └── dark.css                   # Thème sombre
+│       └── validators/
+│           ├── input-validator.js             # Validateur saisie
+│           └── completion-validator.js        # Validateur complétion
+│
+└── legal/
+    ├── terms-of-service.md                    # Conditions d'utilisation
+    ├── privacy-policy.md                      # Politique confidentialité
+    ├── data-processing-agreement.md           # Accord traitement données
+    ├── partner-agreement.md                   # Accord partenaire
+    ├── user-agreement.md                      # Accord utilisateur
+    ├── cookie-policy.md                       # Politique cookies
+    └── licenses/
+        ├── open-source-licenses.md            # Licences open source
+        ├── commercial-license.md              # Licence commerciale
+        ├── partner-license.md                 # Licence partenaire
+        └── enterprise-license.md              # Licence entreprise

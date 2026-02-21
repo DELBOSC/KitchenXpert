@@ -1,0 +1,67 @@
+{
+  "sectionId": "maintenance-preferences",
+  "version": "1.0.0",
+  "metadata": {
+    "title": { "en": "Cleaning & Maintenance", "fr": "Nettoyage et entretien" },
+    "icon": "sparkles",
+    "estimatedTime": 2
+  },
+  "questions": [
+    {
+      "id": "maintenance-time",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How much time are you willing to spend on kitchen maintenance?", "fr": "Combien de temps êtes-vous prêt à consacrer à l'entretien ?" },
+      "options": [
+        { "value": "minimal", "label": { "en": "Minimal - want lowest maintenance", "fr": "Minimal - je veux le moins d'entretien" } },
+        { "value": "moderate", "label": { "en": "Moderate - reasonable upkeep is fine", "fr": "Modéré - entretien raisonnable c'est bien" } },
+        { "value": "willing", "label": { "en": "Willing to maintain for quality/beauty", "fr": "Prêt à entretenir pour la qualité/beauté" } }
+      ]
+    },
+    {
+      "id": "cleaning-frequency",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How often do you deep clean your kitchen?", "fr": "À quelle fréquence nettoyez-vous votre cuisine en profondeur ?" },
+      "options": [
+        { "value": "daily", "label": { "en": "Daily wipe-down", "fr": "Nettoyage quotidien" } },
+        { "value": "weekly", "label": { "en": "Weekly deep clean", "fr": "Nettoyage hebdomadaire" } },
+        { "value": "monthly", "label": { "en": "Monthly deep clean", "fr": "Nettoyage mensuel" } },
+        { "value": "rarely", "label": { "en": "As needed", "fr": "Au besoin" } }
+      ]
+    },
+    {
+      "id": "material-care",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "Are you comfortable with materials that need special care?", "fr": "Êtes-vous à l'aise avec des matériaux nécessitant des soins spéciaux ?" },
+      "options": [
+        { "value": "no-special", "label": { "en": "No - want easy-care only", "fr": "Non - uniquement facile d'entretien" } },
+        { "value": "some-ok", "label": { "en": "Some special care is acceptable", "fr": "Un peu de soins spéciaux est acceptable" } },
+        { "value": "willing", "label": { "en": "Yes - willing to maintain properly", "fr": "Oui - prêt à entretenir correctement" } }
+      ]
+    },
+    {
+      "id": "durability-priority",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How important is durability vs. aesthetics?", "fr": "Quelle importance accordez-vous à la durabilité vs l'esthétique ?" },
+      "options": [
+        { "value": "durability-first", "label": { "en": "Durability is most important", "fr": "La durabilité est primordiale" } },
+        { "value": "balanced", "label": { "en": "Balance of both", "fr": "Équilibre des deux" } },
+        { "value": "aesthetics-first", "label": { "en": "Aesthetics are most important", "fr": "L'esthétique est primordiale" } }
+      ]
+    },
+    {
+      "id": "stain-concern",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How concerned are you about staining?", "fr": "À quel point les taches vous préoccupent-elles ?" },
+      "options": [
+        { "value": "very-concerned", "label": { "en": "Very - need stain-resistant materials", "fr": "Très - besoin de matériaux antitaches" } },
+        { "value": "somewhat", "label": { "en": "Somewhat - prefer resistant but flexible", "fr": "Assez - préfère résistant mais flexible" } },
+        { "value": "not-worried", "label": { "en": "Not worried - patina adds character", "fr": "Pas inquiet - la patine ajoute du caractère" } }
+      ]
+    }
+  ]
+}

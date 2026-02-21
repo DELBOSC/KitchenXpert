@@ -1,0 +1,12 @@
+{
+  "name": "@kitchenxpert/ai-style-analyzer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KitchenXpert AI Style Analyzer - Analyzes and suggests kitchen design styles",
+  "scripts": {
+    "setup": "python -m venv venv && pip install -r requirements.txt",
+    "dev": "python main.py",
+    "test": "pytest",
+    "lint": "flake8 src && mypy src"
+  }
+}

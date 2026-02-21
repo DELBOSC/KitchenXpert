@@ -1,0 +1,131 @@
+{
+  "sectionId": "future-needs",
+  "version": "1.0.0",
+  "conditionalRules": [
+    {
+      "id": "long-term-home",
+      "condition": {
+        "questionId": "time-in-home",
+        "operator": "equals",
+        "value": "10-plus"
+      },
+      "action": {
+        "type": "expand-options",
+        "message": {
+          "en": "Since this is your long-term home, we'll focus on timeless design and quality materials.",
+          "fr": "Puisque c'est votre maison à long terme, nous nous concentrerons sur un design intemporel et des matériaux de qualité."
+        }
+      }
+    },
+    {
+      "id": "short-term-stay",
+      "condition": {
+        "questionId": "time-in-home",
+        "operator": "in",
+        "value": ["1-3-years", "3-5-years"]
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "With a shorter timeline, consider ROI-focused choices that appeal to future buyers.",
+          "fr": "Avec un délai plus court, envisagez des choix axés sur le ROI qui plairont aux futurs acheteurs."
+        }
+      }
+    },
+    {
+      "id": "aging-in-place-planning",
+      "condition": {
+        "questionId": "aging-in-place",
+        "operator": "equals",
+        "value": "yes-plan-now"
+      },
+      "action": {
+        "type": "add-requirements",
+        "requirements": ["wider-aisles", "lower-counters", "pull-out-shelving", "lever-handles"],
+        "message": {
+          "en": "We'll incorporate universal design principles throughout the kitchen.",
+          "fr": "Nous intégrerons des principes de conception universelle dans toute la cuisine."
+        }
+      }
+    },
+    {
+      "id": "family-growth",
+      "condition": {
+        "questionId": "family-changes",
+        "operator": "contains",
+        "value": "children"
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "With children coming, consider durable surfaces and child-safety features.",
+          "fr": "Avec des enfants à venir, envisagez des surfaces durables et des fonctions de sécurité enfant."
+        }
+      }
+    },
+    {
+      "id": "more-cooking-storage",
+      "condition": {
+        "questionId": "cooking-evolution",
+        "operator": "equals",
+        "value": "more-cooking"
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "Plan for extra storage and prep space to accommodate increased cooking.",
+          "fr": "Prévoyez du rangement et de l'espace de préparation supplémentaires pour accommoder plus de cuisine."
+        }
+      }
+    }
+  ],
+  "crossSectionRules": [
+    {
+      "id": "budget-longevity-check",
+      "fromSection": "budget-constraints",
+      "condition": {
+        "questionId": "total-budget",
+        "operator": "in",
+        "value": ["under-10k", "10k-25k"]
+      },
+      "action": {
+        "type": "info",
+        "message": {
+          "en": "Consider prioritizing durable materials within budget for long-term value.",
+          "fr": "Envisagez de prioriser les matériaux durables dans le budget pour une valeur à long terme."
+        }
+      }
+    },
+    {
+      "id": "tech-future-proofing",
+      "fromSection": "technology-preferences",
+      "condition": {
+        "questionId": "tech-comfort",
+        "operator": "in",
+        "value": ["very-comfortable", "comfortable"]
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "Include extra outlets and conduit runs for future technology additions.",
+          "fr": "Incluez des prises supplémentaires et des passages de conduit pour les ajouts technologiques futurs."
+        }
+      }
+    }
+  ],
+  "recommendations": {
+    "foreverHome": {
+      "condition": {
+        "and": [
+          { "questionId": "time-in-home", "equals": "10-plus" },
+          { "questionId": "aging-in-place", "in": ["yes-plan-now", "prepare-later"] }
+        ]
+      },
+      "suggestions": [
+        { "type": "layout", "feature": "wider-aisles", "priority": "high" },
+        { "type": "storage", "feature": "pull-down-shelving", "priority": "medium" },
+        { "type": "fixture", "feature": "lever-handles", "priority": "medium" }
+      ]
+    }
+  }
+}

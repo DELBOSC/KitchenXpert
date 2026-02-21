@@ -1,0 +1,458 @@
+# KitchenXpert MVP - Chronologie de Codage
+## Planning de Développement & Gestion des Dépendances
+
+---
+
+## 📅 **SEMAINE 1 : Fondations & Configuration**
+
+### **Jour 1 : Setup Workspace**
+```bash
+# 1. Configuration Racine
+├── package.json                    # 🔥 PREMIER FICHIER - Base du monorepo
+├── pnpm-workspace.yaml            # Dépend de: package.json
+├── turbo.json                     # Dépend de: pnpm-workspace.yaml
+├── .gitignore                     # Indépendant
+├── .eslintrc.js                   # Indépendant
+├── .prettierrc                    # Indépendant
+└── README.md                      # Indépendant
+```
+**🧠 Fichiers à charger en mémoire :** Aucun (début)
+
+### **Jour 2 : Types Partagés Foundation**
+```bash
+# 2. Types de Base (packages/shared/)
+├── packages/shared/package.json                    # Dépend de: package.json racine
+├── packages/shared/src/types/auth.ts              # 🔥 TYPES FONDAMENTAUX
+├── packages/shared/src/types/api.ts               # Dépend de: auth.ts
+├── packages/shared/src/utils/constants.ts         # Indépendant
+└── packages/shared/src/utils/validation.ts        # Dépend de: types/auth.ts
+```
+**🧠 Fichiers à charger :** `auth.ts` (référence pour tous les autres types)
+
+### **Jour 3 : Types Métier Core**
+```bash
+# 3. Types Métier (packages/shared/)
+├── packages/shared/src/types/project.ts           # Dépend de: auth.ts, api.ts
+├── packages/shared/src/types/kitchen.ts           # 🔥 TYPE LE PLUS COMPLEXE
+├── packages/shared/src/types/catalog.ts           # Dépend de: projet, kitchen
+├── packages/shared/src/schemas/auth.schema.ts     # Dépend de: types/auth.ts
+├── packages/shared/src/schemas/project.schema.ts  # Dépend de: types/project.ts
+└── packages/shared/src/schemas/kitchen.schema.ts  # Dépend de: types/kitchen.ts
+```
+**🧠 Fichiers à charger :** `auth.ts`, `kitchen.ts` (types centraux)
+
+### **Jour 4 : Utilitaires Partagés**
+```bash
+# 4. Utilitaires (packages/shared/)
+├── packages/shared/src/utils/formatting.ts        # Dépend de: constants.ts
+├── packages/shared/src/utils/helpers.ts           # Dépend de: tous les types
+├── packages/shared/src/schemas/catalog.schema.ts  # Dépend de: types/catalog.ts
+└── packages/shared/tests/                         # Tests pour validation
+```
+**🧠 Fichiers à charger :** Tous les types (auth, project, kitchen, catalog)
+
+---
+
+## 📅 **SEMAINE 2 : Infrastructure Backend**
+
+### **Jour 5 : Configuration Backend**
+```bash
+# 5. Setup Backend (apps/api/)
+├── apps/api/package.json                          # Dépend de: shared/package.json
+├── apps/api/src/config/env.ts                     # 🔥 CONFIGURATION CENTRALE
+├── apps/api/src/config/database.ts                # Dépend de: env.ts
+├── apps/api/src/config/auth.ts                    # Dépend de: env.ts
+└── apps/api/src/app.ts                            # Dépend de: tous les configs
+```
+**🧠 Fichiers à charger :** `packages/shared/src/types/auth.ts`
+
+### **Jour 6 : Base de Données**
+```bash
+# 6. Database Layer
+├── apps/api/src/database/connection.ts            # Dépend de: config/database.ts
+├── apps/api/src/database/migrations/001-users.ts  # Dépend de: shared/types/auth.ts
+├── apps/api/src/models/User.ts                    # 🔥 MODÈLE FONDAMENTAL
+└── apps/api/src/database/seeds/demo-data.ts       # Dépend de: User.ts
+```
+**🧠 Fichiers à charger :** `shared/types/auth.ts`, `config/env.ts`, `config/database.ts`
+
+### **Jour 7 : Authentification**
+```bash
+# 7. Auth System
+├── apps/api/src/services/auth.service.ts          # Dépend de: User.ts, shared/types
+├── apps/api/src/controllers/auth.controller.ts    # Dépend de: auth.service.ts
+├── apps/api/src/middleware/auth.middleware.ts     # Dépend de: auth.service.ts
+├── apps/api/src/routes/auth.routes.ts             # Dépend de: auth.controller.ts
+└── apps/api/src/utils/encryption.ts               # Dépend de: config/auth.ts
+```
+**🧠 Fichiers à charger :** `User.ts`, `shared/types/auth.ts`, `shared/schemas/auth.schema.ts`
+
+### **Jour 8 : Serveur & Middleware**
+```bash
+# 8. Server Setup
+├── apps/api/src/middleware/validation.middleware.ts # Dépend de: shared/schemas
+├── apps/api/src/middleware/error.middleware.ts      # Indépendant
+├── apps/api/src/middleware/logging.middleware.ts    # Indépendant
+├── apps/api/src/utils/logger.ts                    # Indépendant
+└── apps/api/src/server.ts                          # 🔥 ORCHESTRE TOUT
+```
+**🧠 Fichiers à charger :** `app.ts`, tous les `middleware/*`, `routes/auth.routes.ts`
+
+---
+
+## 📅 **SEMAINE 3 : Core Business Logic**
+
+### **Jour 9 : Modèles Métier**
+```bash
+# 9. Business Models
+├── apps/api/src/database/migrations/002-projects.ts # Dépend de: shared/types/project.ts
+├── apps/api/src/database/migrations/003-kitchens.ts # Dépend de: shared/types/kitchen.ts
+├── apps/api/src/models/Project.ts                   # 🔥 MODÈLE MÉTIER CORE
+├── apps/api/src/models/Kitchen.ts                   # 🔥 MODÈLE LE PLUS COMPLEXE
+└── apps/api/src/services/users.service.ts           # Dépend de: User.ts
+```
+**🧠 Fichiers à charger :** `shared/types/project.ts`, `shared/types/kitchen.ts`, `User.ts`
+
+### **Jour 10 : Services Métier**
+```bash
+# 10. Business Services
+├── apps/api/src/services/projects.service.ts       # Dépend de: Project.ts, User.ts
+├── apps/api/src/services/kitchens.service.ts       # 🔥 SERVICE LE PLUS COMPLEXE
+└── apps/api/src/utils/validation.ts                # Dépend de: shared/schemas
+```
+**🧠 Fichiers à charger :** `Project.ts`, `Kitchen.ts`, `User.ts`, `shared/schemas/*`
+
+### **Jour 11 : Contrôleurs API**
+```bash
+# 11. API Controllers
+├── apps/api/src/controllers/users.controller.ts    # Dépend de: users.service.ts
+├── apps/api/src/controllers/projects.controller.ts # Dépend de: projects.service.ts
+├── apps/api/src/controllers/kitchens.controller.ts # Dépend de: kitchens.service.ts
+└── apps/api/src/routes/users.routes.ts             # Dépend de: users.controller.ts
+```
+**🧠 Fichiers à charger :** Services correspondants, `middleware/auth.middleware.ts`
+
+### **Jour 12 : Routes & Catalogue**
+```bash
+# 12. API Routes & Catalog
+├── apps/api/src/routes/projects.routes.ts          # Dépend de: projects.controller.ts
+├── apps/api/src/routes/kitchens.routes.ts          # Dépend de: kitchens.controller.ts
+├── apps/api/src/database/migrations/004-catalog.ts # Dépend de: shared/types/catalog.ts
+├── apps/api/src/models/Product.ts                  # Dépend de: shared/types/catalog.ts
+├── apps/api/src/models/Category.ts                 # Dépend de: Product.ts
+└── apps/api/src/services/catalog.service.ts        # Dépend de: Product.ts, Category.ts
+```
+**🧠 Fichiers à charger :** `shared/types/catalog.ts`, modèles précédents
+
+---
+
+## 📅 **SEMAINE 4 : Frontend Foundation**
+
+### **Jour 13 : Setup Frontend**
+```bash
+# 13. Frontend Setup
+├── apps/web-app/package.json                       # Dépend de: shared/package.json
+├── apps/web-app/next.config.js                     # Indépendant
+├── apps/web-app/tailwind.config.js                 # Indépendant
+├── apps/web-app/src/lib/constants.ts               # Dépend de: shared/utils/constants.ts
+└── apps/web-app/src/lib/utils.ts                   # Dépend de: shared/utils/helpers.ts
+```
+**🧠 Fichiers à charger :** `shared/utils/*`
+
+### **Jour 14 : Composants UI de Base**
+```bash
+# 14. UI Components Foundation
+├── packages/ui-components/src/themes/default.ts    # Indépendant
+├── packages/ui-components/src/components/Button/   # 🔥 COMPOSANT DE BASE
+├── packages/ui-components/src/components/Input/    # Dépend de: Button (patterns)
+├── packages/ui-components/src/components/Card/     # Dépend de: Button
+└── packages/ui-components/src/components/Modal/    # Dépend de: Button, Card
+```
+**🧠 Fichiers à charger :** `themes/default.ts`
+
+### **Jour 15 : Auth Frontend**
+```bash
+# 15. Frontend Auth
+├── apps/web-app/src/lib/auth.ts                    # Dépend de: shared/types/auth.ts
+├── apps/web-app/src/lib/api.ts                     # 🔥 CLIENT API CENTRAL
+├── apps/web-app/src/hooks/useAuth.ts               # Dépend de: lib/auth.ts, lib/api.ts
+├── apps/web-app/src/stores/auth-store.ts           # Dépend de: shared/types/auth.ts
+└── apps/web-app/src/components/forms/AuthForm.tsx  # Dépend de: useAuth, ui-components
+```
+**🧠 Fichiers à charger :** `shared/types/auth.ts`, `api/routes/auth.routes.ts`
+
+### **Jour 16 : Pages Auth & Layout**
+```bash
+# 16. Auth Pages & Layout
+├── apps/web-app/src/components/layout/Header.tsx   # Dépend de: useAuth, ui-components
+├── apps/web-app/src/components/layout/Sidebar.tsx  # Dépend de: useAuth
+├── apps/web-app/src/app/layout.tsx                 # 🔥 LAYOUT PRINCIPAL
+├── apps/web-app/src/app/(auth)/login/page.tsx      # Dépend de: AuthForm
+└── apps/web-app/src/app/(auth)/register/page.tsx   # Dépend de: AuthForm
+```
+**🧠 Fichiers à charger :** `useAuth.ts`, `AuthForm.tsx`, `ui-components/*`
+
+---
+
+## 📅 **SEMAINE 5 : Core Features Frontend**
+
+### **Jour 17 : Projets Frontend**
+```bash
+# 17. Projects Frontend
+├── apps/web-app/src/hooks/useProjects.ts           # Dépend de: lib/api.ts, shared/types/project.ts
+├── apps/web-app/src/stores/project-store.ts        # Dépend de: shared/types/project.ts
+├── apps/web-app/src/components/forms/ProjectForm.tsx # Dépend de: useProjects, ui-components
+└── apps/web-app/src/app/(dashboard)/projects/page.tsx # Dépend de: useProjects, ProjectForm
+```
+**🧠 Fichiers à charger :** `shared/types/project.ts`, `api/services/projects.service.ts`, `lib/api.ts`
+
+### **Jour 18 : Dashboard & Projets**
+```bash
+# 18. Dashboard & Project Details
+├── apps/web-app/src/app/(dashboard)/layout.tsx     # Dépend de: layout/Header, layout/Sidebar
+├── apps/web-app/src/app/(dashboard)/dashboard/page.tsx # Dépend de: useAuth, useProjects
+├── apps/web-app/src/app/(dashboard)/projects/[id]/page.tsx # Dépend de: useProjects
+└── apps/web-app/src/app/(dashboard)/projects/new/page.tsx  # Dépend de: ProjectForm
+```
+**🧠 Fichiers à charger :** `useAuth.ts`, `useProjects.ts`, `ProjectForm.tsx`
+
+### **Jour 19 : Kitchen Designer Foundation**
+```bash
+# 19. Kitchen Designer Base
+├── apps/web-app/src/hooks/useKitchenDesign.ts      # Dépend de: shared/types/kitchen.ts, lib/api.ts
+├── apps/web-app/src/stores/design-store.ts         # 🔥 STORE LE PLUS COMPLEXE
+├── apps/web-app/src/components/kitchen/Canvas2D.tsx # Dépend de: design-store, useKitchenDesign
+└── apps/web-app/src/app/(design)/layout.tsx        # Layout spécialisé design
+```
+**🧠 Fichiers à charger :** `shared/types/kitchen.ts`, `api/services/kitchens.service.ts`
+
+### **Jour 20 : Kitchen Designer Components**
+```bash
+# 20. Designer Components
+├── apps/web-app/src/components/kitchen/ComponentPalette.tsx # Dépend de: design-store
+├── apps/web-app/src/components/kitchen/PropertyPanel.tsx   # Dépend de: design-store
+├── apps/web-app/src/components/kitchen/KitchenDesigner.tsx # 🔥 COMPOSANT PRINCIPAL
+└── apps/web-app/src/app/(design)/designer/[projectId]/page.tsx # Orchestre tout
+```
+**🧠 Fichiers à charger :** `design-store.ts`, `useKitchenDesign.ts`, `Canvas2D.tsx`
+
+---
+
+## 📅 **SEMAINE 6 : Catalogue & 3D**
+
+### **Jour 21 : Catalogue Backend Final**
+```bash
+# 21. Catalog Backend Complete
+├── apps/api/src/controllers/catalog.controller.ts  # Dépend de: catalog.service.ts
+├── apps/api/src/routes/catalog.routes.ts           # Dépend de: catalog.controller.ts
+├── apps/api/src/utils/email.ts                     # Utilitaire email
+└── apps/api/src/services/email.service.ts          # Service email
+```
+**🧠 Fichiers à charger :** `catalog.service.ts`, `Product.ts`, `Category.ts`
+
+### **Jour 22 : Catalogue Frontend**
+```bash
+# 22. Catalog Frontend
+├── apps/web-app/src/hooks/useCatalog.ts            # Dépend de: shared/types/catalog.ts, lib/api.ts
+├── apps/web-app/src/components/catalog/ProductGrid.tsx # Dépend de: useCatalog
+├── apps/web-app/src/components/catalog/ProductCard.tsx # Dépend de: ui-components
+├── apps/web-app/src/components/catalog/SearchBar.tsx   # Dépend de: useCatalog
+└── apps/web-app/src/components/catalog/FilterPanel.tsx # Dépend de: useCatalog
+```
+**🧠 Fichiers à charger :** `shared/types/catalog.ts`, `useCatalog.ts`
+
+### **Jour 23 : Pages Catalogue**
+```bash
+# 23. Catalog Pages
+├── apps/web-app/src/app/(design)/catalog/page.tsx     # Dépend de: catalog components
+├── apps/web-app/src/app/(design)/catalog/[category]/page.tsx # Dépend de: catalog components
+└── apps/web-app/src/lib/validation.ts                 # Validation frontend
+```
+**🧠 Fichiers à charger :** Tous les `components/catalog/*`
+
+### **Jour 24 : Canvas 3D**
+```bash
+# 24. 3D Rendering
+├── apps/web-app/src/components/kitchen/Canvas3D.tsx   # 🔥 COMPOSANT 3D COMPLEXE
+└── apps/web-app/src/app/api/auth/login/route.ts       # API route frontend
+```
+**🧠 Fichiers à charger :** `Canvas2D.tsx`, `design-store.ts`, `shared/types/kitchen.ts`
+
+---
+
+## 📅 **SEMAINE 7 : Catalogue Sync & Mobile**
+
+### **Jour 25 : Catalog Sync Service**
+```bash
+# 25. Catalog Synchronization
+├── packages/catalog-sync/src/providers/BaseProvider.ts    # 🔥 PROVIDER DE BASE
+├── packages/catalog-sync/src/providers/IkeaProvider.ts    # Dépend de: BaseProvider
+├── packages/catalog-sync/src/services/SyncService.ts      # Dépend de: providers, shared/types/catalog
+└── packages/catalog-sync/src/services/TransformService.ts # Dépend de: shared/types/catalog
+```
+**🧠 Fichiers à charger :** `shared/types/catalog.ts`, `api/models/Product.ts`
+
+### **Jour 26 : Plus de Providers**
+```bash
+# 26. More Catalog Providers
+├── packages/catalog-sync/src/providers/LeroyMerlinProvider.ts # Dépend de: BaseProvider
+├── packages/catalog-sync/src/providers/SchmidtProvider.ts     # Dépend de: BaseProvider
+├── packages/catalog-sync/src/services/ValidationService.ts   # Dépend de: shared/schemas/catalog
+└── packages/catalog-sync/src/index.ts                        # Point d'entrée principal
+```
+**🧠 Fichiers à charger :** `BaseProvider.ts`, `shared/schemas/catalog.schema.ts`
+
+### **Jour 27 : Mobile App Setup**
+```bash
+# 27. Mobile Application Base
+├── apps/mobile/package.json                           # Dépend de: shared/package.json
+├── apps/mobile/src/App.tsx                            # App mobile principale
+├── apps/mobile/src/services/api.ts                    # Client API mobile
+└── apps/mobile/src/services/auth.ts                   # Service auth mobile
+```
+**🧠 Fichiers à charger :** `shared/types/auth.ts`, `apps/web-app/src/lib/api.ts` (référence)
+
+### **Jour 28 : Mobile Components**
+```bash
+# 28. Mobile Components
+├── apps/mobile/src/components/ui/Button.tsx           # Composant mobile
+├── apps/mobile/src/components/ui/Input.tsx            # Input mobile
+├── apps/mobile/src/screens/AuthScreen.tsx             # Écran auth mobile
+└── apps/mobile/src/screens/HomeScreen.tsx             # Écran accueil mobile
+```
+**🧠 Fichiers à charger :** `apps/web-app/src/components/forms/AuthForm.tsx` (référence)
+
+---
+
+## 📅 **SEMAINE 8 : Tests & Infrastructure**
+
+### **Jour 29 : Tests Foundation**
+```bash
+# 29. Testing Setup
+├── tests/setup/jest.config.js                         # Configuration Jest
+├── tests/setup/playwright.config.js                   # Configuration E2E
+├── tests/setup/test-utils.ts                          # Utilitaires tests
+└── tests/fixtures/users.json                          # Données test
+```
+**🧠 Fichiers à charger :** `shared/types/*` (pour fixtures)
+
+### **Jour 30 : Tests API**
+```bash
+# 30. API Tests
+├── tests/integration/api.test.ts                      # Tests intégration API
+├── tests/integration/database.test.ts                 # Tests base données
+└── tests/fixtures/projects.json                       # Données test projets
+```
+**🧠 Fichiers à charger :** `api/routes/*.routes.ts`, `api/services/*.service.ts`
+
+### **Jour 31 : Tests E2E**
+```bash
+# 31. E2E Tests
+├── tests/e2e/auth.spec.ts                            # Tests E2E auth
+├── tests/e2e/kitchen-design.spec.ts                  # Tests E2E design
+└── tests/fixtures/kitchens.json                      # Données test cuisines
+```
+**🧠 Fichiers à charger :** Pages principales, composants UI
+
+### **Jour 32 : Infrastructure**
+```bash
+# 32. Infrastructure & Deploy
+├── infrastructure/docker/docker-compose.yml          # Composition Docker
+├── infrastructure/terraform/main.tf                  # Infrastructure principale
+├── scripts/dev/setup.sh                              # Script setup dev
+└── docs/README.md                                     # Documentation
+```
+**🧠 Fichiers à charger :** `apps/*/package.json` (pour Docker)
+
+---
+
+## 🧠 **RÈGLES DE GESTION MÉMOIRE**
+
+### **Fichiers Toujours en Mémoire** (Références constantes)
+```typescript
+// Ces fichiers doivent TOUJOURS être chargés
+├── packages/shared/src/types/auth.ts          // ⭐ RÉFÉRENCE ABSOLUE
+├── packages/shared/src/types/kitchen.ts       // ⭐ CŒUR MÉTIER
+├── packages/shared/src/types/project.ts       // ⭐ BUSINESS LOGIC
+├── apps/api/src/models/User.ts               // ⭐ MODÈLE FONDAMENTAL
+└── apps/web-app/src/lib/api.ts               // ⭐ CLIENT API CENTRAL
+```
+
+### **Chargement Contextuel par Phase**
+
+#### Phase Backend (Jours 5-12)
+```bash
+🧠 Charger en mémoire :
+├── shared/types/* (tous)
+├── shared/schemas/* (tous)
+├── config/*.ts (actuels)
+└── models/*.ts (développés)
+```
+
+#### Phase Frontend (Jours 13-24)
+```bash
+🧠 Charger en mémoire :
+├── shared/types/* (tous)
+├── api/routes/*.routes.ts (pour comprendre les APIs)
+├── lib/*.ts (développés)
+├── hooks/*.ts (développés)
+└── stores/*.ts (développés)
+```
+
+#### Phase Features (Jours 25-32)
+```bash
+🧠 Charger en mémoire :
+├── Tous les types et schémas
+├── Services principaux (auth, projects, kitchens, catalog)
+├── Composants UI principaux
+└── Configuration infrastructure
+```
+
+### **Points de Synchronisation Critique** 🚨
+
+#### Point 1 : Types & Schémas (Jour 4)
+```typescript
+// VÉRIFIER COHÉRENCE ABSOLUE entre :
+├── shared/types/*.ts
+├── shared/schemas/*.ts
+└── api/models/*.ts
+```
+
+#### Point 2 : API Contracts (Jour 12)
+```typescript
+// VÉRIFIER COHÉRENCE entre :
+├── api/routes/*.ts
+├── api/controllers/*.ts
+├── api/services/*.ts
+└── shared/types/api.ts
+```
+
+#### Point 3 : Frontend/Backend Integration (Jour 20)
+```typescript
+// VÉRIFIER COHÉRENCE entre :
+├── web-app/src/lib/api.ts
+├── web-app/src/hooks/*.ts
+├── api/routes/*.ts
+└── shared/types/*.ts
+```
+
+### **Commandes de Vérification**
+```bash
+# À exécuter à chaque point de synchronisation
+npm run type-check          # Vérification TypeScript
+npm run lint               # Vérification cohérence code
+npm run test:integration   # Tests intégration
+npm run build             # Build complet
+```
+
+## 🎯 **Instructions pour le Développement**
+
+### **Avant de coder un fichier :**
+1. **Identifier ses dépendances** dans la chronologie
+2. **Charger les fichiers requis** en mémoire
+3. **Vérifier la cohérence** avec les types/schémas
+4. **Coder le fichier** en respectant les contrats
+5. **Tester immédiatement** la cohérence
+
+### **Prêt à commencer ?**
+Dites-moi quel fichier vous voulez que je code en premier, et je vous indiquerai exactement quels fichiers charger en mémoire pour assurer une cohérence parfaite ! 🚀

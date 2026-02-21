@@ -1,0 +1,364 @@
+# Elasticsearch Configuration for KitchenXpert Logs
+#
+# This configuration file sets up Elasticsearch for centralized logging.
+# Documentation: https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html
+
+# ============================================
+# Cluster Configuration
+# ============================================
+
+# Cluster name (all nodes must have the same cluster name)
+cluster.name: kitchenxpert-logs
+
+# Node name (unique identifier for this node)
+node.name: ${HOSTNAME}
+
+# Node roles (master, data, ingest, ml, remote_cluster_client)
+node.roles: [ master, data, ingest ]
+
+# ============================================
+# Paths
+# ============================================
+
+# Path to directory where to store the data
+path.data: /var/lib/elasticsearch
+
+# Path to log files
+path.logs: /var/log/elasticsearch
+
+# Path to repository for snapshots
+path.repo: ["/var/lib/elasticsearch/snapshots"]
+
+# ============================================
+# Memory
+# ============================================
+
+# Lock memory to prevent swapping
+bootstrap.memory_lock: true
+
+# ============================================
+# Network
+# ============================================
+
+# Network host (0.0.0.0 to bind to all interfaces)
+network.host: 0.0.0.0
+
+# HTTP port
+http.port: 9200
+
+# Transport port (for node-to-node communication)
+transport.port: 9300
+
+# Publish host (address published to other nodes)
+# network.publish_host: elasticsearch.kitchenxpert.local
+
+# HTTP max content length
+http.max_content_length: 100mb
+
+# HTTP compression
+http.compression: true
+
+# CORS settings (if needed for direct browser access)
+http.cors.enabled: false
+http.cors.allow-origin: "*"
+http.cors.allow-headers: "X-Requested-With, Content-Type, Content-Length, Authorization"
+
+# ============================================
+# Discovery & Cluster Formation
+# ============================================
+
+# Initial master nodes for cluster formation
+cluster.initial_master_nodes:
+  - ${HOSTNAME}
+
+# Discovery seed hosts (for cluster discovery)
+discovery.seed_hosts:
+  - 127.0.0.1
+  # - es-node-2.kitchenxpert.local:9300
+  # - es-node-3.kitchenxpert.local:9300
+
+# Discovery type (single-node for development, multi-node for production)
+# discovery.type: single-node
+
+# Minimum master nodes (deprecated in 7.x, using voting configuration)
+# discovery.zen.minimum_master_nodes: 2
+
+# ============================================
+# Gateway & Recovery
+# ============================================
+
+# Number of expected data nodes
+gateway.expected_data_nodes: 1
+
+# Recovery after nodes
+gateway.recover_after_data_nodes: 1
+
+# Recovery after time
+gateway.recover_after_time: 5m
+
+# ============================================
+# Index Settings
+# ============================================
+
+# Default number of shards per index
+# action.auto_create_index: true
+
+# Default index settings
+# These can be overridden per index
+indices.memory.index_buffer_size: 10%
+
+# Number of shards for new indices
+# index.number_of_shards: 1
+
+# Number of replicas for new indices
+# index.number_of_replicas: 1
+
+# Refresh interval
+# index.refresh_interval: 1s
+
+# ============================================
+# Thread Pools
+# ============================================
+
+# Thread pool settings for search operations
+thread_pool.search.size: 30
+thread_pool.search.queue_size: 1000
+
+# Thread pool settings for write operations
+thread_pool.write.size: 30
+thread_pool.write.queue_size: 1000
+
+# Thread pool settings for get operations
+thread_pool.get.size: 30
+thread_pool.get.queue_size: 1000
+
+# ============================================
+# Circuit Breakers
+# ============================================
+
+# Request circuit breaker (percentage of heap)
+indices.breaker.request.limit: 60%
+
+# Field data circuit breaker
+indices.breaker.fielddata.limit: 40%
+
+# Total circuit breaker
+indices.breaker.total.limit: 95%
+
+# ============================================
+# Search & Query
+# ============================================
+
+# Maximum result window (max from + size for searches)
+index.max_result_window: 10000
+
+# Search timeout
+search.default_search_timeout: 30s
+
+# Maximum number of clauses in a boolean query
+indices.query.bool.max_clause_count: 1024
+
+# ============================================
+# Indexing
+# ============================================
+
+# Bulk queue size
+thread_pool.bulk.queue_size: 1000
+
+# Indexing buffer size
+indices.memory.index_buffer_size: 10%
+
+# ============================================
+# Monitoring
+# ============================================
+
+# Enable X-Pack monitoring
+xpack.monitoring.enabled: true
+
+# Monitoring collection interval
+xpack.monitoring.collection.enabled: true
+xpack.monitoring.collection.interval: 10s
+
+# Export monitoring data to the same cluster
+xpack.monitoring.exporters:
+  local:
+    type: local
+    use_ingest: true
+
+# ============================================
+# Security (X-Pack)
+# ============================================
+
+# Enable X-Pack security
+xpack.security.enabled: true
+
+# Security transport settings
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: certs/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: certs/elastic-certificates.p12
+
+# Security HTTP settings (HTTPS)
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: certs/elastic-certificates.p12
+xpack.security.http.ssl.truststore.path: certs/elastic-certificates.p12
+
+# Authentication realms
+xpack.security.authc.realms:
+  native:
+    native1:
+      order: 0
+
+# API key settings
+xpack.security.authc.api_key.enabled: true
+
+# Token service
+xpack.security.authc.token.enabled: true
+
+# ============================================
+# Alerting (X-Pack Watcher)
+# ============================================
+
+# Enable watcher
+xpack.watcher.enabled: true
+
+# Encryption key for watcher
+# xpack.watcher.encryption_key: "your-encryption-key-here"
+
+# ============================================
+# Machine Learning (X-Pack)
+# ============================================
+
+# Enable machine learning
+xpack.ml.enabled: false
+
+# Maximum number of ML jobs
+# xpack.ml.max_machine_memory_percent: 30
+
+# ============================================
+# Graph (X-Pack)
+# ============================================
+
+# Enable graph
+xpack.graph.enabled: false
+
+# ============================================
+# License
+# ============================================
+
+# License type (basic, trial, gold, platinum, enterprise)
+xpack.license.self_generated.type: basic
+
+# ============================================
+# Snapshot & Restore
+# ============================================
+
+# Snapshot settings
+# repositories.url.allowed_urls: ["https://snapshots.kitchenxpert.com/*"]
+
+# ============================================
+# Index Lifecycle Management (ILM)
+# ============================================
+
+# Enable ILM
+xpack.ilm.enabled: true
+
+# ILM poll interval
+indices.lifecycle.poll_interval: 10m
+
+# ============================================
+# SQL
+# ============================================
+
+# Enable SQL
+xpack.sql.enabled: true
+
+# ============================================
+# Rollup
+# ============================================
+
+# Enable rollup jobs
+xpack.rollup.enabled: false
+
+# ============================================
+# CCR (Cross-Cluster Replication)
+# ============================================
+
+# Enable CCR
+xpack.ccr.enabled: false
+
+# ============================================
+# Deprecation Logging
+# ============================================
+
+# Cluster deprecation logs
+cluster.deprecation_indexing.enabled: true
+
+# ============================================
+# Action Destructive Requires Name
+# ============================================
+
+# Require explicit index names for destructive operations
+action.destructive_requires_name: true
+
+# ============================================
+# Slow Log Settings
+# ============================================
+
+# Index slow log
+# index.search.slowlog.threshold.query.warn: 10s
+# index.search.slowlog.threshold.query.info: 5s
+# index.search.slowlog.threshold.query.debug: 2s
+# index.search.slowlog.threshold.query.trace: 500ms
+
+# index.search.slowlog.threshold.fetch.warn: 1s
+# index.search.slowlog.threshold.fetch.info: 800ms
+# index.search.slowlog.threshold.fetch.debug: 500ms
+# index.search.slowlog.threshold.fetch.trace: 200ms
+
+# index.indexing.slowlog.threshold.index.warn: 10s
+# index.indexing.slowlog.threshold.index.info: 5s
+# index.indexing.slowlog.threshold.index.debug: 2s
+# index.indexing.slowlog.threshold.index.trace: 500ms
+
+# ============================================
+# GC Logging
+# ============================================
+
+# Garbage collection logging is configured in jvm.options
+
+# ============================================
+# Custom Settings for KitchenXpert
+# ============================================
+
+# Log retention settings (managed by ILM)
+# Hot tier: 7 days
+# Warm tier: 30 days
+# Cold tier: 90 days
+# Delete: after 365 days
+
+# Index templates will be created via Kibana or API
+# Default mappings for common fields:
+# - @timestamp: date
+# - level: keyword
+# - message: text
+# - service: keyword
+# - environment: keyword
+# - host: keyword
+# - requestId: keyword
+# - userId: keyword
+
+# ============================================
+# Environment Variables
+# ============================================
+#
+# Set these environment variables:
+# - ELASTIC_PASSWORD: Password for the elastic user
+# - ES_JAVA_OPTS: JVM options (e.g., -Xms2g -Xmx2g)
+# - HOSTNAME: Node hostname
+#
+# Example docker-compose environment:
+# environment:
+#   - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+#   - "ELASTIC_PASSWORD=changeme"
+#   - "discovery.type=single-node"

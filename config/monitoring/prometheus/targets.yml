@@ -1,0 +1,190 @@
+# Prometheus Service Discovery Targets for KitchenXpert
+#
+# This file defines static targets for file-based service discovery.
+# Prometheus will automatically reload this file when it changes.
+
+# Backend API instances
+- targets:
+    - 'localhost:3000'
+    - 'api-1.kitchenxpert.local:3000'
+    - 'api-2.kitchenxpert.local:3000'
+  labels:
+    job: 'kitchenxpert-api'
+    service: 'kitchenxpert-api'
+    tier: 'backend'
+    environment: 'production'
+    version: 'v1.0.0'
+    datacenter: 'us-east-1'
+
+# Frontend instances
+- targets:
+    - 'localhost:3001'
+    - 'web-1.kitchenxpert.local:3001'
+    - 'web-2.kitchenxpert.local:3001'
+  labels:
+    job: 'kitchenxpert-frontend'
+    service: 'kitchenxpert-frontend'
+    tier: 'frontend'
+    environment: 'production'
+    version: 'v1.0.0'
+
+# PostgreSQL database instances
+- targets:
+    - 'localhost:9187'
+    - 'db-primary.kitchenxpert.local:9187'
+  labels:
+    job: 'postgresql'
+    service: 'postgresql'
+    tier: 'database'
+    role: 'primary'
+    environment: 'production'
+
+- targets:
+    - 'db-replica-1.kitchenxpert.local:9187'
+    - 'db-replica-2.kitchenxpert.local:9187'
+  labels:
+    job: 'postgresql'
+    service: 'postgresql'
+    tier: 'database'
+    role: 'replica'
+    environment: 'production'
+
+# MongoDB instances
+- targets:
+    - 'localhost:9216'
+    - 'mongo-1.kitchenxpert.local:9216'
+    - 'mongo-2.kitchenxpert.local:9216'
+    - 'mongo-3.kitchenxpert.local:9216'
+  labels:
+    job: 'mongodb'
+    service: 'mongodb'
+    tier: 'database'
+    environment: 'production'
+
+# Redis cache instances
+- targets:
+    - 'localhost:9121'
+    - 'redis-master.kitchenxpert.local:9121'
+  labels:
+    job: 'redis'
+    service: 'redis'
+    tier: 'cache'
+    role: 'master'
+    environment: 'production'
+
+- targets:
+    - 'redis-replica-1.kitchenxpert.local:9121'
+    - 'redis-replica-2.kitchenxpert.local:9121'
+  labels:
+    job: 'redis'
+    service: 'redis'
+    tier: 'cache'
+    role: 'replica'
+    environment: 'production'
+
+# Nginx reverse proxy instances
+- targets:
+    - 'localhost:9113'
+    - 'nginx-1.kitchenxpert.local:9113'
+    - 'nginx-2.kitchenxpert.local:9113'
+  labels:
+    job: 'nginx'
+    service: 'nginx'
+    tier: 'proxy'
+    environment: 'production'
+
+# Elasticsearch cluster
+- targets:
+    - 'localhost:9114'
+    - 'es-node-1.kitchenxpert.local:9114'
+    - 'es-node-2.kitchenxpert.local:9114'
+    - 'es-node-3.kitchenxpert.local:9114'
+  labels:
+    job: 'elasticsearch'
+    service: 'elasticsearch'
+    tier: 'logging'
+    cluster: 'kitchenxpert-logs'
+    environment: 'production'
+
+# Node exporter (system metrics)
+- targets:
+    - 'localhost:9100'
+    - 'api-1.kitchenxpert.local:9100'
+    - 'api-2.kitchenxpert.local:9100'
+    - 'web-1.kitchenxpert.local:9100'
+    - 'web-2.kitchenxpert.local:9100'
+    - 'db-primary.kitchenxpert.local:9100'
+  labels:
+    job: 'node-exporter'
+    service: 'node-exporter'
+    tier: 'infrastructure'
+    environment: 'production'
+
+# cAdvisor (container metrics)
+- targets:
+    - 'localhost:8080'
+    - 'docker-host-1.kitchenxpert.local:8080'
+    - 'docker-host-2.kitchenxpert.local:8080'
+  labels:
+    job: 'cadvisor'
+    service: 'cadvisor'
+    tier: 'infrastructure'
+    environment: 'production'
+
+# Message queue (RabbitMQ) - if used
+- targets:
+    - 'localhost:15692'
+    - 'rabbitmq-1.kitchenxpert.local:15692'
+    - 'rabbitmq-2.kitchenxpert.local:15692'
+  labels:
+    job: 'rabbitmq'
+    service: 'rabbitmq'
+    tier: 'messaging'
+    environment: 'production'
+
+# Microservices (if applicable)
+- targets:
+    - 'recipe-service:3010'
+    - 'user-service:3020'
+    - 'order-service:3030'
+    - 'notification-service:3040'
+  labels:
+    job: 'microservices'
+    tier: 'backend'
+    environment: 'production'
+
+# External services monitoring (via blackbox exporter)
+- targets:
+    - 'https://api.kitchenxpert.com/health'
+    - 'https://kitchenxpert.com'
+    - 'https://admin.kitchenxpert.com'
+  labels:
+    job: 'blackbox-http'
+    service: 'blackbox-exporter'
+    tier: 'monitoring'
+    environment: 'production'
+    probe_type: 'http'
+
+# DNS monitoring
+- targets:
+    - 'api.kitchenxpert.com'
+    - 'kitchenxpert.com'
+    - 'db.kitchenxpert.local'
+  labels:
+    job: 'blackbox-dns'
+    service: 'blackbox-exporter'
+    tier: 'monitoring'
+    environment: 'production'
+    probe_type: 'dns'
+
+# TCP monitoring
+- targets:
+    - 'db-primary.kitchenxpert.local:5432'
+    - 'redis-master.kitchenxpert.local:6379'
+    - 'mongo-1.kitchenxpert.local:27017'
+  labels:
+    job: 'blackbox-tcp'
+    service: 'blackbox-exporter'
+    tier: 'monitoring'
+    environment: 'production'
+    probe_type: 'tcp'

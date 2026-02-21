@@ -1,0 +1,330 @@
+{
+  "sectionId": "user-profile",
+  "version": "1.0.0",
+  "metadata": {
+    "title": {
+      "en": "About You & Your Household",
+      "fr": "Vous et votre foyer"
+    },
+    "description": {
+      "en": "Help us understand your household to create the perfect kitchen",
+      "fr": "Aidez-nous à comprendre votre foyer pour créer la cuisine parfaite"
+    },
+    "icon": "users",
+    "estimatedTime": 3
+  },
+  "questions": [
+    {
+      "id": "household-size",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "How many people live in your household?",
+        "fr": "Combien de personnes vivent dans votre foyer ?"
+      },
+      "options": [
+        {
+          "value": "1",
+          "label": { "en": "Just me", "fr": "Juste moi" },
+          "icon": "user",
+          "score": 1,
+          "tags": ["solo", "compact"]
+        },
+        {
+          "value": "2",
+          "label": { "en": "2 people", "fr": "2 personnes" },
+          "icon": "users",
+          "score": 2,
+          "tags": ["couple", "small"]
+        },
+        {
+          "value": "3-4",
+          "label": { "en": "3-4 people", "fr": "3-4 personnes" },
+          "icon": "users",
+          "score": 3,
+          "tags": ["family", "medium"]
+        },
+        {
+          "value": "5+",
+          "label": { "en": "5 or more", "fr": "5 ou plus" },
+          "icon": "users",
+          "score": 4,
+          "tags": ["large-family", "extended"]
+        }
+      ],
+      "scoring": {
+        "weight": 3,
+        "categories": ["space-needs", "storage-capacity"],
+        "impactAreas": ["space", "functionality"]
+      }
+    },
+    {
+      "id": "household-type",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "Which best describes your household?",
+        "fr": "Qu'est-ce qui décrit le mieux votre foyer ?"
+      },
+      "options": [
+        {
+          "value": "single-professional",
+          "label": { "en": "Single professional", "fr": "Professionnel célibataire" },
+          "description": { "en": "Career-focused, often dining out", "fr": "Axé sur la carrière, mange souvent à l'extérieur" },
+          "score": 1,
+          "tags": ["quick-meals", "low-maintenance"]
+        },
+        {
+          "value": "couple-no-kids",
+          "label": { "en": "Couple without children", "fr": "Couple sans enfants" },
+          "description": { "en": "Enjoying cooking together", "fr": "Aime cuisiner ensemble" },
+          "score": 2,
+          "tags": ["social-cooking", "moderate-use"]
+        },
+        {
+          "value": "family-young-kids",
+          "label": { "en": "Family with young children", "fr": "Famille avec jeunes enfants" },
+          "description": { "en": "Safety and practicality are key", "fr": "Sécurité et praticité sont essentielles" },
+          "score": 3,
+          "tags": ["safety-focus", "durable", "easy-clean"]
+        },
+        {
+          "value": "family-teens",
+          "label": { "en": "Family with teenagers", "fr": "Famille avec adolescents" },
+          "description": { "en": "High traffic, multiple cooks", "fr": "Beaucoup de passage, plusieurs cuisiniers" },
+          "score": 4,
+          "tags": ["high-capacity", "multi-user"]
+        },
+        {
+          "value": "multi-generational",
+          "label": { "en": "Multi-generational household", "fr": "Foyer multigénérationnel" },
+          "description": { "en": "Accessibility and varied needs", "fr": "Accessibilité et besoins variés" },
+          "score": 5,
+          "tags": ["accessible", "universal-design"]
+        },
+        {
+          "value": "retired",
+          "label": { "en": "Retired/Empty nesters", "fr": "Retraités/Nid vide" },
+          "description": { "en": "Comfort and ease of use", "fr": "Confort et facilité d'utilisation" },
+          "score": 2,
+          "tags": ["ergonomic", "quality-focused"]
+        }
+      ],
+      "scoring": {
+        "weight": 4,
+        "categories": ["lifestyle", "safety-needs"],
+        "impactAreas": ["functionality", "maintenance"]
+      }
+    },
+    {
+      "id": "primary-cook",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "Who is the primary cook in your household?",
+        "fr": "Qui est le cuisinier principal de votre foyer ?"
+      },
+      "options": [
+        {
+          "value": "one-person",
+          "label": { "en": "One person does most cooking", "fr": "Une personne fait la plupart de la cuisine" },
+          "score": 1,
+          "tags": ["single-workflow"]
+        },
+        {
+          "value": "shared-equally",
+          "label": { "en": "Cooking is shared equally", "fr": "La cuisine est partagée équitablement" },
+          "score": 2,
+          "tags": ["dual-workflow", "flexible-layout"]
+        },
+        {
+          "value": "everyone-cooks",
+          "label": { "en": "Everyone cooks independently", "fr": "Chacun cuisine indépendamment" },
+          "score": 3,
+          "tags": ["multi-zone", "high-capacity"]
+        },
+        {
+          "value": "rarely-cook",
+          "label": { "en": "We rarely cook at home", "fr": "Nous cuisinons rarement à la maison" },
+          "score": 0,
+          "tags": ["minimal-kitchen", "style-focused"]
+        }
+      ],
+      "scoring": {
+        "weight": 2,
+        "categories": ["workflow", "usage-frequency"],
+        "impactAreas": ["space", "functionality"]
+      }
+    },
+    {
+      "id": "cooking-skill-level",
+      "type": "slider",
+      "required": true,
+      "label": {
+        "en": "Rate your cooking skill level",
+        "fr": "Évaluez votre niveau de compétence culinaire"
+      },
+      "description": {
+        "en": "From beginner to professional chef",
+        "fr": "Du débutant au chef professionnel"
+      },
+      "validation": {
+        "min": 1,
+        "max": 5
+      },
+      "metadata": {
+        "labels": {
+          "1": { "en": "Beginner", "fr": "Débutant" },
+          "2": { "en": "Basic", "fr": "Basique" },
+          "3": { "en": "Intermediate", "fr": "Intermédiaire" },
+          "4": { "en": "Advanced", "fr": "Avancé" },
+          "5": { "en": "Professional", "fr": "Professionnel" }
+        }
+      },
+      "scoring": {
+        "weight": 3,
+        "categories": ["equipment-needs", "layout-complexity"],
+        "impactAreas": ["functionality", "technology"]
+      }
+    },
+    {
+      "id": "special-needs",
+      "type": "multi-choice",
+      "required": false,
+      "label": {
+        "en": "Does anyone in your household have special requirements?",
+        "fr": "Quelqu'un dans votre foyer a-t-il des besoins spéciaux ?"
+      },
+      "description": {
+        "en": "Select all that apply",
+        "fr": "Sélectionnez tout ce qui s'applique"
+      },
+      "options": [
+        {
+          "value": "wheelchair-access",
+          "label": { "en": "Wheelchair accessibility", "fr": "Accessibilité fauteuil roulant" },
+          "icon": "accessibility",
+          "tags": ["ada-compliant", "lowered-counters"]
+        },
+        {
+          "value": "mobility-limited",
+          "label": { "en": "Limited mobility", "fr": "Mobilité réduite" },
+          "icon": "move",
+          "tags": ["easy-reach", "pull-out-shelves"]
+        },
+        {
+          "value": "vision-impaired",
+          "label": { "en": "Vision impairment", "fr": "Déficience visuelle" },
+          "icon": "eye-off",
+          "tags": ["high-contrast", "tactile-controls"]
+        },
+        {
+          "value": "height-considerations",
+          "label": { "en": "Very tall/short users", "fr": "Utilisateurs très grands/petits" },
+          "icon": "ruler",
+          "tags": ["adjustable-height", "multi-level"]
+        },
+        {
+          "value": "child-safety",
+          "label": { "en": "Child safety required", "fr": "Sécurité enfants requise" },
+          "icon": "shield",
+          "tags": ["safety-locks", "rounded-corners"]
+        },
+        {
+          "value": "none",
+          "label": { "en": "No special requirements", "fr": "Pas de besoins spéciaux" },
+          "icon": "check",
+          "tags": []
+        }
+      ],
+      "scoring": {
+        "weight": 5,
+        "categories": ["accessibility", "safety"],
+        "impactAreas": ["space", "functionality", "technology"]
+      }
+    },
+    {
+      "id": "ownership-status",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "Do you own or rent your home?",
+        "fr": "Êtes-vous propriétaire ou locataire ?"
+      },
+      "options": [
+        {
+          "value": "owner",
+          "label": { "en": "Owner", "fr": "Propriétaire" },
+          "description": { "en": "Full freedom for renovations", "fr": "Liberté totale pour les rénovations" },
+          "score": 3,
+          "tags": ["permanent-changes", "full-renovation"]
+        },
+        {
+          "value": "renter-allowed",
+          "label": { "en": "Renter with renovation rights", "fr": "Locataire avec droits de rénovation" },
+          "description": { "en": "Landlord allows modifications", "fr": "Le propriétaire autorise les modifications" },
+          "score": 2,
+          "tags": ["limited-changes", "reversible-preferred"]
+        },
+        {
+          "value": "renter-limited",
+          "label": { "en": "Renter with restrictions", "fr": "Locataire avec restrictions" },
+          "description": { "en": "Limited or no permanent changes", "fr": "Changements permanents limités ou non autorisés" },
+          "score": 1,
+          "tags": ["no-structural", "removable-only"]
+        }
+      ],
+      "scoring": {
+        "weight": 4,
+        "categories": ["renovation-scope", "investment-level"],
+        "impactAreas": ["budget"]
+      }
+    },
+    {
+      "id": "project-timeline",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "When are you planning to start your kitchen project?",
+        "fr": "Quand prévoyez-vous de commencer votre projet de cuisine ?"
+      },
+      "options": [
+        {
+          "value": "immediately",
+          "label": { "en": "As soon as possible", "fr": "Dès que possible" },
+          "icon": "zap",
+          "score": 4
+        },
+        {
+          "value": "1-3-months",
+          "label": { "en": "Within 1-3 months", "fr": "Dans 1 à 3 mois" },
+          "icon": "calendar",
+          "score": 3
+        },
+        {
+          "value": "3-6-months",
+          "label": { "en": "Within 3-6 months", "fr": "Dans 3 à 6 mois" },
+          "icon": "calendar",
+          "score": 2
+        },
+        {
+          "value": "6-12-months",
+          "label": { "en": "Within 6-12 months", "fr": "Dans 6 à 12 mois" },
+          "icon": "calendar",
+          "score": 1
+        },
+        {
+          "value": "just-exploring",
+          "label": { "en": "Just exploring options", "fr": "Je me renseigne simplement" },
+          "icon": "search",
+          "score": 0
+        }
+      ],
+      "scoring": {
+        "weight": 1,
+        "categories": ["urgency", "planning-stage"],
+        "impactAreas": ["budget"]
+      }
+    }
+  ]
+}

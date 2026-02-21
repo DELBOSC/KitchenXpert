@@ -1,0 +1,263 @@
+# Grafana Dashboards Provisioning for KitchenXpert
+#
+# This file automatically provisions dashboards when Grafana starts.
+# Place this file in: /etc/grafana/provisioning/dashboards/
+#
+# Documentation: https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+
+apiVersion: 1
+
+# List of dashboard providers
+providers:
+  # ============================================
+  # General Application Dashboards
+  # ============================================
+  - name: 'KitchenXpert - Application'
+    orgId: 1
+    folder: 'KitchenXpert'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      # Path to dashboard JSON files
+      path: /var/lib/grafana/dashboards/application
+      # Folder UID (optional)
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # Infrastructure Dashboards
+  # ============================================
+  - name: 'KitchenXpert - Infrastructure'
+    orgId: 1
+    folder: 'Infrastructure'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/infrastructure
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # Database Dashboards
+  # ============================================
+  - name: 'KitchenXpert - Databases'
+    orgId: 1
+    folder: 'Databases'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/databases
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # Business Metrics Dashboards
+  # ============================================
+  - name: 'KitchenXpert - Business'
+    orgId: 1
+    folder: 'Business Metrics'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/business
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # Security Dashboards
+  # ============================================
+  - name: 'KitchenXpert - Security'
+    orgId: 1
+    folder: 'Security'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/security
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # API & Services Dashboards
+  # ============================================
+  - name: 'KitchenXpert - APIs'
+    orgId: 1
+    folder: 'APIs & Services'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/apis
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # Logs Dashboards
+  # ============================================
+  - name: 'KitchenXpert - Logs'
+    orgId: 1
+    folder: 'Logs'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/logs
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # Alerting Dashboards
+  # ============================================
+  - name: 'KitchenXpert - Alerts'
+    orgId: 1
+    folder: 'Alerting'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/alerts
+      foldersFromFilesStructure: false
+
+  # ============================================
+  # Pre-built Community Dashboards
+  # ============================================
+  - name: 'Community - Node Exporter'
+    orgId: 1
+    folder: 'Community'
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 3600
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards/community
+      foldersFromFilesStructure: false
+
+# ============================================
+# Dashboard Configuration Notes
+# ============================================
+#
+# Recommended Dashboard Structure:
+#
+# /var/lib/grafana/dashboards/
+# ├── application/
+# │   ├── overview.json              # Overall application health
+# │   ├── api-performance.json       # API metrics and performance
+# │   ├── user-activity.json         # User engagement metrics
+# │   ├── errors-tracking.json       # Error rates and types
+# │   └── feature-usage.json         # Feature adoption metrics
+# │
+# ├── infrastructure/
+# │   ├── nodes-overview.json        # Server/node metrics
+# │   ├── docker-containers.json     # Container metrics
+# │   ├── network.json               # Network traffic
+# │   └── disk-io.json               # Disk I/O performance
+# │
+# ├── databases/
+# │   ├── postgresql-overview.json   # PostgreSQL metrics
+# │   ├── postgresql-queries.json    # Slow queries, query stats
+# │   ├── mongodb-overview.json      # MongoDB metrics
+# │   └── redis-overview.json        # Redis cache metrics
+# │
+# ├── business/
+# │   ├── orders.json                # Order metrics
+# │   ├── users.json                 # User growth and retention
+# │   ├── recipes.json               # Recipe creation and views
+# │   ├── revenue.json               # Revenue and conversions
+# │   └── kpis.json                  # Key performance indicators
+# │
+# ├── security/
+# │   ├── authentication.json        # Login attempts, failures
+# │   ├── authorization.json         # Access control events
+# │   ├── ssl-certificates.json      # Certificate expiration
+# │   └── vulnerabilities.json       # Security scan results
+# │
+# ├── apis/
+# │   ├── endpoints-overview.json    # All API endpoints
+# │   ├── rest-api.json              # REST API metrics
+# │   ├── graphql-api.json           # GraphQL metrics
+# │   └── external-services.json     # Third-party API calls
+# │
+# ├── logs/
+# │   ├── application-logs.json      # Application log analysis
+# │   ├── error-logs.json            # Error log aggregation
+# │   ├── access-logs.json           # HTTP access logs
+# │   └── audit-logs.json            # Security audit logs
+# │
+# ├── alerts/
+# │   ├── active-alerts.json         # Currently firing alerts
+# │   ├── alert-history.json         # Historical alert data
+# │   └── sla-compliance.json        # SLA/SLO tracking
+# │
+# └── community/
+#     ├── node-exporter-full.json    # Dashboard ID: 1860
+#     ├── postgres-exporter.json     # Dashboard ID: 9628
+#     ├── redis-exporter.json        # Dashboard ID: 11835
+#     └── nginx-exporter.json        # Dashboard ID: 12708
+#
+# ============================================
+# Importing Pre-built Dashboards
+# ============================================
+#
+# To import dashboards from Grafana.com:
+#
+# 1. Find dashboard on https://grafana.com/grafana/dashboards/
+# 2. Download JSON file
+# 3. Place in appropriate directory above
+# 4. Restart Grafana or wait for auto-reload
+#
+# Popular Dashboard IDs:
+# - Node Exporter Full: 1860
+# - PostgreSQL Database: 9628
+# - Redis Dashboard: 11835
+# - NGINX Ingress Controller: 9614
+# - Docker Monitoring: 893
+# - Kubernetes Cluster Monitoring: 7249
+# - Elasticsearch: 266
+#
+# Example wget command:
+# wget https://grafana.com/api/dashboards/1860/revisions/latest/download \
+#   -O /var/lib/grafana/dashboards/community/node-exporter-full.json
+#
+# ============================================
+# Dashboard Variables
+# ============================================
+#
+# Common variables to use in dashboards:
+# - $datasource: Prometheus data source
+# - $environment: Environment (prod, staging, dev)
+# - $service: Service name
+# - $instance: Instance/host name
+# - $interval: Time interval for rate calculations
+# - $__rate_interval: Auto-calculated rate interval
+#
+# ============================================
+# Dashboard Best Practices
+# ============================================
+#
+# 1. Use consistent naming conventions
+# 2. Group related panels together
+# 3. Use template variables for filtering
+# 4. Set appropriate refresh intervals
+# 5. Add descriptions to panels
+# 6. Use alert annotations
+# 7. Include links to runbooks
+# 8. Set appropriate Y-axis units
+# 9. Use consistent color schemes
+# 10. Add time range controls
+#
+# ============================================
+# Auto-refresh Configuration
+# ============================================
+#
+# Recommended refresh intervals:
+# - Overview dashboards: 30s-1m
+# - Detailed dashboards: 1m-5m
+# - Business dashboards: 5m-15m
+# - Historical dashboards: Off (manual refresh)
+#
+# ============================================

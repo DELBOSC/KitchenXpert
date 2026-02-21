@@ -1,0 +1,427 @@
+# KitchenXpert MVP - Architecture Simplifiée
+## Contrainte : Modules cohérents de 200-500 lignes | Focus Fonctionnel
+
+```
+KitchenXpert-MVP/
+│
+├── .github/
+│   ├── workflows/
+│   │   ├── ci-frontend.yml                    # CI frontend (150 lignes)
+│   │   ├── ci-backend.yml                     # CI backend (150 lignes)
+│   │   ├── deploy-staging.yml                 # Déploiement staging (120 lignes)
+│   │   └── deploy-production.yml              # Déploiement production (120 lignes)
+│   └── ISSUE_TEMPLATE/
+│       ├── bug-report.md                      # Template bug (80 lignes)
+│       └── feature-request.md                 # Template feature (80 lignes)
+│
+├── apps/
+│   ├── web-app/                               # Frontend Principal Next.js
+│   │   ├── package.json                       # Dependencies (40 lignes)
+│   │   ├── next.config.js                     # Next.js config (100 lignes)
+│   │   ├── tailwind.config.js                 # Tailwind config (80 lignes)
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── layout.tsx                 # Layout racine (200 lignes)
+│   │   │   │   ├── page.tsx                   # Page accueil (200 lignes)
+│   │   │   │   ├── globals.css                # Styles globaux (150 lignes)
+│   │   │   │   ├── (auth)/
+│   │   │   │   │   ├── login/page.tsx         # Page login (200 lignes)
+│   │   │   │   │   └── register/page.tsx      # Page inscription (200 lignes)
+│   │   │   │   ├── (dashboard)/
+│   │   │   │   │   ├── layout.tsx             # Layout dashboard (150 lignes)
+│   │   │   │   │   ├── dashboard/page.tsx     # Dashboard principal (250 lignes)
+│   │   │   │   │   └── projects/
+│   │   │   │   │       ├── page.tsx           # Liste projets (200 lignes)
+│   │   │   │   │       ├── [id]/page.tsx      # Projet détail (250 lignes)
+│   │   │   │   │       └── new/page.tsx       # Nouveau projet (200 lignes)
+│   │   │   │   ├── (design)/
+│   │   │   │   │   ├── layout.tsx             # Layout designer (150 lignes)
+│   │   │   │   │   ├── designer/
+│   │   │   │   │   │   └── [projectId]/page.tsx # Designer principal (400 lignes)
+│   │   │   │   │   └── catalog/
+│   │   │   │   │       ├── page.tsx           # Catalogue produits (300 lignes)
+│   │   │   │   │       └── [category]/page.tsx # Catégorie produits (250 lignes)
+│   │   │   │   └── api/
+│   │   │   │       ├── auth/
+│   │   │   │       │   ├── login/route.ts     # API login (150 lignes)
+│   │   │   │       │   └── register/route.ts  # API register (150 lignes)
+│   │   │   │       ├── projects/
+│   │   │   │       │   ├── route.ts           # CRUD projets (200 lignes)
+│   │   │   │       │   └── [id]/route.ts      # Projet spécifique (150 lignes)
+│   │   │   │       └── catalog/
+│   │   │   │           └── route.ts           # API catalogue (200 lignes)
+│   │   │   ├── components/
+│   │   │   │   ├── ui/                        # Composants UI de base
+│   │   │   │   │   ├── Button.tsx             # Bouton (150 lignes)
+│   │   │   │   │   ├── Input.tsx              # Input (150 lignes)
+│   │   │   │   │   ├── Card.tsx               # Carte (120 lignes)
+│   │   │   │   │   ├── Modal.tsx              # Modal (200 lignes)
+│   │   │   │   │   ├── Loading.tsx            # Chargement (100 lignes)
+│   │   │   │   │   └── index.ts               # Exports (50 lignes)
+│   │   │   │   ├── forms/
+│   │   │   │   │   ├── AuthForm.tsx           # Formulaires auth (300 lignes)
+│   │   │   │   │   ├── ProjectForm.tsx        # Formulaire projet (350 lignes)
+│   │   │   │   │   └── index.ts               # Exports (30 lignes)
+│   │   │   │   ├── kitchen/
+│   │   │   │   │   ├── KitchenDesigner.tsx    # Designer principal (500 lignes)
+│   │   │   │   │   ├── ComponentPalette.tsx   # Palette composants (400 lignes)
+│   │   │   │   │   ├── PropertyPanel.tsx      # Panneau propriétés (350 lignes)
+│   │   │   │   │   ├── Canvas2D.tsx           # Canvas 2D (400 lignes)
+│   │   │   │   │   ├── Canvas3D.tsx           # Canvas 3D (300 lignes)
+│   │   │   │   │   └── index.ts               # Exports (50 lignes)
+│   │   │   │   ├── catalog/
+│   │   │   │   │   ├── ProductGrid.tsx        # Grille produits (300 lignes)
+│   │   │   │   │   ├── ProductCard.tsx        # Carte produit (200 lignes)
+│   │   │   │   │   ├── SearchBar.tsx          # Barre recherche (200 lignes)
+│   │   │   │   │   ├── FilterPanel.tsx        # Panneau filtres (250 lignes)
+│   │   │   │   │   └── index.ts               # Exports (50 lignes)
+│   │   │   │   └── layout/
+│   │   │   │       ├── Header.tsx             # En-tête (200 lignes)
+│   │   │   │       ├── Sidebar.tsx            # Barre latérale (250 lignes)
+│   │   │   │       ├── Footer.tsx             # Pied de page (150 lignes)
+│   │   │   │       └── index.ts               # Exports (40 lignes)
+│   │   │   ├── lib/
+│   │   │   │   ├── auth.ts                    # Utilitaires auth (200 lignes)
+│   │   │   │   ├── api.ts                     # Client API (250 lignes)
+│   │   │   │   ├── utils.ts                   # Utilitaires généraux (200 lignes)
+│   │   │   │   ├── validation.ts              # Schémas validation (300 lignes)
+│   │   │   │   └── constants.ts               # Constantes (150 lignes)
+│   │   │   ├── hooks/
+│   │   │   │   ├── useAuth.ts                 # Hook authentification (200 lignes)
+│   │   │   │   ├── useProjects.ts             # Hook projets (200 lignes)
+│   │   │   │   ├── useCatalog.ts              # Hook catalogue (200 lignes)
+│   │   │   │   ├── useKitchenDesign.ts        # Hook conception (300 lignes)
+│   │   │   │   └── index.ts                   # Exports (50 lignes)
+│   │   │   ├── stores/
+│   │   │   │   ├── auth-store.ts              # Store Zustand auth (200 lignes)
+│   │   │   │   ├── project-store.ts           # Store projets (300 lignes)
+│   │   │   │   ├── design-store.ts            # Store conception (400 lignes)
+│   │   │   │   └── index.ts                   # Exports (40 lignes)
+│   │   │   └── types/
+│   │   │       ├── auth.ts                    # Types authentification (100 lignes)
+│   │   │       ├── project.ts                 # Types projet (200 lignes)
+│   │   │       ├── kitchen.ts                 # Types cuisine (300 lignes)
+│   │   │       ├── catalog.ts                 # Types catalogue (200 lignes)
+│   │   │       └── index.ts                   # Exports (50 lignes)
+│   │   └── public/
+│   │       ├── images/                        # Images statiques
+│   │       ├── 3d-models/                     # Modèles 3D de base
+│   │       └── icons/                         # Icônes SVG
+│   │
+│   ├── api/                                   # Backend API Node.js
+│   │   ├── package.json                       # Dependencies (40 lignes)
+│   │   ├── src/
+│   │   │   ├── app.ts                         # Application Express (200 lignes)
+│   │   │   ├── server.ts                      # Serveur principal (150 lignes)
+│   │   │   ├── config/
+│   │   │   │   ├── database.ts                # Config base données (150 lignes)
+│   │   │   │   ├── auth.ts                    # Config authentification (100 lignes)
+│   │   │   │   └── env.ts                     # Variables environnement (100 lignes)
+│   │   │   ├── controllers/
+│   │   │   │   ├── auth.controller.ts         # Contrôleur auth (300 lignes)
+│   │   │   │   ├── users.controller.ts        # Contrôleur utilisateurs (250 lignes)
+│   │   │   │   ├── projects.controller.ts     # Contrôleur projets (400 lignes)
+│   │   │   │   ├── kitchens.controller.ts     # Contrôleur cuisines (350 lignes)
+│   │   │   │   └── catalog.controller.ts      # Contrôleur catalogue (300 lignes)
+│   │   │   ├── services/
+│   │   │   │   ├── auth.service.ts            # Service authentification (300 lignes)
+│   │   │   │   ├── users.service.ts           # Service utilisateurs (200 lignes)
+│   │   │   │   ├── projects.service.ts        # Service projets (400 lignes)
+│   │   │   │   ├── kitchens.service.ts        # Service cuisines (500 lignes)
+│   │   │   │   ├── catalog.service.ts         # Service catalogue (350 lignes)
+│   │   │   │   └── email.service.ts           # Service email (200 lignes)
+│   │   │   ├── models/
+│   │   │   │   ├── User.ts                    # Modèle utilisateur (200 lignes)
+│   │   │   │   ├── Project.ts                 # Modèle projet (250 lignes)
+│   │   │   │   ├── Kitchen.ts                 # Modèle cuisine (400 lignes)
+│   │   │   │   ├── Product.ts                 # Modèle produit (300 lignes)
+│   │   │   │   └── Category.ts                # Modèle catégorie (150 lignes)
+│   │   │   ├── middleware/
+│   │   │   │   ├── auth.middleware.ts         # Middleware auth (150 lignes)
+│   │   │   │   ├── validation.middleware.ts   # Middleware validation (200 lignes)
+│   │   │   │   ├── error.middleware.ts        # Middleware erreurs (150 lignes)
+│   │   │   │   └── logging.middleware.ts      # Middleware logging (100 lignes)
+│   │   │   ├── routes/
+│   │   │   │   ├── auth.routes.ts             # Routes authentification (200 lignes)
+│   │   │   │   ├── users.routes.ts            # Routes utilisateurs (150 lignes)
+│   │   │   │   ├── projects.routes.ts         # Routes projets (200 lignes)
+│   │   │   │   ├── kitchens.routes.ts         # Routes cuisines (200 lignes)
+│   │   │   │   └── catalog.routes.ts          # Routes catalogue (150 lignes)
+│   │   │   ├── utils/
+│   │   │   │   ├── validation.ts              # Utilitaires validation (300 lignes)
+│   │   │   │   ├── encryption.ts              # Utilitaires chiffrement (200 lignes)
+│   │   │   │   ├── email.ts                   # Utilitaires email (150 lignes)
+│   │   │   │   └── logger.ts                  # Logger (150 lignes)
+│   │   │   └── database/
+│   │   │       ├── connection.ts              # Connexion base données (150 lignes)
+│   │   │       ├── migrations/
+│   │   │       │   ├── 001-users.ts           # Migration utilisateurs (200 lignes)
+│   │   │       │   ├── 002-projects.ts        # Migration projets (250 lignes)
+│   │   │       │   ├── 003-kitchens.ts        # Migration cuisines (300 lignes)
+│   │   │       │   └── 004-catalog.ts         # Migration catalogue (200 lignes)
+│   │   │       └── seeds/
+│   │   │           ├── categories.ts          # Seeds catégories (200 lignes)
+│   │   │           ├── products.ts            # Seeds produits (300 lignes)
+│   │   │           └── demo-data.ts           # Données de démonstration (400 lignes)
+│   │   └── Dockerfile                         # Container backend (80 lignes)
+│   │
+│   └── mobile/                                # Application Mobile React Native
+│       ├── package.json                       # Dependencies (40 lignes)
+│       ├── src/
+│       │   ├── App.tsx                        # App principale (200 lignes)
+│       │   ├── components/
+│       │   │   ├── ui/
+│       │   │   │   ├── Button.tsx             # Bouton mobile (150 lignes)
+│       │   │   │   ├── Input.tsx              # Input mobile (150 lignes)
+│       │   │   │   └── Card.tsx               # Carte mobile (120 lignes)
+│       │   │   └── kitchen/
+│       │   │       ├── KitchenViewer.tsx      # Visualiseur cuisine (300 lignes)
+│       │   │       └── ComponentPicker.tsx    # Sélecteur composants (250 lignes)
+│       │   ├── screens/
+│       │   │   ├── AuthScreen.tsx             # Écran authentification (250 lignes)
+│       │   │   ├── HomeScreen.tsx             # Écran accueil (200 lignes)
+│       │   │   ├── ProjectsScreen.tsx         # Écran projets (300 lignes)
+│       │   │   └── DesignScreen.tsx           # Écran conception (400 lignes)
+│       │   ├── navigation/
+│       │   │   └── AppNavigator.tsx           # Navigation principale (200 lignes)
+│       │   ├── services/
+│       │   │   ├── api.ts                     # Service API (250 lignes)
+│       │   │   └── auth.ts                    # Service auth (200 lignes)
+│       │   └── hooks/
+│       │       ├── useAuth.ts                 # Hook auth mobile (150 lignes)
+│       │       └── useApi.ts                  # Hook API mobile (150 lignes)
+│       ├── android/                           # Configuration Android
+│       └── ios/                               # Configuration iOS
+│
+├── packages/
+│   ├── shared/                                # Types & Utilitaires Partagés
+│   │   ├── package.json                       # Dependencies (30 lignes)
+│   │   ├── src/
+│   │   │   ├── types/
+│   │   │   │   ├── auth.ts                    # Types auth partagés (150 lignes)
+│   │   │   │   ├── project.ts                 # Types projet partagés (200 lignes)
+│   │   │   │   ├── kitchen.ts                 # Types cuisine partagés (300 lignes)
+│   │   │   │   ├── catalog.ts                 # Types catalogue partagés (200 lignes)
+│   │   │   │   └── api.ts                     # Types API partagés (200 lignes)
+│   │   │   ├── utils/
+│   │   │   │   ├── validation.ts              # Validation partagée (300 lignes)
+│   │   │   │   ├── formatting.ts              # Formatage partagé (200 lignes)
+│   │   │   │   ├── constants.ts               # Constantes partagées (150 lignes)
+│   │   │   │   └── helpers.ts                 # Assistants partagés (250 lignes)
+│   │   │   └── schemas/
+│   │   │       ├── auth.schema.ts             # Schémas auth (150 lignes)
+│   │   │       ├── project.schema.ts          # Schémas projet (200 lignes)
+│   │   │       ├── kitchen.schema.ts          # Schémas cuisine (300 lignes)
+│   │   │       └── catalog.schema.ts          # Schémas catalogue (200 lignes)
+│   │   └── tests/
+│   │       ├── types.test.ts                  # Tests types (150 lignes)
+│   │       ├── utils.test.ts                  # Tests utilitaires (200 lignes)
+│   │       └── schemas.test.ts                # Tests schémas (150 lignes)
+│   │
+│   ├── ui-components/                         # Bibliothèque Composants
+│   │   ├── package.json                       # Dependencies (30 lignes)
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── Button/
+│   │   │   │   │   ├── Button.tsx             # Composant bouton (200 lignes)
+│   │   │   │   │   ├── Button.stories.tsx     # Stories Storybook (150 lignes)
+│   │   │   │   │   └── Button.test.tsx        # Tests bouton (100 lignes)
+│   │   │   │   ├── Input/
+│   │   │   │   │   ├── Input.tsx              # Composant input (200 lignes)
+│   │   │   │   │   ├── Input.stories.tsx      # Stories input (150 lignes)
+│   │   │   │   │   └── Input.test.tsx         # Tests input (100 lignes)
+│   │   │   │   ├── Card/
+│   │   │   │   │   ├── Card.tsx               # Composant carte (150 lignes)
+│   │   │   │   │   ├── Card.stories.tsx       # Stories carte (120 lignes)
+│   │   │   │   │   └── Card.test.tsx          # Tests carte (100 lignes)
+│   │   │   │   └── Modal/
+│   │   │   │       ├── Modal.tsx              # Composant modal (250 lignes)
+│   │   │   │       ├── Modal.stories.tsx      # Stories modal (150 lignes)
+│   │   │   │       └── Modal.test.tsx         # Tests modal (150 lignes)
+│   │   │   ├── themes/
+│   │   │   │   ├── default.ts                 # Thème par défaut (200 lignes)
+│   │   │   │   ├── dark.ts                    # Thème sombre (150 lignes)
+│   │   │   │   └── index.ts                   # Exports thèmes (30 lignes)
+│   │   │   └── utils/
+│   │   │       ├── theme.ts                   # Utilitaires thème (150 lignes)
+│   │   │       └── styles.ts                  # Utilitaires styles (200 lignes)
+│   │   └── .storybook/
+│   │       ├── main.js                        # Config Storybook (100 lignes)
+│   │       └── preview.js                     # Prévisualisation (80 lignes)
+│   │
+│   └── catalog-sync/                          # Service Synchronisation Catalogues
+│       ├── package.json                       # Dependencies (30 lignes)
+│       ├── src/
+│       │   ├── index.ts                       # Point d'entrée (100 lignes)
+│       │   ├── providers/
+│       │   │   ├── BaseProvider.ts            # Provider de base (200 lignes)
+│       │   │   ├── IkeaProvider.ts            # Provider IKEA (300 lignes)
+│       │   │   ├── LeroyMerlinProvider.ts     # Provider Leroy Merlin (300 lignes)
+│       │   │   ├── SchmidtProvider.ts         # Provider Schmidt (300 lignes)
+│       │   │   └── index.ts                   # Exports providers (50 lignes)
+│       │   ├── services/
+│       │   │   ├── SyncService.ts             # Service synchronisation (400 lignes)
+│       │   │   ├── TransformService.ts        # Service transformation (300 lignes)
+│       │   │   └── ValidationService.ts       # Service validation (250 lignes)
+│       │   ├── utils/
+│       │   │   ├── api.ts                     # Utilitaires API (200 lignes)
+│       │   │   ├── cache.ts                   # Utilitaires cache (150 lignes)
+│       │   │   └── retry.ts                   # Utilitaires retry (150 lignes)
+│       │   └── types/
+│       │       ├── provider.ts                # Types provider (200 lignes)
+│       │       └── catalog.ts                 # Types catalogue (250 lignes)
+│       └── Dockerfile                         # Container sync (80 lignes)
+│
+├── infrastructure/
+│   ├── docker/
+│   │   ├── docker-compose.yml                 # Composition développement (150 lignes)
+│   │   ├── docker-compose.prod.yml            # Composition production (200 lignes)
+│   │   └── nginx/
+│   │       └── nginx.conf                     # Configuration Nginx (100 lignes)
+│   ├── terraform/
+│   │   ├── main.tf                            # Infrastructure principale (300 lignes)
+│   │   ├── variables.tf                       # Variables Terraform (150 lignes)
+│   │   ├── outputs.tf                         # Sorties Terraform (100 lignes)
+│   │   └── modules/
+│   │       ├── database/
+│   │       │   ├── main.tf                    # Module base données (200 lignes)
+│   │       │   └── variables.tf               # Variables BD (100 lignes)
+│   │       └── storage/
+│   │           ├── main.tf                    # Module stockage (150 lignes)
+│   │           └── variables.tf               # Variables stockage (80 lignes)
+│   └── kubernetes/
+│       ├── namespace.yaml                     # Namespace (30 lignes)
+│       ├── configmap.yaml                     # ConfigMap (100 lignes)
+│       ├── secrets.yaml                       # Secrets (80 lignes)
+│       ├── deployments/
+│       │   ├── web-app.yaml                   # Déploiement frontend (150 lignes)
+│       │   ├── api.yaml                       # Déploiement backend (150 lignes)
+│       │   └── catalog-sync.yaml              # Déploiement sync (150 lignes)
+│       ├── services/
+│       │   ├── web-app.yaml                   # Service frontend (80 lignes)
+│       │   ├── api.yaml                       # Service backend (80 lignes)
+│       │   └── database.yaml                  # Service base données (80 lignes)
+│       └── ingress/
+│           └── main.yaml                      # Ingress principal (120 lignes)
+│
+├── tests/
+│   ├── e2e/
+│   │   ├── auth.spec.ts                       # Tests E2E authentification (200 lignes)
+│   │   ├── kitchen-design.spec.ts             # Tests E2E conception (300 lignes)
+│   │   ├── catalog.spec.ts                    # Tests E2E catalogue (200 lignes)
+│   │   └── projects.spec.ts                   # Tests E2E projets (250 lignes)
+│   ├── integration/
+│   │   ├── api.test.ts                        # Tests intégration API (300 lignes)
+│   │   ├── database.test.ts                   # Tests intégration BD (200 lignes)
+│   │   └── catalog-sync.test.ts               # Tests sync catalogue (250 lignes)
+│   ├── fixtures/
+│   │   ├── users.json                         # Données test utilisateurs (100 lignes)
+│   │   ├── projects.json                      # Données test projets (150 lignes)
+│   │   ├── kitchens.json                      # Données test cuisines (200 lignes)
+│   │   └── products.json                      # Données test produits (300 lignes)
+│   └── setup/
+│       ├── jest.config.js                     # Configuration Jest (100 lignes)
+│       ├── playwright.config.js               # Configuration Playwright (100 lignes)
+│       └── test-utils.ts                      # Utilitaires tests (200 lignes)
+│
+├── scripts/
+│   ├── dev/
+│   │   ├── setup.sh                           # Configuration environnement dev (150 lignes)
+│   │   ├── start.sh                           # Démarrage services dev (100 lignes)
+│   │   └── reset-db.sh                        # Reset base données (100 lignes)
+│   ├── build/
+│   │   ├── build-all.sh                       # Build tous les services (150 lignes)
+│   │   └── docker-build.sh                    # Build images Docker (100 lignes)
+│   └── deploy/
+│       ├── deploy-staging.sh                  # Déploiement staging (200 lignes)
+│       ├── deploy-production.sh               # Déploiement production (200 lignes)
+│       └── health-check.sh                    # Vérification santé (150 lignes)
+│
+├── docs/
+│   ├── README.md                              # Documentation principale (300 lignes)
+│   ├── SETUP.md                               # Guide installation (250 lignes)
+│   ├── API.md                                 # Documentation API (400 lignes)
+│   ├── ARCHITECTURE.md                        # Architecture système (350 lignes)
+│   ├── DEPLOYMENT.md                          # Guide déploiement (300 lignes)
+│   └── CONTRIBUTING.md                        # Guide contribution (200 lignes)
+│
+├── .env.example                               # Variables environnement exemple (60 lignes)
+├── .gitignore                                 # Fichiers ignorés Git (80 lignes)
+├── .eslintrc.js                               # Configuration ESLint (100 lignes)
+├── .prettierrc                                # Configuration Prettier (30 lignes)
+├── docker-compose.yml                         # Composition Docker principale (100 lignes)
+├── package.json                               # Configuration workspace (60 lignes)
+├── pnpm-workspace.yaml                        # Configuration pnpm workspace (30 lignes)
+├── turbo.json                                 # Configuration Turbo (80 lignes)
+└── README.md                                  # Documentation racine (200 lignes)
+```
+
+## 📊 Métriques MVP
+
+| Aspect | Quantité | Réduction vs Complet |
+|--------|----------|---------------------|
+| **Modules Racine** | 8 | -67% |
+| **Fichiers Total** | ~150 | -70% |
+| **Technologies** | 12 | -60% |
+| **Lignes de Code** | ~35,000 | -75% |
+| **Équipe Requise** | 4-6 devs | -60% |
+| **Time-to-Market** | 3-6 mois | -75% |
+
+## 🎯 Fonctionnalités MVP
+
+### ✅ Inclus (Core Business)
+- **Authentification complète** (JWT, OAuth)
+- **Gestion projets** (CRUD, partage)
+- **Conception cuisine 2D/3D** (Three.js basique)
+- **Catalogue unifié** (5 fournisseurs principaux)
+- **Interface responsive** (web + mobile)
+- **API REST** complète
+- **Base données** (PostgreSQL)
+- **Synchronisation catalogues** automatique
+- **Infrastructure** Docker + K8s basique
+
+### 🔄 Phase 2 (Expansion)
+- Modules IA génératifs
+- Expérience VR/AR
+- Portail partenaires avancé  
+- IoT et jumeaux numériques
+- Manufacturing CNC
+- Blockchain et smart contracts
+
+### 🔄 Phase 3 (Enterprise)
+- Durabilité et LCA complets
+- Assistant vocal IA
+- Analytics avancées
+- Support 24/7 avec chatbot
+- Écosystème complet (30+ partenaires)
+
+## 🚀 Roadmap de Développement
+
+### Semaines 1-4 : Fondations
+- Configuration monorepo
+- Authentification & base données
+- Interface utilisateur de base
+
+### Semaines 5-8 : Core Features
+- Gestion projets
+- Designer cuisine 2D basique
+- Catalogue produits
+
+### Semaines 9-12 : Advanced Features  
+- Designer 3D avec Three.js
+- Synchronisation catalogues
+- Application mobile
+
+### Semaines 13-16 : Polish & Deploy
+- Tests E2E complets
+- Optimisations performance
+- Déploiement production
+
+## 💡 Avantages de cette Approche
+
+1. **Time-to-Market Rapide** : Validation marché en 3-6 mois
+2. **Équipe Réduite** : 4-6 développeurs suffisants  
+3. **Coûts Contrôlés** : Infrastructure minimale
+4. **Extensibilité** : Architecture modulaire pour croissance
+5. **Focus Business** : Fonctionnalités essentielles prioritaires
+6. **Feedback Utilisateurs** : Itérations rapides possible

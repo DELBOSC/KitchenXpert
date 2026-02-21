@@ -1,0 +1,2 @@
+# Module-specific dependencies
+# Additional requirements beyond base AI modules

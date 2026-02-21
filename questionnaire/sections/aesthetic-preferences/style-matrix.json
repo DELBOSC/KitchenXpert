@@ -1,0 +1,155 @@
+{
+  "version": "1.0.0",
+  "description": "Style compatibility matrix for kitchen design elements",
+  "styles": {
+    "modern": {
+      "name": { "en": "Modern", "fr": "Moderne" },
+      "characteristics": ["clean-lines", "minimalist", "sleek", "geometric"],
+      "compatibleColors": ["neutral-light", "neutral-dark", "two-tone"],
+      "recommendedCabinets": ["flat-panel", "handleless"],
+      "recommendedCountertops": ["quartz", "solid-surface", "concrete", "stainless-steel"],
+      "recommendedHardware": ["handleless", "bar-pulls"],
+      "recommendedFinishes": ["matte-black", "polished-chrome", "stainless"],
+      "recommendedBacksplash": ["large-format", "glass", "slab"],
+      "recommendedFlooring": ["tile", "lvp", "concrete"],
+      "colorPalette": {
+        "primary": ["#FFFFFF", "#1A1A1A", "#4A4A4A"],
+        "accent": ["#FF6B35", "#2E86AB", "#A23B72"]
+      }
+    },
+    "contemporary": {
+      "name": { "en": "Contemporary", "fr": "Contemporain" },
+      "characteristics": ["current-trends", "mixed-materials", "bold-accents"],
+      "compatibleColors": ["neutral-light", "neutral-dark", "two-tone", "colorful"],
+      "recommendedCabinets": ["flat-panel", "shaker", "glass-front"],
+      "recommendedCountertops": ["quartz", "granite", "marble", "concrete"],
+      "recommendedHardware": ["bar-pulls", "mixed"],
+      "recommendedFinishes": ["matte-black", "brass", "mixed"],
+      "recommendedBacksplash": ["subway-tile", "mosaic", "patterned-tile"],
+      "recommendedFlooring": ["engineered-wood", "tile", "lvp"],
+      "colorPalette": {
+        "primary": ["#F5F5F5", "#2D3436", "#636E72"],
+        "accent": ["#E17055", "#00B894", "#6C5CE7"]
+      }
+    },
+    "traditional": {
+      "name": { "en": "Traditional", "fr": "Traditionnel" },
+      "characteristics": ["classic", "ornate", "elegant", "timeless"],
+      "compatibleColors": ["neutral-warm", "natural"],
+      "recommendedCabinets": ["raised-panel", "beadboard", "glass-front"],
+      "recommendedCountertops": ["granite", "marble", "butcher-block"],
+      "recommendedHardware": ["knobs", "cup-pulls"],
+      "recommendedFinishes": ["oil-rubbed-bronze", "brass", "copper"],
+      "recommendedBacksplash": ["subway-tile", "natural-stone", "mosaic"],
+      "recommendedFlooring": ["hardwood", "natural-stone", "tile"],
+      "colorPalette": {
+        "primary": ["#FDF6E3", "#8B7355", "#5D4E37"],
+        "accent": ["#8B0000", "#2F4F4F", "#DAA520"]
+      }
+    },
+    "transitional": {
+      "name": { "en": "Transitional", "fr": "Transitionnel" },
+      "characteristics": ["balanced", "timeless", "versatile", "clean"],
+      "compatibleColors": ["neutral-light", "neutral-warm", "two-tone"],
+      "recommendedCabinets": ["shaker", "flat-panel"],
+      "recommendedCountertops": ["quartz", "granite", "marble"],
+      "recommendedHardware": ["bar-pulls", "knobs"],
+      "recommendedFinishes": ["brushed-nickel", "polished-chrome", "oil-rubbed-bronze"],
+      "recommendedBacksplash": ["subway-tile", "large-format", "natural-stone"],
+      "recommendedFlooring": ["hardwood", "engineered-wood", "tile"],
+      "colorPalette": {
+        "primary": ["#F8F8F8", "#E8E4E1", "#9E9E9E"],
+        "accent": ["#5F7A8C", "#8B9A6D", "#C49A6C"]
+      }
+    },
+    "farmhouse": {
+      "name": { "en": "Farmhouse", "fr": "Campagne" },
+      "characteristics": ["rustic", "cozy", "natural", "charming"],
+      "compatibleColors": ["neutral-light", "neutral-warm", "natural"],
+      "recommendedCabinets": ["shaker", "beadboard", "open-shelving"],
+      "recommendedCountertops": ["butcher-block", "quartz", "solid-surface"],
+      "recommendedHardware": ["cup-pulls", "knobs"],
+      "recommendedFinishes": ["oil-rubbed-bronze", "brass", "matte-black"],
+      "recommendedBacksplash": ["subway-tile", "beadboard", "natural-stone"],
+      "recommendedFlooring": ["hardwood", "engineered-wood", "tile"],
+      "colorPalette": {
+        "primary": ["#FFFFFF", "#F5F1EB", "#E8DFD5"],
+        "accent": ["#9DB4A0", "#C4A77D", "#7C98A6"]
+      }
+    },
+    "industrial": {
+      "name": { "en": "Industrial", "fr": "Industriel" },
+      "characteristics": ["raw", "urban", "edgy", "functional"],
+      "compatibleColors": ["neutral-dark", "natural"],
+      "recommendedCabinets": ["flat-panel", "metal", "open-shelving"],
+      "recommendedCountertops": ["concrete", "stainless-steel", "butcher-block"],
+      "recommendedHardware": ["bar-pulls", "handleless"],
+      "recommendedFinishes": ["matte-black", "stainless", "copper"],
+      "recommendedBacksplash": ["subway-tile", "metal", "exposed-brick"],
+      "recommendedFlooring": ["concrete", "tile", "lvp"],
+      "colorPalette": {
+        "primary": ["#4A4A4A", "#2C2C2C", "#8B8B8B"],
+        "accent": ["#B87333", "#708090", "#CD853F"]
+      }
+    },
+    "scandinavian": {
+      "name": { "en": "Scandinavian", "fr": "Scandinave" },
+      "characteristics": ["light", "airy", "functional", "minimal"],
+      "compatibleColors": ["neutral-light", "natural"],
+      "recommendedCabinets": ["flat-panel", "shaker"],
+      "recommendedCountertops": ["quartz", "butcher-block", "solid-surface"],
+      "recommendedHardware": ["handleless", "bar-pulls", "leather-pulls"],
+      "recommendedFinishes": ["matte-black", "brushed-nickel", "natural-wood"],
+      "recommendedBacksplash": ["subway-tile", "large-format"],
+      "recommendedFlooring": ["hardwood", "engineered-wood", "lvp"],
+      "colorPalette": {
+        "primary": ["#FFFFFF", "#F5F5F5", "#E0E0E0"],
+        "accent": ["#B5C4B1", "#E6B89C", "#9EB1C6"]
+      }
+    },
+    "mediterranean": {
+      "name": { "en": "Mediterranean", "fr": "Méditerranéen" },
+      "characteristics": ["warm", "textured", "artisan", "colorful"],
+      "compatibleColors": ["neutral-warm", "colorful", "natural"],
+      "recommendedCabinets": ["raised-panel", "distressed", "glass-front"],
+      "recommendedCountertops": ["granite", "natural-stone", "tile"],
+      "recommendedHardware": ["knobs", "wrought-iron"],
+      "recommendedFinishes": ["oil-rubbed-bronze", "copper", "brass"],
+      "recommendedBacksplash": ["patterned-tile", "mosaic", "natural-stone"],
+      "recommendedFlooring": ["tile", "natural-stone", "terracotta"],
+      "colorPalette": {
+        "primary": ["#FDF5E6", "#DEB887", "#D2691E"],
+        "accent": ["#1E90FF", "#228B22", "#B22222"]
+      }
+    }
+  },
+  "compatibilityMatrix": {
+    "description": "Compatibility scores between different style elements (0-100)",
+    "cabinetToCountertop": {
+      "flat-panel": { "quartz": 95, "granite": 70, "marble": 80, "butcher-block": 60, "concrete": 90, "stainless-steel": 95, "laminate": 80, "solid-surface": 85 },
+      "shaker": { "quartz": 90, "granite": 85, "marble": 90, "butcher-block": 85, "concrete": 60, "stainless-steel": 50, "laminate": 75, "solid-surface": 80 },
+      "raised-panel": { "quartz": 75, "granite": 95, "marble": 95, "butcher-block": 70, "concrete": 30, "stainless-steel": 25, "laminate": 50, "solid-surface": 60 },
+      "beadboard": { "quartz": 70, "granite": 75, "marble": 65, "butcher-block": 95, "concrete": 40, "stainless-steel": 30, "laminate": 70, "solid-surface": 75 },
+      "glass-front": { "quartz": 85, "granite": 80, "marble": 90, "butcher-block": 70, "concrete": 65, "stainless-steel": 60, "laminate": 65, "solid-surface": 75 },
+      "louvered": { "quartz": 70, "granite": 75, "marble": 60, "butcher-block": 90, "concrete": 55, "stainless-steel": 40, "laminate": 70, "solid-surface": 70 }
+    },
+    "colorToStyle": {
+      "neutral-light": { "modern": 95, "contemporary": 90, "traditional": 70, "transitional": 95, "farmhouse": 95, "industrial": 60, "scandinavian": 100, "mediterranean": 60 },
+      "neutral-warm": { "modern": 50, "contemporary": 70, "traditional": 95, "transitional": 90, "farmhouse": 90, "industrial": 50, "scandinavian": 70, "mediterranean": 95 },
+      "neutral-dark": { "modern": 95, "contemporary": 90, "traditional": 40, "transitional": 70, "farmhouse": 40, "industrial": 100, "scandinavian": 50, "mediterranean": 50 },
+      "two-tone": { "modern": 90, "contemporary": 95, "traditional": 50, "transitional": 85, "farmhouse": 70, "industrial": 75, "scandinavian": 80, "mediterranean": 60 },
+      "colorful": { "modern": 60, "contemporary": 85, "traditional": 50, "transitional": 55, "farmhouse": 60, "industrial": 50, "scandinavian": 40, "mediterranean": 95 },
+      "natural": { "modern": 50, "contemporary": 75, "traditional": 80, "transitional": 80, "farmhouse": 100, "industrial": 85, "scandinavian": 95, "mediterranean": 90 }
+    }
+  },
+  "materialCostTiers": {
+    "budget": ["laminate", "lvp", "solid-surface"],
+    "mid-range": ["quartz", "engineered-wood", "tile", "granite"],
+    "premium": ["marble", "natural-stone", "hardwood", "concrete", "stainless-steel"]
+  },
+  "maintenanceLevels": {
+    "low": ["quartz", "solid-surface", "laminate", "lvp", "tile", "flat-panel"],
+    "medium": ["granite", "engineered-wood", "stainless-steel", "shaker"],
+    "high": ["marble", "butcher-block", "hardwood", "concrete", "natural-stone", "raised-panel"]
+  }
+}

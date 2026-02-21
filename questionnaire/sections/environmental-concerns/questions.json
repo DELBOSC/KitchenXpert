@@ -1,0 +1,72 @@
+{
+  "sectionId": "environmental-concerns",
+  "version": "1.0.0",
+  "metadata": {
+    "title": { "en": "Sustainability & Environment", "fr": "Durabilité et environnement" },
+    "icon": "leaf",
+    "estimatedTime": 3
+  },
+  "questions": [
+    {
+      "id": "eco-priority",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How important is environmental sustainability in your kitchen choices?", "fr": "Quelle importance accordez-vous à la durabilité environnementale ?" },
+      "options": [
+        { "value": "top-priority", "label": { "en": "Top priority - willing to pay more", "fr": "Priorité absolue - prêt à payer plus" } },
+        { "value": "important", "label": { "en": "Important - when comparable in price", "fr": "Important - si prix comparable" } },
+        { "value": "nice-to-have", "label": { "en": "Nice to have but not essential", "fr": "Bien mais pas essentiel" } },
+        { "value": "not-priority", "label": { "en": "Not a priority", "fr": "Pas une priorité" } }
+      ]
+    },
+    {
+      "id": "energy-efficiency",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How important is energy efficiency in appliances?", "fr": "Quelle importance accordez-vous à l'efficacité énergétique ?" },
+      "options": [
+        { "value": "very-important", "label": { "en": "Very important - only Energy Star", "fr": "Très important - uniquement Energy Star" } },
+        { "value": "somewhat", "label": { "en": "Somewhat - factor in decisions", "fr": "Assez - facteur dans les décisions" } },
+        { "value": "not-primary", "label": { "en": "Not a primary factor", "fr": "Pas un facteur principal" } }
+      ]
+    },
+    {
+      "id": "sustainable-materials",
+      "type": "multi-choice",
+      "required": false,
+      "label": { "en": "Which sustainable materials interest you?", "fr": "Quels matériaux durables vous intéressent ?" },
+      "options": [
+        { "value": "bamboo", "label": { "en": "Bamboo", "fr": "Bambou" } },
+        { "value": "reclaimed-wood", "label": { "en": "Reclaimed wood", "fr": "Bois récupéré" } },
+        { "value": "recycled-glass", "label": { "en": "Recycled glass counters", "fr": "Comptoirs en verre recyclé" } },
+        { "value": "low-voc", "label": { "en": "Low-VOC finishes", "fr": "Finitions faibles en COV" } },
+        { "value": "fsc-certified", "label": { "en": "FSC-certified wood", "fr": "Bois certifié FSC" } },
+        { "value": "none-specific", "label": { "en": "No specific preference", "fr": "Pas de préférence spécifique" } }
+      ]
+    },
+    {
+      "id": "water-conservation",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "Interest in water-saving features?", "fr": "Intérêt pour les fonctions économes en eau ?" },
+      "options": [
+        { "value": "very-interested", "label": { "en": "Very interested", "fr": "Très intéressé" } },
+        { "value": "somewhat", "label": { "en": "Somewhat interested", "fr": "Assez intéressé" } },
+        { "value": "not-priority", "label": { "en": "Not a priority", "fr": "Pas une priorité" } }
+      ]
+    },
+    {
+      "id": "waste-management",
+      "type": "multi-choice",
+      "required": true,
+      "label": { "en": "Which waste management features do you want?", "fr": "Quelles fonctions de gestion des déchets voulez-vous ?" },
+      "options": [
+        { "value": "recycling-bins", "label": { "en": "Built-in recycling bins", "fr": "Bacs de recyclage intégrés" } },
+        { "value": "compost-bin", "label": { "en": "Compost bin/drawer", "fr": "Bac/tiroir à compost" } },
+        { "value": "garbage-disposal", "label": { "en": "Garbage disposal", "fr": "Broyeur" } },
+        { "value": "trash-compactor", "label": { "en": "Trash compactor", "fr": "Compacteur" } },
+        { "value": "basic", "label": { "en": "Basic trash only", "fr": "Poubelle basique uniquement" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "@kitchenxpert/scraper",
+  "extends": "../../tsconfig.node.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "lib": ["ES2022", "DOM"],
+    "paths": {
+      "@/*": ["src/*"],
+      "@kitchenxpert/common": ["../common/src"],
+      "@kitchenxpert/common/*": ["../common/src/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["src/**/*", "scripts/**/*"],
+  "exclude": ["node_modules", "dist", "data", "**/*.test.ts", "**/*.spec.ts"],
+  "references": [
+    { "path": "../common" }
+  ]
+}

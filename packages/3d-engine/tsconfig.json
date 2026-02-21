@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "@kitchenxpert/3d-engine",
+  "extends": "../../tsconfig.lib.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@/*": ["./*"],
+      "@/api/*": ["api/*"],
+      "@/engine/*": ["engine/*"],
+      "@/models/*": ["models/*"],
+      "@/utils/*": ["utils/*"],
+      "@kitchenxpert/common": ["../../packages/common/src"],
+      "@kitchenxpert/common/*": ["../../packages/common/src/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "src/test/**/*"],
+  "references": [
+    { "path": "../common" }
+  ]
+}

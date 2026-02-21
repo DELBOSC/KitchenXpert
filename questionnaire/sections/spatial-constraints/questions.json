@@ -1,0 +1,441 @@
+{
+  "sectionId": "spatial-constraints",
+  "version": "1.0.0",
+  "metadata": {
+    "title": {
+      "en": "Kitchen Space & Layout",
+      "fr": "Espace et disposition de la cuisine"
+    },
+    "description": {
+      "en": "Help us understand your kitchen space to optimize the design",
+      "fr": "Aidez-nous à comprendre votre espace cuisine pour optimiser la conception"
+    },
+    "icon": "layout",
+    "estimatedTime": 5
+  },
+  "questions": [
+    {
+      "id": "kitchen-size",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "What is the approximate size of your kitchen?",
+        "fr": "Quelle est la taille approximative de votre cuisine ?"
+      },
+      "options": [
+        {
+          "value": "small",
+          "label": { "en": "Small (under 100 sq ft / 9 m²)", "fr": "Petite (moins de 9 m²)" },
+          "tags": ["compact", "efficiency-focused"]
+        },
+        {
+          "value": "medium",
+          "label": { "en": "Medium (100-150 sq ft / 9-14 m²)", "fr": "Moyenne (9-14 m²)" },
+          "tags": ["standard", "flexible"]
+        },
+        {
+          "value": "large",
+          "label": { "en": "Large (150-250 sq ft / 14-23 m²)", "fr": "Grande (14-23 m²)" },
+          "tags": ["spacious", "island-possible"]
+        },
+        {
+          "value": "very-large",
+          "label": { "en": "Very Large (over 250 sq ft / 23 m²)", "fr": "Très grande (plus de 23 m²)" },
+          "tags": ["luxury-space", "multiple-zones"]
+        }
+      ],
+      "scoring": {
+        "weight": 4,
+        "categories": ["space-category"],
+        "impactAreas": ["space"]
+      }
+    },
+    {
+      "id": "exact-dimensions",
+      "type": "dimension",
+      "required": false,
+      "label": {
+        "en": "Enter your kitchen dimensions (if known)",
+        "fr": "Entrez les dimensions de votre cuisine (si connues)"
+      },
+      "description": {
+        "en": "Provide length and width for more accurate recommendations",
+        "fr": "Fournissez la longueur et la largeur pour des recommandations plus précises"
+      },
+      "metadata": {
+        "units": ["ft", "m"],
+        "defaultUnit": "ft",
+        "fields": ["length", "width"]
+      },
+      "validation": {
+        "min": 4,
+        "max": 100
+      },
+      "scoring": {
+        "weight": 3,
+        "categories": ["precise-dimensions"],
+        "impactAreas": ["space"]
+      }
+    },
+    {
+      "id": "ceiling-height",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "What is your ceiling height?",
+        "fr": "Quelle est la hauteur de votre plafond ?"
+      },
+      "options": [
+        {
+          "value": "standard",
+          "label": { "en": "Standard (8 ft / 2.4 m)", "fr": "Standard (2,4 m)" },
+          "tags": ["standard-cabinets"]
+        },
+        {
+          "value": "tall",
+          "label": { "en": "Tall (9-10 ft / 2.7-3 m)", "fr": "Haut (2,7-3 m)" },
+          "tags": ["extended-cabinets", "stacking-possible"]
+        },
+        {
+          "value": "very-tall",
+          "label": { "en": "Very Tall (over 10 ft / 3 m)", "fr": "Très haut (plus de 3 m)" },
+          "tags": ["custom-height", "dramatic-design"]
+        },
+        {
+          "value": "vaulted",
+          "label": { "en": "Vaulted/Sloped", "fr": "Cathédrale/En pente" },
+          "tags": ["variable-height", "custom-solutions"]
+        }
+      ],
+      "scoring": {
+        "weight": 2,
+        "categories": ["vertical-space"],
+        "impactAreas": ["space", "style"]
+      }
+    },
+    {
+      "id": "current-layout",
+      "type": "image-choice",
+      "required": true,
+      "label": {
+        "en": "What is your current kitchen layout?",
+        "fr": "Quelle est la disposition actuelle de votre cuisine ?"
+      },
+      "options": [
+        {
+          "value": "one-wall",
+          "label": { "en": "One-Wall (Galley)", "fr": "Linéaire" },
+          "image": "/images/layouts/one-wall.svg",
+          "description": { "en": "All along one wall", "fr": "Tout le long d'un mur" }
+        },
+        {
+          "value": "galley",
+          "label": { "en": "Galley (Corridor)", "fr": "Couloir" },
+          "image": "/images/layouts/galley.svg",
+          "description": { "en": "Two parallel walls", "fr": "Deux murs parallèles" }
+        },
+        {
+          "value": "l-shaped",
+          "label": { "en": "L-Shaped", "fr": "En L" },
+          "image": "/images/layouts/l-shaped.svg",
+          "description": { "en": "Two perpendicular walls", "fr": "Deux murs perpendiculaires" }
+        },
+        {
+          "value": "u-shaped",
+          "label": { "en": "U-Shaped", "fr": "En U" },
+          "image": "/images/layouts/u-shaped.svg",
+          "description": { "en": "Three walls", "fr": "Trois murs" }
+        },
+        {
+          "value": "peninsula",
+          "label": { "en": "Peninsula", "fr": "Péninsule" },
+          "image": "/images/layouts/peninsula.svg",
+          "description": { "en": "L or U with attached counter", "fr": "L ou U avec comptoir attaché" }
+        },
+        {
+          "value": "island",
+          "label": { "en": "Island", "fr": "Îlot" },
+          "image": "/images/layouts/island.svg",
+          "description": { "en": "Freestanding center piece", "fr": "Élément central indépendant" }
+        }
+      ],
+      "scoring": {
+        "weight": 4,
+        "categories": ["layout-type"],
+        "impactAreas": ["space", "functionality"]
+      }
+    },
+    {
+      "id": "desired-layout",
+      "type": "image-choice",
+      "required": true,
+      "label": {
+        "en": "What layout would you like?",
+        "fr": "Quelle disposition souhaitez-vous ?"
+      },
+      "description": {
+        "en": "Select your preferred layout (we'll check if it's feasible)",
+        "fr": "Sélectionnez votre disposition préférée (nous vérifierons la faisabilité)"
+      },
+      "options": [
+        {
+          "value": "keep-current",
+          "label": { "en": "Keep Current Layout", "fr": "Garder la disposition actuelle" },
+          "tags": ["no-structural"]
+        },
+        {
+          "value": "one-wall",
+          "label": { "en": "One-Wall", "fr": "Linéaire" },
+          "image": "/images/layouts/one-wall.svg"
+        },
+        {
+          "value": "galley",
+          "label": { "en": "Galley", "fr": "Couloir" },
+          "image": "/images/layouts/galley.svg"
+        },
+        {
+          "value": "l-shaped",
+          "label": { "en": "L-Shaped", "fr": "En L" },
+          "image": "/images/layouts/l-shaped.svg"
+        },
+        {
+          "value": "u-shaped",
+          "label": { "en": "U-Shaped", "fr": "En U" },
+          "image": "/images/layouts/u-shaped.svg"
+        },
+        {
+          "value": "peninsula",
+          "label": { "en": "Peninsula", "fr": "Péninsule" },
+          "image": "/images/layouts/peninsula.svg"
+        },
+        {
+          "value": "island",
+          "label": { "en": "Island", "fr": "Îlot" },
+          "image": "/images/layouts/island.svg"
+        }
+      ],
+      "scoring": {
+        "weight": 4,
+        "categories": ["desired-layout"],
+        "impactAreas": ["space", "functionality", "budget"]
+      }
+    },
+    {
+      "id": "island-preference",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "Do you want a kitchen island?",
+        "fr": "Voulez-vous un îlot de cuisine ?"
+      },
+      "options": [
+        {
+          "value": "yes-large",
+          "label": { "en": "Yes, a large island with seating", "fr": "Oui, un grand îlot avec sièges" },
+          "tags": ["large-island", "seating", "prep-space"]
+        },
+        {
+          "value": "yes-small",
+          "label": { "en": "Yes, a small/compact island", "fr": "Oui, un petit îlot compact" },
+          "tags": ["small-island", "extra-storage"]
+        },
+        {
+          "value": "yes-mobile",
+          "label": { "en": "A mobile/rolling island", "fr": "Un îlot mobile/sur roulettes" },
+          "tags": ["mobile", "flexible"]
+        },
+        {
+          "value": "peninsula-instead",
+          "label": { "en": "Prefer a peninsula", "fr": "Préfère une péninsule" },
+          "tags": ["peninsula", "connected"]
+        },
+        {
+          "value": "no",
+          "label": { "en": "No island needed", "fr": "Pas d'îlot nécessaire" },
+          "tags": ["no-island"]
+        }
+      ],
+      "scoring": {
+        "weight": 3,
+        "categories": ["island-type"],
+        "impactAreas": ["space", "functionality"]
+      }
+    },
+    {
+      "id": "structural-constraints",
+      "type": "multi-choice",
+      "required": true,
+      "label": {
+        "en": "Are there any structural constraints?",
+        "fr": "Y a-t-il des contraintes structurelles ?"
+      },
+      "description": {
+        "en": "Select all that apply",
+        "fr": "Sélectionnez tout ce qui s'applique"
+      },
+      "options": [
+        {
+          "value": "load-bearing-wall",
+          "label": { "en": "Load-bearing wall that can't be moved", "fr": "Mur porteur qui ne peut pas être déplacé" },
+          "tags": ["structural-limit"]
+        },
+        {
+          "value": "window-placement",
+          "label": { "en": "Fixed window placement", "fr": "Emplacement fixe des fenêtres" },
+          "tags": ["window-constraint"]
+        },
+        {
+          "value": "plumbing-location",
+          "label": { "en": "Plumbing in fixed location", "fr": "Plomberie à emplacement fixe" },
+          "tags": ["plumbing-limit"]
+        },
+        {
+          "value": "gas-line",
+          "label": { "en": "Gas line location", "fr": "Emplacement de la conduite de gaz" },
+          "tags": ["gas-constraint"]
+        },
+        {
+          "value": "electrical-panel",
+          "label": { "en": "Electrical panel in kitchen", "fr": "Panneau électrique dans la cuisine" },
+          "tags": ["electrical-limit"]
+        },
+        {
+          "value": "hvac-ducts",
+          "label": { "en": "HVAC ducts/vents", "fr": "Conduits/bouches de ventilation" },
+          "tags": ["hvac-constraint"]
+        },
+        {
+          "value": "door-locations",
+          "label": { "en": "Door locations can't change", "fr": "Les emplacements des portes ne peuvent pas changer" },
+          "tags": ["door-constraint"]
+        },
+        {
+          "value": "none",
+          "label": { "en": "No constraints / Can modify anything", "fr": "Pas de contraintes / Peut tout modifier" },
+          "tags": ["flexible"]
+        }
+      ],
+      "scoring": {
+        "weight": 3,
+        "categories": ["constraints"],
+        "impactAreas": ["space", "budget"]
+      }
+    },
+    {
+      "id": "open-concept",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "Is your kitchen open to other living spaces?",
+        "fr": "Votre cuisine est-elle ouverte sur d'autres espaces de vie ?"
+      },
+      "options": [
+        {
+          "value": "fully-open",
+          "label": { "en": "Fully open concept", "fr": "Entièrement ouvert" },
+          "description": { "en": "Flows into living/dining", "fr": "S'ouvre sur le salon/salle à manger" },
+          "tags": ["open-plan", "visibility-important"]
+        },
+        {
+          "value": "partial-open",
+          "label": { "en": "Partially open", "fr": "Partiellement ouvert" },
+          "description": { "en": "Pass-through or half wall", "fr": "Passe-plat ou demi-mur" },
+          "tags": ["semi-open"]
+        },
+        {
+          "value": "closed",
+          "label": { "en": "Enclosed/Separate room", "fr": "Fermée/Pièce séparée" },
+          "description": { "en": "Traditional enclosed kitchen", "fr": "Cuisine fermée traditionnelle" },
+          "tags": ["enclosed", "private"]
+        },
+        {
+          "value": "want-to-open",
+          "label": { "en": "Currently closed, want to open up", "fr": "Actuellement fermée, souhaite ouvrir" },
+          "tags": ["renovation-required", "structural-change"]
+        }
+      ],
+      "scoring": {
+        "weight": 3,
+        "categories": ["openness"],
+        "impactAreas": ["space", "style", "budget"]
+      }
+    },
+    {
+      "id": "storage-needs",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "How would you describe your storage needs?",
+        "fr": "Comment décririez-vous vos besoins de rangement ?"
+      },
+      "options": [
+        {
+          "value": "minimal",
+          "label": { "en": "Minimal - I keep things simple", "fr": "Minimal - Je garde les choses simples" },
+          "tags": ["minimalist"]
+        },
+        {
+          "value": "average",
+          "label": { "en": "Average - Standard kitchen items", "fr": "Moyen - Articles de cuisine standard" },
+          "tags": ["standard-storage"]
+        },
+        {
+          "value": "above-average",
+          "label": { "en": "Above average - I have lots of gadgets", "fr": "Au-dessus de la moyenne - J'ai beaucoup d'ustensiles" },
+          "tags": ["extra-storage", "organization"]
+        },
+        {
+          "value": "maximum",
+          "label": { "en": "Maximum - Need all the storage possible", "fr": "Maximum - Besoin de tout le rangement possible" },
+          "tags": ["maximum-storage", "pantry-needed"]
+        }
+      ],
+      "scoring": {
+        "weight": 3,
+        "categories": ["storage-level"],
+        "impactAreas": ["space", "functionality"]
+      }
+    },
+    {
+      "id": "pantry-preference",
+      "type": "single-choice",
+      "required": true,
+      "label": {
+        "en": "What type of pantry do you want?",
+        "fr": "Quel type de garde-manger voulez-vous ?"
+      },
+      "options": [
+        {
+          "value": "walk-in",
+          "label": { "en": "Walk-in pantry", "fr": "Garde-manger walk-in" },
+          "tags": ["walk-in", "large-storage"]
+        },
+        {
+          "value": "cabinet-pantry",
+          "label": { "en": "Tall pantry cabinet(s)", "fr": "Armoire(s) garde-manger haute(s)" },
+          "tags": ["cabinet-pantry", "vertical-storage"]
+        },
+        {
+          "value": "pull-out",
+          "label": { "en": "Pull-out pantry system", "fr": "Système garde-manger coulissant" },
+          "tags": ["pull-out", "accessible"]
+        },
+        {
+          "value": "butler",
+          "label": { "en": "Butler's pantry", "fr": "Office" },
+          "tags": ["butler-pantry", "secondary-space"]
+        },
+        {
+          "value": "none",
+          "label": { "en": "No dedicated pantry needed", "fr": "Pas de garde-manger dédié nécessaire" },
+          "tags": ["no-pantry"]
+        }
+      ],
+      "scoring": {
+        "weight": 2,
+        "categories": ["pantry-type"],
+        "impactAreas": ["space", "functionality"]
+      }
+    }
+  ]
+}

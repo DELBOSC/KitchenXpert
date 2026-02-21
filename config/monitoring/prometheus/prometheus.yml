@@ -1,0 +1,329 @@
+# Prometheus Configuration for KitchenXpert
+#
+# This configuration file defines:
+# - Global settings (scrape interval, evaluation interval)
+# - Alertmanager integration
+# - Scrape configurations for all services
+# - Service discovery
+# - Remote storage (optional)
+
+# Global configuration
+global:
+  # How frequently to scrape targets by default
+  scrape_interval: 15s
+
+  # How frequently to evaluate rules
+  evaluation_interval: 15s
+
+  # Scrape timeout (must be shorter than scrape_interval)
+  scrape_timeout: 10s
+
+  # External labels to add to all time series and alerts
+  external_labels:
+    cluster: 'kitchenxpert-prod'
+    environment: 'production'
+    datacenter: 'us-east-1'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'localhost:9093'
+      # Timeout for each attempt to send alerts to Alertmanager
+      timeout: 10s
+      # Path prefix for Alertmanager API
+      api_version: v2
+
+# Rule files
+rule_files:
+  - 'rules.yml'
+  - 'alerts/*.yml'  # Additional alert rules
+
+# Scrape configurations
+scrape_configs:
+  # ============================================
+  # Prometheus self-monitoring
+  # ============================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          tier: 'monitoring'
+
+  # ============================================
+  # Node Exporter (System Metrics)
+  # ============================================
+  - job_name: 'node-exporter'
+    # Scrape more frequently for system metrics
+    scrape_interval: 10s
+    static_configs:
+      - targets:
+          - 'localhost:9100'
+        labels:
+          service: 'node-exporter'
+          tier: 'infrastructure'
+          instance: 'api-server-1'
+
+    # Relabel configurations for node exporter
+    relabel_configs:
+      # Use instance label as the primary identifier
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9100
+
+  # ============================================
+  # KitchenXpert Backend API
+  # ============================================
+  - job_name: 'kitchenxpert-api'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+
+    # File-based service discovery
+    file_sd_configs:
+      - files:
+          - 'targets.yml'
+        refresh_interval: 30s
+
+    # Or static configuration
+    static_configs:
+      - targets:
+          - 'localhost:3000'
+        labels:
+          service: 'kitchenxpert-api'
+          tier: 'backend'
+          version: 'v1'
+
+    # Basic authentication (if enabled)
+    basic_auth:
+      username: 'prometheus'
+      password_file: '/etc/prometheus/api_password'
+
+    # Metric relabeling
+    metric_relabel_configs:
+      # Drop metrics with high cardinality
+      - source_labels: [__name__]
+        regex: 'go_gc_.*'
+        action: drop
+
+  # ============================================
+  # Frontend Application (if exposing metrics)
+  # ============================================
+  - job_name: 'kitchenxpert-frontend'
+    scrape_interval: 30s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+          - 'localhost:3001'
+        labels:
+          service: 'kitchenxpert-frontend'
+          tier: 'frontend'
+
+  # ============================================
+  # PostgreSQL Database
+  # ============================================
+  - job_name: 'postgresql'
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - 'localhost:9187'
+        labels:
+          service: 'postgresql'
+          tier: 'database'
+          database: 'kitchenxpert'
+
+    # PostgreSQL exporter specific configuration
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9187
+
+  # ============================================
+  # MongoDB Database
+  # ============================================
+  - job_name: 'mongodb'
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - 'localhost:9216'
+        labels:
+          service: 'mongodb'
+          tier: 'database'
+
+  # ============================================
+  # Redis Cache
+  # ============================================
+  - job_name: 'redis'
+    scrape_interval: 10s
+    static_configs:
+      - targets:
+          - 'localhost:9121'
+        labels:
+          service: 'redis'
+          tier: 'cache'
+
+  # ============================================
+  # Nginx Web Server
+  # ============================================
+  - job_name: 'nginx'
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - 'localhost:9113'
+        labels:
+          service: 'nginx'
+          tier: 'proxy'
+
+  # ============================================
+  # Elasticsearch
+  # ============================================
+  - job_name: 'elasticsearch'
+    scrape_interval: 30s
+    static_configs:
+      - targets:
+          - 'localhost:9114'
+        labels:
+          service: 'elasticsearch'
+          tier: 'logging'
+
+  # ============================================
+  # Docker Container Metrics (cAdvisor)
+  # ============================================
+  - job_name: 'cadvisor'
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - 'localhost:8080'
+        labels:
+          service: 'cadvisor'
+          tier: 'infrastructure'
+
+    # Relabel to customize container labels
+    metric_relabel_configs:
+      # Extract container name
+      - source_labels: [container_label_com_docker_compose_service]
+        target_label: container_name
+
+  # ============================================
+  # Blackbox Exporter (Endpoint Monitoring)
+  # ============================================
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://api.kitchenxpert.com/health
+          - https://kitchenxpert.com
+        labels:
+          service: 'blackbox-http'
+          tier: 'monitoring'
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
+  # SSL certificate expiration monitoring
+  - job_name: 'blackbox-ssl'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://api.kitchenxpert.com
+          - https://kitchenxpert.com
+        labels:
+          service: 'blackbox-ssl'
+          tier: 'security'
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
+  # ============================================
+  # Kubernetes Service Discovery (if applicable)
+  # ============================================
+  # - job_name: 'kubernetes-pods'
+  #   kubernetes_sd_configs:
+  #     - role: pod
+  #       namespaces:
+  #         names:
+  #           - kitchenxpert
+  #
+  #   relabel_configs:
+  #     # Only scrape pods with annotation prometheus.io/scrape: "true"
+  #     - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+  #       action: keep
+  #       regex: true
+  #
+  #     # Use custom scrape path if defined
+  #     - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+  #       action: replace
+  #       target_label: __metrics_path__
+  #       regex: (.+)
+  #
+  #     # Use custom port if defined
+  #     - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+  #       action: replace
+  #       regex: ([^:]+)(?::\d+)?;(\d+)
+  #       replacement: $1:$2
+  #       target_label: __address__
+  #
+  #     # Add pod labels as metric labels
+  #     - action: labelmap
+  #       regex: __meta_kubernetes_pod_label_(.+)
+
+# Remote write configuration (for long-term storage)
+# Uncomment to enable remote write to systems like Cortex, Thanos, or Grafana Cloud
+# remote_write:
+#   - url: 'http://cortex:9009/api/prom/push'
+#     queue_config:
+#       capacity: 10000
+#       max_shards: 5
+#       min_shards: 1
+#       max_samples_per_send: 500
+#       batch_send_deadline: 5s
+#       min_backoff: 30ms
+#       max_backoff: 100ms
+#
+#     # Write relabeling (filter what to send)
+#     write_relabel_configs:
+#       # Only send specific metrics
+#       - source_labels: [__name__]
+#         regex: 'http_.*|node_.*|pg_.*'
+#         action: keep
+
+# Remote read configuration (for querying long-term storage)
+# remote_read:
+#   - url: 'http://cortex:9009/api/prom/read'
+#     read_recent: true
+
+# Storage configuration
+storage:
+  tsdb:
+    # Data retention period
+    retention.time: 15d
+    # Maximum storage size
+    retention.size: 50GB
+    # Path to storage directory
+    path: /var/lib/prometheus/data
+
+# Tracing configuration (experimental)
+# tracing:
+#   endpoint: 'localhost:4318'
+#   sampling_fraction: 0.1

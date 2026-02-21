@@ -1,0 +1,340 @@
+name: 🚀 Deploy to Staging
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual deployment'
+        required: false
+        default: 'Manual deployment'
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8.15.0'
+  # NOTE: STAGING_API_URL is intentionally empty here. It is populated at runtime
+  # by the Infisical secrets-action (Job 1, step "Fetch secrets from Infisical"),
+  # which injects secrets as environment variables into subsequent steps.
+  STAGING_API_URL: ''
+
+jobs:
+  # Job 1: Build & Test
+  build-and-test:
+    name: 🏗️ Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🧪 Run tests
+        run: pnpm test:ci
+
+      - name: 🔐 Fetch secrets from Infisical
+        uses: Infisical/secrets-action@v1.0.7
+        with:
+          method: "universal-auth"
+          env-slug: "staging"
+          project-slug: "kitchenxpert"
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+
+      - name: 🏗️ Build all packages
+        run: pnpm build
+        env:
+          NODE_ENV: production
+          API_URL: ${{ env.STAGING_API_URL }}
+
+      - name: 📦 Create deployment package
+        run: |
+          tar -czf deployment.tar.gz \
+            packages/backend/dist \
+            packages/frontend/dist \
+            packages/common/dist \
+            package.json \
+            pnpm-lock.yaml
+
+      - name: 📤 Upload deployment package
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package
+          path: deployment.tar.gz
+          retention-days: 7
+
+  # Job 2: Build Docker Images
+  build-docker:
+    name: 🐳 Build Docker Images
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend, frontend]
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKER_REGISTRY }}/kitchenxpert-${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=staging-latest
+
+      - name: 🐳 Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./config/docker/Dockerfile.${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/kitchenxpert-${{ matrix.service }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/kitchenxpert-${{ matrix.service }}:buildcache,mode=max
+
+  # Job 3: Deploy to Staging
+  deploy:
+    name: 🚀 Deploy to Staging Environment
+    needs: [build-and-test, build-docker]
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.kitchenxpert.com
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📥 Download deployment package
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-package
+
+      - name: 🔐 Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          install -m 600 /dev/null ~/.ssh/deploy_key
+          printenv DEPLOY_SSH_KEY > ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+
+      - name: 📤 Upload to staging server
+        run: |
+          scp -i ~/.ssh/deploy_key deployment.tar.gz \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:/tmp/
+
+      - name: 🚀 Deploy via SSH
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'EOF'
+            cd /var/www/kitchenxpert-staging
+
+            # Backup current deployment
+            tar -czf backup-$(date +%Y%m%d-%H%M%S).tar.gz . || true
+
+            # Extract new deployment
+            tar -xzf /tmp/deployment.tar.gz
+
+            # Install dependencies (production only)
+            pnpm install --prod --frozen-lockfile
+
+            # Run migrations
+            pnpm migrate:staging
+
+            # Restart services
+            pm2 reload ecosystem.config.js --env staging
+
+            # Health check
+            sleep 10
+            curl -f http://localhost:4000/health || exit 1
+
+            # Cleanup
+            rm /tmp/deployment.tar.gz
+            find . -name "backup-*.tar.gz" -mtime +7 -delete
+          EOF
+
+      - name: 🔄 Update Docker containers
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'EOF'
+            cd /var/www/kitchenxpert-staging
+
+            # Pull latest images
+            docker-compose -f docker-compose.staging.yml pull
+
+            # Restart services with zero-downtime
+            docker-compose -f docker-compose.staging.yml up -d --force-recreate
+
+            # Remove old images
+            docker image prune -af --filter "until=168h"
+          EOF
+
+  # Job 4: Smoke Tests
+  smoke-tests:
+    name: 🧪 Run Smoke Tests
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🧪 Run smoke tests
+        run: pnpm test:smoke
+        env:
+          API_URL: https://staging-api.kitchenxpert.com
+          FRONTEND_URL: https://staging.kitchenxpert.com
+
+      - name: 🔍 Health check
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://staging-api.kitchenxpert.com/health)
+          if [ $response != "200" ]; then
+            echo "Health check failed with status code: $response"
+            exit 1
+          fi
+
+  # Job 5: Notify
+  notify:
+    name: 📢 Notify Team
+    needs: [deploy, smoke-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: 📢 Notify Slack
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚀 Staging Deployment ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Staging Deployment*\n*Status:* ${{ job.status }}\n*Branch:* ${{ github.ref_name }}\n*Commit:* <${{ github.event.head_commit.url }}|${{ github.sha }}>\n*Author:* ${{ github.actor }}\n*URL:* https://staging.kitchenxpert.com"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_STAGING }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        if: always()
+
+      - name: 📧 Send email notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "❌ Staging Deployment Failed"
+          to: ${{ secrets.DEVOPS_EMAIL }}
+          from: GitHub Actions <noreply@kitchenxpert.com>
+          body: |
+            Staging deployment failed for commit ${{ github.sha }}
+
+            Branch: ${{ github.ref_name }}
+            Author: ${{ github.actor }}
+
+            Check the logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+  # Job 6: Rollback (manual trigger)
+  rollback:
+    name: 🔙 Rollback (Manual)
+    runs-on: ubuntu-latest
+    if: failure() && github.event_name == 'workflow_dispatch'
+    steps:
+      - name: 🔐 Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          install -m 600 /dev/null ~/.ssh/deploy_key
+          printenv DEPLOY_SSH_KEY > ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+
+      - name: 🔙 Rollback deployment
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'EOF'
+            cd /var/www/kitchenxpert-staging
+
+            # Find latest backup
+            latest_backup=$(ls -t backup-*.tar.gz | head -1)
+
+            if [ -z "$latest_backup" ]; then
+              echo "No backup found!"
+              exit 1
+            fi
+
+            echo "Rolling back to: $latest_backup"
+
+            # Restore backup
+            tar -xzf "$latest_backup"
+
+            # Restart services
+            pm2 reload ecosystem.config.js --env staging
+
+            # Health check
+            sleep 10
+            curl -f http://localhost:4000/health || exit 1
+
+            echo "Rollback completed successfully"
+          EOF
+
+      - name: 📢 Notify rollback
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🔙 Staging Rollback Completed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Staging Rollback*\n*Status:* Completed\n*Triggered by:* ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_STAGING }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

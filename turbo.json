@@ -1,0 +1,235 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "**/.env",
+    "**/.env.*",
+    "**/.env.local",
+    "**/.env.*.local",
+    "tsconfig.base.json"
+  ],
+  "globalEnv": [
+    "NODE_ENV",
+    "CI",
+    "VERCEL",
+    "VERCEL_ENV"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "dist/**",
+        "build/**",
+        ".next/**",
+        "!.next/cache/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*",
+        "DATABASE_URL",
+        "REDIS_URL"
+      ]
+    },
+
+    "@kitchenxpert/backend#build": {
+      "dependsOn": ["^build", "prisma:generate"],
+      "outputs": ["dist/**"],
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "JWT_ACCESS_SECRET",
+        "JWT_REFRESH_SECRET",
+        "SENDGRID_API_KEY"
+      ]
+    },
+
+    "@kitchenxpert/frontend#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_WS_URL",
+        "NEXT_PUBLIC_STRIPE_PUBLIC_KEY",
+        "NEXT_PUBLIC_GA_ID"
+      ]
+    },
+
+    "@kitchenxpert/partner-portal#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_PARTNER_API_URL"
+      ]
+    },
+
+    "@kitchenxpert/scraper#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "REDIS_URL",
+        "PROXY_URL"
+      ]
+    },
+
+    "@kitchenxpert/design-system#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "storybook-static/**"]
+    },
+
+    "@kitchenxpert/ui-components#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "storybook-static/**"]
+    },
+
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+
+    "@kitchenxpert/frontend#dev": {
+      "dependsOn": [
+        "@kitchenxpert/common#build",
+        "@kitchenxpert/api-client#build",
+        "@kitchenxpert/design-system#build",
+        "@kitchenxpert/ui-components#build",
+        "@kitchenxpert/3d-engine#build"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+
+    "@kitchenxpert/partner-portal#dev": {
+      "dependsOn": [
+        "@kitchenxpert/common#build",
+        "@kitchenxpert/api-client#build",
+        "@kitchenxpert/design-system#build",
+        "@kitchenxpert/ui-components#build"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+
+    "@kitchenxpert/backend#dev": {
+      "dependsOn": ["@kitchenxpert/common#build", "prisma:generate"],
+      "cache": false,
+      "persistent": true
+    },
+
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "env": ["NODE_ENV", "CI"]
+    },
+
+    "test:watch": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "env": ["NODE_ENV", "CI"]
+    },
+
+    "lint": {
+      "dependsOn": [],
+      "outputs": [],
+      "cache": true
+    },
+
+    "lint:fix": {
+      "dependsOn": [],
+      "outputs": [],
+      "cache": false
+    },
+
+    "type-check": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "cache": true
+    },
+
+    "clean": {
+      "cache": false
+    },
+
+    "prisma:generate": {
+      "cache": true,
+      "inputs": ["prisma/schema.prisma"]
+    },
+
+    "@kitchenxpert/backend#prisma:generate": {
+      "cache": true,
+      "inputs": ["prisma/schema.prisma"],
+      "outputs": ["node_modules/.prisma/**", "node_modules/@prisma/client/**"]
+    },
+
+    "@kitchenxpert/scraper#db:generate": {
+      "cache": true,
+      "inputs": ["prisma/schema.prisma"],
+      "outputs": ["node_modules/.prisma/**", "node_modules/@prisma/client/**"]
+    },
+
+    "db:migrate": {
+      "dependsOn": ["prisma:generate"],
+      "cache": false
+    },
+
+    "db:seed": {
+      "dependsOn": ["db:migrate"],
+      "cache": false
+    },
+
+    "db:reset": {
+      "cache": false
+    },
+
+    "storybook": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"],
+      "cache": true
+    },
+
+    "scrape:all": {
+      "dependsOn": ["@kitchenxpert/scraper#build"],
+      "cache": false
+    },
+
+    "scrape:brand": {
+      "dependsOn": ["@kitchenxpert/scraper#build"],
+      "cache": false
+    },
+
+    "scrape:test": {
+      "dependsOn": ["@kitchenxpert/scraper#build"],
+      "cache": false
+    },
+
+    "export:json": {
+      "dependsOn": ["@kitchenxpert/scraper#build"],
+      "cache": false,
+      "outputs": ["exports/**"]
+    },
+
+    "export:csv": {
+      "dependsOn": ["@kitchenxpert/scraper#build"],
+      "cache": false,
+      "outputs": ["exports/**"]
+    }
+  }
+}

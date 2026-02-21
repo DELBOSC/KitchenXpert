@@ -1,0 +1,97 @@
+# ============================================================================
+# Multi-stage Dockerfile for Backend API
+# ============================================================================
+
+# Stage 1: Dependencies
+FROM node:20-alpine AS dependencies
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy package files
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/common/package.json ./packages/common/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod=false
+
+# Development stage
+FROM node:20-alpine AS development
+WORKDIR /app
+COPY --from=dependencies /app .
+CMD ["pnpm", "dev"]
+
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy dependencies from previous stage
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/packages/backend/node_modules ./packages/backend/node_modules
+COPY --from=dependencies /app/packages/common/node_modules ./packages/common/node_modules
+
+# Copy source code
+COPY packages/backend ./packages/backend
+COPY packages/common ./packages/common
+COPY tsconfig.json ./
+COPY turbo.json ./
+COPY package.json pnpm-workspace.yaml ./
+
+# Build the application
+RUN pnpm --filter @kitchenxpert/backend build
+RUN pnpm --filter @kitchenxpert/common build
+
+# Stage 3: Production
+FROM node:20-alpine AS production
+
+# Install dumb-init (proper signal handling)
+RUN apk add --no-cache dumb-init
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy package files
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/common/package.json ./packages/common/
+
+# Install production dependencies only
+RUN pnpm install --frozen-lockfile --prod
+
+# Copy Prisma schema and regenerate client for correct Alpine binary target
+COPY packages/backend/src/database/prisma/schema.prisma ./packages/backend/src/database/prisma/schema.prisma
+RUN cd packages/backend && npx prisma generate --schema=src/database/prisma/schema.prisma
+
+# Copy built files from builder
+COPY --from=builder --chown=nodejs:nodejs /app/packages/backend/dist ./packages/backend/dist
+COPY --from=builder --chown=nodejs:nodejs /app/packages/common/dist ./packages/common/dist
+
+# Create uploads directory
+RUN mkdir -p /app/uploads && chown -R nodejs:nodejs /app/uploads
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 4000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:4000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Start with dumb-init
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "packages/backend/dist/index.js"]

@@ -1,0 +1,221 @@
+# Test environment configuration
+# Usage: docker-compose -f docker-compose.yml -f config/docker/docker-compose.test.yml up --abort-on-container-exit
+
+services:
+  # ==========================================
+  # Backend Tests
+  # ==========================================
+  backend-test:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.backend
+      target: development
+    environment:
+      - NODE_ENV=test
+      - LOG_LEVEL=error
+      - DB_HOST=postgres-test
+      - DB_PORT=5432
+      - DB_NAME=kitchenxpert_test
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres_test_password
+      - REDIS_HOST=redis-test
+      - REDIS_PORT=6379
+      - JWT_ACCESS_SECRET=test_jwt_access_secret_min_32_chars_long
+      - JWT_REFRESH_SECRET=test_jwt_refresh_secret_min_32_chars_long
+    command: pnpm run test:coverage
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_started
+    networks:
+      - kitchenxpert-test
+    volumes:
+      - ../../packages/backend:/app/packages/backend
+      - ../../packages/common:/app/packages/common
+      - test-coverage:/app/coverage
+
+  # ==========================================
+  # Frontend Tests
+  # ==========================================
+  frontend-test:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.frontend
+      target: deps
+    environment:
+      - NODE_ENV=test
+      - CI=true
+      - REACT_APP_API_URL=http://backend-test:3000
+    command: pnpm --filter frontend test:coverage
+    networks:
+      - kitchenxpert-test
+    volumes:
+      - ../../packages/frontend:/app/packages/frontend
+      - ../../packages/common:/app/packages/common
+      - ../../packages/ui-components:/app/packages/ui-components
+      - test-coverage:/app/coverage
+
+  # ==========================================
+  # Partner Portal Tests
+  # ==========================================
+  partner-portal-test:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.partner-portal
+      target: deps
+    environment:
+      - NODE_ENV=test
+      - CI=true
+      - REACT_APP_API_URL=http://backend-test:3000
+    command: pnpm --filter partner-portal test:coverage
+    networks:
+      - kitchenxpert-test
+    volumes:
+      - ../../packages/partner-portal:/app/packages/partner-portal
+      - ../../packages/common:/app/packages/common
+      - test-coverage:/app/coverage
+
+  # ==========================================
+  # AI Services Tests
+  # ==========================================
+  ai-test:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.ai
+      target: builder
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=ERROR
+      - MODEL_CACHE_DIR=/app/models
+      - REDIS_HOST=redis-test
+      - REDIS_PORT=6379
+      - PYTEST_ARGS=--cov --cov-report=xml --cov-report=html
+    command: pytest ${PYTEST_ARGS}
+    depends_on:
+      - redis-test
+    networks:
+      - kitchenxpert-test
+    volumes:
+      - ../../packages/ai-modules:/app/ai-modules
+      - test-coverage:/app/coverage
+
+  # ==========================================
+  # Data Exchange Tests
+  # ==========================================
+  data-exchange-test:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.data-exchange
+      target: builder
+    environment:
+      - NODE_ENV=test
+      - LOG_LEVEL=error
+      - DB_HOST=postgres-test
+      - DB_PORT=5432
+      - DB_NAME=kitchenxpert_test
+    command: pnpm run test:coverage
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    networks:
+      - kitchenxpert-test
+    volumes:
+      - ../../packages/backend/src/services/data-exchange:/app/packages/backend/src/services/data-exchange
+      - test-coverage:/app/coverage
+
+  # ==========================================
+  # E2E Tests (Playwright/Cypress)
+  # ==========================================
+  e2e-test:
+    image: mcr.microsoft.com/playwright:v1.49.0-noble
+    working_dir: /app
+    environment:
+      - NODE_ENV=test
+      - BASE_URL=http://frontend-test:8080
+      - API_URL=http://backend-test:3000
+    command: npx playwright test --reporter=html
+    depends_on:
+      - backend-test
+      - frontend-test
+    networks:
+      - kitchenxpert-test
+    volumes:
+      - ../../tests/e2e:/app
+      - test-results:/app/test-results
+      - test-coverage:/app/coverage
+
+  # ==========================================
+  # PostgreSQL - Test Database (Isolated)
+  # ==========================================
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: kitchenxpert-postgres-test
+    environment:
+      - POSTGRES_DB=kitchenxpert_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_test_password
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    tmpfs:
+      - /var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    networks:
+      - kitchenxpert-test
+
+  # ==========================================
+  # Redis - Test Cache (No Persistence)
+  # ==========================================
+  redis-test:
+    image: redis:7-alpine
+    container_name: kitchenxpert-redis-test
+    command: redis-server --save ""
+    tmpfs:
+      - /data
+    networks:
+      - kitchenxpert-test
+
+  # ==========================================
+  # Test Reporter (Combine coverage reports)
+  # ==========================================
+  test-reporter:
+    image: node:20-alpine
+    working_dir: /app
+    command: |
+      sh -c "
+        echo 'Collecting test coverage reports...'
+        ls -la /coverage/
+        echo 'Test results available in mounted volume'
+      "
+    depends_on:
+      - backend-test
+      - frontend-test
+      - partner-portal-test
+      - ai-test
+      - data-exchange-test
+    volumes:
+      - test-coverage:/coverage
+      - test-results:/results
+    networks:
+      - kitchenxpert-test
+
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  kitchenxpert-test:
+    driver: bridge
+    name: kitchenxpert-test-network
+
+# ==========================================
+# Volumes (Temporary for test results)
+# ==========================================
+volumes:
+  test-coverage:
+    name: kitchenxpert-test-coverage
+  test-results:
+    name: kitchenxpert-test-results

@@ -1,0 +1,376 @@
+{
+  "version": "1.0",
+  "providerId": "appliances-generic",
+  "name": "Appliances Generic Template",
+  "description": "Template générique pour électroménager encastrable (Bosch, Siemens, Miele, Whirlpool, etc.)",
+  "author": "KitchenXpert",
+  "created": "2026-01-10",
+  "fields": {
+    "id": {
+      "source": "model_number",
+      "fallback": ["sku", "reference", "product_code", "model"]
+    },
+    "externalId": {
+      "source": "ean",
+      "fallback": ["gtin", "upc", "barcode"]
+    },
+    "name": {
+      "source": "product_name",
+      "fallback": ["name", "title", "designation", "model_name"]
+    },
+    "description": {
+      "source": "description",
+      "fallback": ["long_description", "product_description", "details"]
+    },
+    "category": {
+      "source": "category",
+      "fallback": ["product_type", "type", "appliance_type"],
+      "transform": "normalizeApplianceCategory",
+      "mapping": {
+        "Fours": "oven",
+        "Four encastrable": "oven",
+        "Built-in oven": "oven",
+        "Micro-ondes": "microwave",
+        "Microwave": "microwave",
+        "Plaques": "cooktop",
+        "Plaque induction": "induction_cooktop",
+        "Plaque vitrocéramique": "ceramic_cooktop",
+        "Plaque gaz": "gas_cooktop",
+        "Induction hob": "induction_cooktop",
+        "Hottes": "hood",
+        "Hotte aspirante": "hood",
+        "Extractor hood": "hood",
+        "Lave-vaisselle": "dishwasher",
+        "Dishwasher": "dishwasher",
+        "Réfrigérateur": "refrigerator",
+        "Refrigerator": "refrigerator",
+        "Fridge": "refrigerator",
+        "Congélateur": "freezer",
+        "Freezer": "freezer",
+        "Cave à vin": "wine_cooler",
+        "Wine cooler": "wine_cooler"
+      }
+    },
+    "subcategory": {
+      "source": "subcategory",
+      "fallback": ["subtype", "variant"]
+    },
+    "price.price": {
+      "source": "price",
+      "fallback": ["retail_price", "msrp", "prix_ttc", "unit_price"],
+      "transform": "toNumber"
+    },
+    "price.currency": {
+      "source": "currency",
+      "default": "EUR"
+    },
+    "price.taxRate": {
+      "source": "vat",
+      "transform": "toTaxRate",
+      "default": 0.20
+    },
+    "dimensions.width": {
+      "source": "width",
+      "fallback": ["niche_width", "installation_width", "largeur"],
+      "transform": "toNumber",
+      "unit": "cm"
+    },
+    "dimensions.height": {
+      "source": "height",
+      "fallback": ["niche_height", "installation_height", "hauteur"],
+      "transform": "toNumber",
+      "unit": "cm"
+    },
+    "dimensions.depth": {
+      "source": "depth",
+      "fallback": ["niche_depth", "installation_depth", "profondeur"],
+      "transform": "toNumber",
+      "unit": "cm"
+    },
+    "color": {
+      "source": "color",
+      "fallback": ["colour", "finish_color", "couleur"],
+      "transform": "normalizeColor",
+      "mapping": {
+        "Inox": "stainless_steel",
+        "Stainless steel": "stainless_steel",
+        "Noir": "black",
+        "Black": "black",
+        "Blanc": "white",
+        "White": "white"
+      }
+    },
+    "finish": {
+      "source": "finish",
+      "fallback": ["surface_finish", "finition"]
+    },
+    "availability.status": {
+      "source": "availability",
+      "fallback": ["stock_status", "disponibilite"],
+      "transform": "toAvailabilityStatus"
+    },
+    "availability.stock": {
+      "source": "stock",
+      "fallback": ["stock_quantity", "quantity"],
+      "transform": "toNumber"
+    },
+    "availability.leadTime": {
+      "source": "delivery_time",
+      "fallback": ["lead_time", "delai_livraison"]
+    },
+    "images.main": {
+      "source": "image",
+      "fallback": ["main_image", "product_image", "photo"]
+    },
+    "images.gallery": {
+      "source": "images",
+      "fallback": ["additional_images", "gallery_images"],
+      "transform": "splitArray",
+      "delimiter": ","
+    },
+    "weight": {
+      "source": "weight",
+      "fallback": ["net_weight", "poids"],
+      "transform": "toNumber",
+      "unit": "kg"
+    },
+    "brand": {
+      "source": "brand",
+      "fallback": ["manufacturer", "marque", "make"]
+    },
+    "model": {
+      "source": "model",
+      "fallback": ["model_number", "reference"]
+    },
+    "energyClass": {
+      "source": "energy_class",
+      "fallback": ["energy_rating", "classe_energetique", "energy_efficiency"],
+      "transform": "normalizeEnergyClass"
+    },
+    "technicalSpecs": {
+      "source": "specifications",
+      "fallback": ["specs", "technical_data"],
+      "transform": "parseKeyValue"
+    },
+    "capacity": {
+      "source": "capacity",
+      "fallback": ["volume", "capacite", "net_capacity"],
+      "transform": "toCapacity"
+    },
+    "power": {
+      "source": "power",
+      "fallback": ["wattage", "puissance", "power_consumption"],
+      "transform": "toPower"
+    },
+    "noiseLevel": {
+      "source": "noise",
+      "fallback": ["noise_level", "sound_level", "niveau_sonore"],
+      "transform": "toNoiseLevel"
+    },
+    "certifications": {
+      "source": "certifications",
+      "fallback": ["certificates", "labels"],
+      "transform": "splitArray"
+    },
+    "warranty": {
+      "source": "warranty",
+      "fallback": ["guarantee", "garantie"],
+      "transform": "toWarranty"
+    },
+    "features": {
+      "source": "features",
+      "fallback": ["key_features", "caracteristiques"],
+      "transform": "splitArray"
+    },
+    "programs": {
+      "source": "programs",
+      "fallback": ["cooking_programs", "wash_programs", "programmes"]
+    },
+    "connectivity": {
+      "source": "connectivity",
+      "fallback": ["smart_features", "wifi", "connectivite"],
+      "transform": "parseConnectivity"
+    },
+    "installationType": {
+      "source": "installation",
+      "fallback": ["installation_type", "type_installation"],
+      "transform": "normalizeInstallation",
+      "mapping": {
+        "Encastrable": "built_in",
+        "Built-in": "built_in",
+        "Intégrable": "fully_integrated",
+        "Fully integrated": "fully_integrated",
+        "Pose libre": "freestanding",
+        "Freestanding": "freestanding"
+      }
+    }
+  },
+  "transformations": {
+    "normalizeApplianceCategory": {
+      "type": "mapping",
+      "caseSensitive": false,
+      "default": "appliance"
+    },
+    "normalizeEnergyClass": {
+      "type": "custom",
+      "function": "parseEnergyClass",
+      "validValues": ["A+++", "A++", "A+", "A", "B", "C", "D", "E", "F", "G"]
+    },
+    "normalizeColor": {
+      "type": "mapping",
+      "caseSensitive": false,
+      "default": "other"
+    },
+    "normalizeInstallation": {
+      "type": "mapping",
+      "caseSensitive": false,
+      "default": "built_in"
+    },
+    "toNumber": {
+      "type": "parse",
+      "removeNonNumeric": true,
+      "decimalSeparator": "auto"
+    },
+    "toCapacity": {
+      "type": "custom",
+      "function": "parseCapacity",
+      "notes": "Parse '71L', '250 litres', etc."
+    },
+    "toPower": {
+      "type": "custom",
+      "function": "parsePower",
+      "notes": "Parse '2400W', '2.4kW', etc."
+    },
+    "toNoiseLevel": {
+      "type": "custom",
+      "function": "parseNoiseLevel",
+      "notes": "Parse '42dB', '42 dB(A)', etc."
+    },
+    "toTaxRate": {
+      "type": "custom",
+      "function": "parseTaxRate"
+    },
+    "toAvailabilityStatus": {
+      "type": "mapping",
+      "default": "unknown"
+    },
+    "toWarranty": {
+      "type": "custom",
+      "function": "parseWarranty",
+      "notes": "Parse '2 ans', '5 years', etc."
+    },
+    "splitArray": {
+      "type": "split",
+      "trim": true,
+      "removeEmpty": true
+    },
+    "parseKeyValue": {
+      "type": "keyValue",
+      "separator": ":",
+      "delimiter": ";"
+    },
+    "parseConnectivity": {
+      "type": "custom",
+      "function": "parseConnectivity",
+      "notes": "Detect WiFi, Bluetooth, HomeConnect, etc."
+    }
+  },
+  "validation": {
+    "required": ["name", "price.price", "category", "brand"],
+    "recommended": ["energyClass", "dimensions.width", "dimensions.height", "model"],
+    "warnings": {
+      "missingImage": "Produit sans image",
+      "missingDimensions": "Dimensions d'encastrement manquantes",
+      "missingEnergyClass": "Classe énergétique non spécifiée",
+      "noModel": "Numéro de modèle manquant",
+      "highPrice": "Prix suspicieusement élevé (> 10000€)",
+      "lowPrice": "Prix suspicieusement bas (< 100€)"
+    },
+    "custom": {
+      "priceRange": "price >= 100 AND price <= 10000",
+      "hasEssentialInfo": "name.length > 0 AND brand.length > 0 AND model.length > 0"
+    }
+  },
+  "postProcessing": {
+    "generateSlug": true,
+    "normalizeCategories": true,
+    "convertUnits": {
+      "dimensions": "cm",
+      "weight": "kg",
+      "capacity": "L",
+      "power": "W",
+      "noise": "dB"
+    },
+    "enrichment": {
+      "addProviderMetadata": true,
+      "calculateNicheSize": true,
+      "detectSmartFeatures": true,
+      "categorizeByType": true
+    }
+  },
+  "specialHandling": {
+    "energyLabel": {
+      "enabled": true,
+      "parseFromDescription": true,
+      "europeFormat": true
+    },
+    "nicheCalculation": {
+      "enabled": true,
+      "addClearance": {
+        "width": 0,
+        "height": 0,
+        "depth": 5
+      }
+    },
+    "smartFeatures": {
+      "detectKeywords": ["WiFi", "HomeConnect", "SmartThings", "App", "Alexa", "Google Home"],
+      "flagInMetadata": true
+    }
+  },
+  "brandSpecificNotes": {
+    "Bosch": "Gamme Série 2/4/6/8, HomeConnect disponible sur haut de gamme",
+    "Siemens": "iQ100/300/500/700, compatible HomeConnect",
+    "Miele": "Garantie longue durée (jusqu'à 20 ans), qualité premium",
+    "Whirlpool": "6ème Sens, Supreme Clean",
+    "Samsung": "SmartThings, Dual Cook",
+    "LG": "ThinQ, InstaView",
+    "Electrolux": "SteamBoost, UltraFan",
+    "AEG": "SteamBake, Mastery Range",
+    "Neff": "CircoTherm, Slide&Hide"
+  },
+  "notes": [
+    "Template optimisé pour tous les fabricants d'électroménager",
+    "Support des dimensions d'encastrement (niche)",
+    "Classe énergétique européenne (A+++ à G)",
+    "Détection automatique des fonctionnalités connectées",
+    "Support multilingue (FR/EN/DE)",
+    "Compatible formats CSV, Excel, JSON, XML"
+  ],
+  "examples": [
+    {
+      "name": "Four Bosch",
+      "columns": ["model_number", "product_name", "price", "energy_class", "capacity", "width", "height"],
+      "sample": {
+        "model_number": "HBG6764S1",
+        "product_name": "Four encastrable pyrolyse Série 8",
+        "price": "899.00",
+        "energy_class": "A+",
+        "capacity": "71L",
+        "width": "59.4",
+        "height": "59.5"
+      }
+    },
+    {
+      "name": "Lave-vaisselle Miele",
+      "columns": ["sku", "name", "retail_price", "energy_rating", "noise", "programs"],
+      "sample": {
+        "sku": "G7310SCIAUTODOS",
+        "name": "Lave-vaisselle AutoDos 60cm",
+        "retail_price": "1299€",
+        "energy_rating": "A+++",
+        "noise": "42dB",
+        "programs": "QuickIntenseWash;AutoOpen"
+      }
+    }
+  ]
+}

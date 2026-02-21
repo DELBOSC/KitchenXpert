@@ -1,0 +1,416 @@
+name: 🚀 Deploy to Production
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g., v1.2.3)'
+        required: true
+      reason:
+        description: 'Reason for manual deployment'
+        required: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8.15.0'
+  # NOTE: PROD_API_URL is intentionally empty here. It is populated at runtime
+  # by the Infisical secrets-action (Job 2, step "Fetch secrets from Infisical"),
+  # which injects secrets as environment variables into subsequent steps.
+  PROD_API_URL: ''
+
+jobs:
+  # Job 1: Pre-deployment Checks
+  pre-deployment:
+    name: ✅ Pre-deployment Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.event.inputs.version }}
+
+      - name: 🔍 Verify version tag
+        run: |
+          VERSION="${{ github.event.release.tag_name || github.event.inputs.version }}"
+          if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format: $VERSION"
+            echo "Expected format: v1.2.3"
+            exit 1
+          fi
+          echo "Version: $VERSION" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🧪 Run full test suite
+        run: pnpm test:ci
+
+      - name: 🔒 Security audit
+        run: pnpm audit --audit-level=moderate
+
+      - name: 📊 Generate test report
+        run: |
+          echo "## ✅ Pre-deployment Checks Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Version tag validated" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ All tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ No critical security vulnerabilities" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Build Production Artifacts
+  build:
+    name: 🏗️ Build Production
+    needs: pre-deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.event.inputs.version }}
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔐 Fetch secrets from Infisical
+        uses: Infisical/secrets-action@v1.0.7
+        with:
+          method: "universal-auth"
+          env-slug: "prod"
+          project-slug: "kitchenxpert"
+          client-id: ${{ secrets.INFISICAL_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+
+      - name: 🏗️ Build all packages
+        run: pnpm build
+        env:
+          NODE_ENV: production
+          API_URL: ${{ env.PROD_API_URL }}
+
+      - name: 📦 Create production bundle
+        run: |
+          tar -czf production-${{ github.event.release.tag_name || github.event.inputs.version }}.tar.gz \
+            packages/backend/dist \
+            packages/frontend/dist \
+            packages/common/dist \
+            package.json \
+            pnpm-lock.yaml \
+            config/
+
+      - name: 📤 Upload production bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-bundle
+          path: production-*.tar.gz
+          retention-days: 90
+
+  # Job 3: Build Docker Images
+  build-docker:
+    name: 🐳 Build Production Images
+    needs: pre-deployment
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend, frontend]
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.event.inputs.version }}
+
+      - name: 🔐 Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKER_REGISTRY }}/kitchenxpert-${{ matrix.service }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ github.event.release.tag_name || github.event.inputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ github.event.release.tag_name || github.event.inputs.version }}
+            type=raw,value=production-latest
+            type=raw,value={{date 'YYYY-MM-DD'}}
+
+      - name: 🐳 Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./config/docker/Dockerfile.${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NODE_ENV=production
+            VERSION=${{ github.event.release.tag_name || github.event.inputs.version }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/kitchenxpert-${{ matrix.service }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/kitchenxpert-${{ matrix.service }}:buildcache,mode=max
+
+  # Job 4: Deploy to Production (Blue/Green)
+  deploy:
+    name: 🚀 Deploy to Production
+    needs: [build, build-docker]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://kitchenxpert.com
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📥 Download production bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: production-bundle
+
+      - name: 🔐 Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          install -m 600 /dev/null ~/.ssh/deploy_key
+          printenv DEPLOY_SSH_KEY > ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.PROD_HOST }} >> ~/.ssh/known_hosts
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
+
+      - name: 📤 Upload to production server
+        run: |
+          scp -i ~/.ssh/deploy_key production-*.tar.gz \
+            ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:/tmp/
+
+      - name: 🔵 Deploy to Blue environment
+        id: deploy-blue
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }} << 'EOF'
+            # Deploy to blue environment (inactive)
+            cd /var/www/kitchenxpert-blue
+
+            # Backup
+            tar -czf backup-$(date +%Y%m%d-%H%M%S).tar.gz . || true
+
+            # Extract new version
+            tar -xzf /tmp/production-*.tar.gz
+
+            # Install dependencies
+            pnpm install --prod --frozen-lockfile
+
+            # Run migrations on blue DB
+            pnpm migrate:prod-blue
+
+            # Start blue environment
+            pm2 reload ecosystem.blue.config.js --env production
+
+            # Health check
+            sleep 15
+            curl -f http://localhost:4001/health || exit 1
+
+            echo "Blue environment deployed successfully"
+          EOF
+
+      - name: 🧪 Smoke test Blue environment
+        run: |
+          # Test blue environment before switching
+          ssh -i ~/.ssh/deploy_key ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }} << 'EOF'
+            # Run smoke tests against blue
+            cd /var/www/kitchenxpert-blue
+            pnpm test:smoke --url=http://localhost:4001
+          EOF
+
+      - name: 🔄 Switch to Blue (zero-downtime)
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }} << 'EOF'
+            # Update nginx to point to blue
+            sudo ln -sf /etc/nginx/sites-available/kitchenxpert-blue.conf \
+                        /etc/nginx/sites-enabled/kitchenxpert.conf
+
+            # Reload nginx (zero-downtime)
+            sudo nginx -t && sudo nginx -s reload
+
+            # Wait for traffic to settle
+            sleep 30
+
+            # Stop green environment
+            cd /var/www/kitchenxpert-green
+            pm2 stop ecosystem.green.config.js
+
+            echo "Traffic switched to blue environment"
+          EOF
+
+      - name: 🟢 Update Green environment for next deployment
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }} << 'EOF'
+            # Green becomes the new standby
+            cd /var/www/kitchenxpert-green
+            rsync -av --delete /var/www/kitchenxpert-blue/ .
+          EOF
+
+  # Job 5: Post-deployment Tests
+  post-deployment:
+    name: 🧪 Post-deployment Tests
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🧪 Run production smoke tests
+        run: pnpm test:smoke:prod
+        env:
+          API_URL: https://api.kitchenxpert.com
+          FRONTEND_URL: https://kitchenxpert.com
+
+      - name: 🔍 Health checks
+        run: |
+          # API health
+          curl -f https://api.kitchenxpert.com/health || exit 1
+
+          # Frontend health
+          curl -f https://kitchenxpert.com || exit 1
+
+          # Database connectivity
+          curl -f https://api.kitchenxpert.com/health/db || exit 1
+
+      - name: 📊 Performance check
+        run: |
+          # Lighthouse CI on production
+          npx lighthouse-ci https://kitchenxpert.com \
+            --preset=desktop \
+            --quiet \
+            --chrome-flags="--headless"
+
+  # Job 6: Rollback (on failure)
+  rollback:
+    name: 🔙 Rollback
+    needs: [deploy, post-deployment]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: 🔐 Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          install -m 600 /dev/null ~/.ssh/deploy_key
+          printenv DEPLOY_SSH_KEY > ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.PROD_HOST }} >> ~/.ssh/known_hosts
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
+
+      - name: 🔙 Automatic rollback
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }} << 'EOF'
+            # Switch nginx back to green
+            sudo ln -sf /etc/nginx/sites-available/kitchenxpert-green.conf \
+                        /etc/nginx/sites-enabled/kitchenxpert.conf
+
+            # Reload nginx
+            sudo nginx -t && sudo nginx -s reload
+
+            # Restart green environment
+            cd /var/www/kitchenxpert-green
+            pm2 reload ecosystem.green.config.js --env production
+
+            # Stop blue environment
+            cd /var/www/kitchenxpert-blue
+            pm2 stop ecosystem.blue.config.js
+
+            echo "Rolled back to green environment"
+          EOF
+
+      - name: 📢 Alert on rollback
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 PRODUCTION ROLLBACK EXECUTED",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*🚨 PRODUCTION DEPLOYMENT FAILED - AUTOMATIC ROLLBACK*\n\n*Version:* ${{ github.event.release.tag_name || github.event.inputs.version }}\n*Triggered by:* ${{ github.actor }}\n\n@channel Please investigate immediately!"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_CRITICAL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  # Job 7: Notify
+  notify:
+    name: 📢 Notify Team
+    needs: [deploy, post-deployment]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: 📢 Notify Slack
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚀 Production Deployment ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Production Deployment*\n*Status:* ${{ job.status }}\n*Version:* ${{ github.event.release.tag_name || github.event.inputs.version }}\n*Deployed by:* ${{ github.actor }}\n*URL:* https://kitchenxpert.com"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_PROD }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: 📝 Create deployment record
+        run: |
+          echo "## 🚀 Production Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ github.event.release.tag_name || github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployed by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Production URL:** https://kitchenxpert.com" >> $GITHUB_STEP_SUMMARY

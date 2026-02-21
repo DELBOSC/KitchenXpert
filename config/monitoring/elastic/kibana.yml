@@ -1,0 +1,406 @@
+# Kibana Configuration for KitchenXpert
+#
+# This configuration file sets up Kibana for log visualization and analysis.
+# Documentation: https://www.elastic.co/guide/en/kibana/current/settings.html
+
+# ============================================
+# Server Configuration
+# ============================================
+
+# The Kibana server's name
+server.name: "kitchenxpert-kibana"
+
+# The URLs of the Elasticsearch instances to connect to
+elasticsearch.hosts: ["http://localhost:9200"]
+
+# Kibana is served by a back end server. This setting specifies the port to use
+server.port: 5601
+
+# Specifies the address to which the Kibana server will bind
+server.host: "0.0.0.0"
+
+# The maximum payload size in bytes for incoming server requests
+server.maxPayloadBytes: 1048576
+
+# The public URL at which Kibana is available for end users
+server.publicBaseUrl: "https://logs.kitchenxpert.com"
+
+# Base path for Kibana (if behind a proxy)
+# server.basePath: "/kibana"
+
+# Whether to rewrite requests that are prefixed with server.basePath
+server.rewriteBasePath: false
+
+# ============================================
+# Elasticsearch Configuration
+# ============================================
+
+# Username for Kibana to use when connecting to Elasticsearch
+elasticsearch.username: "kibana_system"
+
+# Password for the user specified in elasticsearch.username
+elasticsearch.password: "${KIBANA_SYSTEM_PASSWORD}"
+
+# Time in milliseconds to wait for Elasticsearch to respond to pings
+elasticsearch.pingTimeout: 30000
+
+# Time in milliseconds to wait for responses from Elasticsearch
+elasticsearch.requestTimeout: 30000
+
+# List of Kibana client-side headers to send to Elasticsearch
+elasticsearch.requestHeadersWhitelist: ["authorization"]
+
+# Custom headers to send to Elasticsearch
+# elasticsearch.customHeaders: {}
+
+# Enable SSL for Elasticsearch
+elasticsearch.ssl.verificationMode: none
+
+# SSL certificate and key for Elasticsearch connection
+# elasticsearch.ssl.certificateAuthorities: ["/path/to/ca.crt"]
+# elasticsearch.ssl.certificate: "/path/to/client.crt"
+# elasticsearch.ssl.key: "/path/to/client.key"
+
+# ============================================
+# Kibana Index
+# ============================================
+
+# The Kibana server creates an index in Elasticsearch to store saved searches, visualizations and dashboards
+kibana.index: ".kibana"
+
+# Default space
+kibana.defaultAppId: "discover"
+
+# ============================================
+# Logging Configuration
+# ============================================
+
+# Logging configuration
+logging.root.level: info
+
+# Log to file
+logging.appenders.file:
+  type: file
+  fileName: /var/log/kibana/kibana.log
+  layout:
+    type: json
+
+# Log to console
+logging.appenders.console:
+  type: console
+  layout:
+    type: pattern
+    pattern: "[%date][%level][%logger] %message"
+
+# Loggers configuration
+logging.loggers:
+  - name: plugins
+    level: info
+  - name: server
+    level: info
+  - name: optimize
+    level: info
+  - name: metrics
+    level: error
+
+# Root logger
+logging.root:
+  appenders: [console, file]
+  level: info
+
+# Verbose logging (for debugging)
+# logging.verbose: false
+
+# Quiet mode
+# logging.quiet: false
+
+# Silent mode (no console output)
+# logging.silent: false
+
+# Destination for log output
+# logging.dest: stdout
+
+# Rotate log files
+# logging.rotate.enabled: true
+# logging.rotate.everyBytes: 10485760  # 10MB
+# logging.rotate.keepFiles: 7
+
+# ============================================
+# Performance & Operations
+# ============================================
+
+# Specifies the path where Kibana creates the process ID file
+pid.file: /var/run/kibana/kibana.pid
+
+# Enables you to specify a file where Kibana stores log output
+# logging.dest: /var/log/kibana/kibana.log
+
+# Enables you to specify a path for the data Kibana uses
+path.data: /var/lib/kibana
+
+# ============================================
+# Security Configuration
+# ============================================
+
+# Encryption key for encrypting sensitive data
+xpack.encryptedSavedObjects.encryptionKey: "${KIBANA_ENCRYPTION_KEY}"
+
+# Reporting encryption key
+xpack.reporting.encryptionKey: "${KIBANA_REPORTING_KEY}"
+
+# Security encryption key
+xpack.security.encryptionKey: "${KIBANA_SECURITY_KEY}"
+
+# Session timeout in milliseconds (24 hours)
+xpack.security.session.idleTimeout: "24h"
+
+# Absolute session timeout
+xpack.security.session.lifespan: "30d"
+
+# Session cleanup interval
+xpack.security.session.cleanupInterval: "1h"
+
+# Cookie security settings
+server.ssl.enabled: false
+# server.ssl.certificate: /path/to/cert.crt
+# server.ssl.key: /path/to/cert.key
+
+# Content Security Policy
+csp.strict: true
+csp.warnLegacyBrowsers: true
+
+# ============================================
+# Monitoring
+# ============================================
+
+# Enable monitoring
+monitoring.enabled: true
+
+# Monitoring UI settings
+monitoring.ui.enabled: true
+
+# Monitoring collection
+monitoring.kibana.collection.enabled: true
+monitoring.kibana.collection.interval: 10000  # 10 seconds
+
+# ============================================
+# Alerting & Actions
+# ============================================
+
+# Enable alerting
+xpack.actions.enabled: true
+
+# Allowed hosts for webhook actions
+xpack.actions.allowedHosts: ["*"]
+
+# Enable preconfigured alert connectors
+# xpack.actions.preconfigured:
+#   my-slack:
+#     actionTypeId: .slack
+#     name: 'Slack Alerts'
+#     config:
+#       webhookUrl: 'https://hooks.slack.com/services/...'
+
+# ============================================
+# Reporting
+# ============================================
+
+# Enable reporting
+xpack.reporting.enabled: true
+
+# Reporting queue timeout
+xpack.reporting.queue.timeout: 120000
+
+# Reporting CSV settings
+xpack.reporting.csv.maxSizeBytes: 10485760  # 10MB
+xpack.reporting.csv.scroll.size: 500
+xpack.reporting.csv.scroll.duration: "30s"
+
+# Chromium settings for PDF generation
+# xpack.reporting.capture.browser.chromium.disableSandbox: false
+
+# ============================================
+# Spaces
+# ============================================
+
+# Maximum number of spaces
+xpack.spaces.maxSpaces: 1000
+
+# ============================================
+# Canvas
+# ============================================
+
+# Enable Canvas app
+xpack.canvas.enabled: true
+
+# ============================================
+# Machine Learning
+# ============================================
+
+# Enable ML features
+xpack.ml.enabled: false
+
+# ============================================
+# Graph
+# ============================================
+
+# Enable Graph
+xpack.graph.enabled: false
+
+# ============================================
+# APM
+# ============================================
+
+# Enable APM features
+xpack.apm.enabled: false
+
+# ============================================
+# Maps
+# ============================================
+
+# Enable Maps
+xpack.maps.enabled: true
+
+# ============================================
+# Index Pattern Management
+# ============================================
+
+# Default index pattern
+# uiSettings.overrides.defaultIndex: "logs-*"
+
+# ============================================
+# Telemetry
+# ============================================
+
+# Opt-out of telemetry
+telemetry.enabled: false
+telemetry.optIn: false
+
+# Send usage statistics
+telemetry.allowChangingOptInStatus: false
+
+# ============================================
+# Accessibility
+# ============================================
+
+# Disable animations
+# elasticsearch.shardTimeout: 30000
+
+# ============================================
+# Status Page
+# ============================================
+
+# Enable status page
+status.allowAnonymous: false
+
+# ============================================
+# i18n
+# ============================================
+
+# Default locale
+i18n.locale: "en"
+
+# ============================================
+# Console
+# ============================================
+
+# Enable Dev Tools Console
+console.enabled: true
+
+# ============================================
+# Saved Objects
+# ============================================
+
+# Maximum saved object size
+savedObjects.maxImportPayloadBytes: 26214400  # 25MB
+
+# Maximum number of saved objects to import
+savedObjects.maxImportExportSize: 10000
+
+# ============================================
+# Tile Map Settings
+# ============================================
+
+# Tile map service URL
+# map.tilemap.url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+# ============================================
+# Dashboard Settings
+# ============================================
+
+# Default dark mode
+# uiSettings.overrides."theme:darkMode": true
+
+# ============================================
+# Custom Kibana Configuration for KitchenXpert
+# ============================================
+
+# Custom branding (X-Pack)
+# xpack.reporting.kibanaServer.hostname: "logs.kitchenxpert.com"
+
+# Index patterns to auto-create:
+# - logs-* (all application logs)
+# - logs-app-* (application logs)
+# - logs-nginx-* (nginx access logs)
+# - logs-error-* (error logs)
+# - logs-audit-* (audit logs)
+
+# Saved searches to create:
+# - Error logs in last 24 hours
+# - High severity logs
+# - User activity logs
+# - API request logs
+# - Database slow queries
+
+# Visualizations to create:
+# - Error rate over time
+# - Log levels distribution
+# - Top error messages
+# - Request duration histogram
+# - Geographic distribution of users
+
+# Dashboards to create:
+# - Application Overview
+# - Error Monitoring
+# - Performance Monitoring
+# - Security Monitoring
+# - User Activity Monitoring
+
+# ============================================
+# Environment Variables
+# ============================================
+#
+# Set these environment variables:
+# - KIBANA_SYSTEM_PASSWORD: Password for kibana_system user
+# - KIBANA_ENCRYPTION_KEY: 32-character string for encrypted saved objects
+# - KIBANA_REPORTING_KEY: 32-character string for reporting
+# - KIBANA_SECURITY_KEY: 32-character string for security
+#
+# Example docker-compose environment:
+# environment:
+#   - "KIBANA_SYSTEM_PASSWORD=changeme"
+#   - "KIBANA_ENCRYPTION_KEY=something_at_least_32_characters_long"
+#   - "KIBANA_REPORTING_KEY=something_at_least_32_characters_long"
+#   - "KIBANA_SECURITY_KEY=something_at_least_32_characters_long"
+
+# ============================================
+# Plugin Configuration
+# ============================================
+
+# Disable plugin telemetry
+# telemetry.enabled: false
+
+# Plugin timeout
+# elasticsearch.requestTimeout: 30000
+
+# ============================================
+# Performance Tuning
+# ============================================
+
+# Optimize bundle
+# optimize.enabled: true
+
+# Server max concurrent requests
+# server.maxConcurrentRequests: 10
+
+# ============================================

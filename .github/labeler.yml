@@ -1,0 +1,76 @@
+# Auto-labeling configuration for Pull Requests
+
+# Frontend
+frontend:
+  - packages/frontend/**/*
+  - packages/ui-components/**/*
+  - packages/design-system/**/*
+
+# Backend
+backend:
+  - packages/backend/**/*
+  - packages/api-client/**/*
+
+# 3D Engine
+3d-engine:
+  - packages/3d-engine/**/*
+
+# Common
+common:
+  - packages/common/**/*
+
+# Catalog Providers
+catalog:
+  - catalog-providers/**/*
+
+# AI Modules
+ai:
+  - packages/ai-modules/**/*
+
+# Configuration
+config:
+  - config/**/*
+  - '*.config.js'
+  - '*.config.ts'
+
+# CI/CD
+ci-cd:
+  - .github/workflows/**/*
+  - .github/dependabot.yml
+
+# Documentation
+documentation:
+  - '**/*.md'
+  - docs/**/*
+
+# Tests
+tests:
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/*.spec.tsx'
+  - packages/*/tests/**/*
+
+# Dependencies
+dependencies:
+  - package.json
+  - pnpm-lock.yaml
+  - packages/*/package.json
+
+# Docker
+docker:
+  - '**/Dockerfile*'
+  - '**/docker-compose*.yml'
+  - config/docker/**/*
+
+# Database
+database:
+  - migrations/**/*
+  - seeds/**/*
+  - config/database/**/*
+
+# Security
+security:
+  - config/security/**/*
+  - packages/backend/src/auth/**/*
+  - .github/SECURITY.md

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "@kitchenxpert/frontend",
+  "extends": "../../tsconfig.react.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["components/*"],
+      "@/pages/*": ["pages/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/utils/*": ["utils/*"],
+      "@/stores/*": ["stores/*"],
+      "@/types/*": ["types/*"],
+      "@/styles/*": ["styles/*"],
+      "@kitchenxpert/common": ["../../packages/common/src"],
+      "@kitchenxpert/common/*": ["../../packages/common/src/*"],
+      "@kitchenxpert/api-client": ["../../packages/api-client/src"],
+      "@kitchenxpert/api-client/*": ["../../packages/api-client/src/*"],
+      "@kitchenxpert/design-system": ["../../packages/design-system/src"],
+      "@kitchenxpert/design-system/*": ["../../packages/design-system/src/*"],
+      "@kitchenxpert/ui-components": ["../../packages/ui-components/src"],
+      "@kitchenxpert/ui-components/*": ["../../packages/ui-components/src/*"],
+      "@kitchenxpert/3d-engine": ["../../packages/3d-engine/src"],
+      "@kitchenxpert/3d-engine/*": ["../../packages/3d-engine/src/*"]
+    }
+  },
+  "include": ["src/**/*", "src/**/*.json"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "src/test/**/*", "src/__tests__/**/*"],
+  "references": [
+    { "path": "../common" },
+    { "path": "../api-client" },
+    { "path": "../design-system" },
+    { "path": "../ui-components" },
+    { "path": "../3d-engine" }
+  ]
+}

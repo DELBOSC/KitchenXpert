@@ -1,0 +1,70 @@
+{
+  "sectionId": "future-needs",
+  "version": "1.0.0",
+  "metadata": {
+    "title": { "en": "Future Considerations", "fr": "Considérations futures" },
+    "icon": "trending-up",
+    "estimatedTime": 2
+  },
+  "questions": [
+    {
+      "id": "time-in-home",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How long do you plan to stay in this home?", "fr": "Combien de temps prévoyez-vous rester dans cette maison ?" },
+      "options": [
+        { "value": "1-3-years", "label": { "en": "1-3 years", "fr": "1-3 ans" } },
+        { "value": "3-5-years", "label": { "en": "3-5 years", "fr": "3-5 ans" } },
+        { "value": "5-10-years", "label": { "en": "5-10 years", "fr": "5-10 ans" } },
+        { "value": "10-plus", "label": { "en": "10+ years / Forever home", "fr": "10+ ans / Maison pour toujours" } }
+      ]
+    },
+    {
+      "id": "family-changes",
+      "type": "multi-choice",
+      "required": false,
+      "label": { "en": "Do you anticipate any household changes?", "fr": "Anticipez-vous des changements dans votre foyer ?" },
+      "options": [
+        { "value": "children", "label": { "en": "Having/more children", "fr": "Avoir des enfants/plus d'enfants" } },
+        { "value": "kids-leaving", "label": { "en": "Kids leaving home", "fr": "Enfants quittant la maison" } },
+        { "value": "aging-parents", "label": { "en": "Aging parents moving in", "fr": "Parents âgés emménageant" } },
+        { "value": "work-from-home", "label": { "en": "More work from home", "fr": "Plus de télétravail" } },
+        { "value": "none", "label": { "en": "No changes expected", "fr": "Aucun changement prévu" } }
+      ]
+    },
+    {
+      "id": "aging-in-place",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "Should we consider aging-in-place features?", "fr": "Devons-nous considérer des fonctions pour vieillir sur place ?" },
+      "options": [
+        { "value": "yes-plan-now", "label": { "en": "Yes - plan for it now", "fr": "Oui - planifier maintenant" } },
+        { "value": "prepare-later", "label": { "en": "Design to allow easy future modifications", "fr": "Concevoir pour permettre des modifications futures" } },
+        { "value": "not-needed", "label": { "en": "Not needed", "fr": "Pas nécessaire" } }
+      ]
+    },
+    {
+      "id": "cooking-evolution",
+      "type": "single-choice",
+      "required": false,
+      "label": { "en": "Do you expect your cooking habits to change?", "fr": "Pensez-vous que vos habitudes culinaires vont changer ?" },
+      "options": [
+        { "value": "more-cooking", "label": { "en": "More cooking at home", "fr": "Plus de cuisine à la maison" } },
+        { "value": "less-cooking", "label": { "en": "Less cooking (more takeout)", "fr": "Moins de cuisine" } },
+        { "value": "same", "label": { "en": "Stay about the same", "fr": "Rester à peu près pareil" } },
+        { "value": "unsure", "label": { "en": "Unsure", "fr": "Incertain" } }
+      ]
+    },
+    {
+      "id": "future-tech",
+      "type": "single-choice",
+      "required": false,
+      "label": { "en": "Should we future-proof for technology upgrades?", "fr": "Devons-nous préparer pour les futures technologies ?" },
+      "options": [
+        { "value": "yes-important", "label": { "en": "Yes - very important", "fr": "Oui - très important" } },
+        { "value": "some-prep", "label": { "en": "Some preparation (extra outlets, conduit)", "fr": "Un peu de préparation" } },
+        { "value": "not-concerned", "label": { "en": "Not concerned", "fr": "Pas préoccupé" } }
+      ]
+    }
+  ]
+}

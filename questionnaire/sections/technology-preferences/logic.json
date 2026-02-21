@@ -1,0 +1,118 @@
+{
+  "sectionId": "technology-preferences",
+  "version": "1.0.0",
+  "conditionalRules": [
+    {
+      "id": "skip-voice-details-if-not-comfortable",
+      "condition": {
+        "questionId": "tech-comfort",
+        "operator": "equals",
+        "value": "not-comfortable"
+      },
+      "action": {
+        "type": "suggest-skip",
+        "targetQuestions": ["voice-control", "smart-lighting", "connectivity"],
+        "message": {
+          "en": "Based on your preference for traditional technology, we'll focus on essential features only.",
+          "fr": "Selon votre préférence pour la technologie traditionnelle, nous nous concentrerons sur les fonctionnalités essentielles."
+        }
+      }
+    },
+    {
+      "id": "expand-smart-home-options",
+      "condition": {
+        "questionId": "tech-comfort",
+        "operator": "in",
+        "value": ["very-comfortable", "comfortable"]
+      },
+      "action": {
+        "type": "show-additional",
+        "message": {
+          "en": "Great! We can explore advanced smart home integrations for your kitchen.",
+          "fr": "Parfait ! Nous pouvons explorer des intégrations domotiques avancées pour votre cuisine."
+        }
+      }
+    },
+    {
+      "id": "wifi-requirement",
+      "condition": {
+        "questionId": "smart-appliances",
+        "operator": "not-contains",
+        "value": "none"
+      },
+      "action": {
+        "type": "auto-suggest",
+        "targetQuestion": "connectivity",
+        "suggestValue": "strong-wifi",
+        "message": {
+          "en": "Smart appliances require strong WiFi coverage for reliable operation.",
+          "fr": "Les appareils intelligents nécessitent une bonne couverture WiFi pour un fonctionnement fiable."
+        }
+      }
+    }
+  ],
+  "crossSectionRules": [
+    {
+      "id": "budget-tech-alignment",
+      "fromSection": "budget-constraints",
+      "condition": {
+        "questionId": "total-budget",
+        "operator": "in",
+        "value": ["under-10k", "10k-25k"]
+      },
+      "action": {
+        "type": "warning",
+        "message": {
+          "en": "Note: Full smart home integration may require additional budget allocation.",
+          "fr": "Note : L'intégration domotique complète peut nécessiter une allocation budgétaire supplémentaire."
+        }
+      }
+    },
+    {
+      "id": "elderly-tech-consideration",
+      "fromSection": "user-profile",
+      "condition": {
+        "questionId": "special-needs",
+        "operator": "contains",
+        "value": "elderly"
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "Consider touchless faucets and voice control for accessibility.",
+          "fr": "Envisagez des robinets sans contact et le contrôle vocal pour l'accessibilité."
+        }
+      }
+    }
+  ],
+  "recommendations": {
+    "earlyAdopter": {
+      "condition": {
+        "and": [
+          { "questionId": "tech-comfort", "equals": "very-comfortable" },
+          { "questionId": "smart-appliances", "lengthGreaterThan": 2 }
+        ]
+      },
+      "suggestions": [
+        { "type": "product", "category": "smart-home-hub", "priority": "high" },
+        { "type": "infrastructure", "item": "dedicated-circuit-smart-devices", "priority": "medium" }
+      ]
+    },
+    "basicTech": {
+      "condition": {
+        "questionId": "tech-comfort",
+        "in": ["somewhat", "not-comfortable"]
+      },
+      "suggestions": [
+        {
+          "type": "appliance",
+          "feature": "traditional-controls",
+          "message": {
+            "en": "Focus on quality traditional appliances with simple controls.",
+            "fr": "Privilégiez des appareils traditionnels de qualité avec des commandes simples."
+          }
+        }
+      ]
+    }
+  }
+}

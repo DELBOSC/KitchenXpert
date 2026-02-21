@@ -1,0 +1,145 @@
+{
+  "sectionId": "user-profile",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "skip-primary-cook-if-solo",
+      "description": "Skip primary cook question if household size is 1",
+      "condition": {
+        "questionId": "household-size",
+        "operator": "equals",
+        "value": "1"
+      },
+      "action": {
+        "type": "skip",
+        "targetQuestionId": "primary-cook"
+      }
+    },
+    {
+      "id": "show-child-safety-reminder",
+      "description": "Show safety reminder for families with young children",
+      "condition": {
+        "questionId": "household-type",
+        "operator": "equals",
+        "value": "family-young-kids"
+      },
+      "action": {
+        "type": "show-message",
+        "message": {
+          "en": "We'll prioritize safety features in your kitchen design recommendations.",
+          "fr": "Nous prioriserons les fonctionnalités de sécurité dans vos recommandations de conception de cuisine."
+        },
+        "severity": "info"
+      }
+    },
+    {
+      "id": "accessibility-follow-up",
+      "description": "Add follow-up questions for accessibility needs",
+      "condition": {
+        "operator": "or",
+        "conditions": [
+          {
+            "questionId": "special-needs",
+            "operator": "contains",
+            "value": "wheelchair-access"
+          },
+          {
+            "questionId": "special-needs",
+            "operator": "contains",
+            "value": "mobility-limited"
+          }
+        ]
+      },
+      "action": {
+        "type": "add-tag",
+        "tags": ["accessibility-priority", "ada-review-required"]
+      }
+    },
+    {
+      "id": "renter-budget-note",
+      "description": "Note about budget considerations for renters",
+      "condition": {
+        "questionId": "ownership-status",
+        "operator": "in",
+        "value": ["renter-allowed", "renter-limited"]
+      },
+      "action": {
+        "type": "show-message",
+        "message": {
+          "en": "We'll focus on portable and reversible solutions that you can take with you.",
+          "fr": "Nous nous concentrerons sur des solutions portables et réversibles que vous pourrez emporter avec vous."
+        },
+        "severity": "tip"
+      }
+    },
+    {
+      "id": "multi-generational-accessibility",
+      "description": "Auto-suggest accessibility options for multi-generational homes",
+      "condition": {
+        "questionId": "household-type",
+        "operator": "equals",
+        "value": "multi-generational"
+      },
+      "action": {
+        "type": "pre-select",
+        "targetQuestionId": "special-needs",
+        "suggestedValues": ["mobility-limited", "height-considerations"],
+        "message": {
+          "en": "Based on your multi-generational household, you might want to consider these accessibility options.",
+          "fr": "En fonction de votre foyer multigénérationnel, vous pourriez envisager ces options d'accessibilité."
+        }
+      }
+    },
+    {
+      "id": "professional-cook-equipment",
+      "description": "Flag for professional-grade equipment suggestions",
+      "condition": {
+        "questionId": "cooking-skill-level",
+        "operator": "greater-than",
+        "value": 4
+      },
+      "action": {
+        "type": "add-tag",
+        "tags": ["professional-equipment", "commercial-grade-options"]
+      }
+    },
+    {
+      "id": "urgent-timeline-note",
+      "description": "Note for urgent projects",
+      "condition": {
+        "questionId": "project-timeline",
+        "operator": "equals",
+        "value": "immediately"
+      },
+      "action": {
+        "type": "add-tag",
+        "tags": ["priority-project", "in-stock-preference"]
+      }
+    }
+  ],
+  "sectionFlow": {
+    "defaultOrder": [
+      "household-size",
+      "household-type",
+      "primary-cook",
+      "cooking-skill-level",
+      "special-needs",
+      "ownership-status",
+      "project-timeline"
+    ],
+    "adaptiveFlow": true,
+    "allowSkip": false,
+    "allowBack": true
+  },
+  "completion": {
+    "requiredQuestions": [
+      "household-size",
+      "household-type",
+      "cooking-skill-level",
+      "ownership-status",
+      "project-timeline"
+    ],
+    "minimumAnswered": 5,
+    "validationMode": "on-section-complete"
+  }
+}

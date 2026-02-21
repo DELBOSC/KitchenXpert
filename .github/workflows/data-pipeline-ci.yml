@@ -1,0 +1,105 @@
+name: 🔄 Data Pipeline CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/scraper/**'
+      - 'packages/common/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/data-pipeline-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'packages/scraper/**'
+      - 'packages/common/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/data-pipeline-ci.yml'
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8.15.0'
+
+jobs:
+  lint-and-test:
+    name: 🧹 Lint & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🧹 Lint
+        run: pnpm --filter @kitchenxpert/scraper lint
+
+      - name: 🔍 Type check
+        run: pnpm --filter @kitchenxpert/scraper type-check
+
+      - name: 🧪 Run tests
+        run: pnpm --filter @kitchenxpert/scraper test
+
+  build:
+    name: 🏗️ Build
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build
+        run: pnpm --filter @kitchenxpert/scraper build
+
+  security:
+    name: 🔒 Security Audit
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔒 Run npm audit
+        run: pnpm audit --audit-level=high

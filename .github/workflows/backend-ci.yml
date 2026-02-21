@@ -1,0 +1,429 @@
+name: 🔧 Backend CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/backend/**'
+      - 'packages/common/**'
+      - 'packages/api-client/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'packages/backend/**'
+      - 'packages/common/**'
+      - 'packages/api-client/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8.15.0'
+  POSTGRES_VERSION: '16'
+  REDIS_VERSION: '7'
+
+jobs:
+  # Job 1: Setup
+  setup:
+    name: 📦 Setup & Cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+  # Job 2: Lint
+  lint:
+    name: 🔍 Lint & Type Check
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Restore dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔍 Run ESLint
+        run: pnpm lint:backend
+
+      - name: 🎨 Check Prettier formatting
+        run: pnpm format:check
+
+      - name: 📝 TypeScript type check
+        run: pnpm type-check:backend
+
+  # Job 3: Unit Tests
+  test-unit:
+    name: 🧪 Unit Tests
+    needs: setup
+    runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Restore dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🗄️ Run database migrations
+        run: pnpm migrate:test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+
+      - name: 🧪 Run unit tests
+        run: pnpm test:backend --coverage
+        env:
+          NODE_ENV: test
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          JWT_ACCESS_SECRET: test_secret_min_32_characters_long
+          JWT_REFRESH_SECRET: test_secret_min_32_characters_long
+
+      - name: 📊 Upload coverage to Codecov
+        if: ${{ env.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+          token: ${{ env.CODECOV_TOKEN }}
+
+  # Job 4: Integration Tests
+  test-integration:
+    name: 🔗 Integration Tests
+    needs: setup
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Restore dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🗄️ Run database migrations
+        run: pnpm migrate:test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+
+      - name: 🌱 Seed test data
+        run: pnpm seed:test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+
+      - name: 🔗 Run integration tests
+        run: pnpm test:integration
+        env:
+          NODE_ENV: test
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          JWT_ACCESS_SECRET: test_secret_min_32_characters_long
+          JWT_REFRESH_SECRET: test_secret_min_32_characters_long
+
+  # Job 5: Build
+  build:
+    name: 🏗️ Build
+    needs: [lint, test-unit]
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Restore dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build backend
+        run: pnpm build:backend
+        env:
+          NODE_ENV: production
+
+      - name: 📦 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: packages/backend/dist
+          retention-days: 7
+
+  # Job 6: API Tests (Postman/Newman)
+  test-api:
+    name: 📡 API Tests
+    needs: build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Restore dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 📥 Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: packages/backend/dist
+
+      - name: 🗄️ Run database migrations
+        run: pnpm migrate:test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+
+      - name: 🚀 Start API server
+        run: |
+          pnpm start:test &
+          sleep 15
+        env:
+          NODE_ENV: test
+          PORT: 4000
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kitchenxpert_test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          JWT_ACCESS_SECRET: test_secret_min_32_characters_long
+          JWT_REFRESH_SECRET: test_secret_min_32_characters_long
+
+      - name: 📡 Run API tests with Newman
+        run: pnpm test:api
+
+      - name: 📊 Generate API test report
+        if: always()
+        run: |
+          echo "## 📡 API Test Results" >> $GITHUB_STEP_SUMMARY
+          cat newman-report.txt >> $GITHUB_STEP_SUMMARY || echo "No report generated" >> $GITHUB_STEP_SUMMARY
+
+  # Job 7: Security Audit
+  security:
+    name: 🔒 Security Audit
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔒 Run npm audit
+        run: pnpm audit --audit-level=high
+
+      - name: 🔍 OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@1.1.0
+        with:
+          project: 'KitchenXpert-Backend'
+          path: 'packages/backend'
+          format: 'HTML'
+
+  # Job 8: Success
+  success:
+    name: ✅ All Checks Passed
+    needs: [lint, test-unit, test-integration, build, test-api, security]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: 🎉 Success
+        run: |
+          echo "## ✅ Backend CI - All checks passed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Linting & type checking" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Unit tests with coverage" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Integration tests" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Production build" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ API tests" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Security audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🚀 Ready to deploy!" >> $GITHUB_STEP_SUMMARY

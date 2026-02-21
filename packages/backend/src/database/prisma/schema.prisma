@@ -1,0 +1,1437 @@
+// KitchenXpert - Prisma Database Schema
+// Production-ready schema with all domain models
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== ENUMS ====================
+
+enum UserStatus {
+  pending
+  active
+  suspended
+  deleted
+}
+
+enum ProjectStatus {
+  draft
+  in_progress
+  review
+  approved
+  completed
+  archived
+}
+
+enum OrderStatus {
+  pending
+  confirmed
+  processing
+  shipped
+  delivered
+  cancelled
+  refunded
+}
+
+enum KitchenStyle {
+  modern
+  traditional
+  farmhouse
+  industrial
+  transitional
+  coastal
+  contemporary
+  scandinavian
+  mediterranean
+  rustic
+}
+
+enum LayoutType {
+  l_shaped
+  u_shaped
+  galley
+  island
+  peninsula
+  one_wall
+  open_plan
+}
+
+enum NotificationType {
+  info
+  warning
+  error
+  success
+  system
+}
+
+enum WebhookEventType {
+  project_created
+  project_updated
+  project_completed
+  order_created
+  order_updated
+  user_registered
+  kitchen_generated
+}
+
+enum AuditAction {
+  create
+  read
+  update
+  delete
+  login
+  logout
+  export
+  import
+  payment_succeeded
+  payment_failed
+  subscription_created
+  subscription_updated
+  subscription_deleted
+  invoice_paid
+  invoice_payment_failed
+  charge_refunded
+}
+
+// ==================== USER MANAGEMENT ====================
+
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          String     @default("user")
+  status        UserStatus @default(pending)
+  emailVerified Boolean    @default(false)
+  language      String     @default("fr")
+  timezone      String     @default("UTC")
+  avatar        String?
+  phone         String?
+  lastLoginAt   DateTime?
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret  String?
+  stripeCustomerId   String?   @unique
+  subscriptionId     String?
+  subscriptionStatus String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  userRoles               UserRole[]
+  projects                Project[]
+  kitchens                Kitchen[]
+  orders                  Order[]
+  auditLogs               AuditLog[]
+  notifications           Notification[]
+  preferences             UserPreference?
+  sessions                UserSession[]
+  emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
+  aiChatSessions          AIChatSession[]
+  aiUsageLogs             AIUsageLog[]
+  aiGenerations           AIGeneration[]
+  designRatings           DesignRating[]
+  projectComments         ProjectComment[]
+  designVersions          DesignVersion[]
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@index([name])
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  resource    String
+  action      String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  rolePermissions RolePermission[]
+
+  @@unique([resource, action])
+  @@index([resource])
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+}
+
+model RolePermission {
+  id           String   @id @default(uuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  // Relations
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+model UserPreference {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  theme               String   @default("light")
+  notificationsEmail  Boolean  @default(true)
+  notificationsPush   Boolean  @default(true)
+  measurementUnit     String   @default("metric")
+  currency            String   @default("EUR")
+  defaultStyle        KitchenStyle?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserSession {
+  id           String   @id @default(uuid())
+  userId       String
+  token        String   @unique
+  refreshToken String   @unique
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(uuid())
+  userId    String
+  token     String    @unique  // Hashed token for security
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  token     String    @unique  // Hashed token for security
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+// ==================== PROJECT & KITCHEN ====================
+
+model Project {
+  id          String        @id @default(uuid())
+  userId      String
+  name        String
+  description String?
+  status      ProjectStatus @default(draft)
+  budget      Decimal?      @db.Decimal(12, 2)
+  currency    String        @default("EUR")
+  deadline    DateTime?
+  metadata    Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  user               User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kitchens           Kitchen[]
+  orders             Order[]
+  collaborators      ProjectCollaborator[]
+  questionnaireResponse QuestionnaireResponse?
+  aiGenerations         AIGeneration[]
+  comments              ProjectComment[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ProjectCollaborator {
+  id        String   @id @default(uuid())
+  projectId String
+  email     String
+  role      String   @default("viewer")
+  invitedAt DateTime @default(now())
+  acceptedAt DateTime?
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, email])
+  @@index([projectId])
+}
+
+model Kitchen {
+  id          String       @id @default(uuid())
+  projectId   String
+  userId      String
+  name        String
+  style       KitchenStyle @default(modern)
+  layout      LayoutType   @default(l_shaped)
+  width       Decimal      @db.Decimal(8, 2)
+  length      Decimal      @db.Decimal(8, 2)
+  height      Decimal      @db.Decimal(8, 2) @default(2.50)
+  isGenerated Boolean      @default(false)
+  score       Int?
+  metadata    Json?
+  thumbnail   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  project        Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  configuration  KitchenConfiguration?
+  items          KitchenItem[]
+  designs        DesignPreference?
+  ratings        DesignRating[]
+  versions       DesignVersion[]
+
+  @@index([projectId])
+  @@index([userId])
+  @@index([style])
+  @@index([createdAt])
+}
+
+model KitchenConfiguration {
+  id                String   @id @default(uuid())
+  kitchenId         String   @unique
+  cabinetStyle      String?
+  cabinetFinish     String?
+  countertopMaterial String?
+  countertopColor   String?
+  backsplashType    String?
+  backsplashMaterial String?
+  flooringType      String?
+  hardwareStyle     String?
+  hardwareFinish    String?
+  lightingPlan      Json?
+  colorPalette      Json?
+  appliances        Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  kitchen Kitchen @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+}
+
+model KitchenItem {
+  id          String   @id @default(uuid())
+  kitchenId   String
+  productId   String?
+  applianceId String?
+  type        String
+  name        String
+  brand       String?
+  model       String?
+  positionX   Decimal  @db.Decimal(8, 2)
+  positionY   Decimal  @db.Decimal(8, 2)
+  positionZ   Decimal  @db.Decimal(8, 2) @default(0)
+  rotationY   Decimal  @db.Decimal(8, 2) @default(0)
+  width       Decimal  @db.Decimal(8, 2)
+  depth       Decimal  @db.Decimal(8, 2)
+  height      Decimal  @db.Decimal(8, 2)
+  price       Decimal? @db.Decimal(12, 2)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  kitchen   Kitchen    @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  product   Product?   @relation(fields: [productId], references: [id])
+  appliance Appliance? @relation(fields: [applianceId], references: [id])
+
+  @@index([kitchenId])
+  @@index([productId])
+  @@index([applianceId])
+  @@index([type])
+}
+
+model DesignPreference {
+  id                    String   @id @default(uuid())
+  kitchenId             String   @unique
+  colorScheme           String?
+  materialPreferences   Json?
+  styleInfluences       Json?
+  budgetPriorities      Json?
+  functionalPriorities  Json?
+  aestheticScore        Int?
+  coherenceScore        Int?
+  personaMatch          String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  kitchen Kitchen @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+}
+
+// ==================== CATALOG & PRODUCTS ====================
+
+model Catalog {
+  id          String   @id @default(uuid())
+  providerId  String
+  name        String
+  description String?
+  version     String   @default("1.0")
+  isActive    Boolean  @default(true)
+  lastSyncAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  provider CatalogProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  products Product[]
+
+  @@index([providerId])
+  @@index([isActive])
+}
+
+model CatalogProvider {
+  id             String   @id @default(uuid())
+  name           String   @unique
+  code           String   @unique
+  apiEndpoint    String?
+  apiKey         String?
+  isActive       Boolean  @default(true)
+  configuration  Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  catalogs   Catalog[]
+  products   Product[]
+  appliances Appliance[]
+  materials  Material[]
+
+  @@index([code])
+  @@index([isActive])
+}
+
+model Product {
+  id           String   @id @default(uuid())
+  catalogId    String?
+  providerId   String?
+  categoryId   String?
+  sku          String   @unique
+  name         String
+  description  String?
+  brand        String?
+  model        String?
+  price        Decimal  @db.Decimal(12, 2)
+  currency     String   @default("EUR")
+  width        Decimal? @db.Decimal(8, 2)
+  depth        Decimal? @db.Decimal(8, 2)
+  height       Decimal? @db.Decimal(8, 2)
+  weight       Decimal? @db.Decimal(8, 2)
+  color        String?
+  material     String?
+  finish       String?
+  images       Json?
+  specifications Json?
+  availability String   @default("in_stock")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
+
+  // Relations
+  catalog      Catalog?         @relation(fields: [catalogId], references: [id])
+  provider     CatalogProvider? @relation(fields: [providerId], references: [id])
+  category     ProductCategory? @relation(fields: [categoryId], references: [id])
+  kitchenItems KitchenItem[]
+  orderItems   OrderItem[]
+
+  @@index([catalogId])
+  @@index([providerId])
+  @@index([categoryId])
+  @@index([sku])
+  @@index([brand])
+  @@index([name])
+  @@index([isActive])
+}
+
+model ProductCategory {
+  id          String   @id @default(uuid())
+  parentId    String?
+  name        String
+  slug        String   @unique
+  description String?
+  image       String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  parent   ProductCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children ProductCategory[] @relation("CategoryHierarchy")
+  products Product[]
+
+  @@index([parentId])
+  @@index([slug])
+  @@index([isActive])
+}
+
+model Appliance {
+  id              String   @id @default(uuid())
+  providerId      String?
+  type            String
+  brand           String
+  model           String
+  name            String
+  description     String?
+  price           Decimal  @db.Decimal(12, 2)
+  currency        String   @default("EUR")
+  energyRating    String?
+  powerConsumption Decimal? @db.Decimal(8, 2)
+  width           Decimal  @db.Decimal(8, 2)
+  depth           Decimal  @db.Decimal(8, 2)
+  height          Decimal  @db.Decimal(8, 2)
+  weight          Decimal? @db.Decimal(8, 2)
+  color           String?
+  finish          String?
+  features        Json?
+  specifications  Json?
+  images          Json?
+  smartFeatures   Json?
+  warranty        String?
+  availability    String   @default("in_stock")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+
+  // Relations
+  provider     CatalogProvider? @relation(fields: [providerId], references: [id])
+  kitchenItems KitchenItem[]
+  orderItems   OrderItem[]
+
+  @@unique([brand, model])
+  @@index([providerId])
+  @@index([type])
+  @@index([brand])
+  @@index([isActive])
+}
+
+model Material {
+  id              String   @id @default(uuid())
+  providerId      String?
+  type            String
+  name            String
+  description     String?
+  category        String
+  pricePerUnit    Decimal  @db.Decimal(12, 2)
+  unit            String   @default("sqm")
+  currency        String   @default("EUR")
+  color           String?
+  finish          String?
+  durability      Int?
+  maintenanceLevel String?
+  ecoRating       String?
+  specifications  Json?
+  images          Json?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  provider CatalogProvider? @relation(fields: [providerId], references: [id])
+
+  @@index([providerId])
+  @@index([type])
+  @@index([name])
+  @@index([category])
+  @@index([isActive])
+}
+
+// ==================== ORDERS ====================
+
+model Order {
+  id              String      @id @default(uuid())
+  userId          String
+  projectId       String?
+  orderNumber     String      @unique
+  status          OrderStatus @default(pending)
+  subtotal        Decimal     @db.Decimal(12, 2)
+  tax             Decimal     @db.Decimal(12, 2) @default(0)
+  shipping        Decimal     @db.Decimal(12, 2) @default(0)
+  discount        Decimal     @db.Decimal(12, 2) @default(0)
+  total           Decimal     @db.Decimal(12, 2)
+  currency        String      @default("EUR")
+  shippingAddress Json?
+  billingAddress  Json?
+  notes           String?
+  metadata        Json?
+  paidAt          DateTime?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project?    @relation(fields: [projectId], references: [id])
+  items   OrderItem[]
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([orderNumber])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  productId   String?
+  applianceId String?
+  name        String
+  sku         String?
+  quantity    Int      @default(1)
+  unitPrice   Decimal  @db.Decimal(12, 2)
+  totalPrice  Decimal  @db.Decimal(12, 2)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product?   @relation(fields: [productId], references: [id])
+  appliance Appliance? @relation(fields: [applianceId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([applianceId])
+}
+
+// ==================== PARTNER ====================
+
+model Partner {
+  id              String   @id @default(uuid())
+  name            String
+  code            String   @unique
+  email           String   @unique
+  phone           String?
+  website         String?
+  apiKey          String   @unique
+  apiSecret       String
+  isActive        Boolean  @default(true)
+  commissionRate  Decimal  @db.Decimal(5, 2) @default(0)
+  configuration   Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  integrations PartnerIntegration[]
+  webhooks     Webhook[]
+
+  @@index([code])
+  @@index([apiKey])
+  @@index([isActive])
+}
+
+model PartnerIntegration {
+  id            String   @id @default(uuid())
+  partnerId     String
+  type          String
+  endpoint      String
+  credentials   Json?
+  configuration Json?
+  isActive      Boolean  @default(true)
+  lastSyncAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@index([partnerId])
+  @@index([type])
+  @@index([isActive])
+}
+
+// ==================== QUESTIONNAIRE ====================
+
+model QuestionnaireResponse {
+  id               String   @id @default(uuid())
+  projectId        String   @unique
+  spatialData      Json?
+  cookingHabits    Json?
+  userProfile      Json?
+  budgetData       Json?
+  socialUsage      Json?
+  futureNeeds      Json?
+  aestheticPrefs   Json?
+  technologyPrefs  Json?
+  environmentalPrefs Json?
+  maintenancePrefs Json?
+  completedSections String[] @default([])
+  currentSection   String?
+  completedAt      DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  project       Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  scoringResult ScoringResult?
+}
+
+model ScoringResult {
+  id                     String   @id @default(uuid())
+  questionnaireId        String   @unique
+  overallScore           Int
+  spatialScore           Int?
+  cookingScore           Int?
+  budgetScore            Int?
+  socialScore            Int?
+  futureNeedsScore       Int?
+  aestheticScore         Int?
+  technologyScore        Int?
+  environmentalScore     Int?
+  maintenanceScore       Int?
+  designPersona          String?
+  techPersona            String?
+  ecoPersona             String?
+  maintenancePersona     String?
+  recommendations        Json?
+  warnings               Json?
+  tags                   String[] @default([])
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  // Relations
+  questionnaire QuestionnaireResponse @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+}
+
+// ==================== SYSTEM & AUDIT ====================
+
+model AuditLog {
+  id          String      @id @default(uuid())
+  userId      String?
+  action      AuditAction
+  resource    String
+  resourceId  String?
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([resourceId])
+  @@index([createdAt])
+}
+
+model Webhook {
+  id          String           @id @default(uuid())
+  partnerId   String?
+  name        String
+  url         String
+  secret      String
+  events      WebhookEventType[]
+  isActive    Boolean          @default(true)
+  retryCount  Int              @default(3)
+  timeout     Int              @default(30000)
+  headers     Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  partner   Partner?       @relation(fields: [partnerId], references: [id])
+  eventLogs WebhookEvent[]
+
+  @@index([partnerId])
+  @@index([isActive])
+}
+
+model WebhookEvent {
+  id          String   @id @default(uuid())
+  webhookId   String
+  eventType   WebhookEventType
+  payload     Json
+  response    Json?
+  statusCode  Int?
+  attempts    Int      @default(0)
+  deliveredAt DateTime?
+  failedAt    DateTime?
+  error       String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  webhook Webhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@index([webhookId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType @default(info)
+  title     String
+  message   String
+  data      Json?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+model Locale {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  nativeName String
+  isDefault Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  translations Translation[]
+
+  @@index([code])
+  @@index([isActive])
+}
+
+model Translation {
+  id        String   @id @default(uuid())
+  localeId  String
+  namespace String
+  key       String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  locale Locale @relation(fields: [localeId], references: [id], onDelete: Cascade)
+
+  @@unique([localeId, namespace, key])
+  @@index([localeId])
+  @@index([namespace])
+}
+
+model Metric {
+  id        String   @id @default(uuid())
+  name      String
+  value     Decimal  @db.Decimal(20, 4)
+  unit      String?
+  tags      Json?
+  metadata  Json?
+  timestamp DateTime @default(now())
+
+  @@index([name])
+  @@index([timestamp])
+}
+
+// ==================== AI & SOCIAL FEATURES ====================
+
+model AIChatSession {
+  id           String   @id @default(uuid())
+  userId       String
+  kitchenId    String?
+  title        String?
+  messages     Json
+  sceneContext Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([kitchenId])
+}
+
+model AIUsageLog {
+  id           String   @id @default(uuid())
+  userId       String
+  service      String
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  durationMs   Int?
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([service])
+  @@index([createdAt])
+}
+
+model AIGeneration {
+  id            String    @id @default(uuid())
+  userId        String
+  projectId     String?
+  status        String    @default("pending")
+  preferences   Json
+  designs       Json
+  isAIGenerated Boolean   @default(false)
+  errorMessage  String?
+  completedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [projectId], references: [id])
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([status])
+}
+
+model DesignRating {
+  id        String   @id @default(uuid())
+  userId    String
+  kitchenId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kitchen Kitchen @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, kitchenId])
+  @@index([kitchenId])
+}
+
+model ProjectComment {
+  id        String    @id @default(uuid())
+  projectId String
+  userId    String
+  parentId  String?
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  project Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent  ProjectComment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies ProjectComment[] @relation("CommentReplies")
+
+  @@index([projectId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model DesignVersion {
+  id        String   @id @default(uuid())
+  kitchenId String
+  userId    String
+  version   Int
+  label     String?
+  snapshot  Json
+  thumbnail String?
+  createdAt DateTime @default(now())
+
+  kitchen Kitchen @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([kitchenId, version])
+  @@index([kitchenId])
+}
+
+// ==================== CATALOG ENRICHMENT ====================
+
+model ProductEnrichment {
+  id               String    @id @default(uuid())
+  productType      String
+  productId        String
+  brandId          String
+  status           String    @default("pending")
+  rawDescription   String?   @db.Text
+  rawHtml          String?   @db.Text
+  enrichedSpecs    Json?
+  installationReqs Json?
+  warranty         Json?
+  certifications   String[]
+  energyDetails    Json?
+  confidence       Float     @default(0)
+  enrichedAt       DateTime?
+  errorMessage     String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@unique([productType, productId])
+  @@index([status])
+  @@index([brandId])
+  @@index([productType])
+}
+
+model CompatibilityRule {
+  id              String   @id @default(uuid())
+  cabinetType     String
+  applianceType   String
+  cabinetWidthMin Int
+  cabinetWidthMax Int
+  cabinetDepthMin Int
+  requiresCutout  Boolean  @default(false)
+  cutoutWidth     Int?
+  cutoutDepth     Int?
+  ventilationGap  Int?
+  electricalReq   String?
+  waterReq        Boolean  @default(false)
+  notes           String?
+  source          String   @default("ai")
+  confidence      Float    @default(0.8)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([cabinetType, applianceType, cabinetWidthMin])
+  @@index([cabinetType])
+  @@index([applianceType])
+}
+
+model ProductMatch {
+  id           String   @id @default(uuid())
+  productTypeA String
+  productIdA   String
+  brandIdA     String
+  productTypeB String
+  productIdB   String
+  brandIdB     String
+  matchScore   Float
+  matchReason  String?
+  isVerified   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@unique([productIdA, productIdB])
+  @@index([productIdA])
+  @@index([productIdB])
+  @@index([matchScore])
+}
+
+model DigitalTwin {
+  id              String   @id @default(uuid())
+  kitchenId       String
+  userId          String
+  status          String   @default("active")
+  lastSyncAt      DateTime?
+  maintenanceData Json?
+  warrantyData    Json?
+  sensorData      Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([kitchenId])
+  @@index([userId])
+}
+
+model CarbonReport {
+  id              String   @id @default(uuid())
+  kitchenId       String
+  userId          String
+  totalCO2kg      Float
+  breakdown       Json
+  transportCO2    Float    @default(0)
+  rating          String?
+  createdAt       DateTime @default(now())
+
+  @@index([kitchenId])
+  @@index([userId])
+}
+
+model StockResult {
+  id              String   @id @default(uuid())
+  productId       String
+  providerId      String
+  storeId         String?
+  quantity        Int
+  status          String   @default("in_stock")
+  lastCheckedAt   DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@index([productId])
+  @@index([providerId])
+}
+
+model CartAbandonment {
+  id              String   @id @default(uuid())
+  userId          String
+  sessionId       String
+  riskScore       Float
+  riskFactors     Json
+  intervention    String?
+  intervened      Boolean  @default(false)
+  converted       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([riskScore])
+}
+
+model CRDTOperation {
+  id              String   @id @default(uuid())
+  kitchenId       String
+  userId          String
+  operationType   String
+  payload         Json
+  vectorClock     Json
+  appliedAt       DateTime @default(now())
+
+  @@index([kitchenId])
+  @@index([userId])
+  @@index([appliedAt])
+}
+
+// ==================== F1: COMPLIANCE / NORMES ====================
+
+model ComplianceRule {
+  id              String   @id @default(uuid())
+  code            String   // "NF_C_15_100", "NF_EN_1116", "NF_DTU_24_1", "PMR"
+  category        String   // "electrical", "plumbing", "ventilation", "safety", "accessibility"
+  name            String
+  description     String   @db.Text
+  condition       Json     // machine-readable rule: { type: "min_distance", source: "hob", target: "water", minMm: 600 }
+  severity        String   @default("error") // error, warning, info
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([code, name])
+  @@index([code])
+  @@index([category])
+}
+
+model ComplianceCheck {
+  id              String   @id @default(uuid())
+  kitchenId       String
+  userId          String
+  status          String   @default("pending") // pending, passed, failed
+  totalRules      Int      @default(0)
+  passedRules     Int      @default(0)
+  failedRules     Int      @default(0)
+  warningRules    Int      @default(0)
+  results         Json     // [{ ruleId, status, message, position, severity }]
+  checkedAt       DateTime @default(now())
+
+  @@index([kitchenId])
+  @@index([userId])
+}
+
+// ==================== F6: INSTALLER MARKETPLACE ====================
+
+model Installer {
+  id              String   @id @default(uuid())
+  userId          String?  // link to User account if registered
+  companyName     String
+  contactName     String
+  email           String   @unique
+  phone           String?
+  address         String
+  city            String
+  postalCode      String
+  country         String   @default("FR")
+  latitude        Float?
+  longitude       Float?
+  radiusKm        Int      @default(50)
+  specialties     String[] // ["ikea", "schmidt", "custom", "plumbing", "electrical"]
+  certifications  String[] // ["RGE", "Qualibat", "CAPEB"]
+  yearsExperience Int      @default(0)
+  hourlyRate      Float?
+  rating          Float    @default(0)
+  reviewCount     Int      @default(0)
+  isVerified      Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  portfolioUrls   String[]
+  bio             String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  reviews         InstallerReview[]
+  projects        InstallationProject[]
+
+  @@index([city])
+  @@index([postalCode])
+  @@index([rating])
+  @@index([isVerified, isActive])
+}
+
+model InstallerReview {
+  id              String   @id @default(uuid())
+  installerId     String
+  userId          String
+  projectId       String?
+  rating          Float    // 1-5
+  title           String?
+  comment         String?  @db.Text
+  photos          String[]
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  installer       Installer @relation(fields: [installerId], references: [id], onDelete: Cascade)
+
+  @@unique([installerId, userId])
+  @@index([installerId])
+  @@index([rating])
+}
+
+model InstallationProject {
+  id              String   @id @default(uuid())
+  installerId     String
+  userId          String
+  kitchenId       String?
+  projectId       String?
+  status          String   @default("pending") // pending, accepted, in_progress, completed, cancelled
+  estimatedCost   Float?
+  finalCost       Float?
+  startDate       DateTime?
+  endDate         DateTime?
+  milestones      Json?    // [{ name, date, status, photos }]
+  notes           String?  @db.Text
+  dxfFileUrl      String?
+  bomFileUrl      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  installer       Installer @relation(fields: [installerId], references: [id], onDelete: Cascade)
+
+  @@index([installerId])
+  @@index([userId])
+  @@index([status])
+}
+
+// ==================== F7: RENOVATION BEFORE/AFTER ====================
+
+model RenovationProject {
+  id              String   @id @default(uuid())
+  userId          String
+  kitchenId       String?
+  beforePhotos    String[] // URLs of before photos
+  detectedLayout  Json?    // AI-detected elements from photos
+  afterDesignId   String?  // reference to kitchen design
+  estimatedDemoCost Float?
+  estimatedRenoCost Float?
+  comparisonData  Json?    // side-by-side comparison metrics
+  status          String   @default("draft") // draft, analyzing, compared, finalized
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([kitchenId])
+}
+
+// ==================== F8: FINANCING ====================
+
+model FinancingSimulation {
+  id              String   @id @default(uuid())
+  userId          String
+  kitchenId       String?
+  projectId       String?
+  totalAmount     Float
+  downPayment     Float    @default(0)
+  loanAmount      Float
+  interestRate    Float
+  durationMonths  Int
+  monthlyPayment  Float
+  totalCost       Float    // total with interest
+  provider        String?  // "cetelem", "sofinco", "cofidis"
+  ecoAids         Json?    // { maprimerenovAmount, ceeAmount, tvaReduite }
+  status          String   @default("simulation") // simulation, applied, approved, rejected
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([kitchenId])
+}
+
+// ==================== F9: PRICE TRACKING ====================
+
+model PriceHistory {
+  id              String   @id @default(uuid())
+  productId       String
+  providerId      String
+  price           Float
+  previousPrice   Float?
+  currency        String   @default("EUR")
+  changePercent   Float?
+  recordedAt      DateTime @default(now())
+
+  @@index([productId])
+  @@index([providerId])
+  @@index([recordedAt])
+  @@index([productId, recordedAt])
+}
+
+model PriceAlert {
+  id              String   @id @default(uuid())
+  userId          String
+  productId       String
+  targetPrice     Float
+  currentPrice    Float?
+  direction       String   @default("below") // below, above
+  isTriggered     Boolean  @default(false)
+  triggeredAt     DateTime?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+  @@index([isActive, isTriggered])
+}
+
+// ==================== F10: COLLABORATION ROLES ====================
+
+model CollaborationInvite {
+  id              String   @id @default(uuid())
+  kitchenId       String
+  inviterId       String
+  inviteeEmail    String
+  role            String   // "viewer", "designer", "installer", "supplier"
+  permissions     Json     // { canEdit, canComment, canExport, canViewSpecs, canViewBOM }
+  token           String   @unique
+  status          String   @default("pending") // pending, accepted, declined, expired
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+
+  @@index([kitchenId])
+  @@index([inviteeEmail])
+  @@index([token])
+}
+
+// ==================== F11: SMART HOME ====================
+
+model SmartHomePlan {
+  id              String   @id @default(uuid())
+  kitchenId       String   @unique
+  userId          String
+  devices         Json     // [{ type, brand, model, position, protocol, powerReq }]
+  wifiCoverage    Json?    // { routerPosition, signalMap }
+  circuits        Json?    // [{ name, type, outlets: [{ position, amperage }] }]
+  automations     Json?    // [{ trigger, action, devices }]
+  matterDevices   Json?    // Matter 1.3 compatible devices
+  totalPowerDraw  Float?   // watts
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([kitchenId])
+  @@index([userId])
+}
+
+// ==================== F13: CERTIFIED QUOTES ====================
+
+model CertifiedQuote {
+  id              String   @id @default(uuid())
+  userId          String
+  kitchenId       String
+  projectId       String?
+  quoteNumber     String   @unique // sequential: KX-2026-00001
+  version         Int      @default(1)
+  items           Json     // [{ ref, name, qty, unitPrice, total, tva }]
+  subtotalHT      Float
+  tvaAmount       Float
+  totalTTC        Float
+  validityDays    Int      @default(30)
+  validUntil      DateTime
+  legalMentions   String   @db.Text
+  clientName      String
+  clientEmail     String?
+  clientAddress   String?
+  signatureHash   String?  // eIDAS signature hash
+  signedAt        DateTime?
+  signedByUserId  String?
+  pdfUrl          String?
+  status          String   @default("draft") // draft, sent, viewed, signed, expired, cancelled
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([kitchenId])
+  @@index([quoteNumber])
+  @@index([status])
+}
+
+// ==================== F5: WORKFLOW SIMULATION ====================
+
+model WorkflowSimulation {
+  id              String   @id @default(uuid())
+  kitchenId       String
+  userId          String
+  scenario        String   // "dinner_for_6", "quick_breakfast", "meal_prep", "custom"
+  steps           Json     // [{ action, fromZone, toZone, distanceM, timeS, position3D }]
+  totalDistanceM  Float
+  totalTimeS      Float
+  bottlenecks     Json?    // [{ description, position, suggestion }]
+  efficiencyScore Float    // 0-100
+  optimizedSteps  Json?    // AI-suggested reordering
+  createdAt       DateTime @default(now())
+
+  @@index([kitchenId])
+  @@index([userId])
+}

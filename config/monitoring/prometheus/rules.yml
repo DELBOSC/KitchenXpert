@@ -1,0 +1,419 @@
+# Prometheus Alerting Rules for KitchenXpert
+#
+# This file defines alerting rules based on metrics collected by Prometheus.
+# Rules are evaluated at the interval specified in prometheus.yml (evaluation_interval).
+
+groups:
+  # ============================================
+  # Application Performance Rules
+  # ============================================
+  - name: application_performance
+    interval: 30s
+    rules:
+      # High error rate alert
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"5.."}[5m])) by (service)
+            /
+            sum(rate(http_requests_total[5m])) by (service)
+          ) * 100 > 5
+        for: 5m
+        labels:
+          severity: critical
+          category: performance
+          team: backend
+        annotations:
+          summary: "High error rate detected for {{ $labels.service }}"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/high-error-rate"
+          dashboard_url: "https://grafana.kitchenxpert.com/d/app-overview"
+
+      # Slow response time (P95)
+      - alert: SlowResponseTime
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service)
+          ) > 1
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+          team: backend
+        annotations:
+          summary: "Slow API response time for {{ $labels.service }}"
+          description: "P95 response time is {{ $value | humanizeDuration }} (threshold: 1s)"
+          runbook_url: "https://runbooks.kitchenxpert.com/slow-response"
+
+      # Very high latency (P99)
+      - alert: VeryHighLatency
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service)
+          ) > 2
+        for: 5m
+        labels:
+          severity: critical
+          category: performance
+          team: backend
+        annotations:
+          summary: "Very high API latency for {{ $labels.service }}"
+          description: "P99 latency is {{ $value | humanizeDuration }} (threshold: 2s)"
+          runbook_url: "https://runbooks.kitchenxpert.com/high-latency"
+
+      # High request rate (potential DDoS)
+      - alert: HighRequestRate
+        expr: |
+          sum(rate(http_requests_total[1m])) by (service) > 1000
+        for: 2m
+        labels:
+          severity: warning
+          category: security
+          team: devops
+        annotations:
+          summary: "Unusually high request rate for {{ $labels.service }}"
+          description: "Request rate is {{ $value | humanize }} req/s (normal: <1000)"
+          runbook_url: "https://runbooks.kitchenxpert.com/high-traffic"
+
+  # ============================================
+  # Infrastructure Rules
+  # ============================================
+  - name: infrastructure
+    interval: 30s
+    rules:
+      # High CPU usage
+      - alert: HighCpuUsage
+        expr: |
+          100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: infrastructure
+          team: devops
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | humanize }}% (threshold: 80%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/high-cpu"
+
+      # Critical CPU usage
+      - alert: CriticalCpuUsage
+        expr: |
+          100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 2m
+        labels:
+          severity: critical
+          category: infrastructure
+          team: devops
+        annotations:
+          summary: "Critical CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | humanize }}% (threshold: 95%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/critical-cpu"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          category: infrastructure
+          team: devops
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}% (threshold: 85%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/high-memory"
+
+      # Critical memory usage
+      - alert: CriticalMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+          category: infrastructure
+          team: devops
+        annotations:
+          summary: "Critical memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}% (threshold: 95%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/critical-memory"
+
+      # Low disk space
+      - alert: LowDiskSpace
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs"} / node_filesystem_size_bytes) * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+          category: infrastructure
+          team: devops
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Only {{ $value | humanize }}% disk space available on {{ $labels.mountpoint }}"
+          runbook_url: "https://runbooks.kitchenxpert.com/low-disk"
+
+      # Disk will fill soon
+      - alert: DiskWillFillSoon
+        expr: |
+          predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs"}[1h], 24*3600) < 0
+        for: 1h
+        labels:
+          severity: warning
+          category: infrastructure
+          team: devops
+        annotations:
+          summary: "Disk will fill in 24 hours on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} will fill in approximately 24 hours based on current usage"
+          runbook_url: "https://runbooks.kitchenxpert.com/disk-prediction"
+
+      # Instance down
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: infrastructure
+          team: devops
+        annotations:
+          summary: "Instance {{ $labels.instance }} is down"
+          description: "{{ $labels.job }} on {{ $labels.instance }} has been down for more than 1 minute"
+          runbook_url: "https://runbooks.kitchenxpert.com/instance-down"
+
+  # ============================================
+  # Database Rules
+  # ============================================
+  - name: database
+    interval: 30s
+    rules:
+      # Database down
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: database
+          team: devops
+        annotations:
+          summary: "PostgreSQL is down on {{ $labels.instance }}"
+          description: "PostgreSQL database has been down for more than 1 minute"
+          runbook_url: "https://runbooks.kitchenxpert.com/db-down"
+
+      # Too many connections
+      - alert: PostgreSQLTooManyConnections
+        expr: |
+          sum by (instance) (pg_stat_activity_count)
+          /
+          sum by (instance) (pg_settings_max_connections)
+          * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+          team: backend
+        annotations:
+          summary: "PostgreSQL has too many connections on {{ $labels.instance }}"
+          description: "Connection pool usage is {{ $value | humanize }}% (threshold: 80%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/db-connections"
+
+      # Connection pool exhaustion
+      - alert: PostgreSQLConnectionPoolExhaustion
+        expr: |
+          sum by (instance) (pg_stat_activity_count)
+          /
+          sum by (instance) (pg_settings_max_connections)
+          * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+          category: database
+          team: backend
+        annotations:
+          summary: "PostgreSQL connection pool nearly exhausted on {{ $labels.instance }}"
+          description: "Connection pool usage is {{ $value | humanize }}% (threshold: 95%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/db-connections-critical"
+
+      # Slow queries
+      - alert: PostgreSQLSlowQueries
+        expr: |
+          rate(pg_stat_statements_mean_exec_time_seconds[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+          team: backend
+        annotations:
+          summary: "PostgreSQL slow queries detected on {{ $labels.instance }}"
+          description: "Average query execution time is {{ $value | humanizeDuration }}"
+          runbook_url: "https://runbooks.kitchenxpert.com/slow-queries"
+
+      # Replication lag
+      - alert: PostgreSQLReplicationLag
+        expr: |
+          pg_replication_lag_seconds > 30
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+          team: devops
+        annotations:
+          summary: "PostgreSQL replication lag on {{ $labels.instance }}"
+          description: "Replication lag is {{ $value | humanizeDuration }} (threshold: 30s)"
+          runbook_url: "https://runbooks.kitchenxpert.com/replication-lag"
+
+      # High deadlock rate
+      - alert: PostgreSQLHighDeadlockRate
+        expr: |
+          rate(pg_stat_database_deadlocks[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+          team: backend
+        annotations:
+          summary: "High deadlock rate in PostgreSQL on {{ $labels.instance }}"
+          description: "Deadlock rate is {{ $value | humanize }} per second"
+          runbook_url: "https://runbooks.kitchenxpert.com/deadlocks"
+
+  # ============================================
+  # Cache Rules
+  # ============================================
+  - name: cache
+    interval: 30s
+    rules:
+      # Redis down
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: cache
+          team: devops
+        annotations:
+          summary: "Redis is down on {{ $labels.instance }}"
+          description: "Redis cache has been down for more than 1 minute"
+          runbook_url: "https://runbooks.kitchenxpert.com/redis-down"
+
+      # High memory usage
+      - alert: RedisHighMemoryUsage
+        expr: |
+          (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          category: cache
+          team: devops
+        annotations:
+          summary: "Redis high memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}% (threshold: 90%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/redis-memory"
+
+      # High eviction rate
+      - alert: RedisHighEvictionRate
+        expr: |
+          rate(redis_evicted_keys_total[5m]) > 100
+        for: 5m
+        labels:
+          severity: warning
+          category: cache
+          team: backend
+        annotations:
+          summary: "High cache eviction rate on {{ $labels.instance }}"
+          description: "Redis is evicting {{ $value | humanize }} keys/sec"
+          runbook_url: "https://runbooks.kitchenxpert.com/redis-eviction"
+
+      # Low cache hit rate
+      - alert: RedisLowHitRate
+        expr: |
+          (
+            rate(redis_keyspace_hits_total[5m])
+            /
+            (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))
+          ) * 100 < 80
+        for: 10m
+        labels:
+          severity: info
+          category: cache
+          team: backend
+        annotations:
+          summary: "Low cache hit rate on {{ $labels.instance }}"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 80%)"
+          runbook_url: "https://runbooks.kitchenxpert.com/cache-hit-rate"
+
+  # ============================================
+  # Security Rules
+  # ============================================
+  - name: security
+    interval: 30s
+    rules:
+      # Too many failed login attempts
+      - alert: TooManyFailedLogins
+        expr: |
+          rate(failed_login_attempts_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          category: security
+          team: security
+        annotations:
+          summary: "High rate of failed login attempts"
+          description: "{{ $value | humanize }} failed login attempts/sec"
+          runbook_url: "https://runbooks.kitchenxpert.com/failed-logins"
+
+      # SSL certificate expiring soon
+      - alert: SSLCertificateExpiringSoon
+        expr: |
+          (probe_ssl_earliest_cert_expiry - time()) / 86400 < 7
+        for: 1h
+        labels:
+          severity: warning
+          category: security
+          team: devops
+        annotations:
+          summary: "SSL certificate expiring soon for {{ $labels.instance }}"
+          description: "Certificate expires in {{ $value | humanize }} days"
+          runbook_url: "https://runbooks.kitchenxpert.com/ssl-expiry"
+
+      # SSL certificate expired
+      - alert: SSLCertificateExpired
+        expr: |
+          (probe_ssl_earliest_cert_expiry - time()) / 86400 < 0
+        for: 5m
+        labels:
+          severity: critical
+          category: security
+          team: devops
+        annotations:
+          summary: "SSL certificate expired for {{ $labels.instance }}"
+          description: "Certificate has been expired for {{ $value | humanize }} days"
+          runbook_url: "https://runbooks.kitchenxpert.com/ssl-expired"
+
+  # ============================================
+  # Endpoint Monitoring Rules
+  # ============================================
+  - name: endpoint_monitoring
+    interval: 30s
+    rules:
+      # Endpoint down
+      - alert: EndpointDown
+        expr: probe_success == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: availability
+          team: devops
+        annotations:
+          summary: "Endpoint {{ $labels.instance }} is down"
+          description: "Endpoint has been down for more than 2 minutes"
+          runbook_url: "https://runbooks.kitchenxpert.com/endpoint-down"
+
+      # Slow endpoint response
+      - alert: SlowEndpointResponse
+        expr: probe_duration_seconds > 5
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+          team: backend
+        annotations:
+          summary: "Slow response from {{ $labels.instance }}"
+          description: "Response time is {{ $value | humanizeDuration }} (threshold: 5s)"
+          runbook_url: "https://runbooks.kitchenxpert.com/slow-endpoint"

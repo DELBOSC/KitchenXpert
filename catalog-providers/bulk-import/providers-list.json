@@ -1,0 +1,524 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-01-10",
+  "description": "Liste des providers avec APIs publiques disponibles pour import automatique",
+  "providers": [
+    {
+      "id": "ikea-api",
+      "name": "IKEA Retail API",
+      "baseUrl": "https://api.ikea.com/v1",
+      "endpoints": {
+        "products": "/products",
+        "categories": "/categories"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "limit",
+        "offsetParam": "offset",
+        "maxLimit": 100
+      },
+      "authentication": {
+        "type": "apiKey",
+        "header": "X-API-Key"
+      },
+      "mapping": {
+        "templateId": "ikea"
+      },
+      "status": "active",
+      "coverage": ["furniture", "appliance"],
+      "notes": "Nécessite une clé API IKEA Developer Portal"
+    },
+    {
+      "id": "home-depot-api",
+      "name": "Home Depot Product API",
+      "baseUrl": "https://api.homedepot.com/v1",
+      "endpoints": {
+        "products": "/products/search"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 10,
+        "maxConcurrent": 3
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "pageSize",
+        "pageParam": "pageNumber",
+        "maxLimit": 50
+      },
+      "authentication": {
+        "type": "apiKey",
+        "header": "Authorization"
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "active",
+      "coverage": ["furniture", "hardware", "lighting"],
+      "notes": "Large catalogue de quincaillerie et meubles"
+    },
+    {
+      "id": "wayfair-api",
+      "name": "Wayfair Partner API",
+      "baseUrl": "https://api.wayfair.com/v1",
+      "endpoints": {
+        "products": "/catalog/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 3,
+        "maxConcurrent": 1
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "limit",
+        "pageParam": "page",
+        "maxLimit": 100
+      },
+      "authentication": {
+        "type": "bearer"
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "active",
+      "coverage": ["furniture"],
+      "notes": "Spécialisé mobilier et décoration"
+    },
+    {
+      "id": "amazon-products",
+      "name": "Amazon Product Advertising API",
+      "baseUrl": "https://webservices.amazon.com/paapi5",
+      "endpoints": {
+        "products": "/searchitems"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 1,
+        "maxConcurrent": 1
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "ItemCount",
+        "pageParam": "ItemPage",
+        "maxLimit": 10
+      },
+      "authentication": {
+        "type": "bearer"
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "limited",
+      "coverage": ["furniture", "appliance", "accessory"],
+      "notes": "Rate limit strict, nécessite compte associé Amazon"
+    },
+    {
+      "id": "leroy-merlin-api",
+      "name": "Leroy Merlin Open Data",
+      "baseUrl": "https://api.leroymerlin.fr/v1",
+      "endpoints": {
+        "products": "/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "limit",
+        "offsetParam": "offset",
+        "maxLimit": 50
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "experimental",
+      "coverage": ["furniture", "hardware", "countertop", "sink"],
+      "notes": "API expérimentale, disponibilité variable"
+    },
+    {
+      "id": "castorama-api",
+      "name": "Castorama Product Feed",
+      "baseUrl": "https://api.castorama.fr/v1",
+      "endpoints": {
+        "products": "/catalog"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 3,
+        "maxConcurrent": 1
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "perPage",
+        "pageParam": "page",
+        "maxLimit": 100
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "experimental",
+      "coverage": ["furniture", "hardware", "lighting"],
+      "notes": "Catalogue bricolage et aménagement"
+    },
+    {
+      "id": "but-api",
+      "name": "BUT Mobilier API",
+      "baseUrl": "https://api.but.fr/v1",
+      "endpoints": {
+        "products": "/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "limit",
+        "offsetParam": "offset",
+        "maxLimit": 50
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "experimental",
+      "coverage": ["furniture"],
+      "notes": "Spécialisé mobilier cuisine"
+    },
+    {
+      "id": "conforama-api",
+      "name": "Conforama Product API",
+      "baseUrl": "https://api.conforama.fr/v1",
+      "endpoints": {
+        "products": "/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "limit",
+        "pageParam": "page",
+        "maxLimit": 100
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "experimental",
+      "coverage": ["furniture", "appliance"],
+      "notes": "Meubles et électroménager"
+    },
+    {
+      "id": "darty-api",
+      "name": "Darty Électroménager API",
+      "baseUrl": "https://api.darty.com/v1",
+      "endpoints": {
+        "products": "/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 10,
+        "maxConcurrent": 3
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "limit",
+        "offsetParam": "offset",
+        "maxLimit": 50
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "active",
+      "coverage": ["appliance"],
+      "notes": "Spécialisé électroménager encastrable"
+    },
+    {
+      "id": "boulanger-api",
+      "name": "Boulanger API",
+      "baseUrl": "https://api.boulanger.com/v1",
+      "endpoints": {
+        "products": "/catalog"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "pageSize",
+        "pageParam": "page",
+        "maxLimit": 100
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "experimental",
+      "coverage": ["appliance"],
+      "notes": "Électroménager et high-tech"
+    },
+    {
+      "id": "openfoodfacts",
+      "name": "Open Product Facts",
+      "baseUrl": "https://world.openfoodfacts.org/api/v0",
+      "endpoints": {
+        "products": "/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 10,
+        "maxConcurrent": 5
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "page_size",
+        "pageParam": "page",
+        "maxLimit": 100
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "active",
+      "coverage": ["accessory"],
+      "notes": "Base de données open source, peut contenir des accessoires cuisine"
+    },
+    {
+      "id": "scraped-ikea",
+      "name": "IKEA Scraped Data (Open Source)",
+      "baseUrl": "https://ikea-api.herokuapp.com",
+      "endpoints": {
+        "products": "/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 2,
+        "maxConcurrent": 1
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "limit",
+        "offsetParam": "offset",
+        "maxLimit": 50
+      },
+      "mapping": {
+        "templateId": "ikea"
+      },
+      "status": "community",
+      "coverage": ["furniture"],
+      "notes": "API communautaire non-officielle, données scrapées"
+    },
+    {
+      "id": "scraped-homedepot",
+      "name": "Home Depot Scraped (Unofficial)",
+      "baseUrl": "https://homedepot-api.example.com",
+      "endpoints": {
+        "products": "/api/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 1,
+        "maxConcurrent": 1
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "limit",
+        "pageParam": "page",
+        "maxLimit": 20
+      },
+      "mapping": {
+        "templateId": "generic"
+      },
+      "status": "community",
+      "coverage": ["furniture", "hardware"],
+      "notes": "API communautaire, vérifier légalité d'utilisation"
+    },
+    {
+      "id": "bosch-api",
+      "name": "Bosch Home Appliances API",
+      "baseUrl": "https://api.home-connect.com/api",
+      "endpoints": {
+        "products": "/homeappliances"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "limit",
+        "offsetParam": "offset",
+        "maxLimit": 50
+      },
+      "authentication": {
+        "type": "bearer"
+      },
+      "mapping": {
+        "templateId": "appliances"
+      },
+      "status": "active",
+      "coverage": ["appliance"],
+      "notes": "Home Connect API officielle Bosch/Siemens, nécessite compte développeur"
+    },
+    {
+      "id": "miele-api",
+      "name": "Miele Professional API",
+      "baseUrl": "https://api.miele.com/v1",
+      "endpoints": {
+        "products": "/devices"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 3,
+        "maxConcurrent": 1
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "per_page",
+        "pageParam": "page",
+        "maxLimit": 100
+      },
+      "authentication": {
+        "type": "bearer"
+      },
+      "mapping": {
+        "templateId": "appliances"
+      },
+      "status": "active",
+      "coverage": ["appliance"],
+      "notes": "API Miele Professional, catalogues complets avec specs techniques"
+    },
+    {
+      "id": "samsung-smartthings",
+      "name": "Samsung SmartThings API",
+      "baseUrl": "https://api.smartthings.com/v1",
+      "endpoints": {
+        "products": "/devices"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 10,
+        "maxConcurrent": 3
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "max",
+        "offsetParam": "offset",
+        "maxLimit": 200
+      },
+      "authentication": {
+        "type": "bearer"
+      },
+      "mapping": {
+        "templateId": "appliances"
+      },
+      "status": "active",
+      "coverage": ["appliance"],
+      "notes": "SmartThings API pour électroménager connecté Samsung"
+    },
+    {
+      "id": "lg-thinq",
+      "name": "LG ThinQ API",
+      "baseUrl": "https://aic-service.lgthinq.com/v1",
+      "endpoints": {
+        "products": "/devices"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "limit",
+        "pageParam": "page",
+        "maxLimit": 100
+      },
+      "authentication": {
+        "type": "bearer"
+      },
+      "mapping": {
+        "templateId": "appliances"
+      },
+      "status": "experimental",
+      "coverage": ["appliance"],
+      "notes": "API ThinQ pour électroménager connecté LG"
+    },
+    {
+      "id": "whirlpool-api",
+      "name": "Whirlpool Product API",
+      "baseUrl": "https://api.whirlpool.com/v1",
+      "endpoints": {
+        "products": "/products"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "page",
+        "limitParam": "pageSize",
+        "pageParam": "pageNumber",
+        "maxLimit": 50
+      },
+      "mapping": {
+        "templateId": "appliances"
+      },
+      "status": "experimental",
+      "coverage": ["appliance"],
+      "notes": "Catalogue Whirlpool (incluant Bauknecht, KitchenAid)"
+    },
+    {
+      "id": "electrolux-api",
+      "name": "Electrolux Group API",
+      "baseUrl": "https://api.electrolux.com/v1",
+      "endpoints": {
+        "products": "/appliances"
+      },
+      "rateLimit": {
+        "requestsPerSecond": 5,
+        "maxConcurrent": 2
+      },
+      "pagination": {
+        "type": "offset",
+        "limitParam": "limit",
+        "offsetParam": "skip",
+        "maxLimit": 100
+      },
+      "mapping": {
+        "templateId": "appliances"
+      },
+      "status": "experimental",
+      "coverage": ["appliance"],
+      "notes": "Electrolux Group (incluant AEG, Zanussi, Frigidaire)"
+    }
+  ],
+  "statusDefinitions": {
+    "active": "API officielle, stable et recommandée",
+    "experimental": "API en développement, peut changer",
+    "limited": "API avec restrictions importantes",
+    "community": "API communautaire non-officielle",
+    "deprecated": "API obsolète, à ne plus utiliser"
+  },
+  "notes": [
+    "⚠️  Les APIs marquées 'experimental' ou 'community' peuvent ne pas fonctionner",
+    "🔑 La plupart des APIs nécessitent une clé API (à configurer dans .env)",
+    "📊 Les rate limits doivent être respectés pour éviter les bans",
+    "⚖️  Vérifier les conditions d'utilisation de chaque API",
+    "🔄 Liste mise à jour régulièrement, check for updates"
+  ],
+  "configuration": {
+    "apiKeys": {
+      "ikea": "IKEA_API_KEY",
+      "homeDepot": "HOME_DEPOT_API_KEY",
+      "wayfair": "WAYFAIR_API_KEY",
+      "amazon": "AMAZON_API_KEY",
+      "bosch": "BOSCH_HOME_CONNECT_TOKEN",
+      "miele": "MIELE_API_TOKEN",
+      "samsung": "SAMSUNG_SMARTTHINGS_TOKEN",
+      "lg": "LG_THINQ_TOKEN",
+      "whirlpool": "WHIRLPOOL_API_KEY",
+      "electrolux": "ELECTROLUX_API_KEY"
+    },
+    "envVarPrefix": "CATALOG_API_"
+  },
+  "quickStart": {
+    "step1": "Configurer les clés API dans .env",
+    "step2": "Lancer: pnpm catalog:bulk-import --provider=ikea-api --limit=100",
+    "step3": "Vérifier les résultats dans catalog-providers/imported-catalogs/"
+  }
+}

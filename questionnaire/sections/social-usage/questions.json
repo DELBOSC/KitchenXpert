@@ -1,0 +1,72 @@
+{
+  "sectionId": "social-usage",
+  "version": "1.0.0",
+  "metadata": {
+    "title": { "en": "Entertainment & Social Use", "fr": "Divertissement et usage social" },
+    "icon": "users",
+    "estimatedTime": 2
+  },
+  "questions": [
+    {
+      "id": "entertaining-frequency",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "How often do you entertain guests in your kitchen?", "fr": "À quelle fréquence recevez-vous des invités dans votre cuisine ?" },
+      "options": [
+        { "value": "rarely", "label": { "en": "Rarely", "fr": "Rarement" } },
+        { "value": "occasionally", "label": { "en": "Occasionally (few times/year)", "fr": "Occasionnellement" } },
+        { "value": "monthly", "label": { "en": "Monthly", "fr": "Mensuellement" } },
+        { "value": "weekly", "label": { "en": "Weekly or more", "fr": "Hebdomadairement ou plus" } }
+      ]
+    },
+    {
+      "id": "party-size",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "Typical gathering size when entertaining?", "fr": "Taille typique des réunions ?" },
+      "options": [
+        { "value": "small", "label": { "en": "Small (2-4 guests)", "fr": "Petite (2-4 invités)" } },
+        { "value": "medium", "label": { "en": "Medium (5-8 guests)", "fr": "Moyenne (5-8 invités)" } },
+        { "value": "large", "label": { "en": "Large (9-15 guests)", "fr": "Grande (9-15 invités)" } },
+        { "value": "very-large", "label": { "en": "Very large (15+ guests)", "fr": "Très grande (15+ invités)" } }
+      ]
+    },
+    {
+      "id": "seating-preference",
+      "type": "single-choice",
+      "required": true,
+      "label": { "en": "Do you want seating in the kitchen?", "fr": "Voulez-vous des places assises dans la cuisine ?" },
+      "options": [
+        { "value": "island-seating", "label": { "en": "Island/bar seating", "fr": "Places à l'îlot/bar" } },
+        { "value": "breakfast-nook", "label": { "en": "Breakfast nook/banquette", "fr": "Coin déjeuner/banquette" } },
+        { "value": "small-table", "label": { "en": "Small table in kitchen", "fr": "Petite table dans la cuisine" } },
+        { "value": "no-seating", "label": { "en": "No seating needed", "fr": "Pas de places assises nécessaires" } }
+      ]
+    },
+    {
+      "id": "beverage-station",
+      "type": "single-choice",
+      "required": false,
+      "label": { "en": "Interest in a beverage station?", "fr": "Intérêt pour un coin boissons ?" },
+      "options": [
+        { "value": "full-bar", "label": { "en": "Yes - full bar area", "fr": "Oui - zone bar complète" } },
+        { "value": "coffee-station", "label": { "en": "Coffee/tea station", "fr": "Station café/thé" } },
+        { "value": "wine-storage", "label": { "en": "Wine storage only", "fr": "Stockage de vin uniquement" } },
+        { "value": "beverage-fridge", "label": { "en": "Beverage refrigerator", "fr": "Réfrigérateur à boissons" } },
+        { "value": "not-needed", "label": { "en": "Not needed", "fr": "Pas nécessaire" } }
+      ]
+    },
+    {
+      "id": "tv-kitchen",
+      "type": "single-choice",
+      "required": false,
+      "label": { "en": "Do you want a TV/display in the kitchen?", "fr": "Voulez-vous un écran TV dans la cuisine ?" },
+      "options": [
+        { "value": "yes-mounted", "label": { "en": "Yes - wall mounted", "fr": "Oui - fixé au mur" } },
+        { "value": "yes-integrated", "label": { "en": "Yes - integrated in cabinet", "fr": "Oui - intégré dans un meuble" } },
+        { "value": "smart-display", "label": { "en": "Smart display/tablet for recipes", "fr": "Écran intelligent/tablette pour recettes" } },
+        { "value": "no", "label": { "en": "No", "fr": "Non" } }
+      ]
+    }
+  ]
+}

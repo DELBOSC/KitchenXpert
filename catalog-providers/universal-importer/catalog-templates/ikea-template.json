@@ -1,0 +1,166 @@
+{
+  "version": "1.0",
+  "providerId": "ikea",
+  "name": "IKEA Catalog Template",
+  "description": "Template de mapping pour les catalogues IKEA (CSV, Excel, JSON)",
+  "author": "KitchenXpert",
+  "created": "2026-01-10",
+  "fields": {
+    "id": {
+      "source": "article_number",
+      "fallback": "product_id"
+    },
+    "externalId": {
+      "source": "article_number"
+    },
+    "name": {
+      "source": "product_name",
+      "fallback": "name"
+    },
+    "description": {
+      "source": "product_description",
+      "fallback": "description"
+    },
+    "category": {
+      "source": "category",
+      "fallback": "product_type",
+      "default": "furniture"
+    },
+    "subcategory": {
+      "source": "subcategory",
+      "fallback": "product_subtype"
+    },
+    "price.price": {
+      "source": "price",
+      "transform": "toNumber"
+    },
+    "price.currency": {
+      "source": "currency",
+      "default": "EUR"
+    },
+    "price.taxRate": {
+      "default": 0.20
+    },
+    "dimensions.width": {
+      "source": "width",
+      "transform": "toNumber",
+      "unit": "cm"
+    },
+    "dimensions.height": {
+      "source": "height",
+      "transform": "toNumber",
+      "unit": "cm"
+    },
+    "dimensions.depth": {
+      "source": "depth",
+      "transform": "toNumber",
+      "unit": "cm"
+    },
+    "material": {
+      "source": "main_material",
+      "fallback": "material"
+    },
+    "finish": {
+      "source": "finish",
+      "fallback": "surface"
+    },
+    "color": {
+      "source": "color",
+      "fallback": "colour"
+    },
+    "availability.status": {
+      "source": "availability",
+      "transform": "toAvailabilityStatus",
+      "mapping": {
+        "In stock": "available",
+        "Low stock": "low_stock",
+        "Out of stock": "out_of_stock",
+        "Discontinued": "discontinued"
+      }
+    },
+    "availability.stock": {
+      "source": "stock_quantity",
+      "transform": "toNumber"
+    },
+    "availability.leadTime": {
+      "source": "delivery_time",
+      "fallback": "lead_time"
+    },
+    "images.main": {
+      "source": "image_url",
+      "fallback": "main_image"
+    },
+    "images.gallery": {
+      "source": "additional_images",
+      "transform": "splitArray",
+      "delimiter": ","
+    },
+    "weight": {
+      "source": "weight",
+      "transform": "toNumber",
+      "unit": "kg"
+    },
+    "brand": {
+      "default": "IKEA"
+    },
+    "model": {
+      "source": "article_number"
+    },
+    "technicalSpecs": {
+      "source": "specifications",
+      "transform": "parseJson"
+    },
+    "certifications": {
+      "source": "certifications",
+      "transform": "splitArray",
+      "delimiter": ";"
+    },
+    "tags": {
+      "source": "tags",
+      "transform": "splitArray",
+      "delimiter": ","
+    }
+  },
+  "transformations": {
+    "toAvailabilityStatus": {
+      "type": "mapping",
+      "default": "unknown"
+    },
+    "toNumber": {
+      "type": "parse",
+      "removeNonNumeric": true
+    },
+    "splitArray": {
+      "type": "split",
+      "trim": true,
+      "removeEmpty": true
+    },
+    "parseJson": {
+      "type": "json",
+      "failSafe": true
+    }
+  },
+  "validation": {
+    "required": ["name", "price.price", "category"],
+    "warnings": {
+      "missingImage": "Produit sans image",
+      "missingDimensions": "Dimensions manquantes",
+      "lowStock": "Stock faible"
+    }
+  },
+  "postProcessing": {
+    "generateSlug": true,
+    "normalizeCategories": true,
+    "convertUnits": {
+      "dimensions": "cm",
+      "weight": "kg"
+    }
+  },
+  "notes": [
+    "Template optimisé pour les exports IKEA officiels",
+    "Supporte les formats CSV et Excel",
+    "Compatible avec l'API IKEA Retail API (si disponible)",
+    "Les dimensions sont attendues en centimètres",
+    "Les prix sont en EUR par défaut"
+  ]
+}

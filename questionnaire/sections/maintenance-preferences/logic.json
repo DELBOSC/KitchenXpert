@@ -1,0 +1,102 @@
+{
+  "sectionId": "maintenance-preferences",
+  "version": "1.0.0",
+  "conditionalRules": [
+    {
+      "id": "minimal-maintenance-materials",
+      "condition": {
+        "questionId": "maintenance-time",
+        "operator": "equals",
+        "value": "minimal"
+      },
+      "action": {
+        "type": "material-filter",
+        "exclude": ["marble", "butcher-block", "copper"],
+        "message": {
+          "en": "We'll focus on low-maintenance materials like quartz and laminate.",
+          "fr": "Nous nous concentrerons sur des matériaux à faible entretien comme le quartz et le stratifié."
+        }
+      }
+    },
+    {
+      "id": "willing-to-maintain",
+      "condition": {
+        "questionId": "maintenance-time",
+        "operator": "equals",
+        "value": "willing"
+      },
+      "action": {
+        "type": "expand-options",
+        "include": ["natural-stone", "solid-wood", "copper-fixtures"],
+        "message": {
+          "en": "Great! This opens up beautiful natural materials that develop character over time.",
+          "fr": "Parfait ! Cela ouvre les options de matériaux naturels qui développent du caractère avec le temps."
+        }
+      }
+    },
+    {
+      "id": "stain-concern-counters",
+      "condition": {
+        "questionId": "stain-concern",
+        "operator": "equals",
+        "value": "very-concerned"
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "Consider quartz or solid surface countertops for best stain resistance.",
+          "fr": "Envisagez des comptoirs en quartz ou en surface solide pour une meilleure résistance aux taches."
+        }
+      }
+    }
+  ],
+  "crossSectionRules": [
+    {
+      "id": "cooking-frequency-maintenance",
+      "fromSection": "cooking-habits",
+      "condition": {
+        "questionId": "cooking-frequency",
+        "operator": "in",
+        "value": ["daily-multiple", "daily-once"]
+      },
+      "action": {
+        "type": "info",
+        "message": {
+          "en": "With frequent cooking, easy-clean surfaces become more important.",
+          "fr": "Avec une cuisine fréquente, les surfaces faciles à nettoyer deviennent plus importantes."
+        }
+      }
+    },
+    {
+      "id": "aesthetic-maintenance-balance",
+      "fromSection": "aesthetic-preferences",
+      "condition": {
+        "questionId": "countertop-material",
+        "operator": "in",
+        "value": ["marble", "natural-stone"]
+      },
+      "action": {
+        "type": "warning",
+        "message": {
+          "en": "Natural stone requires sealing and special care. Ensure this fits your maintenance preferences.",
+          "fr": "La pierre naturelle nécessite un scellement et des soins spéciaux. Assurez-vous que cela correspond à vos préférences d'entretien."
+        }
+      }
+    }
+  ],
+  "recommendations": {
+    "lowMaintenance": {
+      "condition": {
+        "and": [
+          { "questionId": "maintenance-time", "equals": "minimal" },
+          { "questionId": "material-care", "equals": "no-special" }
+        ]
+      },
+      "suggestions": [
+        { "type": "countertop", "material": "quartz", "priority": "high" },
+        { "type": "cabinet", "finish": "thermofoil", "priority": "medium" },
+        { "type": "flooring", "material": "luxury-vinyl", "priority": "medium" }
+      ]
+    }
+  }
+}

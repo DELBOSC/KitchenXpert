@@ -1,0 +1,143 @@
+# ============================================
+# Stage 1: Dependencies
+# ============================================
+FROM node:20-alpine AS deps
+
+LABEL maintainer="KitchenXpert Team"
+LABEL description="Data Exchange Service for KitchenXpert - CSV/Excel/Catalog Processing"
+LABEL version="1.0.0"
+
+# Install system dependencies for data processing
+RUN apk add --no-cache \
+    libc6-compat \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/common/package.json ./packages/common/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# ============================================
+# Stage 2: Builder
+# ============================================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+
+# Copy source code
+COPY turbo.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/common ./packages/common
+COPY catalog-providers ./catalog-providers
+
+# Copy data exchange specific code
+COPY packages/backend/src/services/data-exchange ./packages/backend/src/services/data-exchange
+
+# Build arguments
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+# Build TypeScript
+RUN pnpm build
+
+# ============================================
+# Stage 3: Production
+# ============================================
+FROM node:20-alpine AS production
+
+LABEL maintainer="KitchenXpert Team"
+LABEL description="Production Data Exchange Service for KitchenXpert"
+
+# Install runtime dependencies and tools
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    cairo \
+    jpeg \
+    pango \
+    giflib
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy package files and install production dependencies only
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/common/package.json ./packages/common/
+
+RUN pnpm install --frozen-lockfile --prod
+
+# Copy built assets from builder
+COPY --from=builder /app/packages/backend/dist ./packages/backend/dist
+COPY --from=builder /app/packages/common/dist ./packages/common/dist
+COPY --from=builder /app/catalog-providers ./catalog-providers
+
+# Create directories for data processing
+RUN mkdir -p /app/uploads /app/imports /app/exports /app/temp /app/logs
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs
+
+# Change ownership
+RUN chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
+
+# Environment variables
+ENV NODE_ENV=production \
+    UPLOAD_DIR=/app/uploads \
+    IMPORT_DIR=/app/imports \
+    EXPORT_DIR=/app/exports \
+    TEMP_DIR=/app/temp \
+    LOG_LEVEL=info
+
+# Expose port
+EXPOSE 3001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
+
+# Volumes for persistent data
+VOLUME ["/app/uploads", "/app/imports", "/app/exports"]
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start the service
+CMD ["node", "dist/services/data-exchange/server.js"]

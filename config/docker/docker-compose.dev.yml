@@ -1,0 +1,240 @@
+# Development environment overrides
+# Usage: docker-compose -f docker-compose.yml -f config/docker/docker-compose.dev.yml up
+
+services:
+  # ==========================================
+  # Backend API - Development
+  # ==========================================
+  backend:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.backend
+      target: development
+    volumes:
+      - ../../packages/backend:/app/packages/backend
+      - ../../packages/common:/app/packages/common
+      - /app/packages/backend/node_modules
+      - /app/node_modules
+    ports:
+      - "4000:4000"
+      - "9229:9229"  # Node debugger
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - PORT=4000
+      - DB_HOST=postgres-dev
+      - DB_PORT=5432
+      - DB_NAME=kitchenxpert_dev
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres_dev_password
+      - REDIS_HOST=redis-dev
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis-dev:6379
+      - JWT_ACCESS_SECRET=dev-access-secret-key-for-development-only-32chars
+      - JWT_REFRESH_SECRET=dev-refresh-secret-key-for-development-only-32chars
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:3001,http://localhost:3002
+    command: pnpm --filter backend dev
+    depends_on:
+      - postgres-dev
+      - redis-dev
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # Frontend - Development with Hot Reload
+  # ==========================================
+  frontend:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.frontend
+      target: deps
+    volumes:
+      - ../../packages/frontend:/app/packages/frontend
+      - ../../packages/common:/app/packages/common
+      - ../../packages/ui-components:/app/packages/ui-components
+      - ../../packages/design-system:/app/packages/design-system
+      - ../../packages/api-client:/app/packages/api-client
+      - /app/packages/frontend/node_modules
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:4000
+      - REACT_APP_WS_URL=ws://localhost:4000
+      - REACT_APP_3D_ENGINE_URL=http://localhost:3003
+      - CHOKIDAR_USEPOLLING=true
+      - FAST_REFRESH=true
+    command: pnpm --filter frontend dev
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # Partner Portal - Development
+  # ==========================================
+  partner-portal:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.partner-portal
+      target: deps
+    volumes:
+      - ../../packages/partner-portal:/app/packages/partner-portal
+      - ../../packages/common:/app/packages/common
+      - ../../packages/ui-components:/app/packages/ui-components
+      - ../../packages/design-system:/app/packages/design-system
+      - ../../packages/api-client:/app/packages/api-client
+      - /app/packages/partner-portal/node_modules
+      - /app/node_modules
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:4000
+      - REACT_APP_PARTNER_API_URL=http://localhost:4000/partner
+      - REACT_APP_AUTH_DOMAIN=localhost
+      - CHOKIDAR_USEPOLLING=true
+    command: pnpm --filter partner-portal dev
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # AI Services - Development
+  # ==========================================
+  ai-services:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.ai
+      target: builder
+    volumes:
+      - ../../packages/ai-modules:/app/ai-modules
+      - ai-models-dev:/app/models
+      - ai-cache-dev:/app/cache
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+      - MODEL_CACHE_DIR=/app/models
+      - REDIS_HOST=redis-dev
+      - REDIS_PORT=6379
+    command: python -m ai-modules.server --reload
+    depends_on:
+      - redis-dev
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # Data Exchange Service - Development
+  # ==========================================
+  data-exchange:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.data-exchange
+      target: builder
+    volumes:
+      - ../../packages/backend/src/services/data-exchange:/app/packages/backend/src/services/data-exchange
+      - ../../catalog-providers:/app/catalog-providers
+      - data-uploads-dev:/app/uploads
+      - data-imports-dev:/app/imports
+      - data-exports-dev:/app/exports
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - PORT=3003
+      - DB_HOST=postgres-dev
+      - DB_PORT=5432
+      - DB_NAME=kitchenxpert_dev
+    command: pnpm run dev
+    depends_on:
+      - postgres-dev
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # PostgreSQL - Development
+  # ==========================================
+  postgres-dev:
+    image: postgres:16-alpine
+    container_name: kitchenxpert-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=kitchenxpert_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_dev_password
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+      - ../../scripts/db/init:/docker-entrypoint-initdb.d
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # Redis - Development
+  # ==========================================
+  redis-dev:
+    image: redis:7-alpine
+    container_name: kitchenxpert-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-dev-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # Adminer - Database Management UI
+  # ==========================================
+  adminer:
+    image: adminer:4.8.1
+    container_name: kitchenxpert-adminer
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres-dev
+    depends_on:
+      - postgres-dev
+    networks:
+      - kitchenxpert-dev
+
+  # ==========================================
+  # MailHog - Email Testing
+  # ==========================================
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: kitchenxpert-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - kitchenxpert-dev
+
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  kitchenxpert-dev:
+    driver: bridge
+    name: kitchenxpert-dev-network
+
+# ==========================================
+# Volumes
+# ==========================================
+volumes:
+  postgres-dev-data:
+    name: kitchenxpert-postgres-dev-data
+  redis-dev-data:
+    name: kitchenxpert-redis-dev-data
+  ai-models-dev:
+    name: kitchenxpert-ai-models-dev
+  ai-cache-dev:
+    name: kitchenxpert-ai-cache-dev
+  data-uploads-dev:
+    name: kitchenxpert-data-uploads-dev
+  data-imports-dev:
+    name: kitchenxpert-data-imports-dev
+  data-exports-dev:
+    name: kitchenxpert-data-exports-dev

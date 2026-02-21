@@ -1,0 +1,74 @@
+# Code Owners for KitchenXpert
+#
+# Ce fichier définit les propriétaires de code pour chaque partie du projet.
+# Les propriétaires sont automatiquement demandés comme reviewers sur les PRs
+# qui modifient leur code.
+#
+# Format: pattern @owner1 @owner2
+# Plus d'info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @kitchenxpert/core-team
+
+# Frontend
+/packages/frontend/ @kitchenxpert/frontend-team
+/packages/ui-components/ @kitchenxpert/frontend-team
+/packages/design-system/ @kitchenxpert/frontend-team
+
+# Backend
+/packages/backend/ @kitchenxpert/backend-team
+/packages/api-client/ @kitchenxpert/backend-team
+/packages/common/ @kitchenxpert/backend-team @kitchenxpert/frontend-team
+
+# 3D Engine
+/packages/3d-engine/ @kitchenxpert/3d-team
+
+# Catalog Providers
+/catalog-providers/ @kitchenxpert/integration-team
+/catalog-providers/common/ @kitchenxpert/integration-team @kitchenxpert/backend-team
+
+# AI Modules
+/packages/ai-modules/ @kitchenxpert/ai-team
+
+# Configuration
+/config/ @kitchenxpert/devops-team
+/config/webpack/ @kitchenxpert/frontend-team @kitchenxpert/devops-team
+/config/docker/ @kitchenxpert/devops-team
+/config/security/ @kitchenxpert/security-team
+/config/database/ @kitchenxpert/backend-team @kitchenxpert/devops-team
+
+# CI/CD & GitHub
+/.github/ @kitchenxpert/devops-team
+/.github/workflows/ @kitchenxpert/devops-team
+/.github/ISSUE_TEMPLATE/ @kitchenxpert/core-team
+/.github/SECURITY.md @kitchenxpert/security-team
+
+# Security-sensitive files
+/config/security/ @kitchenxpert/security-team
+/packages/backend/src/auth/ @kitchenxpert/security-team @kitchenxpert/backend-team
+/packages/backend/src/api/middleware/auth-middleware.ts @kitchenxpert/security-team
+
+# Dependencies
+/package.json @kitchenxpert/core-team
+/pnpm-lock.yaml @kitchenxpert/core-team
+/pnpm-workspace.yaml @kitchenxpert/core-team
+/.github/dependabot.yml @kitchenxpert/devops-team
+
+# Documentation
+/docs/ @kitchenxpert/documentation-team
+README.md @kitchenxpert/core-team @kitchenxpert/documentation-team
+CONTRIBUTING.md @kitchenxpert/core-team
+CHANGELOG.md @kitchenxpert/core-team
+
+# Tests
+*.test.ts @kitchenxpert/qa-team
+*.spec.ts @kitchenxpert/qa-team
+/packages/*/tests/ @kitchenxpert/qa-team
+
+# Infrastructure as Code
+/terraform/ @kitchenxpert/devops-team
+/kubernetes/ @kitchenxpert/devops-team
+
+# Database
+/migrations/ @kitchenxpert/backend-team
+/seeds/ @kitchenxpert/backend-team

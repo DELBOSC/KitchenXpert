@@ -1,0 +1,337 @@
+# Production environment configuration
+# Usage: docker-compose -f docker-compose.yml -f config/docker/docker-compose.prod.yml up -d
+
+services:
+  # ==========================================
+  # Backend API - Production
+  # ==========================================
+  backend:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.backend
+      target: production
+      args:
+        - NODE_ENV=production
+    image: kitchenxpert/backend:${VERSION:-latest}
+    container_name: kitchenxpert-backend-prod
+    restart: always
+    expose:
+      - "4000"
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - kitchenxpert-prod
+
+  # ==========================================
+  # Frontend - Production
+  # ==========================================
+  frontend:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.frontend
+      target: production
+      args:
+        - NODE_ENV=production
+        - VITE_API_URL=${VITE_API_URL}
+        - VITE_WS_URL=${VITE_WS_URL}
+        - VITE_3D_ENGINE_URL=${VITE_3D_ENGINE_URL}
+    image: kitchenxpert/frontend:${VERSION:-latest}
+    container_name: kitchenxpert-frontend-prod
+    restart: always
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_WS_URL=${VITE_WS_URL}
+      - VITE_3D_ENGINE_URL=${VITE_3D_ENGINE_URL}
+    expose:
+      - "8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - kitchenxpert-prod
+
+  # ==========================================
+  # Partner Portal - Production
+  # ==========================================
+  partner-portal:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.partner-portal
+      target: production
+      args:
+        - NODE_ENV=production
+        - REACT_APP_API_URL=${REACT_APP_API_URL}
+        - REACT_APP_PARTNER_API_URL=${REACT_APP_PARTNER_API_URL}
+        - REACT_APP_AUTH_DOMAIN=${REACT_APP_AUTH_DOMAIN}
+    image: kitchenxpert/partner-portal:${VERSION:-latest}
+    container_name: kitchenxpert-partner-portal-prod
+    restart: always
+    ports:
+      - "8081:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - kitchenxpert-prod
+
+  # ==========================================
+  # AI Services - Production
+  # ==========================================
+  ai-services:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.ai
+      target: production
+    image: kitchenxpert/ai-services:${VERSION:-latest}
+    container_name: kitchenxpert-ai-prod
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+      - MODEL_CACHE_DIR=/app/models
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+    volumes:
+      - ai-models-prod:/app/models
+      - ai-cache-prod:/app/cache
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - kitchenxpert-prod
+
+  # ==========================================
+  # Data Exchange Service - Production
+  # ==========================================
+  data-exchange:
+    build:
+      context: ../..
+      dockerfile: config/docker/Dockerfile.data-exchange
+      target: production
+    image: kitchenxpert/data-exchange:${VERSION:-latest}
+    container_name: kitchenxpert-data-exchange-prod
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - data-uploads-prod:/app/uploads
+      - data-imports-prod:/app/imports
+      - data-exports-prod:/app/exports
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - kitchenxpert-prod
+
+  # ==========================================
+  # PostgreSQL - Production
+  # ==========================================
+  postgres:
+    image: postgres:16.2-alpine3.19
+    container_name: kitchenxpert-postgres-prod
+    restart: always
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-prod-data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - kitchenxpert-prod
+
+  # ==========================================
+  # Redis - Production
+  # ==========================================
+  redis:
+    image: redis:7.2-alpine3.19
+    container_name: kitchenxpert-redis-prod
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-prod-data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - kitchenxpert-prod
+
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  kitchenxpert-prod:
+    driver: bridge
+    name: kitchenxpert-prod-network
+
+# ==========================================
+# Volumes
+# ==========================================
+volumes:
+  postgres-prod-data:
+    name: kitchenxpert-postgres-prod-data
+  redis-prod-data:
+    name: kitchenxpert-redis-prod-data
+  ai-models-prod:
+    name: kitchenxpert-ai-models-prod
+  ai-cache-prod:
+    name: kitchenxpert-ai-cache-prod
+  data-uploads-prod:
+    name: kitchenxpert-data-uploads-prod
+  data-imports-prod:
+    name: kitchenxpert-data-imports-prod
+  data-exports-prod:
+    name: kitchenxpert-data-exports-prod

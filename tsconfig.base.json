@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Base Configuration",
+  "compilerOptions": {
+    // Language & Environment
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "checkJs": false,
+
+    // Interop & Modules
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false,
+
+    // Strict Type-Checking
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+
+    // Code Quality
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+
+    // Output
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "newLine": "lf",
+
+    // Performance & Build
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+
+    // Path Mapping (base - packages override)
+    "baseUrl": ".",
+    "paths": {
+      "@kitchenxpert/common": ["packages/common/src"],
+      "@kitchenxpert/common/*": ["packages/common/src/*"],
+      "@kitchenxpert/backend": ["packages/backend/src"],
+      "@kitchenxpert/backend/*": ["packages/backend/src/*"],
+      "@kitchenxpert/frontend": ["packages/frontend/src"],
+      "@kitchenxpert/frontend/*": ["packages/frontend/src/*"],
+      "@kitchenxpert/api-client": ["packages/api-client/src"],
+      "@kitchenxpert/api-client/*": ["packages/api-client/src/*"],
+      "@kitchenxpert/3d-engine": ["packages/3d-engine/src"],
+      "@kitchenxpert/3d-engine/*": ["packages/3d-engine/src/*"],
+      "@kitchenxpert/ui-components": ["packages/ui-components/src"],
+      "@kitchenxpert/ui-components/*": ["packages/ui-components/src/*"],
+      "@kitchenxpert/design-system": ["packages/design-system/src"],
+      "@kitchenxpert/design-system/*": ["packages/design-system/src/*"],
+      "@kitchenxpert/partner-portal": ["packages/partner-portal/src"],
+      "@kitchenxpert/partner-portal/*": ["packages/partner-portal/src/*"],
+      "@kitchenxpert/scraper": ["packages/scraper/src"],
+      "@kitchenxpert/scraper/*": ["packages/scraper/src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "dist",
+    "**/dist",
+    "build",
+    "**/build",
+    ".next",
+    "**/.next",
+    "coverage",
+    "**/coverage",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.tsx",
+    "**/*.test.tsx"
+  ]
+}

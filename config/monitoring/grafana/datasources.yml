@@ -1,0 +1,302 @@
+# Grafana Data Sources Provisioning for KitchenXpert
+#
+# This file automatically provisions data sources when Grafana starts.
+# Place this file in: /etc/grafana/provisioning/datasources/
+#
+# Documentation: https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources
+
+apiVersion: 1
+
+# List of data sources to insert/update
+datasources:
+  # ============================================
+  # Prometheus - Primary metrics source
+  # ============================================
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    # URL of the Prometheus server
+    url: http://localhost:9090
+    # Basic authentication
+    basicAuth: false
+    basicAuthUser: prometheus
+    # Password from environment variable
+    secureJsonData:
+      basicAuthPassword: ${PROMETHEUS_PASSWORD}
+    # Is this the default data source
+    isDefault: true
+    # Mark as read-only
+    editable: false
+    # JSON data
+    jsonData:
+      # HTTP method for queries
+      httpMethod: POST
+      # Query timeout (in seconds)
+      queryTimeout: 60s
+      # Time interval for queries
+      timeInterval: 15s
+      # Enable custom query parameters
+      customQueryParameters: ''
+      # Prometheus type: Prometheus, Cortex, Mimir, Thanos
+      prometheusType: Prometheus
+      # Prometheus version
+      prometheusVersion: 2.40.0
+      # Cache level: Low, Medium, High
+      cacheLevel: Medium
+      # Disable metrics lookup
+      disableMetricsLookup: false
+      # Exemplars integration
+      exemplarTraceIdDestinations:
+        - name: traceID
+          datasourceUid: jaeger
+      # Enable incremental queries
+      incrementalQuerying: true
+      # Timeout for incremental queries
+      incrementalQueryOverlapWindow: 10m
+    # Version number
+    version: 1
+    # Organization ID (1 is default)
+    orgId: 1
+
+  # ============================================
+  # Elasticsearch - Logs data source
+  # ============================================
+  - name: Elasticsearch-Logs
+    type: elasticsearch
+    access: proxy
+    url: http://localhost:9200
+    database: '[logs-]YYYY.MM.DD'
+    basicAuth: true
+    basicAuthUser: elastic
+    secureJsonData:
+      basicAuthPassword: ${ELASTICSEARCH_PASSWORD}
+    isDefault: false
+    editable: false
+    jsonData:
+      # Elasticsearch version
+      esVersion: '8.0.0'
+      # Time field name
+      timeField: '@timestamp'
+      # Log message field
+      logMessageField: message
+      # Log level field
+      logLevelField: level
+      # Index pattern interval: '', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'
+      interval: Daily
+      # Max concurrent shard requests
+      maxConcurrentShardRequests: 5
+      # Include frozen indices
+      includeFrozen: false
+      # Timeout (in seconds)
+      timeout: 60
+    version: 1
+    orgId: 1
+
+  # ============================================
+  # PostgreSQL - Business metrics
+  # ============================================
+  - name: PostgreSQL-Analytics
+    type: postgres
+    access: proxy
+    url: localhost:5432
+    database: kitchenxpert
+    user: grafana_readonly
+    secureJsonData:
+      password: ${POSTGRES_GRAFANA_PASSWORD}
+    isDefault: false
+    editable: false
+    jsonData:
+      # PostgreSQL version
+      postgresVersion: 1400
+      # SSL mode: disable, require, verify-ca, verify-full
+      sslmode: require
+      # Max open connections
+      maxOpenConns: 10
+      # Max idle connections
+      maxIdleConns: 2
+      # Connection max lifetime (in seconds)
+      connMaxLifetime: 14400
+      # Time series queries
+      timescaledb: false
+    version: 1
+    orgId: 1
+
+  # ============================================
+  # MongoDB - NoSQL data
+  # ============================================
+  - name: MongoDB
+    type: grafana-mongodb-datasource
+    access: proxy
+    url: mongodb://localhost:27017
+    database: kitchenxpert
+    user: grafana_readonly
+    secureJsonData:
+      password: ${MONGODB_GRAFANA_PASSWORD}
+    isDefault: false
+    editable: false
+    jsonData:
+      # MongoDB connection options
+      authSource: admin
+      ssl: false
+      # Timeout in milliseconds
+      timeout: 60000
+    version: 1
+    orgId: 1
+
+  # ============================================
+  # Jaeger - Distributed tracing
+  # ============================================
+  - name: Jaeger
+    type: jaeger
+    uid: jaeger
+    access: proxy
+    url: http://localhost:16686
+    isDefault: false
+    editable: false
+    jsonData:
+      # Trace ID to logs
+      tracesToLogs:
+        datasourceUid: 'elasticsearch-logs'
+        tags: ['job', 'instance', 'pod', 'namespace']
+        mappedTags: [{ key: 'service.name', value: 'service' }]
+        mapTagNamesEnabled: true
+        spanStartTimeShift: '-1h'
+        spanEndTimeShift: '1h'
+        filterByTraceID: true
+        filterBySpanID: false
+      # Trace ID to metrics
+      tracesToMetrics:
+        datasourceUid: 'prometheus'
+        tags: [{ key: 'service.name', value: 'service' }]
+        queries:
+          - name: 'Sample query'
+            query: 'rate(http_request_duration_seconds_count{$$__tags}[5m])'
+      # Service map
+      nodeGraph:
+        enabled: true
+      # Span bar label
+      spanBar:
+        type: 'Tag'
+        tag: 'http.path'
+    version: 1
+    orgId: 1
+
+  # ============================================
+  # Loki - Log aggregation (optional)
+  # ============================================
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://localhost:3100
+    isDefault: false
+    editable: false
+    jsonData:
+      # Derived fields for trace correlation
+      derivedFields:
+        - datasourceUid: jaeger
+          matcherRegex: "traceID=(\\w+)"
+          name: TraceID
+          url: '$${__value.raw}'
+      # Max lines to return
+      maxLines: 1000
+      # Timeout (in seconds)
+      timeout: 60
+    version: 1
+    orgId: 1
+
+  # ============================================
+  # Redis - Cache metrics (via Prometheus)
+  # ============================================
+  - name: Redis
+    type: redis-datasource
+    access: proxy
+    url: redis://localhost:6379
+    secureJsonData:
+      password: ${REDIS_PASSWORD}
+    isDefault: false
+    editable: false
+    jsonData:
+      # Client type: standalone, cluster, sentinel
+      client: standalone
+      # Pool size
+      poolSize: 5
+      # Timeout (in seconds)
+      timeout: 10
+      # Enable TLS
+      tlsAuth: false
+      # TLS skip verify
+      tlsSkipVerify: false
+    version: 1
+    orgId: 1
+
+  # ============================================
+  # CloudWatch - AWS metrics (if using AWS)
+  # ============================================
+  # - name: CloudWatch
+  #   type: cloudwatch
+  #   access: proxy
+  #   jsonData:
+  #     authType: keys
+  #     defaultRegion: us-east-1
+  #   secureJsonData:
+  #     accessKey: ${AWS_ACCESS_KEY_ID}
+  #     secretKey: ${AWS_SECRET_ACCESS_KEY}
+  #   isDefault: false
+  #   editable: false
+  #   version: 1
+  #   orgId: 1
+
+  # ============================================
+  # Graphite - Alternative metrics (optional)
+  # ============================================
+  # - name: Graphite
+  #   type: graphite
+  #   access: proxy
+  #   url: http://localhost:8080
+  #   isDefault: false
+  #   editable: false
+  #   jsonData:
+  #     graphiteVersion: '1.1'
+  #     graphiteType: default
+  #   version: 1
+  #   orgId: 1
+
+  # ============================================
+  # InfluxDB - Time series (optional)
+  # ============================================
+  # - name: InfluxDB
+  #   type: influxdb
+  #   access: proxy
+  #   url: http://localhost:8086
+  #   database: kitchenxpert
+  #   user: grafana
+  #   secureJsonData:
+  #     password: ${INFLUXDB_PASSWORD}
+  #   isDefault: false
+  #   editable: false
+  #   jsonData:
+  #     # InfluxDB version
+  #     version: InfluxQL
+  #     httpMode: GET
+  #     timeInterval: 15s
+  #   version: 1
+  #   orgId: 1
+
+  # ============================================
+  # TestData - For testing and demos
+  # ============================================
+  - name: TestData
+    type: testdata
+    access: proxy
+    isDefault: false
+    editable: true
+    jsonData: {}
+    version: 1
+    orgId: 1
+
+# Delete data sources that are not in this file
+deleteDatasources:
+  - name: Old-Prometheus
+    orgId: 1
+  - name: Legacy-Logs
+    orgId: 1

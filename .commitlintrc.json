@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json.schemastore.org/commitlintrc",
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "build",
+        "ci",
+        "chore",
+        "revert",
+        "wip",
+        "hotfix",
+        "release"
+      ]
+    ],
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "frontend",
+        "backend",
+        "api-client",
+        "common",
+        "3d-engine",
+        "ui-components",
+        "design-system",
+        "partner-portal",
+        "ai-modules",
+        "scraper",
+        "docs",
+        "config",
+        "scripts",
+        "deps",
+        "release",
+        "docker",
+        "ci",
+        "db"
+      ]
+    ],
+    "scope-empty": [1, "never"],
+    "subject-case": [2, "always", "lower-case"],
+    "subject-empty": [2, "never"],
+    "subject-full-stop": [2, "never", "."],
+    "subject-max-length": [2, "always", 72],
+    "body-max-line-length": [2, "always", 100],
+    "body-leading-blank": [2, "always"],
+    "footer-leading-blank": [2, "always"],
+    "header-max-length": [2, "always", 100]
+  },
+  "helpUrl": "https://www.conventionalcommits.org/"
+}

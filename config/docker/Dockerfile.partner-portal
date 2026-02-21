@@ -1,0 +1,130 @@
+# ============================================
+# Stage 1: Dependencies
+# ============================================
+FROM node:20-alpine AS deps
+
+LABEL maintainer="KitchenXpert Team"
+LABEL description="Partner Portal Application for KitchenXpert"
+LABEL version="1.0.0"
+
+# Install dependencies only when needed
+RUN apk add --no-cache libc6-compat
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/partner-portal/package.json ./packages/partner-portal/
+COPY packages/common/package.json ./packages/common/
+COPY packages/ui-components/package.json ./packages/ui-components/
+COPY packages/design-system/package.json ./packages/design-system/
+COPY packages/api-client/package.json ./packages/api-client/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# ============================================
+# Stage 2: Builder
+# ============================================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+
+# Copy source code
+COPY turbo.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/partner-portal ./packages/partner-portal
+COPY packages/common ./packages/common
+COPY packages/ui-components ./packages/ui-components
+COPY packages/design-system ./packages/design-system
+COPY packages/api-client ./packages/api-client
+
+# Build arguments for environment variables
+ARG NODE_ENV=production
+ARG REACT_APP_API_URL
+ARG REACT_APP_PARTNER_API_URL
+ARG REACT_APP_AUTH_DOMAIN
+
+ENV NODE_ENV=${NODE_ENV}
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+ENV REACT_APP_PARTNER_API_URL=${REACT_APP_PARTNER_API_URL}
+ENV REACT_APP_AUTH_DOMAIN=${REACT_APP_AUTH_DOMAIN}
+
+# Build the partner portal
+RUN pnpm --filter partner-portal build
+
+# ============================================
+# Stage 3: Production
+# ============================================
+FROM nginx:1.25-alpine AS production
+
+LABEL maintainer="KitchenXpert Team"
+LABEL description="Production Partner Portal for KitchenXpert"
+
+# Install security updates and dumb-init
+RUN apk add --no-cache dumb-init && \
+    apk upgrade --no-cache
+
+# Copy built assets from builder
+COPY --from=builder /app/packages/partner-portal/dist /usr/share/nginx/html
+
+# Copy custom nginx configuration
+COPY config/docker/nginx/partner-portal.conf /etc/nginx/conf.d/default.conf
+
+# Security: Add security headers configuration
+COPY config/docker/nginx/security-headers.conf /etc/nginx/conf.d/security-headers.conf
+
+# Create nginx cache directories
+RUN mkdir -p /var/cache/nginx/client_temp && \
+    mkdir -p /var/cache/nginx/proxy_temp && \
+    mkdir -p /var/cache/nginx/fastcgi_temp && \
+    mkdir -p /var/cache/nginx/uwsgi_temp && \
+    mkdir -p /var/cache/nginx/scgi_temp
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs
+
+# Change ownership of nginx directories
+RUN chown -R nodejs:nodejs /usr/share/nginx/html && \
+    chown -R nodejs:nodejs /var/cache/nginx && \
+    chown -R nodejs:nodejs /var/log/nginx && \
+    chown -R nodejs:nodejs /etc/nginx/conf.d
+
+# Create PID file directory with proper permissions
+RUN mkdir -p /var/run/nginx && \
+    chown -R nodejs:nodejs /var/run/nginx
+
+# Update nginx.conf to use non-privileged port and user
+RUN sed -i 's/listen       80;/listen       8080;/' /etc/nginx/conf.d/default.conf && \
+    sed -i '/user  nginx;/d' /etc/nginx/nginx.conf && \
+    sed -i 's,/var/run/nginx.pid,/var/run/nginx/nginx.pid,' /etc/nginx/nginx.conf
+
+# Remove server tokens for security
+RUN echo "server_tokens off;" >> /etc/nginx/nginx.conf
+
+# Switch to non-root user
+USER nodejs
+
+# Expose non-privileged port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

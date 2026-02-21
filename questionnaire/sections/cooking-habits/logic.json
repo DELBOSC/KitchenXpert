@@ -1,0 +1,39 @@
+{
+  "sectionId": "cooking-habits",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "heavy-cook-ventilation",
+      "condition": { "questionId": "cooking-frequency", "operator": "in", "value": ["daily", "multiple-daily"] },
+      "action": { "type": "add-tag", "tags": ["high-capacity-ventilation", "durable-surfaces"] }
+    },
+    {
+      "id": "wok-cooking-requirements",
+      "condition": { "questionId": "cooking-methods", "operator": "contains", "value": "wok" },
+      "action": {
+        "type": "show-message",
+        "message": { "en": "Wok cooking benefits from high-BTU burners (15,000+ BTU) and powerful ventilation.", "fr": "La cuisine au wok bénéficie de brûleurs à haut BTU (15 000+ BTU) et d'une ventilation puissante." },
+        "severity": "tip"
+      }
+    },
+    {
+      "id": "baker-needs",
+      "condition": { "questionId": "meal-types", "operator": "contains", "value": "baking" },
+      "action": { "type": "add-tag", "tags": ["baking-station", "marble-counter", "double-oven"] }
+    },
+    {
+      "id": "gas-preference-check",
+      "condition": { "questionId": "range-preference", "operator": "equals", "value": "gas" },
+      "action": { "type": "add-tag", "tags": ["gas-line-required", "check-gas-availability"] }
+    }
+  ],
+  "sectionFlow": {
+    "defaultOrder": ["cooking-frequency", "meal-types", "cuisine-types", "cooking-methods", "range-preference", "oven-needs", "counter-workspace", "small-appliances"],
+    "adaptiveFlow": true,
+    "allowBack": true
+  },
+  "completion": {
+    "requiredQuestions": ["cooking-frequency", "meal-types", "cuisine-types", "cooking-methods", "range-preference", "oven-needs", "counter-workspace"],
+    "minimumAnswered": 7
+  }
+}

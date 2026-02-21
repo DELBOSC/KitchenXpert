@@ -1,0 +1,12 @@
+{
+  "name": "@kitchenxpert/ai-appliance-advisor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KitchenXpert AI Appliance Advisor - Recommends optimal appliances based on user needs",
+  "scripts": {
+    "setup": "python -m venv venv && pip install -r requirements.txt",
+    "dev": "python main.py",
+    "test": "pytest",
+    "lint": "flake8 src && mypy src"
+  }
+}

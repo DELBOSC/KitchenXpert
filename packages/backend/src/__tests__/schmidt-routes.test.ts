@@ -1,0 +1,212 @@
+/**
+ * Schmidt Routes Tests
+ *
+ * Tests the Schmidt catalog provider endpoints:
+ * - GET /schmidt/products — list products with pagination
+ * - GET /schmidt/products/search — search products by query
+ * - GET /schmidt/info — provider metadata
+ * - 404 when provider not configured
+ */
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import request from 'supertest';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+
+// ==================== MOCKS ====================
+
+vi.mock('../../utils/logger', () => ({
+  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
+  createModuleLogger: vi.fn(() => ({
+    info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn(),
+  })),
+}));
+
+vi.mock('express-rate-limit', () => ({
+  default: vi.fn(() => (_req: Request, _res: Response, next: NextFunction) => next()),
+}));
+
+const mockProductFindAll = vi.fn();
+const mockProductFindById = vi.fn();
+
+vi.mock('../../repositories/product-repository', () => ({
+  ProductRepository: vi.fn().mockImplementation(() => ({
+    findAll: mockProductFindAll,
+    findById: mockProductFindById,
+  })),
+}));
+
+vi.mock('../../repositories/appliance-repository', () => ({
+  ApplianceRepository: vi.fn().mockImplementation(() => ({
+    findAll: vi.fn(),
+    search: vi.fn(),
+    getTypes: vi.fn(),
+    findById: vi.fn(),
+  })),
+}));
+
+const mockPrisma = {
+  $disconnect: vi.fn(),
+  catalogProvider: { findFirst: vi.fn() },
+  productCategory: { findMany: vi.fn() },
+};
+
+vi.mock('../../database/client', () => ({ prisma: mockPrisma }));
+
+vi.mock('../../config/app-config', () => ({
+  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+}));
+
+vi.mock('../../auth/token-blacklist', () => ({
+  getTokenBlacklist: vi.fn(() => ({
+    addToBlacklist: vi.fn().mockResolvedValue(undefined),
+    isBlacklisted: vi.fn().mockResolvedValue(false),
+    isUserBlacklisted: vi.fn().mockResolvedValue(false),
+  })),
+  getTokenExpiration: vi.fn(() => new Date(Date.now() + 3600000)),
+  getTokenIssuedAt: vi.fn(() => new Date()),
+}));
+
+vi.mock('../../auth/jwt.service', () => ({
+  jwtService: {
+    verifyAccessToken: vi.fn().mockReturnValue({
+      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+    }),
+    generateTokens: vi.fn(),
+  },
+}));
+
+vi.mock('../../api/middleware/auth-middleware', () => ({
+  authenticate: vi.fn((req: any, _res: any, next: any) => {
+    req.user = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
+    next();
+  }),
+  authorize: () => (_req: any, _res: any, next: any) => next(),
+  requireRole: () => (_req: any, _res: any, next: any) => next(),
+}));
+
+vi.mock('../../api/middleware/rate-limit-middleware', () => ({
+  generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
+}));
+
+// Import after mocks
+import { createProviderRoutes } from '../../api/routes/provider-routes-factory';
+import { errorHandler } from '../../api/middleware/error-middleware';
+
+// ==================== SETUP ====================
+
+function createTestApp(): Application {
+  const app = express();
+  app.use(express.json());
+  const schmidtRoutes = createProviderRoutes({
+    providerCode: 'schmidt',
+    displayName: 'Schmidt',
+    type: 'furniture',
+    rateLimit: 30,
+    categories: ['cuisines', 'rangements', 'arcos', 'loft'],
+  });
+  app.use('/schmidt', schmidtRoutes);
+  app.use(errorHandler);
+  return app;
+}
+
+// ==================== FIXTURES ====================
+
+const mockProvider = {
+  id: 'provider-schmidt',
+  name: 'Schmidt',
+  code: 'schmidt',
+  isActive: true,
+  _count: { products: 120, appliances: 0, catalogs: 2 },
+};
+
+const mockProductList = {
+  data: [{ id: 'p1', name: 'Schmidt Arcos Cabinet', sku: 'SCH-ARC-01', price: 399.99 }],
+  page: 1,
+  total: 1,
+  totalPages: 1,
+};
+
+// ==================== TESTS ====================
+
+describe('Schmidt Routes', () => {
+  let app: Application;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    app = createTestApp();
+  });
+
+  describe('GET /schmidt/products', () => {
+    it('should return paginated product list with 200 status', async () => {
+      mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
+      mockProductFindAll.mockResolvedValue(mockProductList);
+
+      const response = await request(app).get('/schmidt/products').expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveLength(1);
+      expect(response.body.meta.provider).toBe('schmidt');
+    });
+
+    it('should return 404 when Schmidt provider is not configured', async () => {
+      mockPrisma.catalogProvider.findFirst.mockResolvedValue(null);
+
+      const response = await request(app).get('/schmidt/products').expect(404);
+
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should pass filter query parameters to the repository', async () => {
+      mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
+      mockProductFindAll.mockResolvedValue(mockProductList);
+
+      await request(app)
+        .get('/schmidt/products?page=2&limit=10&material=oak&color=white')
+        .expect(200);
+
+      expect(mockProductFindAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          providerId: 'provider-schmidt',
+          material: 'oak',
+          color: 'white',
+        }),
+        expect.objectContaining({ page: 2, limit: 10 }),
+      );
+    });
+  });
+
+  describe('GET /schmidt/products/search', () => {
+    it('should search products and return results with 200 status', async () => {
+      mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
+      mockProductFindAll.mockResolvedValue(mockProductList);
+
+      const response = await request(app)
+        .get('/schmidt/products/search?q=arcos')
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.meta.provider).toBe('schmidt');
+    });
+
+    it('should return 400 when search query "q" is missing', async () => {
+      const response = await request(app)
+        .get('/schmidt/products/search')
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error.code).toBe('MISSING_QUERY');
+    });
+  });
+
+  describe('GET /schmidt/info', () => {
+    it('should return provider metadata with product counts', async () => {
+      mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
+
+      const response = await request(app).get('/schmidt/info').expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.code).toBe('schmidt');
+      expect(response.body.data.productCount).toBe(120);
+    });
+  });
+});

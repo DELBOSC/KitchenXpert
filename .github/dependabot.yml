@@ -1,0 +1,136 @@
+version: 2
+
+updates:
+  # npm/pnpm dependencies - Root
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "kitchenxpert/backend-team"
+    assignees:
+      - "kitchenxpert/backend-team"
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    versioning-strategy: increase
+    allow:
+      - dependency-type: "all"
+    ignore:
+      # Ignore major versions for stability
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "kitchenxpert/devops-team"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+    commit-message:
+      prefix: "chore(ci)"
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/config/docker"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "kitchenxpert/devops-team"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "automated"
+    commit-message:
+      prefix: "chore(docker)"
+
+  # Frontend package
+  - package-ecosystem: "npm"
+    directory: "/packages/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "kitchenxpert/frontend-team"
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps-frontend)"
+
+  # Backend package
+  - package-ecosystem: "npm"
+    directory: "/packages/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "kitchenxpert/backend-team"
+    labels:
+      - "dependencies"
+      - "backend"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps-backend)"
+    ignore:
+      # Security-sensitive packages - manual review required
+      - dependency-name: "jsonwebtoken"
+      - dependency-name: "bcrypt"
+      - dependency-name: "helmet"
+      - dependency-name: "express-rate-limit"
+
+  # 3D Engine package
+  - package-ecosystem: "npm"
+    directory: "/packages/3d-engine"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "04:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "kitchenxpert/3d-team"
+    labels:
+      - "dependencies"
+      - "3d-engine"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps-3d)"
+
+  # Common package
+  - package-ecosystem: "npm"
+    directory: "/packages/common"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "04:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "kitchenxpert/backend-team"
+    labels:
+      - "dependencies"
+      - "common"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps-common)"

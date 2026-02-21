@@ -1,0 +1,12 @@
+# Test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Build outputs
+.next
+out
+dist
+build
+node_modules

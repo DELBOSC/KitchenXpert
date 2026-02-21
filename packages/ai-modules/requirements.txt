@@ -1,0 +1,61 @@
+# ============================================
+# KitchenXpert AI Modules - Python Dependencies
+# ============================================
+
+# Core ML/AI Dependencies
+numpy>=1.24.0
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# Optional: Deep Learning (uncomment if needed)
+# torch>=2.1.0
+# transformers>=4.35.0
+
+# FastAPI for REST API
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+pydantic-settings>=2.0.0
+
+# Data Processing
+pandas>=2.1.0
+
+# Image Processing (optional)
+pillow>=10.0.0
+# opencv-python-headless>=4.8.0
+
+# HTTP Client
+httpx>=0.25.0
+requests>=2.31.0
+aiohttp>=3.9.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Logging and Monitoring
+structlog>=23.2.0
+
+# Testing (development)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+httpx>=0.25.0
+
+# Type Checking (development)
+mypy>=1.7.0
+
+# Code Quality (development)
+ruff>=0.1.6
+black>=23.11.0
+
+# Optional: Redis for caching
+# redis>=5.0.0
+# hiredis>=2.2.0
+
+# Optional: Database
+# sqlalchemy>=2.0.0
+# alembic>=1.12.0
+
+# Optional: Message Queue
+# celery>=5.3.0
+# kombu>=5.3.0

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "KitchenXpert Monorepo Root",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    // Layer 1: Base (no dependencies)
+    { "path": "./packages/common" },
+
+    // Layer 2: Core Libraries (depend on common)
+    { "path": "./packages/api-client" },
+    { "path": "./packages/design-system" },
+    { "path": "./packages/3d-engine" },
+    { "path": "./packages/scraper" },
+
+    // Layer 3: Composition (depend on core libs)
+    { "path": "./packages/ui-components" },
+
+    // Layer 4: Applications (depend on everything)
+    { "path": "./packages/backend" },
+    { "path": "./packages/frontend" },
+    { "path": "./packages/partner-portal" }
+  ]
+}

@@ -1,0 +1,285 @@
+{
+  "version": "1.0",
+  "providerId": "generic",
+  "name": "Generic Catalog Template",
+  "description": "Template générique pour n'importe quel catalogue de meubles/électroménager",
+  "author": "KitchenXpert",
+  "created": "2026-01-10",
+  "fields": {
+    "id": {
+      "source": "id",
+      "fallback": ["sku", "ref", "reference", "product_id"]
+    },
+    "externalId": {
+      "source": "external_id",
+      "fallback": ["supplier_id", "vendor_id", "id"]
+    },
+    "name": {
+      "source": "name",
+      "fallback": ["nom", "title", "product_name", "designation"]
+    },
+    "description": {
+      "source": "description",
+      "fallback": ["desc", "details", "product_description"]
+    },
+    "category": {
+      "source": "category",
+      "fallback": ["categorie", "type", "product_type"],
+      "transform": "normalizeCategory"
+    },
+    "subcategory": {
+      "source": "subcategory",
+      "fallback": ["sous_categorie", "subtype"]
+    },
+    "price.price": {
+      "source": "price",
+      "fallback": ["prix", "cost", "unit_price"],
+      "transform": "toNumber"
+    },
+    "price.currency": {
+      "source": "currency",
+      "fallback": ["devise", "monnaie"],
+      "default": "EUR"
+    },
+    "price.taxRate": {
+      "source": "tax_rate",
+      "fallback": ["tva", "vat"],
+      "transform": "toTaxRate",
+      "default": 0.20
+    },
+    "dimensions.width": {
+      "source": "width",
+      "fallback": ["largeur", "w", "l"],
+      "transform": "toNumber"
+    },
+    "dimensions.height": {
+      "source": "height",
+      "fallback": ["hauteur", "h"],
+      "transform": "toNumber"
+    },
+    "dimensions.depth": {
+      "source": "depth",
+      "fallback": ["profondeur", "d", "p"],
+      "transform": "toNumber"
+    },
+    "material": {
+      "source": "material",
+      "fallback": ["materiau", "matiere"]
+    },
+    "finish": {
+      "source": "finish",
+      "fallback": ["finition", "surface"]
+    },
+    "color": {
+      "source": "color",
+      "fallback": ["colour", "couleur"]
+    },
+    "availability.status": {
+      "source": "status",
+      "fallback": ["availability", "disponibilite"],
+      "transform": "toAvailabilityStatus"
+    },
+    "availability.stock": {
+      "source": "stock",
+      "fallback": ["quantity", "qty", "stock_quantity"],
+      "transform": "toNumber"
+    },
+    "availability.leadTime": {
+      "source": "lead_time",
+      "fallback": ["delivery_time", "delai"]
+    },
+    "images.main": {
+      "source": "image",
+      "fallback": ["main_image", "photo", "url_image"]
+    },
+    "images.gallery": {
+      "source": "images",
+      "fallback": ["gallery", "additional_images", "photos"],
+      "transform": "splitArray"
+    },
+    "weight": {
+      "source": "weight",
+      "fallback": ["poids"],
+      "transform": "toNumber"
+    },
+    "brand": {
+      "source": "brand",
+      "fallback": ["marque", "manufacturer"]
+    },
+    "model": {
+      "source": "model",
+      "fallback": ["modele", "reference_model"]
+    },
+    "tags": {
+      "source": "tags",
+      "fallback": ["keywords", "mots_cles"],
+      "transform": "splitArray"
+    }
+  },
+  "transformations": {
+    "toNumber": {
+      "type": "parse",
+      "removeNonNumeric": true,
+      "decimalSeparator": "auto"
+    },
+    "toTaxRate": {
+      "type": "custom",
+      "function": "parseTaxRate",
+      "notes": "Convertit '20%' ou '0.20' en 0.20"
+    },
+    "normalizeCategory": {
+      "type": "mapping",
+      "caseSensitive": false,
+      "mappings": {
+        "cabinet": "cabinet",
+        "meuble": "cabinet",
+        "armoire": "cabinet",
+        "appliance": "appliance",
+        "electromenager": "appliance",
+        "électroménager": "appliance",
+        "countertop": "countertop",
+        "plan de travail": "countertop",
+        "sink": "sink",
+        "evier": "sink",
+        "faucet": "faucet",
+        "robinet": "faucet"
+      },
+      "default": "other"
+    },
+    "toAvailabilityStatus": {
+      "type": "mapping",
+      "caseSensitive": false,
+      "mappings": {
+        "available": "available",
+        "disponible": "available",
+        "in stock": "available",
+        "en stock": "available",
+        "out of stock": "out_of_stock",
+        "rupture": "out_of_stock",
+        "low stock": "low_stock",
+        "stock faible": "low_stock",
+        "discontinued": "discontinued",
+        "arrêté": "discontinued"
+      },
+      "default": "unknown"
+    },
+    "splitArray": {
+      "type": "split",
+      "delimiter": ",",
+      "alternativeDelimiters": [";", "|"],
+      "trim": true,
+      "removeEmpty": true
+    },
+    "toBoolean": {
+      "type": "boolean",
+      "trueValues": ["yes", "oui", "true", "1", "vrai"],
+      "falseValues": ["no", "non", "false", "0", "faux"]
+    }
+  },
+  "validation": {
+    "required": ["name", "price.price"],
+    "recommended": ["category", "images.main", "dimensions.width"],
+    "warnings": {
+      "missingImage": "Produit sans image",
+      "missingDimensions": "Dimensions manquantes",
+      "missingCategory": "Catégorie non définie",
+      "lowPrice": "Prix suspicieusement bas (< 10€)",
+      "highPrice": "Prix suspicieusement élevé (> 100000€)"
+    },
+    "custom": {
+      "priceRange": "price >= 1 AND price <= 100000",
+      "hasBasicInfo": "name.length > 0 AND price > 0"
+    }
+  },
+  "postProcessing": {
+    "generateSlug": true,
+    "normalizeCategories": true,
+    "convertUnits": {
+      "dimensions": "cm",
+      "weight": "kg"
+    },
+    "autoDetect": {
+      "combinedDimensions": true,
+      "priceWithCurrency": true,
+      "multipleImages": true
+    }
+  },
+  "specialHandling": {
+    "combinedDimensions": {
+      "enabled": true,
+      "patterns": [
+        "(\\d+)\\s*[xX×]\\s*(\\d+)\\s*[xX×]\\s*(\\d+)",
+        "(\\d+)\\s*\\*\\s*(\\d+)\\s*\\*\\s*(\\d+)",
+        "(L|l)\\s*(\\d+)\\s*[xX×]\\s*(H|h)\\s*(\\d+)\\s*[xX×]\\s*(P|p)\\s*(\\d+)"
+      ],
+      "extract": ["width", "height", "depth"]
+    },
+    "priceWithCurrency": {
+      "enabled": true,
+      "patterns": [
+        "(\\d+[.,]\\d+)\\s*(€|EUR|\\$|USD|£|GBP)",
+        "(€|EUR|\\$|USD|£|GBP)\\s*(\\d+[.,]\\d+)"
+      ],
+      "extract": ["price", "currency"]
+    },
+    "arrayDelimiterDetection": {
+      "enabled": true,
+      "testSample": 5,
+      "delimiters": [",", ";", "|", "\n"]
+    }
+  },
+  "fallbackStrategies": {
+    "multipleSourceAttempts": true,
+    "intelligentGuessing": {
+      "enabled": true,
+      "strategies": [
+        "detectSimilarColumnNames",
+        "inferFromContext",
+        "useDefaultValues"
+      ]
+    },
+    "partialMatching": {
+      "enabled": true,
+      "threshold": 0.7
+    }
+  },
+  "notes": [
+    "Template ultra-flexible pour n'importe quel fournisseur",
+    "Auto-détection intelligente des formats",
+    "Support de multiples langues (FR, EN)",
+    "Gestion des formats de dimensions combinées",
+    "Auto-détection du séparateur décimal",
+    "Support des prix avec symbole de devise",
+    "Stratégies de fallback avancées",
+    "Idéal pour les imports ponctuels ou les nouveaux fournisseurs"
+  ],
+  "examples": [
+    {
+      "name": "CSV simple",
+      "columns": ["name", "price", "category"],
+      "sample": {
+        "name": "Armoire cuisine",
+        "price": "299.99",
+        "category": "cabinet"
+      }
+    },
+    {
+      "name": "Excel avec dimensions combinées",
+      "columns": ["nom", "prix", "dimensions"],
+      "sample": {
+        "nom": "Meuble bas",
+        "prix": "189,99€",
+        "dimensions": "80x60x200"
+      }
+    },
+    {
+      "name": "JSON multilangue",
+      "columns": ["product_name", "unit_price", "stock_status"],
+      "sample": {
+        "product_name": "Kitchen Cabinet",
+        "unit_price": "450.00 EUR",
+        "stock_status": "In Stock"
+      }
+    }
+  ]
+}

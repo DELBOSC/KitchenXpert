@@ -1,0 +1,15 @@
+packages:
+  # Main packages
+  - 'packages/*'
+
+  # AI modules (Python-based)
+  - 'packages/ai-modules/*'
+
+  # Catalog providers (if needed as separate packages)
+  # - 'catalog-providers/*'
+
+# Exclude certain directories from being treated as packages
+# (commented out as defaults work well)
+# exclude:
+#   - '**/test/**'
+#   - '**/tests/**'

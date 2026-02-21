@@ -1,0 +1,253 @@
+{
+  "version": "1.0",
+  "providerId": "schmidt",
+  "name": "Schmidt Groupe Catalog Template",
+  "description": "Template de mapping pour les catalogues Schmidt Groupe (cuisines sur-mesure)",
+  "author": "KitchenXpert",
+  "created": "2026-01-10",
+  "fields": {
+    "id": {
+      "source": "ref_produit",
+      "fallback": "reference"
+    },
+    "externalId": {
+      "source": "ref_fournisseur",
+      "fallback": "ref_produit"
+    },
+    "name": {
+      "source": "designation",
+      "fallback": "nom_produit"
+    },
+    "description": {
+      "source": "description_longue",
+      "fallback": "description"
+    },
+    "category": {
+      "source": "famille",
+      "fallback": "categorie",
+      "transform": "normalizeCategory",
+      "mapping": {
+        "Meubles bas": "base_cabinet",
+        "Meubles hauts": "wall_cabinet",
+        "Colonnes": "tall_cabinet",
+        "Electroménager": "appliance",
+        "Plans de travail": "countertop",
+        "Evier": "sink",
+        "Robinetterie": "faucet",
+        "Accessoires": "accessory"
+      }
+    },
+    "subcategory": {
+      "source": "sous_famille",
+      "fallback": "type"
+    },
+    "price.price": {
+      "source": "prix_public_ttc",
+      "fallback": "prix_ttc",
+      "transform": "toNumber"
+    },
+    "price.currency": {
+      "default": "EUR"
+    },
+    "price.taxRate": {
+      "source": "taux_tva",
+      "transform": "toTaxRate",
+      "default": 0.20
+    },
+    "dimensions.width": {
+      "source": "largeur",
+      "fallback": "l",
+      "transform": "toNumber",
+      "unit": "mm"
+    },
+    "dimensions.height": {
+      "source": "hauteur",
+      "fallback": "h",
+      "transform": "toNumber",
+      "unit": "mm"
+    },
+    "dimensions.depth": {
+      "source": "profondeur",
+      "fallback": "p",
+      "transform": "toNumber",
+      "unit": "mm"
+    },
+    "material": {
+      "source": "materiau_facade",
+      "fallback": "materiau"
+    },
+    "finish": {
+      "source": "finition",
+      "fallback": "traitement_surface"
+    },
+    "color": {
+      "source": "coloris",
+      "fallback": "couleur"
+    },
+    "availability.status": {
+      "source": "disponibilite",
+      "transform": "toAvailabilityStatus",
+      "mapping": {
+        "En stock": "available",
+        "Sur commande": "made_to_order",
+        "Délai spécifique": "special_order",
+        "Arrêté": "discontinued"
+      }
+    },
+    "availability.leadTime": {
+      "source": "delai_livraison",
+      "fallback": "delai_fabrication",
+      "transform": "toLeadTime"
+    },
+    "images.main": {
+      "source": "url_image_principale",
+      "fallback": "image"
+    },
+    "images.gallery": {
+      "source": "url_images_secondaires",
+      "transform": "splitArray",
+      "delimiter": ";"
+    },
+    "weight": {
+      "source": "poids",
+      "transform": "toNumber",
+      "unit": "kg"
+    },
+    "brand": {
+      "source": "marque",
+      "default": "Schmidt"
+    },
+    "model": {
+      "source": "modele",
+      "fallback": "gamme"
+    },
+    "collection": {
+      "source": "collection",
+      "fallback": "gamme"
+    },
+    "technicalSpecs": {
+      "source": "caracteristiques_techniques",
+      "transform": "parseKeyValue"
+    },
+    "installationInstructions": {
+      "source": "notice_pose",
+      "fallback": "instructions"
+    },
+    "certifications": {
+      "source": "certifications",
+      "transform": "splitArray",
+      "delimiter": ","
+    },
+    "warranty": {
+      "source": "garantie",
+      "transform": "toWarranty"
+    },
+    "tags": {
+      "source": "mots_cles",
+      "transform": "splitArray",
+      "delimiter": ","
+    },
+    "customizable": {
+      "source": "sur_mesure",
+      "transform": "toBoolean",
+      "default": true
+    },
+    "minWidth": {
+      "source": "largeur_mini",
+      "transform": "toNumber",
+      "unit": "mm"
+    },
+    "maxWidth": {
+      "source": "largeur_maxi",
+      "transform": "toNumber",
+      "unit": "mm"
+    }
+  },
+  "transformations": {
+    "normalizeCategory": {
+      "type": "mapping",
+      "caseSensitive": false,
+      "default": "other"
+    },
+    "toAvailabilityStatus": {
+      "type": "mapping",
+      "default": "unknown"
+    },
+    "toNumber": {
+      "type": "parse",
+      "removeNonNumeric": true,
+      "decimalSeparator": ","
+    },
+    "toTaxRate": {
+      "type": "custom",
+      "function": "parseTaxRate"
+    },
+    "toLeadTime": {
+      "type": "custom",
+      "function": "parseLeadTime"
+    },
+    "toBoolean": {
+      "type": "boolean",
+      "trueValues": ["oui", "yes", "1", "true", "vrai"],
+      "falseValues": ["non", "no", "0", "false", "faux"]
+    },
+    "splitArray": {
+      "type": "split",
+      "trim": true,
+      "removeEmpty": true
+    },
+    "parseKeyValue": {
+      "type": "keyValue",
+      "separator": ":",
+      "delimiter": ";"
+    },
+    "toWarranty": {
+      "type": "custom",
+      "function": "parseWarranty"
+    }
+  },
+  "validation": {
+    "required": ["name", "price.price", "category", "dimensions.width"],
+    "warnings": {
+      "missingImage": "Produit sans image principale",
+      "missingDimensions": "Hauteur ou profondeur manquante",
+      "noLeadTime": "Délai de livraison non spécifié",
+      "noMaterial": "Matériau non spécifié"
+    },
+    "custom": {
+      "dimensionsLogic": "width > 0 AND height > 0 AND depth > 0",
+      "priceRange": "price >= 50 AND price <= 50000"
+    }
+  },
+  "postProcessing": {
+    "generateSlug": true,
+    "normalizeCategories": true,
+    "convertUnits": {
+      "dimensions": "cm",
+      "weight": "kg"
+    },
+    "enrichment": {
+      "addProviderMetadata": true,
+      "calculateVolume": true,
+      "categorizeByDimensions": true
+    }
+  },
+  "specialHandling": {
+    "customizableProducts": {
+      "detectFromName": ["sur mesure", "ajustable", "modulable"],
+      "flagInMetadata": true
+    },
+    "combinedDimensions": {
+      "pattern": "(\\d+)\\s*[xX×]\\s*(\\d+)\\s*[xX×]\\s*(\\d+)",
+      "fields": ["largeur_x_hauteur_x_profondeur", "dimensions"]
+    }
+  },
+  "notes": [
+    "Template optimisé pour Schmidt Groupe (Schmidt, Cuisinella, Cuisineo)",
+    "Supporte les produits sur-mesure avec dimensions variables",
+    "Les dimensions sont en millimètres (converties en cm)",
+    "Les prix incluent la TVA par défaut (20%)",
+    "Gestion spéciale des délais de fabrication sur-mesure",
+    "Support des gammes et collections Schmidt"
+  ]
+}

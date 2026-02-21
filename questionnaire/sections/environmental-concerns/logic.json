@@ -1,0 +1,101 @@
+{
+  "sectionId": "environmental-concerns",
+  "version": "1.0.0",
+  "conditionalRules": [
+    {
+      "id": "eco-top-priority-expand",
+      "condition": {
+        "questionId": "eco-priority",
+        "operator": "equals",
+        "value": "top-priority"
+      },
+      "action": {
+        "type": "show-all",
+        "message": {
+          "en": "Great! We'll explore all eco-friendly options for your kitchen.",
+          "fr": "Parfait ! Nous explorerons toutes les options écologiques pour votre cuisine."
+        }
+      }
+    },
+    {
+      "id": "eco-not-priority-simplify",
+      "condition": {
+        "questionId": "eco-priority",
+        "operator": "equals",
+        "value": "not-priority"
+      },
+      "action": {
+        "type": "suggest-skip",
+        "targetQuestions": ["sustainable-materials", "water-conservation"],
+        "message": {
+          "en": "We'll focus on standard options with basic energy efficiency.",
+          "fr": "Nous nous concentrerons sur les options standard avec une efficacité énergétique de base."
+        }
+      }
+    },
+    {
+      "id": "energy-star-appliance-note",
+      "condition": {
+        "questionId": "energy-efficiency",
+        "operator": "equals",
+        "value": "very-important"
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "Energy Star appliances can save 10-50% on utility bills compared to standard models.",
+          "fr": "Les appareils Energy Star peuvent économiser 10-50% sur les factures comparés aux modèles standard."
+        }
+      }
+    }
+  ],
+  "crossSectionRules": [
+    {
+      "id": "budget-eco-alignment",
+      "fromSection": "budget-constraints",
+      "condition": {
+        "questionId": "total-budget",
+        "operator": "in",
+        "value": ["under-10k", "10k-25k"]
+      },
+      "action": {
+        "type": "info",
+        "message": {
+          "en": "Some eco-friendly options may have higher upfront costs but offer long-term savings.",
+          "fr": "Certaines options écologiques ont des coûts initiaux plus élevés mais offrent des économies à long terme."
+        }
+      }
+    },
+    {
+      "id": "cooking-waste-management",
+      "fromSection": "cooking-habits",
+      "condition": {
+        "questionId": "cooking-frequency",
+        "operator": "in",
+        "value": ["daily-multiple", "daily-once"]
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "With frequent cooking, consider a compost system for food waste.",
+          "fr": "Avec une cuisine fréquente, envisagez un système de compostage pour les déchets alimentaires."
+        }
+      }
+    }
+  ],
+  "recommendations": {
+    "fullEco": {
+      "condition": {
+        "and": [
+          { "questionId": "eco-priority", "in": ["top-priority", "important"] },
+          { "questionId": "energy-efficiency", "equals": "very-important" }
+        ]
+      },
+      "suggestions": [
+        { "type": "appliance", "feature": "energy-star-certified", "priority": "high" },
+        { "type": "material", "category": "sustainable-countertops", "priority": "high" },
+        { "type": "fixture", "feature": "low-flow-faucets", "priority": "medium" }
+      ]
+    }
+  }
+}

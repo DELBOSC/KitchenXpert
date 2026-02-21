@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'kitchenxpert-backend'
+    metrics_path: /api/v1/metrics
+    static_configs:
+      - targets: ['backend:4000']
+    scrape_interval: 10s
+
+  - job_name: 'kitchenxpert-frontend'
+    static_configs:
+      - targets: ['frontend:3000']
+    scrape_interval: 30s
+
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    scrape_interval: 30s

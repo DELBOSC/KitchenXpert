@@ -1,0 +1,21 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussion Générale
+    url: https://github.com/kitchenxpert/discussions
+    about: Posez des questions ou discutez de fonctionnalités avec la communauté
+
+  - name: 🔒 Rapport de Sécurité
+    url: https://github.com/kitchenxpert/security/advisories/new
+    about: Signaler une vulnérabilité de sécurité (privé)
+
+  - name: 📖 Documentation
+    url: https://docs.kitchenxpert.com
+    about: Consulter la documentation complète
+
+  - name: 💡 Forum Communautaire
+    url: https://community.kitchenxpert.com
+    about: Rejoindre la communauté et obtenir de l'aide
+
+  - name: 📧 Support Entreprise
+    url: https://kitchenxpert.com/support
+    about: Support prioritaire pour les clients entreprise

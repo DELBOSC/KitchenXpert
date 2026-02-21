@@ -1,0 +1,117 @@
+{
+  "sectionId": "social-usage",
+  "version": "1.0.0",
+  "conditionalRules": [
+    {
+      "id": "frequent-entertainer",
+      "condition": {
+        "questionId": "entertaining-frequency",
+        "operator": "in",
+        "value": ["weekly", "monthly"]
+      },
+      "action": {
+        "type": "expand-options",
+        "message": {
+          "en": "As a frequent entertainer, we'll focus on open layouts and social features.",
+          "fr": "En tant qu'hôte fréquent, nous nous concentrerons sur les aménagements ouverts et les fonctions sociales."
+        }
+      }
+    },
+    {
+      "id": "large-gatherings",
+      "condition": {
+        "questionId": "party-size",
+        "operator": "in",
+        "value": ["large", "very-large"]
+      },
+      "action": {
+        "type": "recommendation",
+        "message": {
+          "en": "Large gatherings benefit from an open floor plan and multiple work zones.",
+          "fr": "Les grands rassemblements bénéficient d'un plan ouvert et de plusieurs zones de travail."
+        }
+      }
+    },
+    {
+      "id": "beverage-station-space",
+      "condition": {
+        "questionId": "beverage-station",
+        "operator": "in",
+        "value": ["full-bar", "coffee-station"]
+      },
+      "action": {
+        "type": "space-requirement",
+        "minSpace": 6,
+        "message": {
+          "en": "A beverage station requires dedicated counter and storage space.",
+          "fr": "Une station boissons nécessite un espace de comptoir et de rangement dédié."
+        }
+      }
+    },
+    {
+      "id": "rare-entertaining",
+      "condition": {
+        "questionId": "entertaining-frequency",
+        "operator": "equals",
+        "value": "rarely"
+      },
+      "action": {
+        "type": "simplify",
+        "targetQuestions": ["beverage-station", "tv-kitchen"],
+        "message": {
+          "en": "Since you rarely entertain, we'll prioritize everyday functionality.",
+          "fr": "Puisque vous recevez rarement, nous privilégierons la fonctionnalité quotidienne."
+        }
+      }
+    }
+  ],
+  "crossSectionRules": [
+    {
+      "id": "space-entertaining-check",
+      "fromSection": "spatial-constraints",
+      "condition": {
+        "questionId": "kitchen-size",
+        "operator": "equals",
+        "value": "small"
+      },
+      "action": {
+        "type": "warning",
+        "message": {
+          "en": "Small kitchen space may limit entertaining options. Consider peninsula seating.",
+          "fr": "L'espace cuisine limité peut restreindre les options de réception. Envisagez des sièges en péninsule."
+        }
+      }
+    },
+    {
+      "id": "budget-bar-check",
+      "fromSection": "budget-constraints",
+      "condition": {
+        "questionId": "total-budget",
+        "operator": "in",
+        "value": ["under-10k", "10k-25k"]
+      },
+      "action": {
+        "type": "info",
+        "message": {
+          "en": "A full bar area may require prioritizing within your budget.",
+          "fr": "Une zone bar complète peut nécessiter une priorisation dans votre budget."
+        }
+      }
+    }
+  ],
+  "recommendations": {
+    "entertainmentFocused": {
+      "condition": {
+        "and": [
+          { "questionId": "entertaining-frequency", "in": ["weekly", "monthly"] },
+          { "questionId": "party-size", "in": ["medium", "large", "very-large"] }
+        ]
+      },
+      "suggestions": [
+        { "type": "layout", "feature": "open-plan", "priority": "high" },
+        { "type": "seating", "feature": "island-seating", "priority": "high" },
+        { "type": "feature", "category": "beverage-center", "priority": "medium" }
+      ]
+    }
+  }
+}

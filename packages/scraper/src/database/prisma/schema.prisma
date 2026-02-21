@@ -1,0 +1,728 @@
+// ==============================================
+// KitchenXpert Scraper - Prisma Schema
+// ==============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==============================================
+// ENUMS
+// ==============================================
+
+enum Segment {
+  entry
+  entry_mid
+  mid
+  mid_premium
+  premium
+  luxury
+}
+
+enum CabinetCategory {
+  base
+  wall
+  tall
+  corner
+  island
+}
+
+enum CabinetType {
+  // Base cabinets
+  base_standard
+  base_drawer
+  base_sink
+  base_hob
+  base_corner
+  base_corner_carousel
+  base_pull_out
+  base_trash
+  base_bottle
+  // Wall cabinets
+  wall_standard
+  wall_lift_up
+  wall_corner
+  wall_extractor
+  wall_open
+  wall_glass
+  // Tall cabinets
+  tall_pantry
+  tall_oven
+  tall_fridge
+  tall_broom
+  tall_combo
+  // Island
+  island_base
+  island_drawer
+  island_open
+  // Others
+  plinth
+  cornice
+  filler
+  end_panel
+}
+
+enum WorktopMaterial {
+  laminate
+  wood_solid
+  wood_veneer
+  quartz
+  granite
+  marble
+  ceramic
+  compact
+  stainless
+  concrete
+  glass
+  corian
+}
+
+enum WorktopFinish {
+  matte
+  gloss
+  satin
+  textured
+  brushed
+  polished
+}
+
+enum FacadeType {
+  door
+  drawer_front
+  lift_up
+  glass_door
+}
+
+enum FacadeStyle {
+  flat
+  shaker
+  classic
+  handleless
+  slab
+  beaded
+  rustic
+}
+
+enum FacadeMaterial {
+  melamine
+  laminate
+  lacquer_matte
+  lacquer_gloss
+  lacquer_satin
+  acrylic
+  pet
+  veneer
+  solid_wood
+  glass
+  fenix
+  ceramic
+}
+
+enum FacadeFinishEnum {
+  matte
+  satin
+  gloss
+  super_matte
+  textured
+  soft_touch
+}
+
+enum ApplianceType {
+  // Cooking
+  hob_induction
+  hob_gas
+  hob_ceramic
+  hob_mixed
+  oven_single
+  oven_double
+  oven_compact
+  microwave
+  microwave_combi
+  steam_oven
+  warming_drawer
+  // Extraction
+  hood_wall
+  hood_island
+  hood_integrated
+  hood_ceiling
+  hood_downdraft
+  // Cold
+  fridge_integrated
+  fridge_freezer
+  fridge_american
+  freezer
+  wine_cooler
+  // Washing
+  dishwasher_full
+  dishwasher_compact
+  // Sink
+  sink_single
+  sink_double
+  sink_1_5
+  // Tap
+  tap_standard
+  tap_pull_out
+  tap_boiling
+  tap_filtered
+  // Others
+  waste_disposal
+  coffee_machine
+}
+
+enum PriceType {
+  fixed
+  from
+  estimate
+  on_request
+}
+
+enum ScrapingFrequency {
+  daily
+  weekly
+  monthly
+}
+
+enum ScrapingDifficulty {
+  easy
+  medium
+  hard
+}
+
+enum ScrapeStatus {
+  pending
+  running
+  completed
+  failed
+  partial
+}
+
+// ==============================================
+// MODELS
+// ==============================================
+
+/// Brand/Retailer information
+model Brand {
+  id            String   @id @default(uuid())
+  name          String
+  slug          String   @unique
+  parentGroup   String?
+  segment       Segment
+  country       String   @default("FR")
+  madeIn        String[] @default([])
+
+  // URLs
+  website       String
+  catalogUrl    String?
+
+  // Scraping config
+  scrapingEnabled   Boolean            @default(true)
+  scrapingFrequency ScrapingFrequency  @default(weekly)
+  scrapingDifficulty ScrapingDifficulty @default(medium)
+  lastScrapedAt     DateTime?
+
+  // Features
+  has3DConfigurator   Boolean @default(false)
+  hasPricesOnline     Boolean @default(false)
+  hasOnlineOrdering   Boolean @default(false)
+  deliveryType        String  @default("store") // store, home, both
+  installationType    String  @default("optional") // included, optional, not_available
+
+  // Warranty (years)
+  warrantyCabinets    Int?
+  warrantyHinges      Int?
+  warrantyWorktops    Int?
+
+  // Stats
+  storeCount      Int?
+  collectionsCount Int @default(0)
+  productsCount   Int @default(0)
+
+  logo          String?
+  priority      Int      @default(5)
+  notes         String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  collections   Collection[]
+  cabinets      Cabinet[]
+  worktops      Worktop[]
+  facades       Facade[]
+  handles       Handle[]
+  appliances    Appliance[]
+  accessories   Accessory[]
+  scrapeLogs    ScrapeLog[]
+
+  @@index([slug])
+  @@index([segment])
+  @@index([parentGroup])
+}
+
+/// Collection/Range within a brand
+model Collection {
+  id          String   @id @default(uuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  name        String
+  slug        String
+  description String?
+
+  style       String?  // modern, classic, contemporary, etc.
+  segment     Segment?
+
+  launchYear  Int?
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+
+  images      String[] @default([])
+  url         String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  cabinets    Cabinet[]
+  facades     Facade[]
+
+  @@unique([brandId, slug])
+  @@index([brandId])
+}
+
+/// Kitchen Cabinet
+model Cabinet {
+  id            String   @id @default(uuid())
+  externalId    String?  // ID from manufacturer
+  brandId       String
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  collectionId  String?
+  collection    Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+
+  // Classification
+  type          CabinetType
+  category      CabinetCategory
+
+  // Identification
+  name          String
+  reference     String
+  description   String?
+
+  // Dimensions (mm)
+  width         Int
+  height        Int
+  depth         Int
+  widthMin      Int?
+  widthMax      Int?
+  heightAdjustable Boolean @default(false)
+
+  // Configuration
+  doors         Int @default(0)
+  drawers       Int @default(0)
+  shelves       Int @default(0)
+  hasPullOut    Boolean @default(false)
+  hasCarousel   Boolean @default(false)
+  bins          Int @default(0)
+
+  // Compatibility
+  applianceTypes     String[] @default([])
+  sinkCompatible     Boolean @default(false)
+  hobCompatible      Boolean @default(false)
+  extractorCompatible Boolean @default(false)
+
+  // Pricing
+  priceHT       Float?
+  priceTTC      Float?
+  priceUnit     String  @default("EUR")
+  priceType     PriceType @default(on_request)
+  priceDate     DateTime?
+
+  // Finishes
+  availableFinishes String[] @default([])
+  availableColors   String[] @default([])
+
+  // Images
+  imageMain     String?
+  imageThumbnails String[] @default([])
+  imageTechnical  String?
+  model3D       String?
+
+  // Metadata
+  url           String
+  tags          String[] @default([])
+  popularity    Float?
+  isActive      Boolean  @default(true)
+
+  scrapedAt     DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([brandId, reference])
+  @@index([brandId])
+  @@index([collectionId])
+  @@index([type])
+  @@index([category])
+  @@index([width])
+  @@index([priceTTC])
+}
+
+/// Worktop
+model Worktop {
+  id            String   @id @default(uuid())
+  brandId       String
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  name          String
+  reference     String
+  description   String?
+
+  // Material
+  material      WorktopMaterial
+  materialDetail String?
+
+  // Dimensions
+  thicknesses   Int[]    @default([])
+  depths        Int[]    @default([])
+  maxLength     Int?
+
+  // Finishes
+  finishes      WorktopFinish[] @default([])
+
+  // Properties
+  heatResistant     Boolean @default(false)
+  scratchResistant  Boolean @default(false)
+  stainResistant    Boolean @default(false)
+  foodSafe          Boolean @default(true)
+  antibacterial     Boolean @default(false)
+
+  // Pricing
+  pricePerMeter       Float?
+  pricePerSquareMeter Float?
+  priceUnit           String  @default("EUR")
+  priceType           PriceType @default(on_request)
+
+  // Images
+  images        String[] @default([])
+
+  url           String
+  isActive      Boolean  @default(true)
+
+  scrapedAt     DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  colors        WorktopColor[]
+
+  @@unique([brandId, reference])
+  @@index([brandId])
+  @@index([material])
+}
+
+/// Worktop color option
+model WorktopColor {
+  id          String   @id @default(uuid())
+  worktopId   String
+  worktop     Worktop  @relation(fields: [worktopId], references: [id], onDelete: Cascade)
+
+  name        String
+  hexCode     String?
+  image       String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([worktopId])
+}
+
+/// Facade/Door
+model Facade {
+  id            String   @id @default(uuid())
+  brandId       String
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  collectionId  String?
+  collection    Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+
+  name          String
+  reference     String
+  description   String?
+
+  // Type
+  type          FacadeType
+  style         FacadeStyle
+
+  // Material
+  material      FacadeMaterial
+  thickness     Int?     // mm
+
+  // Finishes
+  finishes      FacadeFinishEnum[] @default([])
+
+  // Edging
+  edgingType    String?  // matching, contrast, aluminum
+  edgingThickness Int?
+
+  // Pricing
+  pricePerSquareMeter Float?
+  priceUnit     String  @default("EUR")
+  priceType     PriceType @default(on_request)
+
+  // Images
+  images        String[] @default([])
+
+  url           String
+  isActive      Boolean  @default(true)
+
+  scrapedAt     DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  colors        FacadeColor[]
+  doorPrices    FacadeDoorPrice[]
+
+  @@unique([brandId, reference])
+  @@index([brandId])
+  @@index([collectionId])
+  @@index([style])
+  @@index([material])
+}
+
+/// Facade color option
+model FacadeColor {
+  id          String   @id @default(uuid())
+  facadeId    String
+  facade      Facade   @relation(fields: [facadeId], references: [id], onDelete: Cascade)
+
+  name        String
+  code        String?
+  hexCode     String?
+  category    String?  // neutral, warm, cool, bold, wood, stone
+  image       String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([facadeId])
+}
+
+/// Facade door pricing by size
+model FacadeDoorPrice {
+  id          String   @id @default(uuid())
+  facadeId    String
+  facade      Facade   @relation(fields: [facadeId], references: [id], onDelete: Cascade)
+
+  width       Int
+  height      Int
+  price       Float
+
+  createdAt   DateTime @default(now())
+
+  @@index([facadeId])
+}
+
+/// Handle
+model Handle {
+  id            String   @id @default(uuid())
+  brandId       String
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  name          String
+  reference     String
+  description   String?
+
+  // Type
+  type          String   // bar, knob, profile, integrated, recessed
+  style         String?  // modern, classic, industrial, etc.
+
+  // Material
+  material      String   // stainless, aluminum, brass, zinc, wood, leather
+  finish        String?  // brushed, polished, matte, painted
+
+  // Dimensions
+  length        Int?     // mm (center-to-center for bars)
+  width         Int?
+  projection    Int?     // How far it sticks out
+
+  // Colors
+  colors        String[] @default([])
+
+  // Pricing
+  priceUnit     Float?
+  pricePack     Float?
+  packQuantity  Int?
+  priceType     PriceType @default(on_request)
+
+  // Images
+  images        String[] @default([])
+
+  url           String
+  isActive      Boolean  @default(true)
+
+  scrapedAt     DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([brandId, reference])
+  @@index([brandId])
+  @@index([type])
+}
+
+/// Appliance
+model Appliance {
+  id              String   @id @default(uuid())
+  brandId         String   // Kitchen brand (retailer)
+  brand           Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  manufacturerBrand String // Actual brand (Bosch, Siemens, etc.)
+
+  name            String
+  reference       String
+  description     String?
+
+  type            ApplianceType
+
+  // Dimensions
+  width           Int
+  height          Int
+  depth           Int
+  cutoutWidth     Int?
+  cutoutDepth     Int?
+
+  // Specifications
+  energyClass     String?
+  capacity        Float?   // Liters or kg
+  power           Int?     // Watts
+  noiseLevel      Int?     // dB
+  programs        Int?
+  connectivity    Boolean  @default(false)
+
+  // Pricing
+  priceTTC        Float?
+  priceType       PriceType @default(on_request)
+
+  // Inclusion
+  inclusion       String   @default("optional") // included, optional, separate
+
+  // Images
+  images          String[] @default([])
+
+  url             String
+  isActive        Boolean  @default(true)
+
+  scrapedAt       DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([brandId, reference])
+  @@index([brandId])
+  @@index([type])
+  @@index([manufacturerBrand])
+}
+
+/// Accessory (storage solutions, organizers, etc.)
+model Accessory {
+  id            String   @id @default(uuid())
+  brandId       String
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  name          String
+  reference     String
+  description   String?
+
+  // Type
+  type          String   // drawer_insert, shelf, rail, basket, divider, bin, etc.
+  category      String?  // storage, lighting, organization, etc.
+
+  // Dimensions
+  width         Int?
+  height        Int?
+  depth         Int?
+
+  // Compatibility
+  cabinetTypes  String[] @default([])
+  cabinetWidths Int[]    @default([])
+
+  // Pricing
+  priceTTC      Float?
+  priceType     PriceType @default(on_request)
+
+  // Images
+  images        String[] @default([])
+
+  url           String
+  isActive      Boolean  @default(true)
+
+  scrapedAt     DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([brandId, reference])
+  @@index([brandId])
+  @@index([type])
+}
+
+/// Scraping log
+model ScrapeLog {
+  id            String   @id @default(uuid())
+  brandId       String
+  brand         Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  status        ScrapeStatus
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+
+  // Stats
+  pagesScraped  Int      @default(0)
+  productsFound Int      @default(0)
+  productsNew   Int      @default(0)
+  productsUpdated Int    @default(0)
+  errors        Int      @default(0)
+
+  // Details
+  errorMessages String[] @default([])
+  duration      Int?     // seconds
+
+  createdAt     DateTime @default(now())
+
+  @@index([brandId])
+  @@index([status])
+  @@index([startedAt])
+}
+
+/// Price history for tracking changes
+model PriceHistory {
+  id          String   @id @default(uuid())
+
+  entityType  String   // cabinet, worktop, facade, handle, appliance, accessory
+  entityId    String
+
+  priceOld    Float?
+  priceNew    Float?
+  priceType   PriceType
+
+  recordedAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([recordedAt])
+}
+
+/// Cache for URLs and scraping state
+model ScrapeCache {
+  id          String   @id @default(uuid())
+  url         String   @unique
+
+  contentHash String?  // To detect changes
+  lastChecked DateTime
+
+  responseCode Int?
+  isValid      Boolean @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([url])
+  @@index([lastChecked])
+}

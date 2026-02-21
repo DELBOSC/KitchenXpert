@@ -1,0 +1,121 @@
+# ============================================
+# Stage 1: Base Python Dependencies
+# ============================================
+FROM python:3.11-slim AS python-deps
+
+LABEL maintainer="KitchenXpert Team"
+LABEL description="AI/ML Services for KitchenXpert"
+LABEL version="1.0.0"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+# Install system dependencies for ML libraries
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    g++ \
+    git \
+    curl \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements files
+COPY packages/ai-modules/requirements.txt ./
+COPY packages/ai-modules/kitchen-generator/requirements.txt ./kitchen-generator-requirements.txt
+COPY packages/ai-modules/compatibility-engine/requirements.txt ./compatibility-engine-requirements.txt
+COPY packages/ai-modules/appliance-advisor/requirements.txt ./appliance-advisor-requirements.txt
+COPY packages/ai-modules/style-analyzer/requirements.txt ./style-analyzer-requirements.txt
+
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt && \
+    pip install -r kitchen-generator-requirements.txt && \
+    pip install -r compatibility-engine-requirements.txt && \
+    pip install -r appliance-advisor-requirements.txt && \
+    pip install -r style-analyzer-requirements.txt
+
+# ============================================
+# Stage 2: Builder
+# ============================================
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+# Copy Python dependencies from deps stage
+COPY --from=python-deps /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=python-deps /usr/local/bin /usr/local/bin
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy application code
+COPY packages/ai-modules ./ai-modules
+
+# Create necessary directories
+RUN mkdir -p /app/models /app/cache /app/logs
+
+# ============================================
+# Stage 3: Production
+# ============================================
+FROM python:3.11-slim AS production
+
+LABEL maintainer="KitchenXpert Team"
+LABEL description="Production AI Services for KitchenXpert"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    MODEL_CACHE_DIR=/app/models \
+    LOG_LEVEL=INFO
+
+WORKDIR /app
+
+# Install runtime dependencies and dumb-init
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    curl \
+    dumb-init \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python dependencies and binaries
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy application code
+COPY --from=builder /app/ai-modules ./ai-modules
+
+# Create non-root user
+RUN groupadd -r aiuser -g 1001 && \
+    useradd -r -g aiuser -u 1001 -m -s /sbin/nologin aiuser
+
+# Create directories with proper permissions
+RUN mkdir -p /app/models /app/cache /app/logs && \
+    chown -R aiuser:aiuser /app
+
+# Switch to non-root user
+USER aiuser
+
+# Expose port for AI service API
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Volume for model cache
+VOLUME ["/app/models", "/app/cache"]
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start the AI service
+CMD ["python", "-m", "ai-modules.server"]

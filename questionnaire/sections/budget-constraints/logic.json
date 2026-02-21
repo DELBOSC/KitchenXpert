@@ -1,0 +1,165 @@
+{
+  "sectionId": "budget-constraints",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "low-budget-warning",
+      "description": "Show realistic expectations for low budgets",
+      "condition": {
+        "questionId": "total-budget",
+        "operator": "equals",
+        "value": "under-10k"
+      },
+      "action": {
+        "type": "show-message",
+        "message": {
+          "en": "With this budget, we'll focus on high-impact cosmetic updates like painting, new hardware, and selective appliance upgrades.",
+          "fr": "Avec ce budget, nous nous concentrerons sur des mises à jour cosmétiques à fort impact comme la peinture, la nouvelle quincaillerie et des mises à niveau d'appareils sélectives."
+        },
+        "severity": "info"
+      }
+    },
+    {
+      "id": "luxury-budget-options",
+      "description": "Enable luxury options for high budgets",
+      "condition": {
+        "questionId": "total-budget",
+        "operator": "in",
+        "value": ["75k-100k", "over-100k"]
+      },
+      "action": {
+        "type": "add-tag",
+        "tags": ["luxury-options", "custom-available", "professional-grade"]
+      }
+    },
+    {
+      "id": "appliance-budget-mismatch-warning",
+      "description": "Warn if appliance budget exceeds reasonable portion of total",
+      "condition": {
+        "operator": "and",
+        "conditions": [
+          { "questionId": "total-budget", "operator": "equals", "value": "under-10k" },
+          { "questionId": "appliance-budget", "operator": "in", "value": ["10k-20k", "20k-35k", "over-35k"] }
+        ]
+      },
+      "action": {
+        "type": "show-message",
+        "message": {
+          "en": "Your appliance budget exceeds your total renovation budget. Consider adjusting one of these values.",
+          "fr": "Votre budget appareils dépasse votre budget total de rénovation. Envisagez d'ajuster l'une de ces valeurs."
+        },
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "no-contingency-warning",
+      "description": "Strongly warn about no contingency",
+      "condition": {
+        "questionId": "contingency-comfort",
+        "operator": "equals",
+        "value": "no-buffer"
+      },
+      "action": {
+        "type": "show-message",
+        "message": {
+          "en": "Renovations almost always have unexpected costs (hidden water damage, electrical updates, etc.). We strongly recommend setting aside at least 10% for surprises.",
+          "fr": "Les rénovations ont presque toujours des coûts imprévus (dégâts d'eau cachés, mises à jour électriques, etc.). Nous recommandons fortement de mettre de côté au moins 10% pour les surprises."
+        },
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "phased-project-timeline-note",
+      "description": "Note about phased project implications",
+      "condition": {
+        "questionId": "financing-method",
+        "operator": "equals",
+        "value": "phased"
+      },
+      "action": {
+        "type": "show-message",
+        "message": {
+          "en": "A phased approach can work well. We'll help you prioritize what to do first for maximum impact.",
+          "fr": "Une approche par phases peut bien fonctionner. Nous vous aiderons à prioriser ce qu'il faut faire en premier pour un impact maximum."
+        },
+        "severity": "tip"
+      }
+    },
+    {
+      "id": "roi-focused-recommendations",
+      "description": "Tag for resale-focused choices",
+      "condition": {
+        "questionId": "roi-consideration",
+        "operator": "equals",
+        "value": "very-important"
+      },
+      "action": {
+        "type": "add-tag",
+        "tags": ["resale-focused", "neutral-colors", "timeless-design", "broad-appeal"]
+      }
+    },
+    {
+      "id": "diy-savings-note",
+      "description": "Note about DIY considerations",
+      "condition": {
+        "questionId": "savings-areas",
+        "operator": "contains",
+        "value": "diy-some"
+      },
+      "action": {
+        "type": "show-message",
+        "message": {
+          "en": "DIY can save money but requires time and skills. We'll suggest which tasks are DIY-friendly.",
+          "fr": "Le bricolage peut économiser de l'argent mais nécessite du temps et des compétences. Nous vous suggérerons quelles tâches sont adaptées au bricolage."
+        },
+        "severity": "tip"
+      }
+    },
+    {
+      "id": "high-appliance-priority",
+      "description": "Flag when appliances are top priority",
+      "condition": {
+        "questionId": "priority-spending",
+        "operator": "contains",
+        "value": "appliances"
+      },
+      "action": {
+        "type": "add-tag",
+        "tags": ["appliance-focused", "pro-style-range", "built-in-options"]
+      }
+    }
+  ],
+  "sectionFlow": {
+    "defaultOrder": [
+      "total-budget",
+      "budget-flexibility",
+      "financing-method",
+      "priority-spending",
+      "savings-areas",
+      "appliance-budget",
+      "roi-consideration",
+      "contingency-comfort"
+    ],
+    "adaptiveFlow": true,
+    "allowSkip": false,
+    "allowBack": true
+  },
+  "completion": {
+    "requiredQuestions": [
+      "total-budget",
+      "budget-flexibility",
+      "financing-method",
+      "priority-spending",
+      "appliance-budget",
+      "roi-consideration",
+      "contingency-comfort"
+    ],
+    "minimumAnswered": 7,
+    "validationMode": "on-section-complete"
+  },
+  "calculations": {
+    "triggerOn": ["total-budget", "appliance-budget", "priority-spending", "savings-areas"],
+    "calculator": "budget-calculator.js",
+    "outputFields": ["allocations", "warnings", "recommendations"]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@kitchenxpert/ai-modules",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KitchenXpert AI Modules - Collection of Python-based ML/AI services",
+  "scripts": {
+    "setup:all": "pnpm run setup:kitchen-generator && pnpm run setup:compatibility-engine && pnpm run setup:appliance-advisor && pnpm run setup:style-analyzer",
+    "setup:kitchen-generator": "cd kitchen-generator && python -m venv venv && venv/Scripts/pip install -r requirements.txt",
+    "setup:compatibility-engine": "cd compatibility-engine && python -m venv venv && venv/Scripts/pip install -r requirements.txt",
+    "setup:appliance-advisor": "cd appliance-advisor && python -m venv venv && venv/Scripts/pip install -r requirements.txt",
+    "setup:style-analyzer": "cd style-analyzer && python -m venv venv && venv/Scripts/pip install -r requirements.txt",
+    "setup:kitchen-generator:unix": "cd kitchen-generator && python -m venv venv && . venv/bin/activate && pip install -r requirements.txt",
+    "setup:compatibility-engine:unix": "cd compatibility-engine && python -m venv venv && . venv/bin/activate && pip install -r requirements.txt",
+    "setup:appliance-advisor:unix": "cd appliance-advisor && python -m venv venv && . venv/bin/activate && pip install -r requirements.txt",
+    "setup:style-analyzer:unix": "cd style-analyzer && python -m venv venv && . venv/bin/activate && pip install -r requirements.txt"
+  }
+}

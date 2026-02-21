@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "@kitchenxpert/ui-components",
+  "extends": "../../tsconfig.react.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "jsx": "react-jsx",
+    "paths": {
+      "@kitchenxpert/common": ["../../packages/common/src"],
+      "@kitchenxpert/common/*": ["../../packages/common/src/*"],
+      "@kitchenxpert/design-system": ["../../packages/design-system/src"],
+      "@kitchenxpert/design-system/*": ["../../packages/design-system/src/*"]
+    },
+    "types": ["node", "react"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "storybook-static", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"],
+  "references": [
+    { "path": "../common" },
+    { "path": "../design-system" }
+  ]
+}
