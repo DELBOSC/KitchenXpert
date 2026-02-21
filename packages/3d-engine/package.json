@@ -18,12 +18,12 @@
   },
   "dependencies": {
     "@kitchenxpert/common": "workspace:*",
-    "three": "^0.160.0"
+    "three": "^0.183.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/node": "^20.11.0",
-    "@types/three": "^0.160.0",
+    "@types/three": "^0.183.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.1.1",
