@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { Plus, FolderOpen, Library, UserCircle2, ArrowRight, TrendingUp, Clock, Euro, Layers } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -11,14 +13,15 @@ import {
   type Project,
 } from '../features/project/project-slice';
 import { getErrorMessage } from '../utils/error-handling';
+import { Badge, Card, Container, EmptyState, ErrorState, PageHeader, Skeleton, fadeUp, stagger } from '../components/ui';
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
-  in_progress: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  review: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-  approved: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
-  completed: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  archived: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+const STATUS_TONE: Record<string, 'default' | 'info' | 'warning' | 'success'> = {
+  draft: 'default',
+  in_progress: 'info',
+  review: 'warning',
+  approved: 'info',
+  completed: 'success',
+  archived: 'default',
 };
 
 export default function DashboardPage(): React.ReactElement {
@@ -34,194 +37,194 @@ export default function DashboardPage(): React.ReactElement {
 
   useEffect(() => {
     setError(null);
-    const promise = dispatch(fetchProjects({ page: 1, limit: 5 }));
+    const promise = dispatch(fetchProjects({ page: 1, limit: 6 }));
     promise.unwrap().catch((err: unknown) => {
-      const message = getErrorMessage(err, t('common.error'));
-      setError(message);
+      setError(getErrorMessage(err, t('common.error')));
     });
-    return () => {
-      promise.abort();
-    };
+    return () => { promise.abort(); };
   }, [dispatch, retryCount, t]);
 
-  const recentProjects = projects.slice(0, 5);
+  const recent = projects.slice(0, 6);
+  const stats = {
+    projects: projects.length,
+    inProgress: projects.filter((p) => p.status === 'active').length,
+    completed: projects.filter((p) => p.status === 'completed').length,
+    totalBudget: projects.reduce((acc, p) => acc + (p.budget || 0), 0),
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {t('dashboard.greeting', { name: user?.name || t('dashboard.defaultUser') })} <span role="img" aria-hidden="true">👋</span>
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            {t('dashboard.welcome')}
-          </p>
-        </header>
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
+      <Container size="xl" className="py-10">
+        <PageHeader
+          title={
+            <>
+              Bonjour, <span className="bg-gradient-to-r from-indigo-300 to-fuchsia-300 bg-clip-text text-transparent">
+                {user?.name?.split(' ')[0] || 'chez vous'}
+              </span>
+            </>
+          }
+          description="Voici où vous en êtes aujourd'hui."
+          actions={
+            <Link
+              to="/designer"
+              className="kx-focus inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition hover:bg-white/90"
+            >
+              <Plus className="h-4 w-4" />
+              Nouveau design
+            </Link>
+          }
+        />
 
-        {/* Quick Actions */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            {t('dashboard.quickActions')}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <QuickActionCard
-              title={t('dashboard.newDesign')}
-              description={t('dashboard.newDesignDesc')}
-              href="/designer"
-              icon="+"
-            />
-            <QuickActionCard
-              title={t('dashboard.myProjects')}
-              description={t('dashboard.myProjectsDesc')}
-              href="/projects"
-              icon="📁"
-            />
-            <QuickActionCard
-              title={t('dashboard.catalog')}
-              description={t('dashboard.catalogDesc')}
-              href="/catalog"
-              icon="📚"
-            />
-            <QuickActionCard
-              title={t('dashboard.profileCard')}
-              description={t('dashboard.profileCardDesc')}
-              href="/profile"
-              icon="👤"
-            />
+        <StatsGrid stats={stats} loading={isLoading && recent.length === 0} />
+
+        <section className="mt-10">
+          <h2 className="mb-4 text-xs uppercase tracking-widest text-white/40">Accès rapides</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <QuickAction icon={<Plus className="h-5 w-5" />} title="Nouveau design" desc="Créez une cuisine de zéro" to="/designer" accent="from-indigo-500/30" />
+            <QuickAction icon={<FolderOpen className="h-5 w-5" />} title="Mes projets" desc="Reprendre où j'en étais" to="/projects" accent="from-fuchsia-500/30" />
+            <QuickAction icon={<Library className="h-5 w-5" />} title="Catalogue" desc="Produits & marques" to="/catalog" accent="from-cyan-500/30" />
+            <QuickAction icon={<UserCircle2 className="h-5 w-5" />} title="Profil" desc="Paramètres & compte" to="/profile" accent="from-emerald-500/30" />
           </div>
         </section>
 
-        {/* Recent Projects */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {t('dashboard.recentProjects')}
-            </h2>
-            {recentProjects.length > 0 && (
-              <Link to="/projects" className="text-blue-600 hover:underline dark:text-blue-400 text-sm">
-                {t('dashboard.viewAll')}
+        <section className="mt-10">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xs uppercase tracking-widest text-white/40">Projets récents</h2>
+            {recent.length > 0 && (
+              <Link to="/projects" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white">
+                Tout voir <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             )}
           </div>
 
-          {/* Error */}
           {error && !isLoading && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center mb-4" role="alert">
-              <p className="text-red-600 dark:text-red-400 mb-3">{t('common.error')}: {error}</p>
-              <button
-                onClick={() => setRetryCount((c) => c + 1)}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
-              >
-                {t('common.retry')}
-              </button>
-            </div>
+            <ErrorState
+              title="Impossible de charger vos projets"
+              description={error}
+              onRetry={() => setRetryCount((c) => c + 1)}
+            />
           )}
 
-          {/* Loading */}
           {isLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="bg-white dark:bg-gray-800 rounded-xl shadow p-5 animate-pulse" aria-hidden="true">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3" />
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-4" />
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
-                </div>
+                <Card key={i} className="p-5">
+                  <Skeleton className="mb-3 h-4 w-3/4" />
+                  <Skeleton className="mb-4 h-3 w-1/2" />
+                  <Skeleton className="h-3 w-1/3" />
+                </Card>
               ))}
             </div>
           )}
 
-          {/* Projects List */}
-          {!isLoading && !error && recentProjects.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recentProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} t={t} language={i18n.language} />
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!isLoading && !error && recentProjects.length === 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
-              <p className="text-gray-500 dark:text-gray-400 text-center py-8">
-                {t('dashboard.noProjects')}{' '}
-                <Link to="/projects/new" className="text-blue-600 hover:underline dark:text-blue-400">
-                  {t('dashboard.createFirstDesign')}
+          {!isLoading && !error && recent.length === 0 && (
+            <EmptyState
+              icon={<Layers className="h-5 w-5" />}
+              title="Aucun projet pour l'instant"
+              description="Créez votre premier projet pour organiser vos cuisines et leurs versions."
+              action={
+                <Link
+                  to="/projects/new"
+                  className="kx-focus inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 hover:bg-white/90"
+                >
+                  <Plus className="h-4 w-4" /> Créer un projet
                 </Link>
-              </p>
-            </div>
+              }
+            />
+          )}
+
+          {!isLoading && !error && recent.length > 0 && (
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={{ hidden: {}, show: { transition: stagger(0.05) } }}
+              className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {recent.map((project) => (
+                <motion.div key={project.id} variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}>
+                  <ProjectCard project={project} t={t} language={i18n.language} />
+                </motion.div>
+              ))}
+            </motion.div>
           )}
         </section>
-      </div>
+      </Container>
     </div>
   );
 }
 
-function QuickActionCard({
-  title,
-  description,
-  href,
-  icon,
+// ---------------------------------------------------------------------------
+function StatsGrid({ stats, loading }: { stats: { projects: number; inProgress: number; completed: number; totalBudget: number }; loading: boolean }): React.ReactElement {
+  const items = [
+    { icon: <Layers className="h-4 w-4" />, label: 'Projets', value: stats.projects },
+    { icon: <Clock className="h-4 w-4" />, label: 'En cours', value: stats.inProgress },
+    { icon: <TrendingUp className="h-4 w-4" />, label: 'Terminés', value: stats.completed },
+    { icon: <Euro className="h-4 w-4" />, label: 'Budget cumulé', value: new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(stats.totalBudget) },
+  ];
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {items.map((item) => (
+        <Card key={item.label} variant="elevated" className="p-5">
+          <div className="flex items-center gap-2 text-white/50">
+            {item.icon}
+            <span className="text-xs uppercase tracking-wider">{item.label}</span>
+          </div>
+          <div className="mt-2 text-2xl font-semibold tracking-tight">
+            {loading ? <Skeleton className="h-8 w-20" /> : item.value}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function QuickAction({
+  icon, title, desc, to, accent,
 }: {
-  title: string;
-  description: string;
-  href: string;
-  icon: string;
+  icon: React.ReactNode; title: string; desc: string; to: string; accent: string;
 }): React.ReactElement {
   return (
     <Link
-      to={href}
-      className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg dark:hover:bg-gray-700 transition-shadow"
+      to={to}
+      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/20 hover:bg-white/[0.06]"
     >
-      <div className="text-3xl mb-3"><span role="img" aria-hidden="true">{icon}</span></div>
-      <h3 className="font-semibold text-gray-900 dark:text-white">{title}</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+      <div className={`absolute -top-12 -right-12 h-28 w-28 rounded-full bg-gradient-to-br ${accent} to-transparent blur-2xl transition group-hover:scale-110`} aria-hidden />
+      <div className="relative">
+        <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white">
+          {icon}
+        </div>
+        <div className="font-semibold">{title}</div>
+        <div className="mt-0.5 text-sm text-white/50">{desc}</div>
+      </div>
     </Link>
   );
 }
 
 function ProjectCard({
-  project,
-  t,
-  language,
+  project, t, language,
 }: {
-  project: Project;
-  t: (key: string, opts?: Record<string, unknown>) => string;
-  language: string;
+  project: Project; t: (k: string) => string; language: string;
 }): React.ReactElement {
-  const statusClass = STATUS_COLORS[project.status] || STATUS_COLORS.draft;
-  const dateStr = new Intl.DateTimeFormat(language, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(project.updatedAt));
+  const tone = STATUS_TONE[project.status] ?? 'default';
+  const dateStr = new Intl.DateTimeFormat(language, { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(project.updatedAt));
 
   return (
     <Link
       to={`/projects/${project.id}`}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg dark:hover:bg-gray-700 transition-shadow p-5 block"
+      className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/20 hover:bg-white/[0.05]"
     >
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-1">
-          {project.name}
-        </h3>
-        <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ml-2 ${statusClass}`}>
-          {t(`project.status.${project.status}`)}
-        </span>
+      <div className="mb-3 flex items-start justify-between gap-2">
+        <h3 className="line-clamp-1 text-sm font-semibold text-white group-hover:text-white">{project.name}</h3>
+        <Badge variant={tone} dot>{t(`project.status.${project.status}`)}</Badge>
       </div>
       {project.description && (
-        <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
-          {project.description}
-        </p>
+        <p className="mb-4 line-clamp-2 text-xs text-white/50">{project.description}</p>
       )}
-      <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
+      <div className="flex items-center justify-between text-xs text-white/40">
         <span>{dateStr}</span>
-        {project.budget !== undefined && project.budget > 0 && (
-          <span className="font-medium text-gray-600 dark:text-gray-300">
-            {new Intl.NumberFormat(language, {
-              style: 'currency',
-              currency: 'EUR',
-              maximumFractionDigits: 0,
-            }).format(project.budget)}
+        {!!project.budget && project.budget > 0 && (
+          <span className="font-medium text-white/80">
+            {new Intl.NumberFormat(language, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(project.budget)}
           </span>
         )}
       </div>

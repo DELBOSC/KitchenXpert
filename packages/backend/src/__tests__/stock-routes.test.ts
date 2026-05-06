@@ -8,31 +8,30 @@
  * - Validation (missing required fields)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockStockController = {
-  checkStock: vi.fn((_req: Request, res: Response) => {
+  checkStock: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: { productId: 'prod-1', available: true, quantity: 15 },
     });
   }),
-  getBulkStock: vi.fn((_req: Request, res: Response) => {
+  getBulkStock: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: [
@@ -43,14 +42,14 @@ const mockStockController = {
   }),
 };
 
-vi.mock('../../api/controllers/stock-controller', () => ({
+jest.mock('../api/controllers/stock-controller', () => ({
   stockController: mockStockController,
 }));
 
 // Mock validation middleware -- for body validation tests, we implement a simple check
 let enableValidation = false;
 
-vi.mock('../../api/middleware/validation-middleware', () => ({
+jest.mock('../api/middleware/validation-middleware', () => ({
   validateBody: (schema: any) => (req: Request, res: Response, next: NextFunction) => {
     if (!enableValidation) return next();
     // Simple required-field check for stock check endpoint
@@ -68,7 +67,7 @@ vi.mock('../../api/middleware/validation-middleware', () => ({
 
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -79,7 +78,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   authorize: () => (_req: any, _res: any, next: any) => next(),
 }));
 
-import stockRoutes from '../../api/routes/stock-routes';
+import stockRoutes from '../api/routes/stock-routes';
 
 // ==================== TEST APP ====================
 
@@ -98,7 +97,7 @@ describe('Stock Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
     enableValidation = false;
   });

@@ -1,11 +1,11 @@
 import crypto from 'crypto';
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
-import { DesignGeneratorService } from '../../services/ai/design-generator.service.js';
-import { ImageGeneratorService } from '../../services/ai/image-generator.service.js';
-import type { AIGeneratedDesign, CostBreakdown } from '../../services/ai/design-generator.service.js';
+import { asyncHandler } from '../middleware/error-middleware';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
+import { DesignGeneratorService } from '../../services/ai/design-generator.service';
+import { ImageGeneratorService } from '../../services/ai/image-generator.service';
+import type { AIGeneratedDesign, CostBreakdown } from '../../services/ai/design-generator.service';
 
 interface GeneratedDesign {
   id: string;

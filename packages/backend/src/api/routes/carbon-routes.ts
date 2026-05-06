@@ -1,11 +1,11 @@
 import { Router, Request, Response, type Router as RouterType } from 'express';
 import { z } from 'zod';
-import { authenticate } from '../middleware/auth-middleware.js';
-import { carbonController } from '../controllers/carbon-controller.js';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { validateParams } from '../middleware/validation-middleware.js';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
+import { authenticate } from '../middleware/auth-middleware';
+import { carbonController } from '../controllers/carbon-controller';
+import { asyncHandler } from '../middleware/error-middleware';
+import { validateParams } from '../middleware/validation-middleware';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
 
 const router: RouterType = Router();
 

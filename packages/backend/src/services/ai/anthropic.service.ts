@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
 
 export class AnthropicService {
   private _client: Anthropic;

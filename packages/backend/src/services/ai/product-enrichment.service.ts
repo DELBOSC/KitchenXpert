@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { AnthropicService } from './anthropic.service.js';
-import { SYSTEM_PROMPTS } from './prompt-templates.js';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
+import { AnthropicService } from './anthropic.service';
+import { SYSTEM_PROMPTS } from './prompt-templates';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {

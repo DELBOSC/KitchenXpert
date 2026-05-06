@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
-import { ProductEnrichmentService } from '../../services/ai/product-enrichment.service.js';
-import { CompatibilityGeneratorService } from '../../services/ai/compatibility-generator.service.js';
-import { ProductMatcherService } from '../../services/ai/product-matcher.service.js';
+import { asyncHandler } from '../middleware/error-middleware';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
+import { ProductEnrichmentService } from '../../services/ai/product-enrichment.service';
+import { CompatibilityGeneratorService } from '../../services/ai/compatibility-generator.service';
+import { ProductMatcherService } from '../../services/ai/product-matcher.service';
 
 /**
  * EnrichmentController

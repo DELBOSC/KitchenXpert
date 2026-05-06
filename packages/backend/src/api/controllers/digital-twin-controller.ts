@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
-import { DigitalTwinService } from '../../services/digital-twin/digital-twin.service.js';
+import { asyncHandler } from '../middleware/error-middleware';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
+import { DigitalTwinService } from '../../services/digital-twin/digital-twin.service';
 
 /**
  * DigitalTwinController

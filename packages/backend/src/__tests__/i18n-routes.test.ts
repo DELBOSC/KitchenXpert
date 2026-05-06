@@ -33,7 +33,7 @@ import cookieParser from 'cookie-parser';
 // ==================== MOCKS ====================
 
 // Mock logger before anything else
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: {
     info: jest.fn(),
@@ -74,7 +74,7 @@ const mockLocaleRepository = {
   importTranslations: jest.fn(),
 };
 
-jest.mock('../../repositories/locale-repository', () => ({
+jest.mock('../repositories/locale-repository', () => ({
   LocaleRepository: jest.fn(() => mockLocaleRepository),
 }));
 
@@ -83,12 +83,12 @@ const mockPrisma = {
   $disconnect: jest.fn(),
 };
 
-jest.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: mockPrisma,
 }));
 
 // Mock config
-jest.mock('../../config/app-config', () => ({
+jest.mock('../config/app-config', () => ({
   config: {
     corsOrigins: ['http://localhost:3000'],
     env: 'test',
@@ -99,7 +99,7 @@ jest.mock('../../config/app-config', () => ({
 }));
 
 // Mock token blacklist
-jest.mock('../../auth/token-blacklist', () => ({
+jest.mock('../auth/token-blacklist', () => ({
   getTokenBlacklist: jest.fn(() => ({
     addToBlacklist: jest.fn().mockResolvedValue(undefined),
     isBlacklisted: jest.fn().mockResolvedValue(false),
@@ -110,7 +110,7 @@ jest.mock('../../auth/token-blacklist', () => ({
 }));
 
 // Mock JWT service
-jest.mock('../../auth/jwt.service', () => ({
+jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
       userId: 'test-user-1',
@@ -129,7 +129,7 @@ let currentTestUser: { userId: string; email: string; role: string } = {
   role: 'user',
 };
 
-jest.mock('../../api/middleware/auth-middleware', () => {
+jest.mock('../api/middleware/auth-middleware', () => {
   const { UnauthorizedError } = require('@kitchenxpert/common');
 
   return {
@@ -165,13 +165,13 @@ jest.mock('../../api/middleware/auth-middleware', () => {
 });
 
 // Mock rate limiters
-jest.mock('../../api/middleware/rate-limit-middleware', () => ({
+jest.mock('../api/middleware/rate-limit-middleware', () => ({
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 // Import after mocks
-import i18nRoutes from '../../api/routes/i18n-routes';
-import { errorHandler } from '../../api/middleware/error-middleware';
+import i18nRoutes from '../api/routes/i18n-routes';
+import { errorHandler } from '../api/middleware/error-middleware';
 
 // ==================== TEST APP SETUP ====================
 

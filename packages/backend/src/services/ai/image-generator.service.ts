@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import logger from '../../utils/logger.js';
+import logger from '../../utils/logger';
 
 /** Sanitize input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {

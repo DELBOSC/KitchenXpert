@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import {
+  Search, Sparkles, Package, ArchiveRestore, ChefHat, Square, CircleDot, Lightbulb, Wrench,
+  ChevronLeft, ChevronRight, XCircle,
+} from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   fetchProducts,
@@ -8,17 +13,23 @@ import {
   type CatalogItem,
   type CatalogState,
 } from '../features/catalog/catalog-slice';
+import {
+  Badge, Button, Card, Container, EmptyState, ErrorState, Input, PageHeader, Select, Skeleton,
+  fadeUp, stagger,
+} from '../components/ui';
 
-const selectCatalogError = (state: { catalog: CatalogState }) => state.catalog.error;
-const selectCatalogPagination = (state: { catalog: CatalogState }) => state.catalog.pagination;
+const selectCatalogError = (state: { catalog: CatalogState }): string | null => state.catalog.error;
+const selectCatalogPagination = (state: { catalog: CatalogState }): CatalogState['pagination'] => state.catalog.pagination;
 
-const categories = [
-  { id: 'cabinets', nameKey: 'catalog.cabinets', icon: '🗄️' },
-  { id: 'appliances', nameKey: 'catalog.appliances', icon: '🍳' },
-  { id: 'countertops', nameKey: 'catalog.countertops', icon: '⬜' },
-  { id: 'sinks', nameKey: 'catalog.sinks', icon: '🚰' },
-  { id: 'lighting', nameKey: 'catalog.lighting', icon: '💡' },
-  { id: 'accessories', nameKey: 'catalog.accessories', icon: '🔧' },
+type CategoryDef = { id: string; nameKey: string; icon: React.ReactNode };
+
+const CATEGORIES: CategoryDef[] = [
+  { id: 'cabinets', nameKey: 'catalog.cabinets', icon: <ArchiveRestore className="h-5 w-5" /> },
+  { id: 'appliances', nameKey: 'catalog.appliances', icon: <ChefHat className="h-5 w-5" /> },
+  { id: 'countertops', nameKey: 'catalog.countertops', icon: <Square className="h-5 w-5" /> },
+  { id: 'sinks', nameKey: 'catalog.sinks', icon: <CircleDot className="h-5 w-5" /> },
+  { id: 'lighting', nameKey: 'catalog.lighting', icon: <Lightbulb className="h-5 w-5" /> },
+  { id: 'accessories', nameKey: 'catalog.accessories', icon: <Wrench className="h-5 w-5" /> },
 ];
 
 export default function CatalogPage(): React.ReactElement {
@@ -35,46 +46,15 @@ export default function CatalogPage(): React.ReactElement {
   const [sortBy, setSortBy] = useState('relevance');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // AI Search state
-  const [aiSearchQuery, setAiSearchQuery] = useState('');
-  const [aiSearchLoading, setAiSearchLoading] = useState(false);
-  const [aiSearchResults, setAiSearchResults] = useState<{
-    filters: Record<string, unknown>;
-    results: any[];
-    explanation: string;
-    suggestions: string[];
-  } | null>(null);
-  const [aiSearchError, setAiSearchError] = useState<string | null>(null);
-
-  const aiSearchResultCards = useMemo(() => {
-    if (!aiSearchResults || aiSearchResults.results.length === 0) return null;
-    return aiSearchResults.results.map((product: any) => (
-      <div key={product.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-3">
-        <h4 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-2 mb-1">
-          {product.name}
-        </h4>
-        {product.brand && (
-          <p className="text-xs text-gray-500 dark:text-gray-400">{product.brand}</p>
-        )}
-        {product.material && (
-          <p className="text-xs text-gray-400 dark:text-gray-500">{product.material}</p>
-        )}
-        <p className="text-sm font-bold text-indigo-600 dark:text-indigo-400 mt-1">
-          {product.price
-            ? new Intl.NumberFormat('fr-FR', {
-                style: 'currency',
-                currency: product.currency || 'EUR',
-              }).format(Number(product.price))
-            : t('catalog.priceOnRequest', 'Prix sur demande')}
-        </p>
-      </div>
-    ));
-  }, [aiSearchResults, t]);
+  // AI Search
+  const [aiQuery, setAiQuery] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResults, setAiResults] = useState<{ results: any[]; explanation: string; suggestions: string[] } | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const aiSearchControllerRef = useRef<AbortController | null>(null);
+  const aiControllerRef = useRef<AbortController | null>(null);
 
-  // Fetch products when filters change
   const loadProducts = useCallback(
     (page: number, search?: string, category?: string | null) => {
       const filters: Record<string, string> = {};
@@ -85,18 +65,19 @@ export default function CatalogPage(): React.ReactElement {
     [dispatch],
   );
 
-  // Initial load
-  useEffect(() => {
-    loadProducts(1);
-  }, [loadProducts]);
+  useEffect(() => { loadProducts(1); }, [loadProducts]);
 
-  // Reload when category changes
   useEffect(() => {
     setCurrentPage(1);
     loadProducts(1, searchQuery, selectedCategory);
-  }, [selectedCategory, loadProducts, searchQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory]);
 
-  // Debounced search
+  useEffect(() => () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (aiControllerRef.current) aiControllerRef.current.abort();
+  }, []);
+
   const handleSearchChange = (value: string): void => {
     setSearchQuery(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -106,381 +87,311 @@ export default function CatalogPage(): React.ReactElement {
     }, 300);
   };
 
-  // Cleanup debounce timer and AI search controller
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      if (aiSearchControllerRef.current) aiSearchControllerRef.current.abort();
-    };
-  }, []);
-
-  const handleSearch = (): void => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    setCurrentPage(1);
-    loadProducts(1, searchQuery, selectedCategory);
-  };
-
-  const handlePageChange = (page: number): void => {
-    setCurrentPage(page);
-    loadProducts(page, searchQuery, selectedCategory);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleCategoryToggle = (catId: string): void => {
-    setSelectedCategory(selectedCategory === catId ? null : catId);
-  };
-
-  // AI-powered natural language search
   const handleAISearch = async (): Promise<void> => {
-    if (!aiSearchQuery.trim()) return;
-
-    // Abort any in-flight AI search request
-    if (aiSearchControllerRef.current) {
-      aiSearchControllerRef.current.abort();
-    }
-
+    if (!aiQuery.trim()) return;
+    if (aiControllerRef.current) aiControllerRef.current.abort();
     const controller = new AbortController();
-    aiSearchControllerRef.current = controller;
+    aiControllerRef.current = controller;
 
-    setAiSearchLoading(true);
-    setAiSearchError(null);
-    setAiSearchResults(null);
-
+    setAiLoading(true); setAiError(null); setAiResults(null);
     try {
-      const response = await fetch('/api/v1/ai-search/catalog', {
+      const res = await fetch('/api/v1/ai-search/catalog', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ query: aiSearchQuery }),
+        body: JSON.stringify({ query: aiQuery }),
         signal: controller.signal,
       });
-
-      if (!response.ok) {
-        throw new Error(t('catalog.aiSearchFailed', 'AI search failed'));
-      }
-
-      const result = await response.json();
-      setAiSearchResults(result.data);
+      if (!res.ok) throw new Error('Recherche IA échouée');
+      const json = await res.json();
+      setAiResults(json.data);
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') return;
-      const errorMessage = err instanceof Error ? err.message : t('catalog.aiSearchFailed', 'AI search failed');
-      setAiSearchError(errorMessage);
+      if ((err as Error).name === 'AbortError') return;
+      setAiError((err as Error).message);
     } finally {
-      setAiSearchLoading(false);
+      setAiLoading(false);
     }
   };
 
-  // Sort products locally (API may not support sort)
-  const sortedProducts = [...products].sort((a, b) => {
-    switch (sortBy) {
-      case 'price_asc':
-        return (a.price || 0) - (b.price || 0);
-      case 'price_desc':
-        return (b.price || 0) - (a.price || 0);
-      default:
-        return 0;
-    }
-  });
+  const sorted = useMemo(() => {
+    const copy = [...products];
+    copy.sort((a, b) => {
+      if (sortBy === 'price_asc') return (a.price || 0) - (b.price || 0);
+      if (sortBy === 'price_desc') return (b.price || 0) - (a.price || 0);
+      return 0;
+    });
+    return copy;
+  }, [products, sortBy]);
+
+  const clearFilters = (): void => {
+    setSearchQuery(''); setSelectedCategory(null); setCurrentPage(1);
+    loadProducts(1);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('catalog.title')}
-          </h1>
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
+      <Container size="xl" className="py-10">
+        <PageHeader
+          title={t('catalog.title', 'Catalogue')}
+          description="Parcourez 50 000+ produits provenant des plus grandes marques."
+        />
 
-          {/* Search */}
-          <div className="flex gap-4">
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder={t('catalog.searchPlaceholder')}
-              aria-label={t('catalog.searchLabel', 'Rechercher des produits')}
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white"
-            />
-            <button
-              onClick={handleSearch}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              {t('common.search')}
-            </button>
-          </div>
+        {/* Search bar */}
+        <Card variant="elevated" className="mb-4 p-4">
+          <Input
+            type="search"
+            placeholder="Rechercher un produit, une marque, une référence…"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            leftIcon={<Search className="h-4 w-4" />}
+          />
+        </Card>
 
-          {/* AI Natural Language Search */}
-          <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800">
-            <p className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-2">
-              {t('catalog.aiSearch', 'Recherche intelligente IA')}
-            </p>
-            <div className="flex gap-3">
-              <input
-                type="text"
-                value={aiSearchQuery}
-                onChange={(e) => setAiSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAISearch()}
-                placeholder={t('catalog.aiSearchPlaceholder', 'Ex: un plan de travail en quartz blanc de moins de 500 euros...')}
-                aria-label={t('catalog.aiSearchLabel', 'Recherche en langage naturel')}
-                className="flex-1 px-4 py-2 border border-indigo-200 dark:border-indigo-700 rounded-lg dark:bg-gray-800 dark:text-white text-sm"
-              />
-              <button
-                onClick={handleAISearch}
-                disabled={aiSearchLoading || !aiSearchQuery.trim()}
-                className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
-              >
-                {aiSearchLoading && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                )}
-                {aiSearchLoading ? t('catalog.aiSearching', 'Recherche...') : t('catalog.aiSearchButton', 'Recherche IA')}
-              </button>
-            </div>
-
-            {/* AI Search Error */}
-            {aiSearchError && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{aiSearchError}</p>
-            )}
-
-            {/* AI Search Results */}
-            {aiSearchResults && (
-              <div className="mt-4" aria-live="polite">
-                <p className="text-sm text-indigo-700 dark:text-indigo-300 mb-3">
-                  {aiSearchResults.explanation}
-                </p>
-
-                {aiSearchResults.suggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {aiSearchResults.suggestions.map((suggestion, i) => (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          setAiSearchQuery(suggestion);
-                        }}
-                        className="px-3 py-1 bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-700 rounded-full text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {aiSearchResultCards ? (
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {aiSearchResultCards}
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {t('catalog.aiNoResults', 'Aucun produit trouve. Essayez une autre recherche.')}
-                  </p>
-                )}
+        {/* AI search panel */}
+        <Card variant="glass" className="mb-10 overflow-hidden">
+          <div className="relative p-5">
+            <div aria-hidden className="absolute -top-20 -right-10 h-40 w-40 rounded-full bg-gradient-to-br from-indigo-500/30 to-fuchsia-500/20 blur-3xl" />
+            <div className="relative">
+              <div className="mb-3 flex items-center gap-2">
+                <Badge variant="info" dot><Sparkles className="h-3 w-3" /> Recherche IA</Badge>
+                <span className="text-xs text-white/50">Décrivez ce que vous cherchez en langage naturel</span>
               </div>
-            )}
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Input
+                  placeholder="Ex. un plan de travail en quartz blanc de moins de 500 €…"
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAISearch()}
+                  className="flex-1"
+                />
+                <Button onClick={handleAISearch} loading={aiLoading} disabled={!aiQuery.trim()} leftIcon={<Sparkles className="h-4 w-4" />}>
+                  Rechercher
+                </Button>
+              </div>
+              {aiError && <p className="mt-3 text-sm text-rose-400">{aiError}</p>}
+              {aiResults && (
+                <div className="mt-4" aria-live="polite">
+                  <p className="mb-3 text-sm text-white/70">{aiResults.explanation}</p>
+                  {aiResults.suggestions?.length > 0 && (
+                    <div className="mb-4 flex flex-wrap gap-2">
+                      {aiResults.suggestions.map((s, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setAiQuery(s)}
+                          className="kx-focus rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80 hover:bg-white/10"
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {aiResults.results?.length > 0 ? (
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                      {aiResults.results.map((p: any) => (
+                        <AIResultCard key={p.id} product={p} />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-white/50">Aucun produit trouvé. Reformulez votre recherche.</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </header>
+        </Card>
 
         {/* Categories */}
         <section className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            {t('catalog.categories')}
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => handleCategoryToggle(cat.id)}
-                aria-label={t(cat.nameKey)}
-                aria-pressed={selectedCategory === cat.id}
-                className={`p-4 rounded-xl text-center transition-all ${
-                  selectedCategory === cat.id
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white dark:bg-gray-800 hover:shadow-lg'
-                }`}
-              >
-                <div className="text-3xl mb-2"><span role="img" aria-hidden="true">{cat.icon}</span></div>
-                <div className="text-sm font-medium">{t(cat.nameKey)}</div>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Products Grid */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {selectedCategory
-                ? t(categories.find((c) => c.id === selectedCategory)?.nameKey || 'catalog.allProducts')
-                : t('catalog.allProducts')}
-              {!isLoading && (
-                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
-                  ({pagination.total} {t('catalog.results')})
-                </span>
-              )}
-            </h2>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              aria-label={t('catalog.sortBy', 'Trier par')}
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white"
-            >
-              <option value="relevance">{t('catalog.sortByRelevance')}</option>
-              <option value="price_asc">{t('catalog.priceAsc')}</option>
-              <option value="price_desc">{t('catalog.priceDesc')}</option>
-              <option value="newest">{t('catalog.newest')}</option>
-            </select>
-          </div>
-
-          {/* Error State */}
-          {error && !isLoading && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center mb-4">
-              <p className="text-red-600 dark:text-red-400 mb-2">{error}</p>
-              <button
-                onClick={() => loadProducts(currentPage, searchQuery, selectedCategory)}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm"
-              >
-                {t('common.retry')}
-              </button>
-            </div>
-          )}
-
-          {/* Loading State */}
-          {isLoading && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden animate-pulse" aria-hidden="true">
-                  <div className="h-48 bg-gray-200 dark:bg-gray-700" />
-                  <div className="p-4 space-y-3">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-                    <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Products */}
-          {!isLoading && !error && sortedProducts.length > 0 && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {sortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} t={t} />
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!isLoading && !error && sortedProducts.length === 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-8 text-center">
-              <div className="text-5xl mb-4"><span role="img" aria-hidden="true">📦</span></div>
-              <p className="text-gray-500 dark:text-gray-400">
-                {searchQuery || selectedCategory
-                  ? t('catalog.noResults')
-                  : t('catalog.productsPlaceholder')}
-              </p>
-              {(searchQuery || selectedCategory) && (
+          <h2 className="mb-4 text-xs uppercase tracking-widest text-white/40">Catégories</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {CATEGORIES.map((cat) => {
+              const active = selectedCategory === cat.id;
+              return (
                 <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedCategory(null);
-                    setCurrentPage(1);
-                    loadProducts(1);
-                  }}
-                  className="mt-4 px-4 py-2 text-blue-600 hover:underline text-sm"
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(active ? null : cat.id)}
+                  aria-pressed={active}
+                  className={`kx-focus flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition ${
+                    active
+                      ? 'border-white/30 bg-white/10 text-white'
+                      : 'border-white/10 bg-white/[0.03] text-white/70 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
+                  }`}
                 >
-                  {t('catalog.clearFilters')}
+                  <span className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${active ? 'bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-white' : 'bg-white/5 text-white/80'}`}>
+                    {cat.icon}
+                  </span>
+                  <span className="text-xs font-medium">{t(cat.nameKey)}</span>
                 </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Products grid */}
+        <section>
+          <div className="mb-4 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-semibold text-white">
+                {selectedCategory ? t(CATEGORIES.find((c) => c.id === selectedCategory)?.nameKey ?? 'catalog.allProducts') : 'Tous les produits'}
+              </h2>
+              {!isLoading && <Badge variant="outline">{pagination.total} résultats</Badge>}
+            </div>
+            <div className="flex items-center gap-2">
+              {(searchQuery || selectedCategory) && (
+                <Button variant="ghost" size="sm" onClick={clearFilters} leftIcon={<XCircle className="h-3.5 w-3.5" />}>
+                  Effacer
+                </Button>
               )}
+              <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="!h-9 w-auto">
+                <option value="relevance">Pertinence</option>
+                <option value="price_asc">Prix croissant</option>
+                <option value="price_desc">Prix décroissant</option>
+                <option value="newest">Nouveautés</option>
+              </Select>
+            </div>
+          </div>
+
+          {error && !isLoading && (
+            <ErrorState
+              description={error}
+              onRetry={() => loadProducts(currentPage, searchQuery, selectedCategory)}
+            />
+          )}
+
+          {isLoading && (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Card key={i} className="overflow-hidden p-0">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="space-y-2 p-4">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                    <Skeleton className="h-5 w-1/3" />
+                  </div>
+                </Card>
+              ))}
             </div>
           )}
 
-          {/* Pagination */}
+          {!isLoading && !error && sorted.length > 0 && (
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={{ hidden: {}, show: { transition: stagger(0.03) } }}
+              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              {sorted.map((product) => (
+                <motion.div key={product.id} variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}>
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {!isLoading && !error && sorted.length === 0 && (
+            <EmptyState
+              icon={<Package className="h-5 w-5" />}
+              title={searchQuery || selectedCategory ? 'Aucun résultat' : 'Catalogue en cours de chargement'}
+              description={searchQuery || selectedCategory ? 'Ajustez vos filtres ou essayez d\'autres mots-clés.' : undefined}
+              action={
+                (searchQuery || selectedCategory) && (
+                  <Button variant="outline" onClick={clearFilters}>Effacer les filtres</Button>
+                )
+              }
+            />
+          )}
+
           {!isLoading && pagination.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-8">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
+            <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={currentPage <= 1}
-                aria-label={t('common.previousPage', 'Page precedente')}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                onClick={() => { setCurrentPage(currentPage - 1); loadProducts(currentPage - 1, searchQuery, selectedCategory); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                leftIcon={<ChevronLeft className="h-3.5 w-3.5" />}
               >
-                {t('common.previous')}
-              </button>
-              <span className="px-4 py-2 text-gray-600 dark:text-gray-400 text-sm" aria-current="page">
-                {t('common.pageOf', { current: currentPage, total: pagination.totalPages })}
+                Précédent
+              </Button>
+              <span className="px-4 text-sm text-white/60">
+                Page {currentPage} / {pagination.totalPages}
               </span>
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
+              <Button
+                variant="outline"
+                size="sm"
                 disabled={currentPage >= pagination.totalPages}
-                aria-label={t('common.nextPage', 'Page suivante')}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                onClick={() => { setCurrentPage(currentPage + 1); loadProducts(currentPage + 1, searchQuery, selectedCategory); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                rightIcon={<ChevronRight className="h-3.5 w-3.5" />}
               >
-                {t('common.next')}
-              </button>
-            </div>
+                Suivant
+              </Button>
+            </nav>
           )}
         </section>
-      </div>
+      </Container>
     </div>
   );
 }
 
-function ProductCard({
-  product,
-  t,
-}: {
-  product: CatalogItem;
-  t: (key: string) => string;
-}): React.ReactElement {
+// ---------------------------------------------------------------------------
+function ProductCard({ product }: { product: CatalogItem }): React.ReactElement {
   const imageUrl = product.images?.[0];
-  const [imageLoaded, setImageLoaded] = useState(false);
-
+  const [loaded, setLoaded] = useState(false);
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition-shadow overflow-hidden">
-      {/* Image */}
-      <div className="h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden relative">
+    <Card variant="interactive" className="group overflow-hidden p-0">
+      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-white/5 to-white/[0.02]">
         {imageUrl ? (
           <>
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse" aria-hidden="true" />
-            )}
+            {!loaded && <Skeleton className="absolute inset-0 rounded-none" />}
             <img
               src={imageUrl}
               alt={product.name}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               loading="lazy"
-              onLoad={() => setImageLoaded(true)}
+              onLoad={() => setLoaded(true)}
+              className={`h-full w-full object-cover transition duration-500 ${loaded ? 'opacity-100 group-hover:scale-105' : 'opacity-0'}`}
             />
           </>
         ) : (
-          <span className="text-4xl text-gray-400" role="img" aria-hidden="true">🗄️</span>
+          <div className="flex h-full items-center justify-center text-white/30">
+            <Package className="h-10 w-10" />
+          </div>
         )}
       </div>
-
-      {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-2 mb-1">
-          {product.name}
-        </h3>
+        <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-white">{product.name}</h3>
         {product.category && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-            {product.category}
-            {product.subcategory ? ` / ${product.subcategory}` : ''}
+          <p className="mb-2 text-xs text-white/50">
+            {product.category}{product.subcategory ? ` · ${product.subcategory}` : ''}
           </p>
         )}
         {product.dimensions && (
-          <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">
-            {product.dimensions.width} x {product.dimensions.depth} x {product.dimensions.height} cm
+          <p className="mb-3 text-xs text-white/40">
+            {product.dimensions.width} × {product.dimensions.depth} × {product.dimensions.height} cm
           </p>
         )}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+          <span className="text-base font-semibold text-white">
             {product.price
-              ? new Intl.NumberFormat('fr-FR', {
-                  style: 'currency',
-                  currency: product.currency || 'EUR',
-                }).format(product.price)
-              : t('catalog.priceOnRequest')}
+              ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: product.currency || 'EUR' }).format(product.price)
+              : <span className="text-sm text-white/50">Prix sur demande</span>}
           </span>
+          {product.subcategory && <Badge variant="outline">{product.subcategory}</Badge>}
         </div>
       </div>
+    </Card>
+  );
+}
+
+function AIResultCard({ product }: { product: any }): React.ReactElement {
+  return (
+    <div className="rounded-lg border border-white/10 bg-white/[0.04] p-3 transition hover:border-white/20">
+      <h4 className="line-clamp-2 text-sm font-medium text-white">{product.name}</h4>
+      {product.brand && <p className="mt-0.5 text-xs text-white/50">{product.brand}</p>}
+      {product.material && <p className="text-xs text-white/40">{product.material}</p>}
+      <p className="mt-2 text-sm font-semibold text-white">
+        {product.price
+          ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: product.currency || 'EUR' }).format(Number(product.price))
+          : 'Prix sur demande'}
+      </p>
     </div>
   );
 }

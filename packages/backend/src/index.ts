@@ -3,9 +3,14 @@
 // This validates all required environment variables before any other code runs
 // =============================================================================
 import { validateEnv } from './config/env-validator';
+import { initTelemetry } from './core/telemetry';
 
 // Validate environment variables immediately - exits process if invalid
 validateEnv();
+
+// Start OpenTelemetry BEFORE importing instrumented libraries (pg, express).
+// No-op when OTEL_EXPORTER_OTLP_ENDPOINT isn't set.
+void initTelemetry();
 
 // =============================================================================
 // APPLICATION IMPORTS - Only after env validation passes
@@ -20,6 +25,7 @@ import { PrismaUserRepository } from './repositories';
 import { authService } from './auth/auth.service';
 import { createEmailTokenService } from './services/email-token.service';
 import { jobQueue } from './jobs/job-queue';
+import { startGdprPurgeScheduler, stopGdprPurgeScheduler } from './jobs/gdpr-scheduler';
 import logger from './utils/logger';
 
 /**
@@ -78,7 +84,7 @@ async function bootstrap(): Promise<void> {
       // Start background job processing now that Redis is available
       // Register job handlers before starting the queue
       jobQueue.register('send-email', async (data: { to: string; subject: string; template: string; templateData: Record<string, unknown> }) => {
-        const { EmailService } = await import('./services/email.service.js');
+        const { EmailService } = await import('./services/email.service');
         await EmailService.send({
           to: data.to,
           subject: data.subject,
@@ -116,6 +122,9 @@ async function bootstrap(): Promise<void> {
 
       jobQueue.start();
       logger.info('[JOBQUEUE] Background job processing started');
+
+      // Daily GDPR hard-delete purge — no-op unless GDPR_PURGE_ENABLED=1.
+      startGdprPurgeScheduler();
     } catch (error) {
       logger.warn('[REDIS] Not available — token blacklisting, caching, and job queue will be degraded', {
         error: error instanceof Error ? error.message : String(error),
@@ -141,6 +150,7 @@ async function bootstrap(): Promise<void> {
       server.close(async () => {
         // Stop background job processing
         jobQueue.stop();
+        stopGdprPurgeScheduler();
         logger.info('[JOBQUEUE] Stopped');
 
         // Shutdown WebSocket server

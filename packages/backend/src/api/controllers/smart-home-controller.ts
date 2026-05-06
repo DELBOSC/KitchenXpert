@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
-import { SmartHomeService } from '../../services/smart-home/smart-home.service.js';
-import type { Position3D } from '../../services/smart-home/smart-home.service.js';
+import { asyncHandler } from '../middleware/error-middleware';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
+import { SmartHomeService } from '../../services/smart-home/smart-home.service';
+import type { Position3D } from '../../services/smart-home/smart-home.service';
 
 /**
  * SmartHomeController

@@ -9,27 +9,26 @@
  * - Validation (invalid kitchenId format)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({
-    info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn(),
+jest.mock('../utils/logger', () => ({
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
   })),
 }));
 
-const mockCheckKitchenCompliance = vi.fn();
-const mockGetCheckHistory = vi.fn();
-const mockGetRules = vi.fn();
-const mockGetRulesByCode = vi.fn();
-const mockSeedDefaultRules = vi.fn();
+const mockCheckKitchenCompliance = jest.fn();
+const mockGetCheckHistory = jest.fn();
+const mockGetRules = jest.fn();
+const mockGetRulesByCode = jest.fn();
+const mockSeedDefaultRules = jest.fn();
 
-vi.mock('../../services/compliance/compliance.service', () => ({
+jest.mock('../services/compliance/compliance.service', () => ({
   complianceService: {
     checkKitchenCompliance: mockCheckKitchenCompliance,
     getCheckHistory: mockGetCheckHistory,
@@ -47,41 +46,41 @@ vi.mock('../../services/compliance/compliance.service', () => ({
 }));
 
 const mockPrisma = {
-  $disconnect: vi.fn(),
-  kitchen: { findUnique: vi.fn() },
+  $disconnect: jest.fn(),
+  kitchen: { findUnique: jest.fn() },
 };
 
-vi.mock('../../database/client', () => ({ prisma: mockPrisma }));
+jest.mock('../database/client', () => ({ prisma: mockPrisma }));
 
-vi.mock('../../config/app-config', () => ({
+jest.mock('../config/app-config', () => ({
   config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
 }));
 
-vi.mock('../../auth/token-blacklist', () => ({
-  getTokenBlacklist: vi.fn(() => ({
-    addToBlacklist: vi.fn().mockResolvedValue(undefined),
-    isBlacklisted: vi.fn().mockResolvedValue(false),
-    isUserBlacklisted: vi.fn().mockResolvedValue(false),
+jest.mock('../auth/token-blacklist', () => ({
+  getTokenBlacklist: jest.fn(() => ({
+    addToBlacklist: jest.fn().mockResolvedValue(undefined),
+    isBlacklisted: jest.fn().mockResolvedValue(false),
+    isUserBlacklisted: jest.fn().mockResolvedValue(false),
   })),
-  getTokenExpiration: vi.fn(() => new Date(Date.now() + 3600000)),
-  getTokenIssuedAt: vi.fn(() => new Date()),
+  getTokenExpiration: jest.fn(() => new Date(Date.now() + 3600000)),
+  getTokenIssuedAt: jest.fn(() => new Date()),
 }));
 
-vi.mock('../../auth/jwt.service', () => ({
+jest.mock('../auth/jwt.service', () => ({
   jwtService: {
-    verifyAccessToken: vi.fn().mockReturnValue({
+    verifyAccessToken: jest.fn().mockReturnValue({
       userId: 'test-user-id', email: 'test@test.com', role: 'user',
     }),
-    generateTokens: vi.fn(),
+    generateTokens: jest.fn(),
   },
 }));
 
 let currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
-vi.mock('../../api/middleware/auth-middleware', async () => {
+jest.mock('../api/middleware/auth-middleware', async () => {
   const { UnauthorizedError } = await import('@kitchenxpert/common');
   return {
-    authenticate: vi.fn((req: any, _res: any, next: any) => {
+    authenticate: jest.fn((req: any, _res: any, next: any) => {
       if (req.cookies?.accessToken || req.headers.authorization) {
         req.user = { ...currentTestUser };
         next();
@@ -102,12 +101,12 @@ vi.mock('../../api/middleware/auth-middleware', async () => {
   };
 });
 
-vi.mock('../../api/middleware/rate-limit-middleware', () => ({
+jest.mock('../api/middleware/rate-limit-middleware', () => ({
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
-import complianceRoutes from '../../api/routes/compliance-routes';
-import { errorHandler } from '../../api/middleware/error-middleware';
+import complianceRoutes from '../api/routes/compliance-routes';
+import { errorHandler } from '../api/middleware/error-middleware';
 
 // ==================== SETUP ====================
 
@@ -157,7 +156,7 @@ describe('Compliance Routes', () => {
   let app: Application;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
     app = createTestApp();
   });

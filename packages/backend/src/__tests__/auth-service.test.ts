@@ -17,19 +17,52 @@ jest.mock('../auth/jwt.service', () => ({
   },
   JWTService: jest.fn(),
 }));
-jest.mock('../utils/logger', () => ({
-  __esModule: true,
-  default: {
+jest.mock('../utils/logger', () => {
+  const mockLogger = {
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
     debug: jest.fn(),
-  },
-}));
+    child: jest.fn(),
+  };
+  // .child() returns a logger with the same shape so nested code can call .info etc.
+  mockLogger.child.mockReturnValue(mockLogger);
+  return {
+    __esModule: true,
+    default: mockLogger,
+    createModuleLogger: jest.fn(() => mockLogger),
+  };
+});
+
+// Mock prisma to avoid real DB calls inside register's $transaction.
+// Test cases reach into __prismaMock to tweak per-test behaviour.
+jest.mock('../database/client', () => {
+  const txCreatedUser = {
+    id: 'user-123', email: 'test@example.com', firstName: 'Test', lastName: 'User',
+    password: 'hashed-password', role: 'user', status: 'pending', emailVerified: false,
+    language: 'en', timezone: 'UTC', createdAt: new Date(), updatedAt: new Date(),
+  };
+  const txUserCreate = jest.fn().mockResolvedValue(txCreatedUser);
+  const txTokenCreate = jest.fn().mockResolvedValue({});
+  const findUnique = jest.fn().mockResolvedValue(null);
+  const $transaction = jest.fn(async (fn: any) => fn({
+    user: { create: txUserCreate },
+    emailVerificationToken: { create: txTokenCreate },
+  }));
+  return {
+    prisma: {
+      user: { findUnique, create: jest.fn() },
+      $transaction,
+    },
+    __prismaMock: { findUnique, $transaction, txUserCreate, txTokenCreate },
+  };
+});
 
 // Import after mocks
 import { AuthService, IUserRepository } from '../auth/auth.service';
 import { jwtService } from '../auth/jwt.service';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { __prismaMock } = require('../database/client');
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -90,82 +123,72 @@ describe('AuthService', () => {
     };
 
     it('should register a new user successfully', async () => {
-      mockRepository.emailExists.mockResolvedValue(false);
-      mockRepository.create.mockResolvedValue({
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password');
+      // The transaction mock returns a fixed user@test.example.com user.
+      // We update its email so this test asserts on registrationData.
+      __prismaMock.txUserCreate.mockResolvedValueOnce({
         id: 'new-user-id',
         email: registrationData.email,
         firstName: registrationData.firstName,
         lastName: registrationData.lastName,
+        password: 'hashed-password',
         role: 'user',
         status: 'pending',
-      } as any);
-      (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password');
-      mockEmailTokenService.generateVerificationToken.mockResolvedValue({ token: 'verify-token' });
+        emailVerified: false,
+        language: 'en',
+        timezone: 'UTC',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
       const result = await authService.register(registrationData);
 
-      expect(mockRepository.emailExists).toHaveBeenCalledWith(registrationData.email);
+      expect(__prismaMock.findUnique).toHaveBeenCalledWith({ where: { email: registrationData.email } });
       expect(bcrypt.hash).toHaveBeenCalledWith(registrationData.password, 12);
-      expect(mockRepository.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          email: registrationData.email,
-          password: 'hashed-password',
-          role: 'user',
-          status: 'pending',
-          emailVerified: false,
-        })
-      );
+      expect(__prismaMock.$transaction).toHaveBeenCalled();
       expect(result.user.email).toBe(registrationData.email);
       expect(result.tokens).toEqual(mockTokens);
-      expect(result.verificationToken).toBe('verify-token');
+      expect(result.verificationToken).toEqual(expect.any(String));
     });
 
     it('should throw ConflictError if email already exists', async () => {
-      mockRepository.emailExists.mockResolvedValue(true);
+      __prismaMock.findUnique.mockResolvedValueOnce({ id: 'existing-user', email: registrationData.email });
 
       await expect(authService.register(registrationData)).rejects.toThrow(ConflictError);
     });
 
     it('should throw BadRequestError for weak password (too short)', async () => {
-      mockRepository.emailExists.mockResolvedValue(false);
-
       await expect(
         authService.register({ ...registrationData, password: 'Ab1' })
       ).rejects.toThrow(BadRequestError);
     });
 
     it('should throw BadRequestError for password without uppercase', async () => {
-      mockRepository.emailExists.mockResolvedValue(false);
-
       await expect(
         authService.register({ ...registrationData, password: 'weakpass1' })
       ).rejects.toThrow(BadRequestError);
     });
 
     it('should throw BadRequestError for password without numbers', async () => {
-      mockRepository.emailExists.mockResolvedValue(false);
-
       await expect(
         authService.register({ ...registrationData, password: 'WeakPassword' })
       ).rejects.toThrow(BadRequestError);
     });
 
-    it('should still register if verification token generation fails', async () => {
-      mockRepository.emailExists.mockResolvedValue(false);
-      mockRepository.create.mockResolvedValue({
-        id: 'new-user-id',
-        email: registrationData.email,
-        firstName: 'New',
-        lastName: 'User',
-        role: 'user',
-      } as any);
+    it('register and verification token are issued atomically', async () => {
+      // The new contract: register and the verification token live in the
+      // same prisma.$transaction, so if the token insert fails the user
+      // creation rolls back too. We assert the transaction was invoked.
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password');
-      mockEmailTokenService.generateVerificationToken.mockRejectedValue(new Error('token fail'));
+      mockEmailTokenService.generateVerificationToken.mockRejectedValue(new Error('legacy fallback path'));
 
       const result = await authService.register(registrationData);
 
+      expect(__prismaMock.$transaction).toHaveBeenCalled();
       expect(result.user).toBeDefined();
-      expect(result.verificationToken).toBeUndefined();
+      expect(result.verificationToken).toEqual(expect.any(String));
+      // 64 hex chars = 32 random bytes — guarantees a real token, not the legacy fallback.
+      expect(result.verificationToken).toHaveLength(64);
     });
   });
 

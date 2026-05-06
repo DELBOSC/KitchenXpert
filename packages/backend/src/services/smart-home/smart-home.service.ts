@@ -10,10 +10,10 @@
  */
 
 import { Prisma } from '@prisma/client';
-import { prisma } from '../../database/client.js';
-import AnthropicService from '../ai/anthropic.service.js';
-import { SYSTEM_PROMPTS, PROMPT_VERSIONS } from '../ai/prompt-templates.js';
-import logger from '../../utils/logger.js';
+import { prisma } from '../../database/client';
+import AnthropicService from '../ai/anthropic.service';
+import { SYSTEM_PROMPTS, PROMPT_VERSIONS } from '../ai/prompt-templates';
+import logger from '../../utils/logger';
 
 // ---------------------------------------------------------------------------
 // Types

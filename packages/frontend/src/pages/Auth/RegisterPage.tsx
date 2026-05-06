@@ -1,226 +1,196 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Mail, Lock, User as UserIcon, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../components/ui/Toast';
+import { Button, Input, Checkbox } from '../../components/ui';
+import AuthLayout from './AuthLayout';
+
+type PasswordStrength = { score: 0 | 1 | 2 | 3 | 4; label: string; color: string };
+
+function scorePassword(pw: string): PasswordStrength {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+  if (/\d/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const labels = ['Trop faible', 'Faible', 'Correct', 'Bon', 'Excellent'];
+  const colors = ['bg-rose-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-emerald-400'];
+  return { score: score as PasswordStrength['score'], label: labels[score]!, color: colors[score]! };
+}
 
 export default function RegisterPage(): React.ReactElement {
+  const { t } = useTranslation();
+  const { register } = useAuth();
+  const toast = useToast();
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<{
-    firstName?: boolean;
-    lastName?: boolean;
-    email?: boolean;
-    password?: boolean;
-    confirmPassword?: boolean;
-  }>({});
-  const { register } = useAuth();
-  const toast = useToast();
-  const { t } = useTranslation();
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const strength = useMemo(() => scorePassword(password), [password]);
+
+  const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    setError(null);
-    setFieldErrors({});
-
-    const errors: typeof fieldErrors = {};
-    if (!firstName) errors.firstName = true;
-    if (!lastName) errors.lastName = true;
-    if (!email) errors.email = true;
-    if (!password) errors.password = true;
-    if (!confirmPassword) errors.confirmPassword = true;
-
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
+    const next: Record<string, string> = {};
+    if (!firstName) next.firstName = 'Prénom requis';
+    if (!lastName) next.lastName = 'Nom requis';
+    if (!email) next.email = 'Email requis';
+    if (password.length < 8) next.password = '8 caractères minimum';
+    if (password !== confirmPassword) next.confirmPassword = 'Les mots de passe ne correspondent pas';
+    if (!acceptTerms) next.terms = 'Vous devez accepter les CGV';
+    if (Object.keys(next).length) {
+      setErrors(next);
       return;
     }
-
-    if (password !== confirmPassword) {
-      setError(t('auth.passwordMismatch'));
-      setFieldErrors({ confirmPassword: true });
-      toast.error(t('auth.passwordMismatch'));
-      return;
-    }
-
-    if (password.length < 8) {
-      setError(t('auth.passwordTooShort'));
-      setFieldErrors({ password: true });
-      toast.error(t('auth.passwordTooShort'));
-      return;
-    }
-
-    setIsLoading(true);
-
+    setErrors({});
+    setLoading(true);
     try {
       await register(email, password, firstName, lastName);
-      toast.success(t('auth.registerSuccess'));
+      toast.success(t('auth.registerSuccess', 'Compte créé'));
     } catch (err) {
-      const message = err instanceof Error ? err.message : t('auth.registerError');
-      setError(message);
+      const message = err instanceof Error ? err.message : 'Erreur de création';
+      setErrors({ form: message });
       toast.error(message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-8">
-          {t('auth.createAccount')}
-        </h1>
-
-        {error && (
-          <div id="register-error" role="alert" className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-400">
-            {error}
+    <AuthLayout
+      title="Créez votre espace"
+      subtitle="Démarrez gratuitement. Mettez à niveau quand vous êtes prêt."
+      footer={
+        <>
+          Déjà un compte ?{' '}
+          <Link to="/login" className="font-medium text-white underline-offset-4 hover:underline">
+            Se connecter
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={onSubmit} noValidate className="space-y-4">
+        {errors.form && (
+          <div role="alert" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+            {errors.form}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-          <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('auth.firstName')}
-            </label>
-            <input
-              id="firstName"
-              type="text"
-              value={firstName}
-              onChange={(e) => { setFirstName(e.target.value); setFieldErrors((prev) => ({ ...prev, firstName: false })); }}
-              required
-              autoComplete="given-name"
-              aria-required="true"
-              aria-invalid={fieldErrors.firstName || false}
-              aria-describedby={fieldErrors.firstName ? 'firstName-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder={t('auth.firstNamePlaceholder')}
-            />
-            {fieldErrors.firstName && (
-              <p id="firstName-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
-                {t('auth.firstNameRequired', 'First name is required')}
-              </p>
-            )}
-          </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            label="Prénom"
+            autoComplete="given-name"
+            placeholder="Alex"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            error={errors.firstName}
+            leftIcon={<UserIcon className="h-4 w-4" />}
+            required
+          />
+          <Input
+            label="Nom"
+            autoComplete="family-name"
+            placeholder="Dubois"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            error={errors.lastName}
+            required
+          />
+        </div>
 
-          <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('auth.lastName')}
-            </label>
-            <input
-              id="lastName"
-              type="text"
-              value={lastName}
-              onChange={(e) => { setLastName(e.target.value); setFieldErrors((prev) => ({ ...prev, lastName: false })); }}
-              required
-              autoComplete="family-name"
-              aria-required="true"
-              aria-invalid={fieldErrors.lastName || false}
-              aria-describedby={fieldErrors.lastName ? 'lastName-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder={t('auth.lastNamePlaceholder')}
-            />
-            {fieldErrors.lastName && (
-              <p id="lastName-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
-                {t('auth.lastNameRequired', 'Last name is required')}
-              </p>
-            )}
-          </div>
+        <Input
+          type="email"
+          autoComplete="email"
+          label="Email"
+          placeholder="vous@exemple.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={errors.email}
+          leftIcon={<Mail className="h-4 w-4" />}
+          required
+        />
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('common.email')}
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setFieldErrors((prev) => ({ ...prev, email: false })); }}
-              required
-              autoComplete="email"
-              aria-required="true"
-              aria-invalid={fieldErrors.email || false}
-              aria-describedby={fieldErrors.email ? 'reg-email-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder={t('auth.emailPlaceholder')}
-            />
-            {fieldErrors.email && (
-              <p id="reg-email-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
-                {t('auth.emailRequired', 'Email is required')}
-              </p>
-            )}
-          </div>
+        <div>
+          <Input
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="new-password"
+            label="Mot de passe"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={errors.password}
+            leftIcon={<Lock className="h-4 w-4" />}
+            rightIcon={
+              <button
+                type="button"
+                onClick={() => setShowPassword((s) => !s)}
+                className="kx-focus rounded p-0.5 text-white/50 hover:text-white"
+                aria-label={showPassword ? 'Masquer' : 'Afficher'}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            }
+            required
+          />
+          {password && (
+            <div className="mt-2">
+              <div className="flex gap-1">
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className={`h-1 flex-1 rounded-full transition-colors ${i < strength.score ? strength.color : 'bg-white/10'}`}
+                  />
+                ))}
+              </div>
+              <p className="mt-1 text-xs text-white/50">Force : {strength.label}</p>
+            </div>
+          )}
+        </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('common.password')}
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setFieldErrors((prev) => ({ ...prev, password: false })); }}
-              required
-              minLength={8}
-              autoComplete="new-password"
-              aria-required="true"
-              aria-invalid={fieldErrors.password || false}
-              aria-describedby={fieldErrors.password ? 'reg-password-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder={t('auth.passwordPlaceholder')}
-            />
-            {fieldErrors.password && (
-              <p id="reg-password-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
-                {t('auth.passwordRequired', 'Password is required')}
-              </p>
-            )}
-          </div>
+        <Input
+          type={showPassword ? 'text' : 'password'}
+          autoComplete="new-password"
+          label="Confirmation"
+          placeholder="••••••••"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          error={errors.confirmPassword}
+          leftIcon={<Lock className="h-4 w-4" />}
+          required
+        />
 
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('auth.confirmPassword')}
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => { setConfirmPassword(e.target.value); setFieldErrors((prev) => ({ ...prev, confirmPassword: false })); }}
-              required
-              autoComplete="new-password"
-              aria-required="true"
-              aria-invalid={fieldErrors.confirmPassword || false}
-              aria-describedby={fieldErrors.confirmPassword ? 'confirmPassword-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder={t('auth.passwordPlaceholder')}
-            />
-            {fieldErrors.confirmPassword && (
-              <p id="confirmPassword-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
-                {t('auth.confirmPasswordRequired', 'Password confirmation is required')}
-              </p>
-            )}
-          </div>
+        <div className="pt-1">
+          <Checkbox
+            checked={acceptTerms}
+            onChange={(e) => setAcceptTerms(e.target.checked)}
+            label={
+              <>
+                J'accepte les{' '}
+                <Link to="/legal/cgv" className="underline hover:text-white">CGV</Link>
+                {' '}et la{' '}
+                <Link to="/legal/privacy" className="underline hover:text-white">politique de confidentialité</Link>.
+              </>
+            }
+          />
+          {errors.terms && <p className="mt-1 text-xs text-rose-400">{errors.terms}</p>}
+        </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            aria-label={t('auth.registerAction')}
-            aria-busy={isLoading}
-            className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? t('auth.registerLoading') : t('auth.registerAction')}
-          </button>
-        </form>
+        <Button type="submit" loading={loading} fullWidth size="lg">
+          Créer mon compte
+        </Button>
 
-        <p className="mt-6 text-center text-gray-600 dark:text-gray-400">
-          {t('auth.hasAccount')}{' '}
-          <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
-            {t('auth.loginAction')}
-          </Link>
+        <p className="pt-2 text-center text-xs text-white/40">
+          Essai gratuit · Aucune carte bancaire requise
         </p>
-      </div>
-    </div>
+      </form>
+    </AuthLayout>
   );
 }

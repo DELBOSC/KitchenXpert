@@ -9,25 +9,24 @@
  * - Auth guard (401 without token)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockPaymentController = {
-  createSubscription: vi.fn((_req: Request, res: Response) => {
+  createSubscription: jest.fn((_req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       data: {
@@ -38,7 +37,7 @@ const mockPaymentController = {
       },
     });
   }),
-  getSubscription: vi.fn((_req: Request, res: Response) => {
+  getSubscription: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: {
@@ -48,13 +47,13 @@ const mockPaymentController = {
       },
     });
   }),
-  cancelSubscription: vi.fn((_req: Request, res: Response) => {
+  cancelSubscription: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'Subscription cancelled',
     });
   }),
-  listCustomerSubscriptions: vi.fn((_req: Request, res: Response) => {
+  listCustomerSubscriptions: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: [
@@ -65,11 +64,11 @@ const mockPaymentController = {
   }),
 };
 
-vi.mock('../../api/controllers/payment-controller', () => ({
+jest.mock('../api/controllers/payment-controller', () => ({
   paymentController: mockPaymentController,
 }));
 
-vi.mock('../../api/middleware/validation-middleware', () => ({
+jest.mock('../api/middleware/validation-middleware', () => ({
   validateBody: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateParams: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateQuery: () => (_req: Request, _res: Response, next: NextFunction) => next(),
@@ -78,7 +77,7 @@ vi.mock('../../api/middleware/validation-middleware', () => ({
 
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -89,7 +88,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   authorize: () => (_req: any, _res: any, next: any) => next(),
 }));
 
-import subscriptionRoutes from '../../api/routes/subscription-routes';
+import subscriptionRoutes from '../api/routes/subscription-routes';
 
 // ==================== TEST APP ====================
 
@@ -108,7 +107,7 @@ describe('Subscription Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
   });
 

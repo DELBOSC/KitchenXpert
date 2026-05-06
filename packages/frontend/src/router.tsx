@@ -68,6 +68,13 @@ const CertifiedQuotePage = lazy(() => import('./pages/Quotes/CertifiedQuotePage'
 // AR Viewer
 const ARViewerPage = lazy(() => import('./pages/AR/ARViewerPage'));
 
+// Legal
+const MentionsLegales = lazy(() => import('./pages/Legal/MentionsLegales'));
+const CGV = lazy(() => import('./pages/Legal/CGV'));
+const Privacy = lazy(() => import('./pages/Legal/Privacy'));
+const CookiesPage = lazy(() => import('./pages/Legal/Cookies'));
+const PrivacySettings = lazy(() => import('./pages/Legal/PrivacySettings'));
+
 // Protected Route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }): React.ReactElement {
   const { isAuthenticated, isLoading } = useAuth();
@@ -552,6 +559,20 @@ export function AppRouter(): React.ReactElement {
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
                   <CertifiedQuotePage />
                 </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Legal (public) */}
+          <Route path="/legal/mentions" element={<MentionsLegales />} />
+          <Route path="/legal/cgv" element={<CGV />} />
+          <Route path="/legal/privacy" element={<Privacy />} />
+          <Route path="/legal/cookies" element={<CookiesPage />} />
+          <Route
+            path="/legal/privacy-settings"
+            element={
+              <ProtectedRoute>
+                <PrivacySettings />
               </ProtectedRoute>
             }
           />

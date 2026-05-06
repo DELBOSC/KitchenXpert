@@ -9,67 +9,66 @@
  * - Admin-only access (403 for non-admin)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockPermissionController = {
-  getAll: vi.fn((_req: Request, res: Response) => {
+  getAll: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: [{ id: 'p1', name: 'users.read', resource: 'users', action: 'read' }],
     });
   }),
-  getById: vi.fn((_req: Request, res: Response) => {
+  getById: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { id: 'p1', name: 'users.read' } });
   }),
-  create: vi.fn((_req: Request, res: Response) => {
+  create: jest.fn((_req: Request, res: Response) => {
     res.status(201).json({ success: true, data: { id: 'p-new', name: 'kitchens.write' } });
   }),
-  update: vi.fn((_req: Request, res: Response) => {
+  update: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { id: 'p1', name: 'users.write' } });
   }),
-  delete: vi.fn((_req: Request, res: Response) => {
+  delete: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'Permission deleted' });
   }),
-  getResources: vi.fn((_req: Request, res: Response) => {
+  getResources: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: ['users', 'kitchens'] });
   }),
-  getActions: vi.fn((_req: Request, res: Response) => {
+  getActions: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: ['read', 'write', 'delete'] });
   }),
-  getGrouped: vi.fn((_req: Request, res: Response) => {
+  getGrouped: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  check: vi.fn((_req: Request, res: Response) => {
+  check: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { allowed: true } });
   }),
-  seedDefaults: vi.fn((_req: Request, res: Response) => {
+  seedDefaults: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'Defaults seeded' });
   }),
-  seedResource: vi.fn((_req: Request, res: Response) => {
+  seedResource: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
 };
 
-vi.mock('../../api/controllers/permission-controller', () => ({
+jest.mock('../api/controllers/permission-controller', () => ({
   permissionController: mockPermissionController,
 }));
 
-vi.mock('../../api/middleware/validation-middleware', () => ({
+jest.mock('../api/middleware/validation-middleware', () => ({
   validateBody: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateParams: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateQuery: () => (_req: Request, _res: Response, next: NextFunction) => next(),
@@ -79,7 +78,7 @@ vi.mock('../../api/middleware/validation-middleware', () => ({
 let mockUserRole = 'admin';
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -95,7 +94,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   },
 }));
 
-import permissionRoutes from '../../api/routes/permission-routes';
+import permissionRoutes from '../api/routes/permission-routes';
 
 // ==================== TEST APP ====================
 
@@ -114,7 +113,7 @@ describe('Permission Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockUserRole = 'admin';
     mockAuthenticated = true;
   });

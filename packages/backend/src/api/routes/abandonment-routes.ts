@@ -1,8 +1,8 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
-import { authenticate, requireRole } from '../middleware/auth-middleware.js';
-import { validateBody } from '../middleware/validation-middleware.js';
-import { abandonmentController } from '../controllers/abandonment-controller.js';
+import { authenticate, requireRole } from '../middleware/auth-middleware';
+import { validateBody } from '../middleware/validation-middleware';
+import { abandonmentController } from '../controllers/abandonment-controller';
 
 const router: RouterType = Router();
 

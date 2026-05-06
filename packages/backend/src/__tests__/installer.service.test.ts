@@ -6,7 +6,7 @@
  */
 
 // Mock logger before imports
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: {
     info: jest.fn(),
@@ -49,11 +49,11 @@ const mockPrisma = {
   },
 };
 
-jest.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: mockPrisma,
 }));
 
-import { InstallerService, InstallerServiceError } from '../../services/installer/installer.service';
+import { InstallerService, InstallerServiceError } from '../services/installer/installer.service';
 
 describe('InstallerService', () => {
   let service: InstallerService;

@@ -2,57 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS animations */
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+@import './styles/tokens.css';
+
+/* --------------------------------------------------------------------------
+ * Base reset
+ * ------------------------------------------------------------------------ */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-.animate-slide-in {
-  animation: slide-in 0.3s ease-out;
+body {
+  background: rgb(var(--kx-bg));
+  color: rgb(var(--kx-fg));
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
-/* Custom scrollbar */
+::selection {
+  background: rgb(var(--kx-brand-from) / 0.3);
+  color: rgb(var(--kx-fg));
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  border: 2px solid rgb(var(--kx-bg));
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: #475569;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
-}
-
-/* Focus visible styling */
+/* Focus ring (applies to everything, override per-component with .kx-focus) */
 :focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid rgb(var(--kx-brand-from) / 0.7);
   outline-offset: 2px;
+  border-radius: var(--kx-radius-sm);
 }
 
-/* Base body styles */
-body {
-  @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+/* --------------------------------------------------------------------------
+ * Animations
+ * ------------------------------------------------------------------------ */
+
+@keyframes kx-slide-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes kx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes kx-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-slide-in {
+  animation: kx-slide-in var(--kx-duration-slow) var(--kx-ease-out);
+}
+.animate-fade-in {
+  animation: kx-fade-in var(--kx-duration-base) var(--kx-ease-out);
 }

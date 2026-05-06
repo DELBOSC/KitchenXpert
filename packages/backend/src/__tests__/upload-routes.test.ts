@@ -9,79 +9,78 @@
  * - Auth guard (401 without token)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockUploadController = {
-  getAllowedTypes: vi.fn((_req: Request, res: Response) => {
+  getAllowedTypes: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: ['image/jpeg', 'image/png', 'application/pdf'],
     });
   }),
-  uploadFile: vi.fn((_req: Request, res: Response) => {
+  uploadFile: jest.fn((_req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       data: { key: 'uploads/test-file.jpg', url: 'https://s3.example.com/uploads/test-file.jpg' },
     });
   }),
-  listFiles: vi.fn((_req: Request, res: Response) => {
+  listFiles: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: [{ key: 'uploads/file1.jpg' }, { key: 'uploads/file2.png' }],
     });
   }),
-  getFile: vi.fn((_req: Request, res: Response) => {
+  getFile: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { url: 'https://s3.example.com/signed-url' } });
   }),
-  getFileMetadata: vi.fn((_req: Request, res: Response) => {
+  getFileMetadata: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { size: 12345, contentType: 'image/jpeg' } });
   }),
-  deleteFile: vi.fn((_req: Request, res: Response) => {
+  deleteFile: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'File deleted' });
   }),
-  getSignedUploadUrl: vi.fn((_req: Request, res: Response) => {
+  getSignedUploadUrl: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { uploadUrl: 'https://s3.example.com/presigned' } });
   }),
-  copyFile: vi.fn((_req: Request, res: Response) => {
+  copyFile: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'File copied' });
   }),
 };
 
-vi.mock('../../api/controllers/upload-controller', () => ({
+jest.mock('../api/controllers/upload-controller', () => ({
   uploadController: mockUploadController,
 }));
 
 // Mock multer upload middleware to pass through
-vi.mock('../../middleware/upload-middleware', () => ({
+jest.mock('../middleware/upload-middleware', () => ({
   uploadSingle: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   uploadMultipleImages: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   handleUploadError: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 // Mock rate limiter
-vi.mock('express-rate-limit', () => ({
+jest.mock('express-rate-limit', () => ({
   __esModule: true,
   default: () => (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -92,7 +91,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   authorize: () => (_req: any, _res: any, next: any) => next(),
 }));
 
-import uploadRoutes from '../../api/routes/upload-routes';
+import uploadRoutes from '../api/routes/upload-routes';
 
 // ==================== TEST APP ====================
 
@@ -111,7 +110,7 @@ describe('Upload Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
   });
 

@@ -54,6 +54,8 @@ import smartHomeRoutes from './smart-home-routes';
 import certifiedQuoteRoutes from './certified-quote-routes';
 import workflowSimulationRoutes from './workflow-simulation-routes';
 import partnerPortalRoutes from './partner-portal-routes';
+import gdprRoutes from './gdpr-routes';
+import docsRoutes from './docs-routes';
 
 const router: RouterType = Router();
 
@@ -73,6 +75,8 @@ router.use('/health', monitoringRoutes);
 
 // Protected routes
 router.use('/users', userRoutes);
+router.use('/me/gdpr', gdprRoutes);
+router.use('/docs', docsRoutes);
 router.use('/kitchens', kitchenRoutes);
 router.use('/projects', projectRoutes);
 router.use('/catalog', catalogRoutes);

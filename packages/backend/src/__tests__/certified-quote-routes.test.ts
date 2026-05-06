@@ -9,30 +9,29 @@
  * - Validation (missing items, invalid data)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({
-    info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn(),
+jest.mock('../utils/logger', () => ({
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
   })),
 }));
 
-const mockCreate = vi.fn();
-const mockList = vi.fn();
-const mockSign = vi.fn();
-const mockGetById = vi.fn();
-const mockGetNextNumber = vi.fn();
-const mockSend = vi.fn();
-const mockGeneratePDF = vi.fn();
+const mockCreate = jest.fn();
+const mockList = jest.fn();
+const mockSign = jest.fn();
+const mockGetById = jest.fn();
+const mockGetNextNumber = jest.fn();
+const mockSend = jest.fn();
+const mockGeneratePDF = jest.fn();
 
-vi.mock('../../services/quote/certified-quote.service', () => ({
-  getCertifiedQuoteService: vi.fn(() => ({
+jest.mock('../services/quote/certified-quote.service', () => ({
+  getCertifiedQuoteService: jest.fn(() => ({
     create: mockCreate,
     list: mockList,
     sign: mockSign,
@@ -43,37 +42,37 @@ vi.mock('../../services/quote/certified-quote.service', () => ({
   })),
 }));
 
-vi.mock('../../database/client', () => ({ prisma: { $disconnect: vi.fn() } }));
+jest.mock('../database/client', () => ({ prisma: { $disconnect: jest.fn() } }));
 
-vi.mock('../../config/app-config', () => ({
+jest.mock('../config/app-config', () => ({
   config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
 }));
 
-vi.mock('../../auth/token-blacklist', () => ({
-  getTokenBlacklist: vi.fn(() => ({
-    addToBlacklist: vi.fn().mockResolvedValue(undefined),
-    isBlacklisted: vi.fn().mockResolvedValue(false),
-    isUserBlacklisted: vi.fn().mockResolvedValue(false),
+jest.mock('../auth/token-blacklist', () => ({
+  getTokenBlacklist: jest.fn(() => ({
+    addToBlacklist: jest.fn().mockResolvedValue(undefined),
+    isBlacklisted: jest.fn().mockResolvedValue(false),
+    isUserBlacklisted: jest.fn().mockResolvedValue(false),
   })),
-  getTokenExpiration: vi.fn(() => new Date(Date.now() + 3600000)),
-  getTokenIssuedAt: vi.fn(() => new Date()),
+  getTokenExpiration: jest.fn(() => new Date(Date.now() + 3600000)),
+  getTokenIssuedAt: jest.fn(() => new Date()),
 }));
 
-vi.mock('../../auth/jwt.service', () => ({
+jest.mock('../auth/jwt.service', () => ({
   jwtService: {
-    verifyAccessToken: vi.fn().mockReturnValue({
+    verifyAccessToken: jest.fn().mockReturnValue({
       userId: 'test-user-id', email: 'test@test.com', role: 'user',
     }),
-    generateTokens: vi.fn(),
+    generateTokens: jest.fn(),
   },
 }));
 
 let currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
-vi.mock('../../api/middleware/auth-middleware', async () => {
+jest.mock('../api/middleware/auth-middleware', async () => {
   const { UnauthorizedError } = await import('@kitchenxpert/common');
   return {
-    authenticate: vi.fn((req: any, _res: any, next: any) => {
+    authenticate: jest.fn((req: any, _res: any, next: any) => {
       if (req.cookies?.accessToken || req.headers.authorization) {
         req.user = { ...currentTestUser };
         next();
@@ -86,12 +85,12 @@ vi.mock('../../api/middleware/auth-middleware', async () => {
   };
 });
 
-vi.mock('../../api/middleware/rate-limit-middleware', () => ({
+jest.mock('../api/middleware/rate-limit-middleware', () => ({
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
-import certifiedQuoteRoutes from '../../api/routes/certified-quote-routes';
-import { errorHandler } from '../../api/middleware/error-middleware';
+import certifiedQuoteRoutes from '../api/routes/certified-quote-routes';
+import { errorHandler } from '../api/middleware/error-middleware';
 
 // ==================== SETUP ====================
 
@@ -152,7 +151,7 @@ describe('Certified Quote Routes', () => {
   let app: Application;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
     app = createTestApp();
   });

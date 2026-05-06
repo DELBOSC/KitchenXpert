@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { prisma } from '../../database/client.js';
-import logger from '../../utils/logger.js';
+import { asyncHandler } from '../middleware/error-middleware';
+import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
 
 /**
  * Design Rating Controller

@@ -9,23 +9,22 @@
  * - GET /bosch/appliances/types (list appliance types)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
 const mockPrisma = {
-  $disconnect: vi.fn(),
+  $disconnect: jest.fn(),
   catalogProvider: {
-    findFirst: vi.fn().mockResolvedValue({
+    findFirst: jest.fn().mockResolvedValue({
       id: 'provider-bosch',
       name: 'Bosch',
       code: 'bosch',
@@ -35,43 +34,43 @@ const mockPrisma = {
     }),
   },
   productCategory: {
-    findMany: vi.fn().mockResolvedValue([]),
+    findMany: jest.fn().mockResolvedValue([]),
   },
 };
 
-vi.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: mockPrisma,
 }));
 
 const mockApplianceRepository = {
-  findAll: vi.fn().mockResolvedValue({
+  findAll: jest.fn().mockResolvedValue({
     data: [{ id: 'a1', name: 'Bosch Oven Serie 8', type: 'oven', price: 899 }],
     page: 1,
     total: 1,
     totalPages: 1,
   }),
-  search: vi.fn().mockResolvedValue([
+  search: jest.fn().mockResolvedValue([
     { id: 'a1', name: 'Bosch Oven Serie 8', type: 'oven' },
   ]),
-  getTypes: vi.fn().mockResolvedValue(['oven', 'cooktop', 'dishwasher', 'refrigerator']),
-  findById: vi.fn().mockResolvedValue({
+  getTypes: jest.fn().mockResolvedValue(['oven', 'cooktop', 'dishwasher', 'refrigerator']),
+  findById: jest.fn().mockResolvedValue({
     id: 'a1', name: 'Bosch Oven Serie 8', type: 'oven', price: 899,
   }),
 };
 
-vi.mock('../../repositories/appliance-repository', () => ({
-  ApplianceRepository: vi.fn(() => mockApplianceRepository),
+jest.mock('../repositories/appliance-repository', () => ({
+  ApplianceRepository: jest.fn(() => mockApplianceRepository),
 }));
 
-vi.mock('../../repositories/product-repository', () => ({
-  ProductRepository: vi.fn(() => ({
-    findAll: vi.fn().mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 }),
-    findById: vi.fn().mockResolvedValue(null),
+jest.mock('../repositories/product-repository', () => ({
+  ProductRepository: jest.fn(() => ({
+    findAll: jest.fn().mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 }),
+    findById: jest.fn().mockResolvedValue(null),
   })),
 }));
 
 // Mock rate limiter
-vi.mock('express-rate-limit', () => ({
+jest.mock('express-rate-limit', () => ({
   __esModule: true,
   default: () => (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
@@ -79,7 +78,7 @@ vi.mock('express-rate-limit', () => ({
 // Mock auth middleware
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -95,13 +94,13 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   },
 }));
 
-vi.mock('../../api/middleware/error-middleware', () => ({
+jest.mock('../api/middleware/error-middleware', () => ({
   asyncHandler: (fn: any) => (req: any, res: any, next: any) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   },
 }));
 
-import boschRoutes from '../../api/routes/bosch-routes';
+import boschRoutes from '../api/routes/bosch-routes';
 
 // ==================== TEST APP ====================
 
@@ -120,7 +119,7 @@ describe('Bosch Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
 
     // Reset the provider mock

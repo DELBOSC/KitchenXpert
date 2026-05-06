@@ -6,62 +6,218 @@ export default function HomePage(): React.ReactElement {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
-      {/* Hero Section */}
-      <header className="container mx-auto px-4 py-16 text-center">
-        <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
-          KitchenXpert
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-          {t('home.tagline')}
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link
-            to="/designer"
-            className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            {t('home.startDesign')}
-          </Link>
-          <Link
-            to="/catalog"
-            className="px-8 py-3 bg-white text-blue-600 border border-blue-600 rounded-lg font-semibold hover:bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-gray-700 transition-colors"
-          >
-            {t('home.exploreCatalog')}
-          </Link>
-        </div>
-      </header>
+    <div className="relative min-h-screen overflow-hidden bg-[#0a0a0f] text-white">
+      <AuroraBackground />
 
-      {/* Features Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-          {t('home.features')}
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard
-            title={t('home.feature3dTitle')}
-            description={t('home.feature3dDesc')}
-            icon="🎨"
-          />
-          <FeatureCard
-            title={t('home.featureAiTitle')}
-            description={t('home.featureAiDesc')}
-            icon="🤖"
-          />
-          <FeatureCard
-            title={t('home.featureCatalogTitle')}
-            description={t('home.featureCatalogDesc')}
-            icon="📚"
-          />
-        </div>
-      </section>
+      <Nav />
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-700 py-8">
-        <div className="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
-          <p>&copy; {new Date().getFullYear()} KitchenXpert. {t('common.allRightsReserved')}</p>
-        </div>
-      </footer>
+      <main className="relative z-10">
+        <Hero t={t} />
+        <LogoStrip />
+        <Features t={t} />
+        <ShowcaseSplit />
+        <Metrics />
+        <Testimonial />
+        <CTA t={t} />
+      </main>
+
+      <Footer />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Aurora / gradient background (Linear / Vercel inspired)
+// ---------------------------------------------------------------------------
+function AuroraBackground(): React.ReactElement {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-gradient-to-br from-indigo-500/30 via-fuchsia-500/20 to-transparent blur-3xl" />
+      <div className="absolute top-[20%] -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-cyan-400/20 to-transparent blur-3xl" />
+      <div className="absolute top-[60%] -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-violet-500/20 to-transparent blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.06),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Top navigation
+// ---------------------------------------------------------------------------
+function Nav(): React.ReactElement {
+  return (
+    <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+      <Link to="/" className="flex items-center gap-2">
+        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-400 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30" />
+        <span className="text-lg font-semibold tracking-tight">KitchenXpert</span>
+      </Link>
+      <div className="hidden items-center gap-8 text-sm text-white/70 md:flex">
+        <Link to="/catalog" className="transition hover:text-white">Catalogue</Link>
+        <Link to="/pricing" className="transition hover:text-white">Tarifs</Link>
+        <Link to="/designer" className="transition hover:text-white">Designer 3D</Link>
+        <Link to="/marketplace" className="transition hover:text-white">Marketplace</Link>
+      </div>
+      <div className="flex items-center gap-3">
+        <Link
+          to="/login"
+          className="hidden rounded-full px-4 py-2 text-sm text-white/80 transition hover:text-white md:inline-flex"
+        >
+          Connexion
+        </Link>
+        <Link
+          to="/register"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-lg shadow-white/10 transition hover:bg-white/90"
+        >
+          Démarrer
+          <span aria-hidden>→</span>
+        </Link>
+      </div>
+    </nav>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Hero
+// ---------------------------------------------------------------------------
+function Hero({ t }: { t: (k: string) => string }): React.ReactElement {
+  return (
+    <section className="mx-auto max-w-7xl px-6 pt-20 pb-24 text-center sm:pt-28">
+      <div className="mx-auto mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-white/80 backdrop-blur">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+        Nouveau — Configurateur IA v2 disponible
+      </div>
+
+      <h1 className="mx-auto max-w-4xl bg-gradient-to-b from-white to-white/60 bg-clip-text text-5xl font-semibold leading-[1.05] tracking-tight text-transparent sm:text-6xl md:text-7xl">
+        La cuisine que vous imaginez,
+        <br />
+        <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-rose-300 bg-clip-text text-transparent">
+          conçue en quelques minutes.
+        </span>
+      </h1>
+
+      <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60 sm:text-xl">
+        {t('home.tagline')}
+      </p>
+
+      <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <Link
+          to="/designer"
+          className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(255,255,255,0.12)] transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_8px_60px_rgba(255,255,255,0.25)]"
+        >
+          {t('home.startDesign')}
+          <span className="transition group-hover:translate-x-0.5" aria-hidden>→</span>
+        </Link>
+        <Link
+          to="/catalog"
+          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white/90 backdrop-blur transition hover:border-white/25 hover:bg-white/10"
+        >
+          {t('home.exploreCatalog')}
+        </Link>
+      </div>
+
+      <p className="mt-6 text-xs text-white/40">
+        Essai gratuit · Aucune carte bancaire requise · RGPD conforme
+      </p>
+
+      <HeroVisual />
+    </section>
+  );
+}
+
+function HeroVisual(): React.ReactElement {
+  return (
+    <div className="relative mx-auto mt-20 max-w-5xl">
+      <div className="absolute -inset-x-8 -inset-y-4 rounded-[2rem] bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-cyan-500/20 blur-2xl" aria-hidden />
+      <div className="relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-2 shadow-2xl backdrop-blur">
+        <div className="rounded-xl border border-white/10 bg-[#0d0d14] p-8">
+          <div className="mb-4 flex items-center gap-1.5">
+            <div className="h-3 w-3 rounded-full bg-red-500/70" />
+            <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
+            <div className="h-3 w-3 rounded-full bg-green-500/70" />
+            <div className="ml-4 text-xs text-white/40">kitchenxpert.com/designer</div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="col-span-2 aspect-[16/10] rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black">
+              <div className="flex h-full items-center justify-center text-6xl">🍳</div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Panel label="Style" value="Scandinave" />
+              <Panel label="Layout" value="L-shaped" />
+              <Panel label="Budget" value="12 400 €" />
+              <Panel label="Score IA" value="94 / 100" highlight />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Panel({ label, value, highlight }: { label: string; value: string; highlight?: boolean }): React.ReactElement {
+  return (
+    <div className={`rounded-md border p-3 ${highlight ? 'border-fuchsia-400/30 bg-fuchsia-500/10' : 'border-white/10 bg-white/5'}`}>
+      <div className="text-[10px] uppercase tracking-wider text-white/40">{label}</div>
+      <div className={`mt-1 text-sm font-medium ${highlight ? 'text-fuchsia-200' : 'text-white'}`}>{value}</div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Trust: logo strip
+// ---------------------------------------------------------------------------
+function LogoStrip(): React.ReactElement {
+  const partners = ['IKEA', 'Schmidt', 'Bosch', 'Leroy Merlin', 'Castorama', 'Siemens'];
+  return (
+    <section className="mx-auto max-w-6xl px-6 pb-8">
+      <p className="mb-6 text-center text-xs uppercase tracking-widest text-white/40">
+        Catalogues connectés en direct
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 opacity-60">
+        {partners.map((p) => (
+          <span key={p} className="text-lg font-semibold tracking-tight text-white/70">{p}</span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Features
+// ---------------------------------------------------------------------------
+function Features({ t }: { t: (k: string) => string }): React.ReactElement {
+  return (
+    <section className="mx-auto max-w-7xl px-6 py-24">
+      <div className="mb-16 text-center">
+        <h2 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
+          Tout pour passer du croquis au devis signé.
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-white/60">
+          Un moteur 3D temps réel, une IA entraînée sur 50 000 cuisines,
+          et les catalogues fabricants connectés en direct.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <FeatureCard
+          title={t('home.feature3dTitle')}
+          description={t('home.feature3dDesc')}
+          icon={<IconCube />}
+          accent="from-indigo-500/20 to-transparent"
+        />
+        <FeatureCard
+          title={t('home.featureAiTitle')}
+          description={t('home.featureAiDesc')}
+          icon={<IconSpark />}
+          accent="from-fuchsia-500/20 to-transparent"
+        />
+        <FeatureCard
+          title={t('home.featureCatalogTitle')}
+          description={t('home.featureCatalogDesc')}
+          icon={<IconBook />}
+          accent="from-cyan-500/20 to-transparent"
+        />
+      </div>
+    </section>
   );
 }
 
@@ -69,16 +225,256 @@ function FeatureCard({
   title,
   description,
   icon,
+  accent,
 }: {
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
+  accent: string;
 }): React.ReactElement {
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-      <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
-      <p className="text-gray-600 dark:text-gray-300">{description}</p>
+    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-8 transition hover:border-white/20">
+      <div className={`absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gradient-to-br ${accent} blur-2xl transition group-hover:scale-110`} aria-hidden />
+      <div className="relative">
+        <div className="mb-6 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white">
+          {icon}
+        </div>
+        <h3 className="mb-2 text-lg font-semibold">{title}</h3>
+        <p className="text-sm leading-relaxed text-white/60">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function IconCube(): React.ReactElement {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+      <line x1="12" y1="22.08" x2="12" y2="12" />
+    </svg>
+  );
+}
+function IconSpark(): React.ReactElement {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2v6m0 8v6M2 12h6m8 0h6M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24" />
+    </svg>
+  );
+}
+function IconBook(): React.ReactElement {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Showcase split
+// ---------------------------------------------------------------------------
+function ShowcaseSplit(): React.ReactElement {
+  return (
+    <section className="mx-auto max-w-7xl px-6 py-24">
+      <div className="grid items-center gap-12 md:grid-cols-2">
+        <div>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+            Workflow pro
+          </div>
+          <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            Du plan au chantier.
+            <br />
+            <span className="text-white/50">Sans friction.</span>
+          </h2>
+          <p className="mt-4 text-white/60">
+            Générez un plan 3D, récupérez un devis fournisseur réel en un clic,
+            exportez en PDF ou envoyez directement à votre installateur.
+          </p>
+          <ul className="mt-8 space-y-3">
+            {[
+              'Import des plans existants (PDF, DWG, photo)',
+              'Détection automatique des contraintes techniques',
+              'Devis fournisseurs en temps réel',
+              'Export BIM + liste de commande',
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3 text-sm text-white/80">
+                <span className="mt-1 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-[10px] text-white">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="relative">
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/20 blur-3xl" aria-hidden />
+          <div className="relative grid gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
+            {[
+              { label: 'Cabinets scandinaves', price: '3 240 €', stock: 'En stock' },
+              { label: 'Plan de travail chêne massif', price: '890 €', stock: '48h' },
+              { label: 'Îlot central 2m', price: '2 100 €', stock: 'En stock' },
+              { label: 'Électroménager Bosch', price: '4 980 €', stock: '72h' },
+            ].map((row, i) => (
+              <div key={i} className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] p-4">
+                <div>
+                  <div className="text-sm font-medium">{row.label}</div>
+                  <div className="mt-0.5 text-xs text-white/50">{row.stock}</div>
+                </div>
+                <div className="text-sm font-semibold text-white/90">{row.price}</div>
+              </div>
+            ))}
+            <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-4">
+              <div className="text-sm text-white/60">Total estimé</div>
+              <div className="text-xl font-semibold text-white">11 210 €</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Metrics strip
+// ---------------------------------------------------------------------------
+function Metrics(): React.ReactElement {
+  const stats = [
+    { value: '50k+', label: 'Cuisines générées' },
+    { value: '98%', label: 'Taux de satisfaction' },
+    { value: '< 3 min', label: 'Temps moyen de génération' },
+    { value: '24 / 7', label: 'Support technique' },
+  ];
+  return (
+    <section className="mx-auto max-w-7xl px-6 py-16">
+      <div className="grid gap-8 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-10 backdrop-blur sm:grid-cols-2 md:grid-cols-4">
+        {stats.map((s) => (
+          <div key={s.label} className="text-center">
+            <div className="bg-gradient-to-b from-white to-white/50 bg-clip-text text-4xl font-semibold tracking-tight text-transparent">
+              {s.value}
+            </div>
+            <div className="mt-1 text-sm text-white/50">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Testimonial
+// ---------------------------------------------------------------------------
+function Testimonial(): React.ReactElement {
+  return (
+    <section className="mx-auto max-w-4xl px-6 py-24 text-center">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="mx-auto mb-8 text-white/20">
+        <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h3M16 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <p className="text-2xl font-medium leading-relaxed tracking-tight text-white/90 sm:text-3xl">
+        « On a remplacé trois logiciels par KitchenXpert. Le rendu 3D est bluffant
+        et le devis fournisseur intégré nous fait gagner deux jours par projet. »
+      </p>
+      <div className="mt-8 flex items-center justify-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500" />
+        <div className="text-left">
+          <div className="text-sm font-semibold">Camille Laroche</div>
+          <div className="text-xs text-white/50">Architecte d'intérieur · Studio Maison</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Final CTA
+// ---------------------------------------------------------------------------
+function CTA({ t }: { t: (k: string) => string }): React.ReactElement {
+  return (
+    <section className="mx-auto max-w-5xl px-6 py-24">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-500/20 via-fuchsia-500/20 to-cyan-500/10 p-12 text-center sm:p-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.15),transparent_60%)]" aria-hidden />
+        <div className="relative">
+          <h2 className="mx-auto max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
+            Prêt à dessiner votre prochaine cuisine ?
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-white/70">
+            Démarrez gratuitement. Mettez à niveau quand vous êtes prêt.
+          </p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-gray-900 transition hover:bg-white/90"
+            >
+              {t('home.startDesign')}
+              <span aria-hidden>→</span>
+            </Link>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-medium text-white/90 backdrop-blur transition hover:bg-white/10"
+            >
+              Voir les tarifs
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Footer
+// ---------------------------------------------------------------------------
+function Footer(): React.ReactElement {
+  return (
+    <footer className="relative z-10 border-t border-white/10 px-6 py-12">
+      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-400 to-fuchsia-500" />
+            <span className="font-semibold tracking-tight">KitchenXpert</span>
+          </div>
+          <p className="mt-3 text-sm text-white/50">
+            La plateforme tout-en-un pour concevoir et commander votre cuisine.
+          </p>
+        </div>
+        <FooterCol title="Produit" links={[
+          { label: 'Designer 3D', href: '/designer' },
+          { label: 'Catalogue', href: '/catalog' },
+          { label: 'Tarifs', href: '/pricing' },
+          { label: 'Marketplace', href: '/marketplace' },
+        ]} />
+        <FooterCol title="Ressources" links={[
+          { label: 'Documentation', href: '/docs' },
+          { label: 'Blog', href: '/blog' },
+          { label: 'Support', href: '/support' },
+        ]} />
+        <FooterCol title="Légal" links={[
+          { label: 'Mentions légales', href: '/legal/mentions' },
+          { label: 'CGV', href: '/legal/cgv' },
+          { label: 'Politique de confidentialité', href: '/legal/privacy' },
+          { label: 'Cookies', href: '/legal/cookies' },
+        ]} />
+      </div>
+      <div className="mx-auto mt-10 flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
+        <p>© {new Date().getFullYear()} KitchenXpert SAS — Tous droits réservés.</p>
+        <p>Made in France 🇫🇷 · Hébergé dans l'UE</p>
+      </div>
+    </footer>
+  );
+}
+
+function FooterCol({ title, links }: { title: string; links: { label: string; href: string }[] }): React.ReactElement {
+  return (
+    <div>
+      <div className="mb-3 text-xs uppercase tracking-widest text-white/50">{title}</div>
+      <ul className="space-y-2">
+        {links.map((l) => (
+          <li key={l.href}>
+            <Link to={l.href} className="text-sm text-white/70 transition hover:text-white">
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -6,7 +6,7 @@
  */
 
 // Mock logger before imports
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: {
     info: jest.fn(),
@@ -31,12 +31,12 @@ const mockPrisma = {
   },
 };
 
-jest.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: mockPrisma,
 }));
 
 // Mock AnthropicService
-jest.mock('../../services/ai/anthropic.service', () => ({
+jest.mock('../services/ai/anthropic.service', () => ({
   AnthropicService: {
     getInstance: jest.fn(() => ({
       generateJSON: jest.fn().mockResolvedValue({
@@ -55,14 +55,14 @@ jest.mock('../../services/ai/anthropic.service', () => ({
 }));
 
 // Mock prompt templates
-jest.mock('../../services/ai/prompt-templates', () => ({
+jest.mock('../services/ai/prompt-templates', () => ({
   SYSTEM_PROMPTS: {
     FINANCING_ADVISOR: 'You are a financing advisor.',
   },
 }));
 
-import { FinancingService } from '../../services/financing/financing.service';
-import type { EcoAidsDto, SimulateDto, IncomeBracket, EquipmentType } from '../../services/financing/financing.service';
+import { FinancingService } from '../services/financing/financing.service';
+import type { EcoAidsDto, SimulateDto, IncomeBracket, EquipmentType } from '../services/financing/financing.service';
 
 describe('FinancingService', () => {
   let service: FinancingService;

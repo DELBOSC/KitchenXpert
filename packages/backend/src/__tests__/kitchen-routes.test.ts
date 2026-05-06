@@ -9,123 +9,122 @@
  * - DELETE /kitchens/:id (soft delete)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockKitchenController = {
-  getAll: vi.fn((_req: Request, res: Response) => {
+  getAll: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: [{ id: 'k1', name: 'My Kitchen', style: 'modern' }],
       meta: { page: 1, limit: 20, total: 1 },
     });
   }),
-  create: vi.fn((_req: Request, res: Response) => {
+  create: jest.fn((_req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       data: { id: 'k-new', name: 'New Kitchen', width: 4, length: 3 },
     });
   }),
-  getById: vi.fn((_req: Request, res: Response) => {
+  getById: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: { id: 'k1', name: 'My Kitchen', style: 'modern' },
     });
   }),
-  update: vi.fn((_req: Request, res: Response) => {
+  update: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { id: 'k1', name: 'Updated Kitchen' } });
   }),
-  delete: vi.fn((_req: Request, res: Response) => {
+  delete: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'Kitchen deleted' });
   }),
-  duplicate: vi.fn((_req: Request, res: Response) => {
+  duplicate: jest.fn((_req: Request, res: Response) => {
     res.status(201).json({ success: true, data: { id: 'k-dup' } });
   }),
-  getByShareId: vi.fn((_req: Request, res: Response) => {
+  getByShareId: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  getStats: vi.fn((_req: Request, res: Response) => {
+  getStats: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { total: 5 } });
   }),
-  getArchived: vi.fn((_req: Request, res: Response) => {
+  getArchived: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: [] });
   }),
-  getByProject: vi.fn((_req: Request, res: Response) => {
+  getByProject: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: [] });
   }),
-  getConfiguration: vi.fn((_req: Request, res: Response) => {
+  getConfiguration: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  updateConfiguration: vi.fn((_req: Request, res: Response) => {
+  updateConfiguration: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  getItems: vi.fn((_req: Request, res: Response) => {
+  getItems: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: [] });
   }),
-  addItem: vi.fn((_req: Request, res: Response) => {
+  addItem: jest.fn((_req: Request, res: Response) => {
     res.status(201).json({ success: true });
   }),
-  updateItem: vi.fn((_req: Request, res: Response) => {
+  updateItem: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  removeItem: vi.fn((_req: Request, res: Response) => {
+  removeItem: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  archive: vi.fn((_req: Request, res: Response) => {
+  archive: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  restore: vi.fn((_req: Request, res: Response) => {
+  restore: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  getModel: vi.fn((_req: Request, res: Response) => {
+  getModel: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  updateThumbnail: vi.fn((_req: Request, res: Response) => {
+  updateThumbnail: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  exportKitchen: vi.fn((_req: Request, res: Response) => {
+  exportKitchen: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  createShareLink: vi.fn((_req: Request, res: Response) => {
+  createShareLink: jest.fn((_req: Request, res: Response) => {
     res.status(201).json({ success: true });
   }),
-  revokeShareLink: vi.fn((_req: Request, res: Response) => {
+  revokeShareLink: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
 };
 
-vi.mock('../../api/controllers/kitchen-controller', () => ({
+jest.mock('../api/controllers/kitchen-controller', () => ({
   kitchenController: mockKitchenController,
 }));
 
-vi.mock('../../api/middleware/validation-middleware', () => ({
+jest.mock('../api/middleware/validation-middleware', () => ({
   validateBody: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateParams: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateQuery: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   commonSchemas: { idParam: {} },
 }));
 
-vi.mock('../../api/middleware/rate-limit-middleware', () => ({
+jest.mock('../api/middleware/rate-limit-middleware', () => ({
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -136,7 +135,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   authorize: () => (_req: any, _res: any, next: any) => next(),
 }));
 
-import kitchenRoutes from '../../api/routes/kitchen-routes';
+import kitchenRoutes from '../api/routes/kitchen-routes';
 
 // ==================== TEST APP ====================
 
@@ -155,7 +154,7 @@ describe('Kitchen Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
   });
 

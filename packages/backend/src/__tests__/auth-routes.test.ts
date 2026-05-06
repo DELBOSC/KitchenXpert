@@ -20,7 +20,7 @@ import { ConflictError, UnauthorizedError, BadRequestError } from '@kitchenxpert
 // ==================== MOCKS ====================
 
 // Mock logger before anything else
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: {
     info: jest.fn(),
@@ -37,7 +37,7 @@ jest.mock('../../utils/logger', () => ({
 }));
 
 // Mock database client
-jest.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: {
     user: {
       findUnique: jest.fn(),
@@ -68,7 +68,7 @@ const mockAuthService = {
   changePassword: jest.fn(),
 };
 
-jest.mock('../../auth/auth.service', () => ({
+jest.mock('../auth/auth.service', () => ({
   authService: mockAuthService,
   AuthService: jest.fn(),
 }));
@@ -82,14 +82,14 @@ const mockBlacklist = {
   cleanup: jest.fn(),
 };
 
-jest.mock('../../auth/token-blacklist', () => ({
+jest.mock('../auth/token-blacklist', () => ({
   getTokenBlacklist: jest.fn(() => mockBlacklist),
   getTokenExpiration: jest.fn(() => new Date(Date.now() + 3600000)),
   getTokenIssuedAt: jest.fn(() => new Date()),
 }));
 
 // Mock JWT service
-jest.mock('../../auth/jwt.service', () => ({
+jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     generateTokens: jest.fn(),
     verifyAccessToken: jest.fn().mockReturnValue({
@@ -103,7 +103,7 @@ jest.mock('../../auth/jwt.service', () => ({
 }));
 
 // Mock mail service
-jest.mock('../../services/mail.service', () => ({
+jest.mock('../services/mail.service', () => ({
   getMailService: jest.fn(() => ({
     sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
     sendPasswordReset: jest.fn().mockResolvedValue(undefined),
@@ -112,7 +112,7 @@ jest.mock('../../services/mail.service', () => ({
 }));
 
 // Mock email token service
-jest.mock('../../services/email-token.service', () => ({
+jest.mock('../services/email-token.service', () => ({
   getEmailTokenService: jest.fn(() => ({
     generateVerificationToken: jest.fn(),
     generatePasswordResetToken: jest.fn(),
@@ -123,7 +123,7 @@ jest.mock('../../services/email-token.service', () => ({
 }));
 
 // Mock config
-jest.mock('../../config/app-config', () => ({
+jest.mock('../config/app-config', () => ({
   config: {
     corsOrigins: ['http://localhost:3000'],
     env: 'test',
@@ -134,7 +134,7 @@ jest.mock('../../config/app-config', () => ({
 }));
 
 // Mock rate limiters to pass through in tests
-jest.mock('../../api/middleware/rate-limit-middleware', () => ({
+jest.mock('../api/middleware/rate-limit-middleware', () => ({
   authRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   loginRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   passwordResetRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
@@ -142,7 +142,7 @@ jest.mock('../../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Mock PrismaUserRepository
-jest.mock('../../repositories', () => ({
+jest.mock('../repositories', () => ({
   PrismaUserRepository: jest.fn().mockImplementation(() => ({
     findById: jest.fn(),
     findByEmail: jest.fn(),
@@ -154,9 +154,9 @@ jest.mock('../../repositories', () => ({
 }));
 
 // Import after mocks
-import authRoutes from '../../api/routes/auth-routes';
-import { errorHandler } from '../../api/middleware/error-middleware';
-import { PrismaUserRepository } from '../../repositories';
+import authRoutes from '../api/routes/auth-routes';
+import { errorHandler } from '../api/middleware/error-middleware';
+import { PrismaUserRepository } from '../repositories';
 
 // ==================== TEST APP SETUP ====================
 
@@ -175,8 +175,8 @@ function createTestApp(): Application {
 }
 
 // Mock auth middleware to inject user for protected routes
-jest.mock('../../api/middleware/auth-middleware', () => {
-  const original = jest.requireActual('../../api/middleware/auth-middleware');
+jest.mock('../api/middleware/auth-middleware', () => {
+  const original = jest.requireActual('../api/middleware/auth-middleware');
   return {
     ...original,
     authenticate: jest.fn((req: any, _res: any, next: any) => {
@@ -869,7 +869,7 @@ describe('Auth Routes', () => {
 
   describe('GET /auth/verify-email/:token/info', () => {
     it('should return masked email for valid token', async () => {
-      const { getEmailTokenService } = require('../../services/email-token.service');
+      const { getEmailTokenService } = require('../services/email-token.service');
       const mockService = getEmailTokenService();
       mockService.getUserByVerificationToken.mockResolvedValue({
         email: 'testuser@example.com',
@@ -888,7 +888,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 400 for invalid token', async () => {
-      const { getEmailTokenService } = require('../../services/email-token.service');
+      const { getEmailTokenService } = require('../services/email-token.service');
       const mockService = getEmailTokenService();
       mockService.getUserByVerificationToken.mockResolvedValue(null);
 

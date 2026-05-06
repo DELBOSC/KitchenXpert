@@ -9,23 +9,22 @@
  * - GET /castorama/categories (list product categories)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
 const mockPrisma = {
-  $disconnect: vi.fn(),
+  $disconnect: jest.fn(),
   catalogProvider: {
-    findFirst: vi.fn().mockResolvedValue({
+    findFirst: jest.fn().mockResolvedValue({
       id: 'provider-castorama',
       name: 'Castorama',
       code: 'castorama',
@@ -35,44 +34,44 @@ const mockPrisma = {
     }),
   },
   productCategory: {
-    findMany: vi.fn().mockResolvedValue([
+    findMany: jest.fn().mockResolvedValue([
       { id: 'cat-1', name: 'Meubles Cuisine', slug: 'meubles-cuisine', _count: { products: 80 } },
       { id: 'cat-2', name: 'Plans de travail', slug: 'plans-travail', _count: { products: 40 } },
     ]),
   },
 };
 
-vi.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: mockPrisma,
 }));
 
 const mockProductRepository = {
-  findAll: vi.fn().mockResolvedValue({
+  findAll: jest.fn().mockResolvedValue({
     data: [{ id: 'p1', name: 'GoodHome Alpinia', price: 129.99, provider: 'castorama' }],
     page: 1,
     total: 1,
     totalPages: 1,
   }),
-  findById: vi.fn().mockResolvedValue({
+  findById: jest.fn().mockResolvedValue({
     id: 'p1', name: 'GoodHome Alpinia', price: 129.99, provider: 'castorama',
   }),
 };
 
-vi.mock('../../repositories/product-repository', () => ({
-  ProductRepository: vi.fn(() => mockProductRepository),
+jest.mock('../repositories/product-repository', () => ({
+  ProductRepository: jest.fn(() => mockProductRepository),
 }));
 
-vi.mock('../../repositories/appliance-repository', () => ({
-  ApplianceRepository: vi.fn(() => ({
-    findAll: vi.fn().mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 }),
-    search: vi.fn().mockResolvedValue([]),
-    getTypes: vi.fn().mockResolvedValue([]),
-    findById: vi.fn().mockResolvedValue(null),
+jest.mock('../repositories/appliance-repository', () => ({
+  ApplianceRepository: jest.fn(() => ({
+    findAll: jest.fn().mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 }),
+    search: jest.fn().mockResolvedValue([]),
+    getTypes: jest.fn().mockResolvedValue([]),
+    findById: jest.fn().mockResolvedValue(null),
   })),
 }));
 
 // Mock rate limiter
-vi.mock('express-rate-limit', () => ({
+jest.mock('express-rate-limit', () => ({
   __esModule: true,
   default: () => (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
@@ -80,7 +79,7 @@ vi.mock('express-rate-limit', () => ({
 // Mock auth middleware
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -96,13 +95,13 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   },
 }));
 
-vi.mock('../../api/middleware/error-middleware', () => ({
+jest.mock('../api/middleware/error-middleware', () => ({
   asyncHandler: (fn: any) => (req: any, res: any, next: any) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   },
 }));
 
-import castoramaRoutes from '../../api/routes/castorama-routes';
+import castoramaRoutes from '../api/routes/castorama-routes';
 
 // ==================== TEST APP ====================
 
@@ -121,7 +120,7 @@ describe('Castorama Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
 
     // Reset provider mock

@@ -1,131 +1,122 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../components/ui/Toast';
+import { Button, Input, Checkbox, Separator } from '../../components/ui';
+import AuthLayout from './AuthLayout';
 
 export default function LoginPage(): React.ReactElement {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<{ email?: boolean; password?: boolean }>({});
+  const { t } = useTranslation();
   const { login } = useAuth();
   const toast = useToast();
-  const { t } = useTranslation();
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
+
+  const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    setError(null);
-    setFieldErrors({});
-
-    const errors: { email?: boolean; password?: boolean } = {};
-    if (!email) errors.email = true;
-    if (!password) errors.password = true;
-
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
+    const next: typeof errors = {};
+    if (!email) next.email = t('auth.emailRequired', 'Email requis');
+    if (!password) next.password = t('auth.passwordRequired', 'Mot de passe requis');
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
       return;
     }
-
-    setIsLoading(true);
-
+    setErrors({});
+    setLoading(true);
     try {
       await login(email, password);
-      toast.success(t('auth.loginSuccess'));
+      toast.success(t('auth.loginSuccess', 'Connexion réussie'));
     } catch (err) {
-      const message = err instanceof Error ? err.message : t('auth.loginError');
-      setError(message);
-      toast.error(t('auth.loginError'));
+      const message = err instanceof Error ? err.message : t('auth.loginError', 'Identifiants invalides');
+      setErrors({ form: message });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-8">
-          {t('auth.login')}
-        </h1>
-
-        {error && (
-          <div id="login-error" role="alert" className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-400">
-            {error}
+    <AuthLayout
+      title={t('auth.welcomeBack', 'Bon retour parmi nous')}
+      subtitle={t('auth.loginSubtitle', 'Connectez-vous pour retrouver vos projets et vos cuisines.')}
+      footer={
+        <>
+          {t('auth.noAccount', "Pas encore de compte ?")}{' '}
+          <Link to="/register" className="font-medium text-white underline-offset-4 hover:underline">
+            {t('auth.registerAction', 'Créer un compte')}
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={onSubmit} noValidate className="space-y-4">
+        {errors.form && (
+          <div role="alert" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+            {errors.form}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('common.email')}
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setFieldErrors((prev) => ({ ...prev, email: false })); }}
-              required
-              aria-required="true"
-              aria-invalid={fieldErrors.email || false}
-              aria-describedby={fieldErrors.email ? 'email-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder={t('auth.emailPlaceholder')}
-            />
-            {fieldErrors.email && (
-              <p id="email-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
-                {t('auth.emailRequired', 'Email is required')}
-              </p>
-            )}
-          </div>
+        <Input
+          type="email"
+          autoComplete="email"
+          label={t('common.email', 'Email')}
+          placeholder="vous@exemple.com"
+          value={email}
+          onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }}
+          error={errors.email}
+          leftIcon={<Mail className="h-4 w-4" />}
+          required
+        />
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('common.password')}
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setFieldErrors((prev) => ({ ...prev, password: false })); }}
-              required
-              aria-required="true"
-              aria-invalid={fieldErrors.password || false}
-              aria-describedby={fieldErrors.password ? 'password-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder={t('auth.passwordPlaceholder')}
-            />
-            {fieldErrors.password && (
-              <p id="password-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
-                {t('auth.passwordRequired', 'Password is required')}
-              </p>
-            )}
-          </div>
+        <Input
+          type={showPassword ? 'text' : 'password'}
+          autoComplete="current-password"
+          label={t('common.password', 'Mot de passe')}
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors((p) => ({ ...p, password: undefined })); }}
+          error={errors.password}
+          leftIcon={<Lock className="h-4 w-4" />}
+          rightIcon={
+            <button
+              type="button"
+              onClick={() => setShowPassword((s) => !s)}
+              className="kx-focus rounded p-0.5 text-white/50 hover:text-white"
+              aria-label={showPassword ? 'Masquer' : 'Afficher'}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          }
+          required
+        />
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            aria-label={t('auth.loginAction')}
-            aria-busy={isLoading}
-            className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? t('auth.loginLoading') : t('auth.loginAction')}
-          </button>
-        </form>
-
-        <div className="mt-4 text-center">
-          <Link to="/forgot-password" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-            {t('auth.forgotPassword')}
+        <div className="flex items-center justify-between pt-1">
+          <Checkbox label={t('auth.rememberMe', 'Se souvenir de moi')} checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          <Link to="/forgot-password" className="text-sm text-white/70 hover:text-white">
+            {t('auth.forgotPassword', 'Oublié ?')}
           </Link>
         </div>
 
-        <p className="mt-6 text-center text-gray-600 dark:text-gray-400">
-          {t('auth.noAccount')}{' '}
-          <Link to="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
-            {t('auth.registerAction')}
-          </Link>
-        </p>
-      </div>
-    </div>
+        <Button type="submit" loading={loading} fullWidth size="lg">
+          {t('auth.loginAction', 'Se connecter')}
+        </Button>
+
+        <Separator label={t('common.or', 'OU')} className="my-6" />
+
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="outline" type="button" size="md" onClick={() => toast.info('SSO bientôt disponible')}>
+            Google
+          </Button>
+          <Button variant="outline" type="button" size="md" onClick={() => toast.info('SSO bientôt disponible')}>
+            Apple
+          </Button>
+        </div>
+      </form>
+    </AuthLayout>
   );
 }

@@ -9,64 +9,63 @@
  * - Missing query parameter validation
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 // Mock IKEA client
 const mockIkeaClient = {
-  search: vi.fn().mockResolvedValue({
+  search: jest.fn().mockResolvedValue({
     success: true,
     data: [{ id: 'ikea-1', name: 'METOD Base cabinet', price: 49.99 }],
     total: 1,
   }),
-  getProduct: vi.fn().mockResolvedValue({
+  getProduct: jest.fn().mockResolvedValue({
     success: true,
     data: { id: 'ikea-1', name: 'METOD Base cabinet', price: 49.99 },
   }),
-  getProducts: vi.fn().mockResolvedValue({
+  getProducts: jest.fn().mockResolvedValue({
     success: true,
     data: [{ id: 'ikea-1', name: 'METOD' }, { id: 'ikea-2', name: 'KALLARP' }],
   }),
-  getStock: vi.fn().mockResolvedValue({
+  getStock: jest.fn().mockResolvedValue({
     success: true,
     data: { available: true, quantity: 10 },
   }),
-  searchKitchenCabinets: vi.fn().mockResolvedValue({ success: true, data: [] }),
-  searchAppliances: vi.fn().mockResolvedValue({ success: true, data: [] }),
-  searchCountertops: vi.fn().mockResolvedValue({ success: true, data: [] }),
-  getMetodProducts: vi.fn().mockResolvedValue({ success: true, data: [] }),
-  getAllKitchenProducts: vi.fn().mockResolvedValue({ success: true, data: {} }),
-  getKitchenProductsByCategory: vi.fn().mockResolvedValue({ success: true, data: [] }),
+  searchKitchenCabinets: jest.fn().mockResolvedValue({ success: true, data: [] }),
+  searchAppliances: jest.fn().mockResolvedValue({ success: true, data: [] }),
+  searchCountertops: jest.fn().mockResolvedValue({ success: true, data: [] }),
+  getMetodProducts: jest.fn().mockResolvedValue({ success: true, data: [] }),
+  getAllKitchenProducts: jest.fn().mockResolvedValue({ success: true, data: {} }),
+  getKitchenProductsByCategory: jest.fn().mockResolvedValue({ success: true, data: [] }),
 };
 
-vi.mock('../../services/ikea', () => ({
-  IkeaClient: vi.fn(),
-  createIkeaClient: vi.fn(() => mockIkeaClient),
+jest.mock('../services/ikea', () => ({
+  IkeaClient: jest.fn(),
+  createIkeaClient: jest.fn(() => mockIkeaClient),
 }));
 
 // Mock rate limiter
-vi.mock('express-rate-limit', () => ({
+jest.mock('express-rate-limit', () => ({
   __esModule: true,
   default: () => (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -77,7 +76,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   authorize: () => (_req: any, _res: any, next: any) => next(),
 }));
 
-import ikeaRoutes from '../../api/routes/ikea-routes';
+import ikeaRoutes from '../api/routes/ikea-routes';
 
 // ==================== TEST APP ====================
 
@@ -96,7 +95,7 @@ describe('IKEA Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
   });
 

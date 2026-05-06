@@ -1,8 +1,8 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
-import { designVersionController } from '../controllers/design-version-controller.js';
-import { authenticate } from '../middleware/auth-middleware.js';
-import { validateBody, validateParams } from '../middleware/validation-middleware.js';
+import { designVersionController } from '../controllers/design-version-controller';
+import { authenticate } from '../middleware/auth-middleware';
+import { validateBody, validateParams } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 

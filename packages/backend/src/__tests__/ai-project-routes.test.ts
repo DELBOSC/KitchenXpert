@@ -18,7 +18,7 @@ import cookieParser from 'cookie-parser';
 // ==================== MOCKS ====================
 
 // Mock logger before anything else
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: {
     info: jest.fn(),
@@ -39,7 +39,7 @@ const mockGenerateProjectDescription = jest.fn();
 const mockCompareDesigns = jest.fn();
 const mockGetProgressRecommendations = jest.fn();
 
-jest.mock('../../services/ai/project-assistant.service', () => ({
+jest.mock('../services/ai/project-assistant.service', () => ({
   ProjectAssistantService: jest.fn(() => ({
     generateProjectDescription: mockGenerateProjectDescription,
     compareDesigns: mockCompareDesigns,
@@ -58,12 +58,12 @@ const mockPrisma = {
   $disconnect: jest.fn(),
 };
 
-jest.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: mockPrisma,
 }));
 
 // Mock config
-jest.mock('../../config/app-config', () => ({
+jest.mock('../config/app-config', () => ({
   config: {
     corsOrigins: ['http://localhost:3000'],
     env: 'test',
@@ -74,7 +74,7 @@ jest.mock('../../config/app-config', () => ({
 }));
 
 // Mock token blacklist
-jest.mock('../../auth/token-blacklist', () => ({
+jest.mock('../auth/token-blacklist', () => ({
   getTokenBlacklist: jest.fn(() => ({
     addToBlacklist: jest.fn().mockResolvedValue(undefined),
     isBlacklisted: jest.fn().mockResolvedValue(false),
@@ -85,7 +85,7 @@ jest.mock('../../auth/token-blacklist', () => ({
 }));
 
 // Mock JWT service
-jest.mock('../../auth/jwt.service', () => ({
+jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
       userId: 'test-user-1',
@@ -104,7 +104,7 @@ let currentTestUser: { userId: string; email: string; role: string } = {
   role: 'user',
 };
 
-jest.mock('../../api/middleware/auth-middleware', () => {
+jest.mock('../api/middleware/auth-middleware', () => {
   const { UnauthorizedError } = require('@kitchenxpert/common');
 
   return {
@@ -140,14 +140,14 @@ jest.mock('../../api/middleware/auth-middleware', () => {
 });
 
 // Mock rate limiters
-jest.mock('../../api/middleware/rate-limit-middleware', () => ({
+jest.mock('../api/middleware/rate-limit-middleware', () => ({
   aiRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 // Import after mocks
-import aiProjectRoutes from '../../api/routes/ai-project-routes';
-import { errorHandler } from '../../api/middleware/error-middleware';
+import aiProjectRoutes from '../api/routes/ai-project-routes';
+import { errorHandler } from '../api/middleware/error-middleware';
 
 // ==================== TEST APP SETUP ====================
 

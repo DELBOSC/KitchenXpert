@@ -8,25 +8,24 @@
  * - Rate limiting awareness
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockRoomScanController = {
-  analyzeRoom: vi.fn((_req: Request, res: Response) => {
+  analyzeRoom: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: {
@@ -37,7 +36,7 @@ const mockRoomScanController = {
       },
     });
   }),
-  photoScan: vi.fn((_req: Request, res: Response) => {
+  photoScan: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: {
@@ -50,26 +49,26 @@ const mockRoomScanController = {
   }),
 };
 
-vi.mock('../../api/controllers/room-scan-controller', () => ({
+jest.mock('../api/controllers/room-scan-controller', () => ({
   roomScanController: mockRoomScanController,
 }));
 
 // Mock multer upload middleware to pass through
-vi.mock('../../middleware/upload-middleware', () => ({
+jest.mock('../middleware/upload-middleware', () => ({
   uploadSingle: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   uploadMultipleImages: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   handleUploadError: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 // Mock rate limiter
-vi.mock('express-rate-limit', () => ({
+jest.mock('express-rate-limit', () => ({
   __esModule: true,
   default: () => (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -80,7 +79,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   authorize: () => (_req: any, _res: any, next: any) => next(),
 }));
 
-import roomScanRoutes from '../../api/routes/room-scan-routes';
+import roomScanRoutes from '../api/routes/room-scan-routes';
 
 // ==================== TEST APP ====================
 
@@ -99,7 +98,7 @@ describe('Room Scan Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
   });
 

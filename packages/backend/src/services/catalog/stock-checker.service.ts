@@ -6,8 +6,8 @@
  * are not yet connected — interfaces are ready for future integration.
  */
 
-import logger from '../../utils/logger.js';
-import { CacheService } from '../cache.service.js';
+import logger from '../../utils/logger';
+import { CacheService } from '../cache.service';
 
 // ----------------------------------------------------------------
 // Types

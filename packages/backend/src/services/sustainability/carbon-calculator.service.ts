@@ -6,7 +6,7 @@
  * by item, material, and transport, with suggestions for reducing the footprint.
  */
 
-import logger from '../../utils/logger.js';
+import logger from '../../utils/logger';
 
 // ----------------------------------------------------------------
 // Types

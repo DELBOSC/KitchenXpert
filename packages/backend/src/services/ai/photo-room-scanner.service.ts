@@ -7,9 +7,9 @@
  */
 
 import { z } from 'zod';
-import { AnthropicService } from './anthropic.service.js';
-import { SYSTEM_PROMPTS } from './prompt-templates.js';
-import logger from '../../utils/logger.js';
+import { AnthropicService } from './anthropic.service';
+import { SYSTEM_PROMPTS } from './prompt-templates';
+import logger from '../../utils/logger';
 
 // ----------------------------------------------------------------
 // Types

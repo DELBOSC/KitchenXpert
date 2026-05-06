@@ -6,8 +6,8 @@
  * matching handles, countertops, backsplash, flooring, etc.
  */
 
-import logger from '../../utils/logger.js';
-import { CacheService } from '../cache.service.js';
+import logger from '../../utils/logger';
+import { CacheService } from '../cache.service';
 
 // ----------------------------------------------------------------
 // Types

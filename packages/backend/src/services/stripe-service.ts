@@ -116,41 +116,77 @@ export class StripeService {
     logger.info('Creating payment intent', { amount, currency, customerId });
 
     try {
+      const currencyLower = currency.toLowerCase();
+      // PSD2/SCA: force 3DS for EU currencies above the regulatory threshold (€30 = 3000 cents).
+      // Stripe normally triggers SCA automatically, but requesting it explicitly guarantees
+      // strong customer authentication and creates an auditable decision trail.
+      const euCurrencies = new Set(['eur', 'gbp', 'chf', 'sek', 'nok', 'dkk', 'pln', 'czk', 'ron', 'bgn', 'huf']);
+      const requiresSca = euCurrencies.has(currencyLower) && amount >= 3000;
+
       const paymentIntentParams: Stripe.PaymentIntentCreateParams = {
         amount,
-        currency: currency.toLowerCase(),
+        currency: currencyLower,
         metadata: metadata || {},
-        automatic_payment_methods: {
-          enabled: true,
-        },
+        automatic_payment_methods: { enabled: true },
+        ...(requiresSca && {
+          payment_method_options: {
+            card: { request_three_d_secure: 'any' },
+          },
+        }),
       };
 
-      if (customerId) {
-        paymentIntentParams.customer = customerId;
-      }
-
-      if (description) {
-        paymentIntentParams.description = description;
-      }
-
-      if (receiptEmail) {
-        paymentIntentParams.receipt_email = receiptEmail;
-      }
+      if (customerId) paymentIntentParams.customer = customerId;
+      if (description) paymentIntentParams.description = description;
+      if (receiptEmail) paymentIntentParams.receipt_email = receiptEmail;
 
       const paymentIntent = await this.stripe.paymentIntents.create(paymentIntentParams);
 
       logger.info('Payment intent created successfully', {
         paymentIntentId: paymentIntent.id,
         status: paymentIntent.status,
+        scaEnforced: requiresSca,
       });
 
       return paymentIntent;
     } catch (error) {
+      const stripeErr = error as Stripe.errors.StripeError;
       logger.error('Failed to create payment intent', {
-        error: error instanceof Error ? error.message : String(error),
+        error: stripeErr?.message || String(error),
+        code: stripeErr?.code,
+        declineCode: (stripeErr as Stripe.errors.StripeCardError)?.decline_code,
+        type: stripeErr?.type,
         amount,
         currency,
       });
+
+      // Audit trail for payment creation failures (regulatory + fraud monitoring).
+      const userId = metadata?.userId;
+      if (userId) {
+        try {
+          await prisma.auditLog.create({
+            data: {
+              userId,
+              action: 'payment_failed',
+              resource: 'payment',
+              resourceId: stripeErr?.requestId || 'creation-attempt',
+              metadata: {
+                kind: 'payment_intent_creation_failed',
+                amount,
+                currency,
+                code: stripeErr?.code || null,
+                declineCode: (stripeErr as Stripe.errors.StripeCardError)?.decline_code || null,
+                type: stripeErr?.type || null,
+                message: stripeErr?.message || String(error),
+              },
+            },
+          });
+        } catch (auditErr) {
+          logger.error('Failed to write payment failure audit log', {
+            error: auditErr instanceof Error ? auditErr.message : String(auditErr),
+          });
+        }
+      }
+
       throw new StripeServiceError(
         'PAYMENT_INTENT_CREATION_FAILED',
         'Failed to create payment intent'
@@ -659,9 +695,13 @@ export class StripeService {
   }
 
   private async handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent): Promise<void> {
+    const err = paymentIntent.last_payment_error;
     logger.warn('Payment intent failed', {
       paymentIntentId: paymentIntent.id,
-      lastPaymentError: paymentIntent.last_payment_error?.message,
+      code: err?.code,
+      declineCode: err?.decline_code,
+      type: err?.type,
+      message: err?.message,
     });
 
     const customerId = typeof paymentIntent.customer === 'string'
@@ -686,7 +726,12 @@ export class StripeService {
           metadata: {
             amount: paymentIntent.amount,
             currency: paymentIntent.currency,
-            error: paymentIntent.last_payment_error?.message || 'Unknown error',
+            code: err?.code || null,
+            declineCode: err?.decline_code || null,
+            type: err?.type || null,
+            paymentMethodType: err?.payment_method?.type || null,
+            network: (err?.payment_method?.card as { network?: string } | undefined)?.network || null,
+            message: err?.message || 'Unknown error',
           },
         },
       });

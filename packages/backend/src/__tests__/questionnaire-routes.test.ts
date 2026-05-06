@@ -9,69 +9,68 @@
  * - Auth guard (401 without token)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
-  default: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
-  createModuleLogger: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
+  default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
+  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockQuestionnaireController = {
-  getProgress: vi.fn((_req: Request, res: Response) => {
+  getProgress: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: { completedSections: ['user-profile'], progress: 25 },
     });
   }),
-  getSection: vi.fn((_req: Request, res: Response) => {
+  getSection: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: { roomWidth: 4, roomLength: 3 },
     });
   }),
-  saveSection: vi.fn((_req: Request, res: Response) => {
+  saveSection: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'Section saved' });
   }),
-  getAutoBridgeData: vi.fn((_req: Request, res: Response) => {
+  getAutoBridgeData: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  autoGenerate: vi.fn((_req: Request, res: Response) => {
+  autoGenerate: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { designs: [] } });
   }),
-  getAITips: vi.fn((_req: Request, res: Response) => {
+  getAITips: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { tips: [] } });
   }),
 };
 
-vi.mock('../../api/controllers/questionnaire-controller', () => ({
+jest.mock('../api/controllers/questionnaire-controller', () => ({
   questionnaireController: mockQuestionnaireController,
 }));
 
-vi.mock('../../api/middleware/validation-middleware', () => ({
+jest.mock('../api/middleware/validation-middleware', () => ({
   validateBody: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateParams: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateQuery: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   commonSchemas: { idParam: {} },
 }));
 
-vi.mock('../../api/middleware/rate-limit-middleware', () => ({
+jest.mock('../api/middleware/rate-limit-middleware', () => ({
   aiRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -82,7 +81,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
   authorize: () => (_req: any, _res: any, next: any) => next(),
 }));
 
-import questionnaireRoutes from '../../api/routes/questionnaire-routes';
+import questionnaireRoutes from '../api/routes/questionnaire-routes';
 
 // ==================== TEST APP ====================
 
@@ -101,7 +100,7 @@ describe('Questionnaire Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockAuthenticated = true;
   });
 

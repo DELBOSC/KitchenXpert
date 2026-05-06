@@ -9,84 +9,83 @@
  * - Admin-only access (403 for non-admin)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 
 // ==================== MOCKS ====================
 
-vi.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: {
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   },
-  createModuleLogger: vi.fn(() => ({
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
-vi.mock('../../database/client', () => ({
-  prisma: { $disconnect: vi.fn() },
+jest.mock('../database/client', () => ({
+  prisma: { $disconnect: jest.fn() },
 }));
 
 const mockAdminController = {
-  getDashboard: vi.fn((_req: Request, res: Response) => {
+  getDashboard: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: { totalUsers: 50, totalKitchens: 120 } });
   }),
-  getUsers: vi.fn((_req: Request, res: Response) => {
+  getUsers: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       data: [{ id: 'u1', email: 'user1@test.com', role: 'user' }],
       meta: { page: 1, limit: 20, total: 1 },
     });
   }),
-  changeUserRole: vi.fn((_req: Request, res: Response) => {
+  changeUserRole: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'Role updated' });
   }),
-  bulkUpdateUsers: vi.fn((_req: Request, res: Response) => {
+  bulkUpdateUsers: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  toggleUserActive: vi.fn((_req: Request, res: Response) => {
+  toggleUserActive: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  deleteUser: vi.fn((_req: Request, res: Response) => {
+  deleteUser: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  getSystemInfo: vi.fn((_req: Request, res: Response) => {
+  getSystemInfo: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  getDatabaseStats: vi.fn((_req: Request, res: Response) => {
+  getDatabaseStats: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  runCleanup: vi.fn((_req: Request, res: Response) => {
+  runCleanup: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  reindex: vi.fn((_req: Request, res: Response) => {
+  reindex: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true });
   }),
-  getConfig: vi.fn((_req: Request, res: Response) => {
+  getConfig: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  getUsageReport: vi.fn((_req: Request, res: Response) => {
+  getUsageReport: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
-  getErrorReport: vi.fn((_req: Request, res: Response) => {
+  getErrorReport: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, data: {} });
   }),
 };
 
-vi.mock('../../api/controllers/admin-controller', () => ({
+jest.mock('../api/controllers/admin-controller', () => ({
   adminController: mockAdminController,
 }));
 
-vi.mock('../../api/middleware/validation-middleware', () => ({
+jest.mock('../api/middleware/validation-middleware', () => ({
   validateBody: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateParams: () => (_req: Request, _res: Response, next: NextFunction) => next(),
   validateQuery: () => (_req: Request, _res: Response, next: NextFunction) => next(),
@@ -97,7 +96,7 @@ vi.mock('../../api/middleware/validation-middleware', () => ({
 let mockUserRole = 'admin';
 let mockAuthenticated = true;
 
-vi.mock('../../api/middleware/auth-middleware', () => ({
+jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
       return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
@@ -114,7 +113,7 @@ vi.mock('../../api/middleware/auth-middleware', () => ({
 }));
 
 // Import after mocks
-import adminRoutes from '../../api/routes/admin-routes';
+import adminRoutes from '../api/routes/admin-routes';
 
 // ==================== TEST APP ====================
 
@@ -133,7 +132,7 @@ describe('Admin Routes', () => {
 
   beforeEach(() => {
     app = createTestApp();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockUserRole = 'admin';
     mockAuthenticated = true;
   });

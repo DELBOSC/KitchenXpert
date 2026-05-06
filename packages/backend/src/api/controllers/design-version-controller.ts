@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { prisma } from '../../database/client.js';
+import { asyncHandler } from '../middleware/error-middleware';
+import { prisma } from '../../database/client';
 
 /**
  * Helper to verify kitchen ownership.

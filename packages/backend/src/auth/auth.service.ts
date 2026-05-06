@@ -11,10 +11,13 @@ import {
 } from '@kitchenxpert/common';
 import { jwtService } from './jwt.service';
 import logger from '../utils/logger';
+import { prisma } from '../database/client';
+import crypto from 'crypto';
 import {
   EmailTokenService,
   TokenGenerationResult,
   TokenVerificationResult,
+  TOKEN_EXPIRATION,
 } from '../services/email-token.service';
 
 /**
@@ -172,11 +175,12 @@ export class AuthService {
    * Returns verification token if EmailTokenService is configured
    */
   async register(data: UserRegistration): Promise<RegisterResult> {
-    const repository = this.ensureRepository();
+    this.ensureRepository();
 
     // Check if email already exists
-    const existingUser = await repository.emailExists(data.email);
-    if (existingUser) {
+    const emailLower = data.email.toLowerCase();
+    const existing = await prisma.user.findUnique({ where: { email: emailLower } });
+    if (existing) {
       throw new ConflictError('Email already registered');
     }
 
@@ -186,37 +190,52 @@ export class AuthService {
     // Hash the password
     const hashedPassword = await this.hashPassword(data.password);
 
-    // Create user in database with pending status
-    const user = await repository.create({
-      email: data.email,
-      password: hashedPassword,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      role: 'user',
-      status: 'pending',
-      emailVerified: false,
-      language: data.language || 'en',
-      timezone: data.timezone || 'UTC',
+    // Atomically create the user AND the email verification token so we never
+    // end up with an account that has no way to verify itself. If either insert
+    // fails, the whole registration is rolled back.
+    const shouldIssueToken = !!this.emailTokenService;
+    const rawToken = shouldIssueToken ? crypto.randomBytes(32).toString('hex') : null;
+    const hashedToken = rawToken ? crypto.createHash('sha256').update(rawToken).digest('hex') : null;
+    const tokenExpiresAt = new Date(Date.now() + TOKEN_EXPIRATION.EMAIL_VERIFICATION);
+
+    const { user } = await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
+        data: {
+          email: emailLower,
+          password: hashedPassword,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: 'user',
+          status: 'pending' as never,
+          emailVerified: false,
+          language: data.language || 'en',
+          timezone: data.timezone || 'UTC',
+        },
+      });
+
+      if (hashedToken) {
+        await tx.emailVerificationToken.create({
+          data: {
+            userId: createdUser.id,
+            token: hashedToken,
+            expiresAt: tokenExpiresAt,
+          },
+        });
+      }
+
+      return { user: createdUser };
     });
 
-    // Generate verification token if email token service is configured
-    let verificationToken: string | undefined;
-    if (this.emailTokenService) {
-      try {
-        const tokenResult = await this.emailTokenService.generateVerificationToken(user.id);
-        verificationToken = tokenResult.token;
-        logger.info(`Verification token generated for user ${user.id}`);
-      } catch (error) {
-        logger.error('Failed to generate verification token', error as Error);
-        // Don't fail registration if token generation fails
-      }
+    const verificationToken = rawToken ?? undefined;
+    if (verificationToken) {
+      logger.info(`Verification token issued atomically for user ${user.id}`);
     }
 
     // Generate JWT tokens
     const tokens = jwtService.generateTokens({
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as User['role'],
     });
 
     return {
@@ -225,7 +244,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
+        role: user.role as User['role'],
       },
       tokens,
       verificationToken,

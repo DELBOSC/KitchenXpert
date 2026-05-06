@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware.js';
-import { prisma } from '../../database/client.js';
-import { BOMGeneratorService } from '../../services/ai/bom-generator.service.js';
-import logger from '../../utils/logger.js';
+import { asyncHandler } from '../middleware/error-middleware';
+import { prisma } from '../../database/client';
+import { BOMGeneratorService } from '../../services/ai/bom-generator.service';
+import logger from '../../utils/logger';
 
 /**
  * BOM Controller

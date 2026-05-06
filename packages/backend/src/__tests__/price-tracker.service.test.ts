@@ -6,7 +6,7 @@
  */
 
 // Mock logger before imports
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: {
     info: jest.fn(),
@@ -38,11 +38,11 @@ const mockPrisma = {
   },
 };
 
-jest.mock('../../database/client', () => ({
+jest.mock('../database/client', () => ({
   prisma: mockPrisma,
 }));
 
-import { PriceTrackerService } from '../../services/price-tracker/price-tracker.service';
+import { PriceTrackerService } from '../services/price-tracker/price-tracker.service';
 
 describe('PriceTrackerService', () => {
   let service: PriceTrackerService;
