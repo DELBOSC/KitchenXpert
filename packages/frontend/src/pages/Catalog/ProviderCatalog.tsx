@@ -68,7 +68,7 @@ export default function ProviderCatalog(): React.ReactElement {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'price_asc' | 'price_desc'>('name');
-  const [importTarget, setImportTarget] = useState<{ source: 'product' | 'appliance'; id: string; name: string } | null>(null);
+  const [importTarget, setImportTarget] = useState<ImportTarget | null>(null);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -213,20 +213,23 @@ export default function ProviderCatalog(): React.ReactElement {
         <ImportToDesignDialog
           open
           onClose={() => setImportTarget(null)}
-          source={importTarget.source}
-          sourceId={importTarget.id}
-          itemName={importTarget.name}
+          target={importTarget}
         />
       )}
     </div>
   );
 }
 
+export type ImportTarget =
+  | { source: 'product'; id: string; name: string }
+  | { source: 'appliance'; id: string; name: string }
+  | { source: 'ikea'; itemCode: string; name: string };
+
 function CatalogItemCard({
   item, onImport,
 }: {
   item: CatalogItem;
-  onImport: (target: { source: 'product' | 'appliance'; id: string; name: string }) => void;
+  onImport: (target: ImportTarget) => void;
 }): React.ReactElement {
   const isIkea = item._kind === 'ikea';
   const isAppliance = item._kind === 'appliance';
@@ -247,7 +250,10 @@ function CatalogItemCard({
   const imageUrl = isIkea ? (item as IkeaSearchResult).imageUrl : null;
 
   const handleImport = (): void => {
-    if (isIkea) return; // IKEA live items aren't in our DB yet — disabled here
+    if (isIkea) {
+      onImport({ source: 'ikea', itemCode: (item as IkeaSearchResult).itemCode, name: item.name });
+      return;
+    }
     onImport({
       source: isAppliance ? 'appliance' : 'product',
       id: (item as { id: string }).id,
@@ -287,21 +293,21 @@ function CatalogItemCard({
               ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: (item as { currency?: string }).currency ?? 'EUR', maximumFractionDigits: 0 }).format(price)
               : <span className="text-sm text-white/50">Sur devis</span>}
           </span>
-          {!isIkea && (
+          <div className="flex items-center gap-2">
+            {isIkea && (item as IkeaSearchResult).url && (
+              <a
+                href={(item as IkeaSearchResult).url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="kx-focus inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-white/80 hover:bg-white/10"
+              >
+                ↗
+              </a>
+            )}
             <Button size="sm" variant="outline" onClick={handleImport}>
               Ajouter
             </Button>
-          )}
-          {isIkea && (item as IkeaSearchResult).url && (
-            <a
-              href={(item as IkeaSearchResult).url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="kx-focus inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-white/80 hover:bg-white/10"
-            >
-              IKEA.com →
-            </a>
-          )}
+          </div>
         </div>
       </div>
     </Card>

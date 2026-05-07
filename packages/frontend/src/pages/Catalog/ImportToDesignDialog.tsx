@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dialog, Select } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
+import type { ImportTarget } from './ProviderCatalog';
 
 interface KitchenSummary {
   id: string;
@@ -11,19 +12,18 @@ interface KitchenSummary {
 interface Props {
   open: boolean;
   onClose: () => void;
-  source: 'product' | 'appliance';
-  sourceId: string;
-  itemName: string;
+  target: ImportTarget;
 }
 
 /**
  * Modal that lets the user pick one of their existing kitchens and drops
- * the catalogue item into it as a new KitchenItem. Quantity defaults to 1.
+ * the catalogue item into it as a new KitchenItem.
  *
- * Position is left at the origin (0,0,0) on import — the designer's
- * placement UI is the right place to put the item where it belongs.
+ * For IKEA live items the target carries an `itemCode` instead of a database
+ * id; the backend looks up the live IKEA API, upserts a `Product` row, and
+ * then performs the standard import.
  */
-export default function ImportToDesignDialog({ open, onClose, source, sourceId, itemName }: Props): React.ReactElement {
+export default function ImportToDesignDialog({ open, onClose, target }: Props): React.ReactElement {
   const toast = useToast();
   const [kitchens, setKitchens] = useState<KitchenSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,6 @@ export default function ImportToDesignDialog({ open, onClose, source, sourceId, 
     const controller = new AbortController();
     (async () => {
       try {
-        // List the user's kitchens (across all projects).
         const res = await fetch('/api/v1/kitchens?limit=100', {
           credentials: 'include',
           signal: controller.signal,
@@ -59,17 +58,22 @@ export default function ImportToDesignDialog({ open, onClose, source, sourceId, 
     if (!kitchenId) return;
     setSubmitting(true);
     try {
+      const body =
+        target.source === 'ikea'
+          ? { source: 'ikea', itemCode: target.itemCode, kitchenId, quantity }
+          : { source: target.source, sourceId: target.id, kitchenId, quantity };
+
       const res = await fetch('/api/v1/providers/import', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source, sourceId, kitchenId, quantity }),
+        body: JSON.stringify(body),
       });
       if (!res.ok) {
         const errBody = await res.json().catch(() => null);
         throw new Error(errBody?.error?.message ?? `HTTP ${res.status}`);
       }
-      toast.success(`${itemName} ajouté à votre cuisine`);
+      toast.success(`${target.name} ajouté à votre cuisine`);
       onClose();
     } catch (err) {
       toast.error((err as Error).message);
@@ -83,7 +87,11 @@ export default function ImportToDesignDialog({ open, onClose, source, sourceId, 
       open={open}
       onClose={onClose}
       title="Ajouter à un design"
-      description={`${itemName} sera ajouté comme nouvel élément.`}
+      description={
+        target.source === 'ikea'
+          ? `${target.name} sera récupéré depuis IKEA et ajouté à votre cuisine.`
+          : `${target.name} sera ajouté comme nouvel élément.`
+      }
       footer={
         <>
           <Button variant="ghost" onClick={onClose}>Annuler</Button>

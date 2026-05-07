@@ -251,6 +251,28 @@ export function parseDimensions(raw: unknown): ParsedDimensions {
     }
   }
 
+  // 4) Combination (SPR) fallback: derive an envelope from childItems.
+  // For SPRs (a set of products sold together) no single PIP measurement
+  // describes the whole. We approximate the assembled footprint by summing
+  // child widths (typical for cabinets in a row) and taking max for depth
+  // and height. Quantity is honoured.
+  if (out.width === undefined && Array.isArray(obj.childItems)) {
+    const children = obj.childItems as Array<Record<string, unknown>>;
+    let totalW = 0; let maxD = 0; let maxH = 0; let any = false;
+    for (const child of children) {
+      const dims = parseDimensions(child);
+      const qty = Math.max(1, Number(child.quantity ?? 1));
+      if (dims.width) { totalW += dims.width * qty; any = true; }
+      if (dims.depth && dims.depth > maxD) maxD = dims.depth;
+      if (dims.height && dims.height > maxH) maxH = dims.height;
+    }
+    if (any) {
+      out.width = Math.round(totalW * 10) / 10;
+      if (out.depth === undefined && maxD > 0) out.depth = maxD;
+      if (out.height === undefined && maxH > 0) out.height = maxH;
+    }
+  }
+
   return out;
 }
 
