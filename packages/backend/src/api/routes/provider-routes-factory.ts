@@ -207,15 +207,19 @@ export function createProviderRoutes(config: ProviderRouteConfig): Router {
       return;
     }
 
-    // NOTE: In production, this would enqueue a BullMQ job via the scraper service.
-    // For now, return acknowledgment. The actual sync is handled by the scraper package.
+    // Run the sync inline. Each provider has at most a few hundred rows so
+    // this stays well under request budget. Heavy real-scraping should be
+    // delegated to the @kitchenxpert/scraper BullMQ pipeline via
+    // SCRAPER_BRIDGE_ENABLED=1 — see jobs/sync-sources/scraper-bridge-source.ts.
+    const { runProviderSync } = await import('../../jobs/provider-sync.job');
+    const [stats] = await runProviderSync(prisma, { providers: [config.providerCode] });
+
     res.status(202).json({
       success: true,
       data: {
         providerId: provider.id,
         providerCode: config.providerCode,
-        status: 'queued',
-        message: `Sync job queued for ${config.displayName}`,
+        ...stats,
       },
     });
   }));

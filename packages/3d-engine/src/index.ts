@@ -123,6 +123,14 @@ export type {
 
 // Loaders
 export { ModelLoader } from './loaders/model-loader';
+export {
+  VisualMaterialFactory,
+  pickTextureUrl,
+  matchKitchenMaterial,
+  applyFinish,
+  cssColorOrFallback,
+} from './loaders/visual-material-factory';
+export type { VisualsPayload } from './loaders/visual-material-factory';
 
 // Materials
 export { MaterialLibrary, KITCHEN_MATERIALS } from './models/material-model';

@@ -26,6 +26,7 @@ import { authService } from './auth/auth.service';
 import { createEmailTokenService } from './services/email-token.service';
 import { jobQueue } from './jobs/job-queue';
 import { startGdprPurgeScheduler, stopGdprPurgeScheduler } from './jobs/gdpr-scheduler';
+import { startProviderSyncScheduler, stopProviderSyncScheduler } from './jobs/provider-sync-scheduler';
 import logger from './utils/logger';
 
 /**
@@ -125,6 +126,8 @@ async function bootstrap(): Promise<void> {
 
       // Daily GDPR hard-delete purge — no-op unless GDPR_PURGE_ENABLED=1.
       startGdprPurgeScheduler();
+      // 6-hourly provider catalog sync — no-op unless PROVIDER_SYNC_ENABLED=1.
+      startProviderSyncScheduler();
     } catch (error) {
       logger.warn('[REDIS] Not available — token blacklisting, caching, and job queue will be degraded', {
         error: error instanceof Error ? error.message : String(error),
@@ -151,6 +154,7 @@ async function bootstrap(): Promise<void> {
         // Stop background job processing
         jobQueue.stop();
         stopGdprPurgeScheduler();
+        stopProviderSyncScheduler();
         logger.info('[JOBQUEUE] Stopped');
 
         // Shutdown WebSocket server

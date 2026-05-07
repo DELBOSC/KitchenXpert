@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { VisualMaterialFactory, type VisualsPayload } from './visual-material-factory';
 
 /**
  * Chargeur de modeles 3D avec cache et fallback procedural
@@ -6,6 +7,7 @@ import * as THREE from 'three';
 export class ModelLoader {
   private cache: Map<string, THREE.Group> = new Map();
   private loadingPromises: Map<string, Promise<THREE.Group>> = new Map();
+  private materialFactory = new VisualMaterialFactory();
 
   /**
    * Charge un modele GLTF/GLB depuis une URL
@@ -63,6 +65,43 @@ export class ModelLoader {
         (error) => reject(error)
       );
     });
+  }
+
+  /**
+   * Replace the *body* material of every Mesh in the group with one derived
+   * from the catalog visuals payload (texture + color + finish). Plinths,
+   * worktops, faucets and other accents are left alone — they should keep
+   * their hand-tuned procedural look.
+   *
+   * Idempotent: meshes whose userData already carries a `visualsApplied`
+   * flag are skipped, so this is safe to call multiple times.
+   */
+  applyVisuals(group: THREE.Group, visuals: VisualsPayload | null | undefined): void {
+    if (!visuals) return;
+    const material = this.materialFactory.build(visuals);
+
+    group.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) return;
+      // We tag accent meshes (worktops, faucets, ...) by giving them a
+      // distinctive color or by setting userData.role; the procedural
+      // generator below will mark "body" meshes with role='body'.
+      const role = (child.userData?.role as string | undefined) ?? 'body';
+      if (role !== 'body') return;
+      if (child.userData?.visualsApplied) return;
+
+      // Dispose the throwaway material the procedural fallback assigned.
+      const previous = child.material as THREE.Material | THREE.Material[] | undefined;
+      if (previous && !Array.isArray(previous) && previous !== material) {
+        previous.dispose();
+      }
+      child.material = material;
+      child.userData.visualsApplied = true;
+    });
+  }
+
+  /** Expose the factory so callers can drive it directly when needed. */
+  getMaterialFactory(): VisualMaterialFactory {
+    return this.materialFactory;
   }
 
   /**
@@ -359,8 +398,10 @@ export class ModelLoader {
   }): THREE.Group {
     const group = new THREE.Group();
 
-    // Main body with slight bevel
+    // Main body with slight bevel — tag it so applyVisuals() can swap the
+    // material later without touching handles/lines/drawers.
     const body = this.createBox(w, h, d, color);
+    body.userData.role = 'body';
     body.position.y = h / 2;
     group.add(body);
 
