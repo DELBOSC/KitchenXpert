@@ -112,6 +112,7 @@ export interface SearchResult {
   rating?: number;
   reviewCount?: number;
   availability?: string;
+  dimensions?: ProductDimensions;
 }
 
 export interface SearchResponse {

@@ -68,6 +68,10 @@ const CertifiedQuotePage = lazy(() => import('./pages/Quotes/CertifiedQuotePage'
 // AR Viewer
 const ARViewerPage = lazy(() => import('./pages/AR/ARViewerPage'));
 
+// Catalog (multi-provider)
+const ProvidersHub = lazy(() => import('./pages/Catalog/ProvidersHub'));
+const ProviderCatalog = lazy(() => import('./pages/Catalog/ProviderCatalog'));
+
 // Legal
 const MentionsLegales = lazy(() => import('./pages/Legal/MentionsLegales'));
 const CGV = lazy(() => import('./pages/Legal/CGV'));
@@ -144,7 +148,9 @@ export function AppRouter(): React.ReactElement {
         <Route element={<MainLayout />}>
           {/* Public routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/catalog" element={<ProvidersHub />} />
+          <Route path="/catalog/legacy" element={<CatalogPage />} />
+          <Route path="/catalog/:providerCode" element={<ProviderCatalog />} />
           <Route path="/pricing" element={<Suspense fallback={<LoadingSpinner />}><ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}><PricingPage /></ErrorBoundary></Suspense>} />
 
           {/* Auth routes */}

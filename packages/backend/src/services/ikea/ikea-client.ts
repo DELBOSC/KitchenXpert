@@ -31,6 +31,7 @@ import {
   buildProductUrl,
   chunk,
   getCurrencyForCountry,
+  parseDimensions,
 } from './utils';
 
 /**
@@ -185,6 +186,7 @@ export class IkeaClient {
                 const mainProduct = product.product as Record<string, unknown> | undefined;
 
                 if (mainProduct) {
+                  const dims = parseDimensions(mainProduct);
                   results.push({
                     itemCode: String(mainProduct.itemNo || ''),
                     name: String(mainProduct.name || ''),
@@ -196,6 +198,9 @@ export class IkeaClient {
                     url: mainProduct.pipUrl as string | undefined,
                     rating: mainProduct.ratingValue as number | undefined,
                     reviewCount: mainProduct.ratingCount as number | undefined,
+                    dimensions: (dims.width || dims.depth || dims.height)
+                      ? { width: dims.width, depth: dims.depth, height: dims.height, unit: 'cm' }
+                      : undefined,
                   });
                 }
               }
@@ -413,6 +418,7 @@ export class IkeaClient {
    */
   private parsePipItem(data: unknown, itemCode: string, isCombination: boolean): IkeaProduct {
     const obj = data as Record<string, unknown>;
+    const dims = parseDimensions(obj);
 
     return {
       itemCode,
@@ -432,6 +438,9 @@ export class IkeaClient {
       categoryName: obj.categoryName as string | undefined,
       categoryUrl: obj.categoryUrl as string | undefined,
       weight: Number(obj.weight || 0),
+      dimensions: (dims.width || dims.depth || dims.height)
+        ? { width: dims.width, depth: dims.depth, height: dims.height, unit: 'cm' }
+        : undefined,
       isCombination,
     };
   }

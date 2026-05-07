@@ -56,6 +56,7 @@ import workflowSimulationRoutes from './workflow-simulation-routes';
 import partnerPortalRoutes from './partner-portal-routes';
 import gdprRoutes from './gdpr-routes';
 import docsRoutes from './docs-routes';
+import providersRoutes from './providers-routes';
 
 const router: RouterType = Router();
 
@@ -77,6 +78,7 @@ router.use('/health', monitoringRoutes);
 router.use('/users', userRoutes);
 router.use('/me/gdpr', gdprRoutes);
 router.use('/docs', docsRoutes);
+router.use('/providers', providersRoutes);
 router.use('/kitchens', kitchenRoutes);
 router.use('/projects', projectRoutes);
 router.use('/catalog', catalogRoutes);

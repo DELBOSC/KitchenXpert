@@ -15,6 +15,7 @@ export { RolesSeed } from './roles-seed';
 export { UsersSeed } from './users-seed';
 export { PermissionsSeed } from './permissions-seed';
 export { CatalogsSeed } from './catalogs-seed';
+export { ProviderCatalogsSeed } from './provider-catalogs-seed';
 export { ProjectsSeed } from './projects-seed';
 export { KitchensSeed } from './kitchens-seed';
 
@@ -22,24 +23,28 @@ import { RolesSeed } from './roles-seed';
 import { UsersSeed } from './users-seed';
 import { PermissionsSeed } from './permissions-seed';
 import { CatalogsSeed } from './catalogs-seed';
+import { ProviderCatalogsSeed } from './provider-catalogs-seed';
 import { ProjectsSeed } from './projects-seed';
 import { KitchensSeed } from './kitchens-seed';
 import type { Seed } from './seed-runner';
 
 /**
  * All seeds in execution order:
- * 1. Roles (order 10) — create Role records
- * 2. Users (order 15) — create User records
- * 3. Permissions (order 20) — create Permission + RolePermission + UserRole
- * 4. Catalogs (order 30) — create ProductCategory + Product
- * 5. Projects (order 40) — create Project + ProjectCollaborator
- * 6. Kitchens (order 50) — create Kitchen (requires Projects)
+ * 1. Roles (10) — Role records
+ * 2. Users (15) — User records
+ * 3. Permissions (20) — Permission + RolePermission + UserRole
+ * 4. Catalogs (30) — ProductCategory + sample Products (legacy)
+ * 5. Provider catalogs (31) — CatalogProvider + Products + Appliances for the
+ *    5 providers (IKEA, Leroy Merlin, Castorama, Schmidt, Bosch).
+ * 6. Projects (40) — Project + ProjectCollaborator
+ * 7. Kitchens (50) — Kitchen (requires Projects)
  */
 export const allSeeds: Seed[] = [
   RolesSeed,
   UsersSeed,
   PermissionsSeed,
   CatalogsSeed,
+  ProviderCatalogsSeed,
   ProjectsSeed,
   KitchensSeed,
 ];

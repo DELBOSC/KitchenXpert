@@ -151,6 +151,110 @@ export function extractImageUrl(media: unknown): string | undefined {
 }
 
 /**
+ * Extract product dimensions (width × depth × height) from any of the
+ * IKEA PIP response shapes we've encountered:
+ *
+ *   1. Structured `measurements` block:
+ *        { measurements: { referenceMeasurements: [
+ *            { type: "WIDTH",  imperial: { ... }, metric: { value: "60", unit: "cm" } },
+ *            { type: "DEPTH",  metric: { value: "60", unit: "cm" } },
+ *            { type: "HEIGHT", metric: { value: "80", unit: "cm" } },
+ *          ] } }
+ *
+ *   2. Flat fields on the root:    `width`, `height`, `depth` (numeric or string).
+ *
+ *   3. Free-form text label:       `productMeasureReferenceText: "L60 × P60 × H80 cm"`
+ *      or `measurementText`. We parse the L/P/H or W/D/H letters as a fallback.
+ *
+ * All three branches normalise to centimetres so downstream code (designer,
+ * Prisma `Product.width|depth|height` columns) sees one consistent unit.
+ */
+export interface ParsedDimensions {
+  width?: number;  // cm
+  depth?: number;  // cm
+  height?: number; // cm
+  unit: 'cm';
+}
+
+const DIM_UNIT_RATIO: Record<string, number> = {
+  cm: 1,
+  centimeter: 1,
+  centimeters: 1,
+  centimetre: 1,
+  centimetres: 1,
+  mm: 0.1,
+  millimeter: 0.1,
+  millimeters: 0.1,
+  m: 100,
+  meter: 100,
+  meters: 100,
+};
+
+function toCm(value: unknown, unit: string | undefined): number | undefined {
+  const n = typeof value === 'number' ? value : parseFloat(String(value));
+  if (!Number.isFinite(n)) return undefined;
+  const ratio = DIM_UNIT_RATIO[(unit || 'cm').toLowerCase()] ?? 1;
+  return Math.round(n * ratio * 10) / 10;
+}
+
+/** Match labelled segments like "L60", "W23.5", "H 80", in cm/mm/m. */
+const DIM_TEXT_RE = /\b([LWPHDh])\s*([0-9]+(?:[.,][0-9]+)?)\s*(cm|mm|m)?/gi;
+
+export function parseDimensions(raw: unknown): ParsedDimensions {
+  const out: ParsedDimensions = { unit: 'cm' };
+
+  if (typeof raw !== 'object' || raw === null) return out;
+  const obj = raw as Record<string, unknown>;
+
+  // 1) Structured `measurements.referenceMeasurements`
+  const meas = (obj.measurements as Record<string, unknown> | undefined)?.referenceMeasurements;
+  if (Array.isArray(meas)) {
+    for (const m of meas) {
+      if (typeof m !== 'object' || m === null) continue;
+      const r = m as Record<string, unknown>;
+      const type = String(r.type ?? '').toUpperCase();
+      const metric = r.metric as Record<string, unknown> | undefined;
+      const value = metric?.value ?? r.value;
+      const unit = (metric?.unit ?? r.unit) as string | undefined;
+      const cm = toCm(value, unit);
+      if (cm === undefined) continue;
+      if (type === 'WIDTH') out.width = cm;
+      else if (type === 'DEPTH') out.depth = cm;
+      else if (type === 'HEIGHT') out.height = cm;
+    }
+  }
+
+  // 2) Flat fields with explicit unit hint.
+  const flatUnit = (obj.measurementUnit ?? obj.unit ?? 'cm') as string;
+  if (out.width === undefined && (obj.width ?? obj.itemWidth) !== undefined) {
+    out.width = toCm(obj.width ?? obj.itemWidth, flatUnit);
+  }
+  if (out.depth === undefined && (obj.depth ?? obj.itemDepth) !== undefined) {
+    out.depth = toCm(obj.depth ?? obj.itemDepth, flatUnit);
+  }
+  if (out.height === undefined && (obj.height ?? obj.itemHeight) !== undefined) {
+    out.height = toCm(obj.height ?? obj.itemHeight, flatUnit);
+  }
+
+  // 3) Free-form text fallback.
+  const label = (obj.productMeasureReferenceText ?? obj.measurementText ?? obj.measureText) as string | undefined;
+  if (label && (out.width === undefined || out.depth === undefined || out.height === undefined)) {
+    let m: RegExpExecArray | null;
+    DIM_TEXT_RE.lastIndex = 0;
+    while ((m = DIM_TEXT_RE.exec(label))) {
+      const letter = m[1]!.toUpperCase();
+      const cm = toCm(m[2], m[3] || 'cm');
+      if (cm === undefined) continue;
+      if ((letter === 'L' || letter === 'W') && out.width === undefined) out.width = cm;
+      else if ((letter === 'P' || letter === 'D') && out.depth === undefined) out.depth = cm;
+      else if ((letter === 'H' || letter === 'h') && out.height === undefined) out.height = cm;
+    }
+  }
+
+  return out;
+}
+
+/**
  * Build product URL from item code
  */
 export function buildProductUrl(
