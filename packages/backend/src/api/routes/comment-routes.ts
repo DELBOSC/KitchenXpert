@@ -1,4 +1,5 @@
 import { Router, type Router as RouterType } from 'express';
+
 import { commentController } from '../controllers/comment-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { validateParams, commonSchemas } from '../middleware/validation-middleware';

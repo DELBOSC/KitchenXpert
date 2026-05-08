@@ -2,7 +2,7 @@
  * Catalog Controller Tests
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 // 1. Définition des mocks AVANT jest.mock
 const mockCatalogRepository = {

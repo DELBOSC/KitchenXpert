@@ -1,6 +1,8 @@
 import crypto from 'crypto';
-import { Prisma } from '@prisma/client';
+
+import { type Prisma } from '@prisma/client';
 import { z } from 'zod';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import { prisma } from '../../database/client';
@@ -209,7 +211,7 @@ const ThreeTierDesignSchema = z.object({
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -220,7 +222,7 @@ function sanitizeInput(input: string | undefined | null): string {
 export function safeStringify(obj: unknown, maxLen = 500): string {
   try {
     const str = JSON.stringify(obj);
-    return str.length > maxLen ? str.slice(0, maxLen) + '...' : str;
+    return str.length > maxLen ? `${str.slice(0, maxLen)  }...` : str;
   } catch {
     return '{}';
   }
@@ -357,11 +359,11 @@ export class AutoDesignPipelineService {
    * Extract design constraints from raw questionnaire data.
    */
   private extractConstraints(data: QuestionnaireData): DesignConstraints {
-    const spatial = (data.spatialData ?? {}) as Record<string, unknown>;
-    const budget = (data.budgetData ?? {}) as Record<string, unknown>;
-    const aesthetic = (data.aestheticPrefs ?? {}) as Record<string, unknown>;
-    const profile = (data.userProfile ?? {}) as Record<string, unknown>;
-    const cooking = (data.cookingHabits ?? {}) as Record<string, unknown>;
+    const spatial = (data.spatialData ?? {});
+    const budget = (data.budgetData ?? {});
+    const aesthetic = (data.aestheticPrefs ?? {});
+    const profile = (data.userProfile ?? {});
+    const cooking = (data.cookingHabits ?? {});
 
     // Extract room dimensions (defaulting to typical French kitchen)
     const roomWidth = Number(spatial.width || spatial.roomWidth || 350);

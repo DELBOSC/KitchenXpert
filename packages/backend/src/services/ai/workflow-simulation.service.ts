@@ -1,12 +1,13 @@
 import { z } from 'zod';
-import { prisma } from '../../database/client';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
+import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -617,10 +618,10 @@ export class WorkflowSimulationService {
 
     // Penalize for excessive total distance
     // Optimal single cycle: 5-12m. Penalty for going over
-    if (totalDistanceM > 50) score -= 20;
-    else if (totalDistanceM > 35) score -= 15;
-    else if (totalDistanceM > 20) score -= 10;
-    else if (totalDistanceM > 15) score -= 5;
+    if (totalDistanceM > 50) {score -= 20;}
+    else if (totalDistanceM > 35) {score -= 15;}
+    else if (totalDistanceM > 20) {score -= 10;}
+    else if (totalDistanceM > 15) {score -= 5;}
 
     // Penalize for bottlenecks
     score -= bottlenecks.length * 5;
@@ -635,12 +636,12 @@ export class WorkflowSimulationService {
       const avgUsage =
         usageCounts.reduce((s, c) => s + c, 0) / usageCounts.length;
       const maxUsage = Math.max(...usageCounts);
-      if (maxUsage > avgUsage * 3) score -= 5;
+      if (maxUsage > avgUsage * 3) {score -= 5;}
     }
 
     // Bonus for good zone distribution
     const distinctZones = new Set(steps.flatMap((s) => [s.fromZone, s.toZone]));
-    if (distinctZones.size >= 4) score += 5;
+    if (distinctZones.size >= 4) {score += 5;}
 
     return Math.max(0, Math.min(100, Math.round(score)));
   }

@@ -1,10 +1,13 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import { Prisma } from '@prisma/client';
+import crypto from 'crypto';
+
+import { type Prisma } from '@prisma/client';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
 import { getMailService } from '../../services/mail.service';
 import logger from '../../utils/logger';
-import crypto from 'crypto';
+import { asyncHandler } from '../middleware/error-middleware';
+
 
 /**
  * Quote Controller
@@ -36,7 +39,7 @@ export class QuoteController {
       return;
     }
 
-    if (!contactInfo || !contactInfo.email) {
+    if (!contactInfo?.email) {
       res.status(400).json({ success: false, error: 'Contact information with email is required' });
       return;
     }

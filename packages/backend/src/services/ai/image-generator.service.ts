@@ -1,12 +1,14 @@
-import { GoogleGenAI } from '@google/genai';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
+
+import { GoogleGenAI } from '@google/genai';
+
 import logger from '../../utils/logger';
 
 /** Sanitize input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -179,8 +181,8 @@ No clutter, dirty surfaces, misaligned tiles, or unrealistic material colors.
 /** Classify the error to decide whether to retry */
 function classifyError(err: unknown): 'auth' | 'rate_limit' | 'transient' {
   const msg = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
-  if (msg.includes('api_key') || msg.includes('unauthorized') || msg.includes('403')) return 'auth';
-  if (msg.includes('quota') || msg.includes('rate') || msg.includes('429')) return 'rate_limit';
+  if (msg.includes('api_key') || msg.includes('unauthorized') || msg.includes('403')) {return 'auth';}
+  if (msg.includes('quota') || msg.includes('rate') || msg.includes('429')) {return 'rate_limit';}
   return 'transient';
 }
 
@@ -260,7 +262,7 @@ export class ImageGeneratorService {
     for (let attempt = 1; attempt <= ImageGeneratorService.MAX_RETRIES; attempt++) {
       try {
         const result = await this.attemptGeneration(prompt);
-        if (result) return result;
+        if (result) {return result;}
         // null result without exception = empty response — retry makes no sense
         return null;
       } catch (err) {

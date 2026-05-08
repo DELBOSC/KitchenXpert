@@ -4,6 +4,7 @@
  */
 
 import bcrypt from 'bcrypt';
+
 import { UnauthorizedError, ConflictError, BadRequestError } from '@kitchenxpert/common';
 
 // Mock dependencies
@@ -59,8 +60,9 @@ jest.mock('../database/client', () => {
 });
 
 // Import after mocks
-import { AuthService, IUserRepository } from '../auth/auth.service';
+import { AuthService, type IUserRepository } from '../auth/auth.service';
 import { jwtService } from '../auth/jwt.service';
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { __prismaMock } = require('../database/client');
 

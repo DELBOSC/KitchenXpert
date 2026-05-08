@@ -121,11 +121,11 @@ export class PermissionService {
     }
 
     const directCheck = await this.checkPermissionList(userPermissions.directPermissions, resource, action, context);
-    if (directCheck.allowed) return directCheck;
+    if (directCheck.allowed) {return directCheck;}
 
     const allPermissions = await this.getEffectiveRolePermissions(userPermissions.roles);
     const roleCheck = await this.checkPermissionList(allPermissions, resource, action, context);
-    if (roleCheck.allowed) return roleCheck;
+    if (roleCheck.allowed) {return roleCheck;}
 
     if (context?.resourceId) {
       const resourceCheck = this.checkResourcePermissions(
@@ -134,7 +134,7 @@ export class PermissionService {
         String(context.resourceId),
         action
       );
-      if (resourceCheck.allowed) return resourceCheck;
+      if (resourceCheck.allowed) {return resourceCheck;}
     }
 
     return { allowed: false, reason: 'No matching permission found' };
@@ -146,7 +146,7 @@ export class PermissionService {
   ): Promise<boolean> {
     for (const check of checks) {
       const result = await this.checkPermission(userId, check.resource, check.action);
-      if (result.allowed) return true;
+      if (result.allowed) {return true;}
     }
     return false;
   }
@@ -157,14 +157,14 @@ export class PermissionService {
   ): Promise<boolean> {
     for (const check of checks) {
       const result = await this.checkPermission(userId, check.resource, check.action);
-      if (!result.allowed) return false;
+      if (!result.allowed) {return false;}
     }
     return true;
   }
 
   async getUserEffectivePermissions(userId: string): Promise<Permission[]> {
     const userPermissions = await this.repository.getUserPermissions(userId);
-    if (!userPermissions) return [];
+    if (!userPermissions) {return [];}
 
     const permissionIds = new Set<string>();
     userPermissions.directPermissions.forEach(id => permissionIds.add(id));
@@ -176,7 +176,7 @@ export class PermissionService {
     const permissions: Permission[] = [];
     for (const id of permissionIds) {
       const permission = await this.getPermission(id);
-      if (permission) permissions.push(permission);
+      if (permission) {permissions.push(permission);}
     }
 
     return permissions;
@@ -226,7 +226,7 @@ export class PermissionService {
 
   async updatePermission(id: string, data: Partial<Permission>): Promise<Permission | null> {
     const permission = await this.repository.updatePermission(id, data);
-    if (permission) this.permissionCache.set(id, permission);
+    if (permission) {this.permissionCache.set(id, permission);}
     return permission;
   }
 
@@ -257,13 +257,13 @@ export class PermissionService {
 
   async assignRoleToUser(userId: string, roleSlug: string): Promise<boolean> {
     const role = await this.repository.findRoleBySlug(roleSlug);
-    if (!role) throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');
+    if (!role) {throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');}
     return this.repository.assignRoleToUser(userId, role.id);
   }
 
   async removeRoleFromUser(userId: string, roleSlug: string): Promise<boolean> {
     const role = await this.repository.findRoleBySlug(roleSlug);
-    if (!role) throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');
+    if (!role) {throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');}
     return this.repository.removeRoleFromUser(userId, role.id);
   }
 
@@ -287,12 +287,12 @@ export class PermissionService {
 
   async getUserRoles(userId: string): Promise<Role[]> {
     const userPermissions = await this.repository.getUserPermissions(userId);
-    if (!userPermissions) return [];
+    if (!userPermissions) {return [];}
 
     const roles: Role[] = [];
     for (const roleId of userPermissions.roles) {
       const role = await this.getRole(roleId);
-      if (role) roles.push(role);
+      if (role) {roles.push(role);}
     }
     return roles.sort((a, b) => b.priority - a.priority);
   }
@@ -310,7 +310,7 @@ export class PermissionService {
   ): Promise<string | null> {
     for (const id of deniedIds) {
       const permission = await this.getPermission(id);
-      if (permission && this.matchesPermission(permission, resource, action)) return id;
+      if (permission && this.matchesPermission(permission, resource, action)) {return id;}
     }
     return null;
   }
@@ -323,7 +323,7 @@ export class PermissionService {
   ): Promise<PermissionCheck> {
     for (const id of permissionIds) {
       const permission = await this.getPermission(id);
-      if (!permission) continue;
+      if (!permission) {continue;}
 
       if (this.matchesPermission(permission, resource, action)) {
         if (permission.conditions && permission.conditions.length > 0) {
@@ -348,10 +348,10 @@ export class PermissionService {
   }
 
   private evaluateConditions(conditions: PermissionCondition[], context?: Record<string, unknown>): boolean {
-    if (!context) return false;
+    if (!context) {return false;}
     for (const condition of conditions) {
       const value = context[condition.field];
-      if (!this.evaluateCondition(condition, value)) return false;
+      if (!this.evaluateCondition(condition, value)) {return false;}
     }
     return true;
   }
@@ -380,11 +380,11 @@ export class PermissionService {
     const processedRoles = new Set<string>();
 
     const processRole = async (roleId: string) => {
-      if (processedRoles.has(roleId)) return;
+      if (processedRoles.has(roleId)) {return;}
       processedRoles.add(roleId);
 
       const role = await this.getRole(roleId);
-      if (!role) return;
+      if (!role) {return;}
 
       role.permissions.forEach(p => allPermissions.add(p));
 
@@ -409,8 +409,8 @@ export class PermissionService {
     action: PermissionAction
   ): PermissionCheck {
     for (const rp of resourcePermissions) {
-      if (rp.resourceType !== resourceType || rp.resourceId !== resourceId) continue;
-      if (rp.expiresAt && new Date() > rp.expiresAt) continue;
+      if (rp.resourceType !== resourceType || rp.resourceId !== resourceId) {continue;}
+      if (rp.expiresAt && new Date() > rp.expiresAt) {continue;}
 
       const actionPermission = `${resourceType}:${action}`;
       if (rp.permissions.includes(actionPermission) || rp.permissions.includes(`${resourceType}:*`)) {

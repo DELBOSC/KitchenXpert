@@ -93,7 +93,7 @@ export class CacheService {
     ttlSeconds: number = 300
   ): Promise<T> {
     const cached = await CacheService.get<T>(key);
-    if (cached !== null) return cached;
+    if (cached !== null) {return cached;}
 
     const value = await computeFn();
     await CacheService.set(key, value, ttlSeconds);

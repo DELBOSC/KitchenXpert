@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import { AIChatService } from '../../services/ai/chat.service';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
+import { AIChatService } from '../../services/ai/chat.service';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 const chatService = new AIChatService();
 
@@ -131,9 +132,9 @@ export class AIChatController {
     const { messages, title, sceneContext } = req.body;
 
     const updateData: Record<string, unknown> = {};
-    if (messages !== undefined) updateData.messages = messages;
-    if (title !== undefined) updateData.title = title;
-    if (sceneContext !== undefined) updateData.sceneContext = JSON.parse(JSON.stringify(sceneContext));
+    if (messages !== undefined) {updateData.messages = messages;}
+    if (title !== undefined) {updateData.title = title;}
+    if (sceneContext !== undefined) {updateData.sceneContext = JSON.parse(JSON.stringify(sceneContext));}
 
     const session = await prisma.aIChatSession.update({
       where: { id },

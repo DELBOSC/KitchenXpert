@@ -1,24 +1,27 @@
+import crypto from 'crypto';
+
 import bcrypt from 'bcrypt';
+
 import {
-  User,
-  UserCredentials,
-  UserRegistration,
-  LoginResponse,
-  AuthTokens,
+  type User,
+  type UserCredentials,
+  type UserRegistration,
+  type LoginResponse,
+  type AuthTokens,
   UnauthorizedError,
   ConflictError,
   BadRequestError,
 } from '@kitchenxpert/common';
+
 import { jwtService } from './jwt.service';
-import logger from '../utils/logger';
 import { prisma } from '../database/client';
-import crypto from 'crypto';
 import {
-  EmailTokenService,
-  TokenGenerationResult,
-  TokenVerificationResult,
+  type EmailTokenService,
+  type TokenGenerationResult,
+  type TokenVerificationResult,
   TOKEN_EXPIRATION,
 } from '../services/email-token.service';
+import logger from '../utils/logger';
 
 /**
  * User Repository Interface

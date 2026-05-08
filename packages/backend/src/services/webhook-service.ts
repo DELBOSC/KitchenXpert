@@ -4,6 +4,7 @@
  */
 
 import * as crypto from 'crypto';
+
 import logger from '../utils/logger';
 
 export interface Webhook {

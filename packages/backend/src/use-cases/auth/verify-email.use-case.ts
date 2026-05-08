@@ -1,8 +1,11 @@
 import crypto from 'crypto';
+
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const VerifyEmailSchema = z.object({
   token: z.string().min(1),
@@ -22,7 +25,7 @@ export class VerifyEmailUseCase implements UseCase<VerifyEmailInput, { userId: s
     const record = await this.prisma.emailVerificationToken.findFirst({
       where: { token: hashed, usedAt: null, expiresAt: { gt: new Date() } },
     });
-    if (!record) return err(DomainErrors.validation('Invalid or expired verification token'));
+    if (!record) {return err(DomainErrors.validation('Invalid or expired verification token'));}
 
     await this.prisma.$transaction([
       this.prisma.emailVerificationToken.update({

@@ -4,10 +4,11 @@
  * GET /api/v1/export/:entity?format=csv|json
  */
 
-import { Router, type Router as RouterType, Request, Response } from 'express';
-import { authenticate, requireRole } from '../middleware/auth-middleware';
-import { ExportService, ExportFormat, ExportEntity } from '../../services/export.service';
+import { Router, type Router as RouterType, type Request, type Response } from 'express';
+
+import { ExportService, type ExportFormat, type ExportEntity } from '../../services/export.service';
 import logger from '../../utils/logger';
+import { authenticate, requireRole } from '../middleware/auth-middleware';
 
 const router: RouterType = Router();
 

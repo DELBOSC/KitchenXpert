@@ -1,4 +1,4 @@
-import { PrismaClient, Project, ProjectCollaborator, Prisma } from '@prisma/client';
+import { type PrismaClient, type Project, type ProjectCollaborator, type Prisma } from '@prisma/client';
 
 /**
  * Project Repository
@@ -241,7 +241,7 @@ export class ProjectRepository {
       where: { id, deletedAt: null },
       select: { status: true },
     });
-    if (!project) throw new Error('Project not found');
+    if (!project) {throw new Error('Project not found');}
 
     const validTransitions: Record<string, string[]> = {
       draft: ['in_progress', 'archived'],
@@ -319,7 +319,7 @@ export class ProjectRepository {
         metadata: true,
       },
     });
-    if (!original) throw new Error('Project not found');
+    if (!original) {throw new Error('Project not found');}
 
     return this.prisma.project.create({
       data: {

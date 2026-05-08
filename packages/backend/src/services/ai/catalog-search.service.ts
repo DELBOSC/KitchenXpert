@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import { prisma } from '../../database/client';
@@ -73,13 +74,13 @@ export class AICatalogSearchService {
     }
     if (extracted.filters.minPrice || extracted.filters.maxPrice) {
       where.price = {} as Record<string, unknown>;
-      if (extracted.filters.minPrice) (where.price as Record<string, unknown>).gte = extracted.filters.minPrice;
-      if (extracted.filters.maxPrice) (where.price as Record<string, unknown>).lte = extracted.filters.maxPrice;
+      if (extracted.filters.minPrice) {(where.price as Record<string, unknown>).gte = extracted.filters.minPrice;}
+      if (extracted.filters.maxPrice) {(where.price as Record<string, unknown>).lte = extracted.filters.maxPrice;}
     }
     if (extracted.filters.minWidth || extracted.filters.maxWidth) {
       where.width = {} as Record<string, unknown>;
-      if (extracted.filters.minWidth) (where.width as Record<string, unknown>).gte = extracted.filters.minWidth;
-      if (extracted.filters.maxWidth) (where.width as Record<string, unknown>).lte = extracted.filters.maxWidth;
+      if (extracted.filters.minWidth) {(where.width as Record<string, unknown>).gte = extracted.filters.minWidth;}
+      if (extracted.filters.maxWidth) {(where.width as Record<string, unknown>).lte = extracted.filters.maxWidth;}
     }
     if (extracted.filters.material) {
       where.material = { contains: extracted.filters.material, mode: 'insensitive' };

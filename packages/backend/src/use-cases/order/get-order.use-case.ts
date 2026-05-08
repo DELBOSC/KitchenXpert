@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const GetOrderSchema = z.object({
   orderId: z.string().uuid(),
@@ -19,7 +21,7 @@ export class GetOrderUseCase implements UseCase<GetOrderInput, unknown> {
       where: { id: orderId },
       include: { items: true, project: { select: { id: true, name: true } } },
     });
-    if (!order) return err(DomainErrors.notFound('Order'));
+    if (!order) {return err(DomainErrors.notFound('Order'));}
     if (order.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this order'));
     }

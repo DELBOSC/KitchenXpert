@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import { DomainErrors, ok, err, type Result } from '../../core/result';
-import type { UseCase } from '../../core/use-case';
+
 import { jwtService } from '../../auth/jwt.service';
+import { DomainErrors, ok, err, type Result } from '../../core/result';
+
+import type { UseCase } from '../../core/use-case';
 
 export const RefreshSchema = z.object({
   refreshToken: z.string().min(1),

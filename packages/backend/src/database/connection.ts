@@ -1,4 +1,5 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool, type PoolClient } from 'pg';
+
 import { config } from '../config/app-config';
 import logger from '../utils/logger';
 

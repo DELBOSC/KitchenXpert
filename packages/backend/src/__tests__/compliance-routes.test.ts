@@ -9,9 +9,9 @@
  * - Validation (invalid kitchenId format)
  */
 
-import request from 'supertest';
-import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -105,8 +105,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
-import complianceRoutes from '../api/routes/compliance-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import complianceRoutes from '../api/routes/compliance-routes';
 
 // ==================== SETUP ====================
 

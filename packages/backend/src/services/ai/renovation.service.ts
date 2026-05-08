@@ -8,6 +8,7 @@
  */
 
 import { z } from 'zod';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import { prisma } from '../../database/client';
@@ -329,7 +330,7 @@ export class RenovationService {
       where: { id: projectId },
     });
 
-    if (!project) return null;
+    if (!project) {return null;}
 
     // Ownership verification
     if (project.userId !== userId && !isAdmin) {

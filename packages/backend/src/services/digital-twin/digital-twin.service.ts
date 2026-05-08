@@ -408,8 +408,8 @@ export class DigitalTwinService {
 
     // Sort: overdue first, then by next due date
     maintenanceItems.sort((a, b) => {
-      if (a.isOverdue && !b.isOverdue) return -1;
-      if (!a.isOverdue && b.isOverdue) return 1;
+      if (a.isOverdue && !b.isOverdue) {return -1;}
+      if (!a.isOverdue && b.isOverdue) {return 1;}
       return a.nextDue.getTime() - b.nextDue.getTime();
     });
 
@@ -552,7 +552,7 @@ export class DigitalTwinService {
       const estimateKey = isGas ? `${normalizedType}_gas` : normalizedType;
 
       const estimate = ENERGY_ESTIMATES[estimateKey] || ENERGY_ESTIMATES[normalizedType];
-      if (!estimate) continue;
+      if (!estimate) {continue;}
 
       totalElectricity += estimate.electricity;
       totalWater += estimate.water;

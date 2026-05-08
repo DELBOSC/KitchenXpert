@@ -5,10 +5,10 @@
  * into the local database. Uses Prisma to persist and Redis to cache.
  */
 
-import type { PrismaClient } from '@prisma/client';
-import { Prisma } from '@prisma/client';
-import { createModuleLogger } from '../utils/logger';
+import { type Prisma , type PrismaClient } from '@prisma/client';
+
 import { cacheGet, cacheSet, cacheDel, CACHE_TTL } from '../database/redis-client';
+import { createModuleLogger } from '../utils/logger';
 
 const logger = createModuleLogger('catalog-sync');
 
@@ -126,12 +126,12 @@ export class CatalogSyncService {
         try {
           if (product.type === 'appliance') {
             const result = await this.upsertAppliance(product, dbProvider.id);
-            if (result === 'created') productsAdded++;
-            else if (result === 'updated') productsUpdated++;
+            if (result === 'created') {productsAdded++;}
+            else if (result === 'updated') {productsUpdated++;}
           } else {
             const result = await this.upsertProduct(product, dbProvider.id);
-            if (result === 'created') productsAdded++;
-            else if (result === 'updated') productsUpdated++;
+            if (result === 'created') {productsAdded++;}
+            else if (result === 'updated') {productsUpdated++;}
           }
         } catch (err: unknown) {
           const error = err instanceof Error ? err : new Error(String(err));
@@ -199,13 +199,13 @@ export class CatalogSyncService {
 
     // Try cache first
     const cached = await cacheGet<any[]>(cacheKey);
-    if (cached) return cached;
+    if (cached) {return cached;}
 
     // Fetch from DB
     const dbProvider = await this.prisma.catalogProvider.findUnique({
       where: { code: providerId },
     });
-    if (!dbProvider) return [];
+    if (!dbProvider) {return [];}
 
     const products = await this.prisma.product.findMany({
       where: {
@@ -232,7 +232,7 @@ export class CatalogSyncService {
       where: { code: adapter.providerId },
     });
 
-    if (existing) return existing;
+    if (existing) {return existing;}
 
     return this.prisma.catalogProvider.create({
       data: {

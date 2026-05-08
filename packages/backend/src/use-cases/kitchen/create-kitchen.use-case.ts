@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient, Kitchen } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient, Kitchen } from '@prisma/client';
 
 export const CreateKitchenSchema = z.object({
   userId: z.string().uuid(),
@@ -26,8 +28,8 @@ export class CreateKitchenUseCase implements UseCase<CreateKitchenInput, Kitchen
       where: { id: input.projectId },
       select: { userId: true },
     });
-    if (!project) return err(DomainErrors.notFound('Project'));
-    if (project.userId !== input.userId) return err(DomainErrors.forbidden('Project does not belong to user'));
+    if (!project) {return err(DomainErrors.notFound('Project'));}
+    if (project.userId !== input.userId) {return err(DomainErrors.forbidden('Project does not belong to user'));}
 
     const kitchen = await this.prisma.kitchen.create({
       data: {

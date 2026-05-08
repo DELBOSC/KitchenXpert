@@ -14,9 +14,10 @@
 
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
+import { priceTrackerController } from '../controllers/price-tracker-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { validateBody, validateParams } from '../middleware/validation-middleware';
-import { priceTrackerController } from '../controllers/price-tracker-controller';
 
 const router: RouterType = Router();
 

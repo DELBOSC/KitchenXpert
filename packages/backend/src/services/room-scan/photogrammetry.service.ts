@@ -377,7 +377,7 @@ export class PhotogrammetryService {
    * Cluster line segments by their angle using a simple binning approach.
    */
   private clusterLinesByAngle(lines: LineSegment[]): LineSegment[][] {
-    if (lines.length === 0) return [];
+    if (lines.length === 0) {return [];}
 
     // Normalize angles to 0-180 range (line direction is bidirectional)
     const normalizedLines = lines.map((l) => ({
@@ -421,7 +421,7 @@ export class PhotogrammetryService {
    * Uses least-squares intersection of line extensions.
    */
   private computeVanishingPointFromLines(lines: LineSegment[]): Point2D | null {
-    if (lines.length < 2) return null;
+    if (lines.length < 2) {return null;}
 
     // Use pairwise intersections and take the median
     const intersections: Point2D[] = [];
@@ -435,7 +435,7 @@ export class PhotogrammetryService {
       }
     }
 
-    if (intersections.length === 0) return null;
+    if (intersections.length === 0) {return null;}
 
     // Take the median position as the vanishing point (robust to outliers)
     intersections.sort((a, b) => a.x - b.x);
@@ -455,7 +455,7 @@ export class PhotogrammetryService {
     const x3 = l2.x1, y3 = l2.y1, x4 = l2.x2, y4 = l2.y2;
 
     const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    if (Math.abs(denom) < 1e-6) return null; // Parallel lines
+    if (Math.abs(denom) < 1e-6) {return null;} // Parallel lines
 
     const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
 
@@ -586,18 +586,18 @@ export class PhotogrammetryService {
     let confidence = 0;
 
     // More photos = higher confidence
-    if (photoCount >= 4) confidence += 0.3;
-    else if (photoCount >= 2) confidence += 0.2;
-    else confidence += 0.1;
+    if (photoCount >= 4) {confidence += 0.3;}
+    else if (photoCount >= 2) {confidence += 0.2;}
+    else {confidence += 0.1;}
 
     // Vanishing points detected
-    if (vanishingPointCount >= 3) confidence += 0.3;
-    else if (vanishingPointCount >= 2) confidence += 0.2;
-    else if (vanishingPointCount >= 1) confidence += 0.1;
+    if (vanishingPointCount >= 3) {confidence += 0.3;}
+    else if (vanishingPointCount >= 2) {confidence += 0.2;}
+    else if (vanishingPointCount >= 1) {confidence += 0.1;}
 
     // Line segments detected
-    if (lineCount >= 10) confidence += 0.2;
-    else if (lineCount >= 5) confidence += 0.1;
+    if (lineCount >= 10) {confidence += 0.2;}
+    else if (lineCount >= 5) {confidence += 0.1;}
 
     return Math.min(0.85, Math.max(0.1, confidence));
   }

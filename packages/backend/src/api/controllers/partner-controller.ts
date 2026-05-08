@@ -1,8 +1,10 @@
-import { Request, Response } from 'express';
+import crypto from 'crypto';
+
+import { type Request, type Response } from 'express';
+
+import { prisma } from '../../database/client';
 import { PartnerRepository } from '../../repositories/partner-repository';
 import { asyncHandler } from '../middleware/error-middleware';
-import { prisma } from '../../database/client';
-import crypto from 'crypto';
 const partnerRepository = new PartnerRepository(prisma);
 
 /**

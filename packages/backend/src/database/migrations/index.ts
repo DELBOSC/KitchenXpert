@@ -32,6 +32,7 @@ import { WebhooksMigration } from './20240509-webhooks';
 import { MonitoringMigration } from './20240510-monitoring';
 import { I18nMigration } from './20240511-i18n';
 import { FeaturesMigration } from './20240512-features';
+
 import type { Migration } from './migration-runner';
 
 /**

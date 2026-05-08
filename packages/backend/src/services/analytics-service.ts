@@ -649,7 +649,7 @@ export class AnalyticsService {
    * Flush buffered events
    */
   async flushEvents(): Promise<void> {
-    if (this.eventBuffer.length === 0) return;
+    if (this.eventBuffer.length === 0) {return;}
 
     const events = [...this.eventBuffer];
     this.eventBuffer = [];

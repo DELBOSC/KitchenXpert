@@ -1,5 +1,6 @@
 import { Router, type Router as RouterType } from 'express';
 import rateLimit from 'express-rate-limit';
+
 import { catalogController } from '../controllers/catalog-controller';
 import { authenticate, authorize } from '../middleware/auth-middleware';
 

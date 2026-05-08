@@ -1,4 +1,4 @@
-import { PrismaClient, Role, Permission, RolePermission, UserRole } from '@prisma/client';
+import { type PrismaClient, type Role, type Permission, type RolePermission, type UserRole } from '@prisma/client';
 
 /**
  * Role Repository
@@ -94,8 +94,8 @@ export class RoleRepository {
    */
   async update(id: string, data: UpdateRoleDto): Promise<Role> {
     const role = await this.findById(id);
-    if (!role) throw new Error('Role not found');
-    if (role.isSystem) throw new Error('Cannot modify system role');
+    if (!role) {throw new Error('Role not found');}
+    if (role.isSystem) {throw new Error('Cannot modify system role');}
 
     return this.prisma.$transaction(async (tx) => {
       const updated = await tx.role.update({
@@ -127,8 +127,8 @@ export class RoleRepository {
    */
   async delete(id: string): Promise<Role> {
     const role = await this.findById(id);
-    if (!role) throw new Error('Role not found');
-    if (role.isSystem) throw new Error('Cannot delete system role');
+    if (!role) {throw new Error('Role not found');}
+    if (role.isSystem) {throw new Error('Cannot delete system role');}
     if (role._count && role._count.userRoles > 0) {
       throw new Error('Cannot delete role with assigned users');
     }

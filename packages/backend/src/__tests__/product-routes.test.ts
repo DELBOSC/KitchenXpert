@@ -19,9 +19,9 @@
  * - Validation (duplicate SKU, missing required fields)
  */
 
-import request from 'supertest';
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -163,8 +163,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Import after mocks
-import productRoutes from '../api/routes/product-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import productRoutes from '../api/routes/product-routes';
 
 // ==================== TEST APP SETUP ====================
 

@@ -1,14 +1,19 @@
-import { Request, Response, NextFunction } from 'express';
-import { UnauthorizedError, ForbiddenError, UserRole, JWTPayload } from '@kitchenxpert/common';
+import { type Request, type Response, type NextFunction } from 'express';
+
+import { UnauthorizedError, ForbiddenError, type UserRole, type JWTPayload } from '@kitchenxpert/common';
+
 import { jwtService } from '../../auth/jwt.service';
 import { getTokenBlacklist, getTokenIssuedAt } from '../../auth/token-blacklist';
-import { PrismaUserRepository } from '../../repositories';
 import { prisma } from '../../database/client';
+import { PrismaUserRepository } from '../../repositories';
 
 /**
- * Étend le type Request d'Express pour inclure l'utilisateur
+ * Étend le type Request d'Express pour inclure l'utilisateur.
+ * Express's own type augmentation contract uses `namespace` — the rule's
+ * blanket ban on namespaces would force a less idiomatic workaround.
  */
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: JWTPayload;

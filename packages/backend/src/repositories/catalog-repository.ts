@@ -1,4 +1,5 @@
-import { PrismaClient, Catalog, CatalogProvider, Prisma } from '@prisma/client';
+import { type PrismaClient, type Catalog, type CatalogProvider, type Prisma } from '@prisma/client';
+
 import { encrypt, decrypt, isEncrypted } from '../utils/crypto';
 
 /**
@@ -223,7 +224,7 @@ export class CatalogRepository {
   async toggleProviderStatus(id: string): Promise<CatalogProvider> {
     return this.prisma.$transaction(async (tx) => {
       const provider = await tx.catalogProvider.findUnique({ where: { id } });
-      if (!provider) throw new Error('Provider not found');
+      if (!provider) {throw new Error('Provider not found');}
 
       return tx.catalogProvider.update({
         where: { id },
@@ -240,7 +241,7 @@ export class CatalogRepository {
       where: { id: providerId },
       select: { apiKey: true },
     });
-    if (!provider?.apiKey) return null;
+    if (!provider?.apiKey) {return null;}
     try {
       return isEncrypted(provider.apiKey) ? decrypt(provider.apiKey) : provider.apiKey;
     } catch {

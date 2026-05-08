@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { JWTPayload, AuthTokens, UnauthorizedError } from '@kitchenxpert/common';
+
+import { type JWTPayload, type AuthTokens, UnauthorizedError } from '@kitchenxpert/common';
+
 import logger from '../utils/logger';
 
 /**
@@ -170,7 +172,7 @@ export class JWTService {
    */
   private parseExpiry(expiry: string): number {
     const match = expiry.match(/^(\d+)([smhd])$/);
-    if (!match || !match[1] || !match[2]) return 900; // Default 15 minutes
+    if (!match?.[1] || !match[2]) {return 900;} // Default 15 minutes
 
     const value = parseInt(match[1], 10);
     const unit = match[2];

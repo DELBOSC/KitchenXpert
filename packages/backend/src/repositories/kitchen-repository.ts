@@ -5,8 +5,9 @@
  * Handles all kitchen-related database operations using Prisma ORM.
  */
 
-import type { PrismaClient, Kitchen, KitchenConfiguration, KitchenItem, KitchenStyle, LayoutType } from '@prisma/client';
 import crypto from 'crypto';
+
+import type { PrismaClient, Kitchen, KitchenConfiguration, KitchenItem, KitchenStyle, LayoutType } from '@prisma/client';
 
 export interface KitchenWithRelations {
   id: string;
@@ -180,16 +181,16 @@ export class KitchenRepository {
   async update(id: string, data: UpdateKitchenDto): Promise<Kitchen> {
     const updateData: Record<string, any> = {};
 
-    if (data.name !== undefined) updateData.name = data.name;
-    if (data.style !== undefined) updateData.style = data.style;
-    if (data.layout !== undefined) updateData.layout = data.layout;
-    if (data.width !== undefined) updateData.width = data.width;
-    if (data.length !== undefined) updateData.length = data.length;
-    if (data.height !== undefined) updateData.height = data.height;
-    if (data.isGenerated !== undefined) updateData.isGenerated = data.isGenerated;
-    if (data.score !== undefined) updateData.score = data.score;
-    if (data.thumbnail !== undefined) updateData.thumbnail = data.thumbnail;
-    if (data.metadata !== undefined) updateData.metadata = data.metadata;
+    if (data.name !== undefined) {updateData.name = data.name;}
+    if (data.style !== undefined) {updateData.style = data.style;}
+    if (data.layout !== undefined) {updateData.layout = data.layout;}
+    if (data.width !== undefined) {updateData.width = data.width;}
+    if (data.length !== undefined) {updateData.length = data.length;}
+    if (data.height !== undefined) {updateData.height = data.height;}
+    if (data.isGenerated !== undefined) {updateData.isGenerated = data.isGenerated;}
+    if (data.score !== undefined) {updateData.score = data.score;}
+    if (data.thumbnail !== undefined) {updateData.thumbnail = data.thumbnail;}
+    if (data.metadata !== undefined) {updateData.metadata = data.metadata;}
 
     return this.prisma.kitchen.update({
       where: { id },

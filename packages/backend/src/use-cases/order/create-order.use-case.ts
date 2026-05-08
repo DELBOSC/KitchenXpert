@@ -1,8 +1,11 @@
-import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
+
+import { z } from 'zod';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const CreateOrderSchema = z.object({
   userId: z.string().uuid(),
@@ -30,8 +33,8 @@ export class CreateOrderUseCase implements UseCase<CreateOrderInput, unknown> {
         where: { id: input.projectId },
         select: { userId: true },
       });
-      if (!project) return err(DomainErrors.notFound('Project'));
-      if (project.userId !== input.userId) return err(DomainErrors.forbidden('Project not owned'));
+      if (!project) {return err(DomainErrors.notFound('Project'));}
+      if (project.userId !== input.userId) {return err(DomainErrors.forbidden('Project not owned'));}
     }
 
     const subtotal = input.items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);

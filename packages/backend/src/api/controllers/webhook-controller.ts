@@ -1,10 +1,12 @@
-import { Request, Response } from 'express';
-import { WebhookRepository } from '../../repositories/webhook-repository';
-import { asyncHandler } from '../middleware/error-middleware';
-import { prisma } from '../../database/client';
 import crypto from 'crypto';
-import { generateWebhookSignature } from '../middleware/webhook-middleware';
+
+import { type Request, type Response } from 'express';
+
+import { prisma } from '../../database/client';
+import { WebhookRepository } from '../../repositories/webhook-repository';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
+import { generateWebhookSignature } from '../middleware/webhook-middleware';
 
 const webhookRepository = new WebhookRepository(prisma);
 
@@ -20,11 +22,11 @@ function stripSecret<T extends Record<string, unknown>>(webhook: T): Omit<T, 'se
  */
 function assertWebhookAccess(req: Request, webhook: { partnerId?: string | null }): boolean {
   const user = req.user;
-  if (!user) return false;
-  if (user.role === 'admin') return true;
+  if (!user) {return false;}
+  if (user.role === 'admin') {return true;}
   // Partner users can only access their own webhooks
-  if (webhook.partnerId && req.partnerId === webhook.partnerId) return true;
-  if (webhook.partnerId && user.userId === webhook.partnerId) return true;
+  if (webhook.partnerId && req.partnerId === webhook.partnerId) {return true;}
+  if (webhook.partnerId && user.userId === webhook.partnerId) {return true;}
   return false;
 }
 

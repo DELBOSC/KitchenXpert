@@ -73,6 +73,7 @@ jest.mock('../utils/logger', () => ({
 // Import after mocks
 // ---------------------------------------------------------------------------
 import { RenovationService } from '../services/ai/renovation.service';
+
 import type { ExistingKitchenAnalysis } from '../services/ai/renovation.service';
 
 // ---------------------------------------------------------------------------

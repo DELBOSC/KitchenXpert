@@ -5,6 +5,7 @@
 
 import * as crypto from 'crypto';
 import * as path from 'path';
+
 import {
   S3Client,
   PutObjectCommand,
@@ -17,6 +18,7 @@ import {
   type _Object,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl as awsGetSignedUrl } from '@aws-sdk/s3-request-presigner';
+
 import logger from '../utils/logger';
 
 // ==================== Types & Interfaces ====================
@@ -575,10 +577,14 @@ export class StorageService {
    */
   private createLocalAdapter(): StorageAdapter {
     const config = this.config;
-    const fs = require('fs').promises;
+    // Lazy ESM import: only loaded when local-disk storage is used. The
+    // promise is created once and shared by every adapter method below so
+    // we don't import('fs') on every call.
+    const fsPromise = import('fs').then((m) => m.promises);
 
     return {
       async upload(file: FileUpload, storedName: string, options: UploadOptions): Promise<StoredFile> {
+        const fs = await fsPromise;
         const folder = options.folder || '';
         const filePath = path.join(folder, storedName);
         const fullPath = path.join(config.basePath, filePath);
@@ -608,6 +614,7 @@ export class StorageService {
       },
 
       async delete(filePath: string): Promise<boolean> {
+        const fs = await fsPromise;
         const fullPath = path.join(config.basePath, filePath);
         try {
           await fs.unlink(fullPath);
@@ -625,6 +632,7 @@ export class StorageService {
       },
 
       async exists(filePath: string): Promise<boolean> {
+        const fs = await fsPromise;
         const fullPath = path.join(config.basePath, filePath);
         try {
           await fs.access(fullPath);
@@ -635,6 +643,7 @@ export class StorageService {
       },
 
       async getMetadata(filePath: string): Promise<Partial<StoredFile> | null> {
+        const fs = await fsPromise;
         const fullPath = path.join(config.basePath, filePath);
         try {
           const stats = await fs.stat(fullPath);

@@ -1,4 +1,4 @@
-import { PrismaClient, Product, ProductCategory, Prisma } from '@prisma/client';
+import { type PrismaClient, type Product, type ProductCategory, type Prisma } from '@prisma/client';
 
 /**
  * Product Repository
@@ -408,7 +408,7 @@ export class ProductRepository {
       where: { id: productId, deletedAt: null },
       select: { categoryId: true, brand: true, material: true },
     });
-    if (!product) return [];
+    if (!product) {return [];}
 
     return this.prisma.product.findMany({
       where: {

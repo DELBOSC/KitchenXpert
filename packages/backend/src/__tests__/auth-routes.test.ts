@@ -12,9 +12,10 @@
  * - Current user retrieval
  */
 
-import request from 'supertest';
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
+
 import { ConflictError, UnauthorizedError, BadRequestError } from '@kitchenxpert/common';
 
 // ==================== MOCKS ====================
@@ -154,8 +155,8 @@ jest.mock('../repositories', () => ({
 }));
 
 // Import after mocks
-import authRoutes from '../api/routes/auth-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import authRoutes from '../api/routes/auth-routes';
 import { PrismaUserRepository } from '../repositories';
 
 // ==================== TEST APP SETUP ====================

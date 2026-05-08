@@ -226,17 +226,17 @@ export class ExportService {
    * Includes a UTF-8 BOM for Excel compatibility.
    */
   private static toCSV(records: Record<string, unknown>[]): string {
-    if (records.length === 0) return '';
+    if (records.length === 0) {return '';}
 
     const firstRecord = records[0];
-    if (!firstRecord) return '';
+    if (!firstRecord) {return '';}
 
     const headers = Object.keys(firstRecord);
     const rows = records.map((record) =>
       headers
         .map((header) => {
           const value = record[header];
-          if (value === null || value === undefined) return '';
+          if (value === null || value === undefined) {return '';}
           const str = String(value);
           // Escape quotes and wrap in quotes if contains comma, newline, or quote
           if (str.includes(',') || str.includes('\n') || str.includes('"')) {
@@ -248,6 +248,6 @@ export class ExportService {
     );
 
     // Add BOM for Excel UTF-8 compatibility
-    return '\ufeff' + [headers.join(','), ...rows].join('\n');
+    return `\ufeff${  [headers.join(','), ...rows].join('\n')}`;
   }
 }

@@ -19,7 +19,7 @@
  * - Admin-only guard
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 // ---------------------------------------------------------------------------
 // Define mock repository BEFORE jest.mock (hoisted)

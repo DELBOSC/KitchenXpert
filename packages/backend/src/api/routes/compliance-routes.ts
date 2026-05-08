@@ -6,10 +6,11 @@
 
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
-import { complianceController } from '../controllers/compliance-controller';
+
 import { authenticate, requireRole } from '../../middleware/auth-middleware';
-import { validateParams, validateQuery } from '../middleware/validation-middleware';
+import { complianceController } from '../controllers/compliance-controller';
 import { generalRateLimiter } from '../middleware/rate-limit-middleware';
+import { validateParams, validateQuery } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 

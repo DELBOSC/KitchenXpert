@@ -13,7 +13,8 @@
  * - Redacts sensitive query parameters (token, key, secret, password)
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
+
 import { logger } from '../../utils/logger';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -52,8 +53,8 @@ function redactUrl(originalUrl: string): string {
  * Get the appropriate winston log level based on HTTP status code.
  */
 function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
-  if (statusCode >= 500) return 'error';
-  if (statusCode >= 400) return 'warn';
+  if (statusCode >= 500) {return 'error';}
+  if (statusCode >= 400) {return 'warn';}
   return 'info';
 }
 
@@ -61,8 +62,8 @@ function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
  * Format bytes into a human-readable string for dev output.
  */
 function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
+  if (bytes < 1024) {return `${bytes}B`;}
+  if (bytes < 1024 * 1024) {return `${(bytes / 1024).toFixed(1)}KB`;}
   return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
 }
 
@@ -70,10 +71,10 @@ function formatBytes(bytes: number): string {
  * Get color code for status in dev format.
  */
 function statusColor(status: number): string {
-  if (status >= 500) return '\x1b[31m'; // red
-  if (status >= 400) return '\x1b[33m'; // yellow
-  if (status >= 300) return '\x1b[36m'; // cyan
-  if (status >= 200) return '\x1b[32m'; // green
+  if (status >= 500) {return '\x1b[31m';} // red
+  if (status >= 400) {return '\x1b[33m';} // yellow
+  if (status >= 300) {return '\x1b[36m';} // cyan
+  if (status >= 200) {return '\x1b[32m';} // green
   return '\x1b[0m';
 }
 

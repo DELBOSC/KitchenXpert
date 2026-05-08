@@ -1,9 +1,9 @@
-import { Router, type Router as RouterType } from 'express';
-import { Request, Response } from 'express';
-import { authenticate } from '../middleware/auth-middleware';
-import { aiRateLimiter } from '../middleware/rate-limit-middleware';
-import { asyncHandler } from '../middleware/error-middleware';
+import { Router, type Router as RouterType , type Request, type Response } from 'express';
+
 import { AdminInsightsService } from '../../services/ai/admin-insights.service';
+import { authenticate } from '../middleware/auth-middleware';
+import { asyncHandler } from '../middleware/error-middleware';
+import { aiRateLimiter } from '../middleware/rate-limit-middleware';
 
 const router: RouterType = Router();
 const insightsService = new AdminInsightsService();

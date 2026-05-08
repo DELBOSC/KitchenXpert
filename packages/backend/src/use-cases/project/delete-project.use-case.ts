@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const DeleteProjectSchema = z.object({
   projectId: z.string().uuid(),
@@ -23,7 +25,7 @@ export class DeleteProjectUseCase implements UseCase<DeleteProjectInput, { ok: t
       where: { id: projectId },
       select: { userId: true },
     });
-    if (!project) return err(DomainErrors.notFound('Project'));
+    if (!project) {return err(DomainErrors.notFound('Project'));}
     if (project.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this project'));
     }

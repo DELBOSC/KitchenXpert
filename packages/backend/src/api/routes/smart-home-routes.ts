@@ -1,8 +1,9 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
+import { smartHomeController } from '../controllers/smart-home-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { validateParams, validateBody } from '../middleware/validation-middleware';
-import { smartHomeController } from '../controllers/smart-home-controller';
 
 const router: RouterType = Router();
 

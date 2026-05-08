@@ -3,8 +3,7 @@
  * Creates users and authentication tables
  */
 
-import type { Migration } from './migration-runner';
-import type { Transaction } from './migration-runner';
+import type { Migration , Transaction } from './migration-runner';
 
 export const UsersMigration: Migration = {
   id: '20240502-users',

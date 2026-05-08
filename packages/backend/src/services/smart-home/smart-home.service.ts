@@ -10,10 +10,11 @@
  */
 
 import { Prisma } from '@prisma/client';
+
 import { prisma } from '../../database/client';
+import logger from '../../utils/logger';
 import AnthropicService from '../ai/anthropic.service';
 import { SYSTEM_PROMPTS, PROMPT_VERSIONS } from '../ai/prompt-templates';
-import logger from '../../utils/logger';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -314,7 +315,7 @@ export class SmartHomeService {
    */
   async getPlan(kitchenId: string): Promise<SmartHomePlanData | null> {
     const record = await prisma.smartHomePlan.findUnique({ where: { kitchenId } });
-    if (!record) return null;
+    if (!record) {return null;}
 
     const devices = (record.devices as unknown as PlacedDevice[]) ?? [];
     const matterDevices = (record.matterDevices as unknown as PlacedDevice[]) ?? [];

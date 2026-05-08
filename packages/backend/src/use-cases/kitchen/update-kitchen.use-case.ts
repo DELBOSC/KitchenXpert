@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const UpdateKitchenSchema = z.object({
   kitchenId: z.string().uuid(),
@@ -31,7 +33,7 @@ export class UpdateKitchenUseCase implements UseCase<UpdateKitchenInput, unknown
       where: { id: kitchenId, deletedAt: null },
       select: { userId: true },
     });
-    if (!kitchen) return err(DomainErrors.notFound('Kitchen'));
+    if (!kitchen) {return err(DomainErrors.notFound('Kitchen'));}
     if (kitchen.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this kitchen'));
     }

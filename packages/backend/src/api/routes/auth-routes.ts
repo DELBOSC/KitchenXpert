@@ -1,9 +1,10 @@
-import { Router, IRouter } from 'express';
+import { Router, type IRouter } from 'express';
 import { z } from 'zod';
+
 import { authController } from '../controllers/auth-controller';
 import { authenticate } from '../middleware/auth-middleware';
-import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';
 import { loginRateLimiter, authRateLimiter, passwordResetRateLimiter } from '../middleware/rate-limit-middleware';
+import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';
 
 const router: IRouter = Router();
 

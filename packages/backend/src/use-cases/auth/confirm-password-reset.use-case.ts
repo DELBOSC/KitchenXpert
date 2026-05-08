@@ -1,9 +1,12 @@
-import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+
+import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const ConfirmPasswordResetSchema = z.object({
   token: z.string().min(1),
@@ -28,7 +31,7 @@ export class ConfirmPasswordResetUseCase implements UseCase<ConfirmPasswordReset
     const record = await this.prisma.passwordResetToken.findFirst({
       where: { token: hashed, usedAt: null, expiresAt: { gt: new Date() } },
     });
-    if (!record) return err(DomainErrors.validation('Invalid or expired reset token'));
+    if (!record) {return err(DomainErrors.validation('Invalid or expired reset token'));}
 
     const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
 

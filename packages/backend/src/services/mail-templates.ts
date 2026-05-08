@@ -547,7 +547,7 @@ function escapeHtml(text: string): string {
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
-    currency: currency,
+    currency,
   }).format(amount);
 }
 

@@ -1,4 +1,4 @@
-import { PrismaClient, Material } from '@prisma/client';
+import { type PrismaClient, type Material } from '@prisma/client';
 
 /**
  * Material Repository

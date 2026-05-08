@@ -3,8 +3,9 @@
  * Handles database seeding for development and testing
  */
 
-import type { Connection, Transaction } from '../connection';
 import logger from '../../utils/logger';
+
+import type { Connection, Transaction } from '../connection';
 
 // Re-export Transaction for seeds to use
 export type { Transaction } from '../connection';

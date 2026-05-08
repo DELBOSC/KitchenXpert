@@ -110,7 +110,7 @@ class AiServiceClient {
    * Performs a health check if status is unknown.
    */
   async isAvailable(): Promise<boolean> {
-    if (this.healthy !== null) return this.healthy;
+    if (this.healthy !== null) {return this.healthy;}
     try {
       await this.healthCheck();
       return this.healthy === true;

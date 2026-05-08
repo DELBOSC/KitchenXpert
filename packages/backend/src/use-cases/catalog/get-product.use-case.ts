@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const GetProductSchema = z.object({
   productId: z.string().uuid(),
@@ -20,7 +22,7 @@ export class GetProductUseCase implements UseCase<GetProductInput, unknown> {
         provider: { select: { id: true, name: true } },
       },
     });
-    if (!product) return err(DomainErrors.notFound('Product'));
+    if (!product) {return err(DomainErrors.notFound('Product'));}
     return ok(product);
   }
 }

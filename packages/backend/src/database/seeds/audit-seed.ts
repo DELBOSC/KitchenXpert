@@ -3,8 +3,9 @@
  * Sample audit logs for testing and demo
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const AuditSeed: Seed = {
   id: 'audit-seed',

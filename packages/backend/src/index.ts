@@ -1,33 +1,31 @@
 // =============================================================================
-// ENVIRONMENT VALIDATION - MUST RUN FIRST
-// This validates all required environment variables before any other code runs
+// ENVIRONMENT VALIDATION + TELEMETRY — MUST RUN BEFORE OTHER IMPORTS
+//
+// `validateEnv` exits the process if a required var is missing, so it has to
+// fire before anything else that might dereference the missing var. OTel
+// auto-instrumentation also has to wrap pg/express *before* they're imported,
+// so we keep it on this same first import line.
 // =============================================================================
+import { authService } from './auth/auth.service';
+import { config } from './config/app-config';
 import { validateEnv } from './config/env-validator';
 import { initTelemetry } from './core/telemetry';
+import { prisma, connectPrisma, disconnectPrisma } from './database/client';
+import { connectDatabase } from './database/connection';
+import { getRedisClient, closeRedisConnection } from './database/redis-client';
+import { startGdprPurgeScheduler, stopGdprPurgeScheduler } from './jobs/gdpr-scheduler';
+import { jobQueue } from './jobs/job-queue';
+import { startProviderSyncScheduler, stopProviderSyncScheduler } from './jobs/provider-sync-scheduler';
+import { PrismaUserRepository } from './repositories';
+import { createServer } from './server';
+import { createEmailTokenService } from './services/email-token.service';
+import logger from './utils/logger';
+import { CollaborationWebSocketServer } from './websocket/server';
 
-// Validate environment variables immediately - exits process if invalid
 validateEnv();
 
-// Start OpenTelemetry BEFORE importing instrumented libraries (pg, express).
-// No-op when OTEL_EXPORTER_OTLP_ENDPOINT isn't set.
+// Start OpenTelemetry BEFORE bootstrap; no-op when OTEL_EXPORTER_OTLP_ENDPOINT isn't set.
 void initTelemetry();
-
-// =============================================================================
-// APPLICATION IMPORTS - Only after env validation passes
-// =============================================================================
-import { createServer } from './server';
-import { CollaborationWebSocketServer } from './websocket/server';
-import { config } from './config/app-config';
-import { connectDatabase } from './database/connection';
-import { prisma, connectPrisma, disconnectPrisma } from './database/client';
-import { getRedisClient, closeRedisConnection } from './database/redis-client';
-import { PrismaUserRepository } from './repositories';
-import { authService } from './auth/auth.service';
-import { createEmailTokenService } from './services/email-token.service';
-import { jobQueue } from './jobs/job-queue';
-import { startGdprPurgeScheduler, stopGdprPurgeScheduler } from './jobs/gdpr-scheduler';
-import { startProviderSyncScheduler, stopProviderSyncScheduler } from './jobs/provider-sync-scheduler';
-import logger from './utils/logger';
 
 /**
  * Attempt to connect to the database with exponential backoff retry.
@@ -207,4 +205,6 @@ process.on('uncaughtException', (error: Error) => {
   setTimeout(() => process.exit(1), 1000);
 });
 
-bootstrap();
+// Top-level promise: any unhandled rejection is logged below; the `void`
+// makes the floating-promise intent explicit so eslint stops flagging it.
+void bootstrap();

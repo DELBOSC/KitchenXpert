@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import {
   installerService,
   InstallerServiceError,
 } from '../../services/installer/installer.service';
 import _logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * Installer Marketplace Controller

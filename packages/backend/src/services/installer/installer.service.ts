@@ -133,16 +133,16 @@ export class InstallerService {
               ? this.calculateDistanceKm(
                   latitude,
                   longitude,
-                  installer.latitude!,
-                  installer.longitude!,
+                  installer.latitude,
+                  installer.longitude,
                 )
               : null;
           return { ...installer, distance: dist };
         })
         .filter((inst) => inst.distance === null || inst.distance <= radiusKm)
         .sort((a, b) => {
-          if (a.distance === null) return 1;
-          if (b.distance === null) return -1;
+          if (a.distance === null) {return 1;}
+          if (b.distance === null) {return -1;}
           return a.distance - b.distance;
         });
 
@@ -469,14 +469,14 @@ export class InstallerService {
 
     const updateData: Record<string, unknown> = {};
 
-    if (data.status !== undefined) updateData.status = data.status;
-    if (data.estimatedCost !== undefined) updateData.estimatedCost = data.estimatedCost;
-    if (data.finalCost !== undefined) updateData.finalCost = data.finalCost;
-    if (data.startDate !== undefined) updateData.startDate = new Date(data.startDate);
-    if (data.endDate !== undefined) updateData.endDate = new Date(data.endDate);
-    if (data.notes !== undefined) updateData.notes = data.notes;
-    if (data.dxfFileUrl !== undefined) updateData.dxfFileUrl = data.dxfFileUrl;
-    if (data.bomFileUrl !== undefined) updateData.bomFileUrl = data.bomFileUrl;
+    if (data.status !== undefined) {updateData.status = data.status;}
+    if (data.estimatedCost !== undefined) {updateData.estimatedCost = data.estimatedCost;}
+    if (data.finalCost !== undefined) {updateData.finalCost = data.finalCost;}
+    if (data.startDate !== undefined) {updateData.startDate = new Date(data.startDate);}
+    if (data.endDate !== undefined) {updateData.endDate = new Date(data.endDate);}
+    if (data.notes !== undefined) {updateData.notes = data.notes;}
+    if (data.dxfFileUrl !== undefined) {updateData.dxfFileUrl = data.dxfFileUrl;}
+    if (data.bomFileUrl !== undefined) {updateData.bomFileUrl = data.bomFileUrl;}
 
     const updated = await prisma.installationProject.update({
       where: { id: projectId },

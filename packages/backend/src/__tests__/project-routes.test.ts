@@ -16,9 +16,9 @@
  * - GET /projects/:id/stats — project statistics
  */
 
-import request from 'supertest';
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -164,8 +164,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Import after mocks
-import projectRoutes from '../api/routes/project-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import projectRoutes from '../api/routes/project-routes';
 
 // ==================== TEST APP SETUP ====================
 
@@ -881,7 +881,7 @@ describe('Project Routes', () => {
     });
 
     it('should return 400 for email exceeding 255 characters', async () => {
-      const longEmail = 'a'.repeat(246) + '@test.com';
+      const longEmail = `${'a'.repeat(246)  }@test.com`;
 
       const response = await authedRequest(app)
         .post('/projects/project-1/collaborators')

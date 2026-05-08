@@ -3,8 +3,8 @@
  * Handles in-app notifications, push notifications, and notification preferences
  */
 
-import logger from '../utils/logger';
 import { getMailService } from './mail.service';
+import logger from '../utils/logger';
 
 export interface Notification {
   id: string;
@@ -419,7 +419,7 @@ export class NotificationService {
 
   async getPreferences(userId: string): Promise<NotificationPreferences> {
     const prefs = await this.repository.getPreferences(userId);
-    if (prefs) return prefs;
+    if (prefs) {return prefs;}
 
     return {
       userId,

@@ -1,5 +1,5 @@
-import rateLimit, { RateLimitRequestHandler, Options } from 'express-rate-limit';
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
+import rateLimit, { type RateLimitRequestHandler, type Options } from 'express-rate-limit';
 
 /**
  * Rate Limiting Middleware for KitchenXpert API

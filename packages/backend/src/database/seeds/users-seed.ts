@@ -9,10 +9,14 @@
  * NOTE: Uses bcrypt for password hashing, matching the production auth system.
  */
 
-import type { Seed, Transaction } from './seed-runner';
-import logger from '../../utils/logger';
-import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+
+import bcrypt from 'bcrypt';
+
+import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
+
 
 const SALT_ROUNDS = 12;
 

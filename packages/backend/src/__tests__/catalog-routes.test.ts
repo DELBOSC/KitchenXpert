@@ -27,7 +27,7 @@
  * - GET /catalog/admin/stats (admin-only stats)
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 // ---------------------------------------------------------------------------
 // Define mock repositories BEFORE jest.mock (hoisted)

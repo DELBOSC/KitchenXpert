@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
-import { ProjectRepository } from '../../repositories/project-repository';
-import { asyncHandler } from '../middleware/error-middleware';
-import { prisma } from '../../database/client';
-import { getMailService } from '../../services/mail.service';
+import { type Request, type Response } from 'express';
+
 import { config } from '../../config/app-config';
+import { prisma } from '../../database/client';
+import { ProjectRepository } from '../../repositories/project-repository';
+import { getMailService } from '../../services/mail.service';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 const projectRepository = new ProjectRepository(prisma);
 
@@ -71,7 +72,7 @@ export class ProjectController {
    */
   getById = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string, true);
-    if (!project) return;
+    if (!project) {return;}
 
     res.status(200).json({ success: true, data: project });
   });
@@ -111,7 +112,7 @@ export class ProjectController {
    */
   update = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     const { name, description, status, budget, currency, deadline, metadata } = req.body;
 
@@ -138,7 +139,7 @@ export class ProjectController {
    */
   delete = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     await projectRepository.delete(project.id);
 
@@ -151,7 +152,7 @@ export class ProjectController {
    */
   updateStatus = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     const { status } = req.body;
     const updated = await projectRepository.updateStatus(project.id, status);
@@ -169,7 +170,7 @@ export class ProjectController {
    */
   duplicate = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     const { name } = req.body;
     const duplicated = await projectRepository.duplicate(project.id, name);
@@ -187,7 +188,7 @@ export class ProjectController {
    */
   getCollaborators = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     const collaborators = await projectRepository.getCollaborators(project.id);
 
@@ -200,7 +201,7 @@ export class ProjectController {
    */
   addCollaborator = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     const { email, role } = req.body;
     const collaborator = await projectRepository.addCollaborator(project.id, email, role);
@@ -243,7 +244,7 @@ export class ProjectController {
    */
   removeCollaborator = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     const email = req.params.email as string;
     await projectRepository.removeCollaborator(project.id, email);
@@ -273,7 +274,7 @@ export class ProjectController {
    */
   getKitchens = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) return;
+    if (!project) {return;}
 
     const full = await projectRepository.findById(project.id, true);
 

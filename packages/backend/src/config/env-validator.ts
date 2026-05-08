@@ -10,9 +10,10 @@
  *   validateEnv(); // Call this FIRST, before other imports
  */
 
-import { z } from 'zod';
-import dotenv from 'dotenv';
 import path from 'path';
+
+import dotenv from 'dotenv';
+import { z } from 'zod';
 
 // Load environment variables from .env file
 // Try CWD first (packages/backend/), then monorepo root
@@ -55,7 +56,7 @@ const redisUrlSchema = z
   .optional()
   .refine(
     (url) => {
-      if (!url) return true; // Optional in development
+      if (!url) {return true;} // Optional in development
       try {
         const parsed = new URL(url);
         return parsed.protocol === 'redis:' || parsed.protocol === 'rediss:';

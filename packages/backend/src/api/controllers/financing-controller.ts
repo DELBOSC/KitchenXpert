@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { financingService } from '../../services/financing/financing.service';
 import _logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * Financing Controller

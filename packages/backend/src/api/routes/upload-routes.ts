@@ -5,9 +5,10 @@
 
 import { Router, type Router as RouterType } from 'express';
 import rateLimit from 'express-rate-limit';
+
+import { uploadSingle, handleUploadError } from '../../middleware/upload-middleware';
 import { uploadController } from '../controllers/upload-controller';
 import { authenticate } from '../middleware/auth-middleware';
-import { uploadSingle, handleUploadError } from '../../middleware/upload-middleware';
 
 const uploadRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

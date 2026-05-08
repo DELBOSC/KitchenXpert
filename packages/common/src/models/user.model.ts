@@ -180,7 +180,7 @@ export class UserModel implements User {
       firstName: registration.firstName,
       lastName: registration.lastName,
       role: 'user',
-      status: 'pending_verification',
+      status: 'pending',
       language: registration.language || 'en',
       timezone: registration.timezone || 'UTC',
       emailVerified: false,

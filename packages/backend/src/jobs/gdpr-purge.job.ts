@@ -30,8 +30,9 @@
  * typically at off-peak hours.
  */
 
-import type { PrismaClient } from '@prisma/client';
 import { createModuleLogger } from '../utils/logger';
+
+import type { PrismaClient } from '@prisma/client';
 
 const logger = createModuleLogger('gdpr-purge');
 

@@ -3,8 +3,9 @@
  * Handles database schema migrations
  */
 
-import type { Connection, Transaction } from '../connection';
 import logger from '../../utils/logger';
+
+import type { Connection, Transaction } from '../connection';
 
 // Re-export Transaction for migrations to use
 export type { Transaction } from '../connection';

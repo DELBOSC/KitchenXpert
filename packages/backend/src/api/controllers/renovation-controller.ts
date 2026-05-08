@@ -8,7 +8,8 @@
  * - Listing user's renovation projects
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
+
 import { RenovationService } from '../../services/ai/renovation.service';
 import logger from '../../utils/logger';
 
@@ -113,7 +114,7 @@ class RenovationController {
         return;
       }
 
-      const file = req.file as Express.Multer.File | undefined;
+      const file = req.file;
 
       if (!file) {
         res.status(400).json({
@@ -244,7 +245,7 @@ class RenovationController {
 
       // Generate comparison
       const comparison = await renovationService.generateComparison(
-        projectData.detectedLayout as any,
+        projectData.detectedLayout,
         projectData.afterDesignId,
       );
 

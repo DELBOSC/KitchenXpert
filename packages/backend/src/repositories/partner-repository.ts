@@ -1,4 +1,5 @@
-import { PrismaClient, Partner, PartnerIntegration, Prisma } from '@prisma/client';
+import { type PrismaClient, type Partner, type PartnerIntegration, type Prisma } from '@prisma/client';
+
 import { encrypt, decrypt, isEncrypted } from '../utils/crypto';
 
 /**
@@ -120,7 +121,7 @@ export class PartnerRepository {
   async toggle(id: string): Promise<Partner> {
     return this.prisma.$transaction(async (tx) => {
       const partner = await tx.partner.findUnique({ where: { id } });
-      if (!partner) throw new Error('Partner not found');
+      if (!partner) {throw new Error('Partner not found');}
       return tx.partner.update({
         where: { id },
         data: { isActive: !partner.isActive },
@@ -138,7 +139,7 @@ export class PartnerRepository {
     const partner = await this.prisma.partner.findFirst({
       where: { apiKey, isActive: true }
     });
-    if (!partner) return null;
+    if (!partner) {return null;}
 
     try {
       const storedSecret = isEncrypted(partner.apiSecret)

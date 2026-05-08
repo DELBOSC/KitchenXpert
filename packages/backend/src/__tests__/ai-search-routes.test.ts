@@ -8,9 +8,9 @@
  * - Service integration (AICatalogSearchService)
  */
 
-import request from 'supertest';
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -133,8 +133,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Import after mocks
-import aiSearchRoutes from '../api/routes/ai-search-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import aiSearchRoutes from '../api/routes/ai-search-routes';
 
 // ==================== TEST APP SETUP ====================
 

@@ -9,9 +9,9 @@
  * - Missing query parameter validation
  */
 
-import request from 'supertest';
-import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 

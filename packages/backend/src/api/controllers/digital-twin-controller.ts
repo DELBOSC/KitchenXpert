@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
-import logger from '../../utils/logger';
 import { DigitalTwinService } from '../../services/digital-twin/digital-twin.service';
+import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * DigitalTwinController

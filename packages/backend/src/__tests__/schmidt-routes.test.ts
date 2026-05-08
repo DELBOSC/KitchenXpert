@@ -8,8 +8,8 @@
  * - 404 when provider not configured
  */
 
-import request from 'supertest';
 import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -88,8 +88,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Import after mocks
-import { createProviderRoutes } from '../api/routes/provider-routes-factory';
 import { errorHandler } from '../api/middleware/error-middleware';
+import { createProviderRoutes } from '../api/routes/provider-routes-factory';
 
 // ==================== SETUP ====================
 

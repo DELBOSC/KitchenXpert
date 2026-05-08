@@ -16,12 +16,13 @@
  * unchanged rows because Prisma compares values.
  */
 
-import type { PrismaClient } from '@prisma/client';
 import { prisma as defaultPrisma } from '../database/client';
 import { createModuleLogger } from '../utils/logger';
 import { MockSyncSource } from './sync-sources/mock-sync-source';
 import { ScraperBridgeSyncSource } from './sync-sources/scraper-bridge-source';
+
 import type { SyncSource } from './provider-sync.types';
+import type { PrismaClient } from '@prisma/client';
 
 const logger = createModuleLogger('provider-sync');
 
@@ -95,23 +96,23 @@ async function syncOne(
   await prisma.$transaction(async (tx) => {
     for (const u of updates.products) {
       const data: Record<string, unknown> = {};
-      if (u.price !== undefined) data.price = u.price;
-      if (u.availability) data.availability = u.availability;
-      if (u.name) data.name = u.name;
-      if (Object.keys(data).length === 0) continue;
+      if (u.price !== undefined) {data.price = u.price;}
+      if (u.availability) {data.availability = u.availability;}
+      if (u.name) {data.name = u.name;}
+      if (Object.keys(data).length === 0) {continue;}
       const result = await tx.product.updateMany({ where: { sku: u.sku }, data });
-      if (result.count > 0) productsUpdated += result.count;
+      if (result.count > 0) {productsUpdated += result.count;}
     }
     for (const u of updates.appliances) {
       const data: Record<string, unknown> = {};
-      if (u.price !== undefined) data.price = u.price;
-      if (u.availability) data.availability = u.availability;
-      if (Object.keys(data).length === 0) continue;
+      if (u.price !== undefined) {data.price = u.price;}
+      if (u.availability) {data.availability = u.availability;}
+      if (Object.keys(data).length === 0) {continue;}
       const result = await tx.appliance.updateMany({
         where: { brand: u.brand, model: u.model },
         data,
       });
-      if (result.count > 0) appliancesUpdated += result.count;
+      if (result.count > 0) {appliancesUpdated += result.count;}
     }
     // Stamp lastSyncAt on every catalog tied to this provider so the
     // /sync/status endpoint reflects the latest run.

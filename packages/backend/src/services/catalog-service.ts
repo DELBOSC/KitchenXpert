@@ -237,7 +237,7 @@ export class CatalogService {
    */
   async getRelatedProducts(productId: string, limit: number = 6): Promise<CatalogItem[]> {
     const product = await this.repository.findById(productId);
-    if (!product) return [];
+    if (!product) {return [];}
 
     const result = await this.searchProducts({
       category: product.category,

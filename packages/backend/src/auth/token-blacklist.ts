@@ -32,6 +32,7 @@
  */
 
 import crypto from 'crypto';
+
 import logger from '../utils/logger';
 
 /**
@@ -171,7 +172,7 @@ export class MemoryTokenBlacklist implements ITokenBlacklist {
     try {
       const { TokenBlacklistService } = await import('../services/token-blacklist.service');
       const result = await TokenBlacklistService.isBlacklisted(token);
-      if (result) return true;
+      if (result) {return true;}
     } catch {
       // Fall back to memory check
     }
@@ -376,7 +377,7 @@ export function getTokenBlacklist(): ITokenBlacklist {
     if (redisUrl) {
       try {
         // Dynamic import to avoid requiring ioredis when not used
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
         const Redis = require('ioredis');
         const redisClient = new Redis(redisUrl);
         tokenBlacklistInstance = new RedisTokenBlacklist(redisClient);
@@ -409,7 +410,7 @@ export function setTokenBlacklist(blacklist: ITokenBlacklist): void {
 export function getTokenExpiration(token: string): Date | null {
   try {
     const parts = token.split('.');
-    if (parts.length !== 3) return null;
+    if (parts.length !== 3) {return null;}
 
     const payload = JSON.parse(Buffer.from(parts[1]!, 'base64url').toString('utf8'));
     if (payload.exp) {
@@ -429,7 +430,7 @@ export function getTokenExpiration(token: string): Date | null {
 export function getTokenIssuedAt(token: string): Date | null {
   try {
     const parts = token.split('.');
-    if (parts.length !== 3) return null;
+    if (parts.length !== 3) {return null;}
 
     const payload = JSON.parse(Buffer.from(parts[1]!, 'base64url').toString('utf8'));
     if (payload.iat) {

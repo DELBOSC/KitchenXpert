@@ -1,7 +1,9 @@
-import Anthropic from '@anthropic-ai/sdk';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
+
+import type Anthropic from '@anthropic-ai/sdk';
 
 /** Sanitize user chat message */
 function sanitizeMessage(message: string): string {
@@ -455,7 +457,7 @@ ${items || '(aucun element place)'}`;
 
     // Find the tool definition
     const toolDef = TOOL_USE_3D_TOOLS.find(t => t.name === toolName);
-    if (!toolDef) return false;
+    if (!toolDef) {return false;}
 
     const schema = toolDef.input_schema as {
       properties: Record<string, unknown>;

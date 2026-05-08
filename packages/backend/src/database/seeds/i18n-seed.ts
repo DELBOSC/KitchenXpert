@@ -3,8 +3,9 @@
  * Sample translations for the application
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const I18nSeed: Seed = {
   id: 'i18n-seed',

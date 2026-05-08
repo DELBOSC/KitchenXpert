@@ -1,7 +1,8 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
-import { authenticate } from '../middleware/auth-middleware';
+
 import { digitalTwinController } from '../controllers/digital-twin-controller';
+import { authenticate } from '../middleware/auth-middleware';
 import { validateParams } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();

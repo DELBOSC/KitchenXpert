@@ -1,4 +1,4 @@
-import { PrismaClient, Permission, Prisma } from '@prisma/client';
+import { type PrismaClient, type Permission, type Prisma } from '@prisma/client';
 
 /**
  * Permission Repository

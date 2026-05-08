@@ -11,7 +11,8 @@
  * the AnthropicService for complex spatial analysis when needed.
  */
 
-import { Prisma } from '@prisma/client';
+import { type Prisma } from '@prisma/client';
+
 import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
 import { AnthropicService } from '../ai/anthropic.service';
@@ -510,16 +511,16 @@ export class ComplianceService {
     const meta = metadata as Record<string, unknown> | undefined;
     const metaType = (meta?.elementType as string || '').toLowerCase();
 
-    if (metaType) return metaType;
-    if (cat.includes('hob') || cat.includes('plaque') || cat.includes('cooktop') || nm.includes('plaque')) return 'hob';
-    if (cat.includes('oven') || cat.includes('four') || nm.includes('four')) return 'oven';
-    if (cat.includes('dishwasher') || cat.includes('lave-vaisselle') || nm.includes('lave-vaisselle')) return 'dishwasher';
-    if (cat.includes('fridge') || cat.includes('réfrigérateur') || cat.includes('refriger') || nm.includes('réfrigérateur')) return 'fridge';
-    if (cat.includes('hood') || cat.includes('hotte') || nm.includes('hotte')) return 'hood';
-    if (cat.includes('sink') || cat.includes('évier') || nm.includes('évier')) return 'sink';
-    if (cat.includes('outlet') || cat.includes('prise') || nm.includes('prise')) return 'outlet';
-    if (cat.includes('window') || cat.includes('fenêtre') || nm.includes('fenêtre')) return 'window';
-    if (cat.includes('cabinet') || cat.includes('meuble') || nm.includes('meuble')) return 'cabinet';
+    if (metaType) {return metaType;}
+    if (cat.includes('hob') || cat.includes('plaque') || cat.includes('cooktop') || nm.includes('plaque')) {return 'hob';}
+    if (cat.includes('oven') || cat.includes('four') || nm.includes('four')) {return 'oven';}
+    if (cat.includes('dishwasher') || cat.includes('lave-vaisselle') || nm.includes('lave-vaisselle')) {return 'dishwasher';}
+    if (cat.includes('fridge') || cat.includes('réfrigérateur') || cat.includes('refriger') || nm.includes('réfrigérateur')) {return 'fridge';}
+    if (cat.includes('hood') || cat.includes('hotte') || nm.includes('hotte')) {return 'hood';}
+    if (cat.includes('sink') || cat.includes('évier') || nm.includes('évier')) {return 'sink';}
+    if (cat.includes('outlet') || cat.includes('prise') || nm.includes('prise')) {return 'outlet';}
+    if (cat.includes('window') || cat.includes('fenêtre') || nm.includes('fenêtre')) {return 'window';}
+    if (cat.includes('cabinet') || cat.includes('meuble') || nm.includes('meuble')) {return 'cabinet';}
     return 'unknown';
   }
 
@@ -528,10 +529,10 @@ export class ComplianceService {
     const meta = metadata as Record<string, unknown> | undefined;
     const metaSubType = meta?.subType as string | undefined;
 
-    if (metaSubType) return metaSubType;
-    if (combined.includes('gaz') || combined.includes('gas')) return 'gas';
-    if (combined.includes('induction')) return 'induction';
-    if (combined.includes('électrique') || combined.includes('electric') || combined.includes('vitrocéramique')) return 'electric';
+    if (metaSubType) {return metaSubType;}
+    if (combined.includes('gaz') || combined.includes('gas')) {return 'gas';}
+    if (combined.includes('induction')) {return 'induction';}
+    if (combined.includes('électrique') || combined.includes('electric') || combined.includes('vitrocéramique')) {return 'electric';}
     return undefined;
   }
 
@@ -618,7 +619,7 @@ export class ComplianceService {
 
     // Check metadata for circuit info
     for (const appliance of appliances) {
-      const meta = appliance.metadata as Record<string, unknown> | undefined;
+      const meta = appliance.metadata;
       const circuit = meta?.circuit as string | undefined;
       const amperage = meta?.amperage as number | undefined;
 
@@ -722,7 +723,7 @@ export class ComplianceService {
     }
 
     for (const outlet of outlets) {
-      const meta = outlet.metadata as Record<string, unknown> | undefined;
+      const meta = outlet.metadata;
       const hasGFCI = meta?.gfci as boolean | undefined;
 
       if (hasGFCI === false) {
@@ -1078,7 +1079,7 @@ export class ComplianceService {
       r => r.status === 'warning' && r.message.includes('[needs-spatial-analysis]'),
     );
 
-    if (unresolvedResults.length === 0) return;
+    if (unresolvedResults.length === 0) {return;}
 
     const prompt = `Analyze this kitchen configuration for building code compliance.
 Kitchen dimensions: ${kitchen.width}cm x ${kitchen.length}cm x ${kitchen.height}cm

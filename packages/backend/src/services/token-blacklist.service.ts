@@ -79,7 +79,7 @@ export class TokenBlacklistService {
     try {
       const redis = await getRedisClient();
       const blacklistedAt = await redis.get(`${BLACKLIST_PREFIX}user:${userId}`);
-      if (!blacklistedAt) return false;
+      if (!blacklistedAt) {return false;}
       return tokenIssuedAt < parseInt(blacklistedAt, 10);
     } catch (error) {
       logger.error('[TokenBlacklist] Failed to check user blacklist:', { error });

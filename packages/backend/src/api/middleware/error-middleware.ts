@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 
 // Re-export the canonical errorHandler from its single source of truth.
 // This avoids a duplicate global error handler while keeping existing imports working.

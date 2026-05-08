@@ -137,7 +137,7 @@ export class RoleService {
 
   async updateRole(id: string, data: Partial<RoleDefinition>): Promise<RoleDefinition | null> {
     const role = await this.repository.findById(id);
-    if (!role) return null;
+    if (!role) {return null;}
 
     if (role.isSystem && data.permissions) {
       throw new RoleServiceError('SYSTEM_ROLE', 'Cannot modify permissions of system role');
@@ -153,7 +153,7 @@ export class RoleService {
 
   async deleteRole(id: string): Promise<boolean> {
     const role = await this.repository.findById(id);
-    if (!role) return false;
+    if (!role) {return false;}
     if (role.isSystem) {
       throw new RoleServiceError('SYSTEM_ROLE', 'Cannot delete system role');
     }
@@ -174,7 +174,7 @@ export class RoleService {
     options?: { assignedBy?: string; expiresAt?: Date; scope?: RoleScope }
   ): Promise<boolean> {
     const role = await this.repository.findBySlug(roleSlug);
-    if (!role) throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');
+    if (!role) {throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');}
 
     return this.repository.assignRole({
       userId,
@@ -188,7 +188,7 @@ export class RoleService {
 
   async revokeRole(userId: string, roleSlug: string): Promise<boolean> {
     const role = await this.repository.findBySlug(roleSlug);
-    if (!role) throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');
+    if (!role) {throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');}
     return this.repository.revokeRole(userId, role.id);
   }
 
@@ -200,7 +200,7 @@ export class RoleService {
     const roles: RoleDefinition[] = [];
     for (const assignment of validAssignments) {
       const role = await this.getRoleById(assignment.roleId);
-      if (role) roles.push(role);
+      if (role) {roles.push(role);}
     }
 
     return roles.sort((a, b) => b.level - a.level);
@@ -272,7 +272,7 @@ export class RoleService {
 
   async getUsersByRole(roleSlug: string): Promise<string[]> {
     const role = await this.repository.findBySlug(roleSlug);
-    if (!role) return [];
+    if (!role) {return [];}
     return this.repository.getUsersByRole(role.id);
   }
 

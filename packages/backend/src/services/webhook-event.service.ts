@@ -5,8 +5,10 @@
  */
 
 import * as crypto from 'crypto';
+
+import { type WebhookEventType } from '@prisma/client';
+
 import { prisma } from '../database/client';
-import { WebhookEventType } from '@prisma/client';
 import logger from '../utils/logger';
 
 export interface WebhookPayload {
@@ -45,7 +47,7 @@ export class WebhookEventService {
         (w) => !w.partner || w.partner.isActive
       );
 
-      if (activeWebhooks.length === 0) return;
+      if (activeWebhooks.length === 0) {return;}
 
       const payload: WebhookPayload = {
         event,

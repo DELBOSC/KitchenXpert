@@ -1,4 +1,4 @@
-import { PrismaClient, QuestionnaireResponse } from '@prisma/client';
+import { type PrismaClient, type QuestionnaireResponse } from '@prisma/client';
 
 /**
  * Maps frontend section names to Prisma model fields
@@ -38,7 +38,7 @@ export class QuestionnaireRepository {
           where: { project: { userId, deletedAt: null } },
           orderBy: { updatedAt: 'desc' },
         });
-        if (existing) return existing;
+        if (existing) {return existing;}
 
         // Find the user's latest project
         let project = await tx.project.findFirst({
@@ -60,7 +60,7 @@ export class QuestionnaireRepository {
         const projectQuestionnaire = await tx.questionnaireResponse.findUnique({
           where: { projectId: project.id },
         });
-        if (projectQuestionnaire) return projectQuestionnaire;
+        if (projectQuestionnaire) {return projectQuestionnaire;}
 
         // Create a new questionnaire response
         return tx.questionnaireResponse.create({
@@ -70,7 +70,7 @@ export class QuestionnaireRepository {
     } catch (error) {
       // If duplicate key error from race condition, just fetch the existing one
       const existing = await this.findForUser(userId);
-      if (existing) return existing;
+      if (existing) {return existing;}
       throw error;
     }
   }
@@ -80,7 +80,7 @@ export class QuestionnaireRepository {
    */
   getSectionData(questionnaire: QuestionnaireResponse, section: string): unknown {
     const field = SECTION_FIELD_MAP[section];
-    if (!field) return null;
+    if (!field) {return null;}
     return (questionnaire as Record<string, unknown>)[field] ?? null;
   }
 

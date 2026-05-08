@@ -66,6 +66,7 @@ jest.mock('../utils/logger', () => ({
 // Import after mocks
 // ---------------------------------------------------------------------------
 import { CertifiedQuoteService } from '../services/quote/certified-quote.service';
+
 import type { CreateQuoteDto, QuoteLineItem } from '../services/quote/certified-quote.service';
 
 // ---------------------------------------------------------------------------

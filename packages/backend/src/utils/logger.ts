@@ -4,9 +4,10 @@
  * Winston-based logging for the backend
  */
 
-import winston from 'winston';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+
+import winston from 'winston';
 
 const LOG_DIR = process.env.LOG_FILE_PATH || './logs';
 const LOG_LEVEL = process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug');

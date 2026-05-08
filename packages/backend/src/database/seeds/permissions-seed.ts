@@ -7,8 +7,9 @@
  * Prisma table: "UserRole" — Columns: id, "userId", "roleId", "createdAt"
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const PermissionsSeed: Seed = {
   id: 'permissions-seed',

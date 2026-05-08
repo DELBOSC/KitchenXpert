@@ -4,9 +4,11 @@
  */
 
 import * as Y from 'yjs';
+
+import logger from '../utils/logger';
+
 import type { AuthenticatedSocket } from './server';
 import type { CollaborationUser, CursorPosition, WSMessage } from '@kitchenxpert/common';
-import logger from '../utils/logger';
 
 const USER_COLORS = [
   '#3b82f6', '#ef4444', '#10b981', '#f59e0b',
@@ -75,7 +77,7 @@ export class CollaborationRoomManager {
   leaveRoom(socket: AuthenticatedSocket): void {
     const { kitchenId, userId } = socket;
     const room = this.rooms.get(kitchenId);
-    if (!room) return;
+    if (!room) {return;}
 
     room.clients.delete(userId);
     room.users.delete(userId);
@@ -94,7 +96,7 @@ export class CollaborationRoomManager {
 
   handleMessage(socket: AuthenticatedSocket, message: WSMessage): void {
     const room = this.rooms.get(socket.kitchenId);
-    if (!room) return;
+    if (!room) {return;}
 
     room.lastActivity = Date.now();
 
@@ -148,7 +150,7 @@ export class CollaborationRoomManager {
 
   private destroyRoom(kitchenId: string): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) return;
+    if (!room) {return;}
 
     room.doc.destroy();
     room.clients.clear();
@@ -161,7 +163,7 @@ export class CollaborationRoomManager {
 
   private handleDocUpdate(room: CollaborationRoom, socket: AuthenticatedSocket, message: WSMessage): void {
     const payload = message.payload as { update: string };
-    if (!payload?.update) return;
+    if (!payload?.update) {return;}
 
     try {
       const update = Buffer.from(payload.update, 'base64');
@@ -182,7 +184,7 @@ export class CollaborationRoomManager {
 
   private handleCursorUpdate(room: CollaborationRoom, socket: AuthenticatedSocket, message: WSMessage): void {
     const cursor = message.payload as CursorPosition;
-    if (!cursor) return;
+    if (!cursor) {return;}
 
     cursor.userId = socket.userId;
     cursor.timestamp = Date.now();

@@ -402,7 +402,7 @@ export class Logger {
         buffer.push(entry);
       },
       flush: async () => {
-        if (buffer.length === 0) return;
+        if (buffer.length === 0) {return;}
         // Would send logs to remote endpoint
         buffer.length = 0;
       },

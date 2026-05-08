@@ -7,6 +7,7 @@
  */
 
 import { z } from 'zod';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
@@ -71,7 +72,7 @@ const StyleExtractionSchema = z.object({
 
 /** Sanitize user input to prevent prompt injection */
 export function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '') // Remove special chars
     .replace(/\n/g, ' ')       // Flatten newlines

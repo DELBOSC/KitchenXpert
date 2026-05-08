@@ -3,8 +3,9 @@
  * Runs all database seeds in order
  */
 
-import dotenv from 'dotenv';
 import path from 'path';
+
+import dotenv from 'dotenv';
 
 // Load .env from monorepo root (CWD may be packages/backend/)
 dotenv.config();

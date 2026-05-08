@@ -6,8 +6,9 @@
  * Columns: id, name, description, "isSystem", "createdAt", "updatedAt"
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const RolesSeed: Seed = {
   id: 'roles-seed',

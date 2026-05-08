@@ -121,10 +121,10 @@ function mockStockStatus(sku: string): 'in_stock' | 'low_stock' | 'out_of_stock'
   }
   const value = Math.abs(hash % 100);
 
-  if (value < 85) return 'in_stock';
-  if (value < 95) return 'low_stock';
-  if (value < 97) return 'out_of_stock';
-  if (value < 99) return 'backordered';
+  if (value < 85) {return 'in_stock';}
+  if (value < 95) {return 'low_stock';}
+  if (value < 97) {return 'out_of_stock';}
+  if (value < 99) {return 'backordered';}
   return 'discontinued';
 }
 
@@ -153,7 +153,7 @@ function mockStoreAvailability(
   overallStatus: string,
 ): StockResult['storeAvailability'] {
   const stores = MOCK_STORES[brand];
-  if (!stores) return undefined;
+  if (!stores) {return undefined;}
 
   let hash = 0;
   for (let i = 0; i < sku.length; i++) {

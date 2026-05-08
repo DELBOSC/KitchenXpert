@@ -3,18 +3,19 @@
  * Handles user CRUD operations, profile management, and user queries
  */
 
-import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+
+import bcrypt from 'bcrypt';
 
 const BCRYPT_ROUNDS = parseInt(process.env['BCRYPT_ROUNDS'] || '12', 10);
 
 function validatePasswordStrength(password: string): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  if (password.length < 8) errors.push('Password must be at least 8 characters long');
-  if (!/[A-Z]/.test(password)) errors.push('Password must contain at least one uppercase letter');
-  if (!/[a-z]/.test(password)) errors.push('Password must contain at least one lowercase letter');
-  if (!/[0-9]/.test(password)) errors.push('Password must contain at least one number');
-  if (!/[^A-Za-z0-9]/.test(password)) errors.push('Password must contain at least one special character');
+  if (password.length < 8) {errors.push('Password must be at least 8 characters long');}
+  if (!/[A-Z]/.test(password)) {errors.push('Password must contain at least one uppercase letter');}
+  if (!/[a-z]/.test(password)) {errors.push('Password must contain at least one lowercase letter');}
+  if (!/[0-9]/.test(password)) {errors.push('Password must contain at least one number');}
+  if (!/[^A-Za-z0-9]/.test(password)) {errors.push('Password must contain at least one special character');}
   return { valid: errors.length === 0, errors };
 }
 
@@ -247,7 +248,7 @@ export class UserService {
 
     // Find user with matching reset token
     const user = await this.repository.findByPasswordResetToken(hashedToken);
-    if (!user || !user.passwordResetExpiresAt || user.passwordResetExpiresAt < new Date()) {
+    if (!user?.passwordResetExpiresAt || user.passwordResetExpiresAt < new Date()) {
       throw new UserServiceError('INVALID_TOKEN', 'Password reset token is invalid or expired');
     }
 
@@ -343,7 +344,8 @@ export class UserService {
    * Remove sensitive fields from user object
    */
   private sanitizeUser(user: User): Omit<User, 'passwordHash'> {
-    const { passwordHash, ...sanitized } = user;
+    // Strip the password hash before returning to any caller.
+    const { passwordHash: _passwordHash, ...sanitized } = user;
     return sanitized;
   }
 }

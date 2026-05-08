@@ -111,6 +111,11 @@ module.exports = {
     'import/no-unused-modules': 'off',
     'import/no-deprecated': 'warn',
     'import/no-duplicates': 'error',
+    // These two rules misfire on packages where the default export and a
+    // named export share a name (`cookie`, `jsonwebtoken`, etc.). The
+    // warnings don't catch real issues — disable.
+    'import/no-named-as-default': 'off',
+    'import/no-named-as-default-member': 'off',
 
     // ===================
     // React Rules
@@ -186,9 +191,27 @@ module.exports = {
         jest: true,
       },
       rules: {
+        // Tests routinely use `any` for mocks; not worth the typing churn.
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        // Mocks return non-promises; `await` on them is harmless and keeps
+        // call-sites uniform.
+        '@typescript-eslint/await-thenable': 'off',
+        // Tests use `Function` to type generic callbacks — acceptable.
+        '@typescript-eslint/ban-types': 'off',
+        // CommonJS `require()` is common in test setup code.
+        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
+        // `void` an async test callback is valid; jest infers from return.
+        '@typescript-eslint/no-misused-promises': 'off',
+        // Mock factories often declare unused destructured vars; not bug-prone.
+        '@typescript-eslint/no-unused-vars': 'off',
+        // Tests sometimes call `obj.hasOwnProperty` on simple objects literals.
+        'no-prototype-builtins': 'off',
       },
     },
     // Config files

@@ -5,9 +5,10 @@
  * and price alerts.
  */
 
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { priceTrackerService } from '../../services/price-tracker/price-tracker.service';
+import { asyncHandler } from '../middleware/error-middleware';
 
 export class PriceTrackerController {
   /**

@@ -1,9 +1,12 @@
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
-import { DomainErrors, ok, err, type Result } from '../../core/result';
-import type { UseCase } from '../../core/use-case';
+
 import { jwtService } from '../../auth/jwt.service';
+import { DomainErrors, ok, err, type Result } from '../../core/result';
+
+import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
+
 
 export const LoginSchema = z.object({
   email: z.string().email().transform((e) => e.toLowerCase()),
@@ -29,11 +32,11 @@ export class LoginUseCase implements UseCase<LoginInput, LoginOutput> {
     const user = await this.prisma.user.findUnique({ where: { email: input.email } });
     // Hash the input password against a fixed dummy hash when no user exists,
     // so timing of the response stays constant regardless of email validity.
-    const dummyHash = '$2b$12$' + 'X'.repeat(53);
+    const dummyHash = `$2b$12$${  'X'.repeat(53)}`;
     const passwordOk = await bcrypt.compare(input.password, user?.password ?? dummyHash);
 
-    if (!user || !passwordOk) return err(DomainErrors.unauthorized('Invalid credentials'));
-    if (user.status !== 'active') return err(DomainErrors.unauthorized('Account is not active'));
+    if (!user || !passwordOk) {return err(DomainErrors.unauthorized('Invalid credentials'));}
+    if (user.status !== 'active') {return err(DomainErrors.unauthorized('Account is not active'));}
 
     await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
 

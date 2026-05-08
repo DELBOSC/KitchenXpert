@@ -3,7 +3,7 @@
  * Tests for dashboard, user management, and system operations
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 // Create comprehensive mock prisma client with all models used by admin-controller
 const mockPrisma = {

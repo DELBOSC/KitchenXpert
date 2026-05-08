@@ -1,7 +1,9 @@
-import Anthropic from '@anthropic-ai/sdk';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
+
+import type Anthropic from '@anthropic-ai/sdk';
 
 /** Sanitize user chat message */
 function sanitizeMessage(message: string): string {
@@ -174,7 +176,7 @@ ${items || '(aucun element place)'}`;
       let toolUse: { name: string; input: Record<string, unknown> } | undefined;
 
       for (const block of result.content) {
-        if (block.type === 'text') responseText += block.text;
+        if (block.type === 'text') {responseText += block.text;}
         if (block.type === 'tool_use') {
           toolUse = { name: block.name, input: block.input as Record<string, unknown> };
         }

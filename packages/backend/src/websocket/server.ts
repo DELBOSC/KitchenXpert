@@ -3,12 +3,13 @@
  * Handles real-time collaboration over WebSocket with JWT cookie auth
  */
 
-import { Server as HTTPServer } from 'http';
-import { WebSocketServer, WebSocket } from 'ws';
-import { IncomingMessage } from 'http';
+import { type Server as HTTPServer , type IncomingMessage } from 'http';
+
 import cookie from 'cookie';
-import { jwtService } from '../auth/jwt.service';
+import { WebSocketServer, type WebSocket } from 'ws';
+
 import { CollaborationRoomManager } from './room-manager';
+import { jwtService } from '../auth/jwt.service';
 import { prisma } from '../database/client';
 import logger from '../utils/logger';
 
@@ -33,7 +34,12 @@ export class CollaborationWebSocketServer {
     this.roomManager = new CollaborationRoomManager();
 
     this.wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
-      this.handleConnection(ws, req);
+      // ws.on('connection') signature is sync — `handleConnection` is async
+      // because it awaits room manager work. We `void` the promise after
+      // attaching an error handler so unhandled rejections still surface.
+      void this.handleConnection(ws, req).catch((err: unknown) => {
+        logger.error('[WS] handleConnection failed', { err });
+      });
     });
 
     // Heartbeat to detect broken connections

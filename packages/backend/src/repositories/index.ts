@@ -4,7 +4,7 @@
  * This module exports all repository implementations for the application.
  */
 
-import { PrismaClient } from '@prisma/client';
+import { type PrismaClient } from '@prisma/client';
 
 // Export all repository classes
 export { PrismaUserRepository } from './prisma-user.repository';
@@ -23,20 +23,20 @@ export { LocaleRepository } from './locale-repository';
 export { MetricRepository } from './metric-repository';
 
 // Import classes for factory function
-import { PrismaUserRepository } from './prisma-user.repository';
-import { KitchenRepository } from './kitchen-repository';
-import { ProjectRepository } from './project-repository';
-import { ProductRepository } from './product-repository';
-import { CatalogRepository } from './catalog-repository';
 import { ApplianceRepository } from './appliance-repository';
-import { MaterialRepository } from './material-repository';
-import { RoleRepository } from './role-repository';
-import { PermissionRepository } from './permission-repository';
-import { PartnerRepository } from './partner-repository';
 import { AuditLogRepository } from './audit-log-repository';
-import { WebhookRepository } from './webhook-repository';
+import { CatalogRepository } from './catalog-repository';
+import { KitchenRepository } from './kitchen-repository';
 import { LocaleRepository } from './locale-repository';
+import { MaterialRepository } from './material-repository';
 import { MetricRepository } from './metric-repository';
+import { PartnerRepository } from './partner-repository';
+import { PermissionRepository } from './permission-repository';
+import { PrismaUserRepository } from './prisma-user.repository';
+import { ProductRepository } from './product-repository';
+import { ProjectRepository } from './project-repository';
+import { RoleRepository } from './role-repository';
+import { WebhookRepository } from './webhook-repository';
 
 // Re-export the IUserRepository interface from auth service
 export type { IUserRepository } from '../auth/auth.service';

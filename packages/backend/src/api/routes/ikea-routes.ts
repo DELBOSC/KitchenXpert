@@ -3,10 +3,11 @@
  * REST endpoints for IKEA product data
  */
 
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, type Request, type Response, type NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
+
+import { type IkeaClient, createIkeaClient } from '../../services/ikea';
 import { authenticate } from '../middleware/auth-middleware';
-import { IkeaClient, createIkeaClient } from '../../services/ikea';
 
 const router: Router = Router();
 

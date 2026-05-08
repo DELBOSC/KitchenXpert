@@ -8,9 +8,9 @@
  * - Correct item grouping, totals, and tax calculation
  */
 
-import request from 'supertest';
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -130,8 +130,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Import after mocks
-import shoppingListRoutes from '../api/routes/shopping-list-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import shoppingListRoutes from '../api/routes/shopping-list-routes';
 
 // ==================== TEST APP SETUP ====================
 

@@ -5,14 +5,15 @@
  * Handles all order-related database operations using Prisma ORM.
  */
 
-import type { PrismaClient, OrderStatus } from '@prisma/client';
 import crypto from 'crypto';
+
+import type { PrismaClient, OrderStatus } from '@prisma/client';
 
 // Configurable pricing — override via environment variables
 const TAX_RATE = parseFloat(process.env['TAX_RATE'] || '0.2'); // Default 20% VAT
-if (isNaN(TAX_RATE)) throw new Error('Invalid TAX_RATE configuration');
+if (isNaN(TAX_RATE)) {throw new Error('Invalid TAX_RATE configuration');}
 const DEFAULT_SHIPPING_COST = parseFloat(process.env['DEFAULT_SHIPPING_COST'] || '49.0'); // EUR
-if (isNaN(DEFAULT_SHIPPING_COST)) throw new Error('Invalid DEFAULT_SHIPPING_COST configuration');
+if (isNaN(DEFAULT_SHIPPING_COST)) {throw new Error('Invalid DEFAULT_SHIPPING_COST configuration');}
 
 export interface OrderWithItems {
   id: string;
@@ -250,11 +251,11 @@ export class OrderRepository {
   async update(id: string, data: UpdateOrderDto): Promise<OrderWithItems> {
     const updateData: Record<string, any> = {};
 
-    if (data.status !== undefined) updateData.status = data.status;
-    if (data.shippingAddress !== undefined) updateData.shippingAddress = data.shippingAddress;
-    if (data.billingAddress !== undefined) updateData.billingAddress = data.billingAddress;
-    if (data.notes !== undefined) updateData.notes = data.notes;
-    if (data.metadata !== undefined) updateData.metadata = data.metadata;
+    if (data.status !== undefined) {updateData.status = data.status;}
+    if (data.shippingAddress !== undefined) {updateData.shippingAddress = data.shippingAddress;}
+    if (data.billingAddress !== undefined) {updateData.billingAddress = data.billingAddress;}
+    if (data.notes !== undefined) {updateData.notes = data.notes;}
+    if (data.metadata !== undefined) {updateData.metadata = data.metadata;}
 
     const result = await this.prisma.order.update({
       where: { id },
@@ -353,8 +354,8 @@ export class OrderRepository {
     let completedOrders = 0;
     for (const stat of statusCounts) {
       totalOrders += stat._count._all;
-      if (stat.status === 'pending') pendingOrders = stat._count._all;
-      if (stat.status === 'delivered') completedOrders = stat._count._all;
+      if (stat.status === 'pending') {pendingOrders = stat._count._all;}
+      if (stat.status === 'delivered') {completedOrders = stat._count._all;}
     }
 
     return {

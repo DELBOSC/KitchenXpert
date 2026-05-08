@@ -5,13 +5,14 @@
  * Each provider gets endpoints for: products, search, categories, sync status.
  */
 
-import { Router, Request, Response } from 'express';
+import { Router, type Request, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import { ProductRepository } from '../../repositories/product-repository';
-import { ApplianceRepository } from '../../repositories/appliance-repository';
-import { asyncHandler } from '../middleware/error-middleware';
-import { authenticate, authorize } from '../middleware/auth-middleware';
+
 import { prisma } from '../../database/client';
+import { ApplianceRepository } from '../../repositories/appliance-repository';
+import { ProductRepository } from '../../repositories/product-repository';
+import { authenticate, authorize } from '../middleware/auth-middleware';
+import { asyncHandler } from '../middleware/error-middleware';
 
 const productRepository = new ProductRepository(prisma);
 const applianceRepository = new ApplianceRepository(prisma);

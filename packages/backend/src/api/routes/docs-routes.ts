@@ -1,4 +1,5 @@
 import { Router, type Router as RouterType } from 'express';
+
 import { buildOpenApiDocument } from '../../core/openapi';
 
 /**

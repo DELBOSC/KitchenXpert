@@ -22,7 +22,7 @@
  * - POST /monitoring/track/action (track user action)
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 // ---------------------------------------------------------------------------
 // Mock metric repository

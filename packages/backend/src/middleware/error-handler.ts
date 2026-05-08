@@ -1,5 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
+
 import { ApiError } from '@kitchenxpert/common';
+
 import logger from '../utils/logger';
 
 /**

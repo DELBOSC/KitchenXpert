@@ -1,23 +1,21 @@
-import express, { Application, Request, Response } from 'express';
-import { corsMiddleware } from './api/middleware/cors-middleware';
 import compression from 'compression';
-import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response } from 'express';
+import rateLimit from 'express-rate-limit';
 
-// Import middleware
-import { errorHandler } from './middleware/error-handler';
-import { notFoundHandler } from './middleware/not-found-handler';
-import { securityHeaders } from './api/middleware/security-headers';
-import { sanitizeInput } from './api/middleware/sanitize-middleware';
+// Middleware
+import { corsMiddleware } from './api/middleware/cors-middleware';
 import { csrfProtection } from './api/middleware/csrf-middleware';
 import { requestLogger } from './api/middleware/request-logger';
-
-// Import all routes via centralized router
+import { sanitizeInput } from './api/middleware/sanitize-middleware';
+import { securityHeaders } from './api/middleware/security-headers';
+// Routes (centralised barrel)
 import apiRoutes from './api/routes/index';
-
-// Import config
+// Config + error handlers
 import { config } from './config/app-config';
 import { setupSwagger } from './config/swagger';
+import { errorHandler } from './middleware/error-handler';
+import { notFoundHandler } from './middleware/not-found-handler';
 
 export function createApp(): Application {
   const app = express();

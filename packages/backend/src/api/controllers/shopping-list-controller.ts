@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
 import { asyncHandler } from '../middleware/error-middleware';
 

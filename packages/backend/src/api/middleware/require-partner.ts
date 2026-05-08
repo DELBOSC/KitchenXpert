@@ -1,11 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import { type Partner } from '@prisma/client';
+import { type Request, type Response, type NextFunction } from 'express';
+
 import { prisma } from '../../database/client';
-import { Partner } from '@prisma/client';
 
 /**
  * Extend the Express Request type to include the authenticated partner
  */
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       partner?: Partner;

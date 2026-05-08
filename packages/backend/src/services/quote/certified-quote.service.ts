@@ -11,10 +11,11 @@
  */
 
 import crypto from 'crypto';
-import { prisma } from '../../database/client';
-import { getMailService } from '../mail.service';
+
 import { config } from '../../config/app-config';
+import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
+import { getMailService } from '../mail.service';
 
 // ────────────────────────────── Types ──────────────────────────────
 
@@ -126,7 +127,7 @@ function generateQuoteHTML(quote: {
   const formatDate = (d: Date) =>
     new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(d));
 
-  const itemRows = (quote.items as QuoteLineItem[])
+  const itemRows = (quote.items)
     .map(
       (item) => `
       <tr>
@@ -396,7 +397,7 @@ export class CertifiedQuoteService {
     logger.info('Certified quote signed', {
       quoteNumber: quote.quoteNumber,
       userId,
-      signatureHash: signatureHash.substring(0, 16) + '...',
+      signatureHash: `${signatureHash.substring(0, 16)  }...`,
     });
 
     return updated;

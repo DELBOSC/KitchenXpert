@@ -1,8 +1,10 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
-import type { UseCase } from '../../core/use-case';
 import { getStripeService } from '../../services/stripe-service';
+
+import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const CreatePaymentIntentSchema = z.object({
   userId: z.string().uuid(),
@@ -24,8 +26,8 @@ export class CreatePaymentIntentUseCase implements UseCase<CreatePaymentIntentIn
         where: { id: input.orderId },
         select: { userId: true, total: true },
       });
-      if (!order) return err(DomainErrors.notFound('Order'));
-      if (order.userId !== input.userId) return err(DomainErrors.forbidden('Order not owned'));
+      if (!order) {return err(DomainErrors.notFound('Order'));}
+      if (order.userId !== input.userId) {return err(DomainErrors.forbidden('Order not owned'));}
     }
 
     const stripe = getStripeService();

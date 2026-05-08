@@ -3,9 +3,10 @@
  * Handles photo upload and room dimension analysis
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { RoomScanService } from '../../services/room-scan.service';
+import { type Request, type Response, type NextFunction } from 'express';
+
 import { PhotoRoomScannerService } from '../../services/ai/photo-room-scanner.service';
+import { RoomScanService } from '../../services/room-scan.service';
 import logger from '../../utils/logger';
 
 class RoomScanController {

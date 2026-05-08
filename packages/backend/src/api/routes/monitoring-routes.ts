@@ -1,9 +1,10 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { monitoringController } from '../controllers/monitoring-controller';
 import { authenticate, authorize } from '../middleware/auth-middleware';
-import { validateBody } from '../middleware/validation-middleware';
 import { apiRateLimiter } from '../middleware/rate-limit-middleware';
+import { validateBody } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 

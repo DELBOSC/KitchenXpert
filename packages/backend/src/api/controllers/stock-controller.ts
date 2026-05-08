@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import logger from '../../utils/logger';
+import { type Request, type Response } from 'express';
+
 import { StockCheckerService } from '../../services/catalog/stock-checker.service';
+import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * StockController

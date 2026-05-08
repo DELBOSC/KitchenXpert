@@ -1,6 +1,7 @@
 /// <reference types="node" />
-import cors, { CorsOptions } from 'cors';
-import { RequestHandler } from 'express';
+import cors, { type CorsOptions } from 'cors';
+import { type RequestHandler } from 'express';
+
 import logger from '../../utils/logger';
 
 /**

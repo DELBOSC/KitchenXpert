@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import { prisma } from '../../database/client';
@@ -6,7 +7,7 @@ import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -124,7 +125,7 @@ export class ProductEnrichmentService {
    * Products should be of the same type for better prompt efficiency.
    */
   async enrichBatch(products: ProductToEnrich[]): Promise<EnrichmentResult[]> {
-    if (products.length === 0) return [];
+    if (products.length === 0) {return [];}
 
     const batchSize = Math.min(products.length, 10);
     const batch = products.slice(0, batchSize);
@@ -246,7 +247,7 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
       orderBy: { createdAt: 'asc' },
     });
 
-    if (pending.length === 0) return 0;
+    if (pending.length === 0) {return 0;}
 
     // Convert to ProductToEnrich format
     const products: ProductToEnrich[] = pending.map(p => ({
@@ -265,10 +266,10 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
     let enrichedCount = 0;
     for (let i = 0; i < pending.length; i++) {
       const record = pending[i];
-      if (!record) continue;
+      if (!record) {continue;}
       const result = results.find(r => r.productId === record.productId) || results[i];
 
-      if (!result) continue;
+      if (!result) {continue;}
 
       try {
         if (result.confidence > 0) {

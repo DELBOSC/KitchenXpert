@@ -1,4 +1,4 @@
-import { PrismaClient, Locale, Translation } from '@prisma/client';
+import { type PrismaClient, type Locale, type Translation } from '@prisma/client';
 
 /**
  * Locale Repository
@@ -99,7 +99,7 @@ export class LocaleRepository {
 
   async deleteLocale(id: string): Promise<Locale> {
     const locale = await this.findLocaleById(id);
-    if (locale?.isDefault) throw new Error('Cannot delete default locale');
+    if (locale?.isDefault) {throw new Error('Cannot delete default locale');}
     return this.prisma.locale.delete({ where: { id } });
   }
 
@@ -143,7 +143,7 @@ export class LocaleRepository {
 
   async getNamespaceTranslations(localeCode: string, namespace: string): Promise<Record<string, string>> {
     const locale = await this.findLocaleByCode(localeCode);
-    if (!locale) return {};
+    if (!locale) {return {};}
 
     const translations = await this.prisma.translation.findMany({
       where: { localeId: locale.id, namespace }
@@ -156,7 +156,7 @@ export class LocaleRepository {
 
   async getAllTranslationsForLocale(localeCode: string): Promise<Record<string, Record<string, string>>> {
     const locale = await this.findLocaleByCode(localeCode);
-    if (!locale) return {};
+    if (!locale) {return {};}
 
     const translations = await this.prisma.translation.findMany({
       where: { localeId: locale.id }
@@ -164,7 +164,7 @@ export class LocaleRepository {
 
     const result: Record<string, Record<string, string>> = {};
     translations.forEach(t => {
-      if (!result[t.namespace]) result[t.namespace] = {};
+      if (!result[t.namespace]) {result[t.namespace] = {};}
       result[t.namespace]![t.key] = t.value;
     });
     return result;
@@ -244,7 +244,7 @@ export class LocaleRepository {
 
   async importTranslations(localeCode: string, data: Record<string, Record<string, string>>): Promise<{ count: number }> {
     const locale = await this.findLocaleByCode(localeCode);
-    if (!locale) throw new Error('Locale not found');
+    if (!locale) {throw new Error('Locale not found');}
 
     const translations: CreateTranslationDto[] = [];
     for (const [namespace, keys] of Object.entries(data)) {

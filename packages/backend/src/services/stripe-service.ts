@@ -5,8 +5,9 @@
  */
 
 import Stripe from 'stripe';
-import { createModuleLogger } from '../utils/logger';
+
 import { prisma } from '../database/client';
+import { createModuleLogger } from '../utils/logger';
 
 const logger = createModuleLogger('stripe-service');
 
@@ -135,9 +136,9 @@ export class StripeService {
         }),
       };
 
-      if (customerId) paymentIntentParams.customer = customerId;
-      if (description) paymentIntentParams.description = description;
-      if (receiptEmail) paymentIntentParams.receipt_email = receiptEmail;
+      if (customerId) {paymentIntentParams.customer = customerId;}
+      if (description) {paymentIntentParams.description = description;}
+      if (receiptEmail) {paymentIntentParams.receipt_email = receiptEmail;}
 
       const paymentIntent = await this.stripe.paymentIntents.create(paymentIntentParams);
 
@@ -329,11 +330,11 @@ export class StripeService {
     try {
       const updateParams: Stripe.CustomerUpdateParams = {};
 
-      if (data.email) updateParams.email = data.email;
-      if (data.name) updateParams.name = data.name;
-      if (data.phone) updateParams.phone = data.phone;
-      if (data.metadata) updateParams.metadata = data.metadata;
-      if (data.address) updateParams.address = data.address;
+      if (data.email) {updateParams.email = data.email;}
+      if (data.name) {updateParams.name = data.name;}
+      if (data.phone) {updateParams.phone = data.phone;}
+      if (data.metadata) {updateParams.metadata = data.metadata;}
+      if (data.address) {updateParams.address = data.address;}
 
       const customer = await this.stripe.customers.update(customerId, updateParams);
 
@@ -610,35 +611,35 @@ export class StripeService {
 
     switch (type) {
       case 'payment_intent.succeeded':
-        await this.handlePaymentIntentSucceeded(data.object as Stripe.PaymentIntent);
+        await this.handlePaymentIntentSucceeded(data.object);
         break;
 
       case 'payment_intent.payment_failed':
-        await this.handlePaymentIntentFailed(data.object as Stripe.PaymentIntent);
+        await this.handlePaymentIntentFailed(data.object);
         break;
 
       case 'customer.subscription.created':
-        await this.handleSubscriptionCreated(data.object as Stripe.Subscription);
+        await this.handleSubscriptionCreated(data.object);
         break;
 
       case 'customer.subscription.updated':
-        await this.handleSubscriptionUpdated(data.object as Stripe.Subscription);
+        await this.handleSubscriptionUpdated(data.object);
         break;
 
       case 'customer.subscription.deleted':
-        await this.handleSubscriptionDeleted(data.object as Stripe.Subscription);
+        await this.handleSubscriptionDeleted(data.object);
         break;
 
       case 'invoice.paid':
-        await this.handleInvoicePaid(data.object as Stripe.Invoice);
+        await this.handleInvoicePaid(data.object);
         break;
 
       case 'invoice.payment_failed':
-        await this.handleInvoicePaymentFailed(data.object as Stripe.Invoice);
+        await this.handleInvoicePaymentFailed(data.object);
         break;
 
       case 'charge.refunded':
-        await this.handleChargeRefunded(data.object as Stripe.Charge);
+        await this.handleChargeRefunded(data.object);
         break;
 
       default:
@@ -658,7 +659,7 @@ export class StripeService {
       ? paymentIntent.customer
       : paymentIntent.customer?.id;
 
-    if (!customerId) return;
+    if (!customerId) {return;}
 
     try {
       // Find the user linked to this Stripe customer
@@ -708,14 +709,14 @@ export class StripeService {
       ? paymentIntent.customer
       : paymentIntent.customer?.id;
 
-    if (!customerId) return;
+    if (!customerId) {return;}
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) return;
+      if (!user) {return;}
 
       await prisma.auditLog.create({
         data: {
@@ -806,7 +807,7 @@ export class StripeService {
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) return;
+      if (!user) {return;}
 
       await prisma.user.update({
         where: { id: user.id },
@@ -849,7 +850,7 @@ export class StripeService {
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) return;
+      if (!user) {return;}
 
       // Downgrade user: clear subscription and revert to free tier
       await prisma.user.update({
@@ -888,14 +889,14 @@ export class StripeService {
       ? invoice.customer
       : invoice.customer?.id;
 
-    if (!customerId) return;
+    if (!customerId) {return;}
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) return;
+      if (!user) {return;}
 
       await prisma.auditLog.create({
         data: {
@@ -928,14 +929,14 @@ export class StripeService {
       ? invoice.customer
       : invoice.customer?.id;
 
-    if (!customerId) return;
+    if (!customerId) {return;}
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) return;
+      if (!user) {return;}
 
       await prisma.auditLog.create({
         data: {
@@ -978,14 +979,14 @@ export class StripeService {
       ? charge.customer
       : charge.customer?.id;
 
-    if (!customerId) return;
+    if (!customerId) {return;}
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) return;
+      if (!user) {return;}
 
       await prisma.auditLog.create({
         data: {
@@ -1109,7 +1110,7 @@ export class StripeService {
         amount: refund.amount,
         currency: refund.currency,
         status: refund.status || 'unknown',
-        paymentIntentId: paymentIntentId,
+        paymentIntentId,
         created: new Date(refund.created * 1000),
       };
 

@@ -5,8 +5,9 @@
  * Prisma tables: "ProductCategory", "Product"
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const CatalogsSeed: Seed = {
   id: 'catalogs-seed',

@@ -1,8 +1,11 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import { prisma } from '../../database/client';
-import { UserRole } from '@kitchenxpert/common';
 import os from 'os';
+
+import { type Request, type Response } from 'express';
+
+import { type UserRole } from '@kitchenxpert/common';
+
+import { prisma } from '../../database/client';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * Admin Controller

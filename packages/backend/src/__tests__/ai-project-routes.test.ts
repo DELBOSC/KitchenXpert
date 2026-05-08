@@ -11,9 +11,9 @@
  * - Admin bypass for ownership checks
  */
 
-import request from 'supertest';
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -146,8 +146,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Import after mocks
-import aiProjectRoutes from '../api/routes/ai-project-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import aiProjectRoutes from '../api/routes/ai-project-routes';
 
 // ==================== TEST APP SETUP ====================
 

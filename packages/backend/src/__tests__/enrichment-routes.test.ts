@@ -15,9 +15,9 @@
  * - Validation (param schemas, missing body fields)
  */
 
-import request from 'supertest';
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -172,8 +172,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
 }));
 
 // Import after mocks
-import enrichmentRoutes from '../api/routes/enrichment-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import enrichmentRoutes from '../api/routes/enrichment-routes';
 
 // ==================== TEST APP SETUP ====================
 

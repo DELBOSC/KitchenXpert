@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { z, ZodError, ZodSchema, ZodIssue } from 'zod';
-import { ApiValidationError, ValidationErrorDetail } from '@kitchenxpert/common';
+import { type Request, type Response, type NextFunction, type RequestHandler } from 'express';
+import { z, ZodError, type ZodSchema, type ZodIssue } from 'zod';
+
+import { ApiValidationError, type ValidationErrorDetail } from '@kitchenxpert/common';
 
 /**
  * Zod-based Input Validation Middleware
@@ -176,7 +177,7 @@ export function validateQuery<T extends ZodSchema>(
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const validated = schema.parse(req.query);
-      req.query = validated as any;
+      req.query = validated;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -210,7 +211,7 @@ export function validateParams<T extends ZodSchema>(
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const validated = schema.parse(req.params);
-      req.params = validated as any;
+      req.params = validated;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
@@ -259,7 +260,7 @@ export function validate(
     // Validate params
     if (schemas.params) {
       try {
-        req.params = schemas.params.parse(req.params) as any;
+        req.params = schemas.params.parse(req.params);
       } catch (error) {
         if (error instanceof ZodError) {
           allErrors.push(...zodErrorToValidationErrors(error, config));
@@ -272,7 +273,7 @@ export function validate(
     // Validate query
     if (schemas.query) {
       try {
-        req.query = schemas.query.parse(req.query) as any;
+        req.query = schemas.query.parse(req.query);
       } catch (error) {
         if (error instanceof ZodError) {
           allErrors.push(...zodErrorToValidationErrors(error, config));

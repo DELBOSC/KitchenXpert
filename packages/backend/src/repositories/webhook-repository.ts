@@ -1,4 +1,4 @@
-import { PrismaClient, Webhook, WebhookEvent } from '@prisma/client';
+import { type PrismaClient, type Webhook, type WebhookEvent } from '@prisma/client';
 
 /**
  * Webhook Repository
@@ -158,7 +158,7 @@ export class WebhookRepository {
   async toggle(id: string): Promise<Webhook> {
     return this.prisma.$transaction(async (tx) => {
       const webhook = await tx.webhook.findUnique({ where: { id } });
-      if (!webhook) throw new Error('Webhook not found');
+      if (!webhook) {throw new Error('Webhook not found');}
 
       return tx.webhook.update({
         where: { id },

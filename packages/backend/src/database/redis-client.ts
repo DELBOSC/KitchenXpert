@@ -8,7 +8,8 @@
  * Falls back gracefully if Redis is not available.
  */
 
-import { createClient, RedisClientType } from 'redis';
+import { createClient, type RedisClientType } from 'redis';
+
 import { createModuleLogger } from '../utils/logger';
 
 const logger = createModuleLogger('redis-client');
@@ -91,7 +92,7 @@ export function resetRedisConnection(): void {
  * Used by the cache helpers to provide graceful degradation.
  */
 async function getSafeClient(): Promise<RedisClientType | null> {
-  if (connectionFailed) return null;
+  if (connectionFailed) {return null;}
 
   try {
     return await getRedisClient();
@@ -108,7 +109,7 @@ async function getSafeClient(): Promise<RedisClientType | null> {
  */
 export async function cacheGet<T>(key: string): Promise<T | null> {
   const client = await getSafeClient();
-  if (!client) return null;
+  if (!client) {return null;}
 
   try {
     const value = await client.get(`${KEY_PREFIX}${key}`);
@@ -125,7 +126,7 @@ export async function cacheGet<T>(key: string): Promise<T | null> {
  */
 export async function cacheSet(key: string, value: unknown, ttlSeconds: number = 3600): Promise<boolean> {
   const client = await getSafeClient();
-  if (!client) return false;
+  if (!client) {return false;}
 
   try {
     await client.setEx(`${KEY_PREFIX}${key}`, ttlSeconds, JSON.stringify(value));
@@ -142,7 +143,7 @@ export async function cacheSet(key: string, value: unknown, ttlSeconds: number =
  */
 export async function cacheDel(...keys: string[]): Promise<number> {
   const client = await getSafeClient();
-  if (!client) return 0;
+  if (!client) {return 0;}
 
   try {
     const prefixedKeys = keys.map((k) => `${KEY_PREFIX}${k}`);

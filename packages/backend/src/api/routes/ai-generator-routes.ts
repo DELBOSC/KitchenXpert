@@ -1,5 +1,6 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { aiGeneratorController } from '../controllers/ai-generator-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { validateBody } from '../middleware/validation-middleware';

@@ -18,12 +18,13 @@
 
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { prisma } from '../../database/client';
-import { authenticate } from '../middleware/auth-middleware';
-import { validateBody } from '../middleware/validation-middleware';
-import { asyncHandler } from '../middleware/error-middleware';
 import { createIkeaClient } from '../../services/ikea';
 import { parseDimensions } from '../../services/ikea/utils';
+import { authenticate } from '../middleware/auth-middleware';
+import { asyncHandler } from '../middleware/error-middleware';
+import { validateBody } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 
@@ -187,13 +188,13 @@ function buildItemMetadata(opts: {
 }
 
 function imagesFromJson(raw: unknown): string[] {
-  if (!raw) return [];
-  if (Array.isArray(raw)) return raw.filter((x): x is string => typeof x === 'string');
-  if (typeof raw === 'string') return [raw];
+  if (!raw) {return [];}
+  if (Array.isArray(raw)) {return raw.filter((x): x is string => typeof x === 'string');}
+  if (typeof raw === 'string') {return [raw];}
   if (typeof raw === 'object') {
     const out: string[] = [];
     for (const v of Object.values(raw as Record<string, unknown>)) {
-      if (typeof v === 'string') out.push(v);
+      if (typeof v === 'string') {out.push(v);}
     }
     return out;
   }
@@ -202,7 +203,7 @@ function imagesFromJson(raw: unknown): string[] {
 
 async function importProduct(productId: string, kitchenId: string, shared: SharedImportFields): Promise<unknown | null> {
   const product = await prisma.product.findUnique({ where: { id: productId } });
-  if (!product) return null;
+  if (!product) {return null;}
 
   const images = imagesFromJson(product.images);
   return prisma.kitchenItem.create({
@@ -238,7 +239,7 @@ async function importProduct(productId: string, kitchenId: string, shared: Share
 
 async function importAppliance(applianceId: string, kitchenId: string, shared: SharedImportFields): Promise<unknown | null> {
   const appliance = await prisma.appliance.findUnique({ where: { id: applianceId } });
-  if (!appliance) return null;
+  if (!appliance) {return null;}
 
   const images = imagesFromJson(appliance.images);
   return prisma.kitchenItem.create({
@@ -282,7 +283,7 @@ async function importAppliance(applianceId: string, kitchenId: string, shared: S
 async function upsertIkeaProduct(itemCode: string, country: string, language: string): Promise<{ id: string } | null> {
   const ikea = createIkeaClient({ country, language });
   const result = await ikea.getProduct(itemCode);
-  if (!result.success || !result.data) return null;
+  if (!result.success || !result.data) {return null;}
   const ikeaProduct = result.data;
 
   // Make sure the IKEA provider row exists; idempotent upsert on `code`.

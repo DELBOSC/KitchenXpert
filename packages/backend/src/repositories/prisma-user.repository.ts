@@ -1,6 +1,8 @@
-import { PrismaClient, User as PrismaUser, UserStatus, Prisma } from '@prisma/client';
-import { User } from '@kitchenxpert/common';
-import { IUserRepository } from '../auth/auth.service';
+import { type PrismaClient, type User as PrismaUser, type UserStatus, type Prisma } from '@prisma/client';
+
+import { type User } from '@kitchenxpert/common';
+
+import { type IUserRepository } from '../auth/auth.service';
 
 /**
  * Prisma User Repository

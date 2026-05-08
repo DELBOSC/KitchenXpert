@@ -1,4 +1,4 @@
-import { PrismaClient, Metric } from '@prisma/client';
+import { type PrismaClient, type Metric } from '@prisma/client';
 
 /**
  * Metric Repository
@@ -189,7 +189,7 @@ export class MetricRepository {
   }
 
   async getLatestValues(names: string[]): Promise<Record<string, number | null>> {
-    if (names.length === 0) return {};
+    if (names.length === 0) {return {};}
 
     // Single query: get the latest metric for each name using distinct
     const metrics = await this.prisma.metric.findMany({
@@ -220,7 +220,7 @@ export class MetricRepository {
     const grouped = new Map<number, number[]>();
     metrics.forEach(m => {
       const intervalStart = Math.floor(m.timestamp.getTime() / (intervalMinutes * 60 * 1000)) * (intervalMinutes * 60 * 1000);
-      if (!grouped.has(intervalStart)) grouped.set(intervalStart, []);
+      if (!grouped.has(intervalStart)) {grouped.set(intervalStart, []);}
       grouped.get(intervalStart)!.push(Number(m.value));
     });
 

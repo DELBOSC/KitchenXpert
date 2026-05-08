@@ -1,8 +1,9 @@
 import { Router, type Router as RouterType } from 'express';
+
 import { authController } from '../controllers/auth-controller';
+import * as partnerPortalController from '../controllers/partner-portal-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { requirePartner } from '../middleware/require-partner';
-import * as partnerPortalController from '../controllers/partner-portal-controller';
 
 const router: RouterType = Router();
 

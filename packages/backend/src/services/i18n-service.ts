@@ -357,14 +357,14 @@ export class I18nService {
    */
   async formatNumber(value: number, locale?: string): Promise<string> {
     const targetLocale = await this.getLocale(locale || this.config.defaultLocale);
-    if (!targetLocale) return value.toString();
+    if (!targetLocale) {return value.toString();}
 
     const { decimalSeparator, thousandsSeparator, decimalPlaces } = targetLocale.numberFormat;
 
     const fixed = value.toFixed(decimalPlaces);
     const [intPart, decPart] = fixed.split('.');
 
-    if (!intPart) return fixed;
+    if (!intPart) {return fixed;}
 
     const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
     return decPart ? `${formattedInt}${decimalSeparator}${decPart}` : formattedInt;
@@ -375,7 +375,7 @@ export class I18nService {
    */
   async formatCurrency(value: number, locale?: string, currencyCode?: string): Promise<string> {
     const targetLocale = await this.getLocale(locale || this.config.defaultLocale);
-    if (!targetLocale) return value.toString();
+    if (!targetLocale) {return value.toString();}
 
     const currency = currencyCode
       ? { ...targetLocale.currency, code: currencyCode }
@@ -387,7 +387,7 @@ export class I18nService {
     const fixed = value.toFixed(decimalPlaces);
     const [intPart, decPart] = fixed.split('.');
 
-    if (!intPart) return fixed;
+    if (!intPart) {return fixed;}
 
     const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
     const formattedValue = decPart ? `${formattedInt}${decimalSeparator}${decPart}` : formattedInt;
@@ -400,7 +400,7 @@ export class I18nService {
    */
   async formatDate(date: Date, locale?: string, format?: string): Promise<string> {
     const targetLocale = await this.getLocale(locale || this.config.defaultLocale);
-    if (!targetLocale) return date.toISOString();
+    if (!targetLocale) {return date.toISOString();}
 
     const dateFormat = format || targetLocale.dateFormat;
 

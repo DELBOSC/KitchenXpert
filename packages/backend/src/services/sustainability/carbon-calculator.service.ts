@@ -260,11 +260,11 @@ function estimateWeight(
 
 /** Determine CO2e grade */
 function calculateGrade(totalCO2e: number): CarbonReport['grade'] {
-  if (totalCO2e <= 1500) return 'A+';
-  if (totalCO2e <= 2000) return 'A';
-  if (totalCO2e <= 2500) return 'B';
-  if (totalCO2e <= 3500) return 'C';
-  if (totalCO2e <= 5000) return 'D';
+  if (totalCO2e <= 1500) {return 'A+';}
+  if (totalCO2e <= 2000) {return 'A';}
+  if (totalCO2e <= 2500) {return 'B';}
+  if (totalCO2e <= 3500) {return 'C';}
+  if (totalCO2e <= 5000) {return 'D';}
   return 'E';
 }
 
@@ -398,10 +398,10 @@ export class CarbonCalculatorService {
       .sort(([, a], [, b]) => b.totalCO2e - a.totalCO2e);
 
     for (const [material, data] of sortedMaterials) {
-      if (processedMaterials.has(material)) continue;
+      if (processedMaterials.has(material)) {continue;}
 
       const alt = CARBON_ALTERNATIVES[material];
-      if (!alt || alt.savingsPerKg <= 0) continue;
+      if (!alt || alt.savingsPerKg <= 0) {continue;}
 
       const co2Savings = Number((data.totalWeight * alt.savingsPerKg).toFixed(2));
       const costImpact = Number((data.totalWeight * alt.costImpactPerKg).toFixed(0));

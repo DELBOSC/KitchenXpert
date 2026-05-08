@@ -12,6 +12,7 @@
  */
 
 import crypto from 'crypto';
+
 import { getRedisClient } from '../database/redis-client';
 import { createModuleLogger } from '../utils/logger';
 
@@ -80,7 +81,7 @@ export class JobQueue {
    * @param intervalMs - Polling interval in milliseconds (default: 5000)
    */
   start(intervalMs: number = 5000): void {
-    if (this.pollingInterval) return;
+    if (this.pollingInterval) {return;}
 
     this.pollingInterval = setInterval(() => {
       if (!this.processing) {

@@ -1,10 +1,13 @@
-import { Request, Response } from 'express';
-import { OrderRepository } from '../../repositories/order-repository';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
+import { OrderRepository } from '../../repositories/order-repository';
 import { getMailService } from '../../services/mail.service';
-import type { OrderDetails } from '../../services/mail-templates';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
+
+import type { OrderDetails } from '../../services/mail-templates';
+
 
 const orderRepository = new OrderRepository(prisma);
 

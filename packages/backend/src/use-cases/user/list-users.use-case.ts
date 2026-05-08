@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { ok, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const ListUsersSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -28,13 +30,13 @@ export class ListUsersUseCase implements UseCase<ListUsersInput, ListUsersOutput
 
   async execute({ page, limit, search, role, status }: ListUsersInput): Promise<Result<ListUsersOutput>> {
     const where: Record<string, unknown> = {};
-    if (role) where.role = role;
-    if (status) where.status = status;
-    if (search) where.OR = [
+    if (role) {where.role = role;}
+    if (status) {where.status = status;}
+    if (search) {where.OR = [
       { email: { contains: search, mode: 'insensitive' } },
       { firstName: { contains: search, mode: 'insensitive' } },
       { lastName: { contains: search, mode: 'insensitive' } },
-    ];
+    ];}
 
     const [rows, total] = await Promise.all([
       this.prisma.user.findMany({

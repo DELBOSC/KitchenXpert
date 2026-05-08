@@ -6,9 +6,10 @@
 import { Router, type Router as RouterType } from 'express';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
-import { authenticate } from '../middleware/auth-middleware';
+
 import { uploadMultipleImages, handleUploadError } from '../../middleware/upload-middleware';
 import { roomScanController } from '../controllers/room-scan-controller';
+import { authenticate } from '../middleware/auth-middleware';
 
 const router: RouterType = Router();
 
@@ -24,7 +25,7 @@ const roomScanRateLimiter = rateLimit({
 // Zod schema for optional context body field
 export const roomScanContextSchema = z.object({
   context: z.string().optional().transform((val) => {
-    if (!val) return undefined;
+    if (!val) {return undefined;}
     try { return JSON.parse(val); } catch { return undefined; }
   }),
 }).passthrough();

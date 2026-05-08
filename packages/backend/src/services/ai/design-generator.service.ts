@@ -1,12 +1,14 @@
 import crypto from 'crypto';
+
 import { z } from 'zod';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '') // Remove special chars
     .replace(/\n/g, ' ')       // Flatten newlines
@@ -16,7 +18,7 @@ function sanitizeInput(input: string | undefined | null): string {
 /** Safely stringify objects with length limit */
 function safeStringify(obj: unknown, maxLen = 500): string {
   const str = JSON.stringify(obj);
-  return str.length > maxLen ? str.slice(0, maxLen) + '...' : str;
+  return str.length > maxLen ? `${str.slice(0, maxLen)  }...` : str;
 }
 
 const CostRangeSchema = z.object({
@@ -284,12 +286,12 @@ export class DesignGeneratorService {
     }
 
     const features: string[] = [];
-    if (preferences.includeIsland) features.push('ilot central');
+    if (preferences.includeIsland) {features.push('ilot central');}
     if (preferences.includeBreakfastNook)
-      features.push('coin petit-dejeuner');
-    if (preferences.includePantry) features.push('cellier/garde-manger');
-    if (preferences.sustainableOptions) features.push('materiaux eco-responsables');
-    if (preferences.smartHomeIntegration) features.push('domotique');
+      {features.push('coin petit-dejeuner');}
+    if (preferences.includePantry) {features.push('cellier/garde-manger');}
+    if (preferences.sustainableOptions) {features.push('materiaux eco-responsables');}
+    if (preferences.smartHomeIntegration) {features.push('domotique');}
     if (features.length > 0) {
       sections.push(`- Fonctionnalites souhaitees: ${features.join(', ')}`);
     }
@@ -306,18 +308,18 @@ export class DesignGeneratorService {
       sections.push('=== DONNEES DU QUESTIONNAIRE ===');
 
       if (questionnaireData.spatialData) {
-        const spatial = questionnaireData.spatialData as Record<string, unknown>;
+        const spatial = questionnaireData.spatialData;
         sections.push(`- Dimensions piece: ${spatial.width || '?'}mm x ${spatial.depth || '?'}mm, hauteur ${spatial.height || '?'}mm`);
-        if (spatial.shape) sections.push(`- Forme: ${spatial.shape}`);
+        if (spatial.shape) {sections.push(`- Forme: ${spatial.shape}`);}
       }
       if (questionnaireData.budgetData) {
-        const budget = questionnaireData.budgetData as Record<string, unknown>;
+        const budget = questionnaireData.budgetData;
         sections.push(`- Budget: ${budget.min || '?'} - ${budget.max || '?'} ${budget.currency || 'EUR'}`);
       }
       if (questionnaireData.cookingHabits) {
-        const habits = questionnaireData.cookingHabits as Record<string, unknown>;
-        if (habits.frequency) sections.push(`- Frequence cuisine: ${habits.frequency}`);
-        if (habits.mealTypes) sections.push(`- Types repas: ${habits.mealTypes}`);
+        const habits = questionnaireData.cookingHabits;
+        if (habits.frequency) {sections.push(`- Frequence cuisine: ${habits.frequency}`);}
+        if (habits.mealTypes) {sections.push(`- Types repas: ${habits.mealTypes}`);}
       }
       if (questionnaireData.aestheticPrefs) {
         sections.push(`- Preferences esthetiques: ${safeStringify(questionnaireData.aestheticPrefs, 300)}`);

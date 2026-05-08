@@ -206,7 +206,7 @@ export class CompatibilityGeneratorService {
               typeof entry.cabinetDepthMin !== 'number'
             ) {
               throw new Error(
-                'Invalid entry for appliance ' + JSON.stringify(entry.applianceType) + ': missing required dimension fields',
+                `Invalid entry for appliance ${  JSON.stringify(entry.applianceType)  }: missing required dimension fields`,
               );
             }
           }
@@ -356,29 +356,29 @@ export class CompatibilityGeneratorService {
     for (const rule of rules) {
       if (rule.requiresCutout) {
         warnings.push(
-          'Decoupe requise: ' +
-            (rule.cutoutWidth ?? '?') +
-            'mm x ' +
-            (rule.cutoutDepth ?? '?') +
-            'mm',
+          `Decoupe requise: ${ 
+            rule.cutoutWidth ?? '?' 
+            }mm x ${ 
+            rule.cutoutDepth ?? '?' 
+            }mm`,
         );
       }
       if (rule.ventilationGap && rule.ventilationGap > 0) {
         warnings.push(
-          'Espace de ventilation requis: ' + rule.ventilationGap + 'mm',
+          `Espace de ventilation requis: ${  rule.ventilationGap  }mm`,
         );
       }
       if (rule.electricalReq) {
-        warnings.push('Raccordement electrique: ' + rule.electricalReq);
+        warnings.push(`Raccordement electrique: ${  rule.electricalReq}`);
       }
       if (rule.waterReq) {
         warnings.push('Raccordement eau necessaire');
       }
       if (rule.confidence < 0.7) {
         warnings.push(
-          'Confiance faible (' +
-            (rule.confidence * 100).toFixed(0) +
-            '%) — verification manuelle recommandee',
+          `Confiance faible (${ 
+            (rule.confidence * 100).toFixed(0) 
+            }%) — verification manuelle recommandee`,
         );
       }
       if (rule.notes) {
@@ -412,9 +412,9 @@ export class CompatibilityGeneratorService {
     const sections: string[] = [];
 
     sections.push(
-      'Determine tous les electromenagers compatibles avec le meuble de cuisine de type "' +
-        cabinetType +
-        '".',
+      `Determine tous les electromenagers compatibles avec le meuble de cuisine de type "${ 
+        cabinetType 
+        }".`,
     );
     sections.push('');
     sections.push(
@@ -450,28 +450,28 @@ export class CompatibilityGeneratorService {
     sections.push('');
     sections.push('=== FORMAT DE SORTIE ===');
     sections.push(
-      'Reponds UNIQUEMENT avec un JSON valide, sans texte avant ou apres:\n' +
-        '{\n' +
-        '  "cabinetType": "' +
-        cabinetType +
-        '",\n' +
-        '  "compatibleAppliances": [\n' +
-        '    {\n' +
-        '      "applianceType": "type",\n' +
-        '      "cabinetWidthMin": 600,\n' +
-        '      "cabinetWidthMax": 900,\n' +
-        '      "cabinetDepthMin": 560,\n' +
-        '      "requiresCutout": false,\n' +
-        '      "cutoutWidth": null,\n' +
-        '      "cutoutDepth": null,\n' +
-        '      "ventilationGap": 5,\n' +
-        '      "electricalReq": "16A",\n' +
-        '      "waterReq": false,\n' +
-        "      \"notes\": \"note d'installation ou null\",\n" +
-        '      "confidence": 0.9\n' +
-        '    }\n' +
-        '  ]\n' +
-        '}',
+      `Reponds UNIQUEMENT avec un JSON valide, sans texte avant ou apres:\n` +
+        `{\n` +
+        `  "cabinetType": "${ 
+        cabinetType 
+        }",\n` +
+        `  "compatibleAppliances": [\n` +
+        `    {\n` +
+        `      "applianceType": "type",\n` +
+        `      "cabinetWidthMin": 600,\n` +
+        `      "cabinetWidthMax": 900,\n` +
+        `      "cabinetDepthMin": 560,\n` +
+        `      "requiresCutout": false,\n` +
+        `      "cutoutWidth": null,\n` +
+        `      "cutoutDepth": null,\n` +
+        `      "ventilationGap": 5,\n` +
+        `      "electricalReq": "16A",\n` +
+        `      "waterReq": false,\n` +
+        `      "notes": "note d'installation ou null",\n` +
+        `      "confidence": 0.9\n` +
+        `    }\n` +
+        `  ]\n` +
+        `}`,
     );
 
     return sections.join('\n');

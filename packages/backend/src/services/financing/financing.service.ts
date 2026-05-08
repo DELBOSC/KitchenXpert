@@ -1,8 +1,9 @@
 import { z } from 'zod';
+
 import { prisma } from '../../database/client';
+import _logger from '../../utils/logger';
 import { AnthropicService } from '../ai/anthropic.service';
 import { SYSTEM_PROMPTS } from '../ai/prompt-templates';
-import _logger from '../../utils/logger';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -202,7 +203,7 @@ const BudgetAdviceSchema = z.object({
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -220,8 +221,8 @@ export class FinancingService {
    * Standard amortization formula: monthly payment for a fixed-rate loan.
    */
   calculateMonthlyPayment(amount: number, annualRate: number, months: number): number {
-    if (amount <= 0 || months <= 0) return 0;
-    if (annualRate <= 0) return amount / months;
+    if (amount <= 0 || months <= 0) {return 0;}
+    if (annualRate <= 0) {return amount / months;}
 
     const monthlyRate = annualRate / 100 / 12;
     const payment = amount * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
@@ -252,7 +253,7 @@ export class FinancingService {
         }
 
         const rate = provider.rates[months];
-        if (rate === undefined) continue;
+        if (rate === undefined) {continue;}
 
         const monthlyPayment = this.calculateMonthlyPayment(loanAmount, rate, months);
         const totalCost = Math.round(monthlyPayment * months * 100) / 100;
@@ -524,7 +525,7 @@ Reponds en JSON avec le format: { "recommendations": [...], "totalSuggested": nu
       where: { id: simulationId },
     });
 
-    if (!simulation) return null;
+    if (!simulation) {return null;}
 
     // Ownership check
     if (simulation.userId !== userId && !isAdmin) {

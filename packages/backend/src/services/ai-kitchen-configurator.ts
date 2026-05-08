@@ -10,6 +10,7 @@
  */
 
 import crypto from 'crypto';
+
 import type { CatalogItem, ProductDimensions, ProductType } from './catalog-service';
 
 // ============================================================================
@@ -441,7 +442,7 @@ export class AIKitchenConfiguratorService {
         configurations.push(config);
       }
 
-      if (configurations.length >= maxConfigs) break;
+      if (configurations.length >= maxConfigs) {break;}
     }
 
     // 5. Scorer et trier les configurations
@@ -573,7 +574,7 @@ export class AIKitchenConfiguratorService {
 
     // Filtrer les items qui rentrent physiquement dans l'espace
     return allItems.filter(item => {
-      if (!item.dimensions) return false;
+      if (!item.dimensions) {return false;}
 
       // Vérifier que le meuble peut rentrer
       const itemWidth = this.getDimensionValue(item.dimensions, 'width');
@@ -717,15 +718,15 @@ export class AIKitchenConfiguratorService {
 
     // Trouver l'évier
     const sink = this.selectBestItem(items.sinks, preferences);
-    if (!sink) return null;
+    if (!sink) {return null;}
 
     // Trouver la plaque de cuisson
     const cooktop = this.selectBestItem(items.cooktops, preferences);
-    if (!cooktop) return null;
+    if (!cooktop) {return null;}
 
     // Trouver le réfrigérateur
     const refrigerator = this.selectBestItem(items.refrigerators, preferences);
-    if (!refrigerator) return null;
+    if (!refrigerator) {return null;}
 
     // Trouver les positions optimales selon le layout
     const positions = this.calculateEssentialPositions(
@@ -812,13 +813,13 @@ export class AIKitchenConfiguratorService {
     const cooktop = placements.find(p => p.zone === 'cooking');
     const refrigerator = placements.find(p => p.zone === 'cold');
 
-    if (!sink || !cooktop || !refrigerator) return placements;
+    if (!sink || !cooktop || !refrigerator) {return placements;}
 
     // Calculer le triangle actuel
     const currentTriangle = this.calculateWorkTriangle(placements);
 
     // Si le triangle est déjà optimal, ne rien faire
-    if (currentTriangle.isOptimal) return placements;
+    if (currentTriangle.isOptimal) {return placements;}
 
     // Sinon, tenter des ajustements
     const optimized = [...placements];
@@ -886,7 +887,7 @@ export class AIKitchenConfiguratorService {
 
     // Placer les meubles hauts
     for (const space of remainingSpaces) {
-      if (preferences.storagePreferences?.upperCabinets === 'none') continue;
+      if (preferences.storagePreferences?.upperCabinets === 'none') {continue;}
 
       const bestFitWallCabinets = this.findBestFitCabinets(
         space,
@@ -899,7 +900,7 @@ export class AIKitchenConfiguratorService {
         const hasWindow = roomAnalysis.constraints.some(
           c => c.type === 'window' && c.side === space.wallSide
         );
-        if (hasWindow) continue;
+        if (hasWindow) {continue;}
 
         const position = this.calculateWallCabinetPosition(
           space,
@@ -979,7 +980,7 @@ export class AIKitchenConfiguratorService {
     const cabinetsByWall = this.groupByWall(baseCabinets);
 
     for (const [wallSide, cabinets] of Object.entries(cabinetsByWall)) {
-      if (cabinets.length === 0) continue;
+      if (cabinets.length === 0) {continue;}
 
       // Calculer les points du plan de travail
       const points = this.calculateCountertopPoints(cabinets);
@@ -1054,7 +1055,7 @@ export class AIKitchenConfiguratorService {
       suggestions: [],
     };
 
-    if (!sink || !cooktop || !refrigerator) return defaultAnalysis;
+    if (!sink || !cooktop || !refrigerator) {return defaultAnalysis;}
 
     const sinkPos = { x: sink.position.x, y: sink.position.y };
     const cooktopPos = { x: cooktop.position.x, y: cooktop.position.y };
@@ -1099,10 +1100,10 @@ export class AIKitchenConfiguratorService {
     // Score de 0 à 100
     let score = 100;
     if (!isOptimal) {
-      if (total < minTotalDistance || total > maxTotalDistance) score -= 30;
-      if (sinkToCooktop < minLegDistance || sinkToCooktop > maxLegDistance) score -= 15;
-      if (cooktopToRefrigerator < minLegDistance || cooktopToRefrigerator > maxLegDistance) score -= 15;
-      if (refrigeratorToSink < minLegDistance || refrigeratorToSink > maxLegDistance) score -= 15;
+      if (total < minTotalDistance || total > maxTotalDistance) {score -= 30;}
+      if (sinkToCooktop < minLegDistance || sinkToCooktop > maxLegDistance) {score -= 15;}
+      if (cooktopToRefrigerator < minLegDistance || cooktopToRefrigerator > maxLegDistance) {score -= 15;}
+      if (refrigeratorToSink < minLegDistance || refrigeratorToSink > maxLegDistance) {score -= 15;}
     }
 
     return {
@@ -1292,15 +1293,15 @@ export class AIKitchenConfiguratorService {
 
     // Fonctionnalité (rangement, équipements)
     let functionality = 50;
-    if (statistics.storageVolume > 500) functionality += 20;
-    if (statistics.totalAppliances >= 3) functionality += 15;
-    if (statistics.countertopArea > 10000) functionality += 15;
+    if (statistics.storageVolume > 500) {functionality += 20;}
+    if (statistics.totalAppliances >= 3) {functionality += 15;}
+    if (statistics.countertopArea > 10000) {functionality += 15;}
 
     // Esthétique (proportions, harmonie)
     let aesthetics = 70;
     // Bonus si tous les éléments sont de la même marque
     const brands = new Set(placements.map(p => p.catalogItem.brand));
-    if (brands.size <= 2) aesthetics += 15;
+    if (brands.size <= 2) {aesthetics += 15;}
 
     // Budget (respect du budget)
     let budget = 100;
@@ -1438,7 +1439,7 @@ export class AIKitchenConfiguratorService {
     items: CatalogItem[],
     preferences: UserPreferences
   ): CatalogItem | undefined {
-    if (items.length === 0) return undefined;
+    if (items.length === 0) {return undefined;}
 
     let filtered = items;
 
@@ -1553,10 +1554,10 @@ export class AIKitchenConfiguratorService {
   private getWallSideForPosition(position: Point2D, roomAnalysis: RoomAnalysis): WallSide {
     const { width, depth } = roomAnalysis.dimensions;
 
-    if (position.y < 60) return 'north';
-    if (position.y > depth - 60) return 'south';
-    if (position.x < 60) return 'west';
-    if (position.x > width - 60) return 'east';
+    if (position.y < 60) {return 'north';}
+    if (position.y > depth - 60) {return 'south';}
+    if (position.x < 60) {return 'west';}
+    if (position.x > width - 60) {return 'east';}
 
     return 'north';
   }
@@ -1609,7 +1610,7 @@ export class AIKitchenConfiguratorService {
         remainingWidth -= cabinetWidth;
       }
 
-      if (remainingWidth < 30) break;
+      if (remainingWidth < 30) {break;}
     }
 
     return result;
@@ -1622,7 +1623,7 @@ export class AIKitchenConfiguratorService {
   ): Point3D | null {
     const cabinetWidth = this.getDimensionValue(cabinet.dimensions, 'width');
 
-    let x = space.startX + space.usedWidth;
+    const x = space.startX + space.usedWidth;
 
     if (x + cabinetWidth > space.startX + space.width) {
       return null;
@@ -1642,7 +1643,7 @@ export class AIKitchenConfiguratorService {
   ): Point3D | null {
     const cabinetWidth = this.getDimensionValue(cabinet.dimensions, 'width');
 
-    let x = space.startX + space.usedWidth;
+    const x = space.startX + space.usedWidth;
 
     if (x + cabinetWidth > space.startX + space.width) {
       return null;
@@ -1660,7 +1661,7 @@ export class AIKitchenConfiguratorService {
 
     for (const placement of placements) {
       const wall = placement.wallSide || 'unknown';
-      if (!grouped[wall]) grouped[wall] = [];
+      if (!grouped[wall]) {grouped[wall] = [];}
       grouped[wall].push(placement);
     }
 
@@ -1668,7 +1669,7 @@ export class AIKitchenConfiguratorService {
   }
 
   private calculateCountertopPoints(cabinets: ItemPlacement[]): Point2D[] {
-    if (cabinets.length === 0) return [];
+    if (cabinets.length === 0) {return [];}
 
     const sorted = [...cabinets].sort((a, b) => a.position.x - b.position.x);
     const first = sorted[0]!;
@@ -1689,8 +1690,8 @@ export class AIKitchenConfiguratorService {
     const itemsWithPrices = placements.filter(p => p.catalogItem.price?.amount);
     const ratio = itemsWithPrices.length / placements.length;
 
-    if (ratio > 0.8) return 'high';
-    if (ratio > 0.5) return 'medium';
+    if (ratio > 0.8) {return 'high';}
+    if (ratio > 0.5) {return 'medium';}
     return 'low';
   }
 }

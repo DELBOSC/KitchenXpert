@@ -13,6 +13,7 @@
  * reachable — keeps `pnpm test` green everywhere.
  */
 import { PrismaClient } from '@prisma/client';
+
 import { RegisterUseCase, RegisterSchema } from '../register.use-case';
 
 const hasDocker = async (): Promise<boolean> => {
@@ -35,7 +36,7 @@ describeIf(true)('RegisterUseCase (integration)', () => {
   let stop: (() => Promise<void>) | null = null;
 
   beforeAll(async () => {
-    if (!dockerAvailable) return;
+    if (!dockerAvailable) {return;}
     // Lazily require testcontainers so the file type-checks without the dep.
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PostgreSqlContainer } = require('testcontainers/modules/postgresql') as {
@@ -76,7 +77,7 @@ describeIf(true)('RegisterUseCase (integration)', () => {
   });
 
   it('registers a new user atomically and issues a verification token', async () => {
-    if (!prisma || !process.env.DATABASE_URL) return;
+    if (!prisma || !process.env.DATABASE_URL) {return;}
     const useCase = new RegisterUseCase(prisma);
     const out = await useCase.execute({
       email: `t-${Date.now()}@example.com`,
@@ -87,7 +88,7 @@ describeIf(true)('RegisterUseCase (integration)', () => {
       timezone: 'Europe/Paris',
     });
     expect(out.ok).toBe(true);
-    if (!out.ok) return;
+    if (!out.ok) {return;}
     expect(out.value.user.email).toMatch(/@example\.com$/);
     expect(out.value.verificationToken).toHaveLength(64);
 
@@ -98,7 +99,7 @@ describeIf(true)('RegisterUseCase (integration)', () => {
   });
 
   it('rejects duplicate email with a CONFLICT domain error', async () => {
-    if (!prisma || !process.env.DATABASE_URL) return;
+    if (!prisma || !process.env.DATABASE_URL) {return;}
     const useCase = new RegisterUseCase(prisma);
     const email = `dup-${Date.now()}@example.com`;
     const base = { email, password: 'Test1234!', firstName: 'A', lastName: 'B' };
@@ -107,7 +108,7 @@ describeIf(true)('RegisterUseCase (integration)', () => {
     const second = await useCase.execute(base);
 
     expect(second.ok).toBe(false);
-    if (second.ok) return;
+    if (second.ok) {return;}
     expect(second.error.code).toBe('CONFLICT');
     expect(second.error.detail).toBe('EMAIL_TAKEN');
   });

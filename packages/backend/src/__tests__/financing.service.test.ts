@@ -62,6 +62,7 @@ jest.mock('../services/ai/prompt-templates', () => ({
 }));
 
 import { FinancingService } from '../services/financing/financing.service';
+
 import type { EcoAidsDto, SimulateDto, IncomeBracket, EquipmentType } from '../services/financing/financing.service';
 
 describe('FinancingService', () => {

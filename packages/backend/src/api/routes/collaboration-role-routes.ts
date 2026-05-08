@@ -15,9 +15,10 @@
 
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
+import { collaborationRoleController } from '../controllers/collaboration-role-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { validateBody } from '../middleware/validation-middleware';
-import { collaborationRoleController } from '../controllers/collaboration-role-controller';
 
 const router: RouterType = Router();
 

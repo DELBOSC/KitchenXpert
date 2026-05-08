@@ -1,8 +1,10 @@
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const ChangePasswordSchema = z.object({
   userId: z.string().uuid(),
@@ -25,10 +27,10 @@ export class ChangePasswordUseCase implements UseCase<ChangePasswordInput, { ok:
 
   async execute({ userId, currentPassword, newPassword }: ChangePasswordInput): Promise<Result<{ ok: true }>> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) return err(DomainErrors.notFound('User'));
+    if (!user) {return err(DomainErrors.notFound('User'));}
 
     const valid = await bcrypt.compare(currentPassword, user.password);
-    if (!valid) return err(DomainErrors.unauthorized('Current password is incorrect'));
+    if (!valid) {return err(DomainErrors.unauthorized('Current password is incorrect'));}
 
     const hashed = await bcrypt.hash(newPassword, SALT_ROUNDS);
     await this.prisma.user.update({ where: { id: userId }, data: { password: hashed } });

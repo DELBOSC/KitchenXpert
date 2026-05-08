@@ -5,10 +5,9 @@
  */
 
 import crypto from 'crypto';
-import nodemailer, { Transporter } from 'nodemailer';
-import type { SendMailOptions as NodemailerOptions } from 'nodemailer';
-import { config } from '../config/app-config';
-import winstonLogger from '../utils/logger';
+
+import nodemailer, { type Transporter , type SendMailOptions as NodemailerOptions } from 'nodemailer';
+
 import {
   welcomeEmail,
   verificationEmail,
@@ -19,6 +18,8 @@ import {
   plainTextTemplates,
   type OrderDetails,
 } from './mail-templates';
+import { config } from '../config/app-config';
+import winstonLogger from '../utils/logger';
 
 // Create logger instance
 const logger = winstonLogger.child({ module: 'MailService' });
@@ -376,7 +377,7 @@ function createConsoleTransport(): MailTransport {
       const toStr = recipients.map(r => r.name ? `${r.name} <${r.email}>` : r.email).join(', ');
       const messageId = `console-${crypto.randomBytes(12).toString('base64url')}`;
 
-      logger.info('\n' + '='.repeat(70));
+      logger.info(`\n${  '='.repeat(70)}`);
       logger.info('[MAIL SERVICE - DEVELOPMENT MODE]');
       logger.info('='.repeat(70));
       logger.info(`Message ID: ${messageId}`);
@@ -404,7 +405,7 @@ function createConsoleTransport(): MailTransport {
         logger.info('HTML BODY:');
         // Log a truncated version in dev mode
         const htmlPreview = options.html.length > 1000
-          ? options.html.substring(0, 1000) + '\n... [truncated]'
+          ? `${options.html.substring(0, 1000)  }\n... [truncated]`
           : options.html;
         logger.info(htmlPreview);
       }
@@ -417,7 +418,7 @@ function createConsoleTransport(): MailTransport {
         });
       }
 
-      logger.info('='.repeat(70) + '\n');
+      logger.info(`${'='.repeat(70)  }\n`);
 
       logger.info('Email logged to console (development mode)', {
         messageId,

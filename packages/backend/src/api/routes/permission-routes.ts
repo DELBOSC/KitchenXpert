@@ -1,5 +1,6 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { permissionController } from '../controllers/permission-controller';
 import { authenticate, authorize } from '../middleware/auth-middleware';
 import { validateBody } from '../middleware/validation-middleware';

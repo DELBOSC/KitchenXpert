@@ -175,7 +175,7 @@ export class LiDARProcessorService {
         z: wall.end.z - wall.start.z,
       };
       const wallLength = Math.sqrt(wallDir.x * wallDir.x + wallDir.z * wallDir.z);
-      if (wallLength < 0.1) return;
+      if (wallLength < 0.1) {return;}
 
       const wallDirNorm = {
         x: wallDir.x / wallLength,
@@ -265,7 +265,7 @@ export class LiDARProcessorService {
       for (let v = 0; v < height; v += SUBSAMPLE) {
         for (let u = 0; u < width; u += SUBSAMPLE) {
           const depth = depthData[v * width + u];
-          if (depth === undefined || depth <= 0 || depth > 10) continue; // Filter invalid / far points
+          if (depth === undefined || depth <= 0 || depth > 10) {continue;} // Filter invalid / far points
 
           // Back-project pixel to camera space
           const camX = ((u - cx) / fx) * depth;
@@ -311,10 +311,10 @@ export class LiDARProcessorService {
     for (let planeIdx = 0; planeIdx < maxPlanes; planeIdx++) {
       const availableIndices: number[] = [];
       for (let i = 0; i < numPoints; i++) {
-        if (available[i]) availableIndices.push(i);
+        if (available[i]) {availableIndices.push(i);}
       }
 
-      if (availableIndices.length < this.MIN_WALL_INLIERS) break;
+      if (availableIndices.length < this.MIN_WALL_INLIERS) {break;}
 
       let bestPlane: Plane | null = null;
       let bestInlierCount = 0;
@@ -325,7 +325,7 @@ export class LiDARProcessorService {
         const idx1 = availableIndices[Math.floor(Math.random() * availableIndices.length)]!;
         const idx2 = availableIndices[Math.floor(Math.random() * availableIndices.length)]!;
 
-        if (idx0 === idx1 || idx1 === idx2 || idx0 === idx2) continue;
+        if (idx0 === idx1 || idx1 === idx2 || idx0 === idx2) {continue;}
 
         // Get points
         const p0 = this.getPoint(pointCloud, idx0);
@@ -342,7 +342,7 @@ export class LiDARProcessorService {
         };
 
         const len = Math.sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-        if (len < 1e-6) continue;
+        if (len < 1e-6) {continue;}
 
         normal.x /= len;
         normal.y /= len;
@@ -443,12 +443,12 @@ export class LiDARProcessorService {
         const x = pointCloud[idx * 3]!;
         const y = pointCloud[idx * 3 + 1]!;
         const z = pointCloud[idx * 3 + 2]!;
-        if (x < minX) minX = x;
-        if (x > maxX) maxX = x;
-        if (z < minZ) minZ = z;
-        if (z > maxZ) maxZ = z;
-        if (y < minY) minY = y;
-        if (y > maxY) maxY = y;
+        if (x < minX) {minX = x;}
+        if (x > maxX) {maxX = x;}
+        if (z < minZ) {minZ = z;}
+        if (z > maxZ) {maxZ = z;}
+        if (y < minY) {minY = y;}
+        if (y > maxY) {maxY = y;}
       }
 
       // Determine wall orientation: primarily along X or Z axis
@@ -532,7 +532,7 @@ export class LiDARProcessorService {
 
       for (let y = 0; y < binsHeight; y++) {
         if ((occupancy[x]?.[y] ?? 0) <= EMPTY_THRESHOLD) {
-          if (emptyStart === -1) emptyStart = y;
+          if (emptyStart === -1) {emptyStart = y;}
           emptyBinsInColumn++;
         }
       }
@@ -605,19 +605,19 @@ export class LiDARProcessorService {
     let confidence = 0;
 
     // More frames = more data = higher confidence
-    if (frameCount >= 30) confidence += 0.3;
-    else if (frameCount >= 10) confidence += 0.2;
-    else confidence += 0.1;
+    if (frameCount >= 30) {confidence += 0.3;}
+    else if (frameCount >= 10) {confidence += 0.2;}
+    else {confidence += 0.1;}
 
     // Detecting floor + walls gives higher confidence
-    if (planes.length >= 3) confidence += 0.3;
-    else if (planes.length >= 2) confidence += 0.2;
-    else confidence += 0.1;
+    if (planes.length >= 3) {confidence += 0.3;}
+    else if (planes.length >= 2) {confidence += 0.2;}
+    else {confidence += 0.1;}
 
     // Reasonable wall count
-    if (walls.length >= 3 && walls.length <= 6) confidence += 0.3;
-    else if (walls.length >= 2) confidence += 0.2;
-    else confidence += 0.1;
+    if (walls.length >= 3 && walls.length <= 6) {confidence += 0.3;}
+    else if (walls.length >= 2) {confidence += 0.2;}
+    else {confidence += 0.1;}
 
     // Cap at 0.95 (never fully confident from LiDAR alone)
     return Math.min(0.95, Math.max(0.1, confidence));

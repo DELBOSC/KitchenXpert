@@ -3,8 +3,8 @@
  * Handles file upload, download, and management endpoints
  */
 
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import {
   getS3StorageService,
   StorageServiceError,
@@ -12,6 +12,7 @@ import {
   FILE_EXTENSIONS,
 } from '../../services/storage-service';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 const storageService = getS3StorageService();
 
@@ -26,7 +27,7 @@ const MAX_FILE_SIZE = 100 * 1024 * 1024;
  * Returns a safe folder string or the default 'user-uploads'.
  */
 function sanitizeFolder(folder: unknown): string {
-  if (typeof folder !== 'string') return 'user-uploads';
+  if (typeof folder !== 'string') {return 'user-uploads';}
   // Reject if it contains path traversal characters
   if (folder.includes('..') || folder.includes('/') || folder.includes('\\')) {
     return 'user-uploads';

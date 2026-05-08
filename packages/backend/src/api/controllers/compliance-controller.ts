@@ -3,10 +3,11 @@
  * Handles HTTP requests for building code compliance checking.
  */
 
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
 import { complianceService, ComplianceServiceError } from '../../services/compliance/compliance.service';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * Helper to verify kitchen ownership.
@@ -61,7 +62,7 @@ export class ComplianceController {
 
     // Verify ownership
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) return;
+    if (!kitchen) {return;}
 
     try {
       const result = await complianceService.checkKitchenCompliance(kitchenId, userId);
@@ -135,7 +136,7 @@ export class ComplianceController {
 
     // Verify ownership
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) return;
+    if (!kitchen) {return;}
 
     const history = await complianceService.getCheckHistory(kitchenId);
 

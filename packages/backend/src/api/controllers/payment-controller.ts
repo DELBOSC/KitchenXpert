@@ -4,11 +4,13 @@
  * subscriptions, webhooks, and refunds.
  */
 
-import { Request, Response } from 'express';
-import type Stripe from 'stripe';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { getStripeService, StripeServiceError } from '../../services/stripe-service';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
+
+import type Stripe from 'stripe';
 
 /**
  * Payment Controller
@@ -487,7 +489,7 @@ export class PaymentController {
       }
 
       // After the deleted check above, we know this is a full Customer object
-      const activeCustomer = customer as Stripe.Customer;
+      const activeCustomer = customer;
 
       // Verify ownership: customer must belong to the authenticated user
       if (activeCustomer.metadata?.userId !== userId && req.user?.role !== 'admin') {
@@ -604,7 +606,7 @@ export class PaymentController {
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           clientSecret,
           customerId: subscription.customer,
-          priceId: (subscription.items.data[0]?.price as Stripe.Price | undefined)?.id,
+          priceId: (subscription.items.data[0]?.price)?.id,
         },
         message: 'Subscription created successfully',
       });
@@ -666,7 +668,7 @@ export class PaymentController {
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
           canceledAt: subscription.canceled_at ? new Date(subscription.canceled_at * 1000) : null,
           customerId: subscription.customer,
-          priceId: (subscription.items.data[0]?.price as Stripe.Price | undefined)?.id,
+          priceId: (subscription.items.data[0]?.price)?.id,
           metadata: subscription.metadata,
         },
       });
@@ -802,7 +804,7 @@ export class PaymentController {
           currentPeriodStart: new Date(sub.current_period_start * 1000),
           currentPeriodEnd: new Date(sub.current_period_end * 1000),
           cancelAtPeriodEnd: sub.cancel_at_period_end,
-          priceId: (sub.items.data[0]?.price as Stripe.Price | undefined)?.id,
+          priceId: (sub.items.data[0]?.price)?.id,
         })),
         meta: {
           count: subscriptions.data.length,

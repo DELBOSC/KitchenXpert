@@ -1,9 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+
+import { type JWTPayload } from '@kitchenxpert/common';
+
 import { config } from '../config/app-config';
-import { JWTPayload } from '@kitchenxpert/common';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: JWTPayload;
@@ -17,7 +20,7 @@ export function authenticateToken(
   next: NextFunction
 ): void {
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const token = authHeader?.split(' ')[1]; // Bearer TOKEN
 
   if (!token) {
     res.status(401).json({
@@ -51,7 +54,7 @@ export function optionalAuth(
   next: NextFunction
 ): void {
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader?.split(' ')[1];
 
   if (token) {
     try {

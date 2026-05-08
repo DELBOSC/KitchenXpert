@@ -1,6 +1,7 @@
 import { Router, type Router as RouterType } from 'express';
-import { authenticate } from '../middleware/auth-middleware';
+
 import { shoppingListController } from '../controllers/shopping-list-controller';
+import { authenticate } from '../middleware/auth-middleware';
 
 const router: RouterType = Router();
 

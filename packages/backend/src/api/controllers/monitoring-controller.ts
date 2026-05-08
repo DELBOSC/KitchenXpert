@@ -1,8 +1,10 @@
-import { Request, Response } from 'express';
+import os from 'os';
+
+import { type Request, type Response } from 'express';
+
+import { prisma } from '../../database/client';
 import { MetricRepository } from '../../repositories/metric-repository';
 import { asyncHandler } from '../middleware/error-middleware';
-import { prisma } from '../../database/client';
-import os from 'os';
 const metricRepository = new MetricRepository(prisma);
 
 /**

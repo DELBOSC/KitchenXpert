@@ -1,5 +1,6 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { gdprController } from '../controllers/gdpr-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { validateBody } from '../middleware/validation-middleware';

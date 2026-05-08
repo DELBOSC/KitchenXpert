@@ -3,12 +3,13 @@
  * Tests for MemoryTokenBlacklist, helper functions, and Redis blacklist interface
  */
 
+import jwt from 'jsonwebtoken';
+
 import {
   MemoryTokenBlacklist,
   getTokenExpiration,
   getTokenIssuedAt,
 } from '../auth/token-blacklist';
-import jwt from 'jsonwebtoken';
 
 jest.mock('../utils/logger', () => ({
   __esModule: true,

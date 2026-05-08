@@ -5,10 +5,11 @@
  * and role updates.
  */
 
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import { collaborationRoleService } from '../../services/collaboration/collaboration-role.service';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
+import { collaborationRoleService } from '../../services/collaboration/collaboration-role.service';
+import { asyncHandler } from '../middleware/error-middleware';
 
 export class CollaborationRoleController {
   /**

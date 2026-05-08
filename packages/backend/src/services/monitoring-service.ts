@@ -205,7 +205,7 @@ export class MonitoringService {
    * Start metrics collection
    */
   start(): void {
-    if (this.collectInterval) return;
+    if (this.collectInterval) {return;}
 
     this.collectInterval = setInterval(
       () => this.collectAndStoreMetrics(),
@@ -266,7 +266,8 @@ export class MonitoringService {
    * Get system metrics
    */
   async getSystemMetrics(): Promise<SystemMetrics> {
-    const os = require('os');
+    // Lazy ESM import keeps this fn tree-shakeable in non-Node envs.
+    const os = await import('os');
     const memoryUsage = process.memoryUsage();
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
@@ -446,10 +447,10 @@ export class MonitoringService {
     const rules = await this.repository.getAlertRules();
 
     for (const rule of rules) {
-      if (!rule.enabled) continue;
+      if (!rule.enabled) {continue;}
 
       const value = this.getMetricValue(metrics, rule.condition.metric);
-      if (value === null) continue;
+      if (value === null) {continue;}
 
       const triggered = this.evaluateCondition(value, rule.condition);
 
@@ -499,7 +500,7 @@ export class MonitoringService {
    * Flush metrics buffer
    */
   private async flushMetrics(): Promise<void> {
-    if (this.metricsBuffer.length === 0) return;
+    if (this.metricsBuffer.length === 0) {return;}
 
     const metrics = [...this.metricsBuffer];
     this.metricsBuffer = [];
@@ -545,7 +546,7 @@ export class MonitoringService {
    * Get CPU usage (average across all cores)
    */
   private async getCpuUsage(): Promise<number> {
-    const os = require('os');
+    const os = await import('os');
     const cpus = os.cpus();
 
     let totalIdle = 0;

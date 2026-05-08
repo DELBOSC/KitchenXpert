@@ -9,9 +9,9 @@
  * - Validation (missing fields, invalid email)
  */
 
-import request from 'supertest';
-import express, { type Application, type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import request from 'supertest';
 
 // ==================== MOCKS ====================
 
@@ -97,8 +97,8 @@ jest.mock('../api/middleware/rate-limit-middleware', () => ({
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
-import collaborationRoleRoutes from '../api/routes/collaboration-role-routes';
 import { errorHandler } from '../api/middleware/error-middleware';
+import collaborationRoleRoutes from '../api/routes/collaboration-role-routes';
 
 // ==================== SETUP ====================
 

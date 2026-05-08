@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
-import logger from '../../utils/logger';
-import { ProductEnrichmentService } from '../../services/ai/product-enrichment.service';
 import { CompatibilityGeneratorService } from '../../services/ai/compatibility-generator.service';
+import { ProductEnrichmentService } from '../../services/ai/product-enrichment.service';
 import { ProductMatcherService } from '../../services/ai/product-matcher.service';
+import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * EnrichmentController

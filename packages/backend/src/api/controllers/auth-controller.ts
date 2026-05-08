@@ -1,20 +1,22 @@
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
+
 import {
-  LoginRequest,
-  UserRegistration,
-  PasswordResetRequest,
-  PasswordResetConfirm,
-  ChangePasswordRequest,
+  type LoginRequest,
+  type UserRegistration,
+  type PasswordResetRequest,
+  type PasswordResetConfirm,
+  type ChangePasswordRequest,
 } from '@kitchenxpert/common';
+
 import { authService } from '../../auth/auth.service';
-import { asyncHandler } from '../middleware/error-middleware';
 import { getTokenBlacklist, getTokenExpiration } from '../../auth/token-blacklist';
-import { PrismaUserRepository } from '../../repositories';
+import { config } from '../../config/app-config';
 import { prisma } from '../../database/client';
+import { PrismaUserRepository } from '../../repositories';
 import { getEmailTokenService } from '../../services/email-token.service';
 import { getMailService } from '../../services/mail.service';
-import { config } from '../../config/app-config';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -360,7 +362,7 @@ export class AuthController {
 
     // Only return masked email to prevent information disclosure
     const [localPart, domain] = user.email.split('@');
-    const maskedEmail = localPart!.charAt(0) + '***@' + domain;
+    const maskedEmail = `${localPart!.charAt(0)  }***@${  domain}`;
 
     res.status(200).json({
       success: true,

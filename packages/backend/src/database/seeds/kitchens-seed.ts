@@ -7,8 +7,9 @@
  *          "isGenerated", score, metadata, "updatedAt"
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const KitchensSeed: Seed = {
   id: 'kitchens-seed',

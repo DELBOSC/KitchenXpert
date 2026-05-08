@@ -1,11 +1,11 @@
-import { Router, type Router as RouterType } from 'express';
-import { Request, Response } from 'express';
+import { Router, type Router as RouterType , type Request, type Response } from 'express';
 import { z } from 'zod';
+
+import { ProductRecommendationService } from '../../services/ai/recommendation.service';
 import { authenticate } from '../middleware/auth-middleware';
+import { asyncHandler } from '../middleware/error-middleware';
 import { aiRateLimiter } from '../middleware/rate-limit-middleware';
 import { validateBody } from '../middleware/validation-middleware';
-import { asyncHandler } from '../middleware/error-middleware';
-import { ProductRecommendationService } from '../../services/ai/recommendation.service';
 
 const router: RouterType = Router();
 const recService = new ProductRecommendationService();

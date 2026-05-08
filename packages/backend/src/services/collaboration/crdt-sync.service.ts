@@ -15,9 +15,11 @@
  * then incremental operations as they occur.
  */
 
-import { createModuleLogger } from '../../utils/logger';
 import crypto from 'crypto';
+
 import WebSocket from 'ws';
+
+import { createModuleLogger } from '../../utils/logger';
 
 const logger = createModuleLogger('crdt-sync');
 
@@ -171,7 +173,7 @@ export class CRDTSyncService {
         userId: uid,
         userName: p.userName,
         color: uid === userId ? color : PARTICIPANT_COLORS[
-          Array.from(room!.participants.keys()).indexOf(uid) % PARTICIPANT_COLORS.length
+          Array.from(room.participants.keys()).indexOf(uid) % PARTICIPANT_COLORS.length
         ]!,
       })),
     };
@@ -212,7 +214,7 @@ export class CRDTSyncService {
    */
   leaveRoom(kitchenId: string, userId: string): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) return;
+    if (!room) {return;}
 
     room.participants.delete(userId);
 
@@ -332,7 +334,7 @@ export class CRDTSyncService {
    */
   private handleMessage(kitchenId: string, userId: string, message: Record<string, unknown>): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) return;
+    if (!room) {return;}
 
     const participant = room.participants.get(userId);
     if (participant) {
@@ -395,7 +397,7 @@ export class CRDTSyncService {
           properties?: Record<string, unknown>;
         };
 
-        if (!objData.id) break;
+        if (!objData.id) {break;}
 
         const existing = state.objects.get(objData.id);
         if (existing && !existing.tombstone) {
@@ -425,7 +427,7 @@ export class CRDTSyncService {
 
       case 'remove_object': {
         const removeData = operation.data as { id: string };
-        if (!removeData.id) break;
+        if (!removeData.id) {break;}
 
         const obj = state.objects.get(removeData.id);
         if (obj) {
@@ -445,7 +447,7 @@ export class CRDTSyncService {
           position: { x: number; y: number; z: number };
           rotation?: { x: number; y: number; z: number };
         };
-        if (!moveData.id) break;
+        if (!moveData.id) {break;}
 
         const moveObj = state.objects.get(moveData.id);
         if (moveObj && !moveObj.tombstone) {
@@ -466,7 +468,7 @@ export class CRDTSyncService {
           id: string;
           properties: Record<string, unknown>;
         };
-        if (!modifyData.id) break;
+        if (!modifyData.id) {break;}
 
         const modifyObj = state.objects.get(modifyData.id);
         if (modifyObj && !modifyObj.tombstone) {
@@ -511,12 +513,12 @@ export class CRDTSyncService {
    */
   private broadcast(kitchenId: string, excludeUserId: string, message: WSMessage): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) return;
+    if (!room) {return;}
 
     const msgStr = JSON.stringify(message);
 
     for (const [uid, participant] of room.participants) {
-      if (uid === excludeUserId) continue;
+      if (uid === excludeUserId) {continue;}
       try {
         if (participant.ws.readyState === WebSocket.OPEN) {
           participant.ws.send(msgStr);

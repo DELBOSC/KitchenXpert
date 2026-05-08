@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { ok, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const SearchProductsSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -24,20 +26,20 @@ export class SearchProductsUseCase implements UseCase<SearchProductsInput, unkno
     const { page, limit, search, category, brand, providerId, minPrice, maxPrice, isActive } = input;
 
     const where: Record<string, unknown> = { isActive };
-    if (category) where.categoryId = category;
-    if (brand) where.brand = { contains: brand, mode: 'insensitive' };
-    if (providerId) where.providerId = providerId;
+    if (category) {where.categoryId = category;}
+    if (brand) {where.brand = { contains: brand, mode: 'insensitive' };}
+    if (providerId) {where.providerId = providerId;}
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.price = {
         ...(minPrice !== undefined && { gte: minPrice }),
         ...(maxPrice !== undefined && { lte: maxPrice }),
       };
     }
-    if (search) where.OR = [
+    if (search) {where.OR = [
       { name: { contains: search, mode: 'insensitive' } },
       { sku: { contains: search, mode: 'insensitive' } },
       { brand: { contains: search, mode: 'insensitive' } },
-    ];
+    ];}
 
     const [data, total] = await Promise.all([
       this.prisma.product.findMany({

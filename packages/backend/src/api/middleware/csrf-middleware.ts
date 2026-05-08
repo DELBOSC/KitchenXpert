@@ -1,5 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
+
+import { type Request, type Response, type NextFunction } from 'express';
+
 import { getRedisClient } from '../../database/redis-client';
 import logger from '../../utils/logger';
 

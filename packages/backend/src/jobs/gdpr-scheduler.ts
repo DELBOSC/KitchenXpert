@@ -14,8 +14,8 @@
  *   GDPR_PURGE_DRY_RUN=1            — log without deleting
  */
 
-import { prisma } from '../database/client';
 import { runGdprPurge } from './gdpr-purge.job';
+import { prisma } from '../database/client';
 import { createModuleLogger } from '../utils/logger';
 
 const logger = createModuleLogger('gdpr-scheduler');
@@ -25,7 +25,7 @@ const DEFAULT_INTERVAL_MS = 24 * 60 * 60 * 1000;
 let timer: ReturnType<typeof setInterval> | null = null;
 
 export function startGdprPurgeScheduler(): void {
-  if (timer) return;
+  if (timer) {return;}
   if (process.env.GDPR_PURGE_ENABLED !== '1') {
     logger.info('[gdpr-scheduler] Disabled (set GDPR_PURGE_ENABLED=1 to enable)');
     return;

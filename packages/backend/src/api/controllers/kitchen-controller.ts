@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import { type Request, type Response } from 'express';
+
+import { prisma } from '../../database/client';
 import { KitchenRepository } from '../../repositories/kitchen-repository';
 import { ProjectRepository } from '../../repositories/project-repository';
 import { asyncHandler } from '../middleware/error-middleware';
-import { prisma } from '../../database/client';
 
 const kitchenRepository = new KitchenRepository(prisma);
 
@@ -86,7 +87,7 @@ export class KitchenController {
       return;
     }
     const kitchen = await verifyKitchenOwnership(req, res, id);
-    if (!kitchen) return;
+    if (!kitchen) {return;}
 
     res.status(200).json({
       success: true,
@@ -137,7 +138,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const { name, style, layout, width, length, height, isGenerated, score, thumbnail, metadata } = req.body;
 
@@ -172,7 +173,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     await kitchenRepository.delete(id);
 
@@ -193,7 +194,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const { name } = req.body;
 
@@ -217,7 +218,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const config = await kitchenRepository.getConfiguration(id);
 
@@ -238,7 +239,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const configData = req.body;
 
@@ -262,7 +263,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const items = await kitchenRepository.getItems(id);
 
@@ -283,7 +284,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const itemData = req.body;
 
@@ -309,7 +310,7 @@ export class KitchenController {
 
     // Verify ownership of the parent kitchen
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) return;
+    if (!kitchen) {return;}
 
     // Verify item belongs to this kitchen
     const existingItem = await kitchenRepository.findItemInKitchen(kitchenId, itemId);
@@ -341,7 +342,7 @@ export class KitchenController {
 
     // Verify ownership of the parent kitchen
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) return;
+    if (!kitchen) {return;}
 
     // Verify item belongs to this kitchen
     const existingItem = await kitchenRepository.findItemInKitchen(kitchenId, itemId);
@@ -429,7 +430,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const kitchen = await kitchenRepository.archive(id);
 
@@ -451,7 +452,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const kitchen = await kitchenRepository.restore(id);
 
@@ -493,7 +494,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const modelData = await kitchenRepository.getModel(id);
 
@@ -514,7 +515,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const { thumbnailUrl } = req.body;
     if (!thumbnailUrl) {
@@ -543,7 +544,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const format = (req.query.format as 'json' | 'pdf' | 'csv') || 'json';
     const exportData = await kitchenRepository.exportData(id, format);
@@ -567,7 +568,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     const { expiresIn, allowEdit, password } = req.body;
     const shareData = await kitchenRepository.createShareLink(id, {
@@ -642,7 +643,7 @@ export class KitchenController {
       return;
     }
     const existing = await verifyKitchenOwnership(req, res, id);
-    if (!existing) return;
+    if (!existing) {return;}
 
     await kitchenRepository.revokeShareLink(id, shareId);
 

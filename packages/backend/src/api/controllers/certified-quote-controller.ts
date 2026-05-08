@@ -5,10 +5,11 @@
  * All routes require authentication; ownership is verified in the service layer.
  */
 
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { getCertifiedQuoteService } from '../../services/quote/certified-quote.service';
 import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 const quoteService = getCertifiedQuoteService();
 

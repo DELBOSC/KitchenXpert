@@ -6,9 +6,11 @@
  * In production, webhooks should be created through the API with proper secrets.
  */
 
-import type { Seed, Transaction } from './seed-runner';
-import logger from '../../utils/logger';
 import crypto from 'crypto';
+
+import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 /**
  * Generate a secure random webhook secret

@@ -1,7 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../../database/client';
-import { Prisma, WebhookEventType } from '@prisma/client';
 import crypto from 'crypto';
+
+import { type Prisma, type WebhookEventType } from '@prisma/client';
+import { type Request, type Response, type NextFunction } from 'express';
+
+import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
 
 interface WebhookRequest extends Request {
@@ -59,9 +61,9 @@ function isRetryable(statusCode?: number, error?: Error): boolean {
   }
   if (error) {
     const code = (error as NodeJS.ErrnoException).code;
-    if (code && RETRY_CONFIG.retryableErrorCodes.has(code)) return true;
-    if (error.name === 'AbortError' || error.name === 'TimeoutError') return true;
-    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('timeout')) return true;
+    if (code && RETRY_CONFIG.retryableErrorCodes.has(code)) {return true;}
+    if (error.name === 'AbortError' || error.name === 'TimeoutError') {return true;}
+    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('timeout')) {return true;}
   }
   return false;
 }
@@ -532,7 +534,7 @@ async function checkSuspension(webhookId: string): Promise<void> {
       select: { deliveredAt: true, failedAt: true },
     });
 
-    if (recentEvents.length < 5) return;
+    if (recentEvents.length < 5) {return;}
 
     const failedCount = recentEvents.filter(e => e.failedAt !== null && e.deliveredAt === null).length;
     const failureRate = failedCount / recentEvents.length;

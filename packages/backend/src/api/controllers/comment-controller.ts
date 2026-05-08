@@ -1,7 +1,9 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import { prisma } from '../../database/client';
+import { type Request, type Response } from 'express';
+
 import { NotFoundError, BadRequestError, ForbiddenError } from '@kitchenxpert/common';
+
+import { prisma } from '../../database/client';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * Comment Controller

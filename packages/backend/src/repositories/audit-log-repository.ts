@@ -1,4 +1,4 @@
-import { PrismaClient, AuditLog, Prisma } from '@prisma/client';
+import { type PrismaClient, type AuditLog, type Prisma } from '@prisma/client';
 
 /**
  * Audit Log Repository

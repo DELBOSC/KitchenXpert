@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import logger from '../../utils/logger';
+import { type Request, type Response } from 'express';
+
 import { AbandonmentDetectorService } from '../../services/analytics/abandonment-detector.service';
+import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * AbandonmentController

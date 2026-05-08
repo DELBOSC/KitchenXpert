@@ -142,8 +142,8 @@ export class PriceTrackerService {
       const lastPrice30d = prices30d[prices30d.length - 1]!;
       if (firstPrice30d !== 0) {
         changePercent30d = ((lastPrice30d - firstPrice30d) / firstPrice30d) * 100;
-        if (changePercent30d > 2) trendDirection = 'up';
-        else if (changePercent30d < -2) trendDirection = 'down';
+        if (changePercent30d > 2) {trendDirection = 'up';}
+        else if (changePercent30d < -2) {trendDirection = 'down';}
       }
     }
 
@@ -296,7 +296,7 @@ export class PriceTrackerService {
         orderBy: { recordedAt: 'desc' },
       });
 
-      if (!latest) continue;
+      if (!latest) {continue;}
 
       const currentPrice = latest.price;
       let shouldTrigger = false;

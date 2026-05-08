@@ -4,6 +4,7 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
+
 import logger from '../utils/logger';
 
 export interface RoomScanResult {
@@ -161,10 +162,10 @@ Si tu ne peux pas determiner une dimension avec certitude, fais une estimation r
 
     if (context) {
       prompt += '\n\nInformations supplementaires fournies par l\'utilisateur:';
-      if (context.estimatedWidth) prompt += `\n- Largeur estimee: ${context.estimatedWidth}mm`;
-      if (context.estimatedLength) prompt += `\n- Longueur estimee: ${context.estimatedLength}mm`;
-      if (context.estimatedHeight) prompt += `\n- Hauteur estimee: ${context.estimatedHeight}mm`;
-      if (context.notes) prompt += `\n- Notes: ${context.notes}`;
+      if (context.estimatedWidth) {prompt += `\n- Largeur estimee: ${context.estimatedWidth}mm`;}
+      if (context.estimatedLength) {prompt += `\n- Longueur estimee: ${context.estimatedLength}mm`;}
+      if (context.estimatedHeight) {prompt += `\n- Hauteur estimee: ${context.estimatedHeight}mm`;}
+      if (context.notes) {prompt += `\n- Notes: ${context.notes}`;}
     }
 
     return prompt;
@@ -219,7 +220,7 @@ Si tu ne peux pas determiner une dimension avec certitude, fais une estimation r
   }
 
   private clampDimension(value: unknown, min: number, max: number, fallback: number): number {
-    if (typeof value !== 'number' || isNaN(value)) return fallback;
+    if (typeof value !== 'number' || isNaN(value)) {return fallback;}
     return Math.max(min, Math.min(max, Math.round(value)));
   }
 }

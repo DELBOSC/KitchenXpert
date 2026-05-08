@@ -2,7 +2,7 @@
  * Auth Middleware Tests
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 // Mock jsonwebtoken
@@ -11,7 +11,7 @@ jest.mock('jsonwebtoken');
 // Simple auth middleware implementation for testing
 const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader?.split(' ')[1];
 
   if (!token) {
     res.status(401).json({ success: false, error: 'Access token required' });

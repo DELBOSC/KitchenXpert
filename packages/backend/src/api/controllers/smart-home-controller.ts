@@ -1,8 +1,10 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
-import logger from '../../utils/logger';
 import { SmartHomeService } from '../../services/smart-home/smart-home.service';
+import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
+
 import type { Position3D } from '../../services/smart-home/smart-home.service';
 
 /**

@@ -14,7 +14,7 @@
  * - POST /ai-chat/style-transfer (style analysis)
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, NextFunction } from 'express';
 
 // ---------------------------------------------------------------------------
 // Mock prisma client

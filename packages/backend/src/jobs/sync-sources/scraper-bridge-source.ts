@@ -1,6 +1,7 @@
-import type { PrismaClient } from '@prisma/client';
-import type { ApplianceUpdate, ProductUpdate, SyncSource } from '../provider-sync.types';
 import { createModuleLogger } from '../../utils/logger';
+
+import type { ApplianceUpdate, ProductUpdate, SyncSource } from '../provider-sync.types';
+import type { PrismaClient } from '@prisma/client';
 
 const logger = createModuleLogger('scraper-bridge');
 
@@ -76,10 +77,10 @@ export class ScraperBridgeSyncSource implements SyncSource {
 }
 
 function normalize(raw: string | undefined): ProductUpdate['availability'] | undefined {
-  if (!raw) return undefined;
+  if (!raw) {return undefined;}
   const v = raw.toLowerCase();
-  if (v.includes('out')) return 'out_of_stock';
-  if (v.includes('low') || v.includes('limited')) return 'low_stock';
-  if (v.includes('order') || v.includes('on demand')) return 'on_order';
+  if (v.includes('out')) {return 'out_of_stock';}
+  if (v.includes('low') || v.includes('limited')) {return 'low_stock';}
+  if (v.includes('order') || v.includes('on demand')) {return 'on_order';}
   return 'in_stock';
 }

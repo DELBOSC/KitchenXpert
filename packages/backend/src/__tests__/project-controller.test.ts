@@ -2,7 +2,7 @@
  * Project Controller Tests
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 // Mock repository must be defined before jest.mock due to hoisting
 const mockRepository = {

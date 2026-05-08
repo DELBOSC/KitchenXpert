@@ -1,12 +1,12 @@
-import { Router, type Router as RouterType } from 'express';
-import { Request, Response } from 'express';
+import { Router, type Router as RouterType , type Request, type Response } from 'express';
 import { z } from 'zod';
+
+import { prisma } from '../../database/client';
+import { ProjectAssistantService } from '../../services/ai/project-assistant.service';
 import { authenticate } from '../middleware/auth-middleware';
+import { asyncHandler } from '../middleware/error-middleware';
 import { aiRateLimiter } from '../middleware/rate-limit-middleware';
 import { validateBody } from '../middleware/validation-middleware';
-import { asyncHandler } from '../middleware/error-middleware';
-import { ProjectAssistantService } from '../../services/ai/project-assistant.service';
-import { prisma } from '../../database/client';
 
 const router: RouterType = Router();
 const projectAssistant = new ProjectAssistantService();

@@ -123,8 +123,9 @@ export {
   KitchenGeneratorService,
   createKitchenGeneratorService,
   KitchenGeneratorError,
-  // Room & Space Types
-  type RoomDimensions,
+  // Room & Space Types — aliased because RoomDimensions is also exported
+  // from kitchen-service via `export *` at the top of this file.
+  type RoomDimensions as GeneratorRoomDimensions,
   type RoomShape as GeneratorRoomShape,
   type WallSegment,
   type WallSide as GeneratorWallSide,
@@ -258,7 +259,10 @@ export type {
   OptimizationResult,
   OptimizationSuggestion,
   ScenarioDefinition,
-  Position3D,
+  // Position3D is also exported by SmartHomeService below; alias to avoid
+  // an `import/export` collision warning. Inline `type` modifier is dropped
+  // because the enclosing `export type {}` already marks the whole list.
+  Position3D as AIPosition3D,
 } from './ai/index';
 
 // Compliance

@@ -4,9 +4,10 @@
  */
 
 import crypto from 'crypto';
-import { Router, Request, Response, NextFunction } from 'express';
+
+import { Router, type Request, type Response, type NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
-import { authenticate } from '../middleware/auth-middleware';
+
 import { aiServiceClient } from '../../services/ai-service-client';
 import {
   transformGenerateRequest,
@@ -17,6 +18,7 @@ import {
   transformOptimizeResult,
 } from '../../services/ai-service-transformers';
 import { createModuleLogger } from '../../utils/logger';
+import { authenticate } from '../middleware/auth-middleware';
 
 const aiLogger = createModuleLogger('kitchen-generator-ai');
 
@@ -205,7 +207,7 @@ router.post('/generate', generatorRateLimiter, authenticate, async (req: Request
     const body = req.body as GenerationRequestBody;
 
     // Validate required fields
-    if (!body.room || !body.room.dimensions) {
+    if (!body.room?.dimensions) {
       res.status(400).json({
         success: false,
         error: {
@@ -216,7 +218,7 @@ router.post('/generate', generatorRateLimiter, authenticate, async (req: Request
       return;
     }
 
-    if (!body.preferences || !body.preferences.budget) {
+    if (!body.preferences?.budget) {
       res.status(400).json({
         success: false,
         error: {
@@ -793,7 +795,7 @@ router.post('/recommend-shape', async (req: Request, res: Response, next: NextFu
   try {
     const { dimensions, wallsAvailable = 4 } = req.body;
 
-    if (!dimensions || !dimensions.width || !dimensions.length) {
+    if (!dimensions?.width || !dimensions.length) {
       res.status(400).json({
         success: false,
         error: {

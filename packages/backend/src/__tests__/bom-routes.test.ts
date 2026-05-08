@@ -9,7 +9,7 @@
  * - Error handling (service failure)
  */
 
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 
 // ---------------------------------------------------------------------------
 // Mock BOM generator service

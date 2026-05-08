@@ -1,7 +1,8 @@
+import { DomainErrors, errorToBody, errorToStatus, type Result } from './result';
+
+import type { UseCase } from './use-case';
 import type { Request, Response, NextFunction } from 'express';
 import type { ZodSchema } from 'zod';
-import { DomainErrors, errorToBody, errorToStatus, type Result } from './result';
-import type { UseCase } from './use-case';
 
 /**
  * Adapter that runs a Zod schema then a UseCase, writing the HTTP response.

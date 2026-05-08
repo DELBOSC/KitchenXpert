@@ -3,6 +3,24 @@
  * Main client for interacting with IKEA APIs
  */
 
+
+import {
+  IKEA_CLIENT_IDS,
+  IKEA_AUTH_SECRET,
+  IKEA_ENDPOINTS,
+} from './types';
+import {
+  getDefaultHeaders,
+  buildUrl,
+  formatItemCode,
+  parsePrice,
+  extractImageUrl,
+  buildProductUrl,
+  chunk,
+  getCurrencyForCountry,
+  parseDimensions,
+} from './utils';
+
 import type {
   IkeaConfig,
   IkeaAuthToken,
@@ -15,24 +33,6 @@ import type {
   StockInfo,
   ApiResponse,
 } from './types';
-
-import {
-  IKEA_CLIENT_IDS,
-  IKEA_AUTH_SECRET,
-  IKEA_ENDPOINTS,
-} from './types';
-
-import {
-  getDefaultHeaders,
-  buildUrl,
-  formatItemCode,
-  parsePrice,
-  extractImageUrl,
-  buildProductUrl,
-  chunk,
-  getCurrencyForCountry,
-  parseDimensions,
-} from './utils';
 
 /**
  * IKEA API Client
@@ -649,7 +649,6 @@ export class IkeaClient {
     const allResults: SearchResult[] = [];
     const seenItemCodes = new Set<string>();
     const categories: Record<string, number> = {};
-    let totalApiCount = 0;
 
     // Execute searches in parallel batches to avoid rate limiting
     const batchSize = 5;
@@ -671,7 +670,8 @@ export class IkeaClient {
         const term = batch[j];
 
         if (result && result.success && result.data) {
-          totalApiCount += result.data.totalCount;
+          // Note: result.data.totalCount tracks per-search totals; we
+          // intentionally don't accumulate them because dedup happens below.
           let categoryCount = 0;
 
           for (const product of result.data.results) {

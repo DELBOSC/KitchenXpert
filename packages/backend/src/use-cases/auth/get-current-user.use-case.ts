@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { DomainErrors, ok, err, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const GetCurrentUserSchema = z.object({
   userId: z.string().uuid(),
@@ -26,7 +28,7 @@ export class GetCurrentUserUseCase implements UseCase<GetCurrentUserInput, Curre
         language: true, timezone: true, createdAt: true, lastLoginAt: true,
       },
     });
-    if (!user) return err(DomainErrors.notFound('User'));
+    if (!user) {return err(DomainErrors.notFound('User'));}
     return ok({ ...user, status: user.status as string });
   }
 }

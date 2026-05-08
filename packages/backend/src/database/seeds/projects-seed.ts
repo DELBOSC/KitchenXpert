@@ -5,8 +5,9 @@
  * Prisma tables: "Project", "ProjectCollaborator"
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const ProjectsSeed: Seed = {
   id: 'projects-seed',

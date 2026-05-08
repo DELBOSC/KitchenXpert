@@ -1,7 +1,8 @@
-import type { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
 import { prisma } from '../../database/client';
 import { createModuleLogger } from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
+
+import type { Request, Response } from 'express';
 
 const logger = createModuleLogger('gdpr-controller');
 

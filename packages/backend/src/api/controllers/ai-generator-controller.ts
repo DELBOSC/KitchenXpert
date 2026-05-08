@@ -1,10 +1,13 @@
 import crypto from 'crypto';
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
-import logger from '../../utils/logger';
 import { DesignGeneratorService } from '../../services/ai/design-generator.service';
 import { ImageGeneratorService } from '../../services/ai/image-generator.service';
+import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
+
 import type { AIGeneratedDesign, CostBreakdown } from '../../services/ai/design-generator.service';
 
 interface GeneratedDesign {
@@ -495,12 +498,12 @@ export class AIGeneratorController {
       const baseScore = 65 + Math.floor(Math.random() * 15);
 
       const features = [...(styleInfo?.features || [])];
-      if (includeIsland) features.push('Ilot central');
-      if (storage === 'maximum') features.push('Rangements optimises');
-      if (preferences.sustainableOptions) features.push('Materiaux eco-responsables');
-      if (preferences.smartHomeIntegration) features.push('Domotique integree');
-      if (preferences.includePantry) features.push('Cellier integre');
-      if (preferences.includeBreakfastNook) features.push('Coin petit-dejeuner');
+      if (includeIsland) {features.push('Ilot central');}
+      if (storage === 'maximum') {features.push('Rangements optimises');}
+      if (preferences.sustainableOptions) {features.push('Materiaux eco-responsables');}
+      if (preferences.smartHomeIntegration) {features.push('Domotique integree');}
+      if (preferences.includePantry) {features.push('Cellier integre');}
+      if (preferences.includeBreakfastNook) {features.push('Coin petit-dejeuner');}
 
       designs.push({
         id: crypto.randomUUID(),

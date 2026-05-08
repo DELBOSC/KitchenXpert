@@ -1,14 +1,15 @@
-import { Router, Request, Response, type Router as RouterType } from 'express';
+import { Router, type Request, type Response, type Router as RouterType } from 'express';
 import { z } from 'zod';
-import { authenticate } from '../middleware/auth-middleware';
-import { aiRateLimiter } from '../middleware/rate-limit-middleware';
-import { validateBody } from '../middleware/validation-middleware';
-import { aiChatController } from '../controllers/ai-chat-controller';
-import { asyncHandler } from '../middleware/error-middleware';
+
+import { prisma } from '../../database/client';
 import { StyleTransferService } from '../../services/ai/style-transfer.service';
 import { ToolUse3DService } from '../../services/ai/tool-use-3d.service';
-import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
+import { aiChatController } from '../controllers/ai-chat-controller';
+import { authenticate } from '../middleware/auth-middleware';
+import { asyncHandler } from '../middleware/error-middleware';
+import { aiRateLimiter } from '../middleware/rate-limit-middleware';
+import { validateBody } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 
@@ -487,8 +488,8 @@ router.post('/style-transfer', authenticate, aiRateLimiter, validateBody(styleTr
       return;
     }
     const contentType = response.headers.get('content-type') || 'image/jpeg';
-    if (contentType.includes('png')) resolvedMediaType = 'image/png';
-    else if (contentType.includes('webp')) resolvedMediaType = 'image/webp';
+    if (contentType.includes('png')) {resolvedMediaType = 'image/png';}
+    else if (contentType.includes('webp')) {resolvedMediaType = 'image/webp';}
     const buffer = Buffer.from(await response.arrayBuffer());
     imageBase64 = buffer.toString('base64');
   }

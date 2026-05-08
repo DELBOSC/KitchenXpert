@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
-import logger from '../../utils/logger';
 import { CarbonCalculatorService } from '../../services/sustainability/carbon-calculator.service';
+import logger from '../../utils/logger';
+import { asyncHandler } from '../middleware/error-middleware';
 
 /**
  * CarbonController

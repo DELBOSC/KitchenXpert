@@ -1,11 +1,12 @@
-import { Request, Response } from 'express';
-import { CatalogRepository } from '../../repositories/catalog-repository';
-import { ProductRepository } from '../../repositories/product-repository';
-import { ApplianceRepository } from '../../repositories/appliance-repository';
-import { MaterialRepository } from '../../repositories/material-repository';
-import { asyncHandler } from '../middleware/error-middleware';
+import { type Request, type Response } from 'express';
+
 import { prisma } from '../../database/client';
+import { ApplianceRepository } from '../../repositories/appliance-repository';
+import { CatalogRepository } from '../../repositories/catalog-repository';
+import { MaterialRepository } from '../../repositories/material-repository';
+import { ProductRepository } from '../../repositories/product-repository';
 import { CacheService } from '../../services/cache.service';
+import { asyncHandler } from '../middleware/error-middleware';
 const catalogRepository = new CatalogRepository(prisma);
 const productRepository = new ProductRepository(prisma);
 const applianceRepository = new ApplianceRepository(prisma);

@@ -3,8 +3,9 @@
  * Multer configuration for file uploads
  */
 
-import multer, { FileFilterCallback, MulterError } from 'multer';
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction , type RequestHandler } from 'express';
+import multer, { type FileFilterCallback, MulterError } from 'multer';
+
 import { ALLOWED_FILE_TYPES, ALLOWED_IMAGE_TYPES, ALLOWED_DOCUMENT_TYPES } from '../services/storage-service';
 import logger from '../utils/logger';
 
@@ -122,7 +123,6 @@ export const uploadDocument = multer({
 
 // ==================== Middleware Handlers ====================
 
-import type { RequestHandler } from 'express';
 
 /**
  * Single file upload middleware
@@ -188,7 +188,7 @@ export const handleUploadError = (
     });
 
     let statusCode = 400;
-    let errorCode = error.code;
+    const errorCode = error.code;
     let message = error.message;
 
     switch (error.code) {
@@ -281,11 +281,11 @@ export function isValidMimeType(mimeType: string, allowedTypes: string[] = ALLOW
  * Get human-readable file size
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) {return '0 Bytes';}
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))  } ${  sizes[i]}`;
 }
 
 // ==================== Export Constants ====================

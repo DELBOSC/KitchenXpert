@@ -61,10 +61,10 @@ export function decrypt(encryptedData: string): string {
  */
 export function isEncrypted(value: string): boolean {
   const parts = value.split(':');
-  if (parts.length !== 3 || !parts[0] || !parts[1]) return false;
+  if (parts.length !== 3 || !parts[0] || !parts[1]) {return false;}
   try {
-    Buffer.from(parts[0] as string, 'base64');
-    Buffer.from(parts[1] as string, 'base64');
+    Buffer.from(parts[0], 'base64');
+    Buffer.from(parts[1], 'base64');
     return true;
   } catch {
     return false;

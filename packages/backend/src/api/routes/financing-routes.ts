@@ -1,5 +1,6 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { financingController } from '../controllers/financing-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';

@@ -257,7 +257,7 @@ export class KitchenService {
    */
   async addWall(layoutId: string, wall: Omit<Wall, 'id'>): Promise<KitchenLayout | null> {
     const layout = await this.repository.findLayoutById(layoutId);
-    if (!layout) return null;
+    if (!layout) {return null;}
 
     const newWall: Wall = {
       ...wall,
@@ -278,7 +278,7 @@ export class KitchenService {
     opening: Omit<Opening, 'id' | 'wallId'>
   ): Promise<KitchenLayout | null> {
     const layout = await this.repository.findLayoutById(layoutId);
-    if (!layout) return null;
+    if (!layout) {return null;}
 
     const wall = layout.walls.find(w => w.id === wallId);
     if (!wall) {

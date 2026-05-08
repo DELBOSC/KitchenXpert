@@ -1,12 +1,13 @@
 import { z } from 'zod';
-import { prisma } from '../../database/client';
+
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
+import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) return '';
+  if (!input) {return '';}
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -200,14 +201,14 @@ export class BOMGeneratorService {
     if (kitchenConfig) {
       sections.push('');
       sections.push('=== CONFIGURATION ===');
-      if (kitchenConfig.cabinetStyle) sections.push(`- Style caissons: ${sanitizeInput(kitchenConfig.cabinetStyle)}`);
-      if (kitchenConfig.cabinetFinish) sections.push(`- Finition caissons: ${sanitizeInput(kitchenConfig.cabinetFinish)}`);
-      if (kitchenConfig.countertopMaterial) sections.push(`- Plan de travail: ${sanitizeInput(kitchenConfig.countertopMaterial)}`);
-      if (kitchenConfig.countertopColor) sections.push(`- Couleur plan: ${sanitizeInput(kitchenConfig.countertopColor)}`);
-      if (kitchenConfig.backsplashType) sections.push(`- Credence: ${sanitizeInput(kitchenConfig.backsplashType)}`);
-      if (kitchenConfig.backsplashMaterial) sections.push(`- Materiau credence: ${sanitizeInput(kitchenConfig.backsplashMaterial)}`);
-      if (kitchenConfig.flooringType) sections.push(`- Sol: ${sanitizeInput(kitchenConfig.flooringType)}`);
-      if (kitchenConfig.hardwareStyle) sections.push(`- Quincaillerie: ${sanitizeInput(kitchenConfig.hardwareStyle)}`);
+      if (kitchenConfig.cabinetStyle) {sections.push(`- Style caissons: ${sanitizeInput(kitchenConfig.cabinetStyle)}`);}
+      if (kitchenConfig.cabinetFinish) {sections.push(`- Finition caissons: ${sanitizeInput(kitchenConfig.cabinetFinish)}`);}
+      if (kitchenConfig.countertopMaterial) {sections.push(`- Plan de travail: ${sanitizeInput(kitchenConfig.countertopMaterial)}`);}
+      if (kitchenConfig.countertopColor) {sections.push(`- Couleur plan: ${sanitizeInput(kitchenConfig.countertopColor)}`);}
+      if (kitchenConfig.backsplashType) {sections.push(`- Credence: ${sanitizeInput(kitchenConfig.backsplashType)}`);}
+      if (kitchenConfig.backsplashMaterial) {sections.push(`- Materiau credence: ${sanitizeInput(kitchenConfig.backsplashMaterial)}`);}
+      if (kitchenConfig.flooringType) {sections.push(`- Sol: ${sanitizeInput(kitchenConfig.flooringType)}`);}
+      if (kitchenConfig.hardwareStyle) {sections.push(`- Quincaillerie: ${sanitizeInput(kitchenConfig.hardwareStyle)}`);}
     }
 
     // Items
@@ -216,9 +217,9 @@ export class BOMGeneratorService {
       sections.push('=== ELEMENTS DANS LA CUISINE ===');
       for (const item of kitchenItems) {
         let itemDesc = `- ${sanitizeInput(item.name)} (${sanitizeInput(item.type)})`;
-        if (item.brand) itemDesc += ` - Marque: ${sanitizeInput(item.brand)}`;
-        if (item.model) itemDesc += ` - Modele: ${sanitizeInput(item.model)}`;
-        if (item.price) itemDesc += ` - Prix unitaire: ${item.price}EUR`;
+        if (item.brand) {itemDesc += ` - Marque: ${sanitizeInput(item.brand)}`;}
+        if (item.model) {itemDesc += ` - Modele: ${sanitizeInput(item.model)}`;}
+        if (item.price) {itemDesc += ` - Prix unitaire: ${item.price}EUR`;}
         if (item.product) {
           itemDesc += ` [Produit catalogue: ${sanitizeInput(item.product.name)}]`;
         }

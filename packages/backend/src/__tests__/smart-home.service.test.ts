@@ -81,6 +81,7 @@ jest.mock('../utils/logger', () => ({
 // Import after mocks
 // ---------------------------------------------------------------------------
 import { SmartHomeService } from '../services/smart-home/smart-home.service';
+
 import type { PlacedDevice, AutomationRule, CoverageMap } from '../services/smart-home/smart-home.service';
 
 // ---------------------------------------------------------------------------

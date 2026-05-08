@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import type { PrismaClient, Project } from '@prisma/client';
+
 import { ok, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient, Project } from '@prisma/client';
 
 export const CreateProjectSchema = z.object({
   userId: z.string().uuid(),

@@ -11,10 +11,11 @@
 import { Router, type Router as RouterType } from 'express';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
-import { authenticate } from '../middleware/auth-middleware';
-import { validateBody, validateParams } from '../middleware/validation-middleware';
+
 import { uploadSingleImage, handleUploadError } from '../../middleware/upload-middleware';
 import { renovationController } from '../controllers/renovation-controller';
+import { authenticate } from '../middleware/auth-middleware';
+import { validateBody, validateParams } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 

@@ -1,4 +1,4 @@
-import { PrismaClient, Appliance } from '@prisma/client';
+import { type PrismaClient, type Appliance } from '@prisma/client';
 
 /**
  * Appliance Repository

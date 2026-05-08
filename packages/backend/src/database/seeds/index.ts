@@ -19,13 +19,14 @@ export { ProviderCatalogsSeed } from './provider-catalogs-seed';
 export { ProjectsSeed } from './projects-seed';
 export { KitchensSeed } from './kitchens-seed';
 
+import { CatalogsSeed } from './catalogs-seed';
+import { KitchensSeed } from './kitchens-seed';
+import { PermissionsSeed } from './permissions-seed';
+import { ProjectsSeed } from './projects-seed';
+import { ProviderCatalogsSeed } from './provider-catalogs-seed';
 import { RolesSeed } from './roles-seed';
 import { UsersSeed } from './users-seed';
-import { PermissionsSeed } from './permissions-seed';
-import { CatalogsSeed } from './catalogs-seed';
-import { ProviderCatalogsSeed } from './provider-catalogs-seed';
-import { ProjectsSeed } from './projects-seed';
-import { KitchensSeed } from './kitchens-seed';
+
 import type { Seed } from './seed-runner';
 
 /**

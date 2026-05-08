@@ -1,8 +1,11 @@
 import crypto from 'crypto';
+
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
+
 import { ok, type Result } from '../../core/result';
+
 import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 export const RequestPasswordResetSchema = z.object({
   email: z.string().email().transform((e) => e.toLowerCase()),
@@ -31,7 +34,7 @@ export class RequestPasswordResetUseCase implements UseCase<RequestPasswordReset
       where: { email },
       select: { id: true, email: true, firstName: true },
     });
-    if (!user) return ok({ token: null, user: null });
+    if (!user) {return ok({ token: null, user: null });}
 
     const raw = crypto.randomBytes(32).toString('hex');
     const hashed = crypto.createHash('sha256').update(raw).digest('hex');

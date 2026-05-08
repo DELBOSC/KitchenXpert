@@ -49,7 +49,7 @@ export function isValidItemCode(code: string): boolean {
  */
 export function parseItemCodeWithType(code: string, type?: ItemType): ItemCode | null {
   const formatted = formatItemCode(code);
-  if (!formatted) return null;
+  if (!formatted) {return null;}
 
   return {
     code: formatted,
@@ -108,9 +108,9 @@ export function parsePrice(priceData: unknown): number {
   if (typeof priceData === 'object' && priceData !== null) {
     const obj = priceData as Record<string, unknown>;
     // Common price object formats
-    if ('amount' in obj) return parsePrice(obj.amount);
-    if ('value' in obj) return parsePrice(obj.value);
-    if ('price' in obj) return parsePrice(obj.price);
+    if ('amount' in obj) {return parsePrice(obj.amount);}
+    if ('value' in obj) {return parsePrice(obj.value);}
+    if ('price' in obj) {return parsePrice(obj.price);}
     if ('wholeNumber' in obj && 'decimals' in obj) {
       return Number(obj.wholeNumber) + Number(obj.decimals) / 100;
     }
@@ -138,13 +138,13 @@ export function extractImageUrl(media: unknown): string | undefined {
   if (typeof media === 'object' && media !== null) {
     const obj = media as Record<string, unknown>;
     // Common image URL fields
-    if ('url' in obj) return String(obj.url);
-    if ('href' in obj) return String(obj.href);
-    if ('src' in obj) return String(obj.src);
-    if ('mainImageUrl' in obj) return String(obj.mainImageUrl);
-    if ('S5' in obj) return String(obj.S5); // IKEA uses size codes like S5
-    if ('S4' in obj) return String(obj.S4);
-    if ('S3' in obj) return String(obj.S3);
+    if ('url' in obj) {return String(obj.url);}
+    if ('href' in obj) {return String(obj.href);}
+    if ('src' in obj) {return String(obj.src);}
+    if ('mainImageUrl' in obj) {return String(obj.mainImageUrl);}
+    if ('S5' in obj) {return String(obj.S5);} // IKEA uses size codes like S5
+    if ('S4' in obj) {return String(obj.S4);}
+    if ('S3' in obj) {return String(obj.S3);}
   }
 
   return undefined;
@@ -192,7 +192,7 @@ const DIM_UNIT_RATIO: Record<string, number> = {
 
 function toCm(value: unknown, unit: string | undefined): number | undefined {
   const n = typeof value === 'number' ? value : parseFloat(String(value));
-  if (!Number.isFinite(n)) return undefined;
+  if (!Number.isFinite(n)) {return undefined;}
   const ratio = DIM_UNIT_RATIO[(unit || 'cm').toLowerCase()] ?? 1;
   return Math.round(n * ratio * 10) / 10;
 }
@@ -203,24 +203,24 @@ const DIM_TEXT_RE = /\b([LWPHDh])\s*([0-9]+(?:[.,][0-9]+)?)\s*(cm|mm|m)?/gi;
 export function parseDimensions(raw: unknown): ParsedDimensions {
   const out: ParsedDimensions = { unit: 'cm' };
 
-  if (typeof raw !== 'object' || raw === null) return out;
+  if (typeof raw !== 'object' || raw === null) {return out;}
   const obj = raw as Record<string, unknown>;
 
   // 1) Structured `measurements.referenceMeasurements`
   const meas = (obj.measurements as Record<string, unknown> | undefined)?.referenceMeasurements;
   if (Array.isArray(meas)) {
     for (const m of meas) {
-      if (typeof m !== 'object' || m === null) continue;
+      if (typeof m !== 'object' || m === null) {continue;}
       const r = m as Record<string, unknown>;
       const type = String(r.type ?? '').toUpperCase();
       const metric = r.metric as Record<string, unknown> | undefined;
       const value = metric?.value ?? r.value;
       const unit = (metric?.unit ?? r.unit) as string | undefined;
       const cm = toCm(value, unit);
-      if (cm === undefined) continue;
-      if (type === 'WIDTH') out.width = cm;
-      else if (type === 'DEPTH') out.depth = cm;
-      else if (type === 'HEIGHT') out.height = cm;
+      if (cm === undefined) {continue;}
+      if (type === 'WIDTH') {out.width = cm;}
+      else if (type === 'DEPTH') {out.depth = cm;}
+      else if (type === 'HEIGHT') {out.height = cm;}
     }
   }
 
@@ -244,10 +244,10 @@ export function parseDimensions(raw: unknown): ParsedDimensions {
     while ((m = DIM_TEXT_RE.exec(label))) {
       const letter = m[1]!.toUpperCase();
       const cm = toCm(m[2], m[3] || 'cm');
-      if (cm === undefined) continue;
-      if ((letter === 'L' || letter === 'W') && out.width === undefined) out.width = cm;
-      else if ((letter === 'P' || letter === 'D') && out.depth === undefined) out.depth = cm;
-      else if ((letter === 'H' || letter === 'h') && out.height === undefined) out.height = cm;
+      if (cm === undefined) {continue;}
+      if ((letter === 'L' || letter === 'W') && out.width === undefined) {out.width = cm;}
+      else if ((letter === 'P' || letter === 'D') && out.depth === undefined) {out.depth = cm;}
+      else if ((letter === 'H' || letter === 'h') && out.height === undefined) {out.height = cm;}
     }
   }
 
@@ -263,13 +263,13 @@ export function parseDimensions(raw: unknown): ParsedDimensions {
       const dims = parseDimensions(child);
       const qty = Math.max(1, Number(child.quantity ?? 1));
       if (dims.width) { totalW += dims.width * qty; any = true; }
-      if (dims.depth && dims.depth > maxD) maxD = dims.depth;
-      if (dims.height && dims.height > maxH) maxH = dims.height;
+      if (dims.depth && dims.depth > maxD) {maxD = dims.depth;}
+      if (dims.height && dims.height > maxH) {maxH = dims.height;}
     }
     if (any) {
       out.width = Math.round(totalW * 10) / 10;
-      if (out.depth === undefined && maxD > 0) out.depth = maxD;
-      if (out.height === undefined && maxH > 0) out.height = maxH;
+      if (out.depth === undefined && maxD > 0) {out.depth = maxD;}
+      if (out.height === undefined && maxH > 0) {out.height = maxH;}
     }
   }
 

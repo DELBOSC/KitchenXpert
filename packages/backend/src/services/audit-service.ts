@@ -152,8 +152,8 @@ export class AuditService {
       metadata?: Partial<AuditMetadata>;
     }
   ): Promise<AuditLog | null> {
-    if (!this.config.enabled) return null;
-    if (action === 'read' && !this.config.logReads) return null;
+    if (!this.config.enabled) {return null;}
+    if (action === 'read' && !this.config.logReads) {return null;}
 
     const sanitizedChanges = this.sanitizeChanges(data.changes);
 
@@ -266,7 +266,7 @@ export class AuditService {
   }
 
   async flush(): Promise<void> {
-    if (this.pendingLogs.length === 0) return;
+    if (this.pendingLogs.length === 0) {return;}
     const logs = [...this.pendingLogs];
     this.pendingLogs = [];
     await Promise.allSettled(logs.map(log => this.repository.create(log)));
@@ -285,7 +285,7 @@ export class AuditService {
   }
 
   private sanitizeChanges(changes?: AuditChange[]): AuditChange[] | undefined {
-    if (!changes) return undefined;
+    if (!changes) {return undefined;}
     return changes.map(change => {
       if (this.config.sensitiveFields.includes(change.field.toLowerCase())) {
         return { ...change, oldValue: '[REDACTED]', newValue: '[REDACTED]' };

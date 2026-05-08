@@ -1,9 +1,10 @@
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { kitchenController } from '../controllers/kitchen-controller';
 import { authenticate } from '../middleware/auth-middleware';
-import { validateBody, validateQuery, validateParams, commonSchemas } from '../middleware/validation-middleware';
 import { generalRateLimiter } from '../middleware/rate-limit-middleware';
+import { validateBody, validateQuery, validateParams, commonSchemas } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 

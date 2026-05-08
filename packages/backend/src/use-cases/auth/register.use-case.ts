@@ -1,11 +1,14 @@
-import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+
+import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import type { PrismaClient } from '@prisma/client';
-import { DomainErrors, ok, err, type Result } from '../../core/result';
-import type { UseCase } from '../../core/use-case';
+
 import { jwtService } from '../../auth/jwt.service';
+import { DomainErrors, ok, err, type Result } from '../../core/result';
 import { TOKEN_EXPIRATION } from '../../services/email-token.service';
+
+import type { UseCase } from '../../core/use-case';
+import type { PrismaClient } from '@prisma/client';
 
 /**
  * Registers a new user atomically:

@@ -1,11 +1,11 @@
-import { Router, type Router as RouterType } from 'express';
+import { Router, type Router as RouterType , type Request, type Response } from 'express';
 import { z } from 'zod';
+
+import { AICatalogSearchService } from '../../services/ai/catalog-search.service';
 import { authenticate } from '../middleware/auth-middleware';
+import { asyncHandler } from '../middleware/error-middleware';
 import { aiRateLimiter } from '../middleware/rate-limit-middleware';
 import { validateBody } from '../middleware/validation-middleware';
-import { Request, Response } from 'express';
-import { asyncHandler } from '../middleware/error-middleware';
-import { AICatalogSearchService } from '../../services/ai/catalog-search.service';
 
 const router: RouterType = Router();
 const searchService = new AICatalogSearchService();

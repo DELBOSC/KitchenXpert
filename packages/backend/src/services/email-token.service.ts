@@ -5,8 +5,10 @@
  */
 
 import * as crypto from 'crypto';
-import type { PrismaClient } from '@prisma/client';
+
 import winstonLogger from '../utils/logger';
+
+import type { PrismaClient } from '@prisma/client';
 
 const logger = winstonLogger.child({ module: 'EmailTokenService' });
 

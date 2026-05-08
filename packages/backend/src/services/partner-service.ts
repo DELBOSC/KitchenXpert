@@ -4,6 +4,7 @@
  */
 
 import crypto from 'crypto';
+
 import logger from '../utils/logger';
 
 export interface Partner {
@@ -316,7 +317,7 @@ export class PartnerService {
     }
 
     // Don't allow changing certain fields directly
-    const { id: _id, slug: _slug, integration, subscription, ...updateData } = data;
+    const { id: _id, slug: _slug, integration: _integration, subscription: _subscription, ...updateData } = data;
 
     return this.repository.update(id, {
       ...updateData,
@@ -573,11 +574,11 @@ export class PartnerService {
   }
 
   private generateApiKey(): string {
-    return 'kx_' + crypto.randomBytes(24).toString('base64url');
+    return `kx_${  crypto.randomBytes(24).toString('base64url')}`;
   }
 
   private generateWebhookSecret(): string {
-    return 'whsec_' + crypto.randomBytes(18).toString('base64url');
+    return `whsec_${  crypto.randomBytes(18).toString('base64url')}`;
   }
 
   private generateOrderNumber(partnerId: string): string {
@@ -632,7 +633,7 @@ export class PartnerService {
     event: string,
     payload: unknown
   ): Promise<void> {
-    if (!partner.integration?.webhookUrl) return;
+    if (!partner.integration?.webhookUrl) {return;}
 
     // In real implementation, would send HTTP request with signature
     logger.info(`[Webhook] Sending ${event} to ${partner.integration.webhookUrl}`, { payload });

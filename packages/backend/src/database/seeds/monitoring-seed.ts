@@ -3,8 +3,9 @@
  * Sample monitoring data for testing dashboards
  */
 
-import type { Seed, Transaction } from './seed-runner';
 import logger from '../../utils/logger';
+
+import type { Seed, Transaction } from './seed-runner';
 
 export const MonitoringSeed: Seed = {
   id: 'monitoring-seed',
