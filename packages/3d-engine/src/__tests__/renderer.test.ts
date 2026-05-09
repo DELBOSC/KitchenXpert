@@ -31,6 +31,13 @@ jest.mock('three', () => {
     SRGBColorSpace: 'srgb',
     Scene: jest.fn().mockImplementation(() => ({})),
     Camera: jest.fn().mockImplementation(() => ({})),
+    // The renderer module instantiates Vector2/ShaderMaterial/etc. at
+    // import time (the SSR shader uniforms). Provide minimal stubs so
+    // the module loads without throwing.
+    Vector2: jest.fn().mockImplementation((x = 0, y = 0) => ({ x, y, set: jest.fn() })),
+    Vector3: jest.fn().mockImplementation((x = 0, y = 0, z = 0) => ({ x, y, z, set: jest.fn() })),
+    ShaderMaterial: jest.fn().mockImplementation((opts) => ({ ...opts, dispose: jest.fn() })),
+    Color: jest.fn().mockImplementation(() => ({ set: jest.fn() })),
   };
 });
 

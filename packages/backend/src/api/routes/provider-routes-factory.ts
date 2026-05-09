@@ -212,7 +212,7 @@ export function createProviderRoutes(config: ProviderRouteConfig): Router {
     // this stays well under request budget. Heavy real-scraping should be
     // delegated to the @kitchenxpert/scraper BullMQ pipeline via
     // SCRAPER_BRIDGE_ENABLED=1 — see jobs/sync-sources/scraper-bridge-source.ts.
-    const { runProviderSync } = await import('../../jobs/provider-sync.job');
+    const { runProviderSync } = await import('../../jobs/provider-sync.job.js');
     const [stats] = await runProviderSync(prisma, { providers: [config.providerCode] });
 
     res.status(202).json({

@@ -12,12 +12,12 @@ const cleanupSchema = z.object({
 });
 
 const userIdParam = z.object({
-  userId: z.string().uuid('Invalid user ID format'),
+  userId: z.string().uuid(),
 });
 
 const resourceParams = z.object({
   resource: z.string().min(1, 'Resource type is required'),
-  resourceId: z.string().uuid('Invalid resource ID format'),
+  resourceId: z.string().uuid(),
 });
 
 // All routes require authentication and admin role

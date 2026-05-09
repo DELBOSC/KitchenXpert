@@ -21,6 +21,7 @@ jest.mock('../utils/logger', () => ({
 }));
 
 jest.mock('express-rate-limit', () => ({
+  __esModule: true,
   default: jest.fn(() => (_req: Request, _res: Response, next: NextFunction) => next()),
 }));
 

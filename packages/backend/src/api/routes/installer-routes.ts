@@ -54,9 +54,9 @@ const addReviewSchema = z.object({
 });
 
 const requestInstallationSchema = z.object({
-  installerId: z.string().uuid('Invalid installer ID'),
-  kitchenId: z.string().uuid('Invalid kitchen ID').optional(),
-  projectId: z.string().uuid('Invalid project ID').optional(),
+  installerId: z.string().uuid(),
+  kitchenId: z.string().uuid().optional(),
+  projectId: z.string().uuid().optional(),
   notes: z.string().max(2000).optional(),
 });
 

@@ -10,8 +10,8 @@ const router: RouterType = Router();
 // ─── Validation Schemas ───────────────────────────────────────────────────────
 
 const sendQuoteSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
-  partnerId: z.string().uuid('Invalid partner ID'),
+  kitchenId: z.string().uuid(),
+  partnerId: z.string().uuid(),
   message: z.string().max(2000).optional(),
   timeline: z.enum(['1-3months', '3-6months', '6-12months', 'flexible']).optional(),
   contactInfo: z.object({

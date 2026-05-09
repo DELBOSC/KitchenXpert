@@ -29,8 +29,8 @@ const quoteItemSchema = z.object({
 });
 
 const createQuoteSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
-  projectId: z.string().uuid('Invalid project ID').optional(),
+  kitchenId: z.string().uuid(),
+  projectId: z.string().uuid().optional(),
   clientName: z.string().min(1, 'Client name is required').max(200),
   clientEmail: z.string().email('Invalid email').max(255).optional(),
   clientAddress: z.string().max(500).optional(),
@@ -45,7 +45,7 @@ const sendQuoteSchema = z.object({
 });
 
 const idParamSchema = z.object({
-  id: z.string().uuid('Invalid ID format'),
+  id: z.string().uuid(),
 });
 
 // ────────────────────────────── Routes ──────────────────────────────

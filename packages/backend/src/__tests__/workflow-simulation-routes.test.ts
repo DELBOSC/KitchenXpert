@@ -71,8 +71,13 @@ jest.mock('../auth/jwt.service', () => ({
 
 let currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
-jest.mock('../api/middleware/auth-middleware', async () => {
-  const { UnauthorizedError } = await import('@kitchenxpert/common');
+jest.mock('../api/middleware/auth-middleware', () => {
+  // jest.mock factories must be SYNC — async factories return a Promise
+  // that Jest doesn't await, leaving every export undefined and breaking
+  // `router.use(authenticate)` with "Router.use() requires a middleware
+  // function". Use require() to load the dependency synchronously.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+  const { UnauthorizedError } = require('@kitchenxpert/common');
   return {
     authenticate: jest.fn((req: any, _res: any, next: any) => {
       if (req.cookies?.accessToken || req.headers.authorization) {

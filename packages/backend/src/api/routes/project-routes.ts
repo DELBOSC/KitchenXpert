@@ -294,7 +294,7 @@ router.post('/:id/collaborators', validateParams(commonSchemas.idParam), validat
  *         description: Project or collaborator not found
  */
 router.delete('/:id/collaborators/:email', validateParams(z.object({
-  id: z.string().uuid('Invalid ID format'),
+  id: z.string().uuid(),
   email: z.string().email('Invalid email format'),
 })), projectController.removeCollaborator);
 

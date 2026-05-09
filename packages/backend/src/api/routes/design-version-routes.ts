@@ -10,16 +10,16 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const createVersionSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
   label: z.string().max(200).optional(),
 });
 
 const kitchenIdParam = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
 });
 
 const kitchenVersionParams = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
   version: z.coerce.number().int().positive('Version must be a positive integer'),
 });
 

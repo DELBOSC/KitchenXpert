@@ -10,7 +10,7 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const createWebhookSchema = z.object({
-  partnerId: z.string().uuid('Invalid partner ID'),
+  partnerId: z.string().uuid(),
   name: z.string().min(1, 'Name is required').max(200),
   url: z.string().url('Invalid webhook URL'),
   events: z.array(z.string()).min(1, 'At least one event type is required'),

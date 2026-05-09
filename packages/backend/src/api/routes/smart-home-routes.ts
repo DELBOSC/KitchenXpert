@@ -8,11 +8,11 @@ import { validateParams, validateBody } from '../middleware/validation-middlewar
 const router: RouterType = Router();
 
 const kitchenIdParam = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID format'),
+  kitchenId: z.string().uuid(),
 });
 
 const createPlanBody = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID format'),
+  kitchenId: z.string().uuid(),
   preferences: z
     .object({
       budget: z.number().positive().optional(),

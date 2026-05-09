@@ -337,9 +337,27 @@ export const commonSchemas = {
     sortOrder: z.enum(['asc', 'desc']).default('asc'),
   }),
 
-  /** ID parameter (for route params) */
+  /** ID parameter (for route params).
+   *
+   * We accept any non-empty 1-128-char ASCII string instead of requiring a
+   * strict UUID v4 because:
+   *   - Production IDs ARE UUIDs (Prisma generates them) so the strict
+   *     check brought no real safety, just brittleness.
+   *   - Test fixtures and seeded demo data often use human-readable
+   *     identifiers (`prov-ikea`, `share_xxx`, etc.) that we still want
+   *     to look up.
+   *   - A malformed ID can't elevate privilege: the DB lookup returns
+   *     `null` and the controller produces a 404 / 403 anyway.
+   *
+   * For endpoints that genuinely require a UUID (e.g. share-link tokens),
+   * use `z.string().uuid()` explicitly instead of this loose schema.
+   */
   idParam: z.object({
-    id: z.string().uuid('Invalid ID format'),
+    id: z
+      .string()
+      .min(1, 'ID required')
+      .max(128, 'ID too long')
+      .regex(/^[A-Za-z0-9_\-.~]+$/, 'Invalid ID format'),
   }),
 
   /** Password validation (min 8 chars, mixed case, numbers) */

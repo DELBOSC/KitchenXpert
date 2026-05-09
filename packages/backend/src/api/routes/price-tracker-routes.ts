@@ -34,7 +34,7 @@ const productIdParamSchema = z.object({
 });
 
 const alertIdParamSchema = z.object({
-  id: z.string().uuid('Invalid alert ID'),
+  id: z.string().uuid(),
 });
 
 // ─── Protected routes ────────────────────────────────────────────────────────

@@ -10,7 +10,7 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const generateBOMSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
 });
 
 // All BOM routes require authentication

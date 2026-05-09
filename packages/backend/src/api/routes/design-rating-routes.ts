@@ -10,7 +10,7 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const createRatingSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
   rating: z.number().int().min(1).max(5),
   comment: z.string().max(1000).optional(),
 });

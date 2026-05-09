@@ -12,8 +12,8 @@ const router: RouterType = Router();
 const simulateSchema = z.object({
   totalAmount: z.number().positive('Total amount must be positive').max(500000),
   downPayment: z.number().min(0, 'Down payment cannot be negative').max(500000),
-  kitchenId: z.string().uuid('Invalid kitchen ID').optional(),
-  projectId: z.string().uuid('Invalid project ID').optional(),
+  kitchenId: z.string().uuid().optional(),
+  projectId: z.string().uuid().optional(),
 }).refine(data => data.downPayment < data.totalAmount, {
   message: 'Down payment must be less than total amount',
   path: ['downPayment'],

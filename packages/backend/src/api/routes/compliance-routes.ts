@@ -17,7 +17,7 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const kitchenIdParam = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
 });
 
 const ruleCodeParam = z.object({

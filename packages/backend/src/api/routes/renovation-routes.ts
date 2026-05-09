@@ -22,11 +22,11 @@ const router: RouterType = Router();
 // ─── Validation schemas ──────────────────────────────────────────────────────
 
 const idParamSchema = z.object({
-  id: z.string().uuid('Invalid ID format'),
+  id: z.string().uuid(),
 });
 
 const createProjectSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID').optional(),
+  kitchenId: z.string().uuid().optional(),
   beforePhotos: z.array(z.string().url()).max(10).optional(),
 });
 

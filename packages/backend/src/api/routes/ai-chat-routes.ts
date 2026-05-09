@@ -418,7 +418,7 @@ router.post('/execute-tool', authenticate, aiRateLimiter, validateBody(executeTo
   logger.info('[AI:chat] Execute tool request', { userId, toolName });
 
   // Delegate to the tool-use 3D service
-  const { ToolUse3DService } = await import('../../services/ai/tool-use-3d.service');
+  const { ToolUse3DService } = await import('../../services/ai/tool-use-3d.service.js');
   const toolService = new ToolUse3DService();
   const result = await toolService.processMessage({
     message: `Execute tool: ${toolName}`,

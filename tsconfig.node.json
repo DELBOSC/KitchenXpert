@@ -3,18 +3,18 @@
   "display": "Node.js Backend Configuration",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    // Suppress the TS 7.0 deprecation warning for `node` resolver. Full
-    // migration to `node16`/`nodenext` is blocked by:
-    //   - ESM-only dependencies (yjs, @google/genai) imported from CJS
-    //     source files (TS1479)
-    //   - dynamic `await import('relative/path')` in monitoring & storage
-    //     services that would need explicit .js extensions (TS2835)
-    // The official TS team escape hatch for this transition is the
-    // `ignoreDeprecations` flag below — set to `"6.0"` per the IDE's
-    // suggestion. Migration tracked separately.
-    "ignoreDeprecations": "5.0",
+    // Modern Node module resolution (replaces deprecated "node10"/"Node").
+    // We keep the OUTPUT as CommonJS because nothing in this monorepo
+    // declares `"type": "module"` in package.json — meaning every file
+    // is treated as CJS by Node, even under node16 type-checking.
+    //
+    // Two consequences:
+    //   - Dynamic `await import('./relative')` calls don't need explicit
+    //     .js extensions (CJS interop)
+    //   - ESM-only deps (yjs, @google/genai) must use dynamic import()
+    //     instead of static `import` because static CJS→ESM is rejected
+    "module": "Node16",
+    "moduleResolution": "node16",
     "target": "ES2022",
     "lib": ["ES2022"],
     "outDir": "./dist",

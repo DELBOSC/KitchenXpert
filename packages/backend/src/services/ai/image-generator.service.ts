@@ -2,9 +2,21 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-import { GoogleGenAI } from '@google/genai';
+// `@google/genai` is shipped as ESM. Under `module: Node16`, a static
+// import from a CommonJS source would fail (TS1479). The
+// `with { 'resolution-mode': 'import' }` attribute tells the compiler to
+// load the ESM type definitions for *type-only* imports; runtime is
+// loaded via dynamic `import()` inside `loadGenAI()`.
+import type { GoogleGenAI as GoogleGenAIType } from '@google/genai' with { 'resolution-mode': 'import' };
 
 import logger from '../../utils/logger';
+
+type GenAIModule = typeof import('@google/genai', { with: { 'resolution-mode': 'import' } });
+let cachedGenAI: GenAIModule | null = null;
+async function loadGenAI(): Promise<GenAIModule> {
+  if (!cachedGenAI) cachedGenAI = await import('@google/genai');
+  return cachedGenAI;
+}
 
 /** Sanitize input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
@@ -204,7 +216,7 @@ const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout
  * - Differentiated error handling (auth → no retry, rate limit → retry, transient → retry)
  */
 export class ImageGeneratorService {
-  private client: GoogleGenAI | null = null;
+  private client: GoogleGenAIType | null = null;
   private static instance: ImageGeneratorService;
   private uploadsDir: string;
 
@@ -213,17 +225,30 @@ export class ImageGeneratorService {
   private static readonly MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
   private constructor() {
-    if (process.env.GOOGLE_GENAI_API_KEY) {
-      this.client = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
-    } else {
+    this.uploadsDir = path.resolve(__dirname, '../../../uploads');
+    this.ensureUploadsDirExists();
+    // The actual GoogleGenAI client is constructed lazily via
+    // `getClient()` because @google/genai is ESM and must be loaded with
+    // a dynamic import().
+    if (!process.env.GOOGLE_GENAI_API_KEY) {
       logger.warn(
         '[ImageGenerator] GOOGLE_GENAI_API_KEY is not set. ' +
           'Image generation will be disabled. ' +
           'Add the key to your .env file — see .env.example for instructions.',
       );
     }
-    this.uploadsDir = path.resolve(__dirname, '../../../uploads');
-    this.ensureUploadsDirExists();
+  }
+
+  /**
+   * Lazy-initialise the Google GenAI SDK. Returns null when the API key
+   * is missing so callers can degrade gracefully.
+   */
+  private async getClient(): Promise<GoogleGenAIType | null> {
+    if (this.client) return this.client;
+    if (!process.env.GOOGLE_GENAI_API_KEY) return null;
+    const mod = await loadGenAI();
+    this.client = new mod.GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+    return this.client;
   }
 
   static getInstance(): ImageGeneratorService {
@@ -252,7 +277,8 @@ export class ImageGeneratorService {
    * @returns URL path to the generated image (e.g., `/uploads/abc123.png`), or null on failure
    */
   async generateThumbnail(description: string): Promise<string | null> {
-    if (!this.client) {
+    const client = await this.getClient();
+    if (!client) {
       return null;
     }
 
@@ -261,7 +287,7 @@ export class ImageGeneratorService {
 
     for (let attempt = 1; attempt <= ImageGeneratorService.MAX_RETRIES; attempt++) {
       try {
-        const result = await this.attemptGeneration(prompt);
+        const result = await this.attemptGeneration(client, prompt);
         if (result) {return result;}
         // null result without exception = empty response — retry makes no sense
         return null;
@@ -297,12 +323,12 @@ export class ImageGeneratorService {
    * Single generation attempt with timeout.
    * Returns the saved file URL or null if the API returned no image.
    */
-  private async attemptGeneration(prompt: string): Promise<string | null> {
+  private async attemptGeneration(client: GoogleGenAIType, prompt: string): Promise<string | null> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), ImageGeneratorService.TIMEOUT_MS);
 
     try {
-      const response = await this.client!.models.generateContent({
+      const response = await client.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: prompt,
         config: {

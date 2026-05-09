@@ -141,14 +141,18 @@ export class CollaborationWebSocketServer {
       socket.isAlive = true;
     });
 
-    // Join room
-    this.roomManager.joinRoom(socket);
+    // Join room (yjs is loaded lazily, hence async)
+    void this.roomManager.joinRoom(socket).catch((err: unknown) => {
+      logger.warn('[WS] joinRoom failed', { userId: socket.userId, err });
+    });
 
     // Handle messages
     socket.on('message', (data) => {
       try {
         const message = JSON.parse(data.toString());
-        this.roomManager.handleMessage(socket, message);
+        void this.roomManager.handleMessage(socket, message).catch((err: unknown) => {
+          logger.warn('[WS] handleMessage failed', { userId: socket.userId, err });
+        });
       } catch (err) {
         logger.warn('[WS] Invalid message from client', { userId: socket.userId, error: err });
       }

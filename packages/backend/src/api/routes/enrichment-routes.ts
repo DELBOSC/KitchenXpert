@@ -11,7 +11,7 @@ const router: RouterType = Router();
 
 const productTypeIdParams = z.object({
   type: z.string().min(1, 'Type is required'),
-  id: z.string().uuid('Invalid ID format'),
+  id: z.string().uuid(),
 });
 
 const cabinetTypeParam = z.object({
@@ -24,7 +24,7 @@ const brandMatchParams = z.object({
 });
 
 const productIdParam = z.object({
-  productId: z.string().uuid('Invalid product ID format'),
+  productId: z.string().uuid(),
 });
 
 // All routes require authentication

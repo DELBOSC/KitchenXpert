@@ -76,8 +76,8 @@ jest.mock('../auth/jwt.service', () => ({
 
 let currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
-jest.mock('../api/middleware/auth-middleware', async () => {
-  const { UnauthorizedError } = await import('@kitchenxpert/common');
+jest.mock('../api/middleware/auth-middleware', () => {
+  const { UnauthorizedError } = require('@kitchenxpert/common');
   return {
     authenticate: jest.fn((req: any, _res: any, next: any) => {
       if (req.cookies?.accessToken || req.headers.authorization) {
@@ -244,7 +244,7 @@ describe('Installer Routes', () => {
     });
 
     it('should return 404 when installer does not exist', async () => {
-      const { InstallerServiceError } = await import('../services/installer/installer.service');
+      const { InstallerServiceError } = require('../services/installer/installer.service');
       mockAddReview.mockRejectedValue(new InstallerServiceError('Installer not found', 'INSTALLER_NOT_FOUND'));
 
       const response = await authedRequest(app)

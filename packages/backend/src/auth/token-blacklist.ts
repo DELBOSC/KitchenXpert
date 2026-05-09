@@ -142,7 +142,7 @@ export class MemoryTokenBlacklist implements ITokenBlacklist {
   async addToBlacklist(token: string, expiresAt: Date, reason?: string): Promise<void> {
     // Try Redis first
     try {
-      const { TokenBlacklistService } = await import('../services/token-blacklist.service');
+      const { TokenBlacklistService } = await import('../services/token-blacklist.service.js');
       const expiresInSeconds = Math.max(0, Math.floor((expiresAt.getTime() - Date.now()) / 1000));
       if (expiresInSeconds > 0) {
         await TokenBlacklistService.blacklist(token, expiresInSeconds);
@@ -170,7 +170,7 @@ export class MemoryTokenBlacklist implements ITokenBlacklist {
   async isBlacklisted(token: string): Promise<boolean> {
     // Try Redis first
     try {
-      const { TokenBlacklistService } = await import('../services/token-blacklist.service');
+      const { TokenBlacklistService } = await import('../services/token-blacklist.service.js');
       const result = await TokenBlacklistService.isBlacklisted(token);
       if (result) {return true;}
     } catch {

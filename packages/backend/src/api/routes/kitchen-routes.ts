@@ -11,16 +11,16 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const kitchenItemParams = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
-  itemId: z.string().uuid('Invalid item ID'),
+  kitchenId: z.string().uuid(),
+  itemId: z.string().uuid(),
 });
 
 const projectIdParam = z.object({
-  projectId: z.string().uuid('Invalid project ID'),
+  projectId: z.string().uuid(),
 });
 
 const createKitchenSchema = z.object({
-  projectId: z.string().uuid('Invalid project ID'),
+  projectId: z.string().uuid(),
   name: z.string().min(1, 'Name is required').max(200),
   style: z.string().optional(),
   layout: z.enum(['l_shaped', 'u_shaped', 'galley', 'island', 'peninsula', 'one_wall', 'open_plan']).optional(),
@@ -521,7 +521,7 @@ router.get('/:id/items', validateParams(commonSchemas.idParam), kitchenControlle
  *         description: Kitchen not found
  */
 router.post('/:id/items', validateParams(commonSchemas.idParam), validateBody(z.object({
-  productId: z.string().uuid('Invalid product ID'),
+  productId: z.string().uuid(),
   quantity: z.number().int().positive().default(1),
   position: z.object({
     x: z.number(),

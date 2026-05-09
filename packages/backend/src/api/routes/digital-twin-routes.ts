@@ -8,7 +8,7 @@ import { validateParams } from '../middleware/validation-middleware';
 const router: RouterType = Router();
 
 const kitchenIdParam = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID format'),
+  kitchenId: z.string().uuid(),
 });
 
 // All routes require authentication

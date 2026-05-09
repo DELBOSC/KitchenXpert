@@ -10,7 +10,7 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const generateSchema = z.object({
-  projectId: z.string().uuid('Invalid project ID'),
+  projectId: z.string().uuid(),
   kitchenStyle: z.string().min(1).max(100),
   colorPalette: z.string().min(1).max(100).optional(),
   layoutPreference: z.string().min(1).max(100).optional(),
@@ -20,7 +20,7 @@ const generateSchema = z.object({
 const saveDesignSchema = z.object({
   generationId: z.string().min(1, 'generationId is required'),
   designId: z.string().min(1, 'designId is required'),
-  projectId: z.string().uuid('Invalid project ID'),
+  projectId: z.string().uuid(),
 });
 
 // All AI generator routes require authentication

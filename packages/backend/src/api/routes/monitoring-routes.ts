@@ -401,7 +401,7 @@ router.get('/stats', authorize(['admin']), async (_req, res) => {
 
     // Job queue stats
     try {
-      const { jobQueue } = await import('../../jobs/job-queue');
+      const { jobQueue } = await import('../../jobs/job-queue.js');
       stats.jobQueue = await jobQueue.getStats();
     } catch {
       stats.jobQueue = { error: 'unavailable' };
@@ -409,7 +409,7 @@ router.get('/stats', authorize(['admin']), async (_req, res) => {
 
     // Redis status
     try {
-      const { getRedisClient } = await import('../../database/redis-client');
+      const { getRedisClient } = await import('../../database/redis-client.js');
       const redis = await getRedisClient();
       stats.redis = { connected: true, ping: await redis.ping() };
     } catch {
@@ -418,7 +418,7 @@ router.get('/stats', authorize(['admin']), async (_req, res) => {
 
     // Database stats
     try {
-      const { prisma: db } = await import('../../database/client');
+      const { prisma: db } = await import('../../database/client.js');
       const [users, projects, orders] = await Promise.all([
         db.user.count(),
         db.project.count(),

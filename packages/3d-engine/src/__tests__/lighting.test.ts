@@ -30,28 +30,47 @@ jest.mock('three', () => {
     },
   });
 
+  // Scene tracks added objects so the lighting code can call
+  // `scene.traverse()` over them (used by `setGlobalIntensity`).
+  const sceneChildrenByScene = new WeakMap<object, unknown[]>();
+
+  // The source uses `child instanceof THREE.Light` to filter scene
+  // children. A shared `lightProto` lets every mock light satisfy that
+  // check — we splice it onto the returned objects.
+  const lightProto = {};
+
   return {
-    Scene: jest.fn().mockImplementation(() => ({
-      add: jest.fn(),
-      remove: jest.fn(),
-    })),
-    AmbientLight: jest.fn().mockImplementation((color, intensity) => ({
+    Scene: jest.fn().mockImplementation(function (this: Record<string, unknown>) {
+      const children: unknown[] = [];
+      sceneChildrenByScene.set(this, children);
+      this.add = jest.fn((obj: unknown) => { children.push(obj); });
+      this.remove = jest.fn((obj: unknown) => {
+        const i = children.indexOf(obj);
+        if (i >= 0) children.splice(i, 1);
+      });
+      this.traverse = jest.fn((callback: (child: unknown) => void) => {
+        for (const child of children) callback(child);
+      });
+    }),
+    AmbientLight: Object.assign(jest.fn().mockImplementation((color, intensity) => Object.setPrototypeOf({
       ...createMockLight('AmbientLight'),
       color: { r: 1, g: 1, b: 1 },
       intensity: intensity ?? 1,
-    })),
-    DirectionalLight: jest.fn().mockImplementation((color, intensity) => ({
+    }, lightProto)), { prototype: lightProto }),
+    DirectionalLight: Object.assign(jest.fn().mockImplementation((color, intensity) => Object.setPrototypeOf({
       ...createMockLight('DirectionalLight'),
       color: { r: 1, g: 1, b: 1 },
       intensity: intensity ?? 1,
-    })),
-    HemisphereLight: jest.fn().mockImplementation((skyColor, groundColor, intensity) => ({
+    }, lightProto)), { prototype: lightProto }),
+    HemisphereLight: Object.assign(jest.fn().mockImplementation((skyColor, groundColor, intensity) => Object.setPrototypeOf({
       ...createMockLight('HemisphereLight'),
       color: { r: 1, g: 1, b: 1 },
       groundColor: { r: 0.5, g: 0.5, b: 0.5 },
       intensity: intensity ?? 1,
-    })),
-    Light: jest.fn().mockImplementation(() => createMockLight('Light')),
+    }, lightProto)), { prototype: lightProto }),
+    Light: Object.assign(jest.fn().mockImplementation(() => Object.setPrototypeOf(createMockLight('Light'), lightProto)), { prototype: lightProto }),
+    SpotLight: Object.assign(jest.fn().mockImplementation(() => Object.setPrototypeOf(createMockLight('SpotLight'), lightProto)), { prototype: lightProto }),
+    PointLight: Object.assign(jest.fn().mockImplementation(() => Object.setPrototypeOf(createMockLight('PointLight'), lightProto)), { prototype: lightProto }),
   };
 });
 

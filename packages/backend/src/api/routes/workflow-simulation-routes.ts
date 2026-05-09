@@ -10,7 +10,7 @@ const router: RouterType = Router();
 // ==================== ZOD SCHEMAS ====================
 
 const simulateSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
   scenario: z.enum(['dinner_for_6', 'quick_breakfast', 'meal_prep', 'baking'], {
     errorMap: () => ({
       message:
@@ -20,11 +20,11 @@ const simulateSchema = z.object({
 });
 
 const optimizeSchema = z.object({
-  simulationId: z.string().uuid('Invalid simulation ID'),
+  simulationId: z.string().uuid(),
 });
 
 const kitchenIdParamSchema = z.object({
-  kitchenId: z.string().uuid('Invalid kitchen ID'),
+  kitchenId: z.string().uuid(),
 });
 
 // All workflow simulation routes require authentication

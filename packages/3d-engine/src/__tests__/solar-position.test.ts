@@ -14,12 +14,14 @@ describe('SolarCalculator', () => {
   const paris = CITY_LOCATIONS['paris']!;
 
   describe('CITY_LOCATIONS', () => {
-    it('should contain 8 French cities', () => {
+    it('should contain at least the 8 original French cities', () => {
+      // The catalogue has been expanded internationally; we only assert a
+      // lower bound here so the test stays stable across new additions.
       const cityKeys = Object.keys(CITY_LOCATIONS);
-      expect(cityKeys).toHaveLength(8);
+      expect(cityKeys.length).toBeGreaterThanOrEqual(8);
     });
 
-    it('should include known cities', () => {
+    it('should include the 8 historical French cities', () => {
       expect(CITY_LOCATIONS).toHaveProperty('paris');
       expect(CITY_LOCATIONS).toHaveProperty('lyon');
       expect(CITY_LOCATIONS).toHaveProperty('marseille');
@@ -30,13 +32,16 @@ describe('SolarCalculator', () => {
       expect(CITY_LOCATIONS).toHaveProperty('lille');
     });
 
-    it('should have valid latitude/longitude/timezone for each city', () => {
-      for (const [name, loc] of Object.entries(CITY_LOCATIONS)) {
-        expect(loc.latitude).toBeGreaterThan(40);
-        expect(loc.latitude).toBeLessThan(52);
-        expect(loc.longitude).toBeGreaterThan(-2);
-        expect(loc.longitude).toBeLessThan(8);
-        expect(loc.timezone).toBe(1); // All French cities are UTC+1
+    it('should have plausible latitude/longitude/timezone for every city', () => {
+      // Bounds expanded to cover the international catalogue.
+      for (const [, loc] of Object.entries(CITY_LOCATIONS)) {
+        expect(loc.latitude).toBeGreaterThanOrEqual(-90);
+        expect(loc.latitude).toBeLessThanOrEqual(90);
+        expect(loc.longitude).toBeGreaterThanOrEqual(-180);
+        expect(loc.longitude).toBeLessThanOrEqual(180);
+        // IANA timezone offsets currently range from UTC-12 to UTC+14.
+        expect(loc.timezone).toBeGreaterThanOrEqual(-12);
+        expect(loc.timezone).toBeLessThanOrEqual(14);
       }
     });
   });

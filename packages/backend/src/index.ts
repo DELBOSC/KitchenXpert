@@ -83,7 +83,7 @@ async function bootstrap(): Promise<void> {
       // Start background job processing now that Redis is available
       // Register job handlers before starting the queue
       jobQueue.register('send-email', async (data: { to: string; subject: string; template: string; templateData: Record<string, unknown> }) => {
-        const { EmailService } = await import('./services/email.service');
+        const { EmailService } = await import('./services/email.service.js');
         await EmailService.send({
           to: data.to,
           subject: data.subject,
