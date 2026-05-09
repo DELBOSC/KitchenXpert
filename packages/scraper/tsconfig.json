@@ -5,10 +5,12 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": ".",
-    "baseUrl": ".",
+    // baseUrl removed (deprecated). Without it, path values resolve
+    // relative to this tsconfig (i.e. packages/scraper/), so prefixes
+    // stay the same as before.
     "lib": ["ES2022", "DOM"],
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["./src/*"],
       "@kitchenxpert/common": ["../common/src"],
       "@kitchenxpert/common/*": ["../common/src/*"]
     },

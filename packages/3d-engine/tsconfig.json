@@ -5,16 +5,16 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src",
+    // baseUrl removed (deprecated). Path values now embed `./src/`.
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "paths": {
-      "@/*": ["./*"],
-      "@/api/*": ["api/*"],
-      "@/engine/*": ["engine/*"],
-      "@/models/*": ["models/*"],
-      "@/utils/*": ["utils/*"],
-      "@kitchenxpert/common": ["../../packages/common/src"],
-      "@kitchenxpert/common/*": ["../../packages/common/src/*"]
+      "@/*": ["./src/*"],
+      "@/api/*": ["./src/api/*"],
+      "@/engine/*": ["./src/engine/*"],
+      "@/models/*": ["./src/models/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@kitchenxpert/common": ["../common/src"],
+      "@kitchenxpert/common/*": ["../common/src/*"]
     },
     "types": ["node"]
   },

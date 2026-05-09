@@ -5,9 +5,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    // baseUrl removed (deprecated). No `paths` here, so nothing else to do.
+    // module + moduleResolution come from tsconfig.lib.json
+    // (ESNext + bundler) — the modern, deprecation-free combo for a
+    // library consumed by other workspace packages.
     "lib": ["ES2022", "DOM"],
     "types": ["node"]
   },

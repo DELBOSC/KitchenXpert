@@ -4,7 +4,17 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "CommonJS",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
+    // Suppress the TS 7.0 deprecation warning for `node` resolver. Full
+    // migration to `node16`/`nodenext` is blocked by:
+    //   - ESM-only dependencies (yjs, @google/genai) imported from CJS
+    //     source files (TS1479)
+    //   - dynamic `await import('relative/path')` in monitoring & storage
+    //     services that would need explicit .js extensions (TS2835)
+    // The official TS team escape hatch for this transition is the
+    // `ignoreDeprecations` flag below — set to `"6.0"` per the IDE's
+    // suggestion. Migration tracked separately.
+    "ignoreDeprecations": "5.0",
     "target": "ES2022",
     "lib": ["ES2022"],
     "outDir": "./dist",

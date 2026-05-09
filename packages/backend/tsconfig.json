@@ -5,19 +5,20 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src",
+    // Without `baseUrl` (deprecated), path values are resolved relative
+    // to this tsconfig file. We prefix every entry with `./src/`.
     "paths": {
-      "@/*": ["./*"],
-      "@/controllers/*": ["controllers/*"],
-      "@/services/*": ["services/*"],
-      "@/models/*": ["models/*"],
-      "@/middlewares/*": ["middlewares/*"],
-      "@/repositories/*": ["repositories/*"],
-      "@/utils/*": ["utils/*"],
-      "@/config/*": ["config/*"],
-      "@/types/*": ["types/*"],
-      "@kitchenxpert/common": ["../../packages/common/src"],
-      "@kitchenxpert/common/*": ["../../packages/common/src/*"]
+      "@/*": ["./src/*"],
+      "@/controllers/*": ["./src/controllers/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/models/*": ["./src/models/*"],
+      "@/middlewares/*": ["./src/middlewares/*"],
+      "@/repositories/*": ["./src/repositories/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/types/*": ["./src/types/*"],
+      "@kitchenxpert/common": ["../common/src"],
+      "@kitchenxpert/common/*": ["../common/src/*"]
     },
     "types": ["node", "jest"],
     "emitDecoratorMetadata": true,
