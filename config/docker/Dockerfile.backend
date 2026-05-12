@@ -3,7 +3,7 @@
 # ============================================================================
 
 # Stage 1: Dependencies
-FROM node:20-alpine AS dependencies
+FROM node:26-alpine AS dependencies
 
 WORKDIR /app
 
@@ -19,13 +19,13 @@ COPY packages/common/package.json ./packages/common/
 RUN pnpm install --frozen-lockfile --prod=false
 
 # Development stage
-FROM node:20-alpine AS development
+FROM node:26-alpine AS development
 WORKDIR /app
 COPY --from=dependencies /app .
 CMD ["pnpm", "dev"]
 
 # Stage 2: Builder
-FROM node:20-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /app
 
@@ -49,7 +49,7 @@ RUN pnpm --filter @kitchenxpert/backend build
 RUN pnpm --filter @kitchenxpert/common build
 
 # Stage 3: Production
-FROM node:20-alpine AS production
+FROM node:26-alpine AS production
 
 # Install dumb-init (proper signal handling)
 RUN apk add --no-cache dumb-init
