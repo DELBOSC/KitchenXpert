@@ -1,7 +1,7 @@
 # ============================================
 # Stage 1: Dependencies
 # ============================================
-FROM node:20-alpine AS deps
+FROM node:26-alpine AS deps
 
 LABEL maintainer="KitchenXpert Team"
 LABEL description="Frontend React Application for KitchenXpert"
@@ -29,7 +29,7 @@ RUN pnpm install --frozen-lockfile
 # ============================================
 # Stage 2: Builder
 # ============================================
-FROM node:20-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /app
 
