@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import type { KitchenEngine } from '@kitchenxpert/3d-engine';
-import * as THREE from 'three';
+import type * as THREE from 'three';
+
 
 interface PricingPanelProps {
   engine: KitchenEngine | null;
@@ -63,7 +65,7 @@ function extractPriceItems(engine: KitchenEngine): PriceItem[] {
     if (!child.userData.id || child.userData.type === 'wall' || child.userData.type === 'floor') {
       return;
     }
-    if (child.userData.isGenerated) return; // Skip auto-generated worktops/plinths
+    if (child.userData.isGenerated) {return;} // Skip auto-generated worktops/plinths
 
     const type = child.userData.type || 'unknown';
     const price = child.userData.price || DEFAULT_PRICES[type] || 0;
@@ -103,7 +105,7 @@ export default function PricingPanel({ engine, budget }: PricingPanelProps): Rea
   const [total, setTotal] = useState(0);
 
   const updatePricing = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
     const priceItems = extractPriceItems(engine);
     const grouped = groupByCategory(priceItems, t);
     const totalPrice = priceItems.reduce((sum, item) => sum + item.price, 0);
@@ -113,7 +115,7 @@ export default function PricingPanel({ engine, budget }: PricingPanelProps): Rea
   }, [engine, t]);
 
   useEffect(() => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     // Initial calculation
     updatePricing();

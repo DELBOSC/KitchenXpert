@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 interface Project {
   id: string;
@@ -65,7 +65,7 @@ const ProjectsList: React.FC = () => {
         setProjects(data.projects);
         setPagination(data.pagination);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');
         setError(errorMessage);
       } finally {
@@ -107,7 +107,7 @@ const ProjectsList: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')}></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')} />
       </div>
     );
   }
@@ -221,7 +221,7 @@ const ProjectsList: React.FC = () => {
                     </div>
                   )}
                   <span className={`absolute top-3 right-3 px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(project.status)}`}>
-                    {t('projects.status.' + project.status)}
+                    {t(`projects.status.${  project.status}`)}
                   </span>
                 </div>
                 <div className="p-4">

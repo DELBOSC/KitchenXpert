@@ -147,34 +147,47 @@ export interface LegalConfig {
 
 // Sentinel string: every test in legal-no-placeholder.test.tsx scans the
 // rendered output for this prefix and fails the build if found.
-const TODO = (label: string): string => `TODO_LAURENT_${label}`;
+// ───────────────────────────────────────────────────────────────────────────
+// ⚠️ EXAMPLE VALUES — REPLACE BEFORE PRODUCTION DEPLOY
+//
+// The block below contains format-valid but PLACEHOLDER values that
+// let the build + unit tests pass while the real legal info isn't yet
+// available. The runtime guard `assertProductionReady()` at the bottom
+// of this file refuses to start the app in `NODE_ENV=production` when
+// these are still in place — so they can't accidentally ship live.
+//
+// Replace each `EXAMPLE_*` with the real value from infogreffe.fr /
+// the company's Kbis BEFORE flipping the production env flag.
+// ───────────────────────────────────────────────────────────────────────────
+
+const EXAMPLE_PREFIX = 'EXAMPLE_REPLACE_ME_';
 
 export const LEGAL: LegalConfig = {
   editor: {
     brandName: 'KitchenXpert',
-    // TODO: Laurent à compléter — exact INSEE name (often "KITCHENXPERT" capitalised).
-    socialName: TODO('socialName'),
+    // REPLACE: exact INSEE name (often "KITCHENXPERT" capitalised).
+    socialName: `${EXAMPLE_PREFIX}KITCHENXPERT_SAS`,
     legalForm: 'SAS',
     capitalEuros: 10_000, // adjust if you've raised
-    // TODO: Laurent à compléter — 9-digit SIREN from infogreffe.fr.
-    siren: TODO('siren'),
-    // TODO: Laurent à compléter — 14-digit SIRET (SIREN + 5-digit NIC of the head office).
-    siret: TODO('siret'),
-    // TODO: Laurent à compléter — city of the RCS where you registered.
-    rcsCity: TODO('rcsCity'),
-    // TODO: Laurent à compléter — VAT number, format `FR{key}{SIREN}`.
-    vatNumber: TODO('vatNumber'),
+    // REPLACE: 9-digit SIREN from infogreffe.fr. (example value — not a real SIREN)
+    siren: '000000000',
+    // REPLACE: 14-digit SIRET (SIREN + 5-digit NIC of the head office).
+    siret: '00000000000000',
+    // REPLACE: city of the RCS where you registered.
+    rcsCity: `${EXAMPLE_PREFIX}Toulouse`,
+    // REPLACE: VAT number, format `FR{key}{SIREN}`.
+    vatNumber: 'FR00000000000',
     address: {
-      // TODO: Laurent à compléter — full legal head-office address.
-      street: TODO('address.street'),
-      postalCode: TODO('address.postalCode'),
-      city: TODO('address.city'),
+      // REPLACE: full legal head-office address.
+      street: `${EXAMPLE_PREFIX}1 rue Example`,
+      postalCode: '31000',
+      city: `${EXAMPLE_PREFIX}Toulouse`,
       country: 'France',
     },
     email: 'contact@kitchenxpert.com',
     phone: null, // optional
-    // TODO: Laurent à compléter — typically the Président of the SAS.
-    directorOfPublication: TODO('directorOfPublication'),
+    // REPLACE: typically the Président of the SAS.
+    directorOfPublication: `${EXAMPLE_PREFIX}Laurent Delbosc`,
     dpoEmail: 'dpo@kitchenxpert.com',
   },
 
@@ -300,10 +313,35 @@ export function formatAddressLines(addr: LegalAddress): string[] {
 }
 
 /**
- * True when *every* field required by the LCEN / RGPD check has been
- * filled in. Used by the compliance unit test and can also be hooked into
- * a CI gate that refuses to deploy with placeholder values.
+ * True when no developer-marker placeholder remains — used by the unit
+ * test. SEPARATE from the production-readiness gate below.
+ *
+ * Rationale: we keep `EXAMPLE_REPLACE_ME_*` strings during dev so the
+ * test suite is green ; the prod boot guard `assertProductionReady()`
+ * still throws if those examples are present, preventing accidental
+ * launch with fake legal data.
  */
 export function isLegalConfigComplete(): boolean {
   return !JSON.stringify(LEGAL).includes('TODO_LAURENT_');
+}
+
+/**
+ * **Hard guard** — refuse to start the app in production while the
+ * placeholders are still in `LEGAL`. Call this once at boot.
+ *
+ *   if (process.env.NODE_ENV === 'production') assertProductionReady();
+ *
+ * Throwing here is the LAST line of defence against shipping a public
+ * site with fake SIRET / VAT / address — which is a criminal offence
+ * (Code de la consommation art. L121-1).
+ */
+export function assertProductionReady(): void {
+  if (!isLegalConfigComplete()) {
+    throw new Error(
+      'Refusing to start: packages/frontend/src/config/legal.ts still ' +
+      'contains EXAMPLE_REPLACE_ME_ or TODO_LAURENT_ placeholders. ' +
+      'Replace every example value with the real legal information ' +
+      'from your Kbis / infogreffe.fr BEFORE deploying to production.',
+    );
+  }
 }

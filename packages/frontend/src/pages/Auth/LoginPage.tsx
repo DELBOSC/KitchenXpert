@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useToast } from '../../components/ui/Toast';
-import { Button, Input, Checkbox, Separator } from '../../components/ui';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+
 import AuthLayout from './AuthLayout';
+import { SeoHead } from '../../components/seo/SeoHead';
+import { Button, Input, Checkbox, Separator } from '../../components/ui';
+import { useToast } from '../../components/ui/Toast';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginPage(): React.ReactElement {
   const { t } = useTranslation();
@@ -22,8 +24,8 @@ export default function LoginPage(): React.ReactElement {
   const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     const next: typeof errors = {};
-    if (!email) next.email = t('auth.emailRequired', 'Email requis');
-    if (!password) next.password = t('auth.passwordRequired', 'Mot de passe requis');
+    if (!email) {next.email = t('auth.emailRequired', 'Email requis');}
+    if (!password) {next.password = t('auth.passwordRequired', 'Mot de passe requis');}
     if (Object.keys(next).length > 0) {
       setErrors(next);
       return;
@@ -42,6 +44,12 @@ export default function LoginPage(): React.ReactElement {
   };
 
   return (
+    <>
+      <SeoHead
+        title="Connexion"
+        description="Connectez-vous à KitchenXpert pour retrouver vos cuisines, devis et collaborations en cours."
+        canonical="https://kitchenxpert.com/login"
+      />
     <AuthLayout
       title={t('auth.welcomeBack', 'Bon retour parmi nous')}
       subtitle={t('auth.loginSubtitle', 'Connectez-vous pour retrouver vos projets et vos cuisines.')}
@@ -67,7 +75,7 @@ export default function LoginPage(): React.ReactElement {
           label={t('common.email', 'Email')}
           placeholder="vous@exemple.com"
           value={email}
-          onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }}
+          onChange={(e) => { setEmail(e.target.value); if (errors.email) {setErrors((p) => ({ ...p, email: undefined }));} }}
           error={errors.email}
           leftIcon={<Mail className="h-4 w-4" />}
           required
@@ -79,7 +87,7 @@ export default function LoginPage(): React.ReactElement {
           label={t('common.password', 'Mot de passe')}
           placeholder="••••••••"
           value={password}
-          onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors((p) => ({ ...p, password: undefined })); }}
+          onChange={(e) => { setPassword(e.target.value); if (errors.password) {setErrors((p) => ({ ...p, password: undefined }));} }}
           error={errors.password}
           leftIcon={<Lock className="h-4 w-4" />}
           rightIcon={
@@ -118,5 +126,6 @@ export default function LoginPage(): React.ReactElement {
         </div>
       </form>
     </AuthLayout>
+    </>
   );
 }

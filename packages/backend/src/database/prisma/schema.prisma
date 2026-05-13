@@ -1095,7 +1095,7 @@ model DigitalTwin {
 
 model CarbonReport {
   id              String   @id @default(uuid())
-  kitchenId       String
+  kitchenId       String   @unique
   userId          String
   totalCO2kg      Float
   breakdown       Json
@@ -1103,7 +1103,6 @@ model CarbonReport {
   rating          String?
   createdAt       DateTime @default(now())
 
-  @@index([kitchenId])
   @@index([userId])
 }
 
@@ -1434,4 +1433,96 @@ model WorkflowSimulation {
 
   @@index([kitchenId])
   @@index([userId])
+}
+
+// ==================== REVIEWS — request scheduling + internal feedback ====================
+//
+// Workflow:
+//   1. Backend service detects a milestone (1st project completed,
+//      14d+>3 sessions, Premium purchase, support resolved).
+//   2. We create a ReviewRequest row with `triggeredAt` and the
+//      trigger kind. 90-day cooldown per user enforced by
+//      `last triggeredAt + 90d < now` check before insert.
+//   3. A cron/worker reads pending rows (sentAt = null), sends the
+//      email + sets sentAt. The frontend modal is shown on next visit
+//      if sentAt is set and respondedAt is null.
+//   4. User responds: 4-5 stars → external platform (G2/Capterra/
+//      Trustpilot) ; 1-3 stars → InternalFeedback (NOT pushed externally).
+//
+// We don't store the external review text — it lives on G2/Capterra/
+// Trustpilot. We only record that the user GAVE one (`pushedToPlatform`)
+// for funnel analytics.
+//
+// LEGAL: G2 + Capterra + Trustpilot ALL forbid paid incentives. The
+// satisfaction-gate (4-5 stars only routed externally) is allowed
+// because internal feedback is collected for ALL ratings — we're not
+// suppressing negative reviews, we're triaging where they go for
+// product improvement.
+
+model ReviewRequest {
+  id              String   @id @default(uuid())
+  userId          String
+
+  // Trigger metadata
+  trigger         ReviewRequestTrigger
+  triggeredAt     DateTime @default(now())
+  /// Project that triggered, if applicable. Useful for {projectName} in the email.
+  projectId       String?
+
+  // Lifecycle
+  sentAt          DateTime? // email/in-app shown
+  respondedAt     DateTime? // user clicked through (any rating)
+
+  // Response
+  rating          Int?      // 1–5 (null until user responds)
+  pushedToPlatform ReviewPlatform? // external platform if rating ≥ 4
+  pushedAt        DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId, triggeredAt])
+  @@index([sentAt])
+  @@index([respondedAt])
+}
+
+enum ReviewRequestTrigger {
+  first_project_completed
+  active_two_weeks
+  premium_purchase
+  support_resolved_positive
+  manual // admin-triggered
+}
+
+enum ReviewPlatform {
+  g2
+  capterra
+  trustpilot
+  avis_verifies
+  google_business
+}
+
+model InternalFeedback {
+  id              String   @id @default(uuid())
+  userId          String
+
+  /// 1–5 — the rating the user gave in the modal.
+  rating          Int
+
+  /// Free-text feedback (rating < 4 path always; rating >= 4 optional).
+  message         String?
+
+  /// Where the user was when they submitted the modal.
+  context         String?
+
+  /// Triaged + resolved? Set by support team.
+  resolvedAt      DateTime?
+  resolvedBy      String?
+  resolutionNote  String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([rating])
+  @@index([resolvedAt])
 }

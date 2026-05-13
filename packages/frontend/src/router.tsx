@@ -1,11 +1,13 @@
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext';
-import { LoadingSpinner } from './components/ui/LoadingSpinner';
-import MainLayout from './layouts/MainLayout/MainLayout';
+import { Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
+
 import DesignerErrorBoundary from './components/common/DesignerErrorBoundary';
 import ErrorBoundary from './components/common/ErrorBoundary/ErrorBoundary';
 import ErrorFallback from './components/common/ErrorFallback/ErrorFallback';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
+import { useAuth } from './contexts/AuthContext';
+import { useLanguage, SUPPORTED_LANGUAGES, type SupportedLanguage } from './i18n/LanguageProvider';
+import MainLayout from './layouts/MainLayout/MainLayout';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -14,6 +16,9 @@ const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/Auth/ForgotPasswordPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const KitchenDesignerPage = lazy(() => import('./pages/KitchenDesignerPage'));
+const SandboxDesignerPage = lazy(() => import('./pages/SandboxDesignerPage'));
+const CommentCaMarchePage = lazy(() => import('./pages/CommentCaMarchePage'));
+const AvisPage = lazy(() => import('./pages/AvisPage'));
 const CatalogPage = lazy(() => import('./pages/CatalogPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -77,6 +82,7 @@ const MentionsLegales = lazy(() => import('./pages/Legal/MentionsLegales'));
 const CGV = lazy(() => import('./pages/Legal/CGV'));
 const Privacy = lazy(() => import('./pages/Legal/Privacy'));
 const CookiesPage = lazy(() => import('./pages/Legal/Cookies'));
+const Accessibilite = lazy(() => import('./pages/Legal/Accessibilite'));
 const PrivacySettings = lazy(() => import('./pages/Legal/PrivacySettings'));
 
 // Protected Route wrapper
@@ -128,13 +134,63 @@ function PublicRoute({ children }: { children: React.ReactNode }): React.ReactEl
   return <>{children}</>;
 }
 
-export function AppRouter(): React.ReactElement {
+/**
+ * Top-level lang detector + redirect. Anything that doesn't start with
+ * `/fr` or `/en` gets normalised. The detected lang comes from
+ * `useLanguage()` (URL → cookie → navigator → FR).
+ */
+function RedirectToLang(): React.ReactElement {
+  const { language } = useLanguage();
+  const { pathname, search, hash } = useLocation();
+  return <Navigate to={`/${language}${pathname}${search}${hash}`} replace />;
+}
+
+/**
+ * Validates the `:lang` param and renders the inner `<Routes>` tree.
+ * If `:lang` is anything other than fr/en, redirect to the default
+ * language while preserving the rest of the path.
+ */
+function LocaleAwareShell(): React.ReactElement {
+  const { lang } = useParams<{ lang: string }>();
+  const { pathname, search, hash } = useLocation();
+  if (!lang || !(SUPPORTED_LANGUAGES as readonly string[]).includes(lang)) {
+    // Unknown lang segment — strip it and let RedirectToLang handle it.
+    const stripped = pathname.replace(/^\/[^/]+/, '') || '/';
+    return <Navigate to={`/fr${stripped}${search}${hash}`} replace />;
+  }
+  return <AppRouteTree />;
+}
+
+/**
+ * The actual route tree. Same routes as before but with paths relative
+ * to the `/:lang/*` parent — every leading `/` was stripped in this
+ * commit. Nothing inside changes lang awareness ; i18next reacts to
+ * the URL change via LanguageProvider.
+ */
+function AppRouteTree(): React.ReactElement {
   return (
-    <Suspense fallback={<LoadingSpinner fullScreen />}>
-      <Routes>
-        {/* Designer route — full-screen, outside MainLayout */}
+    <Routes>
+      {/* Sandbox designer — PUBLIC, no auth. Uses localStorage. */}
         <Route
-          path="/designer/:id"
+          path="designer/sandbox"
+          element={
+            <DesignerErrorBoundary>
+              <SandboxDesignerPage />
+            </DesignerErrorBoundary>
+          }
+        />
+        <Route
+          path="designer/sandbox/:templateId"
+          element={
+            <DesignerErrorBoundary>
+              <SandboxDesignerPage />
+            </DesignerErrorBoundary>
+          }
+        />
+
+        {/* Designer route — full-screen, outside MainLayout, auth-only */}
+        <Route
+          path="designer/:id"
           element={
             <ProtectedRoute>
               <DesignerErrorBoundary>
@@ -147,15 +203,17 @@ export function AppRouter(): React.ReactElement {
         {/* All other routes wrapped in MainLayout (Header + Sidebar) */}
         <Route element={<MainLayout />}>
           {/* Public routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/catalog" element={<ProvidersHub />} />
-          <Route path="/catalog/legacy" element={<CatalogPage />} />
-          <Route path="/catalog/:providerCode" element={<ProviderCatalog />} />
-          <Route path="/pricing" element={<Suspense fallback={<LoadingSpinner />}><ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}><PricingPage /></ErrorBoundary></Suspense>} />
+          <Route path="" element={<HomePage />} />
+          <Route path="catalog" element={<ProvidersHub />} />
+          <Route path="catalog/legacy" element={<CatalogPage />} />
+          <Route path="catalog/:providerCode" element={<ProviderCatalog />} />
+          <Route path="pricing" element={<Suspense fallback={<LoadingSpinner />}><ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}><PricingPage /></ErrorBoundary></Suspense>} />
+          <Route path="comment-ca-marche" element={<CommentCaMarchePage />} />
+          <Route path="avis" element={<AvisPage />} />
 
           {/* Auth routes */}
           <Route
-            path="/login"
+            path="login"
             element={
               <PublicRoute>
                 <LoginPage />
@@ -163,7 +221,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/register"
+            path="register"
             element={
               <PublicRoute>
                 <RegisterPage />
@@ -171,7 +229,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/forgot-password"
+            path="forgot-password"
             element={
               <PublicRoute>
                 <ForgotPasswordPage />
@@ -181,7 +239,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* Protected routes */}
           <Route
-            path="/dashboard"
+            path="dashboard"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -191,7 +249,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/designer"
+            path="designer"
             element={
               <ProtectedRoute>
                 <DesignerErrorBoundary>
@@ -201,7 +259,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/profile"
+            path="profile"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -213,7 +271,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* Projects */}
           <Route
-            path="/projects"
+            path="projects"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -223,7 +281,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/projects/new"
+            path="projects/new"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -233,7 +291,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/projects/:id"
+            path="projects/:id"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -243,7 +301,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/projects/:id/edit"
+            path="projects/:id/edit"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -253,7 +311,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/projects/:id/kitchens/create"
+            path="projects/:id/kitchens/create"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -265,7 +323,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* Questionnaire */}
           <Route
-            path="/questionnaire"
+            path="questionnaire"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -275,7 +333,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/questionnaire/spatial"
+            path="questionnaire/spatial"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -285,7 +343,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/questionnaire/style"
+            path="questionnaire/style"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -295,7 +353,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/questionnaire/budget"
+            path="questionnaire/budget"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -305,7 +363,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/questionnaire/results"
+            path="questionnaire/results"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -317,7 +375,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* AI Generator */}
           <Route
-            path="/ai-generator"
+            path="ai-generator"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -327,7 +385,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/ai-generator/results"
+            path="ai-generator/results"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -337,7 +395,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/ai-generator/compare"
+            path="ai-generator/compare"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -349,7 +407,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* VR */}
           <Route
-            path="/vr/:kitchenId?"
+            path="vr/:kitchenId?"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -361,7 +419,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F12: AR Viewer */}
           <Route
-            path="/ar"
+            path="ar"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -373,7 +431,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* Admin routes */}
           <Route
-            path="/admin/users"
+            path="admin/users"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -383,7 +441,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/admin/users/:id"
+            path="admin/users/:id"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -393,7 +451,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/admin/roles"
+            path="admin/roles"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -403,7 +461,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/admin/audit"
+            path="admin/audit"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -413,7 +471,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/admin/enrichment"
+            path="admin/enrichment"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -423,7 +481,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/admin/digital-twin"
+            path="admin/digital-twin"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -433,7 +491,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/admin/stock"
+            path="admin/stock"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -443,7 +501,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/admin/carbon"
+            path="admin/carbon"
             element={
               <AdminRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -455,7 +513,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F1: Compliance Dashboard */}
           <Route
-            path="/compliance/:kitchenId?"
+            path="compliance/:kitchenId?"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -467,7 +525,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F5: Workflow Simulator */}
           <Route
-            path="/workflow/:kitchenId?"
+            path="workflow/:kitchenId?"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -479,7 +537,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F6: Installer Marketplace */}
           <Route
-            path="/marketplace"
+            path="marketplace"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -489,7 +547,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/marketplace/installer/:id"
+            path="marketplace/installer/:id"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -499,7 +557,7 @@ export function AppRouter(): React.ReactElement {
             }
           />
           <Route
-            path="/marketplace/project/:id"
+            path="marketplace/project/:id"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -511,7 +569,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F7: Renovation Before/After */}
           <Route
-            path="/renovation"
+            path="renovation"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -523,7 +581,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F8: Financing Calculator */}
           <Route
-            path="/financing"
+            path="financing"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -535,7 +593,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F9: Price Tracker */}
           <Route
-            path="/price-tracker"
+            path="price-tracker"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -547,7 +605,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F11: Smart Home Planner */}
           <Route
-            path="/smart-home/:kitchenId?"
+            path="smart-home/:kitchenId?"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -559,7 +617,7 @@ export function AppRouter(): React.ReactElement {
 
           {/* F13: Certified Quotes */}
           <Route
-            path="/certified-quotes"
+            path="certified-quotes"
             element={
               <ProtectedRoute>
                 <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
@@ -570,12 +628,13 @@ export function AppRouter(): React.ReactElement {
           />
 
           {/* Legal (public) */}
-          <Route path="/legal/mentions" element={<MentionsLegales />} />
-          <Route path="/legal/cgv" element={<CGV />} />
-          <Route path="/legal/privacy" element={<Privacy />} />
-          <Route path="/legal/cookies" element={<CookiesPage />} />
+          <Route path="legal/mentions" element={<MentionsLegales />} />
+          <Route path="legal/cgv" element={<CGV />} />
+          <Route path="legal/privacy" element={<Privacy />} />
+          <Route path="legal/cookies" element={<CookiesPage />} />
+          <Route path="legal/accessibilite" element={<Accessibilite />} />
           <Route
-            path="/legal/privacy-settings"
+            path="legal/privacy-settings"
             element={
               <ProtectedRoute>
                 <PrivacySettings />
@@ -586,6 +645,24 @@ export function AppRouter(): React.ReactElement {
           {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
+      </Routes>
+  );
+}
+
+/**
+ * Top-level router : two branches.
+ *   - `/:lang/*` → LocaleAwareShell → AppRouteTree (the real routes)
+ *   - anything else → RedirectToLang (normalises `/login` → `/fr/login`)
+ *
+ * This gives us proper SEO-friendly localised URLs while keeping every
+ * existing internal link working through `<LocalizedLink>`.
+ */
+export function AppRouter(): React.ReactElement {
+  return (
+    <Suspense fallback={<LoadingSpinner fullScreen />}>
+      <Routes>
+        <Route path="/:lang/*" element={<LocaleAwareShell />} />
+        <Route path="*" element={<RedirectToLang />} />
       </Routes>
     </Suspense>
   );

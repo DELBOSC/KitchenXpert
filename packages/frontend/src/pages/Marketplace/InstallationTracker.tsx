@@ -94,7 +94,7 @@ export default function InstallationTracker(): React.ReactElement {
 
   const fetchProject = useCallback(
     async (controller: AbortController) => {
-      if (!id) return;
+      if (!id) {return;}
       setIsLoading(true);
       setError(null);
 
@@ -128,7 +128,7 @@ export default function InstallationTracker(): React.ReactElement {
         // returning installer.userId. If it matches something, we mark installer view.
         setIsInstallerView(proj.installer.userId !== undefined && proj.installer.userId !== null);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const message =
           err instanceof Error ? err.message : t('tracker.loadError', 'Erreur lors du chargement');
         setError(message);
@@ -148,7 +148,7 @@ export default function InstallationTracker(): React.ReactElement {
   // ─── Update Project Status ─────────────────────────────────────────────────
 
   const handleStatusUpdate = async (newStatus: string): Promise<void> => {
-    if (!id) return;
+    if (!id) {return;}
     setIsUpdating(true);
     setUpdateError(null);
 
@@ -179,7 +179,7 @@ export default function InstallationTracker(): React.ReactElement {
 
   const handleAddMilestone = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    if (!id || !milestoneName.trim()) return;
+    if (!id || !milestoneName.trim()) {return;}
 
     setIsAddingMilestone(true);
     setMilestoneError(null);
@@ -254,7 +254,7 @@ export default function InstallationTracker(): React.ReactElement {
                       : 'text-gray-500 dark:text-gray-400'
                   }`}
                 >
-                  {t(`tracker.status.${status}` as string, STATUS_LABELS[status] ?? status)}
+                  {t(`tracker.status.${status}`, STATUS_LABELS[status] ?? status)}
                 </span>
               </div>
               {index < STATUS_ORDER.length - 1 && (
@@ -332,7 +332,7 @@ export default function InstallationTracker(): React.ReactElement {
     );
   }
 
-  const milestones = (project.milestones || []) as Milestone[];
+  const milestones = (project.milestones || []);
 
   // ─── Render ────────────────────────────────────────────────────────────────
 
@@ -375,7 +375,7 @@ export default function InstallationTracker(): React.ReactElement {
                 STATUS_COLORS[project.status] || STATUS_COLORS.pending
               }`}
             >
-              {t(`tracker.status.${project.status}` as string, STATUS_LABELS[project.status] || project.status)}
+              {t(`tracker.status.${project.status}`, STATUS_LABELS[project.status] || project.status)}
             </span>
           </div>
 

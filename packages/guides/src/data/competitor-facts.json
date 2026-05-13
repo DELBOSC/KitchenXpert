@@ -1,0 +1,123 @@
+{
+  "$schema": "./competitor-facts.schema.json",
+  "_README": [
+    "Source de vérité pour TOUS les faits cités dans /comparatifs/vs-*.",
+    "Convention :",
+    "  - Chaque entrée a `verified: false` par défaut. Tant qu'elle est false,",
+    "    le composant ComparisonCriteriaTable affiche '— à vérifier' et NE compte",
+    "    PAS comme un fait actionnable côté CI.",
+    "  - Avant de passer un fait à `verified: true`, ouvre l'URL `source` dans le",
+    "    navigateur, vérifie que le `claim` correspond bien à ce qui est écrit",
+    "    sur la page, et mets `verifiedAt` à la date du jour (YYYY-MM-DD).",
+    "  - Le script `scripts/check-competitor-facts.mjs` (mensuel) re-pingue chaque",
+    "    URL et alerte si 404 OU si le contenu HTML a changé > 30%.",
+    "Légalité publicité comparative (L122-1 Code conso) : tout fait publié DOIT",
+    "être vérifiable et daté. C'est ce fichier qui prouve la vérification."
+  ],
+  "competitors": {
+    "coohom": {
+      "displayName": "Coohom",
+      "url": "https://www.coohom.com",
+      "hq": "Hangzhou, Chine (Manycore Technology)",
+      "lastFullReview": null,
+      "facts": {
+        "design_ux": [
+          { "criterion": "Interface en français", "claim": "TODO_LAURENT — vérifier si UI traduite FR", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Mode sombre disponible", "claim": "TODO_LAURENT", "source": "https://www.coohom.com/3d-design-software", "verified": false, "verifiedAt": null },
+          { "criterion": "Onboarding sans inscription", "claim": "TODO_LAURENT — tester sur la page d'accueil", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null }
+        ],
+        "moteur_3d": [
+          { "criterion": "Rendu temps réel", "claim": "TODO_LAURENT — comparer fps + qualité", "source": "https://www.coohom.com/3d-design-software", "verified": false, "verifiedAt": null },
+          { "criterion": "Path-tracing", "claim": "TODO_LAURENT", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "AR / VR", "claim": "TODO_LAURENT — chercher 'AR' dans le footer", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Snap intelligent", "claim": "TODO_LAURENT", "source": "https://www.coohom.com/3d-design-software", "verified": false, "verifiedAt": null },
+          { "criterion": "Vue 2D plan coté", "claim": "TODO_LAURENT", "source": "https://www.coohom.com/3d-design-software", "verified": false, "verifiedAt": null }
+        ],
+        "catalogue": [
+          { "criterion": "Volume du catalogue", "claim": "TODO_LAURENT — chercher chiffre exact sur la page produit, ne JAMAIS écrire 'millions' sans source", "source": "https://www.coohom.com/3d-model", "verified": false, "verifiedAt": null },
+          { "criterion": "Catalogue IKEA officiel", "claim": "TODO_LAURENT", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Fournisseurs FR (Schmidt, Mobalpa…)", "claim": "TODO_LAURENT", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Dimensions précises (mm)", "claim": "TODO_LAURENT — créer un compte test, vérifier sur 3 modèles", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null }
+        ],
+        "ia": [
+          { "criterion": "Auto-layout IA", "claim": "TODO_LAURENT — fonction « AI Design » à comparer", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Reconnaissance plan import", "claim": "TODO_LAURENT", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Recommandations contextuelles", "claim": "TODO_LAURENT", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null }
+        ],
+        "conformite": [
+          { "criterion": "Hébergement UE", "claim": "TODO_LAURENT — vérifier dans Privacy Policy / DPA", "source": "https://www.coohom.com/privacy-policy", "verified": false, "verifiedAt": null },
+          { "criterion": "RGPD compliant", "claim": "TODO_LAURENT — chercher la mention 'GDPR' explicite", "source": "https://www.coohom.com/privacy-policy", "verified": false, "verifiedAt": null },
+          { "criterion": "Mentions légales FR", "claim": "TODO_LAURENT — vérifier Mentions Légales / Editor info", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "DPO contactable", "claim": "TODO_LAURENT", "source": "https://www.coohom.com/privacy-policy", "verified": false, "verifiedAt": null }
+        ],
+        "business": [
+          { "criterion": "Plan gratuit", "claim": "TODO_LAURENT — limites du free tier (projets, exports, qualité)", "source": "https://www.coohom.com/pricing", "verified": false, "verifiedAt": null },
+          { "criterion": "Prix mensuel plan payant", "claim": "TODO_LAURENT — citer prix EUR exact + URL pricing + date", "source": "https://www.coohom.com/pricing", "verified": false, "verifiedAt": null },
+          { "criterion": "Marketplace installateurs", "claim": "TODO_LAURENT", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Support en français", "claim": "TODO_LAURENT — tester l'envoi d'un ticket en FR + temps de réponse", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null },
+          { "criterion": "Export DXF / IFC", "claim": "TODO_LAURENT", "source": "https://www.coohom.com", "verified": false, "verifiedAt": null }
+        ]
+      }
+    },
+    "planner-5d": {
+      "displayName": "Planner 5D",
+      "url": "https://planner5d.com",
+      "hq": "Vilnius, Lituanie (UAB Planner 5D)",
+      "lastFullReview": null,
+      "facts": {
+        "design_ux": [],
+        "moteur_3d": [],
+        "catalogue": [],
+        "ia": [],
+        "conformite": [],
+        "business": []
+      },
+      "_TODO": "Dupliquer la structure de coohom + remplir 20-30 facts. Modèle dans coohom ci-dessus."
+    },
+    "homestyler": {
+      "displayName": "Homestyler",
+      "url": "https://www.homestyler.com",
+      "hq": "Hangzhou, Chine (Easyhome Group)",
+      "lastFullReview": null,
+      "facts": {
+        "design_ux": [],
+        "moteur_3d": [],
+        "catalogue": [],
+        "ia": [],
+        "conformite": [],
+        "business": []
+      },
+      "_TODO": "Dupliquer la structure de coohom + remplir 20-30 facts."
+    },
+    "ikea-home-planner": {
+      "displayName": "IKEA Home Planner",
+      "url": "https://www.ikea.com/fr/fr/planning-tools",
+      "hq": "Älmhult, Suède (Inter IKEA Systems B.V.)",
+      "lastFullReview": null,
+      "facts": {
+        "design_ux": [],
+        "moteur_3d": [],
+        "catalogue": [],
+        "ia": [],
+        "conformite": [],
+        "business": []
+      },
+      "_TODO": "Cas particulier : IKEA HP est gratuit + limité au catalogue IKEA. La vraie comparaison est 'spécialisé un fournisseur vs multi-fournisseurs'."
+    },
+    "sketchup": {
+      "displayName": "SketchUp",
+      "url": "https://www.sketchup.com",
+      "hq": "Boulder, Colorado, USA (Trimble Inc.)",
+      "lastFullReview": null,
+      "facts": {
+        "design_ux": [],
+        "moteur_3d": [],
+        "catalogue": [],
+        "ia": [],
+        "conformite": [],
+        "business": []
+      },
+      "_TODO": "Cas particulier : SketchUp est généraliste, pas spécialisé cuisine. Comparer en termes de courbe d'apprentissage + temps pour produire un devis."
+    }
+  }
+}

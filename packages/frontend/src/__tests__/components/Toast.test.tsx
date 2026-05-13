@@ -136,7 +136,7 @@ describe('Toast', () => {
 
       await user.click(screen.getByText('Show Success'));
 
-      expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /close|fermer/i })).toBeInTheDocument();
     });
   });
 
@@ -174,7 +174,7 @@ describe('Toast', () => {
       await user.click(screen.getByText('Show Success'));
       expect(screen.getByText('Success message')).toBeInTheDocument();
 
-      await user.click(screen.getByRole('button', { name: /close/i }));
+      await user.click(screen.getByRole('button', { name: /close|fermer/i }));
       expect(screen.queryByText('Success message')).not.toBeInTheDocument();
     });
 
@@ -281,7 +281,8 @@ describe('Toast', () => {
       await user.click(screen.getByText('Show Success'));
 
       const toast = screen.getByRole('alert');
-      expect(toast).toHaveClass('min-w-[300px]');
+      // Component uses min-w-[280px] (mobile-friendly width).
+      expect(toast).toHaveClass('min-w-[280px]');
     });
 
     it('should have animation class', async () => {
@@ -352,8 +353,9 @@ describe('Toast', () => {
 
       await user.click(screen.getByText('Show Success'));
 
-      const closeButton = screen.getByRole('button', { name: /close/i });
-      expect(closeButton).toHaveAttribute('aria-label', 'Close');
+      const closeButton = screen.getByRole('button', { name: /close|fermer/i });
+      // Component uses i18n: 'Fermer' in fr.json, fallback to 'Close'.
+      expect(closeButton).toHaveAttribute('aria-label', expect.stringMatching(/close|fermer/i));
     });
 
     it('should announce toast messages to screen readers', async () => {

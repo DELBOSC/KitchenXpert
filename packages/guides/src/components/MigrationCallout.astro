@@ -1,0 +1,186 @@
+---
+/**
+ * MigrationCallout — bloc « Vous utilisez X ? Voici comment migrer ».
+ *
+ * Inclut le lien vers la doc d'export du concurrent (à fact-check) et
+ * un CTA vers /designer/sandbox?import=<source> pour amorcer le flux.
+ *
+ * Si on a une vraie offre d'aide à la migration (30 min de support
+ * gratuit), elle est mentionnée ici. Sinon on retire la propriété.
+ */
+
+interface Step {
+  title: string;
+  body: string;
+  /** URL externe pour l'étape (souvent doc concurrent). */
+  href?: string;
+}
+
+interface Props {
+  competitorName: string;
+  competitorSlug: string;
+  /** Documentation officielle d'export du concurrent. */
+  exportDocUrl?: string;
+  /** Limitations connues à expliciter (transparence). */
+  limitations?: string[];
+  /** Inclure l'offre support 30 min gratuit ? */
+  offerAssistance?: boolean;
+}
+
+const {
+  competitorName,
+  competitorSlug,
+  exportDocUrl,
+  limitations = [],
+  offerAssistance = true,
+} = Astro.props;
+
+const steps: Step[] = [
+  {
+    title: `Exporter depuis ${competitorName}`,
+    body: `Suivez la documentation officielle de ${competitorName} pour exporter votre projet (généralement format DXF, OBJ ou PDF du plan).`,
+    href: exportDocUrl,
+  },
+  {
+    title: 'Importer dans KitchenXpert',
+    body: 'Ouvrez le designer démo, cliquez « Importer un plan » dans le modal d\'accueil et déposez votre fichier. Le moteur reconstruit la pièce en 30 secondes.',
+    href: `/designer/sandbox?source=${competitorSlug}`,
+  },
+  {
+    title: 'Re-mapper les meubles',
+    body: 'Les meubles génériques sont conservés au bon emplacement ; vous remplacez ceux que vous voulez par des références IKEA, Schmidt, Bosch, Leroy Merlin ou Castorama via la palette.',
+  },
+  {
+    title: 'Générer le devis',
+    body: 'Dès que la cuisine est complète, le panneau « Devis fournisseurs » compare les 5 catalogues automatiquement.',
+  },
+];
+---
+
+<section
+  aria-labelledby="migration-heading"
+  class="migration"
+>
+  <h2 id="migration-heading">Vous utilisez {competitorName} ? Voici comment migrer.</h2>
+
+  <ol>
+    {steps.map((step, i) => (
+      <li>
+        <span class="num">{i + 1}</span>
+        <div>
+          <h3>
+            {step.href ? (
+              <a href={step.href} target={step.href.startsWith('http') ? '_blank' : undefined} rel={step.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                {step.title}
+                {step.href.startsWith('http') && <span aria-hidden> ↗</span>}
+              </a>
+            ) : (
+              step.title
+            )}
+          </h3>
+          <p>{step.body}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  {limitations.length > 0 && (
+    <details class="limitations">
+      <summary>Limitations connues — à savoir avant de migrer</summary>
+      <ul>
+        {limitations.map((limit) => <li>{limit}</li>)}
+      </ul>
+    </details>
+  )}
+
+  {offerAssistance && (
+    <div class="cta">
+      <p>
+        <strong>Bloqué dans la migration ?</strong> Notre équipe vous offre
+        30 minutes de support en visio pour finaliser l'import — sans engagement.
+      </p>
+      <a href={`mailto:support@kitchenxpert.com?subject=Aide%20migration%20${encodeURIComponent(competitorName)}`}>
+        Demander 30 min de support
+      </a>
+    </div>
+  )}
+</section>
+
+<style>
+  .migration {
+    margin: 3rem 0;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(236, 72, 153, 0.04) 100%);
+  }
+  .migration h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.5rem;
+    color: #fff;
+  }
+  .migration ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .migration li {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .migration .num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .migration h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    color: #fff;
+  }
+  .migration h3 a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .migration p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .limitations {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(251, 191, 36, 0.04);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 0.5rem;
+  }
+  .limitations summary { cursor: pointer; color: #fbbf24; font-weight: 500; font-size: 0.875rem; }
+  .limitations ul { margin: 0.75rem 0 0; padding-left: 1.25rem; color: rgba(255, 255, 255, 0.7); font-size: 0.875rem; }
+  .cta {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 0.5rem;
+  }
+  .cta p { margin: 0 0 0.5rem; color: rgba(255, 255, 255, 0.85); font-size: 0.9375rem; }
+  .cta a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #fff;
+    color: #1e293b;
+    text-decoration: none;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+</style>

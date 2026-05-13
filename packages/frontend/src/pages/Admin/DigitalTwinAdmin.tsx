@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { API_BASE_URL } from '../../services/api/endpoints';
 import { getErrorMessage } from '../../utils/error-handling';
 
@@ -58,8 +59,8 @@ const DigitalTwinAdmin: React.FC = () => {
           }),
         ]);
 
-        if (!statsRes.ok) throw new Error(t('admin.digitalTwin.errors.fetchStats', 'Failed to load stats'));
-        if (!twinsRes.ok) throw new Error(t('admin.digitalTwin.errors.fetchList', 'Failed to load twins'));
+        if (!statsRes.ok) {throw new Error(t('admin.digitalTwin.errors.fetchStats', 'Failed to load stats'));}
+        if (!twinsRes.ok) {throw new Error(t('admin.digitalTwin.errors.fetchList', 'Failed to load twins'));}
 
         const statsData = await statsRes.json();
         const twinsData = await twinsRes.json();
@@ -67,7 +68,7 @@ const DigitalTwinAdmin: React.FC = () => {
         setStats(statsData.data ?? statsData);
         setTwins(twinsData.data ?? twinsData);
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         setError(getErrorMessage(err, t('admin.digitalTwin.errors.load', 'Failed to load digital twins')));
       } finally {
         setIsLoading(false);
@@ -80,7 +81,7 @@ const DigitalTwinAdmin: React.FC = () => {
 
   // Auto-dismiss messages after 5 seconds
   useEffect(() => {
-    if (!message) return;
+    if (!message) {return;}
     const timer = setTimeout(() => setMessage(null), 5000);
     return () => clearTimeout(timer);
   }, [message]);
@@ -114,7 +115,7 @@ const DigitalTwinAdmin: React.FC = () => {
       const res = await fetch(`${API_BASE_URL}/digital-twin/${twin.kitchenId}`, {
         credentials: 'include',
       });
-      if (!res.ok) throw new Error(t('admin.digitalTwin.errors.fetchDetail', 'Failed to load twin details'));
+      if (!res.ok) {throw new Error(t('admin.digitalTwin.errors.fetchDetail', 'Failed to load twin details'));}
       const data = await res.json();
       setSelectedTwin(data.data ?? data);
     } catch (err) {
@@ -135,7 +136,7 @@ const DigitalTwinAdmin: React.FC = () => {
   };
 
   const formatDate = (iso: string | null) => {
-    if (!iso) return t('common.never', 'Never');
+    if (!iso) {return t('common.never', 'Never');}
     return new Date(iso).toLocaleString(i18n.language, {
       day: '2-digit',
       month: 'short',

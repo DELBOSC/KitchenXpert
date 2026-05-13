@@ -1,0 +1,60 @@
+name: Lighthouse – performance + a11y + SEO
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/frontend/**'
+      - '.github/workflows/lighthouse.yml'
+  workflow_dispatch:
+
+# A new push to the same PR cancels the previous run.
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI (8 public pages)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 8.15.0 }
+
+      - run: pnpm install --frozen-lockfile
+
+      # Production build — measures what users actually load.
+      - name: Build frontend (production)
+        run: pnpm --filter frontend build
+
+      - name: Serve dist on :3005
+        working-directory: packages/frontend
+        run: |
+          # `vite preview` mimics a static-host with proper MIME types
+          # and Cache-Control. Strict port so a hung process fails loud.
+          pnpm preview --port 3005 --strictPort &
+          echo "PREVIEW_PID=$!" >> $GITHUB_ENV
+          npx wait-on http://localhost:3005 --timeout 60000
+
+      - name: Lighthouse CI
+        run: |
+          pnpm dlx @lhci/cli@0.13.x autorun \
+            --config=packages/frontend/lighthouserc.json
+        env:
+          # Sets the GitHub status check + leaves a PR comment with scores.
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-${{ github.run_id }}
+          path: .lighthouseci/
+          retention-days: 14

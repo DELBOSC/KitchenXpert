@@ -13,6 +13,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+
 import { API_BASE_URL } from '../../services/api/endpoints';
 
 // ----------------------------------------------------------------
@@ -168,7 +169,7 @@ export default function RenovationPage(): React.ReactElement {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      if (preview) {URL.revokeObjectURL(preview);}
       controllerRef.current?.abort();
     };
   }, [preview]);
@@ -184,7 +185,7 @@ export default function RenovationPage(): React.ReactElement {
 
   const handleFileChange = useCallback(
     (selectedFile: File | null) => {
-      if (!selectedFile) return;
+      if (!selectedFile) {return;}
 
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(selectedFile.type)) {
         setError(t('renovation.invalidFileType', 'Please upload a JPEG, PNG, or WebP image.'));
@@ -199,7 +200,7 @@ export default function RenovationPage(): React.ReactElement {
       setFile(selectedFile);
       setError(null);
 
-      if (preview) URL.revokeObjectURL(preview);
+      if (preview) {URL.revokeObjectURL(preview);}
       setPreview(URL.createObjectURL(selectedFile));
     },
     [preview, t],
@@ -216,7 +217,7 @@ export default function RenovationPage(): React.ReactElement {
   // ── Step 1 -> 2: Analyze photo ──
 
   const handleAnalyze = useCallback(async () => {
-    if (!file) return;
+    if (!file) {return;}
 
     setIsLoading(true);
     setError(null);

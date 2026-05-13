@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../../contexts/AuthContext';
 import { logger } from '../../services/logger';
 
@@ -172,7 +173,7 @@ const SmartHomePlanner: React.FC = () => {
           setKitchens(data.data ?? data ?? []);
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         logger.error('Failed to fetch kitchens', err instanceof Error ? err : { error: err });
       }
     };
@@ -196,7 +197,7 @@ const SmartHomePlanner: React.FC = () => {
           setCatalog(data.data ?? []);
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         logger.error('Failed to fetch device catalog', err instanceof Error ? err : { error: err });
       }
     };
@@ -207,7 +208,7 @@ const SmartHomePlanner: React.FC = () => {
 
   // Fetch existing plan when kitchenId changes
   useEffect(() => {
-    if (!kitchenId) return;
+    if (!kitchenId) {return;}
     const controller = new AbortController();
 
     const fetchPlan = async () => {
@@ -227,7 +228,7 @@ const SmartHomePlanner: React.FC = () => {
           throw new Error('Failed to load smart home plan');
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const msg = err instanceof Error ? err.message : 'An unexpected error occurred';
         setError(msg);
       } finally {
@@ -241,7 +242,7 @@ const SmartHomePlanner: React.FC = () => {
 
   // Generate a new plan with AI
   const handleGeneratePlan = useCallback(async () => {
-    if (!kitchenId) return;
+    if (!kitchenId) {return;}
     setIsGenerating(true);
     setError(null);
 
@@ -276,7 +277,7 @@ const SmartHomePlanner: React.FC = () => {
 
   // Save / update plan
   const handleSavePlan = useCallback(async () => {
-    if (!kitchenId || !plan) return;
+    if (!kitchenId || !plan) {return;}
     setIsSaving(true);
     setError(null);
 
@@ -310,7 +311,7 @@ const SmartHomePlanner: React.FC = () => {
   // Remove device from plan
   const handleRemoveDevice = useCallback((deviceId: string) => {
     setPlan((prev) => {
-      if (!prev) return prev;
+      if (!prev) {return prev;}
       return {
         ...prev,
         devices: prev.devices.filter((d) => d.id !== deviceId),
@@ -328,7 +329,7 @@ const SmartHomePlanner: React.FC = () => {
   const handleAddDevice = useCallback(
     (device: SmartDevice) => {
       setPlan((prev) => {
-        if (!prev) return prev;
+        if (!prev) {return prev;}
         const newDevice: PlacedDevice = {
           ...device,
           id: `shd_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
@@ -349,10 +350,10 @@ const SmartHomePlanner: React.FC = () => {
 
   // Add automation rule
   const handleAddAutomation = useCallback(() => {
-    if (!newAutomation.name || !newAutomation.triggerEvent || !newAutomation.actionCommand) return;
+    if (!newAutomation.name || !newAutomation.triggerEvent || !newAutomation.actionCommand) {return;}
 
     setPlan((prev) => {
-      if (!prev) return prev;
+      if (!prev) {return prev;}
       const rule: AutomationRule = {
         id: `sha_${Date.now()}`,
         name: newAutomation.name,
@@ -376,7 +377,7 @@ const SmartHomePlanner: React.FC = () => {
   // Remove automation
   const handleRemoveAutomation = useCallback((ruleId: string) => {
     setPlan((prev) => {
-      if (!prev) return prev;
+      if (!prev) {return prev;}
       return {
         ...prev,
         automations: prev.automations.filter((a) => a.id !== ruleId),
@@ -386,7 +387,7 @@ const SmartHomePlanner: React.FC = () => {
 
   // Calculate coverage
   const handleCalculateCoverage = useCallback(async () => {
-    if (!kitchenId) return;
+    if (!kitchenId) {return;}
 
     try {
       const res = await fetch(
@@ -510,7 +511,7 @@ const SmartHomePlanner: React.FC = () => {
       {/* Loading */}
       {isLoading && (
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500" />
           <span className="ml-3 text-gray-600 dark:text-gray-400">
             {t('common.loading', 'Loading...')}
           </span>
@@ -853,7 +854,7 @@ const SmartHomePlanner: React.FC = () => {
                   onClick={() => setShowAutomationBuilder(!showAutomationBuilder)}
                   className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  {showAutomationBuilder ? t('common.close', 'Close') : '+ ' + t('smartHome.addRule', 'Add Rule')}
+                  {showAutomationBuilder ? t('common.close', 'Close') : `+ ${  t('smartHome.addRule', 'Add Rule')}`}
                 </button>
               </div>
 

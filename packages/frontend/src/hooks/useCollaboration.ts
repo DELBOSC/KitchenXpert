@@ -3,9 +3,10 @@
  * Manages WebSocket connection for real-time collaboration
  */
 
+import i18next from 'i18next';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import * as Y from 'yjs';
-import i18next from 'i18next';
+
 import type { KitchenEngine } from '@kitchenxpert/3d-engine';
 
 export interface CollaborationUser {
@@ -59,7 +60,7 @@ export function useCollaboration(
   const staleCursorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const connect = useCallback(() => {
-    if (!kitchenId) return;
+    if (!kitchenId) {return;}
 
     try {
       const ws = new WebSocket(`${WS_BASE_URL}/ws/collaboration?kitchenId=${kitchenId}`);
@@ -180,7 +181,7 @@ export function useCollaboration(
 
   // Connect on mount, disconnect on unmount
   useEffect(() => {
-    if (!kitchenId || !engine) return;
+    if (!kitchenId || !engine) {return;}
 
     connect();
 
@@ -219,7 +220,7 @@ export function useCollaboration(
   }, [kitchenId, engine, connect]);
 
   const sendCursorUpdate = useCallback((position: { x: number; y: number; z: number }, objectId?: string) => {
-    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !kitchenId) return;
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !kitchenId) {return;}
 
     wsRef.current.send(JSON.stringify({
       type: 'cursor-update',

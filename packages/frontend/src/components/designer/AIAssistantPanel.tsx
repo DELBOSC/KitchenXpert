@@ -1,8 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AIAssistant, SmartPlacement, KitchenEngine, ModelLoader, AddObjectCommand, BatchCommand, AccessibilityChecker } from '@kitchenxpert/3d-engine';
-import type { ConfigurationScore, Suggestion, PlacedItem3D, RoomConfig, AutoCompleteResult, AccessibilityScore, AccessibilityViolation } from '@kitchenxpert/3d-engine';
 import * as THREE from 'three';
+
+import { AIAssistant, SmartPlacement, type KitchenEngine, ModelLoader, AddObjectCommand, BatchCommand, AccessibilityChecker , type ConfigurationScore, type Suggestion, type PlacedItem3D, type RoomConfig, type AutoCompleteResult, type AccessibilityScore, type AccessibilityViolation } from '@kitchenxpert/3d-engine';
+
+
 
 interface AIAssistantPanelProps {
   engine: KitchenEngine | null;
@@ -104,9 +106,9 @@ function SuggestionIcon({ type }: { type: Suggestion['type'] }): React.ReactElem
 }
 
 function getScoreColor(value: number): string {
-  if (value >= 80) return '#22c55e'; // green-500
-  if (value >= 60) return '#eab308'; // yellow-500
-  if (value >= 40) return '#f97316'; // orange-500
+  if (value >= 80) {return '#22c55e';} // green-500
+  if (value >= 60) {return '#eab308';} // yellow-500
+  if (value >= 40) {return '#f97316';} // orange-500
   return '#ef4444'; // red-500
 }
 
@@ -203,7 +205,7 @@ export default function AIAssistantPanel({ engine, onOpenProposals }: AIAssistan
   const [pmrScore, setPmrScore] = useState<AccessibilityScore | null>(null);
 
   const runAnalysis = useCallback(() => {
-    if (!engine || !aiAssistantRef.current) return;
+    if (!engine || !aiAssistantRef.current) {return;}
 
     setIsAnalyzing(true);
 
@@ -224,7 +226,7 @@ export default function AIAssistantPanel({ engine, onOpenProposals }: AIAssistan
   }, [engine]);
 
   const runAutoComplete = useCallback(() => {
-    if (!engine || !aiAssistantRef.current || !smartPlacementRef.current) return;
+    if (!engine || !aiAssistantRef.current || !smartPlacementRef.current) {return;}
 
     setIsAutoCompleting(true);
 
@@ -278,7 +280,7 @@ export default function AIAssistantPanel({ engine, onOpenProposals }: AIAssistan
   }, [engine]);
 
   const togglePmrMode = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     const newMode = !pmrMode;
     setPmrMode(newMode);

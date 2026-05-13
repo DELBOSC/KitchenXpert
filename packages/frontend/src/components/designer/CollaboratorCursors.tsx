@@ -54,14 +54,14 @@ export default function CollaboratorCursors({
 
     for (const [userId, cursor] of cursors) {
       // Skip current user
-      if (userId === currentUserId) continue;
+      if (userId === currentUserId) {continue;}
 
       const user = users.get(userId);
-      if (!user) continue;
+      if (!user) {continue;}
 
       // Calculate age for fade-out
       const age = now - cursor.timestamp;
-      if (age > CURSOR_STALE_MS) continue;
+      if (age > CURSOR_STALE_MS) {continue;}
 
       // Opacity fades from 1.0 to 0.0 over the last 3 seconds of the stale window
       const fadeStart = CURSOR_STALE_MS - 3000;
@@ -77,7 +77,7 @@ export default function CollaboratorCursors({
         y = (-vec.y * 0.5 + 0.5) * rect.height;
 
         // Skip if behind camera or outside visible bounds (with small margin)
-        if (vec.z > 1 || x < -20 || x > rect.width + 20 || y < -20 || y > rect.height + 20) continue;
+        if (vec.z > 1 || x < -20 || x > rect.width + 20 || y < -20 || y > rect.height + 20) {continue;}
       } else {
         // Cannot project without a camera and container reference
         continue;

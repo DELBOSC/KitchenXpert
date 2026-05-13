@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { API_BASE_URL, API_ENDPOINTS } from '../../services/api/endpoints';
 
 // ─── Types ───────────────────────────────────────────────────────────
@@ -119,7 +120,7 @@ export default function AIToolUseChat({
    */
   const sendMessage = useCallback(async () => {
     const trimmed = inputValue.trim();
-    if (!trimmed || isLoading) return;
+    if (!trimmed || isLoading) {return;}
 
     setError(null);
     setInputValue('');
@@ -193,7 +194,7 @@ export default function AIToolUseChat({
       // Execute tool calls sequentially
       for (let i = 0; i < toolCalls.length; i++) {
         const tc = toolCalls[i];
-        if (!tc) continue;
+        if (!tc) {continue;}
         try {
           onExecuteToolCall(tc.name, tc.params);
 
@@ -201,7 +202,7 @@ export default function AIToolUseChat({
           setMessages(prev => {
             const updated = [...prev];
             const lastMsg = updated[updated.length - 1];
-            if (lastMsg && lastMsg.toolCalls) {
+            if (lastMsg?.toolCalls) {
               const updatedTools = [...lastMsg.toolCalls];
               updatedTools[i] = { ...updatedTools[i]!, executed: true };
               updated[updated.length - 1] = { ...lastMsg, toolCalls: updatedTools };

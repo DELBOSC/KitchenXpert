@@ -1,5 +1,6 @@
-import React, { forwardRef, useId } from 'react';
 import { ChevronDown } from 'lucide-react';
+import React, { forwardRef, useId } from 'react';
+
 import { cn } from './_utils';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
@@ -8,10 +9,10 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   error?: string;
 }
 
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+export const Select = forwardRef<HTMLSelectElement, SelectProps>((
   { className, label, description, error, id, children, ...rest },
   ref,
-) {
+) => {
   const autoId = useId();
   const selectId = id || autoId;
   return (

@@ -345,7 +345,7 @@ export class OfflineStorage {
           const req = store.delete(id);
           req.onsuccess = () => {
             completed++;
-            if (completed === changeIds.length) resolve();
+            if (completed === changeIds.length) {resolve();}
           };
           req.onerror = () => reject(req.error);
         });

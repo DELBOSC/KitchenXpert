@@ -1,10 +1,14 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as THREE from 'three';
+
+
 import { ModelLoader, mmToM } from '@kitchenxpert/3d-engine';
-import type { BrandProfile } from '@kitchenxpert/3d-engine';
+
 import { api } from '../../services/api/api';
 import { API_ENDPOINTS } from '../../services/api/endpoints';
+
+import type { BrandProfile } from '@kitchenxpert/3d-engine';
+import type * as THREE from 'three';
 
 interface CatalogPanelProps {
   addObject: (id: string, obj: THREE.Object3D) => void;
@@ -162,7 +166,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
 
       for (const w of widthsForThisHeight) {
         // For non-default heights, only use the common wall widths that exist in available widths
-        if (!isDefaultHeight && !commonWallWidths.includes(w)) continue;
+        if (!isDefaultHeight && !commonWallWidths.includes(w)) {continue;}
 
         items.push({
           id: `wall-${w}-${h}`,
@@ -269,15 +273,15 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
             category: mapCategory(p.category || p.type),
             price: p.price || 0,
           }));
-          if (mounted) setCatalogItems(mapped);
+          if (mounted) {setCatalogItems(mapped);}
           return;
         }
       } catch {
         // API not available, use local fallback
       } finally {
-        if (mounted) setIsLoadingCatalog(false);
+        if (mounted) {setIsLoadingCatalog(false);}
       }
-      if (mounted) setCatalogItems(localCatalogItems);
+      if (mounted) {setCatalogItems(localCatalogItems);}
     };
 
     fetchCatalog();
@@ -285,7 +289,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
   }, [localCatalogItems]);
 
   const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) return catalogItems;
+    if (!searchQuery.trim()) {return catalogItems;}
     const query = searchQuery.toLowerCase();
     return catalogItems.filter((item) =>
       item.name.toLowerCase().includes(query) ||
@@ -393,7 +397,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
           const items = itemsByCategory.get(category) || [];
           const isExpanded = expandedCategory === category;
 
-          if (searchQuery && items.length === 0) return null;
+          if (searchQuery && items.length === 0) {return null;}
 
           return (
             <div key={category} className="border-b border-gray-100 dark:border-gray-700">

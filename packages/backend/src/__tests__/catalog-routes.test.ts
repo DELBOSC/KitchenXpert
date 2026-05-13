@@ -290,7 +290,7 @@ describe('CatalogController', () => {
     it('should return 404 if catalog not found', async () => {
       mockCatalogRepository.findById.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getCatalogById(req as Request, res as Response);
@@ -412,7 +412,7 @@ describe('CatalogController', () => {
     it('should return 404 if provider not found', async () => {
       mockCatalogRepository.findProviderById.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getProviderById(req as Request, res as Response);
@@ -520,7 +520,7 @@ describe('CatalogController', () => {
     it('should return 404 if product not found', async () => {
       mockProductRepository.findById.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getProductById(req as Request, res as Response);
@@ -710,7 +710,7 @@ describe('CatalogController', () => {
     it('should return 404 if category not found', async () => {
       mockProductRepository.findCategoryBySlug.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { slug: 'nonexistent' } });
+      const req = createMockReq({ params: { slug: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getCategoryBySlug(req as Request, res as Response);
@@ -804,7 +804,7 @@ describe('CatalogController', () => {
     it('should return 404 if appliance not found', async () => {
       mockApplianceRepository.findById.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getApplianceById(req as Request, res as Response);
@@ -946,7 +946,7 @@ describe('CatalogController', () => {
     it('should return 404 if material not found', async () => {
       mockMaterialRepository.findById.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getMaterialById(req as Request, res as Response);

@@ -1,0 +1,68 @@
+---
+/**
+ * ImageGallery — responsive image grid for the "5 exemples" sections.
+ *
+ * Astro's <Image /> can't be used inside an MDX file's frontmatter, so
+ * we accept plain `src` strings + alt text + optional caption. Pair
+ * with the @astrojs/image (or similar) integration if you want WebP
+ * conversion at build time.
+ */
+
+interface GalleryImage {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  images: GalleryImage[];
+  /** Override grid columns at the desktop breakpoint. */
+  columns?: 2 | 3 | 4;
+}
+
+const { images, columns = 3 } = Astro.props;
+---
+
+<div class:list={['gallery', `cols-${columns}`]}>
+  {images.map((img) => (
+    <figure>
+      <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+      {img.caption && <figcaption>{img.caption}</figcaption>}
+    </figure>
+  ))}
+</div>
+
+<style>
+  .gallery {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+  .gallery.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .gallery.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .gallery.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  @media (max-width: 767px) {
+    .gallery { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .gallery { grid-template-columns: 1fr; }
+  }
+
+  .gallery figure {
+    margin: 0;
+  }
+  .gallery img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .gallery figcaption {
+    margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+</style>

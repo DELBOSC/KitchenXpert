@@ -329,9 +329,9 @@ describe('API Endpoints', () => {
     it('should have questionnaire endpoints', () => {
       expect(API_ENDPOINTS.QUESTIONNAIRE.BASE).toBe('/questionnaire');
       expect(API_ENDPOINTS.QUESTIONNAIRE.USER_PROFILE).toBe('/questionnaire/user-profile');
-      expect(API_ENDPOINTS.QUESTIONNAIRE.SPATIAL).toBe('/questionnaire/spatial');
-      expect(API_ENDPOINTS.QUESTIONNAIRE.STYLE).toBe('/questionnaire/style');
-      expect(API_ENDPOINTS.QUESTIONNAIRE.BUDGET).toBe('/questionnaire/budget');
+      expect(API_ENDPOINTS.QUESTIONNAIRE.SPATIAL).toBe('/questionnaire/spatial-constraints');
+      expect(API_ENDPOINTS.QUESTIONNAIRE.STYLE).toBe('/questionnaire/style-preferences');
+      expect(API_ENDPOINTS.QUESTIONNAIRE.BUDGET).toBe('/questionnaire/budget-planning');
       expect(API_ENDPOINTS.QUESTIONNAIRE.COMPLETE).toBe('/questionnaire/complete');
       expect(API_ENDPOINTS.QUESTIONNAIRE.PROGRESS).toBe('/questionnaire/progress');
     });

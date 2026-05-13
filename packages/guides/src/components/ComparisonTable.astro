@@ -1,0 +1,103 @@
+---
+/**
+ * ComparisonTable — head-to-head comparison grid.
+ *
+ * Pure static. Render-once, no JS. Used in /comparatifs/* pages and
+ * also embeddable from other templates via MDX:
+ *
+ *   import ComparisonTable from '../../components/ComparisonTable.astro';
+ *   <ComparisonTable
+ *     contenders={['IKEA METOD', 'Leroy Merlin Delinia']}
+ *     rows={[
+ *       { criterion: 'Prix moyen', values: ['~3 500 €', '~4 200 €'] },
+ *       { criterion: 'Délai', values: ['1 sem.', '2-3 sem.'] },
+ *     ]}
+ *   />
+ */
+
+interface Row {
+  criterion: string;
+  values: [string, string];
+  /** Index of the winner (0 or 1). Adds a subtle highlight. Use null for ties. */
+  winner?: 0 | 1 | null;
+}
+
+interface Props {
+  contenders: [string, string];
+  rows: Row[];
+  /** Optional caption rendered above the table (used for accessibility too). */
+  caption?: string;
+}
+
+const { contenders, rows, caption } = Astro.props;
+---
+
+<figure class="comparison">
+  {caption && <figcaption>{caption}</figcaption>}
+
+  <table aria-label={caption ?? `Comparatif ${contenders[0]} vs ${contenders[1]}`}>
+    <thead>
+      <tr>
+        <th scope="col" class="row-label">Critère</th>
+        <th scope="col">{contenders[0]}</th>
+        <th scope="col">{contenders[1]}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <th scope="row" class="row-label">{row.criterion}</th>
+          <td class={row.winner === 0 ? 'winner' : ''}>{row.values[0]}</td>
+          <td class={row.winner === 1 ? 'winner' : ''}>{row.values[1]}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</figure>
+
+<style>
+  .comparison {
+    margin: 2rem 0;
+  }
+  .comparison figcaption {
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.875rem;
+  }
+  .comparison table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .comparison th, .comparison td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9375rem;
+    text-align: left;
+  }
+  .comparison thead th {
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  .comparison .row-label {
+    width: 30%;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+  }
+  .comparison td.winner {
+    background: rgba(167, 139, 250, 0.08);
+    color: #fff;
+    font-weight: 600;
+    position: relative;
+  }
+  .comparison td.winner::after {
+    content: '✓';
+    margin-left: 0.5rem;
+    color: #a78bfa;
+  }
+</style>

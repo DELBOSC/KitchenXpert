@@ -52,9 +52,10 @@ describe('PricingPage', () => {
     it('should render the comparison section heading', () => {
       renderPricingPage();
 
-      expect(
-        screen.getByRole('heading', { level: 2 })
-      ).toBeInTheDocument();
+      // The page exposes 2 h2 sections ("Comparaison détaillée" and the
+      // trust signals title). At least one h2 must be rendered.
+      const h2s = screen.getAllByRole('heading', { level: 2 });
+      expect(h2s.length).toBeGreaterThanOrEqual(1);
     });
 
     it('should render contact email at the bottom', () => {
@@ -70,29 +71,38 @@ describe('PricingPage', () => {
     it('should render three pricing tier cards', () => {
       renderPricingPage();
 
-      // Three tiers: Free (Gratuit), Pro, Enterprise (Entreprise)
-      expect(screen.getByText(/gratuit/i)).toBeInTheDocument();
-      expect(screen.getByText(/^pro$/i)).toBeInTheDocument();
-      expect(screen.getByText(/entreprise/i)).toBeInTheDocument();
+      // Tier names appear both as <h3> in the cards and as <th> in the
+      // comparison table — use getAllBy* to assert presence.
+      expect(screen.getAllByText(/gratuit/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/^pro$/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/entreprise/i).length).toBeGreaterThan(0);
     });
 
     it('should display the Free plan price as 0', () => {
       renderPricingPage();
 
-      // 0 + euro sign
-      expect(screen.getByText('0')).toBeInTheDocument();
+      // Price is rendered as "<number>€" inside a single span. Use the
+      // tag-name + textContent function matcher to find the price span.
+      const free = screen.getAllByText((_, el) =>
+        el?.tagName === 'SPAN' && el.textContent === '0€',
+      );
+      expect(free.length).toBeGreaterThan(0);
     });
 
     it('should display the Pro plan price as 29', () => {
       renderPricingPage();
-
-      expect(screen.getByText('29')).toBeInTheDocument();
+      const pro = screen.getAllByText((_, el) =>
+        el?.tagName === 'SPAN' && el.textContent === '29€',
+      );
+      expect(pro.length).toBeGreaterThan(0);
     });
 
     it('should display the Enterprise plan price as 99', () => {
       renderPricingPage();
-
-      expect(screen.getByText('99')).toBeInTheDocument();
+      const ent = screen.getAllByText((_, el) =>
+        el?.tagName === 'SPAN' && el.textContent === '99€',
+      );
+      expect(ent.length).toBeGreaterThan(0);
     });
 
     it('should show the Popular badge on the Pro tier', () => {
@@ -193,9 +203,12 @@ describe('PricingPage', () => {
       // Switch to annual
       await user.click(screen.getByRole('switch'));
 
-      // Pro: 29 * 0.8 = 23.2 -> Math.round(23.2 * 100) / 100 = 23.2
+      // Pro: 29 * 0.8 = 23.2 → rendered as "23.2€".
       await waitFor(() => {
-        expect(screen.getByText('23.2')).toBeInTheDocument();
+        const matches = screen.getAllByText((_, el) =>
+          el?.tagName === 'SPAN' && el.textContent === '23.2€',
+        );
+        expect(matches.length).toBeGreaterThan(0);
       });
     });
 
@@ -207,7 +220,10 @@ describe('PricingPage', () => {
 
       // Enterprise: 99 * 0.8 = 79.2
       await waitFor(() => {
-        expect(screen.getByText('79.2')).toBeInTheDocument();
+        const matches = screen.getAllByText((_, el) =>
+          el?.tagName === 'SPAN' && el.textContent === '79.2€',
+        );
+        expect(matches.length).toBeGreaterThan(0);
       });
     });
 
@@ -217,8 +233,11 @@ describe('PricingPage', () => {
 
       await user.click(screen.getByRole('switch'));
 
-      // Free stays 0
-      expect(screen.getByText('0')).toBeInTheDocument();
+      // Free stays "0€".
+      const free = screen.getAllByText((_, el) =>
+        el?.tagName === 'SPAN' && el.textContent === '0€',
+      );
+      expect(free.length).toBeGreaterThan(0);
     });
 
     it('should show billed annually text in annual mode', async () => {
@@ -312,10 +331,11 @@ describe('PricingPage', () => {
       renderPricingPage();
 
       expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
-      // h3 for each tier name
+      // The page exposes multiple h2 sections (comparison + trust signals).
+      expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(1);
+      // h3 for each tier name — there may also be h3s in the trust block.
       const h3s = screen.getAllByRole('heading', { level: 3 });
-      expect(h3s.length).toBe(3);
+      expect(h3s.length).toBeGreaterThanOrEqual(3);
     });
 
     it('should have link elements for CTA buttons', () => {

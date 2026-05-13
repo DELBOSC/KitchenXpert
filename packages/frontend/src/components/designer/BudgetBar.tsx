@@ -15,16 +15,16 @@ interface BudgetBarProps {
 
 // ─── Color helpers ────────────────────────────────────────────
 function getBarColor(percentage: number): string {
-  if (percentage > 100) return '#ef4444'; // red
-  if (percentage >= 90) return '#f97316'; // orange
-  if (percentage >= 70) return '#eab308'; // yellow
+  if (percentage > 100) {return '#ef4444';} // red
+  if (percentage >= 90) {return '#f97316';} // orange
+  if (percentage >= 70) {return '#eab308';} // yellow
   return '#22c55e'; // green
 }
 
 function getBarColorClass(percentage: number): string {
-  if (percentage > 100) return 'text-red-500 dark:text-red-400';
-  if (percentage >= 90) return 'text-orange-500 dark:text-orange-400';
-  if (percentage >= 70) return 'text-yellow-500 dark:text-yellow-400';
+  if (percentage > 100) {return 'text-red-500 dark:text-red-400';}
+  if (percentage >= 90) {return 'text-orange-500 dark:text-orange-400';}
+  if (percentage >= 70) {return 'text-yellow-500 dark:text-yellow-400';}
   return 'text-green-500 dark:text-green-400';
 }
 

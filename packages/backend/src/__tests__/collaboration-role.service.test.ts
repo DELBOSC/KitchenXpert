@@ -59,7 +59,7 @@ describe('CollaborationRoleService', () => {
   const mockUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
   const mockKitchen = {
-    id: 'kitchen-1',
+    id: '550e8400-e29b-41d4-a716-446655440000',
     userId: mockUser.userId,
     name: 'Ma Cuisine',
   };
@@ -72,7 +72,7 @@ describe('CollaborationRoleService', () => {
 
   const mockInvite = {
     id: 'invite-1',
-    kitchenId: 'kitchen-1',
+    kitchenId: '550e8400-e29b-41d4-a716-446655440000',
     inviterId: mockUser.userId,
     inviteeEmail: 'collaborator@test.com',
     role: 'designer',
@@ -102,7 +102,7 @@ describe('CollaborationRoleService', () => {
       mockPrisma.collaborationInvite.create.mockResolvedValue(mockInvite);
 
       const result = await service.invite({
-        kitchenId: 'kitchen-1',
+        kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         inviterId: mockUser.userId,
         inviteeEmail: 'collaborator@test.com',
         role: 'designer',
@@ -111,7 +111,7 @@ describe('CollaborationRoleService', () => {
       expect(result.role).toBe('designer');
       expect(mockPrisma.collaborationInvite.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
-          kitchenId: 'kitchen-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
           inviterId: mockUser.userId,
           inviteeEmail: 'collaborator@test.com',
           role: 'designer',
@@ -148,7 +148,7 @@ describe('CollaborationRoleService', () => {
 
       await expect(
         service.invite({
-          kitchenId: 'kitchen-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
           inviterId: mockUser.userId,
           inviteeEmail: 'collab@test.com',
           role: 'viewer',
@@ -164,7 +164,7 @@ describe('CollaborationRoleService', () => {
       });
 
       await service.invite({
-        kitchenId: 'kitchen-1',
+        kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         inviterId: mockUser.userId,
         inviteeEmail: 'viewer@test.com',
         role: 'viewer',
@@ -188,7 +188,7 @@ describe('CollaborationRoleService', () => {
       mockPrisma.collaborationInvite.create.mockResolvedValue(mockInvite);
 
       await service.invite({
-        kitchenId: 'kitchen-1',
+        kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         inviterId: mockUser.userId,
         inviteeEmail: ' Collaborator@Test.COM ',
         role: 'designer',
@@ -306,7 +306,7 @@ describe('CollaborationRoleService', () => {
         { ...mockInvite, id: 'invite-2', inviteeEmail: 'another@test.com', role: 'viewer', status: 'accepted' },
       ]);
 
-      const result = await service.getMembers('kitchen-1');
+      const result = await service.getMembers('550e8400-e29b-41d4-a716-446655440000');
 
       expect(result).toHaveLength(2);
       expect(result[0]).toHaveProperty('id');
@@ -423,7 +423,7 @@ describe('CollaborationRoleService', () => {
     it('should return true for kitchen owner regardless of permission', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
-      const result = await service.checkPermission(mockUser.userId, 'kitchen-1', 'canEdit');
+      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
 
       expect(result).toBe(true);
     });
@@ -439,7 +439,7 @@ describe('CollaborationRoleService', () => {
         status: 'accepted',
       });
 
-      const result = await service.checkPermission(mockUser.userId, 'kitchen-1', 'canEdit');
+      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
 
       expect(result).toBe(true);
     });
@@ -463,7 +463,7 @@ describe('CollaborationRoleService', () => {
         status: 'accepted',
       });
 
-      const result = await service.checkPermission(mockUser.userId, 'kitchen-1', 'canEdit');
+      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
 
       expect(result).toBe(false);
     });
@@ -484,7 +484,7 @@ describe('CollaborationRoleService', () => {
       mockPrisma.user.findUnique.mockResolvedValue({ email: 'no-invite@test.com' });
       mockPrisma.collaborationInvite.findFirst.mockResolvedValue(null);
 
-      const result = await service.checkPermission(mockUser.userId, 'kitchen-1', 'canEdit');
+      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
 
       expect(result).toBe(false);
     });

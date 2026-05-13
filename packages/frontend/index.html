@@ -2,14 +2,84 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Default title + description (overridden per route by <SeoHead>) -->
+    <title>KitchenXpert — Concevez votre cuisine en 3D avec l'IA</title>
+    <meta
+      name="description"
+      content="Plateforme française de conception de cuisines en 3D temps réel, avec IA, catalogue IKEA et 4 fournisseurs, devis instantané et installateurs certifiés."
+    />
+    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Open Graph (defaults — SeoHead overrides per-route) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="KitchenXpert" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="KitchenXpert — Concevez votre cuisine en 3D avec l'IA" />
+    <meta property="og:description" content="Plateforme française de conception de cuisines en 3D temps réel, avec IA et catalogue IKEA + 4 fournisseurs." />
+    <meta property="og:url" content="https://kitchenxpert.com" />
+    <meta property="og:image" content="https://kitchenxpert.com/og/default.svg" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="KitchenXpert — Concevez votre cuisine en 3D avec l'IA" />
+    <meta name="twitter:description" content="Plateforme française de conception de cuisines en 3D temps réel, avec IA et catalogue IKEA + 4 fournisseurs." />
+    <meta name="twitter:image" content="https://kitchenxpert.com/og/default.svg" />
+
+    <!-- Canonical (overridden per route) -->
+    <link rel="canonical" href="https://kitchenxpert.com" />
+
+    <!-- Favicon + manifest -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="KitchenXpert - Concevez votre cuisine idéale avec l'IA" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#3b82f6" />
-    <title>KitchenXpert</title>
+
+    <!--
+      Self-hosted Inter (variable, latin subset). Shipped under
+      /fonts/inter-var-latin.woff2 — see scripts/fetch-fonts.sh.
+      `font-display: swap` avoids invisible-text-on-load (FOIT) and
+      preloading + crossorigin avoids the second round-trip.
+    -->
+    <link
+      rel="preload"
+      href="/fonts/inter-var-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Preconnect to third-parties we hit on first paint -->
+    <link rel="preconnect" href="https://js.stripe.com" />
+    <link rel="dns-prefetch" href="https://api.stripe.com" />
+
+    <!-- Default JSON-LD (Organization). Per-page SeoHead injects more. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "KitchenXpert",
+        "url": "https://kitchenxpert.com",
+        "logo": "https://kitchenxpert.com/logo-512.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": "contact@kitchenxpert.com",
+          "availableLanguage": ["French", "English"]
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body class="bg-[#0a0a0f] text-white antialiased">
+    <!-- Skip-link for keyboard users — see App.tsx for the matching #main target -->
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-black focus:shadow-lg"
+    >
+      Aller au contenu
+    </a>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>

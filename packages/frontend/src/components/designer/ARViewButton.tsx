@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { logger } from '../../services/logger';
 
 // ---------------------------------------------------------------------------
@@ -47,7 +48,7 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
   useEffect(() => {
     const checkSupport = async () => {
       try {
-        if (typeof navigator !== 'undefined' && navigator.xr) {
+        if (navigator?.xr) {
           const supported = await navigator.xr.isSessionSupported('immersive-ar');
           setArSupported(supported);
         }
@@ -152,7 +153,7 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
 
   // Take screenshot
   const handleScreenshot = useCallback(async () => {
-    if (!arOverlayRef.current) return;
+    if (!arOverlayRef.current) {return;}
     try {
       const blob = await arOverlayRef.current.captureScreenshot();
       const url = URL.createObjectURL(blob);
@@ -170,7 +171,7 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
 
   // Toggle split view
   const handleToggleSplitView = useCallback(() => {
-    if (!arOverlayRef.current) return;
+    if (!arOverlayRef.current) {return;}
 
     if (splitViewEnabled) {
       arOverlayRef.current.disableSplitView();
@@ -183,7 +184,7 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
 
   // Share AR view
   const handleShare = useCallback(async () => {
-    if (!arOverlayRef.current) return;
+    if (!arOverlayRef.current) {return;}
     try {
       await arOverlayRef.current.shareARView();
     } catch (err) {

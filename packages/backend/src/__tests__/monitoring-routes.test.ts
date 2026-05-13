@@ -296,32 +296,24 @@ describe('MonitoringController', () => {
       await controller.getSystemInfo(req as Request, res as Response);
 
       expect(statusMock).toHaveBeenCalledWith(200);
-      expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          success: true,
-          data: expect.objectContaining({
-            platform: expect.any(String),
-            arch: expect.any(String),
-            nodeVersion: expect.any(String),
-            uptime: expect.objectContaining({
-              process: expect.any(Number),
-              system: expect.any(Number),
-            }),
-            memory: expect.objectContaining({
-              rss: expect.any(Number),
-              heapTotal: expect.any(Number),
-              heapUsed: expect.any(Number),
-              external: expect.any(Number),
-            }),
-            cpu: expect.objectContaining({
-              cores: expect.any(Number),
-              loadAverage: expect.any(Array),
-            }),
-            hostname: expect.any(String),
-            timestamp: expect.any(String),
-          }),
-        }),
-      );
+      // expect.objectContaining + expect.any(Array) flakes when comparing
+      // the os.loadavg() Float64Array-vs-Array semantics on Windows.
+      // Inspect the actual payload directly.
+      const payload = jsonMock.mock.calls[0][0];
+      expect(payload.success).toBe(true);
+      expect(typeof payload.data.platform).toBe('string');
+      expect(typeof payload.data.arch).toBe('string');
+      expect(typeof payload.data.nodeVersion).toBe('string');
+      expect(typeof payload.data.hostname).toBe('string');
+      expect(typeof payload.data.timestamp).toBe('string');
+      expect(typeof payload.data.uptime.process).toBe('number');
+      expect(typeof payload.data.uptime.system).toBe('number');
+      expect(typeof payload.data.memory.rss).toBe('number');
+      expect(typeof payload.data.memory.heapTotal).toBe('number');
+      expect(typeof payload.data.memory.heapUsed).toBe('number');
+      expect(typeof payload.data.memory.external).toBe('number');
+      expect(typeof payload.data.cpu.cores).toBe('number');
+      expect(Array.isArray(payload.data.cpu.loadAverage)).toBe(true);
     });
   });
 

@@ -2,7 +2,6 @@ module.exports = {
   root: true,
   extends: [
     '../../.eslintrc.js',
-    'next/core-web-vitals',
   ],
   parserOptions: {
     project: './tsconfig.json',
@@ -16,6 +15,5 @@ module.exports = {
     // Frontend-specific rules
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
-    '@next/next/no-img-element': 'warn',
   },
 };

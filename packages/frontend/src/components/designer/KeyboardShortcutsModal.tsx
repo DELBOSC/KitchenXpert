@@ -79,7 +79,7 @@ export default function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShor
   }, [onClose]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
 
     document.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -87,7 +87,7 @@ export default function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShor
     };
   }, [isOpen, handleKeyDown]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <>

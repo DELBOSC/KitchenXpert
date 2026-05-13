@@ -171,10 +171,11 @@ describe('EnrichmentDashboard', () => {
       renderEnrichmentDashboard();
 
       await waitFor(() => {
-        expect(screen.getByText('En attente')).toBeInTheDocument();
-        expect(screen.getByText('Enrichis')).toBeInTheDocument();
-        expect(screen.getByText('Echoues')).toBeInTheDocument();
-        expect(screen.getByText('Ignores')).toBeInTheDocument();
+        // Labels appear as card titles and as filter pills — use getAllBy.
+        expect(screen.getAllByText('En attente').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Enrichis').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Echoues').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Ignores').length).toBeGreaterThan(0);
       });
     });
 
@@ -206,7 +207,8 @@ describe('EnrichmentDashboard', () => {
       renderEnrichmentDashboard();
 
       await waitFor(() => {
-        expect(screen.getByText('8')).toBeInTheDocument();
+        // '8' may appear in multiple cells (stat value + brand counts).
+        expect(screen.getAllByText('8').length).toBeGreaterThan(0);
       });
     });
 
@@ -412,7 +414,9 @@ describe('EnrichmentDashboard', () => {
       renderEnrichmentDashboard();
 
       await waitFor(() => {
-        expect(screen.getByText('Cross-match marques')).toBeInTheDocument();
+        // "Cross-match marques" appears as a section heading and again
+        // as a button label.
+        expect(screen.getAllByText('Cross-match marques').length).toBeGreaterThan(0);
       });
     });
 
@@ -552,8 +556,10 @@ describe('EnrichmentDashboard', () => {
       renderEnrichmentDashboard();
 
       await waitFor(() => {
-        expect(screen.getByText('IKEA')).toBeInTheDocument();
-        expect(screen.getByText('Leroy Merlin')).toBeInTheDocument();
+        // Brand names appear in the breakdown table AND in the cross-match
+        // form options — use getAllBy to be tolerant of duplicates.
+        expect(screen.getAllByText('IKEA').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Leroy Merlin').length).toBeGreaterThan(0);
       });
     });
   });

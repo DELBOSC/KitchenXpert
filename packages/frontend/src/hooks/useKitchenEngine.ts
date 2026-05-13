@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import * as THREE from 'three';
+
 import {
   KitchenEngine,
   MoveObjectCommand,
@@ -11,6 +13,7 @@ import {
   LightingPresets,
   mmToM,
 } from '@kitchenxpert/3d-engine';
+
 import type {
   TransformMode,
   SelectionEvent,
@@ -21,7 +24,6 @@ import type {
   BrandProfile,
   BrandId,
 } from '@kitchenxpert/3d-engine';
-import * as THREE from 'three';
 
 export interface UseKitchenEngineOptions {
   width?: number;     // room width in meters
@@ -107,7 +109,7 @@ export function useKitchenEngine(
   // Initialize engine
   useEffect(() => {
     const container = canvasRef.current;
-    if (!container) return;
+    if (!container) {return;}
 
     const engine = new KitchenEngine(
       container,
@@ -188,7 +190,7 @@ export function useKitchenEngine(
           // Show distances to walls
           const walls: THREE.Object3D[] = [];
           engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-            if (child.userData.type === 'wall') walls.push(child);
+            if (child.userData.type === 'wall') {walls.push(child);}
           });
           engine.dimensionLabels.showDistancesToWalls(event.object, walls);
           engine.dimensionLabels.showDistancesToNeighbors(event.object, engine.scene.getAllObjects());
@@ -210,7 +212,7 @@ export function useKitchenEngine(
 
     // Handle resize
     const handleResize = () => {
-      if (!container) return;
+      if (!container) {return;}
       engine.renderer.resize();
       engine.camera.updateAspect(container.clientWidth, container.clientHeight);
     };
@@ -218,8 +220,8 @@ export function useKitchenEngine(
 
     // Handle mouse events
     const handlePointerDown = (e: PointerEvent) => {
-      if (engine.controls.isDragging()) return;
-      if (engine.walkthroughCamera.isActive()) return;
+      if (engine.controls.isDragging()) {return;}
+      if (engine.walkthroughCamera.isActive()) {return;}
 
       const rect = container.getBoundingClientRect();
       const ndc = new THREE.Vector2(
@@ -239,7 +241,7 @@ export function useKitchenEngine(
 
     // Mouse move for measurement preview
     const handlePointerMove = (e: PointerEvent) => {
-      if (!engine.measurementTool.isActive()) return;
+      if (!engine.measurementTool.isActive()) {return;}
       const rect = container.getBoundingClientRect();
       const ndc = new THREE.Vector2(
         ((e.clientX - rect.left) / rect.width) * 2 - 1,
@@ -252,7 +254,7 @@ export function useKitchenEngine(
     // Keyboard shortcuts
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't handle shortcuts during walkthrough
-      if (engine.walkthroughCamera.isActive()) return;
+      if (engine.walkthroughCamera.isActive()) {return;}
 
       // Ctrl+Z = undo
       if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
@@ -284,9 +286,9 @@ export function useKitchenEngine(
         }
       }
       // W = translate, E = rotate, R = scale
-      if (e.key === 'w') engine.controls.setMode('translate');
-      if (e.key === 'e') engine.controls.setMode('rotate');
-      if (e.key === 'r') engine.controls.setMode('scale');
+      if (e.key === 'w') {engine.controls.setMode('translate');}
+      if (e.key === 'e') {engine.controls.setMode('rotate');}
+      if (e.key === 'r') {engine.controls.setMode('scale');}
       // Escape = deselect or cancel measurement
       if (e.key === 'Escape') {
         engine.selection.clearSelection();
@@ -320,7 +322,7 @@ export function useKitchenEngine(
 
   const addObject = useCallback((id: string, object: THREE.Object3D) => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     object.userData.id = id;
     const cmd = new AddObjectCommand(
@@ -335,7 +337,7 @@ export function useKitchenEngine(
 
   const removeObject = useCallback((id: string) => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     const obj = engine.scene.getObject(id);
     if (obj) {
@@ -352,10 +354,10 @@ export function useKitchenEngine(
 
   const removeSelected = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     const selected = engine.selection.getSelection();
-    if (selected.length === 0) return;
+    if (selected.length === 0) {return;}
 
     const cmds: Command[] = selected.map((obj: THREE.Object3D) =>
       new RemoveObjectCommand(
@@ -373,10 +375,10 @@ export function useKitchenEngine(
 
   const duplicateSelected = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     const selected = engine.selection.getSelection();
-    if (selected.length === 0) return;
+    if (selected.length === 0) {return;}
 
     const cmds: Command[] = [];
     for (const obj of selected) {
@@ -403,7 +405,7 @@ export function useKitchenEngine(
 
   const setViewPreset = useCallback((preset: 'perspective' | 'top' | 'front' | 'isometric') => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     const presetMap: Record<string, import('@kitchenxpert/3d-engine').CameraPreset> = {
       perspective: 'perspective' as import('@kitchenxpert/3d-engine').CameraPreset,
@@ -420,7 +422,7 @@ export function useKitchenEngine(
 
   const takeScreenshot = useCallback((_w?: number, _h?: number) => {
     const engine = engineRef.current;
-    if (!engine) return null;
+    if (!engine) {return null;}
 
     return engine.renderer.takeScreenshot();
   }, []);
@@ -441,7 +443,7 @@ export function useKitchenEngine(
   // Plan View 2D
   const togglePlanView = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     if (isPlanView) {
       // Deactivate: restore 3D view
@@ -480,7 +482,7 @@ export function useKitchenEngine(
   // Elevation View
   const toggleElevation = useCallback((wall: ElevationWall) => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     if (isElevation) {
       // Deactivate
@@ -520,7 +522,7 @@ export function useKitchenEngine(
   // Walkthrough
   const toggleWalkthrough = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     if (isWalkthrough) {
       engine.walkthroughCamera.deactivate();
@@ -542,7 +544,7 @@ export function useKitchenEngine(
       // Set walls for collision
       const walls: THREE.Object3D[] = [];
       engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-        if (child.userData.type === 'wall') walls.push(child);
+        if (child.userData.type === 'wall') {walls.push(child);}
       });
       engine.walkthroughCamera.setWalls(walls);
 
@@ -558,7 +560,7 @@ export function useKitchenEngine(
   // Measurement tool
   const toggleMeasure = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     const newState = !isMeasuring;
     engine.measurementTool.setActive(newState);
@@ -572,7 +574,7 @@ export function useKitchenEngine(
   // Lighting presets
   const setLightingPreset = useCallback((preset: LightingPresetName) => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     LightingPresets.apply(engine.lighting, engine.renderer, preset);
     setCurrentLightingPreset(preset);
@@ -584,7 +586,7 @@ export function useKitchenEngine(
     e.dataTransfer.dropEffect = 'copy';
 
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     const data = e.dataTransfer.types.includes('application/json')
       ? null // Can't read during dragover, only on drop
@@ -592,7 +594,7 @@ export function useKitchenEngine(
 
     // Get mouse position in NDC
     const container = canvasRef.current;
-    if (!container) return;
+    if (!container) {return;}
 
     const rect = container.getBoundingClientRect();
     const ndc = new THREE.Vector2(
@@ -630,7 +632,7 @@ export function useKitchenEngine(
     e.preventDefault();
 
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     // Remove ghost
     if (ghostRef.current) {
@@ -642,7 +644,7 @@ export function useKitchenEngine(
 
     // Parse catalog item data
     const jsonData = e.dataTransfer.getData('application/json');
-    if (!jsonData) return;
+    if (!jsonData) {return;}
 
     let itemData: {
       id: string;
@@ -663,7 +665,7 @@ export function useKitchenEngine(
 
     // Calculate drop position via raycast
     const container = canvasRef.current;
-    if (!container) return;
+    if (!container) {return;}
 
     const rect = container.getBoundingClientRect();
     const ndc = new THREE.Vector2(
@@ -677,7 +679,7 @@ export function useKitchenEngine(
     const intersection = new THREE.Vector3();
     const hit = raycaster.ray.intersectPlane(floorPlane, intersection);
 
-    if (!hit) return;
+    if (!hit) {return;}
 
     // Create the mesh
     const loader = modelLoaderRef.current;
@@ -711,7 +713,7 @@ export function useKitchenEngine(
 
   const handleDragLeave = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) return;
+    if (!engine) {return;}
 
     if (ghostRef.current) {
       engine.scene.getThreeScene().remove(ghostRef.current);

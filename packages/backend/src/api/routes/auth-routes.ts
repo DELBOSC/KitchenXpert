@@ -1,12 +1,40 @@
-import { Router, type IRouter } from 'express';
+import { Router, type IRouter, type Request, type Response } from 'express';
 import { z } from 'zod';
 
+import { prisma } from '../../database/client';
 import { authController } from '../controllers/auth-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { loginRateLimiter, authRateLimiter, passwordResetRateLimiter } from '../middleware/rate-limit-middleware';
 import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';
 
 const router: IRouter = Router();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DEV-ONLY backdoor — flips a user's `emailVerified` flag without sending an
+// email. Used by the E2E suite (Flow 1, Flow 8) so we don't depend on an
+// SMTP inbox in CI. Mounted ONLY when NODE_ENV !== 'production'; in prod
+// the route literally does not exist (404), so there is no production
+// attack surface.
+// ─────────────────────────────────────────────────────────────────────────────
+if (process.env.NODE_ENV !== 'production') {
+  const verifyDevSchema = z.object({ email: z.string().email() });
+  router.post(
+    '/dev/verify-email',
+    validateBody(verifyDevSchema),
+    async (req: Request, res: Response) => {
+      const { email } = req.body as { email: string };
+      try {
+        const user = await prisma.user.update({
+          where: { email },
+          data: { emailVerified: new Date(), emailVerifiedAt: new Date() } as never,
+        });
+        res.status(200).json({ success: true, data: { id: user.id } });
+      } catch {
+        res.status(404).json({ success: false, error: 'User not found' });
+      }
+    },
+  );
+}
 
 // ==================== ZOD SCHEMAS ====================
 

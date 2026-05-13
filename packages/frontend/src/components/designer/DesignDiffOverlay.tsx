@@ -62,7 +62,7 @@ function computeDiff(current: DesignItem[], compared: DesignItem[]): DiffEntry[]
   // Items in both -- check for moves and modifications
   for (const item of current) {
     const old = comparedMap.get(item.id);
-    if (!old) continue;
+    if (!old) {continue;}
 
     const dx = Math.abs(item.position.x - old.position.x);
     const dy = Math.abs(item.position.y - old.position.y);
@@ -237,10 +237,10 @@ function DiffVisualizationSVG({
     const right = item.position.x + item.dimensions.width / 2;
     const top = item.position.z - item.dimensions.depth / 2;
     const bottom = item.position.z + item.dimensions.depth / 2;
-    if (left < minX) minX = left;
-    if (right > maxX) maxX = right;
-    if (top < minZ) minZ = top;
-    if (bottom > maxZ) maxZ = bottom;
+    if (left < minX) {minX = left;}
+    if (right > maxX) {maxX = right;}
+    if (top < minZ) {minZ = top;}
+    if (bottom > maxZ) {maxZ = bottom;}
   }
 
   // Add padding
@@ -384,7 +384,7 @@ export default function DesignDiffOverlay({
     });
   }, []);
 
-  if (!visible) return null;
+  if (!visible) {return null;}
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">

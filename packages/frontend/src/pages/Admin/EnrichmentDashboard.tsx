@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { API_BASE_URL, API_ENDPOINTS } from '../../services/api/endpoints';
 
 // ---------- Types ----------
@@ -57,7 +58,7 @@ const EnrichmentDashboard: React.FC = () => {
 
   // Auto-dismiss messages after 5 seconds
   useEffect(() => {
-    if (!message) return;
+    if (!message) {return;}
     const timer = setTimeout(() => setMessage(null), 5000);
     return () => clearTimeout(timer);
   }, [message]);
@@ -69,11 +70,11 @@ const EnrichmentDashboard: React.FC = () => {
         credentials: 'include',
         signal,
       });
-      if (!res.ok) throw new Error(t('admin.enrichment.errors.fetchStats', 'Failed to fetch stats'));
+      if (!res.ok) {throw new Error(t('admin.enrichment.errors.fetchStats', 'Failed to fetch stats'));}
       const data = await res.json();
       setStats(data.data);
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') return;
+      if (err instanceof Error && err.name === 'AbortError') {return;}
       setMessage({ type: 'error', text: t('admin.enrichment.errors.loadStats', 'Erreur de chargement des statistiques') });
     } finally {
       setLoading(false);

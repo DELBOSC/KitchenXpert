@@ -1,0 +1,107 @@
+---
+/**
+ * Catch-all dynamic route: turns every MDX file in any of the 6
+ * collections into a static page at the URL its frontmatter defines.
+ *
+ * Astro's `getStaticPaths()` runs at build time → 50 articles = 50
+ * pre-rendered HTML files in `dist/`. Zero runtime, perfect SEO.
+ *
+ * Routing rules (collection → URL prefix):
+ *   layouts     → /guides/<slug>
+ *   pratiques   → /guides/<slug>      (same as layouts — both "guides")
+ *   cuisinistes → /cuisinistes/<slug>
+ *   budgets     → /budget/<slug>
+ *   styles      → /styles/<slug>
+ *   comparatifs → /comparatifs/<slug>
+ *
+ * Slug must match the file name; the schema enforces the format.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ArticleLayout from '../layouts/ArticleLayout.astro';
+
+type AnyEntry =
+  | CollectionEntry<'layouts'>
+  | CollectionEntry<'cuisinistes'>
+  | CollectionEntry<'budgets'>
+  | CollectionEntry<'styles'>
+  | CollectionEntry<'comparatifs'>
+  | CollectionEntry<'pratiques'>
+  | CollectionEntry<'competitors'>;
+
+const COLLECTION_PREFIX: Record<string, string> = {
+  layouts: 'guides',
+  pratiques: 'guides',
+  cuisinistes: 'cuisinistes',
+  budgets: 'budget',
+  styles: 'styles',
+  comparatifs: 'comparatifs',
+  competitors: 'comparatifs/vs', // → /comparatifs/vs-<slug>
+};
+
+const COLLECTION_LABEL: Record<string, string> = {
+  layouts: 'Layout',
+  pratiques: 'Guide pratique',
+  cuisinistes: 'Cuisiniste',
+  budgets: 'Budget',
+  styles: 'Style',
+  comparatifs: 'Comparatif',
+  competitors: 'Comparatif concurrent',
+};
+
+export async function getStaticPaths() {
+  const all = (
+    await Promise.all([
+      getCollection('layouts',     ({ data }) => !data.draft),
+      getCollection('cuisinistes', ({ data }) => !data.draft),
+      getCollection('budgets',     ({ data }) => !data.draft),
+      getCollection('styles',      ({ data }) => !data.draft),
+      getCollection('comparatifs', ({ data }) => !data.draft),
+      getCollection('pratiques',   ({ data }) => !data.draft),
+      getCollection('competitors', ({ data }) => !data.draft),
+    ])
+  ).flat() as AnyEntry[];
+
+  return all.map((entry) => ({
+    params: { slug: `${COLLECTION_PREFIX[entry.collection]}/${entry.slug}` },
+    props: { entry },
+  }));
+}
+
+interface Props { entry: AnyEntry; }
+const { entry } = Astro.props as Props;
+
+const { Content, headings, remarkPluginFrontmatter } = await entry.render();
+
+// Extract any FAQ MDX module export so we can build the FAQPage JSON-LD.
+// Convention: the article exports `export const faq = [{q, a}, …]`.
+const faq = (entry as unknown as { faq?: Array<{ q: string; a: string }> }).faq;
+
+const breadcrumb = [
+  { label: 'Accueil', url: '/' },
+  { label: 'Guides',  url: '/guides' },
+  {
+    label: COLLECTION_LABEL[entry.collection],
+    url: `/${COLLECTION_PREFIX[entry.collection]}`,
+  },
+  { label: entry.data.title, url: Astro.url.pathname },
+];
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  slug={entry.slug}
+  author={entry.data.author}
+  publishedAt={entry.data.publishedAt}
+  updatedAt={entry.data.updatedAt}
+  cover={entry.data.cover}
+  keywords={entry.data.keywords}
+  related={entry.data.related}
+  headings={headings}
+  wordCount={remarkPluginFrontmatter?.wordCount as number | undefined}
+  category={COLLECTION_LABEL[entry.collection]}
+  breadcrumb={breadcrumb}
+  faq={faq}
+>
+  <Content />
+</ArticleLayout>

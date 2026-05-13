@@ -7,14 +7,15 @@ import path from 'path';
 // `with { 'resolution-mode': 'import' }` attribute tells the compiler to
 // load the ESM type definitions for *type-only* imports; runtime is
 // loaded via dynamic `import()` inside `loadGenAI()`.
+import logger from '../../utils/logger';
+
 import type { GoogleGenAI as GoogleGenAIType } from '@google/genai' with { 'resolution-mode': 'import' };
 
-import logger from '../../utils/logger';
 
 type GenAIModule = typeof import('@google/genai', { with: { 'resolution-mode': 'import' } });
 let cachedGenAI: GenAIModule | null = null;
 async function loadGenAI(): Promise<GenAIModule> {
-  if (!cachedGenAI) cachedGenAI = await import('@google/genai');
+  if (!cachedGenAI) {cachedGenAI = await import('@google/genai');}
   return cachedGenAI;
 }
 
@@ -244,8 +245,8 @@ export class ImageGeneratorService {
    * is missing so callers can degrade gracefully.
    */
   private async getClient(): Promise<GoogleGenAIType | null> {
-    if (this.client) return this.client;
-    if (!process.env.GOOGLE_GENAI_API_KEY) return null;
+    if (this.client) {return this.client;}
+    if (!process.env.GOOGLE_GENAI_API_KEY) {return null;}
     const mod = await loadGenAI();
     this.client = new mod.GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
     return this.client;

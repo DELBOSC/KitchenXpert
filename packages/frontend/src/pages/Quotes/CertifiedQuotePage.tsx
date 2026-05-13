@@ -12,6 +12,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { useAuth } from '../../contexts/AuthContext';
 
 // ────────────────────────────── Types ──────────────────────────────
@@ -158,7 +159,7 @@ export default function CertifiedQuotePage(): React.ReactElement {
       });
       setQuotes(data.data);
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') return;
+      if (err instanceof Error && err.name === 'AbortError') {return;}
       setError(err instanceof Error ? err.message : 'Failed to load quotes');
     } finally {
       setLoading(false);
@@ -230,7 +231,7 @@ export default function CertifiedQuotePage(): React.ReactElement {
 
   // ─── Sign quote ───
   const handleSign = async () => {
-    if (!selectedQuote) return;
+    if (!selectedQuote) {return;}
     setSigning(true);
     try {
       await apiFetch(`/api/v1/certified-quotes/${selectedQuote.id}/sign`, {
@@ -252,7 +253,7 @@ export default function CertifiedQuotePage(): React.ReactElement {
 
   // ─── Send quote ───
   const handleSend = async () => {
-    if (!selectedQuote || !sendEmail) return;
+    if (!selectedQuote || !sendEmail) {return;}
     setSending(true);
     try {
       await apiFetch(`/api/v1/certified-quotes/${selectedQuote.id}/send`, {
@@ -271,12 +272,12 @@ export default function CertifiedQuotePage(): React.ReactElement {
 
   // ─── Download PDF ───
   const handleDownloadPDF = async () => {
-    if (!selectedQuote) return;
+    if (!selectedQuote) {return;}
     try {
       const res = await fetch(`/api/v1/certified-quotes/${selectedQuote.id}/pdf`, {
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('Failed to download PDF');
+      if (!res.ok) {throw new Error('Failed to download PDF');}
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -309,7 +310,7 @@ export default function CertifiedQuotePage(): React.ReactElement {
   const updateItem = (index: number, field: keyof QuoteLineItem, value: string | number) => {
     setFormItems((prev) =>
       prev.map((item, i) => {
-        if (i !== index) return item;
+        if (i !== index) {return item;}
         const updated = { ...item, [field]: value };
         updated.totalHT = updated.qty * updated.unitPriceHT;
         updated.totalTVA = updated.totalHT * (updated.tvaRate / 100);
@@ -906,7 +907,7 @@ export default function CertifiedQuotePage(): React.ReactElement {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {(selectedQuote.items as QuoteLineItem[]).map((item, i) => (
+                  {(selectedQuote.items).map((item, i) => (
                     <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                       <td className="px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-300">{item.ref}</td>
                       <td className="px-4 py-3 text-sm text-gray-900 dark:text-white">{item.name}</td>

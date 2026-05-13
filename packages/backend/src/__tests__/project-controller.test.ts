@@ -152,7 +152,7 @@ describe('ProjectController', () => {
     });
 
     it('should return 404 if project not found', async () => {
-      mockReq.params = { id: 'nonexistent' };
+      mockReq.params = { id: '00000000-0000-0000-0000-000000000000' };
       mockRepository.findById.mockResolvedValue(null);
 
       await controller.getById(mockReq as Request, mockRes as Response);

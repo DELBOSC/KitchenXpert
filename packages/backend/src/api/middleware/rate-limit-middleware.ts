@@ -212,6 +212,58 @@ export const webhookRateLimiter: RateLimitRequestHandler = rateLimit({
 });
 
 /**
+ * Catalog browsing rate limiter
+ * 60 requests per minute per IP. The catalog endpoints (`/catalog`,
+ * `/products`, `/ikea`, `/leroy-merlin`, `/castorama`, `/bosch`,
+ * `/schmidt`) are unauthenticated discovery surfaces, so we cap them
+ * tightly to deter scrapers and keep our partner-API quotas safe.
+ */
+export const catalogRateLimiter: RateLimitRequestHandler = rateLimit({
+  ...baseOptions,
+  windowMs: 60 * 1000, // 1 minute
+  max: 60,
+  message: 'Catalog browse rate limit exceeded — slow down or sign in for a higher quota',
+});
+
+/**
+ * Renovation Vision rate limiter — Claude Vision is expensive,
+ * cap to 10 analyses/hour per user. Lives here instead of inline in
+ * renovation-routes.ts because ts-jest mishandles the express-rate-limit
+ * default export when the import is in a route file directly loaded by
+ * a test that mocks this middleware. Centralising the import here works.
+ */
+export const renovationAnalysisRateLimiter: RateLimitRequestHandler = rateLimit({
+  ...baseOptions,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10,
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMIT', message: 'Trop d\'analyses. Réessayez dans une heure.' },
+  },
+});
+
+/**
+ * AI rate limiter for UNAUTHENTICATED users.
+ * 5 AI requests per hour per IP. Authenticated users use `aiRateLimiter`
+ * (20/hour). The split prevents anonymous abuse of expensive Anthropic
+ * / Gemini calls while keeping a small free trial alive.
+ *
+ * `skip` lets authenticated users through immediately so they hit the
+ * downstream per-user limit instead of being throttled at the IP layer.
+ */
+export const aiUnauthRateLimiter: RateLimitRequestHandler = rateLimit({
+  ...baseOptions,
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  keyGenerator: (req: Request): string => req.ip || req.socket.remoteAddress || 'unknown',
+  skip: (req: Request): boolean => {
+    if (skipFunction(req)) {return true;}          // /health + INTERNAL_API_KEY
+    return Boolean(req.user?.userId);            // logged-in user → use aiRateLimiter
+  },
+  message: 'AI usage limit reached — sign in to continue using the assistant',
+});
+
+/**
  * Export default general limiter
  */
 export default generalRateLimiter;

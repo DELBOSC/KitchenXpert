@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface Surface {
   id: string;
@@ -63,7 +63,7 @@ export const fetchMaterials = createAsyncThunk<Material[], { type?: string; cate
       const params = new URLSearchParams(Object.fromEntries(Object.entries(filters).filter(([, v]) => v)));
       const response = await fetch(`${API_URL}/materials?${params}`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -80,7 +80,7 @@ export const analyzeSurfaces = createAsyncThunk<SurfaceRecommendation[], { kitch
         body: JSON.stringify({ kitchenId, style }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data.recommendations;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -97,7 +97,7 @@ export const generateColorPalette = createAsyncThunk<string[], { baseColor: stri
         body: JSON.stringify({ baseColor, style }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data.colors;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -112,7 +112,7 @@ export const applyMaterialToSurface = createAsyncThunk<Surface, { surfaceId: str
       const state = getState() as { adaptiveSurfaces: AdaptiveSurfacesState };
       const surface = state.adaptiveSurfaces.surfaces.find(s => s.id === surfaceId);
       const material = state.adaptiveSurfaces.materials.find(m => m.id === materialId);
-      if (!surface || !material) throw new Error('Surface or material not found');
+      if (!surface || !material) {throw new Error('Surface or material not found');}
       return { ...surface, materialId, color: material.color, finish: material.finish, texture: material.textureUrl };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -136,7 +136,7 @@ const adaptiveSurfacesSlice = createSlice({
     },
     removeSurface: (state, action: PayloadAction<string>) => {
       state.surfaces = state.surfaces.filter(s => s.id !== action.payload);
-      if (state.selectedSurfaceId === action.payload) state.selectedSurfaceId = null;
+      if (state.selectedSurfaceId === action.payload) {state.selectedSurfaceId = null;}
     },
     selectSurface: (state, action: PayloadAction<string | null>) => { state.selectedSurfaceId = action.payload; },
     setColorPalette: (state, action: PayloadAction<string[]>) => { state.colorPalette = action.payload; },
@@ -155,7 +155,7 @@ const adaptiveSurfacesSlice = createSlice({
       .addCase(generateColorPalette.fulfilled, (state, action) => { state.colorPalette = action.payload; })
       .addCase(applyMaterialToSurface.fulfilled, (state, action) => {
         const idx = state.surfaces.findIndex(s => s.id === action.payload.id);
-        if (idx !== -1) state.surfaces[idx] = action.payload;
+        if (idx !== -1) {state.surfaces[idx] = action.payload;}
       });
   },
 });

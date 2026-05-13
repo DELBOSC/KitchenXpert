@@ -1,0 +1,154 @@
+---
+title: "KitchenXpert vs Coohom : alternative française en 2026"
+description: "Coohom vs KitchenXpert : interface, catalogue, prix, conformité RGPD, support FR. Tableau comparatif factuel + plan de migration. Sources citées."
+slug: "coohom"
+author: redaction
+publishedAt: 2026-05-10
+keywords: ["coohom alternative", "coohom français", "logiciel cuisine coohom", "coohom rgpd"]
+related: ["planner-5d", "homestyler", "ikea-home-planner"]
+draft: true            # ⚠️ NE PASSE À false QUE SI CHAQUE FAIT EST `verified: true` DANS competitor-facts.json
+
+competitorName: "Coohom"
+competitorSlug: "coohom"
+competitorUrl: "https://www.coohom.com"
+competitorHq: "Hangzhou, Chine (Manycore Technology)"
+verdictDate: 2026-05-10
+denigratesCompetitor: false
+
+reasonsToChooseCompetitor:
+  - "TODO_LAURENT — raison 1 légitime de préférer Coohom (ex. catalogue plus volumineux). Cite la source."
+  - "TODO_LAURENT — raison 2 (ex. plus mature internationalement)."
+  - "TODO_LAURENT — raison 3 (ex. communauté de templates partagés)."
+
+reasonsToChooseUs:
+  - "Hébergement intégral en Union Européenne — vos données de plan ne quittent pas l'UE."
+  - "Catalogue calibré dimensionnellement sur 5 fournisseurs FR (IKEA, Schmidt, Bosch, Leroy Merlin, Castorama)."
+  - "Support en français, réponse < 24h ouvrées."
+  - "Designer accessible sans création de compte ni saisie de carte bancaire."
+  - "Mentions légales conformes LCEN + RGPD complet (export Art. 15, suppression Art. 17)."
+---
+
+import CompetitorTable    from '../../components/CompetitorTable.astro';
+import MigrationCallout   from '../../components/MigrationCallout.astro';
+import LegalDisclaimer    from '../../components/LegalDisclaimer.astro';
+import CTABlock           from '../../components/CTABlock.astro';
+import FAQ                from '../../components/FAQ.tsx';
+
+{/*
+  ============================================================================
+  AVANT DE PASSER `draft: false` :
+    1. Ouvrir competitor-facts.json → competitors.coohom
+    2. Pour CHAQUE entrée : vérifier l'URL, lire le contenu, écrire le claim
+       au format "✅/⚠️/❌ Description courte (≤ 80 char)"
+    3. Passer `verified: true` + `verifiedAt: <date du jour>`
+    4. Lancer `node scripts/check-competitor-facts.mjs --competitor coohom`
+       → doit afficher 0 ❌
+    5. Validation juridique avocat (cf docs/COMPETITORS-COMPARISON.md)
+  ============================================================================
+*/}
+
+Si vous cherchez **un logiciel de conception cuisine 3D avec catalogue
+fournisseurs et devis instantané**, voici comment KitchenXpert et
+Coohom se comparent.
+
+## En une phrase
+
+**Coohom** est un acteur chinois généraliste avec un large catalogue
+international, particulièrement adopté par les professionnels du
+meuble en B2B mondial. **KitchenXpert** est un éditeur français
+spécialisé cuisine, hébergé en UE, intégrant les 5 fournisseurs FR du
+marché et le cadre RGPD natif.
+
+Le bon choix dépend de votre besoin : grand catalogue international vs
+spécialisation française + conformité UE.
+
+<CTABlock variant="inline" fromSlug="coohom" />
+
+## Tableau comparatif factuel
+
+<CompetitorTable competitorSlug="coohom" />
+
+## Choisir Coohom si…
+
+1. TODO_LAURENT — raison 1 (ex. vous travaillez à l'international et
+   avez besoin d'un catalogue de meubles US/Asie). Source à citer.
+2. TODO_LAURENT — raison 2.
+3. TODO_LAURENT — raison 3.
+
+## Choisir KitchenXpert si…
+
+- Vous concevez **principalement pour le marché français** et voulez
+  les vrais catalogues IKEA, Schmidt, Bosch, Leroy Merlin et Castorama
+  avec leurs dimensions exactes (au mm près).
+- La **conformité RGPD** et l'hébergement UE sont un critère contractuel
+  (clients institutionnels, marchés publics, B2G).
+- Vous voulez **essayer sans créer de compte** ni saisir de carte
+  bancaire — le designer est accessible directement via /designer/sandbox.
+- Vous attachez de l'importance au **support en français** et à un
+  interlocuteur joignable.
+- Votre projet est un **achat ponctuel à finaliser** (devis multi-fournisseurs
+  + marketplace d'installateurs intégrée), pas un outil pro de production
+  en masse.
+
+## Tarifs comparés
+
+| Plan                    | KitchenXpert        | Coohom              |
+| ----------------------- | ------------------- | ------------------- |
+| Gratuit                 | Sandbox illimitée   | TODO_LAURENT        |
+| Premium / Pro mensuel   | 14,90 €/mois        | TODO_LAURENT        |
+| Studio / Enterprise     | 49 €/mois           | TODO_LAURENT        |
+
+> Les tarifs Coohom sont à vérifier mensuellement sur [coohom.com/pricing](https://www.coohom.com/pricing).
+> Le script `scripts/check-competitor-facts.mjs` les surveille
+> automatiquement et alerte si la page change.
+
+<MigrationCallout
+  competitorName="Coohom"
+  competitorSlug="coohom"
+  exportDocUrl="https://www.coohom.com/help"
+  limitations={[
+    "Les rendus path-tracé Coohom ne s'importent pas — vous obtiendrez la géométrie + les matériaux génériques.",
+    "Les modèles propriétaires du catalogue Coohom sont remplacés par leurs équivalents IKEA/Schmidt les plus proches.",
+    "Les commentaires collaboratifs ne sont pas migrés (à recopier manuellement)."
+  ]}
+/>
+
+## Questions fréquentes
+
+<FAQ
+  client:visible
+  questions={[
+    { q: "Coohom a-t-il un meilleur catalogue que KitchenXpert ?",                 a: "TODO_LAURENT — Réponse factuelle. Coohom annonce ~X modèles 3D ; KitchenXpert intègre les 5 catalogues fournisseurs FR au mm. Selon votre marché (FR vs international), l'un ou l'autre peut être préférable." },
+    { q: "KitchenXpert est-il plus cher que Coohom ?",                              a: "TODO_LAURENT — Comparer prix exacts plans équivalents." },
+    { q: "Coohom respecte-t-il le RGPD ?",                                          a: "TODO_LAURENT — Vérifier la Privacy Policy de Coohom + le DPA. Citer la source." },
+    { q: "Puis-je essayer KitchenXpert sans créer de compte ?",                    a: "Oui — le designer 3D, les 6 templates et le catalogue IKEA sont accessibles immédiatement via /designer/sandbox. Aucun compte ni CB requise." },
+    { q: "Mes données restent-elles en France ?",                                   a: "Oui — Postgres OVH (Gravelines), Redis Scaleway (Paris), Object Storage Scaleway. Aucune donnée ne quitte l'UE sauf les appels API IA (Anthropic, Gemini) sur consentement explicite." },
+    { q: "Combien de temps pour migrer un projet de Coohom à KitchenXpert ?",      a: "Comptez 15 à 30 minutes pour un projet standard via export DXF + ré-import. Notre équipe propose 30 min de support gratuit sur demande." },
+    { q: "Coohom propose-t-il un support en français ?",                            a: "TODO_LAURENT — Tester en envoyant un ticket en français + mesurer le temps de réponse." },
+    { q: "Quelle est la qualité du rendu 3D KitchenXpert vs Coohom ?",             a: "TODO_LAURENT — Comparer rendus côte-à-côte sur la MÊME scène. Mettre captures." }
+  ]}
+/>
+
+export const faq = [
+  { q: "Coohom a-t-il un meilleur catalogue que KitchenXpert ?",                 a: "TODO_LAURENT — Réponse factuelle." },
+  { q: "KitchenXpert est-il plus cher que Coohom ?",                              a: "TODO_LAURENT — Comparer prix exacts." },
+  { q: "Coohom respecte-t-il le RGPD ?",                                          a: "TODO_LAURENT — Vérifier la Privacy Policy de Coohom." },
+  { q: "Puis-je essayer KitchenXpert sans créer de compte ?",                    a: "Oui — le designer 3D, les 6 templates et le catalogue IKEA sont accessibles immédiatement via /designer/sandbox." },
+  { q: "Mes données restent-elles en France ?",                                   a: "Oui — Postgres OVH, Redis Scaleway, Object Storage Scaleway. Aucune donnée ne quitte l'UE sauf API IA sur consentement explicite." },
+  { q: "Combien de temps pour migrer un projet de Coohom à KitchenXpert ?",      a: "15 à 30 minutes via export DXF + ré-import. Notre équipe propose 30 min de support gratuit sur demande." },
+  { q: "Coohom propose-t-il un support en français ?",                            a: "TODO_LAURENT — Tester en français." },
+  { q: "Quelle est la qualité du rendu 3D KitchenXpert vs Coohom ?",             a: "TODO_LAURENT — Comparer rendus côte-à-côte." }
+];
+
+<CTABlock
+  variant="final"
+  fromSlug="coohom"
+  headline="Essayez KitchenXpert sans inscription"
+  subline="Designer 3D · 5 catalogues fournisseurs · Conforme RGPD · Aucune CB"
+/>
+
+<LegalDisclaimer
+  competitorName="Coohom"
+  verdictDate={frontmatter.verdictDate}
+  competitorUrl="https://www.coohom.com"
+/>

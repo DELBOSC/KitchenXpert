@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+
 import { useToast } from '../../../components/ui/Toast';
 
 interface UserProject {
@@ -96,12 +97,12 @@ const UserDetailPage: React.FC = () => {
         const data = await response.json();
         const userData = data.data || data;
 
-        if (!mountedRef.current) return;
+        if (!mountedRef.current) {return;}
 
         setUser(userData);
         setSelectedRole(userData.role);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : t('admin.fetchUserError', 'Failed to load user details');
         setError(errorMessage);
       } finally {
@@ -114,7 +115,7 @@ const UserDetailPage: React.FC = () => {
   }, [id, retryCount, t]);
 
   const handleUserAction = async (action: string): Promise<void> => {
-    if (!user) return;
+    if (!user) {return;}
 
     setIsProcessing(true);
 
@@ -127,7 +128,7 @@ const UserDetailPage: React.FC = () => {
         credentials: 'include',
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         throw new Error(t('admin.userActionFailed', 'Failed to {{action}} user', { action }));
@@ -135,7 +136,7 @@ const UserDetailPage: React.FC = () => {
 
       // Update local state
       setUser((prev) => {
-        if (!prev) return prev;
+        if (!prev) {return prev;}
         switch (action) {
           case 'activate':
             return { ...prev, status: 'active' as const };
@@ -176,7 +177,7 @@ const UserDetailPage: React.FC = () => {
         body: JSON.stringify({ role: selectedRole }),
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         throw new Error(t('admin.roleChangeFailed', 'Failed to change user role'));
@@ -244,14 +245,14 @@ const UserDetailPage: React.FC = () => {
   const formatCurrency = (amount: number, currency: string): string => {
     return new Intl.NumberFormat(i18n.language, {
       style: 'currency',
-      currency: currency,
+      currency,
     }).format(amount);
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')}></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')} />
       </div>
     );
   }
@@ -305,8 +306,8 @@ const UserDetailPage: React.FC = () => {
 
   const tabs = [
     { id: 'overview' as const, label: t('admin.overview', 'Overview') },
-    { id: 'projects' as const, label: t('admin.projects', 'Projects') + ` (${user.projects?.length || 0})` },
-    { id: 'orders' as const, label: t('admin.orders', 'Orders') + ` (${user.orders?.length || 0})` },
+    { id: 'projects' as const, label: `${t('admin.projects', 'Projects')  } (${user.projects?.length || 0})` },
+    { id: 'orders' as const, label: `${t('admin.orders', 'Orders')  } (${user.orders?.length || 0})` },
     { id: 'activity' as const, label: t('admin.activity', 'Activity') },
   ];
 
@@ -488,7 +489,7 @@ const UserDetailPage: React.FC = () => {
                     <div className="space-y-3">
                       {user.activity.slice(0, 5).map((entry) => (
                         <div key={entry.id} className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                          <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                          <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0" />
                           <div>
                             <p className="text-sm text-gray-900 dark:text-white">{entry.action}</p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">{entry.details}</p>
@@ -595,7 +596,7 @@ const UserDetailPage: React.FC = () => {
                   <div className="space-y-4">
                     {user.activity.map((entry) => (
                       <div key={entry.id} className="flex items-start gap-4 p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                        <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0" />
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
@@ -629,7 +630,7 @@ const UserDetailPage: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="action-modal-heading"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) setShowActionModal(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) {setShowActionModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="action-modal-heading" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -660,7 +661,7 @@ const UserDetailPage: React.FC = () => {
                 }`}
               >
                 {isProcessing && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {t('common.confirm', 'Confirm')}
               </button>
@@ -676,7 +677,7 @@ const UserDetailPage: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="role-modal-heading"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) setShowActionModal(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) {setShowActionModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="role-modal-heading" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -709,7 +710,7 @@ const UserDetailPage: React.FC = () => {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {isProcessing && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {t('admin.saveRole', 'Save Role')}
               </button>

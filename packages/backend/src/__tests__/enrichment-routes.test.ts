@@ -377,7 +377,7 @@ describe('Enrichment Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('products');
+      expect(JSON.stringify(response.body)).toContain('products');
     });
 
     it('should return 400 when products array is empty', async () => {
@@ -475,7 +475,7 @@ describe('Enrichment Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('not found');
+      expect(JSON.stringify(response.body)).toContain('not found');
     });
 
     it('should return 400 for invalid UUID in id param', async () => {
@@ -536,7 +536,7 @@ describe('Enrichment Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('cabinetType and applianceType');
+      expect(JSON.stringify(response.body)).toContain('cabinetType and applianceType');
     });
 
     it('should return 400 when applianceType query param is missing', async () => {

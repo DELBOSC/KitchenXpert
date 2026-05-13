@@ -1,0 +1,168 @@
+---
+/**
+ * Hub `/comparatifs` — landing comparatifs concurrents.
+ *
+ * Liste les 5 concurrents évalués, chacun avec carte rapide. Cohabite
+ * avec le hub /guides existant qui couvre les comparatifs PRODUITS
+ * (IKEA vs Leroy Merlin, etc.) — eux restent dans le collection
+ * `comparatifs`.
+ *
+ * Disclaimer en haut conforme L122-1.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+const competitors = (
+  await getCollection('competitors', ({ data }) => !data.draft)
+).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+
+const SITE = 'https://kitchenxpert.com';
+const updatedAt = competitors.reduce<Date>(
+  (acc, e) => (e.data.verdictDate > acc ? e.data.verdictDate : acc),
+  new Date(0),
+);
+const fmt = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric', month: 'long', year: 'numeric',
+}).format(updatedAt);
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comparatifs concurrents — KitchenXpert</title>
+    <meta name="description" content="Comparatifs factuels KitchenXpert vs Coohom, Planner 5D, Homestyler, IKEA Home Planner, SketchUp. Sources citées, mises à jour mensuelles." />
+    <link rel="canonical" href={`${SITE}/comparatifs`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Comparatifs concurrents — KitchenXpert" />
+    <meta property="og:description" content="5 alternatives à KitchenXpert passées au crible : fonctionnalités, prix, conformité RGPD." />
+    <meta property="og:url" content={`${SITE}/comparatifs`} />
+    <meta name="robots" content="index,follow" />
+  </head>
+
+  <body>
+    <header class="hero">
+      <a href="/" class="back">← KitchenXpert</a>
+      <h1>Comparatifs concurrents</h1>
+      <p class="lead">
+        Comparatifs factuels avec les principaux logiciels de conception cuisine.
+        Sources citées, mises à jour mensuelles, sans dénigrement.
+      </p>
+      <div class="meta">Dernière mise à jour : {fmt}</div>
+    </header>
+
+    {/* Disclaimer L122-1 visible en haut */}
+    <aside class="disclaimer-top" role="note" aria-label="Conformité du comparatif">
+      <strong>Comparatif honnête</strong> — basé sur les fonctionnalités publiées par chaque éditeur.
+      Tous les faits cités renvoient à une source officielle datée. Marques citées : propriété de leurs détenteurs respectifs.
+      Sans affiliation commerciale.
+    </aside>
+
+    <main class="grid">
+      {competitors.length === 0 ? (
+        <p class="empty">Comparatifs en cours d'écriture — disponibles sous peu.</p>
+      ) : (
+        competitors.map((entry) => (
+          <a href={`/comparatifs/vs-${entry.slug}`} class="card">
+            <div class="card-header">
+              <span class="card-vs">KitchenXpert vs</span>
+              <span class="card-name">{entry.data.competitorName}</span>
+            </div>
+            <p class="card-desc">{entry.data.description}</p>
+            <div class="card-footer">
+              <span class="badge">{entry.data.competitorHq.split(',').pop()?.trim()}</span>
+              <span class="cta">Lire le comparatif →</span>
+            </div>
+          </a>
+        ))
+      )}
+    </main>
+
+    <footer class="footer">
+      <a href="/">← Retour kitchenxpert.com</a>
+      <span>Mention : Art. L122-1 du Code de la consommation respecté.</span>
+    </footer>
+
+    <style is:global>
+      :root { font-family: 'Inter', system-ui, sans-serif; color-scheme: dark; }
+      html, body { margin: 0; background: #0a0a0f; color: #fff; min-height: 100%; }
+      a { color: inherit; }
+
+      .hero { max-width: 1100px; margin: 0 auto; padding: 4rem 1.5rem 2rem; }
+      .back { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.875rem; }
+      .back:hover { color: #fff; }
+      .hero h1 {
+        margin: 1.5rem 0 0.5rem;
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        letter-spacing: -0.02em;
+      }
+      .lead { color: rgba(255,255,255,0.65); max-width: 680px; line-height: 1.6; font-size: 1.0625rem; }
+      .meta { margin-top: 1rem; font-size: 0.8125rem; color: rgba(255,255,255,0.4); }
+
+      .disclaimer-top {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1rem 1.5rem;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 0.75rem;
+        font-size: 0.8125rem;
+        color: rgba(255,255,255,0.65);
+        line-height: 1.5;
+      }
+
+      .grid {
+        max-width: 1100px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
+      .empty { color: rgba(255,255,255,0.4); text-align: center; padding: 4rem 0; }
+
+      .card {
+        display: flex; flex-direction: column;
+        padding: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 0.75rem;
+        background: rgba(255,255,255,0.02);
+        text-decoration: none;
+        height: 100%;
+        transition: border-color 0.18s, background 0.18s, transform 0.18s;
+      }
+      .card:hover {
+        border-color: rgba(167,139,250,0.4);
+        background: rgba(255,255,255,0.05);
+        transform: translateY(-2px);
+      }
+      .card-header { display: flex; flex-direction: column; gap: 0.125rem; margin-bottom: 0.75rem; }
+      .card-vs { color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; }
+      .card-name { color: #fff; font-size: 1.5rem; font-weight: 600; }
+      .card-desc { flex: 1; color: rgba(255,255,255,0.65); font-size: 0.875rem; line-height: 1.5; margin: 0 0 1rem; }
+      .card-footer { display: flex; justify-content: space-between; align-items: center; }
+      .badge {
+        font-size: 0.6875rem;
+        padding: 0.125rem 0.5rem;
+        background: rgba(255,255,255,0.06);
+        color: rgba(255,255,255,0.65);
+        border-radius: 999px;
+      }
+      .cta { color: #c4b5fd; font-size: 0.8125rem; font-weight: 500; }
+
+      .footer {
+        max-width: 1100px;
+        margin: 3rem auto 0;
+        padding: 2rem 1.5rem 3rem;
+        display: flex; justify-content: space-between;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.4);
+        font-size: 0.8125rem;
+      }
+      .footer a { text-decoration: none; }
+      .footer a:hover { color: #fff; }
+    </style>
+  </body>
+</html>

@@ -1,11 +1,15 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as THREE from 'three';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { GLTFExporterUtil, DXFExporter, IFCExporter, CNCExporter, KitchenEngine } from '@kitchenxpert/3d-engine';
-import type { KitchenSceneData } from '@kitchenxpert/3d-engine';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+
+
+import { GLTFExporterUtil, DXFExporter, IFCExporter, CNCExporter, type KitchenEngine , type KitchenSceneData } from '@kitchenxpert/3d-engine';
+
 import { PDFQuoteGenerator } from '../../services/pdf-quote-generator';
+
+import type * as THREE from 'three';
+
 
 interface ExportPanelProps {
   engine: KitchenEngine | null;
@@ -44,7 +48,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
 
   // Close on click outside
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
 
     const handleClickOutside = (e: MouseEvent) => {
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
@@ -53,7 +57,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
     };
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {onClose();}
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -67,13 +71,13 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
 
   // Auto-dismiss export status after 5 seconds
   useEffect(() => {
-    if (!exportStatus) return;
+    if (!exportStatus) {return;}
     const timer = setTimeout(() => setExportStatus(null), 5000);
     return () => clearTimeout(timer);
   }, [exportStatus]);
 
   const handleExportGLTF = useCallback(async () => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     setIsExporting(true);
     setExportStatus(null);
@@ -96,7 +100,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, exportFormat, t]);
 
   const handleScreenshot = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     setIsExporting(true);
     setExportStatus(null);
@@ -104,7 +108,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
     try {
       const exporter = exporterRef.current;
       const resolution = RESOLUTION_OPTIONS[selectedResolution];
-      if (!resolution) return;
+      if (!resolution) {return;}
 
       exporter.downloadScreenshot(
         engine.renderer.getThreeRenderer(),
@@ -129,7 +133,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, selectedResolution, t]);
 
   const handleDXFExport = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     setIsExporting(true);
     setExportStatus(null);
@@ -160,7 +164,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, t]);
 
   const handleIFCExport = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     setIsExporting(true);
     setExportStatus(null);
@@ -191,7 +195,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, pdfProjectName, t]);
 
   const handleCNCExport = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     setIsExporting(true);
     setExportStatus(null);
@@ -219,7 +223,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, t]);
 
   const handlePDFExport = useCallback(async () => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     setIsExporting(true);
     setExportStatus(null);
@@ -251,7 +255,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, pdfProjectName, pdfClientName, t]);
 
   const handleDesignSpecsPDF = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
 
     setIsExporting(true);
     setExportStatus(null);
@@ -440,7 +444,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
     }
   }, [engine, pdfProjectName, t]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <>

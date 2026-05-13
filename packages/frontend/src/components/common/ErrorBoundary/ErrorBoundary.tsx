@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+
 import type { TFunction } from 'i18next';
 
 type FallbackRender = (props: { error: Error | null; resetErrorBoundary: () => void }) => React.ReactNode;

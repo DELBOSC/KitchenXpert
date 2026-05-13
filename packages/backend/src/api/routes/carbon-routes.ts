@@ -106,7 +106,7 @@ router.get('/eco-score/:kitchenId', validateParams(kitchenIdParam), asyncHandler
   logger.info('[Carbon] Retrieving eco score', { userId, kitchenId });
 
   // Try to derive eco score from existing carbon report
-  const report = await prisma.carbonReport.findFirst({
+  const report = await prisma.carbonReport.findUnique({
     where: { kitchenId },
   });
 

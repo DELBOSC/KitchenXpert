@@ -12,8 +12,10 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import { getOfflineStorage } from '../../utils/offline-storage';
+
 import type { SyncResult } from '../../utils/offline-storage';
 
 export default function OfflineIndicator(): React.ReactElement | null {
@@ -56,7 +58,7 @@ export default function OfflineIndicator(): React.ReactElement | null {
 
   // ─── Auto-sync when coming back online ───
   const performSync = useCallback(async () => {
-    if (syncing) return;
+    if (syncing) {return;}
     setSyncing(true);
     setSyncResult(null);
 

@@ -87,7 +87,7 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   const fetchInstaller = useCallback(
     async (controller: AbortController) => {
-      if (!id) return;
+      if (!id) {return;}
       setIsLoading(true);
       setError(null);
 
@@ -109,7 +109,7 @@ export default function InstallerProfilePage(): React.ReactElement {
         const result = await response.json();
         setInstaller(result.data);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const message =
           err instanceof Error ? err.message : t('marketplace.loadError', 'Erreur lors du chargement');
         setError(message);
@@ -139,7 +139,7 @@ export default function InstallerProfilePage(): React.ReactElement {
         setKitchens(result.data || []);
       }
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') return;
+      if (err instanceof DOMException && err.name === 'AbortError') {return;}
       // Non-critical failure: user just won't see kitchen dropdown
     }
   }, []);
@@ -157,7 +157,7 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   const handleRequestSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    if (!id) return;
+    if (!id) {return;}
 
     setIsSubmitting(true);
     setRequestError(null);
@@ -166,8 +166,8 @@ export default function InstallerProfilePage(): React.ReactElement {
       const body: Record<string, string> = {
         installerId: id,
       };
-      if (selectedKitchenId) body.kitchenId = selectedKitchenId;
-      if (requestNotes.trim()) body.notes = requestNotes.trim();
+      if (selectedKitchenId) {body.kitchenId = selectedKitchenId;}
+      if (requestNotes.trim()) {body.notes = requestNotes.trim();}
 
       const response = await fetch('/api/v1/installers/request', {
         method: 'POST',
@@ -203,7 +203,7 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   const handleReviewSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    if (!id) return;
+    if (!id) {return;}
 
     setIsSubmittingReview(true);
     setReviewError(null);
@@ -212,8 +212,8 @@ export default function InstallerProfilePage(): React.ReactElement {
       const body: Record<string, unknown> = {
         rating: reviewRating,
       };
-      if (reviewTitle.trim()) body.title = reviewTitle.trim();
-      if (reviewComment.trim()) body.comment = reviewComment.trim();
+      if (reviewTitle.trim()) {body.title = reviewTitle.trim();}
+      if (reviewComment.trim()) {body.comment = reviewComment.trim();}
 
       const response = await fetch(`/api/v1/installers/${id}/reviews`, {
         method: 'POST',

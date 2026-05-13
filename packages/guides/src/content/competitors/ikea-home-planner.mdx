@@ -1,0 +1,105 @@
+---
+title: "KitchenXpert vs IKEA Home Planner : multi-fournisseurs vs mono"
+description: "IKEA Home Planner est gratuit mais limité à IKEA. KitchenXpert intègre IKEA + 4 autres marques avec devis comparé. Comparatif factuel."
+slug: "ikea-home-planner"
+author: redaction
+publishedAt: 2026-05-10
+keywords: ["ikea home planner alternative", "ikea métod alternative", "logiciel cuisine ikea concurrent"]
+related: ["coohom", "schmidt"]
+draft: true              # ⚠️ remplir competitor-facts.json AVANT publication
+
+competitorName: "IKEA Home Planner"
+competitorSlug: "ikea-home-planner"
+competitorUrl: "https://www.ikea.com/fr/fr/planning-tools"
+competitorHq: "Älmhult, Suède (Inter IKEA Systems B.V.)"
+verdictDate: 2026-05-10
+denigratesCompetitor: false
+
+reasonsToChooseCompetitor:
+  - "100 % gratuit, sans aucune limite d'utilisation."
+  - "Catalogue IKEA METOD complet et intégralement à jour (c'est l'outil officiel)."
+  - "Édité par IKEA — vous achetez ensuite directement chez eux."
+
+reasonsToChooseUs:
+  - "Multi-fournisseurs : IKEA + Schmidt + Bosch + Leroy Merlin + Castorama dans le même outil, comparés en parallèle."
+  - "Devis comparatif chiffré entre les 5 marques — vous voyez l'écart de prix réel."
+  - "Marketplace d'installateurs Qualibat indépendants (pas que IKEA)."
+  - "Path-tracing photoréaliste vs rendu basique IKEA HP."
+  - "Plans 2D cotés + élévations + export DXF (utile si vous changez d'avis pour un cuisiniste)."
+---
+
+import CompetitorTable    from '../../components/CompetitorTable.astro';
+import MigrationCallout   from '../../components/MigrationCallout.astro';
+import LegalDisclaimer    from '../../components/LegalDisclaimer.astro';
+import CTABlock           from '../../components/CTABlock.astro';
+import FAQ                from '../../components/FAQ.tsx';
+
+{/*
+  STUB — cas particulier : IKEA HP est totalement gratuit + spécifique
+  IKEA. La VRAIE comparaison n'est pas "qui a plus de features" mais
+  "outil constructeur unique vs outil multi-fournisseurs".
+*/}
+
+IKEA Home Planner est l'**outil officiel et gratuit** d'IKEA pour
+planifier une cuisine METOD. Si vous êtes sûr d'acheter chez IKEA, il
+n'y a aucune raison de chercher ailleurs.
+
+**KitchenXpert** est conçu pour ceux qui hésitent encore — entre IKEA,
+Schmidt, Bosch, Leroy Merlin, Castorama — ou qui veulent **comparer
+les devis** des 5 fournisseurs avant de signer. Si vous savez à 100 %
+que ce sera IKEA, sautez cette page.
+
+<CTABlock variant="inline" fromSlug="ikea-home-planner" />
+
+<CompetitorTable competitorSlug="ikea-home-planner" />
+
+## Choisir IKEA Home Planner si…
+
+1. **Vous êtes certain d'acheter chez IKEA** — l'outil officiel garantit la conformité du devis.
+2. **Votre budget est serré** — IKEA HP est totalement gratuit, sans abonnement.
+3. **Vous voulez le catalogue METOD à jour à la minute** — IKEA HP est synchronisé avec le stock magasin.
+
+<MigrationCallout
+  competitorName="IKEA Home Planner"
+  competitorSlug="ikea-home-planner"
+  exportDocUrl="https://www.ikea.com/fr/fr/planning-tools"
+  limitations={[
+    "IKEA Home Planner exporte un PDF du plan ; les meubles ne reviennent pas en 3D dans KitchenXpert (à re-glisser depuis la palette IKEA).",
+    "Le devis IKEA est conservé pour comparaison — vous le mettez à côté des 4 autres devis."
+  ]}
+  offerAssistance={false}
+/>
+
+## Questions fréquentes
+
+<FAQ
+  client:visible
+  questions={[
+    { q: "IKEA Home Planner est-il vraiment gratuit ?", a: "Oui, sans condition. C'est l'outil officiel IKEA, financé par les ventes de meubles." },
+    { q: "KitchenXpert remplace-t-il IKEA Home Planner ?", a: "Non, il le complète : KitchenXpert vous laisse comparer IKEA avec 4 autres fournisseurs. Si vous avez décidé d'IKEA, IKEA HP reste plus rapide." },
+    { q: "Le devis KitchenXpert pour IKEA est-il aussi exact que IKEA HP ?", a: "Le catalogue est synchronisé quotidiennement avec l'API IKEA officielle. L'écart sur le total dépasse rarement 2-3 % — différence due aux promos en cours." },
+    { q: "Puis-je ouvrir un projet IKEA HP dans KitchenXpert ?", a: "Pas directement. L'export IKEA HP est un PDF non éditable. Vous re-créez le plan dans le sandbox KitchenXpert (15-20 min en partant de votre PDF en référence)." },
+    { q: "KitchenXpert est-il moins cher qu'IKEA HP ?", a: "IKEA HP est gratuit. KitchenXpert a un plan Découverte gratuit avec sandbox illimité, et un Premium 14,90 €/mois pour les fonctions avancées (multi-projets, export DXF, IA illimitée)." }
+  ]}
+/>
+
+export const faq = [
+  { q: "IKEA Home Planner est-il vraiment gratuit ?", a: "Oui, sans condition." },
+  { q: "KitchenXpert remplace-t-il IKEA Home Planner ?", a: "Non, il le complète : compare IKEA avec 4 autres fournisseurs." },
+  { q: "Le devis KitchenXpert pour IKEA est-il aussi exact ?", a: "Catalogue synchronisé quotidiennement avec l'API IKEA. Écart < 3 % en général." },
+  { q: "Puis-je ouvrir un projet IKEA HP dans KitchenXpert ?", a: "Pas directement (PDF non éditable). Re-créer en 15-20 min à partir du PDF de référence." },
+  { q: "KitchenXpert est-il moins cher qu'IKEA HP ?", a: "IKEA HP est gratuit. KitchenXpert : sandbox gratuit illimité, Premium 14,90 €/mois pour fonctions avancées." }
+];
+
+<CTABlock
+  variant="final"
+  fromSlug="ikea-home-planner"
+  headline="Comparez IKEA avec 4 autres fournisseurs"
+  subline="Sans inscription · Designer 3D temps réel · Devis instantané"
+/>
+
+<LegalDisclaimer
+  competitorName="IKEA Home Planner"
+  verdictDate={frontmatter.verdictDate}
+  competitorUrl="https://www.ikea.com/fr/fr/planning-tools"
+/>

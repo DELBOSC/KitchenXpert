@@ -1,6 +1,7 @@
-import React, { forwardRef } from 'react';
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import React, { forwardRef } from 'react';
+
 import { cn } from './_utils';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
@@ -36,10 +37,10 @@ const sizes: Record<Size, string> = {
   icon: 'h-10 w-10 rounded-full',
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>((
   { className, variant = 'primary', size = 'md', loading, disabled, leftIcon, rightIcon, fullWidth, children, ...rest },
   ref,
-) {
+) => {
   const isDisabled = disabled || loading;
   return (
     <motion.button

@@ -64,6 +64,16 @@ jest.mock('@prisma/client', () => ({
   PrismaClient: jest.fn().mockImplementation(() => ({})),
 }));
 
+// Mock CacheService — controller short-circuits to cached data otherwise.
+jest.mock('../services/cache.service', () => ({
+  CacheService: {
+    get: jest.fn().mockResolvedValue(null),
+    set: jest.fn().mockResolvedValue(undefined),
+    del: jest.fn().mockResolvedValue(undefined),
+    delPattern: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
 // 3. Import du module à tester APRÈS les mocks
 import { CatalogController } from '../api/controllers/catalog-controller';
 
@@ -130,7 +140,7 @@ describe('CatalogController', () => {
     });
 
     it('should return 404 if catalog not found', async () => {
-      mockReq.params = { id: 'nonexistent' };
+      mockReq.params = { id: '00000000-0000-0000-0000-000000000000' };
       mockCatalogRepository.findById.mockResolvedValue(null);
 
       await controller.getCatalogById(mockReq as Request, mockRes as Response);
@@ -212,7 +222,7 @@ describe('CatalogController', () => {
     });
 
     it('should return 404 if product not found', async () => {
-      mockReq.params = { id: 'nonexistent' };
+      mockReq.params = { id: '00000000-0000-0000-0000-000000000000' };
       mockProductRepository.findById.mockResolvedValue(null);
 
       await controller.getProductById(mockReq as Request, mockRes as Response);
@@ -251,7 +261,11 @@ describe('CatalogController', () => {
       ];
       mockProductRepository.getCategories.mockResolvedValue(mockCategories);
 
-      await controller.getCategories(mockReq as Request, mockRes as Response);
+      // getCategories is wrapped by asyncHandler, which returns void
+      // synchronously while the inner async fn runs on microtasks. Flush
+      // the queue so the response is written before we assert.
+      await controller.getCategories(mockReq as Request, mockRes as Response, jest.fn());
+      await new Promise((r) => setImmediate(r));
 
       expect(mockProductRepository.getCategories).toHaveBeenCalled();
       expect(statusMock).toHaveBeenCalledWith(200);

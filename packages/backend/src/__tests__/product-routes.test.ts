@@ -321,7 +321,7 @@ describe('Product Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Search query is required');
+      expect(JSON.stringify(response.body)).toContain('Search query is required');
     });
   });
 
@@ -554,7 +554,7 @@ describe('Product Routes', () => {
         .expect(409);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('SKU already exists');
+      expect(JSON.stringify(response.body)).toContain('SKU already exists');
     });
 
     it('should return 400 when required fields are missing (no name)', async () => {

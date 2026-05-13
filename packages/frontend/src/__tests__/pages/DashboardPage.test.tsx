@@ -1,6 +1,18 @@
 /**
  * DashboardPage Tests
- * Tests for dashboard page component - rendering, user info, and navigation
+ * Tests for dashboard page component — rendering, user info, and navigation.
+ *
+ * Updated 2026-05-12 to match the redesigned dashboard:
+ * - greeting uses just the first name segment (split(' ')[0]) — falls back
+ *   to "chez vous" when name is missing
+ * - subtitle is "Voici où vous en êtes aujourd'hui."
+ * - "Accès rapides" (not "Actions rapides")
+ * - icons are Lucide SVGs (not emoji)
+ * - empty state copy is "Aucun projet pour l'instant"
+ * - empty-state CTA is "Créer un projet" → /projects/new
+ *
+ * The page now dispatches a thunk that returns a promise — the mock
+ * dispatch must return something `.unwrap()`-able.
  */
 
 import { render, screen } from '@testing-library/react';
@@ -8,29 +20,31 @@ import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import DashboardPage from '../../pages/DashboardPage';
 
-// Mock the AuthContext
+// ---- AuthContext --------------------------------------------------------
 const mockUser = {
   id: 'user-123',
   email: 'test@example.com',
   name: 'Jean Dupont',
   role: 'user',
 };
-
 const mockUseAuth = vi.fn(() => ({
-  user: mockUser,
+  user: mockUser as { id: string; email: string; name?: string; role?: string } | null,
   isAuthenticated: true,
   isLoading: false,
 }));
-
 vi.mock('../../contexts/AuthContext', () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-// Mock Redux store hooks
-const mockDispatch = vi.fn();
+// ---- Sandbox migration banner: stubbed so it doesn't render anything ----
+vi.mock('../../components/sandbox/SandboxMigrationBanner', () => ({
+  SandboxMigrationBanner: () => null,
+}));
+
+// ---- Redux store hooks ---------------------------------------------------
 const mockProjectState = {
   project: {
-    projects: [],
+    projects: [] as unknown[],
     currentProject: null,
     isLoading: false,
     error: null,
@@ -38,9 +52,17 @@ const mockProjectState = {
   },
 };
 
+const mockDispatch = vi.fn(() => {
+  const p: Promise<unknown> & { unwrap?: () => Promise<unknown>; abort?: () => void } =
+    Promise.resolve({}) as Promise<unknown> & { unwrap?: () => Promise<unknown>; abort?: () => void };
+  p.unwrap = () => Promise.resolve({});
+  p.abort = () => {};
+  return p;
+});
+
 vi.mock('../../store/hooks', () => ({
   useAppDispatch: () => mockDispatch,
-  useAppSelector: (selector: Function) => selector(mockProjectState),
+  useAppSelector: (selector: (s: typeof mockProjectState) => unknown) => selector(mockProjectState),
 }));
 
 const renderDashboardPage = () => {
@@ -59,191 +81,158 @@ describe('DashboardPage', () => {
       isAuthenticated: true,
       isLoading: false,
     });
+    mockProjectState.project.projects = [];
+    mockProjectState.project.isLoading = false;
+    mockProjectState.project.error = null;
   });
 
   describe('Rendering', () => {
-    it('should render welcome message with user name', () => {
+    it('should render welcome message with first name only', () => {
       renderDashboardPage();
-
-      expect(screen.getByText(/bonjour, jean dupont/i)).toBeInTheDocument();
+      // Title is "Bonjour, <span>Jean</span>" — text is split across nodes,
+      // so query both halves.
+      expect(screen.getByText(/bonjour/i)).toBeInTheDocument();
+      expect(screen.getByText('Jean')).toBeInTheDocument();
     });
 
-    it('should render default username when user name is not available', () => {
-      mockUseAuth.mockReturnValue({
+    it('should fall back to a generic salutation when no name is available', () => {
+      mockUseAuth.mockReturnValueOnce({
         user: { id: 'user-123', email: 'test@example.com' },
         isAuthenticated: true,
         isLoading: false,
       });
-
       renderDashboardPage();
-
-      expect(screen.getByText(/bonjour, utilisateur/i)).toBeInTheDocument();
+      // Generic salutation copy is "chez vous".
+      expect(screen.getByText(/chez vous/i)).toBeInTheDocument();
     });
 
     it('should render welcome subtitle', () => {
       renderDashboardPage();
-
-      expect(screen.getByText(/bienvenue sur votre tableau de bord kitchenxpert/i)).toBeInTheDocument();
+      expect(screen.getByText(/voici où vous en êtes aujourd'hui/i)).toBeInTheDocument();
     });
 
-    it('should render quick actions section', () => {
+    it('should render the quick-actions section heading', () => {
       renderDashboardPage();
-
-      expect(screen.getByText(/actions rapides/i)).toBeInTheDocument();
+      expect(screen.getByText(/accès rapides/i)).toBeInTheDocument();
     });
 
-    it('should render recent projects section', () => {
+    it('should render recent projects section heading', () => {
       renderDashboardPage();
-
       expect(screen.getByText(/projets récents/i)).toBeInTheDocument();
     });
   });
 
   describe('Quick Action Cards', () => {
-    it('should render New Design card with correct link', () => {
+    it('should render a "Nouveau design" link to /designer', () => {
       renderDashboardPage();
-
-      const newDesignLink = screen.getByRole('link', { name: /nouveau design/i });
-      expect(newDesignLink).toBeInTheDocument();
-      expect(newDesignLink).toHaveAttribute('href', '/designer');
+      const newDesignLinks = screen
+        .getAllByRole('link')
+        .filter((l) => l.getAttribute('href') === '/designer');
+      // There are two: the header CTA + the quick action card.
+      expect(newDesignLinks.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('should render My Projects card with correct link', () => {
+    it('should render a "Mes projets" card linking to /projects', () => {
       renderDashboardPage();
-
-      const projectsLink = screen.getByRole('link', { name: /mes projets/i });
-      expect(projectsLink).toBeInTheDocument();
-      expect(projectsLink).toHaveAttribute('href', '/projects');
+      const link = screen.getByRole('link', { name: /mes projets/i });
+      expect(link).toHaveAttribute('href', '/projects');
     });
 
-    it('should render Catalog card with correct link', () => {
+    it('should render a "Catalogue" card linking to /catalog', () => {
       renderDashboardPage();
-
-      const catalogLink = screen.getByRole('link', { name: /catalogue/i });
-      expect(catalogLink).toBeInTheDocument();
-      expect(catalogLink).toHaveAttribute('href', '/catalog');
+      const link = screen.getByRole('link', { name: /catalogue/i });
+      expect(link).toHaveAttribute('href', '/catalog');
     });
 
-    it('should render Profile card with correct link', () => {
+    it('should render a "Profil" card linking to /profile', () => {
       renderDashboardPage();
-
-      const profileLink = screen.getByRole('link', { name: /profil/i });
-      expect(profileLink).toBeInTheDocument();
-      expect(profileLink).toHaveAttribute('href', '/profile');
+      const link = screen.getByRole('link', { name: /profil/i });
+      expect(link).toHaveAttribute('href', '/profile');
     });
 
-    it('should render all four quick action cards', () => {
+    it('should render at least four quick-action links', () => {
       renderDashboardPage();
-
-      const cards = screen.getAllByRole('link');
-      expect(cards.length).toBeGreaterThanOrEqual(4);
+      const links = screen.getAllByRole('link');
+      expect(links.length).toBeGreaterThanOrEqual(4);
     });
 
-    it('should display correct descriptions for quick actions', () => {
+    it('should display the correct descriptions for each quick action', () => {
       renderDashboardPage();
-
-      expect(screen.getByText(/créer une nouvelle cuisine/i)).toBeInTheDocument();
-      expect(screen.getByText(/voir tous mes designs/i)).toBeInTheDocument();
-      expect(screen.getByText(/explorer les produits/i)).toBeInTheDocument();
-      expect(screen.getByText(/gérer mon compte/i)).toBeInTheDocument();
+      expect(screen.getByText(/créez une cuisine de zéro/i)).toBeInTheDocument();
+      expect(screen.getByText(/reprendre où j'en étais/i)).toBeInTheDocument();
+      expect(screen.getByText(/produits & marques/i)).toBeInTheDocument();
+      expect(screen.getByText(/paramètres & compte/i)).toBeInTheDocument();
     });
   });
 
   describe('Recent Projects Section', () => {
-    it('should show empty state when no projects', () => {
+    it('should show the empty state when no projects are returned', () => {
       renderDashboardPage();
-
-      expect(screen.getByText(/aucun projet pour le moment/i)).toBeInTheDocument();
+      expect(screen.getByText(/aucun projet pour l'instant/i)).toBeInTheDocument();
     });
 
-    it('should render link to create first design', () => {
+    it('should render an empty-state CTA linking to /projects/new', () => {
       renderDashboardPage();
-
-      const createLink = screen.getByRole('link', { name: /créez votre premier design/i });
-      expect(createLink).toBeInTheDocument();
+      const createLink = screen.getByRole('link', { name: /créer un projet/i });
       expect(createLink).toHaveAttribute('href', '/projects/new');
     });
   });
 
   describe('Layout and Styling', () => {
-    it('should have main container with proper structure', () => {
+    it('should render an h1 and at least two section headings', () => {
       renderDashboardPage();
-
       expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
-      expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(2);
+      // The page exposes 2 section h2-equivalent headings ("Accès rapides"
+      // + "Projets récents"); they are rendered as <h2>.
+      expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(2);
     });
 
-    it('should render icons in quick action cards', () => {
+    it('should render the quick-action grid', () => {
       renderDashboardPage();
-
-      const container = document.body;
-      expect(container.textContent).toContain('➕');
-      expect(container.textContent).toContain('📁');
-      expect(container.textContent).toContain('📚');
-      expect(container.textContent).toContain('👤');
+      expect(document.querySelector('.grid')).toBeInTheDocument();
     });
   });
 
   describe('User Context', () => {
-    it('should handle null user gracefully', () => {
-      mockUseAuth.mockReturnValue({
+    it('should handle a null user gracefully', () => {
+      mockUseAuth.mockReturnValueOnce({
         user: null,
         isAuthenticated: false,
         isLoading: false,
       });
-
       renderDashboardPage();
-
-      expect(screen.getByText(/bonjour, utilisateur/i)).toBeInTheDocument();
+      expect(screen.getByText(/chez vous/i)).toBeInTheDocument();
     });
 
-    it('should handle user with empty name', () => {
-      mockUseAuth.mockReturnValue({
+    it('should handle a user with an empty name', () => {
+      mockUseAuth.mockReturnValueOnce({
         user: { id: 'user-123', email: 'test@example.com', name: '' },
         isAuthenticated: true,
         isLoading: false,
       });
-
       renderDashboardPage();
-
-      expect(screen.getByText(/bonjour, utilisateur/i)).toBeInTheDocument();
+      expect(screen.getByText(/chez vous/i)).toBeInTheDocument();
     });
   });
 
   describe('Accessibility', () => {
     it('should have proper heading structure', () => {
       renderDashboardPage();
-
-      const h1 = screen.getByRole('heading', { level: 1 });
-      const h2s = screen.getAllByRole('heading', { level: 2 });
-
-      expect(h1).toBeInTheDocument();
-      expect(h2s.length).toBeGreaterThan(0);
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+      expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThan(0);
     });
 
-    it('should have accessible links', () => {
+    it('should have accessible links (all carry an href)', () => {
       renderDashboardPage();
-
-      const links = screen.getAllByRole('link');
-      links.forEach((link) => {
+      screen.getAllByRole('link').forEach((link) => {
         expect(link).toHaveAttribute('href');
       });
     });
 
-    it('should have proper semantic structure', () => {
+    it('should render at least two <section> regions', () => {
       renderDashboardPage();
-
       const sections = document.querySelectorAll('section');
       expect(sections.length).toBeGreaterThanOrEqual(2);
-    });
-  });
-
-  describe('Responsive Design', () => {
-    it('should render grid layout for quick actions', () => {
-      renderDashboardPage();
-
-      const gridContainer = document.querySelector('.grid');
-      expect(gridContainer).toBeInTheDocument();
     });
   });
 });

@@ -161,7 +161,7 @@ describe('FinancingService', () => {
       const data: SimulateDto = {
         totalAmount: 20000,
         downPayment: 5000,
-        kitchenId: 'kitchen-1',
+        kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         projectId: 'project-1',
       };
 
@@ -170,7 +170,7 @@ describe('FinancingService', () => {
       expect(mockPrisma.financingSimulation.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           userId: mockUser.userId,
-          kitchenId: 'kitchen-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
           projectId: 'project-1',
           totalAmount: 20000,
           downPayment: 5000,

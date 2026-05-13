@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+
 import { logger } from '../../../services/logger';
 
 interface AIPreferences {
@@ -93,10 +94,10 @@ const PreferenceForm: React.FC = () => {
 
         if (response.ok) {
           const result = await response.json();
-          if (result.data) setPreferences(result.data as AIPreferences);
+          if (result.data) {setPreferences(result.data as AIPreferences);}
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         logger.debug('Failed to fetch existing preferences', err instanceof Error ? { error: err.message } : { error: err });
       } finally {
         setIsLoading(false);
@@ -117,7 +118,7 @@ const PreferenceForm: React.FC = () => {
           signal: controller.signal,
         });
 
-        if (!mountedRef.current) return;
+        if (!mountedRef.current) {return;}
 
         if (response.ok) {
           const result = await response.json();
@@ -129,7 +130,7 @@ const PreferenceForm: React.FC = () => {
           setHasQuestionnaire(false);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         setHasQuestionnaire(false);
       }
     };
@@ -184,7 +185,7 @@ const PreferenceForm: React.FC = () => {
         body: JSON.stringify(preferences),
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -204,7 +205,7 @@ const PreferenceForm: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')}></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')} />
       </div>
     );
   }
@@ -526,7 +527,7 @@ const PreferenceForm: React.FC = () => {
               >
                 {isGenerating ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
                     {t('aiGenerator.generating', 'Generating...')}
                   </>
                 ) : (

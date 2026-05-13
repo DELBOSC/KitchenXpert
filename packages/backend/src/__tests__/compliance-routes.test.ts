@@ -16,6 +16,7 @@ import request from 'supertest';
 // ==================== MOCKS ====================
 
 jest.mock('../utils/logger', () => ({
+  __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
     info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
@@ -77,7 +78,33 @@ jest.mock('../auth/jwt.service', () => ({
 
 let currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
+// compliance-routes imports auth from ../../middleware/auth-middleware,
+// NOT from ../api/middleware/auth-middleware. Mock BOTH paths since
+// hoisting makes function references unavailable.
 jest.mock('../api/middleware/auth-middleware', () => {
+  const { UnauthorizedError } = require('@kitchenxpert/common');
+  return {
+    authenticate: jest.fn((req: any, _res: any, next: any) => {
+      if (req.cookies?.accessToken || req.headers.authorization) {
+        req.user = { ...currentTestUser };
+        next();
+      } else {
+        next(new UnauthorizedError('Authentication required'));
+      }
+    }),
+    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
+      if (!req.user) {
+        return next(new UnauthorizedError('Authentication required'));
+      }
+      if (!roles.includes(req.user.role)) {
+        const { ForbiddenError } = require('@kitchenxpert/common');
+        return next(new ForbiddenError('Access denied'));
+      }
+      next();
+    },
+  };
+});
+jest.mock('../middleware/auth-middleware', () => {
   const { UnauthorizedError } = require('@kitchenxpert/common');
   return {
     authenticate: jest.fn((req: any, _res: any, next: any) => {
@@ -194,7 +221,7 @@ describe('Compliance Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should return 404 when kitchen is not found', async () => {
@@ -205,7 +232,7 @@ describe('Compliance Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Kitchen not found');
+      expect(JSON.stringify(response.body)).toContain('Kitchen not found');
     });
   });
 

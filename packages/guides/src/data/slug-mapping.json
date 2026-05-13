@@ -1,0 +1,99 @@
+{
+  "$comment": "FR ↔ EN slug pairs for /guides/*. Used by Hreflang component + sitemap generator + 301 redirects from /fr/foo to /en/<translated-foo>. SEO rule: each EN slug is the most-searched query for that topic, not a literal translation. Example: /guides/cuisine-en-l → /en/guides/l-shaped-kitchen (not 'kitchen-in-l').",
+
+  "_app_routes": {
+    "/":                      { "fr": "/",                       "en": "/" },
+    "/login":                 { "fr": "/login",                  "en": "/login" },
+    "/register":              { "fr": "/inscription",            "en": "/sign-up" },
+    "/forgot-password":       { "fr": "/mot-de-passe-oublie",    "en": "/forgot-password" },
+    "/pricing":               { "fr": "/tarifs",                 "en": "/pricing" },
+    "/catalog":               { "fr": "/catalogue",              "en": "/catalog" },
+    "/designer/sandbox":      { "fr": "/designer/demo",          "en": "/designer/demo" },
+    "/comment-ca-marche":     { "fr": "/comment-ca-marche",      "en": "/how-it-works" },
+    "/avis":                  { "fr": "/avis",                   "en": "/reviews" },
+    "/comparatifs":           { "fr": "/comparatifs",            "en": "/comparisons" },
+    "/legal/mentions":        { "fr": "/legal/mentions-legales", "en": "/legal/legal-notice" },
+    "/legal/cgv":             { "fr": "/legal/cgv",              "en": "/legal/terms" },
+    "/legal/privacy":         { "fr": "/legal/confidentialite",  "en": "/legal/privacy" },
+    "/legal/cookies":         { "fr": "/legal/cookies",          "en": "/legal/cookies" },
+    "/legal/accessibilite":   { "fr": "/legal/accessibilite",    "en": "/legal/accessibility" }
+  },
+
+  "_guides_layouts": {
+    "cuisine-en-l":                { "fr": "cuisine-en-l",                "en": "l-shaped-kitchen" },
+    "cuisine-en-u":                { "fr": "cuisine-en-u",                "en": "u-shaped-kitchen" },
+    "cuisine-parallele":           { "fr": "cuisine-parallele",           "en": "galley-kitchen" },
+    "cuisine-avec-ilot":           { "fr": "cuisine-avec-ilot",           "en": "kitchen-with-island" },
+    "cuisine-ouverte-sur-salon":   { "fr": "cuisine-ouverte-sur-salon",   "en": "open-plan-kitchen" },
+    "cuisine-fermee":              { "fr": "cuisine-fermee",              "en": "closed-kitchen" },
+    "petite-cuisine-amenagement":  { "fr": "petite-cuisine-amenagement",  "en": "small-kitchen-design" },
+    "grande-cuisine-amenagement":  { "fr": "grande-cuisine-amenagement",  "en": "large-kitchen-design" }
+  },
+
+  "_guides_cuisinistes": {
+    "_comment": "Brands available in France only — EN slug provided for the few that ARE international (IKEA, Bosch). Schmidt/Mobalpa/Cuisinella/Lapeyre are French — EN page mentions 'available in France'.",
+    "schmidt":      { "fr": "schmidt",      "en": "schmidt-kitchens" },
+    "mobalpa":      { "fr": "mobalpa",      "en": "mobalpa-kitchens" },
+    "cuisinella":   { "fr": "cuisinella",   "en": "cuisinella-kitchens" },
+    "lapeyre":      { "fr": "lapeyre",      "en": "lapeyre-kitchens" },
+    "ikea":         { "fr": "ikea",         "en": "ikea-metod" },
+    "leroy-merlin": { "fr": "leroy-merlin", "en": "leroy-merlin-kitchens" },
+    "castorama":    { "fr": "castorama",    "en": "castorama-kitchens" },
+    "brico-depot":  { "fr": "brico-depot",  "en": "brico-depot-kitchens" },
+    "but":          { "fr": "but",          "en": "but-kitchens" },
+    "conforama":    { "fr": "conforama",    "en": "conforama-kitchens" }
+  },
+
+  "_guides_budgets": {
+    "_comment": "EN versions use the most-searched currency: dollar for en-US, euro for en-EU, etc. We default to USD for SEO reach, with explicit /budget/in-euros/* fallback when needed.",
+    "cuisine-3000-euros":   { "fr": "cuisine-3000-euros",   "en": "kitchen-under-3500-dollars" },
+    "cuisine-5000-euros":   { "fr": "cuisine-5000-euros",   "en": "kitchen-under-5500-dollars" },
+    "cuisine-7500-euros":   { "fr": "cuisine-7500-euros",   "en": "kitchen-under-8000-dollars" },
+    "cuisine-10000-euros":  { "fr": "cuisine-10000-euros",  "en": "kitchen-under-11000-dollars" },
+    "cuisine-15000-euros":  { "fr": "cuisine-15000-euros",  "en": "kitchen-under-16000-dollars" },
+    "cuisine-20000-euros":  { "fr": "cuisine-20000-euros",  "en": "kitchen-under-22000-dollars" },
+    "cuisine-30000-euros":  { "fr": "cuisine-30000-euros",  "en": "kitchen-under-33000-dollars" },
+    "cuisine-50000-euros":  { "fr": "cuisine-50000-euros",  "en": "luxury-kitchen-50k-plus" }
+  },
+
+  "_guides_styles": {
+    "cuisine-scandinave":    { "fr": "cuisine-scandinave",    "en": "scandinavian-kitchen" },
+    "cuisine-industrielle":  { "fr": "cuisine-industrielle",  "en": "industrial-kitchen" },
+    "cuisine-moderne":       { "fr": "cuisine-moderne",       "en": "modern-kitchen" },
+    "cuisine-contemporaine": { "fr": "cuisine-contemporaine", "en": "contemporary-kitchen" },
+    "cuisine-campagne":      { "fr": "cuisine-campagne",      "en": "farmhouse-kitchen" },
+    "cuisine-provencale":    { "fr": "cuisine-provencale",    "en": "provencal-kitchen" },
+    "cuisine-minimaliste":   { "fr": "cuisine-minimaliste",   "en": "minimalist-kitchen" },
+    "cuisine-boheme":        { "fr": "cuisine-boheme",        "en": "bohemian-kitchen" },
+    "cuisine-art-deco":      { "fr": "cuisine-art-deco",      "en": "art-deco-kitchen" },
+    "cuisine-japonaise":     { "fr": "cuisine-japonaise",     "en": "japanese-kitchen" }
+  },
+
+  "_guides_comparatifs": {
+    "ikea-vs-leroy-merlin":            { "fr": "ikea-vs-leroy-merlin",            "en": "ikea-vs-leroy-merlin" },
+    "schmidt-vs-mobalpa":              { "fr": "schmidt-vs-mobalpa",              "en": "schmidt-vs-mobalpa" },
+    "cuisine-sur-mesure-vs-kit":       { "fr": "cuisine-sur-mesure-vs-kit",       "en": "custom-kitchen-vs-flat-pack" },
+    "cuisiniste-vs-en-ligne":          { "fr": "cuisiniste-vs-en-ligne",          "en": "kitchen-designer-vs-online" },
+    "electromenager-bosch-vs-siemens": { "fr": "electromenager-bosch-vs-siemens", "en": "bosch-vs-siemens-appliances" },
+    "plan-travail-quartz-vs-granit":   { "fr": "plan-travail-quartz-vs-granit",   "en": "quartz-vs-granite-countertop" },
+    "induction-vs-vitroceramique":     { "fr": "induction-vs-vitroceramique",     "en": "induction-vs-ceramic-cooktop" },
+    "cuisine-blanche-vs-noire":        { "fr": "cuisine-blanche-vs-noire",        "en": "white-vs-black-kitchen" }
+  },
+
+  "_guides_pratiques": {
+    "comment-mesurer-sa-cuisine":     { "fr": "comment-mesurer-sa-cuisine",     "en": "how-to-measure-a-kitchen" },
+    "triangle-activite-cuisine":      { "fr": "triangle-activite-cuisine",      "en": "kitchen-work-triangle" },
+    "normes-electriques-cuisine":     { "fr": "normes-electriques-cuisine",     "en": "kitchen-electrical-code" },
+    "credit-impot-cuisine":           { "fr": "credit-impot-cuisine",           "en": "kitchen-tax-credit" },
+    "tva-renovation-cuisine":         { "fr": "tva-renovation-cuisine",         "en": "kitchen-vat-renovation" },
+    "garanties-cuisinistes":          { "fr": "garanties-cuisinistes",          "en": "kitchen-designer-warranties" }
+  },
+
+  "_guides_competitors": {
+    "coohom":            { "fr": "coohom",            "en": "coohom" },
+    "planner-5d":        { "fr": "planner-5d",        "en": "planner-5d" },
+    "homestyler":        { "fr": "homestyler",        "en": "homestyler" },
+    "ikea-home-planner": { "fr": "ikea-home-planner", "en": "ikea-home-planner" },
+    "sketchup":          { "fr": "sketchup",          "en": "sketchup" }
+  }
+}

@@ -116,7 +116,8 @@ describe('UserProfile', () => {
       renderUserProfile();
 
       await waitFor(() => {
-        const cancelLink = screen.getByRole('link', { name: /cancel/i });
+        // fr.json: common.cancel = "Annuler".
+        const cancelLink = screen.getByRole('link', { name: /cancel|annuler/i });
         expect(cancelLink).toBeInTheDocument();
         expect(cancelLink).toHaveAttribute('href', '/dashboard');
       });
@@ -192,7 +193,8 @@ describe('UserProfile', () => {
       renderUserProfile();
 
       await waitFor(() => {
-        expect(screen.getByText(/cooking habits/i)).toBeInTheDocument();
+        // Section heading + AI-tips block both mention cooking habits.
+        expect(screen.getAllByText(/cooking habits/i).length).toBeGreaterThan(0);
       });
     });
 

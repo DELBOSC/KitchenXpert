@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
 import { api } from '../../../services/api/api';
 import { API_ENDPOINTS } from '../../../services/api/endpoints';
+
 import type {
   GeneratedDesign,
   AIGenerationResult,
@@ -12,8 +14,8 @@ import type {
 // Score badge color helper
 // ----------------------------------------------------------------
 function scoreBadgeClasses(score: number): string {
-  if (score > 80) return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
-  if (score >= 60) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
+  if (score > 80) {return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';}
+  if (score >= 60) {return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';}
   return 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
 }
 
@@ -82,7 +84,7 @@ const DesignComparison: React.FC = () => {
           setLoading(false);
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         if (mountedRef.current) {
           setError(err instanceof Error ? err.message : t('common.unknownError', 'Unknown error'));
           setLoading(false);

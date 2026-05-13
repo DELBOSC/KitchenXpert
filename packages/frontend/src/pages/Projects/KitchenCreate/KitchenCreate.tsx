@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+
 import { useToast } from '../../../components/ui/Toast';
 
 interface KitchenFormData {
@@ -76,7 +77,7 @@ const KitchenCreate: React.FC = () => {
           }
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         // Non-critical: just continue without project name
       } finally {
         if (mountedRef.current) {
@@ -182,7 +183,7 @@ const KitchenCreate: React.FC = () => {
         }),
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -446,7 +447,7 @@ const KitchenCreate: React.FC = () => {
                 className={`px-6 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
               >
                 {isSubmitting && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {isSubmitting ? t('kitchens.creating', 'Creation en cours...') : t('kitchens.createAndDesign', 'Create & Open Designer')}
               </button>

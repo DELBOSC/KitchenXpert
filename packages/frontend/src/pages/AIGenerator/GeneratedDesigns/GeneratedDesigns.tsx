@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+
 import type {
   GeneratedDesign,
   AIGenerationResult,
@@ -256,7 +257,7 @@ const GeneratedDesigns: React.FC = () => {
           pollInterval = setInterval(async () => {
             // M-2: Check whether we have exceeded the maximum poll duration
             if (Date.now() - pollStartTime >= MAX_POLL_DURATION) {
-              if (pollInterval) clearInterval(pollInterval);
+              if (pollInterval) {clearInterval(pollInterval);}
               setError(
                 'Design generation is taking longer than expected. Please try again later.',
               );
@@ -274,13 +275,13 @@ const GeneratedDesigns: React.FC = () => {
                 setResult(pollData);
 
                 if (pollData.status === 'completed' || pollData.status === 'failed') {
-                  if (pollInterval) clearInterval(pollInterval);
+                  if (pollInterval) {clearInterval(pollInterval);}
                 }
               }
             } catch (pollErr) {
               // If the request was aborted (component unmounting), stop silently
               if (pollErr instanceof DOMException && pollErr.name === 'AbortError') {
-                if (pollInterval) clearInterval(pollInterval);
+                if (pollInterval) {clearInterval(pollInterval);}
                 return;
               }
               // Otherwise continue polling -- transient network errors are expected
@@ -304,7 +305,7 @@ const GeneratedDesigns: React.FC = () => {
     // M-1: Cleanup -- abort in-flight requests AND clear the poll interval
     return () => {
       abortController.abort();
-      if (pollInterval) clearInterval(pollInterval);
+      if (pollInterval) {clearInterval(pollInterval);}
     };
   }, [generationId, retryCount]);
 
@@ -325,7 +326,7 @@ const GeneratedDesigns: React.FC = () => {
         }),
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         throw new Error('Failed to save design');
@@ -345,7 +346,7 @@ const GeneratedDesigns: React.FC = () => {
   const formatCurrency = (amount: number, currency: string): string => {
     return new Intl.NumberFormat(i18n.language, {
       style: 'currency',
-      currency: currency,
+      currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -397,7 +398,7 @@ const GeneratedDesigns: React.FC = () => {
     const isExpanded = expandedDesigns.has(design.id);
     const hasExplanation = design.description || design.materialRationale || design.layoutExplanation || design.tradeoffs;
 
-    if (!hasExplanation) return null;
+    if (!hasExplanation) {return null;}
 
     return (
       <div className="mt-3 border-t border-gray-100 pt-3">
@@ -449,7 +450,7 @@ const GeneratedDesigns: React.FC = () => {
    * Renders the BOM modal with generation results
    */
   const renderBomModal = (): React.ReactNode => {
-    if (!showBomModal) return null;
+    if (!showBomModal) {return null;}
 
     return (
       <div
@@ -480,7 +481,7 @@ const GeneratedDesigns: React.FC = () => {
 
             {bomLoading && (
               <div className="flex flex-col items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
                 <p className="text-gray-600">
                   {t('aiGenerator.generatingBOM', 'Generating Bill of Materials...')}
                 </p>
@@ -575,7 +576,7 @@ const GeneratedDesigns: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
       </div>
     );
   }
@@ -624,7 +625,7 @@ const GeneratedDesigns: React.FC = () => {
             {t('aiGenerator.generatingDescription', 'Our AI is crafting personalized kitchen designs based on your preferences. This usually takes 1-3 minutes.')}
           </p>
           <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full animate-pulse w-2/3"></div>
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full animate-pulse w-2/3" />
           </div>
           <p className="text-sm text-gray-500">
             {t('aiGenerator.status', 'Status')}: {result?.status === 'pending' ? t('aiGenerator.queued', 'Queued') : t('aiGenerator.processing', 'Processing')}...
@@ -836,7 +837,7 @@ const GeneratedDesigns: React.FC = () => {
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
           role="dialog"
           aria-modal="true"
-          onKeyDown={(e) => { if (e.key === 'Escape') setSelectedDesign(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape') {setSelectedDesign(null);} }}
         >
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <div className="relative h-64 sm:h-80 bg-gray-200">

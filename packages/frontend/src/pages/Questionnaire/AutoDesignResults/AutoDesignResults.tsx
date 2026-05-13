@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { logger } from '../../../services/logger';
 
 // ============================================================================
@@ -243,7 +244,7 @@ function CostPieChart({
   t: (key: string, defaultValue: string) => string;
 }): React.ReactElement {
   const total = breakdown.cabinets + breakdown.countertops + breakdown.appliances + breakdown.installation;
-  if (total === 0) return <div className="text-sm text-gray-400">--</div>;
+  if (total === 0) {return <div className="text-sm text-gray-400">--</div>;}
 
   const segments = [
     { label: t('autoDesign.categories.cabinets', 'Caissons'), value: breakdown.cabinets, color: '#3B82F6' },
@@ -362,7 +363,7 @@ const AutoDesignResults: React.FC = () => {
           throw new Error(result.error || t('autoDesign.errors.invalidResponse', 'Invalid response'));
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         const message = err instanceof Error ? err.message : String(err);
         setError(message);
         logger.error('Auto-generate designs failed', { error: message });
@@ -450,7 +451,7 @@ const AutoDesignResults: React.FC = () => {
 
   /** Generate comparison highlights between tiers */
   const getComparisonHighlights = (): string[] => {
-    if (designs.length < 2) return [];
+    if (designs.length < 2) {return [];}
     const highlights: string[] = [];
 
     const sorted = [...designs].sort((a, b) => a.totalCost - b.totalCost);

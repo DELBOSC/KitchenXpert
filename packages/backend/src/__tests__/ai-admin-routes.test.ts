@@ -221,7 +221,7 @@ describe('AI Admin Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Admin access required');
+      expect(JSON.stringify(response.body)).toContain('Admin access required');
     });
 
     it('should return 403 when a partner user tries to access insights', async () => {
@@ -232,7 +232,7 @@ describe('AI Admin Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Admin access required');
+      expect(JSON.stringify(response.body)).toContain('Admin access required');
     });
 
     it('should return 403 when a moderator user tries to access insights', async () => {

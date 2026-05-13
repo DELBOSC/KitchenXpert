@@ -3,8 +3,9 @@
  */
 
 import { configureStore } from '@reduxjs/toolkit';
-import projectReducer from '../features/project/project-slice';
+
 import catalogReducer from '../features/catalog/catalog-slice';
+import projectReducer from '../features/project/project-slice';
 
 export const store = configureStore({
   reducer: {

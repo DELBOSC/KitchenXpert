@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import type { UseKitchenEngineReturn } from '../../hooks/useKitchenEngine';
 import type { TransformMode } from '@kitchenxpert/3d-engine';
 
@@ -99,7 +100,7 @@ export default function Toolbar({
 
   // Close delete confirmation on Escape key
   useEffect(() => {
-    if (!showDeleteConfirm) return;
+    if (!showDeleteConfirm) {return;}
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();

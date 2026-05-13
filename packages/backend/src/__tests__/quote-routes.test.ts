@@ -364,7 +364,7 @@ describe('Quote Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Kitchen not found');
+      expect(JSON.stringify(response.body)).toContain('Kitchen not found');
     });
 
     it('should return 403 when kitchen does not belong to user (IDOR prevention)', async () => {
@@ -380,7 +380,7 @@ describe('Quote Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should allow admin to send quote for any kitchen', async () => {
@@ -412,7 +412,7 @@ describe('Quote Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Partner not found');
+      expect(JSON.stringify(response.body)).toContain('Partner not found');
     });
 
     it('should return 400 when partner is inactive', async () => {
@@ -425,7 +425,7 @@ describe('Quote Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('not accepting quote requests');
+      expect(JSON.stringify(response.body)).toContain('not accepting quote requests');
     });
 
     it('should still succeed even if email sending fails', async () => {
@@ -520,7 +520,7 @@ describe('Quote Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should allow admin to access any quote', async () => {

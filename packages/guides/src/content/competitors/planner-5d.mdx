@@ -1,0 +1,100 @@
+---
+title: "KitchenXpert vs Planner 5D : alternative française en 2026"
+description: "Planner 5D vs KitchenXpert : interface, catalogue, prix, conformité RGPD, support FR. Tableau comparatif factuel + plan de migration."
+slug: "planner-5d"
+author: redaction
+publishedAt: 2026-05-10
+keywords: ["planner 5d alternative", "planner 5d français", "planner 5d concurrent"]
+related: ["coohom", "homestyler"]
+draft: true              # ⚠️ remplir competitor-facts.json AVANT publication
+
+competitorName: "Planner 5D"
+competitorSlug: "planner-5d"
+competitorUrl: "https://planner5d.com"
+competitorHq: "Vilnius, Lituanie (UAB Planner 5D)"
+verdictDate: 2026-05-10
+denigratesCompetitor: false
+
+reasonsToChooseCompetitor:
+  - "TODO_LAURENT — raison 1 (ex. interface intuitive non-pro, gros catalogue de meubles décoratifs)."
+  - "TODO_LAURENT — raison 2 (ex. très grosse communauté + templates partagés)."
+  - "TODO_LAURENT — raison 3 (ex. apps iOS / Android natives matures)."
+
+reasonsToChooseUs:
+  - "Spécialisé cuisine — pas généraliste — donc catalogue calibré au fournisseur près."
+  - "Hébergement en France/UE (Lituanie est UE mais double-check votre exigence sectorielle)."
+  - "5 catalogues fournisseurs FR (IKEA, Schmidt, Bosch, Leroy Merlin, Castorama) avec dimensions exactes."
+  - "Devis multi-fournisseurs comparé en temps réel — pas qu'une simulation décorative."
+  - "Marketplace d'installateurs Qualibat / RGE intégrée."
+---
+
+import CompetitorTable    from '../../components/CompetitorTable.astro';
+import MigrationCallout   from '../../components/MigrationCallout.astro';
+import LegalDisclaimer    from '../../components/LegalDisclaimer.astro';
+import CTABlock           from '../../components/CTABlock.astro';
+import FAQ                from '../../components/FAQ.tsx';
+
+{/*
+  STUB — voir vs-coohom.mdx pour la structure complète à recopier ici
+  une fois competitor-facts.json renseigné pour planner-5d.
+*/}
+
+Planner 5D et KitchenXpert répondent à des besoins voisins mais
+divergent sur la **spécialisation cuisine** et la **calibration au
+fournisseur**. Ce comparatif détaille les écarts critère par critère.
+
+<CTABlock variant="inline" fromSlug="planner-5d" />
+
+## Tableau comparatif
+
+<CompetitorTable competitorSlug="planner-5d" />
+
+## Choisir Planner 5D si…
+
+1. TODO_LAURENT
+2. TODO_LAURENT
+3. TODO_LAURENT
+
+## Choisir KitchenXpert si…
+
+(voir frontmatter `reasonsToChooseUs`)
+
+<MigrationCallout
+  competitorName="Planner 5D"
+  competitorSlug="planner-5d"
+  exportDocUrl="https://planner5d.com/help/"
+  limitations={["TODO_LAURENT — limites d'export Planner 5D"]}
+/>
+
+## Questions fréquentes
+
+<FAQ
+  client:visible
+  questions={[
+    { q: "Planner 5D est-il gratuit ?", a: "TODO_LAURENT" },
+    { q: "Peut-on utiliser KitchenXpert sur mobile comme Planner 5D ?", a: "TODO_LAURENT" },
+    { q: "KitchenXpert a-t-il un mode AR comme Planner 5D ?", a: "Oui — AR iOS 16+ et Android 12+." },
+    { q: "Migration Planner 5D → KitchenXpert ?", a: "Voir section ci-dessus + 30 min de support offert." },
+    { q: "Données conservées en France ?", a: "Oui — Postgres OVH + Redis Scaleway." }
+  ]}
+/>
+
+export const faq = [
+  { q: "Planner 5D est-il gratuit ?", a: "TODO_LAURENT" },
+  { q: "Peut-on utiliser KitchenXpert sur mobile comme Planner 5D ?", a: "TODO_LAURENT" },
+  { q: "KitchenXpert a-t-il un mode AR comme Planner 5D ?", a: "Oui — AR iOS 16+ et Android 12+." },
+  { q: "Migration Planner 5D → KitchenXpert ?", a: "30 min de support offert." },
+  { q: "Données conservées en France ?", a: "Oui — Postgres OVH + Redis Scaleway." }
+];
+
+<CTABlock
+  variant="final"
+  fromSlug="planner-5d"
+  headline="Essayez KitchenXpert maintenant"
+/>
+
+<LegalDisclaimer
+  competitorName="Planner 5D"
+  verdictDate={frontmatter.verdictDate}
+  competitorUrl="https://planner5d.com"
+/>

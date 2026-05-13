@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { api } from '../../services/api/api';
 import { API_ENDPOINTS } from '../../services/api/endpoints';
 
@@ -79,7 +80,7 @@ function computeDiff(oldItems: DesignItem[], currentItems: DesignItem[]): DiffRe
   // Modified items: in both but with differences
   for (const [id, oldItem] of oldMap) {
     const currentItem = currentMap.get(id);
-    if (!currentItem) continue;
+    if (!currentItem) {continue;}
 
     const changes: string[] = [];
 
@@ -153,7 +154,7 @@ export default function VersionHistoryPanel({
 
   // ---- Fetch versions ----
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
 
     const controller = new AbortController();
 
@@ -173,7 +174,7 @@ export default function VersionHistoryPanel({
           setError(res.error?.message || t('designer.versions.loadError', 'Impossible de charger les versions'));
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         setError(t('designer.versions.loadError', 'Impossible de charger les versions'));
       } finally {
         setLoading(false);
@@ -186,7 +187,7 @@ export default function VersionHistoryPanel({
 
   // ---- Close on Escape ----
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -204,14 +205,14 @@ export default function VersionHistoryPanel({
 
   // ---- Focus trap for restore modal ----
   useEffect(() => {
-    if (!restoreTarget) return;
+    if (!restoreTarget) {return;}
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
         const modal = document.querySelector('[data-restore-modal]');
-        if (!modal) return;
+        if (!modal) {return;}
         const focusable = modal.querySelectorAll<HTMLElement>('button:not([disabled])');
-        if (focusable.length === 0) return;
+        if (focusable.length === 0) {return;}
         const first = focusable[0]!;
         const last = focusable[focusable.length - 1]!;
         if (e.shiftKey && document.activeElement === first) {
@@ -257,7 +258,7 @@ export default function VersionHistoryPanel({
 
   // ---- Restore version ----
   const handleConfirmRestore = useCallback(async () => {
-    if (!restoreTarget) return;
+    if (!restoreTarget) {return;}
     setRestoring(true);
     try {
       const res = await api.post(
@@ -300,7 +301,7 @@ export default function VersionHistoryPanel({
         setDiffResult(computeDiff(oldItems, currentItems));
       }
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AbortError') return;
+      if (err instanceof Error && err.name === 'AbortError') {return;}
       // Silently fail — user can dismiss
     } finally {
       setComparing(false);
@@ -326,7 +327,7 @@ export default function VersionHistoryPanel({
     });
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   return (
     <>
@@ -371,7 +372,7 @@ export default function VersionHistoryPanel({
                 className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                 autoFocus
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSaveVersion();
+                  if (e.key === 'Enter') {handleSaveVersion();}
                 }}
               />
               <div className="flex gap-2">

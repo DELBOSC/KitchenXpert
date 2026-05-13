@@ -20,6 +20,18 @@ import { notFoundHandler } from './middleware/not-found-handler';
 export function createApp(): Application {
   const app = express();
 
+  // Trust the reverse proxy (Caddy/Traefik/Nginx in front of the
+  // container). Without this, req.ip is the proxy IP and every request
+  // collapses into one rate-limit bucket. Default `1` = trust the first
+  // hop; override via env if running behind multiple proxies.
+  const trustProxyEnv = process.env.TRUST_PROXY;
+  if (trustProxyEnv) {
+    const n = Number(trustProxyEnv);
+    app.set('trust proxy', Number.isFinite(n) ? n : trustProxyEnv);
+  } else if (config.env === 'production') {
+    app.set('trust proxy', 1);
+  }
+
   // Security headers (Content-Security-Policy, X-Frame-Options, etc.)
   // This replaces the basic helmet() call with enhanced security configuration
   app.use(securityHeaders);

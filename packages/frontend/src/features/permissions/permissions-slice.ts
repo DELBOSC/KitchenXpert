@@ -19,7 +19,7 @@ export const fetchPermissions = createAsyncThunk<Permission[]>('permissions/fetc
   try {
     const response = await fetch(`${API_URL}/permissions`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -31,7 +31,7 @@ export const fetchGroupedPermissions = createAsyncThunk<GroupedPermissions>('per
   try {
     const response = await fetch(`${API_URL}/permissions/grouped`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -43,7 +43,7 @@ export const fetchResources = createAsyncThunk<string[]>('permissions/fetchResou
   try {
     const response = await fetch(`${API_URL}/permissions/resources`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -55,7 +55,7 @@ export const fetchActions = createAsyncThunk<string[]>('permissions/fetchActions
   try {
     const response = await fetch(`${API_URL}/permissions/actions`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -70,7 +70,7 @@ export const createPermission = createAsyncThunk<Permission, { name: string; res
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(permData),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -83,7 +83,7 @@ export const deletePermission = createAsyncThunk<string, string>('permissions/de
   try {
     const response = await fetch(`${API_URL}/permissions/${id}`, { method: 'DELETE', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -95,7 +95,7 @@ export const seedPermissions = createAsyncThunk<void>('permissions/seed', async 
   try {
     const response = await fetch(`${API_URL}/permissions/seed`, { method: 'POST', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';

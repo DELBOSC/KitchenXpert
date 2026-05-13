@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 interface Permission {
   id: string;
@@ -66,7 +66,7 @@ const RoleManagement: React.FC = () => {
         setRoles(rolesData);
         setPermissions(permissionsData);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');
         setError(errorMessage);
       } finally {
@@ -124,7 +124,7 @@ const RoleManagement: React.FC = () => {
   };
 
   const handleUpdateRole = async (): Promise<void> => {
-    if (!editingRole) return;
+    if (!editingRole) {return;}
 
     setIsSaving(true);
     setError(null);
@@ -170,7 +170,7 @@ const RoleManagement: React.FC = () => {
   };
 
   const confirmDeleteRole = async (): Promise<void> => {
-    if (!deleteConfirm) return;
+    if (!deleteConfirm) {return;}
 
     try {
       const response = await fetch(`/api/v1/admin/roles/${deleteConfirm.id}`, {
@@ -223,7 +223,7 @@ const RoleManagement: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')}></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')} />
       </div>
     );
   }
@@ -478,7 +478,7 @@ const RoleManagement: React.FC = () => {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {isSaving && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {t('admin.roles.create', 'Creer')}
               </button>
@@ -491,7 +491,7 @@ const RoleManagement: React.FC = () => {
       {editingRole && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isSaving) setEditingRole(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape' && !isSaving) {setEditingRole(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="editRoleTitle" ref={(el) => { if (el) { const input = el.querySelector<HTMLElement>('input'); input?.focus(); } }}>
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -580,7 +580,7 @@ const RoleManagement: React.FC = () => {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {isSaving && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {t('admin.roles.saveChanges', 'Enregistrer')}
               </button>
@@ -593,7 +593,7 @@ const RoleManagement: React.FC = () => {
       {deleteConfirm && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          onKeyDown={(e) => { if (e.key === 'Escape') setDeleteConfirm(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape') {setDeleteConfirm(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6" role="dialog" aria-modal="true" aria-labelledby="deleteRoleTitle" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="deleteRoleTitle" className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('admin.deleteRole', 'Delete Role')}</h2>

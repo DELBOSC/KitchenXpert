@@ -206,7 +206,8 @@ describe('SpatialConstraints', () => {
       renderSpatialConstraints();
 
       await waitFor(() => {
-        const backLink = screen.getByRole('link', { name: /back/i });
+        // fr.json: common.back = "Retour".
+        const backLink = screen.getByRole('link', { name: /back|retour/i });
         expect(backLink).toBeInTheDocument();
         expect(backLink).toHaveAttribute('href', '/questionnaire');
       });

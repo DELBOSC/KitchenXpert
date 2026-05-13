@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { KeyRound, LogOut, Shield, Mail, Phone, Check } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useToast } from '../components/ui/Toast';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+
 import {
   Avatar, Badge, Button, Card, CardBody, CardHeader, CardTitle, CardDescription,
   Container, Dialog, Input, PageHeader, Select, Skeleton, Switch,
 } from '../components/ui';
+import { useToast } from '../components/ui/Toast';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Preferences {
   language?: string;
@@ -57,12 +58,12 @@ export default function ProfilePage(): React.ReactElement {
         }
         if (prefRes.status === 'fulfilled' && prefRes.value.ok) {
           const data = await prefRes.value.json();
-          if (mountedRef.current && data.data) setPreferences(data.data);
+          if (mountedRef.current && data.data) {setPreferences(data.data);}
         }
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') toast.error('Impossible de charger le profil');
+        if ((err as Error).name !== 'AbortError') {toast.error('Impossible de charger le profil');}
       } finally {
-        if (mountedRef.current) setLoading(false);
+        if (mountedRef.current) {setLoading(false);}
       }
     })();
 
@@ -79,12 +80,12 @@ export default function ProfilePage(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, phone }),
       });
-      if (!res.ok) throw new Error('Échec de la mise à jour');
+      if (!res.ok) {throw new Error('Échec de la mise à jour');}
       toast.success('Profil mis à jour');
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
-      if (mountedRef.current) setSavingProfile(false);
+      if (mountedRef.current) {setSavingProfile(false);}
     }
   };
 
@@ -97,18 +98,18 @@ export default function ProfilePage(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(preferences),
       });
-      if (!res.ok) throw new Error('Échec de la mise à jour');
+      if (!res.ok) {throw new Error('Échec de la mise à jour');}
       toast.success('Préférences enregistrées');
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
-      if (mountedRef.current) setSavingPrefs(false);
+      if (mountedRef.current) {setSavingPrefs(false);}
     }
   };
 
   const changePassword = async (): Promise<void> => {
-    if (newPassword !== confirmPassword) return toast.error('Les mots de passe ne correspondent pas');
-    if (newPassword.length < 8) return toast.error('8 caractères minimum');
+    if (newPassword !== confirmPassword) {return toast.error('Les mots de passe ne correspondent pas');}
+    if (newPassword.length < 8) {return toast.error('8 caractères minimum');}
     setChangingPw(true);
     try {
       const res = await fetch('/api/v1/auth/password/change', {
@@ -117,14 +118,14 @@ export default function ProfilePage(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
-      if (!res.ok) throw new Error('Mot de passe actuel incorrect');
+      if (!res.ok) {throw new Error('Mot de passe actuel incorrect');}
       setShowPwModal(false);
       setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
       toast.success('Mot de passe modifié');
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
-      if (mountedRef.current) setChangingPw(false);
+      if (mountedRef.current) {setChangingPw(false);}
     }
   };
 

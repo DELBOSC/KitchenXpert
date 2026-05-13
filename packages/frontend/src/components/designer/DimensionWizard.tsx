@@ -815,7 +815,7 @@ export default function DimensionWizard({
 
   // Animated step change
   const goToStep = useCallback((newStep: number) => {
-    if (animating) return;
+    if (animating) {return;}
     setSlideDirection(newStep > step ? 'left' : 'right');
     setAnimating(true);
     setTimeout(() => {

@@ -1,4 +1,5 @@
 import React, { forwardRef, useId } from 'react';
+
 import { cn } from './_utils';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -9,10 +10,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: React.ReactNode;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+export const Input = forwardRef<HTMLInputElement, InputProps>((
   { className, label, description, error, leftIcon, rightIcon, id, ...rest },
   ref,
-) {
+) => {
   const autoId = useId();
   const inputId = id || autoId;
   const describedBy = description ? `${inputId}-desc` : error ? `${inputId}-err` : undefined;

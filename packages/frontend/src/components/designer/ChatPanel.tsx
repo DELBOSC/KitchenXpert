@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import * as THREE from 'three';
+
 import { useAIChat } from '../../hooks/useAIChat';
+
 import type { SceneContext, ToolUseEntry, SessionInfo } from '../../hooks/useAIChat';
 import type { KitchenEngine } from '@kitchenxpert/3d-engine';
-import * as THREE from 'three';
 
 // Web Speech API type declarations
 interface SpeechRecognitionEvent extends Event {
@@ -209,7 +211,7 @@ function ToolActionCard({
 }): React.ReactElement {
   const [dismissed, setDismissed] = useState(false);
 
-  if (dismissed) return <></>;
+  if (dismissed) {return <></>;}
 
   return (
     <div className="mt-2 bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-xl p-3">
@@ -342,7 +344,7 @@ export default function ChatPanel({ engine, onClose, onToolAction }: ChatPanelPr
   }, [onToolAction, showVoiceCommandToast]);
 
   const toggleVoiceInput = useCallback(() => {
-    if (!voiceSupported) return;
+    if (!voiceSupported) {return;}
 
     // If already listening, stop
     if (isListening && recognitionRef.current) {
@@ -352,7 +354,7 @@ export default function ChatPanel({ engine, onClose, onToolAction }: ChatPanelPr
     }
 
     const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognitionCtor) return;
+    if (!SpeechRecognitionCtor) {return;}
 
     const recognition = new SpeechRecognitionCtor();
     recognition.continuous = false;
@@ -440,7 +442,7 @@ export default function ChatPanel({ engine, onClose, onToolAction }: ChatPanelPr
 
   const handleSend = useCallback(() => {
     const trimmed = input.trim();
-    if (!trimmed || isStreaming || !engine) return;
+    if (!trimmed || isStreaming || !engine) {return;}
 
     // Try local voice command parsing on typed text as well
     const localCommand = tryParseLocalVoiceCommand(trimmed);
@@ -463,7 +465,7 @@ export default function ChatPanel({ engine, onClose, onToolAction }: ChatPanelPr
   }, [handleSend]);
 
   const handleQuickSuggestion = useCallback((suggestion: string) => {
-    if (isStreaming || !engine) return;
+    if (isStreaming || !engine) {return;}
     const sceneContext = extractSceneContext(engine);
     sendMessage(suggestion, sceneContext);
   }, [isStreaming, engine, sendMessage]);

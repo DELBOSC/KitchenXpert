@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fallback OG image (1200×630). SVG so it stays under 2 KB and we ship
+  it before the design team produces the JPG. Most social validators
+  (Twitter, LinkedIn, Slack) accept SVG; Facebook does not. Replace
+  with `default.jpg` (1200×630, ≤ 200 KB) once you have a real cover.
+
+  After replacing, also drop:
+    public/og/home.jpg
+    public/og/pricing.jpg
+    public/og/catalog.jpg
+    public/og/sandbox.jpg
+  and update src/components/seo/SeoHead.tsx DEFAULT_OG_IMAGE accordingly.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="100%" stop-color="#1a0a2a"/>
+    </linearGradient>
+    <radialGradient id="aurora" cx="50%" cy="0%" r="60%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.45"/>
+      <stop offset="60%" stop-color="#ec4899" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#0a0a0f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="text" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#aurora)"/>
+
+  <!-- Logo mark -->
+  <g transform="translate(80, 80)">
+    <rect x="0" y="0" width="56" height="56" rx="14" fill="url(#text)"/>
+    <text x="80" y="40" font-family="ui-sans-serif, -apple-system, system-ui" font-size="28" font-weight="600" fill="#ffffff">KitchenXpert</text>
+  </g>
+
+  <!-- Headline -->
+  <text x="80" y="380" font-family="ui-sans-serif, -apple-system, system-ui" font-size="84" font-weight="600" fill="url(#text)" letter-spacing="-2">
+    La cuisine
+  </text>
+  <text x="80" y="475" font-family="ui-sans-serif, -apple-system, system-ui" font-size="84" font-weight="600" fill="url(#text)" letter-spacing="-2">
+    en quelques clics.
+  </text>
+
+  <!-- Tagline -->
+  <text x="80" y="540" font-family="ui-sans-serif, -apple-system, system-ui" font-size="24" fill="#9ca3af">
+    Designer 3D · IA · Catalogue IKEA + 4 fournisseurs
+  </text>
+
+  <!-- Footer URL -->
+  <text x="80" y="595" font-family="ui-sans-serif, -apple-system, system-ui" font-size="18" fill="#6b7280">
+    kitchenxpert.com
+  </text>
+</svg>

@@ -1,19 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
-import { api } from '../services/api/api';
-import { API_ENDPOINTS } from '../services/api/endpoints';
-import { useToast } from '../components/ui/Toast';
-import { useKitchenEngine } from '../hooks/useKitchenEngine';
+
 import { BRAND_PROFILES, getAllBrandIds, getBrandProfile, recomputeWithThickness, mmToM } from '@kitchenxpert/3d-engine';
-import type { BrandId } from '@kitchenxpert/3d-engine';
-import Toolbar from '../components/designer/Toolbar';
-import CatalogPanel from '../components/designer/CatalogPanel';
-import PropertiesPanel from '../components/designer/PropertiesPanel';
+
 import AIAssistantPanel from '../components/designer/AIAssistantPanel';
-import ChatPanel from '../components/designer/ChatPanel';
-import ExportPanel from '../components/designer/ExportPanel';
 import PricingPanel from '../components/designer/PricingPanel';
 import PlanView2DOverlay from '../components/designer/PlanView2DOverlay';
 import CollaboratorCursors from '../components/designer/CollaboratorCursors';
@@ -22,16 +14,27 @@ import VersionHistoryPanel from '../components/designer/VersionHistoryPanel';
 import KeyboardShortcutsModal from '../components/designer/KeyboardShortcutsModal';
 import ShoppingListPanel from '../components/designer/ShoppingListPanel';
 import BudgetBar from '../components/designer/BudgetBar';
+import CatalogPanel from '../components/designer/CatalogPanel';
+import ChatPanel from '../components/designer/ChatPanel';
 import EcoScorePanel from '../components/designer/EcoScorePanel';
-import ProductPairingsPanel from '../components/designer/ProductPairingsPanel';
-import StockIndicator from '../components/designer/StockIndicator';
 import DimensionWizard from '../components/designer/DimensionWizard';
 import DesignDiffOverlay from '../components/designer/DesignDiffOverlay';
 import DisplacementCostOverlay from '../components/designer/DisplacementCostOverlay';
+import ExportPanel from '../components/designer/ExportPanel';
+import ProductPairingsPanel from '../components/designer/ProductPairingsPanel';
+import PropertiesPanel from '../components/designer/PropertiesPanel';
 import QuoteToPartnerModal from '../components/designer/QuoteToPartnerModal';
+import StockIndicator from '../components/designer/StockIndicator';
 import StyleTransferModal from '../components/designer/StyleTransferModal';
+import Toolbar from '../components/designer/Toolbar';
 import LiDARScanner from '../components/scanner/LiDARScanner';
+import { useToast } from '../components/ui/Toast';
 import { useCollaboration } from '../hooks/useCollaboration';
+import { useKitchenEngine } from '../hooks/useKitchenEngine';
+import { api } from '../services/api/api';
+import { API_ENDPOINTS } from '../services/api/endpoints';
+
+import type { BrandId } from '@kitchenxpert/3d-engine';
 
 // ─── Types ────────────────────────────────────────────────────
 interface Project {
@@ -368,7 +371,7 @@ function KitchenDesigner({
 
   // Warn about unsaved changes on page close/refresh
   useEffect(() => {
-    if (!hasChanges) return;
+    if (!hasChanges) {return;}
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = '';
@@ -489,12 +492,12 @@ function KitchenDesigner({
   }), [t]);
 
   const updateBudgetData = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
     const categoryMap = new Map<string, number>();
     let total = 0;
     engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-      if (!child.userData.id || child.userData.type === 'wall' || child.userData.type === 'floor') return;
-      if (child.userData.isGenerated) return;
+      if (!child.userData.id || child.userData.type === 'wall' || child.userData.type === 'floor') {return;}
+      if (child.userData.isGenerated) {return;}
       const itemType = child.userData.type || 'unknown';
       const price = child.userData.price || DEFAULT_PRICES[itemType] || 0;
       total += price;
@@ -510,7 +513,7 @@ function KitchenDesigner({
   }, [engine, DEFAULT_PRICES, BUDGET_CATEGORY_MAP]);
 
   useEffect(() => {
-    if (!engine) return;
+    if (!engine) {return;}
     updateBudgetData();
     engine.history.onChangeCallback(() => {
       updateBudgetData();
@@ -564,13 +567,13 @@ function KitchenDesigner({
 
   // ─── Build Kitchen Scene ──────────────────────
   const buildKitchenScene = useCallback(() => {
-    if (!engine) return;
+    if (!engine) {return;}
     const scene = engine.scene.getThreeScene();
 
     // Remove old kitchen structure
     const toRemove: THREE.Object3D[] = [];
     scene.traverse((obj) => {
-      if (obj.userData.isKitchenStructure) toRemove.push(obj);
+      if (obj.userData.isKitchenStructure) {toRemove.push(obj);}
     });
     toRemove.forEach((obj) => scene.remove(obj));
 
@@ -675,7 +678,7 @@ function KitchenDesigner({
 
   // Rebuild scene when dimensions/layout change
   useEffect(() => {
-    if (!isReady || loading) return;
+    if (!isReady || loading) {return;}
     buildKitchenScene();
   }, [isReady, loading, buildKitchenScene]);
 
@@ -705,7 +708,7 @@ function KitchenDesigner({
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip if user is typing in an input or textarea
       const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {return;}
 
       // Ctrl+S → save
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {

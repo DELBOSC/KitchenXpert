@@ -308,7 +308,7 @@ describe('Comment Routes', () => {
 
       const response = await authedRequest(app)
         .post('/comments')
-        .send({ projectId: 'nonexistent', content: 'Test' })
+        .send({ projectId: '00000000-0000-0000-0000-000000000000', content: 'Test' })
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -340,7 +340,7 @@ describe('Comment Routes', () => {
 
       const response = await authedRequest(app)
         .post('/comments')
-        .send({ projectId: 'project-1', content: 'Reply', parentId: 'nonexistent' })
+        .send({ projectId: 'project-1', content: 'Reply', parentId: '00000000-0000-0000-0000-000000000000' })
         .expect(404);
 
       expect(response.body.success).toBe(false);

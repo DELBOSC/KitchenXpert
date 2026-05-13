@@ -49,23 +49,23 @@ const SUBTYPE_FALLBACK_LABELS: Record<string, string> = {
 
 // ─── Color helpers ────────────────────────────────────────────
 function getCostColorClasses(cost: number): string {
-  if (cost === 0) return 'text-green-600 dark:text-green-400';
-  if (cost < 500) return 'text-yellow-600 dark:text-yellow-400';
-  if (cost <= 1000) return 'text-orange-500 dark:text-orange-400';
+  if (cost === 0) {return 'text-green-600 dark:text-green-400';}
+  if (cost < 500) {return 'text-yellow-600 dark:text-yellow-400';}
+  if (cost <= 1000) {return 'text-orange-500 dark:text-orange-400';}
   return 'text-red-500 dark:text-red-400';
 }
 
 function getBorderColorClass(cost: number): string {
-  if (cost === 0) return 'border-green-400 dark:border-green-600';
-  if (cost < 500) return 'border-yellow-400 dark:border-yellow-600';
-  if (cost <= 1000) return 'border-orange-400 dark:border-orange-600';
+  if (cost === 0) {return 'border-green-400 dark:border-green-600';}
+  if (cost < 500) {return 'border-yellow-400 dark:border-yellow-600';}
+  if (cost <= 1000) {return 'border-orange-400 dark:border-orange-600';}
   return 'border-red-400 dark:border-red-600';
 }
 
 function getDotColor(cost: number): string {
-  if (cost === 0) return '#22c55e';
-  if (cost < 500) return '#eab308';
-  if (cost <= 1000) return '#f97316';
+  if (cost === 0) {return '#22c55e';}
+  if (cost < 500) {return '#eab308';}
+  if (cost <= 1000) {return '#f97316';}
   return '#ef4444';
 }
 

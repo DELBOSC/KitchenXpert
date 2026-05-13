@@ -323,7 +323,7 @@ describe('Abandonment Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('sessionData');
+      expect(JSON.stringify(response.body)).toContain('sessionData');
     });
 
     it('should return 400 when sessionData.events is not an array', async () => {
@@ -333,7 +333,7 @@ describe('Abandonment Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('sessionData');
+      expect(JSON.stringify(response.body)).toContain('sessionData');
     });
 
     it('should return 400 when sessionData.events is missing', async () => {

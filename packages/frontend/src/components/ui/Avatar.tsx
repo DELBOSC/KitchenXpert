@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { cn } from './_utils';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -12,7 +13,7 @@ const sizes: Record<Size, string> = {
 };
 
 function getInitials(name?: string): string {
-  if (!name) return '?';
+  if (!name) {return '?';}
   return name
     .split(/\s+/)
     .slice(0, 2)

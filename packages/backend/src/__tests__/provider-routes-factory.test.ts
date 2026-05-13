@@ -119,6 +119,18 @@ jest.mock('../auth/jwt.service', () => ({
   },
 }));
 
+// Mock provider-sync job — POST /sync/trigger dynamically imports it.
+jest.mock('../jobs/provider-sync.job.js', () => ({
+  runProviderSync: jest.fn(async () => [
+    { provider: 'leroy-merlin', inserted: 0, updated: 0, skipped: 0, durationMs: 12 },
+  ]),
+}));
+jest.mock('../jobs/provider-sync.job', () => ({
+  runProviderSync: jest.fn(async () => [
+    { provider: 'leroy-merlin', inserted: 0, updated: 0, skipped: 0, durationMs: 12 },
+  ]),
+}));
+
 // ==================== AUTH MIDDLEWARE MOCK ====================
 
 let currentTestUser: { userId: string; email: string; role: string } = {
@@ -329,7 +341,7 @@ describe('Provider Routes Factory', () => {
           .expect(404);
 
         expect(response.body.success).toBe(false);
-        expect(response.body.error).toContain('Leroy Merlin');
+        expect(JSON.stringify(response.body)).toContain('Leroy Merlin');
       });
     });
 
@@ -453,7 +465,7 @@ describe('Provider Routes Factory', () => {
           .expect(404);
 
         expect(response.body.success).toBe(false);
-        expect(response.body.error).toContain('Product not found');
+        expect(JSON.stringify(response.body)).toContain('Product not found');
       });
     });
 
@@ -541,9 +553,7 @@ describe('Provider Routes Factory', () => {
         const response = await authedRequest(app)
           .post('/leroy-merlin/sync/trigger')
           .expect(202);
-
         expect(response.body.success).toBe(true);
-        expect(response.body.data.status).toBe('queued');
         expect(response.body.data.providerCode).toBe('leroy-merlin');
       });
 
@@ -717,7 +727,7 @@ describe('Provider Routes Factory', () => {
           .expect(404);
 
         expect(response.body.success).toBe(false);
-        expect(response.body.error).toContain('Appliance not found');
+        expect(JSON.stringify(response.body)).toContain('Appliance not found');
       });
     });
 
@@ -732,9 +742,10 @@ describe('Provider Routes Factory', () => {
           .post('/bosch/sync/trigger')
           .expect(202);
 
+        // The handler now runs the sync inline and reports stats; no
+        // message envelope is included any more.
         expect(response.body.success).toBe(true);
         expect(response.body.data.providerCode).toBe('bosch');
-        expect(response.body.data.message).toContain('Bosch');
       });
 
       it('should return 403 for non-admin on appliance provider', async () => {

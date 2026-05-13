@@ -1,0 +1,55 @@
+# KitchenXpert — robots policy
+# Updated 2026-05-10. Bump the date in PRs that change this file so future
+# diffs are easy to spot.
+
+User-agent: *
+Allow: /
+Allow: /guides/
+Allow: /cuisinistes/
+Allow: /budget/
+Allow: /styles/
+Allow: /comparatifs/
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /profile
+Disallow: /profile/
+Disallow: /designer
+Disallow: /designer/
+Disallow: /projects/
+Disallow: /admin/
+Disallow: /partner/
+Disallow: /legal/privacy-settings
+Disallow: /vr/
+Disallow: /ar
+Disallow: /workflow/
+Disallow: /compliance/
+Disallow: /smart-home/
+Disallow: /financing
+Disallow: /price-tracker
+Disallow: /renovation
+Disallow: /certified-quotes
+Disallow: /marketplace/
+
+# AI training crawlers — blocked by default. Whitelist explicitly if and
+# when we sign a content-licensing agreement.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+Sitemap: https://kitchenxpert.com/sitemap.xml
+Sitemap: https://kitchenxpert.com/guides/sitemap-index.xml

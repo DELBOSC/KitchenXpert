@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
+
 import { useAuth } from '../../../contexts/AuthContext';
 
 interface SidebarProps {

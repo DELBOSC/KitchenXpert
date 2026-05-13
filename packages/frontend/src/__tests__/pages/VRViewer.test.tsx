@@ -171,7 +171,7 @@ describe('VRViewer', () => {
       renderVRViewer();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /go back/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /go back|retour/i })).toBeInTheDocument();
       });
     });
 
@@ -180,7 +180,7 @@ describe('VRViewer', () => {
       renderVRViewer();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /try again|réessayer/i })).toBeInTheDocument();
       });
     });
 
@@ -190,10 +190,10 @@ describe('VRViewer', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /go back/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /go back|retour/i })).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /go back/i }));
+      await user.click(screen.getByRole('button', { name: /go back|retour/i }));
       expect(mockNavigate).toHaveBeenCalledWith(-1);
     });
 
@@ -206,10 +206,10 @@ describe('VRViewer', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /try again|réessayer/i })).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /try again/i }));
+      await user.click(screen.getByRole('button', { name: /try again|réessayer/i }));
 
       // Should call fetch again (retryCount incremented)
       await waitFor(() => {
@@ -345,8 +345,14 @@ describe('VRViewer', () => {
       await user.click(screen.getByTitle('Settings'));
 
       await waitFor(() => {
-        expect(screen.getByText(/quality/i)).toBeInTheDocument();
-        expect(screen.getByDisplayValue('high')).toBeInTheDocument();
+        // "Quality" appears as the field label and inside the status bar.
+        expect(screen.getAllByText(/quality/i).length).toBeGreaterThan(0);
+        // Quality select defaults to "high".
+        const selects = screen.getAllByRole('combobox');
+        const qualitySelect = selects.find(
+          (s) => (s as HTMLSelectElement).value === 'high',
+        );
+        expect(qualitySelect).toBeDefined();
       });
     });
 

@@ -1,5 +1,6 @@
-import React, { forwardRef, useId } from 'react';
 import { Check } from 'lucide-react';
+import React, { forwardRef, useId } from 'react';
+
 import { cn } from './_utils';
 
 interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
@@ -7,10 +8,10 @@ interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>
   description?: string;
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((
   { className, label, description, id, checked, defaultChecked, ...rest },
   ref,
-) {
+) => {
   const autoId = useId();
   const inputId = id || autoId;
   // We style from the input's :checked state using a sibling span with

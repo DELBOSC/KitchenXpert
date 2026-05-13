@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link, useSearchParams } from 'react-router-dom';
+
 import { useToast } from '../../../components/ui/Toast';
 
 interface User {
@@ -70,9 +71,9 @@ const UserManagement: React.FC = () => {
           limit: pagination.itemsPerPage.toString(),
         });
 
-        if (searchQuery) params.append('search', searchQuery);
-        if (roleFilter) params.append('role', roleFilter);
-        if (statusFilter) params.append('status', statusFilter);
+        if (searchQuery) {params.append('search', searchQuery);}
+        if (roleFilter) {params.append('role', roleFilter);}
+        if (statusFilter) {params.append('status', statusFilter);}
 
         const response = await fetch(`/api/v1/admin/users?${params.toString()}`, { credentials: 'include', signal: controller.signal });
 
@@ -84,7 +85,7 @@ const UserManagement: React.FC = () => {
         setUsers(data.users);
         setPagination(data.pagination);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : t('admin.errors.unexpected', 'An unexpected error occurred');
         setError(errorMessage);
       } finally {
@@ -141,7 +142,7 @@ const UserManagement: React.FC = () => {
         credentials: 'include',
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         throw new Error(t('admin.errors.userAction', { action, defaultValue: `Failed to ${action} user` }));
@@ -176,7 +177,7 @@ const UserManagement: React.FC = () => {
   };
 
   const handleBulkAction = async (action: 'suspend' | 'activate'): Promise<void> => {
-    if (selectedUsers.length === 0) return;
+    if (selectedUsers.length === 0) {return;}
 
     setIsBulkProcessing(true);
     let successCount = 0;
@@ -190,7 +191,7 @@ const UserManagement: React.FC = () => {
           credentials: 'include',
         });
 
-        if (!mountedRef.current) return;
+        if (!mountedRef.current) {return;}
 
         if (response.ok) {
           successCount++;
@@ -206,7 +207,7 @@ const UserManagement: React.FC = () => {
       }
     }
 
-    if (!mountedRef.current) return;
+    if (!mountedRef.current) {return;}
 
     if (successCount > 0) {
       toast.success(t('admin.bulkActionSuccess', `Successfully updated ${successCount} user(s)`));
@@ -221,7 +222,7 @@ const UserManagement: React.FC = () => {
   };
 
   const handleBulkRoleChange = async (): Promise<void> => {
-    if (selectedUsers.length === 0) return;
+    if (selectedUsers.length === 0) {return;}
 
     setIsBulkProcessing(true);
     let successCount = 0;
@@ -236,7 +237,7 @@ const UserManagement: React.FC = () => {
           body: JSON.stringify({ role: bulkRole }),
         });
 
-        if (!mountedRef.current) return;
+        if (!mountedRef.current) {return;}
 
         if (response.ok) {
           successCount++;
@@ -251,7 +252,7 @@ const UserManagement: React.FC = () => {
       }
     }
 
-    if (!mountedRef.current) return;
+    if (!mountedRef.current) {return;}
 
     if (successCount > 0) {
       toast.success(t('admin.bulkRoleSuccess', `Successfully changed role for ${successCount} user(s)`));
@@ -297,7 +298,7 @@ const UserManagement: React.FC = () => {
   if (isLoading && users.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
       </div>
     );
   }
@@ -574,7 +575,7 @@ const UserManagement: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="actionModalTitle"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) setShowActionModal(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) {setShowActionModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="actionModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -606,7 +607,7 @@ const UserManagement: React.FC = () => {
                 }`}
               >
                 {isProcessing && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {t('common.confirm', 'Confirm')}
               </button>
@@ -622,7 +623,7 @@ const UserManagement: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="bulkModalTitle"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isBulkProcessing) setShowBulkModal(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape' && !isBulkProcessing) {setShowBulkModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="bulkModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -659,7 +660,7 @@ const UserManagement: React.FC = () => {
                 }`}
               >
                 {isBulkProcessing && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {t('common.confirm', 'Confirm')} ({selectedUsers.length})
               </button>
@@ -675,7 +676,7 @@ const UserManagement: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="bulkRoleModalTitle"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isBulkProcessing) setShowBulkModal(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape' && !isBulkProcessing) {setShowBulkModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="bulkRoleModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -711,7 +712,7 @@ const UserManagement: React.FC = () => {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {isBulkProcessing && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {t('admin.applyRole', 'Apply Role')} ({selectedUsers.length})
               </button>

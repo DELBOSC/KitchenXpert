@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Package, ArrowLeft, Ruler } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+
+import ImportToDesignDialog from './ImportToDesignDialog';
 import {
   Badge, Card, Container, EmptyState, ErrorState, Input, PageHeader, Select, Skeleton,
   Button, fadeUp, stagger,
 } from '../../components/ui';
-import ImportToDesignDialog from './ImportToDesignDialog';
 
 interface DBProduct {
   id: string;
@@ -85,7 +86,7 @@ export default function ProviderCatalog(): React.ReactElement {
             ? `/api/v1/ikea/search?q=${encodeURIComponent(search)}&limit=40`
             : '/api/v1/ikea/kitchen/cabinets?limit=40';
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
           const json = await res.json();
           const results = (json.data?.results ?? []) as IkeaSearchResult[];
           setItems(results.map((r) => ({ ...r, _kind: 'ikea' as const })));
@@ -94,7 +95,7 @@ export default function ProviderCatalog(): React.ReactElement {
             ? `/api/v1/${providerCode}/appliances/search?q=${encodeURIComponent(search)}&limit=40`
             : `/api/v1/${providerCode}/appliances?limit=40`;
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
           const json = await res.json();
           const results = (json.data ?? []) as DBAppliance[];
           setItems(results.map((r) => ({ ...r, _kind: 'appliance' as const })));
@@ -103,35 +104,35 @@ export default function ProviderCatalog(): React.ReactElement {
             ? `/api/v1/${providerCode}/products/search?q=${encodeURIComponent(search)}&limit=40`
             : `/api/v1/${providerCode}/products?limit=40`;
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
           const json = await res.json();
           const results = (json.data ?? []) as DBProduct[];
           setItems(results.map((r) => ({ ...r, _kind: 'product' as const })));
         }
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') setError((err as Error).message);
+        if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}
       }
     };
 
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (debounceRef.current) {clearTimeout(debounceRef.current);}
     debounceRef.current = setTimeout(() => void run(), search ? 300 : 0);
 
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (debounceRef.current) {clearTimeout(debounceRef.current);}
       controller.abort();
     };
   }, [providerCode, search, isLive, isAppliance]);
 
   const sorted = useMemo(() => {
-    if (!items) return null;
+    if (!items) {return null;}
     const copy = [...items];
     const priceOf = (it: CatalogItem): number =>
       typeof (it as { price?: unknown }).price === 'number'
         ? Number((it as { price: number }).price)
         : Number((it as { price: string }).price ?? 0);
-    if (sortBy === 'price_asc') copy.sort((a, b) => priceOf(a) - priceOf(b));
-    else if (sortBy === 'price_desc') copy.sort((a, b) => priceOf(b) - priceOf(a));
-    else copy.sort((a, b) => a.name.localeCompare(b.name));
+    if (sortBy === 'price_asc') {copy.sort((a, b) => priceOf(a) - priceOf(b));}
+    else if (sortBy === 'price_desc') {copy.sort((a, b) => priceOf(b) - priceOf(a));}
+    else {copy.sort((a, b) => a.name.localeCompare(b.name));}
     return copy;
   }, [items, sortBy]);
 
@@ -235,11 +236,11 @@ function CatalogItemCard({
   const isAppliance = item._kind === 'appliance';
 
   const dims = (() => {
-    if (isIkea) return item.dimensions;
+    if (isIkea) {return item.dimensions;}
     const w = (item as { width?: unknown }).width;
     const d = (item as { depth?: unknown }).depth;
     const h = (item as { height?: unknown }).height;
-    if (w == null && d == null && h == null) return undefined;
+    if (w == null && d == null && h == null) {return undefined;}
     return { width: w == null ? undefined : Number(w), depth: d == null ? undefined : Number(d), height: h == null ? undefined : Number(h), unit: 'cm' as const };
   })();
 

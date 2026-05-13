@@ -1,0 +1,99 @@
+---
+/**
+ * TOC — sticky right-side table of contents with scroll-spy.
+ *
+ * Astro renders the static list at build time from the headings array
+ * Astro extracts from MDX. The active-link highlighting is one tiny
+ * IntersectionObserver hydrated as an inline script (no React island
+ * needed, ~600 bytes).
+ */
+
+interface Heading { depth: number; slug: string; text: string; }
+interface Props { headings: Heading[]; }
+
+const { headings } = Astro.props;
+const tocItems = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+<nav class="toc" aria-label="Sommaire de l'article">
+  <div class="toc-title">Sommaire</div>
+  <ul>
+    {tocItems.map((h) => (
+      <li class={`depth-${h.depth}`}>
+        <a href={`#${h.slug}`} data-toc-link={h.slug}>{h.text}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  // Scroll-spy: highlight the link whose section is currently in view.
+  // No framework. ~30 lines vs ~5 KB react-scrollspy.
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+  const map = new Map<string, HTMLAnchorElement>();
+  links.forEach((a) => map.set(a.dataset.tocLink!, a));
+
+  if (links.length > 0 && 'IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            map.forEach((a) => a.classList.remove('active'));
+            map.get(e.target.id)?.classList.add('active');
+          }
+        }
+      },
+      { rootMargin: '-30% 0px -65% 0px' },
+    );
+    document.querySelectorAll<HTMLElement>('h2[id], h3[id]').forEach((h) => obs.observe(h));
+  }
+</script>
+
+<style>
+  .toc {
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+    padding-left: 1.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .toc-title {
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .toc li {
+    margin-bottom: 0.5rem;
+  }
+  .toc li.depth-3 {
+    margin-left: 0.875rem;
+    font-size: 0.75rem;
+  }
+  .toc a {
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    transition: color 0.15s;
+    border-left: 2px solid transparent;
+    padding-left: 0.625rem;
+    margin-left: -0.75rem;
+    display: block;
+  }
+  .toc a:hover { color: rgba(255, 255, 255, 0.9); }
+  .toc a.active {
+    color: #fff;
+    border-left-color: #a78bfa;
+  }
+  @media (max-width: 1023px) {
+    .toc { display: none; }
+  }
+</style>

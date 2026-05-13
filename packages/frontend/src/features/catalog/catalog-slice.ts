@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface CatalogItem {
   id: string;
@@ -53,7 +53,7 @@ export const fetchCatalogs = createAsyncThunk<Catalog[]>('catalog/fetchCatalogs'
   try {
     const response = await fetch(`${API_URL}/catalog`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -67,16 +67,16 @@ export const fetchProducts = createAsyncThunk<
 >('catalog/fetchProducts', async ({ catalogId, page = 1, limit = 20, filters = {} }, { rejectWithValue }) => {
   try {
     const queryParams: Record<string, string> = { page: String(page), limit: String(limit) };
-    if (filters.category) queryParams.category = filters.category;
-    if (filters.providerId) queryParams.providerId = filters.providerId;
-    if (filters.minPrice !== undefined) queryParams.minPrice = String(filters.minPrice);
-    if (filters.maxPrice !== undefined) queryParams.maxPrice = String(filters.maxPrice);
-    if (filters.search) queryParams.search = filters.search;
+    if (filters.category) {queryParams.category = filters.category;}
+    if (filters.providerId) {queryParams.providerId = filters.providerId;}
+    if (filters.minPrice !== undefined) {queryParams.minPrice = String(filters.minPrice);}
+    if (filters.maxPrice !== undefined) {queryParams.maxPrice = String(filters.maxPrice);}
+    if (filters.search) {queryParams.search = filters.search;}
     const params = new URLSearchParams(queryParams);
     const url = catalogId ? `${API_URL}/catalog/${catalogId}/products?${params}` : `${API_URL}/products?${params}`;
     const response = await fetch(url, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -88,7 +88,7 @@ export const searchProducts = createAsyncThunk<CatalogItem[], string>('catalog/s
   try {
     const response = await fetch(`${API_URL}/catalog/search?q=${encodeURIComponent(query)}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -100,7 +100,7 @@ export const fetchCategories = createAsyncThunk<string[]>('catalog/fetchCategori
   try {
     const response = await fetch(`${API_URL}/products/categories`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';

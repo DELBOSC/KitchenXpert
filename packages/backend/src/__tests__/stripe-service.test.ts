@@ -381,6 +381,13 @@ describe('StripeService', () => {
 
   describe('getPaymentHistory', () => {
     it('should return formatted payment history', async () => {
+      // IDOR guard: stub the customer retrieval first so the ownership
+      // check passes (metadata.userId must match the userId passed in).
+      mockStripe.customers.retrieve.mockResolvedValue({
+        id: 'cus_test',
+        deleted: false,
+        metadata: { userId: 'user-1' },
+      });
       mockStripe.charges.list.mockResolvedValue({
         data: [
           {
@@ -396,7 +403,7 @@ describe('StripeService', () => {
         ],
       });
 
-      const result = await service.getPaymentHistory('cus_test');
+      const result = await service.getPaymentHistory('cus_test', 'user-1');
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe('ch_1');

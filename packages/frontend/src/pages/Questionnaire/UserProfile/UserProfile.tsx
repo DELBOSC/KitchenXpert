@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, Link } from 'react-router-dom';
+
 import { logger } from '../../../services/logger';
 
 interface UserProfileData {
@@ -112,10 +113,10 @@ const UserProfile: React.FC = () => {
 
         if (response.ok) {
           const result = await response.json();
-          if (result.data) setFormData(result.data as UserProfileData);
+          if (result.data) {setFormData(result.data as UserProfileData);}
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         // If no existing profile, use defaults
         logger.debug('Failed to fetch user profile, using defaults', err instanceof Error ? { error: err.message } : { error: err });
       } finally {
@@ -225,7 +226,7 @@ const UserProfile: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
       </div>
     );
   }
@@ -460,7 +461,7 @@ const UserProfile: React.FC = () => {
             {/* AI Tips */}
             {aiTipsLoading && (
               <div className="mt-6 flex items-center gap-2 text-sm text-gray-500">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" />
                 Analyse IA en cours...
               </div>
             )}
@@ -499,7 +500,7 @@ const UserProfile: React.FC = () => {
                 className={`px-6 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${isSaving ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
               >
                 {isSaving && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {isSaving ? t('common.saving', 'Enregistrement...') : t('common.continue', 'Continue')}
                 {!isSaving && (

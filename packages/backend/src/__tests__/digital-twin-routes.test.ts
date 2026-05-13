@@ -172,7 +172,7 @@ function authedRequest(app: Application) {
 // ==================== FIXTURES ====================
 
 const mockKitchen = {
-  id: 'kitchen-1',
+  id: '550e8400-e29b-41d4-a716-446655440000',
   name: 'My Kitchen',
   userId: 'test-user-1',
   projectId: 'project-1',
@@ -180,7 +180,7 @@ const mockKitchen = {
 };
 
 const otherUserKitchen = {
-  id: 'kitchen-2',
+  id: '660e8400-e29b-41d4-a716-446655440001',
   name: 'Other Kitchen',
   userId: 'other-user-99',
   projectId: 'project-2',
@@ -200,7 +200,7 @@ const mockTwinData = {
 
 const mockTwinRecord = {
   id: 'twin-1',
-  kitchenId: 'kitchen-1',
+  kitchenId: '550e8400-e29b-41d4-a716-446655440000',
   installedAt: '2024-06-01T00:00:00.000Z',
   data: JSON.stringify(mockTwinData),
   createdAt: new Date('2024-06-01'),
@@ -209,7 +209,7 @@ const mockTwinRecord = {
 
 const mockCreatedTwin = {
   id: 'twin-1',
-  kitchenId: 'kitchen-1',
+  kitchenId: '550e8400-e29b-41d4-a716-446655440000',
   installedAt: new Date('2024-06-01'),
   items: mockTwinData.items,
   technicalPlan: mockTwinData.technicalPlan,
@@ -240,7 +240,7 @@ describe('Digital Twin Routes', () => {
     it('should return 401 for unauthenticated request to POST /digital-twin', async () => {
       const response = await request(app)
         .post('/digital-twin')
-        .send({ kitchenId: 'kitchen-1' })
+        .send({ kitchenId: '550e8400-e29b-41d4-a716-446655440000' })
         .expect(401);
 
       expect(response.body.success).toBe(false);
@@ -248,7 +248,7 @@ describe('Digital Twin Routes', () => {
 
     it('should return 401 for unauthenticated request to GET /digital-twin/:kitchenId', async () => {
       const response = await request(app)
-        .get('/digital-twin/kitchen-1')
+        .get('/digital-twin/550e8400-e29b-41d4-a716-446655440000')
         .expect(401);
 
       expect(response.body.success).toBe(false);
@@ -256,7 +256,7 @@ describe('Digital Twin Routes', () => {
 
     it('should return 401 for unauthenticated request to PUT /digital-twin/:kitchenId/sync', async () => {
       const response = await request(app)
-        .put('/digital-twin/kitchen-1/sync')
+        .put('/digital-twin/550e8400-e29b-41d4-a716-446655440000/sync')
         .expect(401);
 
       expect(response.body.success).toBe(false);
@@ -264,7 +264,7 @@ describe('Digital Twin Routes', () => {
 
     it('should return 401 for unauthenticated request to GET /digital-twin/:kitchenId/maintenance', async () => {
       const response = await request(app)
-        .get('/digital-twin/kitchen-1/maintenance')
+        .get('/digital-twin/550e8400-e29b-41d4-a716-446655440000/maintenance')
         .expect(401);
 
       expect(response.body.success).toBe(false);
@@ -280,12 +280,12 @@ describe('Digital Twin Routes', () => {
 
       const response = await authedRequest(app)
         .post('/digital-twin')
-        .send({ kitchenId: 'kitchen-1' })
+        .send({ kitchenId: '550e8400-e29b-41d4-a716-446655440000' })
         .expect(201);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data.kitchenId).toBe('kitchen-1');
-      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith('kitchen-1');
+      expect(response.body.data.kitchenId).toBe('550e8400-e29b-41d4-a716-446655440000');
+      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith('550e8400-e29b-41d4-a716-446655440000');
     });
 
     it('should return 400 when kitchenId is missing', async () => {
@@ -303,7 +303,7 @@ describe('Digital Twin Routes', () => {
 
       const response = await authedRequest(app)
         .post('/digital-twin')
-        .send({ kitchenId: 'nonexistent' })
+        .send({ kitchenId: '00000000-0000-0000-0000-000000000000' })
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -315,11 +315,11 @@ describe('Digital Twin Routes', () => {
 
       const response = await authedRequest(app)
         .post('/digital-twin')
-        .send({ kitchenId: 'kitchen-2' })
+        .send({ kitchenId: '660e8400-e29b-41d4-a716-446655440001' })
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('do not have access');
+      expect(JSON.stringify(response.body)).toContain('do not have access');
     });
 
     it('should allow admin to create twin for any kitchen', async () => {
@@ -329,7 +329,7 @@ describe('Digital Twin Routes', () => {
 
       const response = await authedRequest(app)
         .post('/digital-twin')
-        .send({ kitchenId: 'kitchen-2' })
+        .send({ kitchenId: '660e8400-e29b-41d4-a716-446655440001' })
         .expect(201);
 
       expect(response.body.success).toBe(true);
@@ -344,11 +344,11 @@ describe('Digital Twin Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-1')
+        .get('/digital-twin/550e8400-e29b-41d4-a716-446655440000')
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data.kitchenId).toBe('kitchen-1');
+      expect(response.body.data.kitchenId).toBe('550e8400-e29b-41d4-a716-446655440000');
       expect(response.body.data.items).toBeDefined();
     });
 
@@ -356,11 +356,11 @@ describe('Digital Twin Routes', () => {
       mockPrisma.digitalTwin.findFirst.mockResolvedValue(null);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-1')
+        .get('/digital-twin/550e8400-e29b-41d4-a716-446655440000')
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Digital twin not found');
+      expect(JSON.stringify(response.body)).toContain('Digital twin not found');
     });
 
     it('should return 403 when non-owner tries to access twin (IDOR prevention)', async () => {
@@ -368,11 +368,11 @@ describe('Digital Twin Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(otherUserKitchen);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-2')
+        .get('/digital-twin/660e8400-e29b-41d4-a716-446655440001')
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('do not have access');
+      expect(JSON.stringify(response.body)).toContain('do not have access');
     });
 
     it('should allow admin to access any digital twin', async () => {
@@ -381,7 +381,7 @@ describe('Digital Twin Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(otherUserKitchen);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-2')
+        .get('/digital-twin/660e8400-e29b-41d4-a716-446655440001')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -396,19 +396,19 @@ describe('Digital Twin Routes', () => {
       mockTwinService.createDigitalTwin.mockResolvedValue(mockCreatedTwin);
 
       const response = await authedRequest(app)
-        .put('/digital-twin/kitchen-1/sync')
+        .put('/digital-twin/550e8400-e29b-41d4-a716-446655440000/sync')
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data.kitchenId).toBe('kitchen-1');
-      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith('kitchen-1');
+      expect(response.body.data.kitchenId).toBe('550e8400-e29b-41d4-a716-446655440000');
+      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith('550e8400-e29b-41d4-a716-446655440000');
     });
 
     it('should return 404 when kitchen does not exist', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
       const response = await authedRequest(app)
-        .put('/digital-twin/nonexistent/sync')
+        .put('/digital-twin/00000000-0000-0000-0000-000000000000/sync')
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -419,7 +419,7 @@ describe('Digital Twin Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(otherUserKitchen);
 
       const response = await authedRequest(app)
-        .put('/digital-twin/kitchen-2/sync')
+        .put('/digital-twin/660e8400-e29b-41d4-a716-446655440001/sync')
         .expect(403);
 
       expect(response.body.success).toBe(false);
@@ -431,7 +431,7 @@ describe('Digital Twin Routes', () => {
       mockTwinService.createDigitalTwin.mockResolvedValue(mockCreatedTwin);
 
       const response = await authedRequest(app)
-        .put('/digital-twin/kitchen-2/sync')
+        .put('/digital-twin/660e8400-e29b-41d4-a716-446655440001/sync')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -447,7 +447,7 @@ describe('Digital Twin Routes', () => {
       mockTwinService.getMaintenanceSchedule.mockReturnValue(mockMaintenanceSchedule);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-1/maintenance')
+        .get('/digital-twin/550e8400-e29b-41d4-a716-446655440000/maintenance')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -459,7 +459,7 @@ describe('Digital Twin Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/nonexistent/maintenance')
+        .get('/digital-twin/00000000-0000-0000-0000-000000000000/maintenance')
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -471,18 +471,18 @@ describe('Digital Twin Routes', () => {
       mockPrisma.digitalTwin.findFirst.mockResolvedValue(null);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-1/maintenance')
+        .get('/digital-twin/550e8400-e29b-41d4-a716-446655440000/maintenance')
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Digital twin not found');
+      expect(JSON.stringify(response.body)).toContain('Digital twin not found');
     });
 
     it('should return 403 when non-owner tries to access maintenance (IDOR prevention)', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(otherUserKitchen);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-2/maintenance')
+        .get('/digital-twin/660e8400-e29b-41d4-a716-446655440001/maintenance')
         .expect(403);
 
       expect(response.body.success).toBe(false);
@@ -495,7 +495,7 @@ describe('Digital Twin Routes', () => {
       mockTwinService.getMaintenanceSchedule.mockReturnValue(mockMaintenanceSchedule);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-2/maintenance')
+        .get('/digital-twin/660e8400-e29b-41d4-a716-446655440001/maintenance')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -510,9 +510,9 @@ describe('Digital Twin Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
       const results = await Promise.all([
-        authedRequest(app).get('/digital-twin/kitchen-1'),
-        authedRequest(app).get('/digital-twin/kitchen-1'),
-        authedRequest(app).get('/digital-twin/kitchen-1'),
+        authedRequest(app).get('/digital-twin/550e8400-e29b-41d4-a716-446655440000'),
+        authedRequest(app).get('/digital-twin/550e8400-e29b-41d4-a716-446655440000'),
+        authedRequest(app).get('/digital-twin/550e8400-e29b-41d4-a716-446655440000'),
       ]);
 
       results.forEach((response) => {
@@ -526,7 +526,7 @@ describe('Digital Twin Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
       const response = await authedRequest(app)
-        .get('/digital-twin/kitchen-1')
+        .get('/digital-twin/550e8400-e29b-41d4-a716-446655440000')
         .expect(200);
 
       expect(response.body.data.items).toEqual(mockTwinData.items);

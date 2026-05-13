@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { logger } from '../../services/logger';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
+
+import { logger } from '../../services/logger';
+
 
 // ---------------------------------------------------------------------------
 // Types
@@ -132,7 +134,7 @@ const ARViewerPage: React.FC = () => {
           setViewMode('3d-fallback');
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const msg = err instanceof Error ? err.message : 'Failed to load kitchen';
         setErrorMessage(msg);
 
@@ -148,7 +150,7 @@ const ARViewerPage: React.FC = () => {
 
   // Initialize 3D fallback viewer
   useEffect(() => {
-    if (viewMode !== '3d-fallback' || !canvasRef.current) return;
+    if (viewMode !== '3d-fallback' || !canvasRef.current) {return;}
 
     const canvas = canvasRef.current;
     const width = canvas.clientWidth || window.innerWidth;
@@ -209,7 +211,7 @@ const ARViewerPage: React.FC = () => {
       prevX = e.clientX;
     };
     const onPointerMove = (e: PointerEvent) => {
-      if (!isDragging) return;
+      if (!isDragging) {return;}
       const dx = e.clientX - prevX;
       angle += dx * 0.005;
       camera.position.x = 4 * Math.sin(angle);

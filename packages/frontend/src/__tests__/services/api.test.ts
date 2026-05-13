@@ -300,7 +300,7 @@ describe('API Service', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should redirect to login when refresh fails', async () => {
+    it('should dispatch an auth:unauthorized event when refresh fails', async () => {
       // First call returns 401
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -315,13 +315,17 @@ describe('API Service', () => {
         json: () => Promise.resolve({ error: 'Invalid refresh token' }),
       });
 
-      try {
-        await api.get('/protected-endpoint');
-      } catch {
-        // Expected to throw
-      }
+      const listener = vi.fn();
+      window.addEventListener('auth:unauthorized', listener);
 
-      expect(locationMock.href).toBe('/login');
+      // Refresh failure is reported via the NETWORK_ERROR envelope (the
+      // 'Session expired' error is caught by the request's try/catch).
+      const result = await api.get('/protected-endpoint');
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(result.success).toBe(false);
+
+      window.removeEventListener('auth:unauthorized', listener);
     });
   });
 

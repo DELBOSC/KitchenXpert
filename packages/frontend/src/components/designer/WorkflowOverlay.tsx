@@ -80,8 +80,8 @@ const ZONE_LABELS: Record<string, string> = {
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 function getDistanceStrokeColor(distanceM: number): string {
-  if (distanceM <= 1.5) return '#22c55e'; // green
-  if (distanceM <= 3.0) return '#eab308'; // yellow
+  if (distanceM <= 1.5) {return '#22c55e';} // green
+  if (distanceM <= 3.0) {return '#eab308';} // yellow
   return '#ef4444'; // red
 }
 
@@ -127,7 +127,7 @@ export default function WorkflowOverlay({
 
   const toScreenX = useCallback(
     (worldX: number): number => {
-      if (kitchenWidth <= 0) return PADDING;
+      if (kitchenWidth <= 0) {return PADDING;}
       return PADDING + (worldX / kitchenWidth) * (containerWidth - 2 * PADDING);
     },
     [kitchenWidth, containerWidth],
@@ -135,7 +135,7 @@ export default function WorkflowOverlay({
 
   const toScreenZ = useCallback(
     (worldZ: number): number => {
-      if (kitchenDepth <= 0) return PADDING;
+      if (kitchenDepth <= 0) {return PADDING;}
       return PADDING + (worldZ / kitchenDepth) * (containerHeight - 2 * PADDING);
     },
     [kitchenDepth, containerHeight],
@@ -153,7 +153,7 @@ export default function WorkflowOverlay({
     const ANIM_DURATION = 5000; // 5 seconds for full animation
 
     const animate = (timestamp: number): void => {
-      if (!startTime) startTime = timestamp;
+      if (!startTime) {startTime = timestamp;}
       const elapsed = timestamp - startTime;
       const progress = Math.min(elapsed / ANIM_DURATION, 1);
 
@@ -177,10 +177,10 @@ export default function WorkflowOverlay({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !simulation || !visible) return;
+    if (!canvas || !simulation || !visible) {return;}
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     // Clear the canvas
     ctx.clearRect(0, 0, containerWidth, containerHeight);
@@ -341,7 +341,7 @@ export default function WorkflowOverlay({
 
   // ─── Render ──────────────────────────────────────────────────────────────
 
-  if (!simulation) return null;
+  if (!simulation) {return null;}
 
   return (
     <>
@@ -391,7 +391,7 @@ export default function WorkflowOverlay({
             <div className="flex items-center gap-2 text-xs">
               <div className="w-4 h-0.5 bg-yellow-500 rounded" />
               <span className="text-gray-600 dark:text-gray-400">
-                {'1.5-3m'} ({t('workflow.medium', 'moyen')})
+                1.5-3m ({t('workflow.medium', 'moyen')})
               </span>
             </div>
             <div className="flex items-center gap-2 text-xs">

@@ -14,6 +14,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { API_BASE_URL } from '../../services/api/endpoints';
 import { getErrorMessage } from '../../utils/error-handling';
 
@@ -182,8 +183,8 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
   ): RoomScanResult['walls'] => [
     { id: 'wall_back',  side: 'back',  length: width,  hasWindow: false, hasDoor: false },
     { id: 'wall_front', side: 'front', length: width,  hasWindow: false, hasDoor: true  },
-    { id: 'wall_left',  side: 'left',  length: length, hasWindow: true,  hasDoor: false },
-    { id: 'wall_right', side: 'right', length: length, hasWindow: false, hasDoor: false },
+    { id: 'wall_left',  side: 'left',  length, hasWindow: true,  hasDoor: false },
+    { id: 'wall_right', side: 'right', length, hasWindow: false, hasDoor: false },
   ];
 
   // ─── computeRoomDimensions ────────────────────────────────────────────────
@@ -204,7 +205,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
     }
 
     const median = (arr: number[]): number => {
-      if (arr.length === 0) return 3.0;
+      if (arr.length === 0) {return 3.0;}
       const s = [...arr].sort((a, b) => a - b);
       return s[Math.floor(s.length / 2)]!;
     };
@@ -259,7 +260,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
   // ─── Start LiDAR Scan ───────────────────────────────────────────────────
 
   const handleStartScan = useCallback(async (): Promise<void> => {
-    if (!navigator.xr) return;
+    if (!navigator.xr) {return;}
 
     setError(null);
     setScanProgress(0);
@@ -289,9 +290,9 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       // ── Depth heatmap renderer ──────────────────────────────────────────
       const renderDepthHeatmap = (depthInfo: XRDepthInformation): void => {
         const canvas = heatmapCanvasRef.current;
-        if (!canvas) return;
+        if (!canvas) {return;}
         const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        if (!ctx) {return;}
 
         canvas.width  = depthInfo.width;
         canvas.height = depthInfo.height;
@@ -320,7 +321,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       // ── XR animation frame callback ─────────────────────────────────────
       const onXRFrame = (_time: number, frame: XRFrame): void => {
         const activeSession = xrSessionRef.current;
-        if (!activeSession || !referenceSpaceRef.current) return;
+        if (!activeSession || !referenceSpaceRef.current) {return;}
 
         const viewerPose = frame.getViewerPose(referenceSpaceRef.current);
         if (viewerPose) {
@@ -478,7 +479,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       setScanResult(result);
       setScannerState('review');
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') return; // silently cancelled
+      if (err instanceof Error && err.name === 'AbortError') {return;} // silently cancelled
       setError(getErrorMessage(err, "Erreur lors de l'analyse des photos"));
     } finally {
       uploadControllerRef.current = null;
@@ -490,9 +491,9 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
 
   const handleDimensionEdit = useCallback(
     (field: 'width' | 'length' | 'height', value: string): void => {
-      if (!scanResult) return;
+      if (!scanResult) {return;}
       const numValue = parseInt(value, 10);
-      if (isNaN(numValue)) return;
+      if (isNaN(numValue)) {return;}
 
       setScanResult({
         ...scanResult,
@@ -519,7 +520,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
     return (
       <div className="fixed inset-0 z-50 bg-gray-900 bg-opacity-95 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4" />
           <p className="text-white text-lg">
             {t('lidarScanner.checkingDevice', 'Checking device capabilities...')}
           </p>

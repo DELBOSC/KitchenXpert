@@ -1,0 +1,105 @@
+---
+title: "KitchenXpert vs SketchUp : spécialisé vs généraliste"
+description: "SketchUp est le couteau-suisse 3D des architectes. KitchenXpert est l'outil dédié cuisine. Comparatif factuel, courbe d'apprentissage, prix, devis."
+slug: "sketchup"
+author: redaction
+publishedAt: 2026-05-10
+keywords: ["sketchup alternative cuisine", "sketchup extension cuisine", "logiciel cuisine sketchup"]
+related: ["coohom", "ikea-home-planner"]
+draft: true              # ⚠️ remplir competitor-facts.json AVANT publication
+
+competitorName: "SketchUp"
+competitorSlug: "sketchup"
+competitorUrl: "https://www.sketchup.com"
+competitorHq: "Boulder, Colorado, USA (Trimble Inc.)"
+verdictDate: 2026-05-10
+denigratesCompetitor: false
+
+reasonsToChooseCompetitor:
+  - "Outil 3D le plus puissant et le plus flexible du marché — modélisation libre, sans contrainte de catalogue."
+  - "Énorme bibliothèque communautaire (3D Warehouse) et écosystème d'extensions."
+  - "Format de référence pour les architectes — vos plans sont compatibles avec tout autre acteur du BTP."
+
+reasonsToChooseUs:
+  - "Spécialisé cuisine : 0 setup, 0 plugin à installer, le designer sait déjà ce qu'est un caisson 60×60×80."
+  - "Catalogue 5 fournisseurs FR avec prix réels — SketchUp ne propose pas de devis natif."
+  - "Marketplace d'installateurs intégrée."
+  - "Designer accessible immédiatement sans installation ni licence."
+  - "Path-tracing photoréaliste sans plugin V-Ray (1 200 € la licence) ou similaire."
+---
+
+import CompetitorTable    from '../../components/CompetitorTable.astro';
+import MigrationCallout   from '../../components/MigrationCallout.astro';
+import LegalDisclaimer    from '../../components/LegalDisclaimer.astro';
+import CTABlock           from '../../components/CTABlock.astro';
+import FAQ                from '../../components/FAQ.tsx';
+
+{/*
+  STUB — cas particulier : SketchUp est généraliste, pas spécialisé
+  cuisine. La VRAIE comparaison porte sur :
+   1. Courbe d'apprentissage (SketchUp = 10-20h ; KitchenXpert = 5 min)
+   2. Devis fournisseurs (SketchUp = manuel ; KitchenXpert = automatique)
+   3. Catalogues (SketchUp = 3D Warehouse ; KitchenXpert = 5 marques calibrées)
+*/}
+
+SketchUp est l'**outil 3D pro**, mature et puissant, utilisé par les
+architectes du monde entier. KitchenXpert est un **vertical SaaS**
+focalisé cuisine, qui supprime les 95 % de complexité de SketchUp
+inutiles à un projet cuisine.
+
+Le bon choix : SketchUp si vous savez déjà l'utiliser ou si votre
+projet dépasse la cuisine, KitchenXpert sinon.
+
+<CTABlock variant="inline" fromSlug="sketchup" />
+
+<CompetitorTable competitorSlug="sketchup" />
+
+## Choisir SketchUp si…
+
+1. **Vous êtes architecte ou cuisiniste pro** et utilisez déjà SketchUp pour vos autres projets — pas la peine d'avoir 2 outils.
+2. **Votre projet sort du cadre cuisine** — vous voulez modéliser le séjour, le hall, l'extérieur dans le même fichier.
+3. **Vous avez besoin d'IFC pour un BIM** d'envergure — SketchUp a un workflow Revit-compatible plus mature qu'un SaaS comme KitchenXpert.
+
+<MigrationCallout
+  competitorName="SketchUp"
+  competitorSlug="sketchup"
+  exportDocUrl="https://help.sketchup.com/"
+  limitations={[
+    "Les composants SketchUp custom (pas de la 3D Warehouse) ne peuvent pas être mappés automatiquement aux références des 5 fournisseurs FR — vous remplacez à la main.",
+    "Les matériaux SketchUp deviennent des références génériques KitchenXpert (chêne clair, blanc mat, inox brossé…)."
+  ]}
+/>
+
+## Questions fréquentes
+
+<FAQ
+  client:visible
+  questions={[
+    { q: "SketchUp est-il gratuit ?", a: "TODO_LAURENT — version gratuite SketchUp Free (web) limitée vs SketchUp Pro à ~390 €/an." },
+    { q: "KitchenXpert est-il aussi puissant que SketchUp ?", a: "Non — SketchUp est plus puissant en modélisation libre. KitchenXpert est plus rapide pour produire un devis cuisine signable, ce qui est l'objectif d'un particulier." },
+    { q: "Combien de temps pour apprendre SketchUp vs KitchenXpert ?", a: "SketchUp : 10-20h pour atteindre l'autonomie. KitchenXpert : 5 minutes (la palette + le drag-drop suffisent)." },
+    { q: "Puis-je importer un fichier .skp dans KitchenXpert ?", a: "Pas directement. Exportez en DXF depuis SketchUp puis importez le DXF dans le sandbox KitchenXpert (les volumes sont conservés)." },
+    { q: "Y a-t-il une extension SketchUp pour les devis cuisine ?", a: "Plusieurs extensions tierces existent (Cuisinart, Kitchen Plugin…) mais aucune n'a la profondeur catalogue de KitchenXpert (5 fournisseurs FR au mm)." }
+  ]}
+/>
+
+export const faq = [
+  { q: "SketchUp est-il gratuit ?", a: "TODO_LAURENT — version gratuite vs Pro ~390 €/an." },
+  { q: "KitchenXpert est-il aussi puissant que SketchUp ?", a: "Non, SketchUp est plus puissant en modélisation libre ; KitchenXpert est plus rapide pour produire un devis." },
+  { q: "Combien de temps pour apprendre SketchUp vs KitchenXpert ?", a: "SketchUp : 10-20h. KitchenXpert : 5 min." },
+  { q: "Puis-je importer un fichier .skp dans KitchenXpert ?", a: "Pas directement. Exportez en DXF puis ré-importez." },
+  { q: "Y a-t-il une extension SketchUp pour les devis cuisine ?", a: "Plusieurs extensions tierces existent ; aucune n'a 5 fournisseurs FR calibrés au mm." }
+];
+
+<CTABlock
+  variant="final"
+  fromSlug="sketchup"
+  headline="Designer cuisine en 5 minutes"
+  subline="Sans installation, sans licence, sans plugin"
+/>
+
+<LegalDisclaimer
+  competitorName="SketchUp"
+  verdictDate={frontmatter.verdictDate}
+  competitorUrl="https://www.sketchup.com"
+/>

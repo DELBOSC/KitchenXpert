@@ -160,13 +160,13 @@ function authedRequest(app: Application) {
 // ==================== FIXTURES ====================
 
 const mockKitchen = {
-  id: 'kitchen-1',
+  id: '550e8400-e29b-41d4-a716-446655440000',
   userId: 'test-user-1',
   name: 'My Kitchen',
 };
 
 const otherUserKitchen = {
-  id: 'kitchen-2',
+  id: '660e8400-e29b-41d4-a716-446655440001',
   userId: 'other-user-99',
   name: 'Other Kitchen',
 };
@@ -174,7 +174,7 @@ const otherUserKitchen = {
 const mockKitchenItems = [
   {
     id: 'item-1',
-    kitchenId: 'kitchen-1',
+    kitchenId: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Base Cabinet',
     type: 'base_cabinet',
     price: 250,
@@ -189,7 +189,7 @@ const mockKitchenItems = [
   },
   {
     id: 'item-2',
-    kitchenId: 'kitchen-1',
+    kitchenId: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Wall Cabinet',
     type: 'wall_cabinet',
     price: 180,
@@ -204,7 +204,7 @@ const mockKitchenItems = [
   },
   {
     id: 'item-3',
-    kitchenId: 'kitchen-1',
+    kitchenId: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Oven',
     type: 'oven',
     price: 800,
@@ -218,7 +218,7 @@ const mockKitchenItems = [
   },
   {
     id: 'item-4',
-    kitchenId: 'kitchen-1',
+    kitchenId: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Granite Countertop',
     type: 'countertop',
     price: 1500,
@@ -231,7 +231,7 @@ const mockKitchenItems = [
 const duplicateKitchenItems = [
   {
     id: 'item-5',
-    kitchenId: 'kitchen-1',
+    kitchenId: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Base Cabinet',
     type: 'base_cabinet',
     price: 250,
@@ -246,7 +246,7 @@ const duplicateKitchenItems = [
   },
   {
     id: 'item-6',
-    kitchenId: 'kitchen-1',
+    kitchenId: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Base Cabinet',
     type: 'base_cabinet',
     price: 250,
@@ -460,12 +460,12 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchenItem.findMany.mockResolvedValue([]);
 
       await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
+        .get('/shopping-list/550e8400-e29b-41d4-a716-446655440000')
         .expect(200);
 
       expect(mockPrisma.kitchen.findUnique).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 'kitchen-1' },
+          where: { id: '550e8400-e29b-41d4-a716-446655440000' },
         })
       );
     });
@@ -493,7 +493,7 @@ describe('Shopping List Routes', () => {
     it('should handle items with zero price', async () => {
       const zeroItem = {
         id: 'item-free',
-        kitchenId: 'kitchen-1',
+        kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         name: 'Free Accessory',
         type: 'accessory',
         price: 0,

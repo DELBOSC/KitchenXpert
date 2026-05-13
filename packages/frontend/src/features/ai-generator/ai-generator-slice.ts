@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface GenerationRequest {
   id: string;
@@ -123,7 +123,7 @@ export const generateLayout = createAsyncThunk<GenerationRequest, GenerationInpu
         body: JSON.stringify({ type: 'layout', ...input }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -140,7 +140,7 @@ export const generateDesign = createAsyncThunk<GenerationRequest, GenerationInpu
         body: JSON.stringify(input),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -157,7 +157,7 @@ export const optimizeLayout = createAsyncThunk<GenerationRequest, { kitchenId: s
         body: JSON.stringify({ kitchenId, goals }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -172,7 +172,7 @@ export const getSuggestions = createAsyncThunk<GenerationOutput, { kitchenId: st
       const params = new URLSearchParams({ kitchenId, ...(category && { category }) });
       const response = await fetch(`${API_URL}/kitchen-generator/suggestions?${params}`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -186,7 +186,7 @@ export const fetchGenerationHistory = createAsyncThunk<GenerationRequest[], { li
     try {
       const response = await fetch(`${API_URL}/kitchen-generator/history?limit=${limit}`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -203,7 +203,7 @@ export const applyGeneration = createAsyncThunk<void, { kitchenId: string; gener
         body: JSON.stringify({ kitchenId, generationId }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -221,7 +221,7 @@ const aiGeneratorSlice = createSlice({
     clearError: (state) => { state.error = null; },
     selectHistoryItem: (state, action: PayloadAction<string>) => {
       const item = state.history.find(h => h.id === action.payload);
-      if (item) state.currentRequest = item;
+      if (item) {state.currentRequest = item;}
     },
   },
   extraReducers: (builder) => {

@@ -209,7 +209,7 @@ describe('RoleController', () => {
     it('should return 404 if role not found', async () => {
       mockRoleRepository.findById.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getById(req as Request, res as Response);

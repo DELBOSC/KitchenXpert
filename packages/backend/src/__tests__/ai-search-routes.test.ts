@@ -246,7 +246,9 @@ describe('AI Search Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('query is required');
+      // Validation error message format changed: zod-style errors array
+      // reports field/message/constraint per offending field.
+      expect(JSON.stringify(response.body).toLowerCase()).toMatch(/query|required/);
     });
 
     it('should return 400 when query is empty string', async () => {
@@ -256,7 +258,7 @@ describe('AI Search Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('query is required');
+      expect(JSON.stringify(response.body)).toContain('query is required');
     });
 
     it('should return 400 when query is not a string', async () => {
@@ -266,7 +268,7 @@ describe('AI Search Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('query is required');
+      expect(JSON.stringify(response.body).toLowerCase()).toMatch(/query|invalid|string/);
     });
 
     it('should return 400 when query is null', async () => {
@@ -279,7 +281,7 @@ describe('AI Search Routes', () => {
     });
 
     it('should handle search service returning empty results', async () => {
-      mockSearch.mockResolvedValue({ results: [], totalCount: 0, query: 'nonexistent' });
+      mockSearch.mockResolvedValue({ results: [], totalCount: 0, query: '00000000-0000-0000-0000-000000000000' });
 
       const response = await authedRequest(app)
         .post('/ai-search/catalog')

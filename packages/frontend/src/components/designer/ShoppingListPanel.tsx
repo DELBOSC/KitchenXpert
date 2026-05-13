@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { api } from '../../services/api/api';
 import { API_ENDPOINTS } from '../../services/api/endpoints';
 
@@ -97,7 +98,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Fetch shopping list ───────────────────────────
   useEffect(() => {
-    if (!isOpen || !kitchenId) return;
+    if (!isOpen || !kitchenId) {return;}
 
     const controller = new AbortController();
     setLoading(true);
@@ -115,7 +116,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
           setError(res.error?.message || t('designer.shoppingList.fetchError', 'Erreur lors du chargement'));
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         setError(t('designer.shoppingList.fetchError', 'Erreur lors du chargement'));
       } finally {
         setLoading(false);
@@ -128,10 +129,10 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Close on Escape ───────────────────────────────
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {onClose();}
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -140,11 +141,11 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Group items by category ───────────────────────
   const groupedItems = useCallback((): Record<string, ShoppingItem[]> => {
-    if (!data?.items) return {};
+    if (!data?.items) {return {};}
     const groups: Record<string, ShoppingItem[]> = {};
     for (const item of data.items) {
       const cat = item.category || 'Accessories';
-      if (!groups[cat]) groups[cat] = [];
+      if (!groups[cat]) {groups[cat] = [];}
       groups[cat].push(item);
     }
     return groups;
@@ -152,7 +153,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Export as PDF ─────────────────────────────────
   const handleExportPDF = useCallback(() => {
-    if (!data) return;
+    if (!data) {return;}
 
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -176,7 +177,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
     for (const category of allCategories) {
       const items = groups[category];
-      if (!items || items.length === 0) continue;
+      if (!items || items.length === 0) {continue;}
 
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
@@ -235,10 +236,10 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Print ─────────────────────────────────────────
   const handlePrint = useCallback(() => {
-    if (!panelRef.current) return;
+    if (!panelRef.current) {return;}
 
     const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+    if (!printWindow) {return;}
 
     const content = panelRef.current.innerHTML;
     const printTitle = t('shopping.pdfTitle', "Liste d'achats - KitchenXpert");
@@ -269,7 +270,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
     printWindow.print();
   }, [t]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   const groups = groupedItems();
   const orderedCategories = CATEGORY_ORDER.filter((c) => groups[c] && groups[c].length > 0);
@@ -282,7 +283,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
       <div
         className="fixed inset-0 bg-black/30 z-40"
         onClick={onClose}
-        onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+        onKeyDown={(e) => { if (e.key === 'Escape') {onClose();} }}
         role="button"
         tabIndex={-1}
         aria-label={t('common.closeBackdrop', 'Close')}
@@ -334,7 +335,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
             <div className="space-y-4">
               {allCategories.map((category) => {
                 const items = groups[category];
-                if (!items || items.length === 0) return null;
+                if (!items || items.length === 0) {return null;}
 
                 return (
                   <div key={category}>

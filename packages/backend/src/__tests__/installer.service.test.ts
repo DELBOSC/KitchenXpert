@@ -367,7 +367,7 @@ describe('InstallerService', () => {
         service.requestInstallation({
           installerId: 'installer-1',
           userId: mockUser.userId,
-          kitchenId: 'kitchen-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         }),
       ).rejects.toThrow('You do not own this kitchen');
     });

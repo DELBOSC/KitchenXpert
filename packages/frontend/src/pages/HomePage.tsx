@@ -1,19 +1,56 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+
+import { HeroA, HeroB, HeroC } from '../components/Hero/HeroVariants';
+import { HowItWorks } from '../components/Hero/HowItWorks';
+import { LogoStrip as BrandLogoStrip } from '../components/Hero/LogoStrip';
+import { TrustBar } from '../components/Hero/TrustBar';
+import { ReviewsSection } from '../components/Reviews/ReviewsSection';
+import {
+  SeoHead,
+  ORGANIZATION_JSONLD,
+  WEBSITE_JSONLD,
+  SOFTWARE_JSONLD,
+} from '../components/seo/SeoHead';
+import { LiveCounter } from '../components/Trust/LiveCounter';
+import { useABVariant } from '../hooks/useABVariant';
 
 export default function HomePage(): React.ReactElement {
   const { t } = useTranslation();
+  // Sticky 14-day A/B test on the hero layout. The variant is persisted
+  // in localStorage by the hook + tagged into Plausible as
+  // `ab_assignment` once per session.
+  const variant = useABVariant('hero', ['A', 'B', 'C'] as const);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0a0a0f] text-white">
+      <SeoHead
+        title="KitchenXpert — Concevez votre cuisine en 3D avec l'IA"
+        description="Plateforme française de conception de cuisines en 3D temps réel : IA, catalogue IKEA + 4 fournisseurs, devis instantané, installateurs certifiés. Essai sans compte."
+        canonical="https://kitchenxpert.com/"
+        jsonLd={[ORGANIZATION_JSONLD, WEBSITE_JSONLD, SOFTWARE_JSONLD]}
+      />
       <AuroraBackground />
 
       <Nav />
 
       <main className="relative z-10">
-        <Hero t={t} />
-        <LogoStrip />
+        {variant === 'A' && <HeroA />}
+        {variant === 'B' && <HeroB />}
+        {variant === 'C' && <HeroC />}
+
+        <BrandLogoStrip />
+        <TrustBar />
+
+        {/* LiveCounter — discreet trust signal between the brands and the explainer */}
+        <div className="mx-auto max-w-3xl px-6 py-10">
+          <LiveCounter />
+        </div>
+
+        <HowItWorks />
+        <ReviewsSection />
+
         <Features t={t} />
         <ShowcaseSplit />
         <Metrics />
@@ -101,22 +138,22 @@ function Hero({ t }: { t: (k: string) => string }): React.ReactElement {
 
       <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Link
-          to="/designer"
+          to="/designer/sandbox"
           className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(255,255,255,0.12)] transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_8px_60px_rgba(255,255,255,0.25)]"
         >
-          {t('home.startDesign')}
+          Essayer le designer
           <span className="transition group-hover:translate-x-0.5" aria-hidden>→</span>
         </Link>
         <Link
-          to="/catalog"
+          to="/register"
           className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white/90 backdrop-blur transition hover:border-white/25 hover:bg-white/10"
         >
-          {t('home.exploreCatalog')}
+          Créer un compte
         </Link>
       </div>
 
       <p className="mt-6 text-xs text-white/40">
-        Essai gratuit · Aucune carte bancaire requise · RGPD conforme
+        Aucun compte requis pour essayer · Sauvegarde locale automatique · RGPD conforme
       </p>
 
       <HeroVisual />

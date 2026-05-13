@@ -25,8 +25,10 @@ jest.mock('../database/client', () => ({
   prisma: { $disconnect: jest.fn() },
 }));
 
-// Mock IKEA client
-const mockIkeaClient = {
+// Mock IKEA client — must include `config` because the route's getClient()
+// reads `client.config.country` to decide whether to recreate the client.
+const mockIkeaClient: any = {
+  config: { country: 'fr', language: 'fr' },
   search: jest.fn().mockResolvedValue({
     success: true,
     data: [{ id: 'ikea-1', name: 'METOD Base cabinet', price: 49.99 }],
@@ -97,6 +99,30 @@ describe('IKEA Routes', () => {
     app = createTestApp();
     jest.clearAllMocks();
     mockAuthenticated = true;
+    // Restore default mock implementations after clearAllMocks() wiped them.
+    mockIkeaClient.search.mockResolvedValue({
+      success: true,
+      data: [{ id: 'ikea-1', name: 'METOD Base cabinet', price: 49.99 }],
+      total: 1,
+    });
+    mockIkeaClient.getProduct.mockResolvedValue({
+      success: true,
+      data: { id: 'ikea-1', name: 'METOD Base cabinet', price: 49.99 },
+    });
+    mockIkeaClient.getProducts.mockResolvedValue({
+      success: true,
+      data: [{ id: 'ikea-1', name: 'METOD' }, { id: 'ikea-2', name: 'KALLARP' }],
+    });
+    mockIkeaClient.getStock.mockResolvedValue({
+      success: true,
+      data: { available: true, quantity: 10 },
+    });
+    mockIkeaClient.searchKitchenCabinets.mockResolvedValue({ success: true, data: [] });
+    mockIkeaClient.searchAppliances.mockResolvedValue({ success: true, data: [] });
+    mockIkeaClient.searchCountertops.mockResolvedValue({ success: true, data: [] });
+    mockIkeaClient.getMetodProducts.mockResolvedValue({ success: true, data: [] });
+    mockIkeaClient.getAllKitchenProducts.mockResolvedValue({ success: true, data: {} });
+    mockIkeaClient.getKitchenProductsByCategory.mockResolvedValue({ success: true, data: [] });
   });
 
   describe('GET /ikea/search', () => {
@@ -135,7 +161,6 @@ describe('IKEA Routes', () => {
       const response = await request(app)
         .get('/ikea/products/123.456.78')
         .expect(200);
-
       expect(response.body.success).toBe(true);
       expect(mockIkeaClient.getProduct).toHaveBeenCalledWith('123.456.78');
     });

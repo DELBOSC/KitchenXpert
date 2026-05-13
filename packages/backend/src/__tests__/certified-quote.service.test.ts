@@ -101,7 +101,7 @@ const sampleItems: QuoteLineItem[] = [
 ];
 
 const createQuoteDto: CreateQuoteDto = {
-  kitchenId: 'kitchen-1',
+  kitchenId: '550e8400-e29b-41d4-a716-446655440000',
   clientName: 'Jean Dupont',
   clientEmail: 'jean@example.com',
   clientAddress: '10 rue de Paris, 75001 Paris',
@@ -114,7 +114,7 @@ const createQuoteDto: CreateQuoteDto = {
 const mockQuote = {
   id: 'quote-1',
   userId: testUserId,
-  kitchenId: 'kitchen-1',
+  kitchenId: '550e8400-e29b-41d4-a716-446655440000',
   projectId: null,
   quoteNumber: 'KX-2026-00001',
   items: sampleItems,
@@ -193,7 +193,7 @@ describe('CertifiedQuoteService', () => {
       expect(mockPrisma.certifiedQuote.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           userId: testUserId,
-          kitchenId: 'kitchen-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
           clientName: 'Jean Dupont',
           clientEmail: 'jean@example.com',
           status: 'draft',
@@ -243,7 +243,7 @@ describe('CertifiedQuoteService', () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.getById('nonexistent', testUserId),
+        service.getById('00000000-0000-0000-0000-000000000000', testUserId),
       ).rejects.toThrow('Quote not found');
     });
 
@@ -306,7 +306,7 @@ describe('CertifiedQuoteService', () => {
     it('should throw when quote is not found', async () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
-      await expect(service.sign('nonexistent', testUserId)).rejects.toThrow('Quote not found');
+      await expect(service.sign('00000000-0000-0000-0000-000000000000', testUserId)).rejects.toThrow('Quote not found');
     });
 
     it('should throw "Access denied" when user does not own the quote', async () => {
@@ -364,7 +364,7 @@ describe('CertifiedQuoteService', () => {
     it('should throw when quote is not found', async () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
-      await expect(service.generatePDF('nonexistent', testUserId)).rejects.toThrow('Quote not found');
+      await expect(service.generatePDF('00000000-0000-0000-0000-000000000000', testUserId)).rejects.toThrow('Quote not found');
     });
 
     it('should throw "Access denied" when user does not own the quote', async () => {
@@ -401,7 +401,7 @@ describe('CertifiedQuoteService', () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.send('nonexistent', testUserId, 'test@test.com'),
+        service.send('00000000-0000-0000-0000-000000000000', testUserId, 'test@test.com'),
       ).rejects.toThrow('Quote not found');
     });
 

@@ -49,34 +49,19 @@ export class CarbonController {
 
     const report = this.carbonService.calculateKitchenCarbon(items);
 
-    // Persist the report to database
+    // Persist atomically — upsert avoids the find→update/create race.
     try {
-      const existing = await prisma.carbonReport.findFirst({
+      const data = {
+        totalCO2kg: report.totalCO2e ?? 0,
+        breakdown: (report.breakdown as any) ?? {},
+        transportCO2: report.transportCO2e ?? 0,
+        rating: report.grade ?? null,
+      };
+      await prisma.carbonReport.upsert({
         where: { kitchenId },
+        create: { kitchenId, userId, ...data },
+        update: data,
       });
-
-      if (existing) {
-        await prisma.carbonReport.update({
-          where: { id: existing.id },
-          data: {
-            totalCO2kg: report.totalCO2e ?? 0,
-            breakdown: report.breakdown as any ?? {},
-            transportCO2: report.transportCO2e ?? 0,
-            rating: report.grade ?? null,
-          },
-        });
-      } else {
-        await prisma.carbonReport.create({
-          data: {
-            kitchenId,
-            userId,
-            totalCO2kg: report.totalCO2e ?? 0,
-            breakdown: report.breakdown as any ?? {},
-            transportCO2: report.transportCO2e ?? 0,
-            rating: report.grade ?? null,
-          },
-        });
-      }
     } catch (err) {
       // Non-critical: log and continue even if persistence fails
       logger.warn('[Carbon] Failed to persist carbon report', {
@@ -106,7 +91,7 @@ export class CarbonController {
 
     logger.info('[Carbon] Retrieving carbon report', { userId, kitchenId });
 
-    const report = await prisma.carbonReport.findFirst({
+    const report = await prisma.carbonReport.findUnique({
       where: { kitchenId },
     });
 

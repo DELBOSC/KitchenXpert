@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+
 import { useToast } from '../../../components/ui/Toast';
 
 interface ProjectFormData {
@@ -85,7 +86,7 @@ const ProjectEdit: React.FC = () => {
 
         const data = await response.json();
 
-        if (!mountedRef.current) return;
+        if (!mountedRef.current) {return;}
 
         setFormData({
           name: data.name || '',
@@ -97,7 +98,7 @@ const ProjectEdit: React.FC = () => {
           clientPhone: data.clientPhone || '',
         });
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : t('projects.fetchError', 'Failed to load project');
         setLoadError(errorMessage);
       } finally {
@@ -194,7 +195,7 @@ const ProjectEdit: React.FC = () => {
         }),
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -215,7 +216,7 @@ const ProjectEdit: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
       </div>
     );
   }
@@ -473,7 +474,7 @@ const ProjectEdit: React.FC = () => {
                 className={`px-6 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${isSaving ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
               >
                 {isSaving && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {isSaving ? t('projects.saving', 'Saving...') : t('projects.saveChanges', 'Save Changes')}
               </button>

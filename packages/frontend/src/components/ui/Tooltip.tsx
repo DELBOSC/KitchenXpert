@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import React, { useState } from 'react';
+
 import { cn } from './_utils';
 
 interface TooltipProps {
@@ -26,11 +27,11 @@ export function Tooltip({ label, children, side = 'top', delay = 300, className 
   const timerRef = React.useRef<number | null>(null);
 
   const show = (): void => {
-    if (timerRef.current) window.clearTimeout(timerRef.current);
+    if (timerRef.current) {window.clearTimeout(timerRef.current);}
     timerRef.current = window.setTimeout(() => setVisible(true), delay);
   };
   const hide = (): void => {
-    if (timerRef.current) window.clearTimeout(timerRef.current);
+    if (timerRef.current) {window.clearTimeout(timerRef.current);}
     setVisible(false);
   };
 

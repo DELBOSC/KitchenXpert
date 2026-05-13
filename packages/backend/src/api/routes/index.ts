@@ -5,6 +5,7 @@ import abandonmentRoutes from './abandonment-routes';
 import adminRoutes from './admin-routes';
 import aiAdminRoutes from './ai-admin-routes';
 import aiChatRoutes from './ai-chat-routes';
+import aiFeaturesRoutes from './ai-features-routes';
 import aiGeneratorRoutes from './ai-generator-routes';
 import aiProjectRoutes from './ai-project-routes';
 import aiRecommendationRoutes from './ai-recommendation-routes';
@@ -47,17 +48,23 @@ import providersRoutes from './providers-routes';
 import questionnaireRoutes from './questionnaire-routes';
 import quoteRoutes from './quote-routes';
 import renovationRoutes from './renovation-routes';
+import reviewRoutes from './review-routes';
 import roleRoutes from './role-routes';
 import roomScanRoutes from './room-scan-routes';
 import schmidtRoutes from './schmidt-routes';
 import shoppingListRoutes from './shopping-list-routes';
 import smartHomeRoutes from './smart-home-routes';
+import statsRoutes from './stats-routes';
 import stockRoutes from './stock-routes';
 import subscriptionRoutes from './subscription-routes';
 import uploadRoutes from './upload-routes';
 import userRoutes from './user-routes';
 import webhookRoutes from './webhook-routes';
 import workflowSimulationRoutes from './workflow-simulation-routes';
+import {
+  catalogRateLimiter,
+  aiUnauthRateLimiter,
+} from '../middleware/rate-limit-middleware';
 
 const router: RouterType = Router();
 
@@ -74,31 +81,42 @@ const authRateLimit = rateLimit({
 router.use('/auth', authRateLimit, authRoutes);
 router.use('/i18n', i18nRoutes);
 router.use('/health', monitoringRoutes);
+router.use('/stats', statsRoutes); // public counters for the marketing site
 
 // Protected routes
 router.use('/users', userRoutes);
 router.use('/me/gdpr', gdprRoutes);
+router.use('/me/reviews', reviewRoutes); // satisfaction modal + external review redirects
 router.use('/docs', docsRoutes);
 router.use('/providers', providersRoutes);
 router.use('/kitchens', kitchenRoutes);
 router.use('/projects', projectRoutes);
-router.use('/catalog', catalogRoutes);
-router.use('/products', productRoutes);
+// Catalog browse surfaces — capped at 60 req/min/IP to deter scrapers
+// and protect our partner-API quotas. Authenticated users still benefit
+// from the higher per-user limit applied inside the route handlers.
+router.use('/catalog',     catalogRateLimiter, catalogRoutes);
+router.use('/products',    catalogRateLimiter, productRoutes);
+router.use('/ikea',        catalogRateLimiter, ikeaRoutes);
+router.use('/leroy-merlin',catalogRateLimiter, leroyMerlinRoutes);
+router.use('/castorama',   catalogRateLimiter, castoramaRoutes);
+router.use('/schmidt',     catalogRateLimiter, schmidtRoutes);
+router.use('/bosch',       catalogRateLimiter, boschRoutes);
+
 router.use('/partners', partnerRoutes);
 router.use('/webhooks', webhookRoutes);
 router.use('/orders', orderRoutes);
 router.use('/kitchen-generator', kitchenGeneratorRoutes);
 router.use('/ai-generator', aiGeneratorRoutes);
+router.use('/ai', aiFeaturesRoutes); // POST /auto-layout, /snapit, /style-transfer
 router.use('/questionnaire', questionnaireRoutes);
-router.use('/ikea', ikeaRoutes);
-router.use('/leroy-merlin', leroyMerlinRoutes);
-router.use('/castorama', castoramaRoutes);
-router.use('/schmidt', schmidtRoutes);
-router.use('/bosch', boschRoutes);
 router.use('/uploads', uploadRoutes);
 router.use('/room-scan', roomScanRoutes);
-router.use('/ai-chat', aiChatRoutes);
-router.use('/ai-search', aiSearchRoutes);
+
+// AI chat/search are expensive (Anthropic + Gemini). Apply the
+// unauthenticated limiter first; authenticated requests skip it via the
+// in-handler aiRateLimiter (20/hour/user).
+router.use('/ai-chat',   aiUnauthRateLimiter, aiChatRoutes);
+router.use('/ai-search', aiUnauthRateLimiter, aiSearchRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/subscriptions', subscriptionRoutes);
 router.use('/ai-project', aiProjectRoutes);

@@ -16,6 +16,7 @@ import request from 'supertest';
 // ==================== MOCKS ====================
 
 jest.mock('../utils/logger', () => ({
+  __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
     info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
@@ -187,7 +188,7 @@ describe('Workflow Simulation Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Kitchen not found');
+      expect(JSON.stringify(response.body)).toContain('Kitchen not found');
     });
 
     it('should return 403 when user does not own the kitchen', async () => {
@@ -202,7 +203,7 @@ describe('Workflow Simulation Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should return 400 when scenario is invalid', async () => {

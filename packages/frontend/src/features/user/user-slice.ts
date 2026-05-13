@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface User {
   id: string;
@@ -38,7 +38,7 @@ export const fetchUsers = createAsyncThunk<
     const params = new URLSearchParams({ page: String(page), limit: String(limit), ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== undefined)) });
     const response = await fetch(`${API_URL}/users?${params}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -50,7 +50,7 @@ export const fetchUserById = createAsyncThunk<User, string>('user/fetchUserById'
   try {
     const response = await fetch(`${API_URL}/users/${id}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -64,7 +64,7 @@ export const updateUser = createAsyncThunk<User, { id: string; updates: Partial<
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -76,7 +76,7 @@ export const deleteUser = createAsyncThunk<string, string>('user/deleteUser', as
   try {
     const response = await fetch(`${API_URL}/users/${id}`, { method: 'DELETE', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -88,7 +88,7 @@ export const toggleUserActive = createAsyncThunk<User, string>('user/toggleUserA
   try {
     const response = await fetch(`${API_URL}/admin/users/${id}/toggle-active`, { method: 'PUT', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -116,16 +116,16 @@ const userSlice = createSlice({
       .addCase(fetchUserById.fulfilled, (state, action) => { state.currentUser = action.payload; })
       .addCase(updateUser.fulfilled, (state, action) => {
         const idx = state.users.findIndex(u => u.id === action.payload.id);
-        if (idx !== -1) state.users[idx] = action.payload;
-        if (state.currentUser?.id === action.payload.id) state.currentUser = action.payload;
+        if (idx !== -1) {state.users[idx] = action.payload;}
+        if (state.currentUser?.id === action.payload.id) {state.currentUser = action.payload;}
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter(u => u.id !== action.payload);
-        if (state.currentUser?.id === action.payload) state.currentUser = null;
+        if (state.currentUser?.id === action.payload) {state.currentUser = null;}
       })
       .addCase(toggleUserActive.fulfilled, (state, action) => {
         const idx = state.users.findIndex(u => u.id === action.payload.id);
-        if (idx !== -1) state.users[idx] = action.payload;
+        if (idx !== -1) {state.users[idx] = action.payload;}
       });
   },
 });

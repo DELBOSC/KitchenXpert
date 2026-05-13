@@ -19,7 +19,7 @@ describe('LoadingSpinner', () => {
       render(<LoadingSpinner />);
 
       const spinner = screen.getByRole('status');
-      expect(spinner).toHaveAttribute('aria-label', 'Loading');
+      expect(spinner).toHaveAttribute('aria-label', expect.stringMatching(/loading|chargement/i));
     });
 
     it('should have animate-spin class', () => {
@@ -161,7 +161,7 @@ describe('LoadingSpinner', () => {
       render(<LoadingSpinner />);
 
       const spinner = screen.getByRole('status');
-      expect(spinner).toHaveAttribute('aria-label', 'Loading');
+      expect(spinner).toHaveAttribute('aria-label', expect.stringMatching(/loading|chargement/i));
     });
 
     it('should be focusable for screen readers', () => {

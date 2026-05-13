@@ -1,0 +1,29 @@
+{
+  "name": "@kitchenxpert/guides",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "KitchenXpert editorial guides — Astro static-content site mounted at /guides/*",
+  "scripts": {
+    "dev": "astro dev --port 4321",
+    "build": "astro build",
+    "preview": "astro preview --port 4321",
+    "check": "astro check",
+    "new": "node ../../scripts/new-article.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/react": "^4.1.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "astro": "^5.0.0",
+    "astro-og-canvas": "^0.7.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3"
+  }
+}

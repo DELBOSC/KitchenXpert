@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
+import { useParams } from 'react-router-dom';
+
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { useAuth } from '../../contexts/AuthContext';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -108,28 +109,28 @@ const ZONE_COLORS: Record<string, string> = {
 // ─── Distance color helpers ─────────────────────────────────────────────────
 
 function getDistanceColor(distanceM: number): string {
-  if (distanceM <= 1.5) return 'text-green-600 dark:text-green-400';
-  if (distanceM <= 3.0) return 'text-yellow-600 dark:text-yellow-400';
+  if (distanceM <= 1.5) {return 'text-green-600 dark:text-green-400';}
+  if (distanceM <= 3.0) {return 'text-yellow-600 dark:text-yellow-400';}
   return 'text-red-500 dark:text-red-400';
 }
 
 function getDistanceBgColor(distanceM: number): string {
-  if (distanceM <= 1.5) return 'bg-green-100 dark:bg-green-900/30';
-  if (distanceM <= 3.0) return 'bg-yellow-100 dark:bg-yellow-900/30';
+  if (distanceM <= 1.5) {return 'bg-green-100 dark:bg-green-900/30';}
+  if (distanceM <= 3.0) {return 'bg-yellow-100 dark:bg-yellow-900/30';}
   return 'bg-red-100 dark:bg-red-900/30';
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) return 'text-green-600 dark:text-green-400';
-  if (score >= 60) return 'text-yellow-600 dark:text-yellow-400';
-  if (score >= 40) return 'text-orange-500 dark:text-orange-400';
+  if (score >= 80) {return 'text-green-600 dark:text-green-400';}
+  if (score >= 60) {return 'text-yellow-600 dark:text-yellow-400';}
+  if (score >= 40) {return 'text-orange-500 dark:text-orange-400';}
   return 'text-red-500 dark:text-red-400';
 }
 
 function getScoreBgColor(score: number): string {
-  if (score >= 80) return 'bg-green-500';
-  if (score >= 60) return 'bg-yellow-500';
-  if (score >= 40) return 'bg-orange-500';
+  if (score >= 80) {return 'bg-green-500';}
+  if (score >= 60) {return 'bg-yellow-500';}
+  if (score >= 40) {return 'bg-orange-500';}
   return 'bg-red-500';
 }
 
@@ -188,12 +189,12 @@ export default function WorkflowSimulator(): React.ReactElement {
           }
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         if (mountedRef.current) {
           setError(t('workflow.errorLoadingKitchens', 'Erreur lors du chargement des cuisines'));
         }
       } finally {
-        if (mountedRef.current) setIsLoadingKitchens(false);
+        if (mountedRef.current) {setIsLoadingKitchens(false);}
       }
     };
 
@@ -228,12 +229,12 @@ export default function WorkflowSimulator(): React.ReactElement {
           setScenarios(data.data || []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         if (mountedRef.current) {
           setError(t('workflow.errorLoadingScenarios', 'Erreur lors du chargement des scenarios'));
         }
       } finally {
-        if (mountedRef.current) setIsLoadingScenarios(false);
+        if (mountedRef.current) {setIsLoadingScenarios(false);}
       }
     };
 
@@ -248,7 +249,7 @@ export default function WorkflowSimulator(): React.ReactElement {
   // ─── Load history when kitchen changes ────────────────────────────────────
 
   useEffect(() => {
-    if (!selectedKitchenId) return;
+    if (!selectedKitchenId) {return;}
 
     mountedRef.current = true;
     const controller = new AbortController();
@@ -273,10 +274,10 @@ export default function WorkflowSimulator(): React.ReactElement {
           setHistory(data.data || []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         // Non-critical: silently ignore
       } finally {
-        if (mountedRef.current) setIsLoadingHistory(false);
+        if (mountedRef.current) {setIsLoadingHistory(false);}
       }
     };
 
@@ -291,7 +292,7 @@ export default function WorkflowSimulator(): React.ReactElement {
   // ─── Simulate ────────────────────────────────────────────────────────────
 
   const handleSimulate = useCallback(async (): Promise<void> => {
-    if (!selectedKitchenId || !selectedScenario) return;
+    if (!selectedKitchenId || !selectedScenario) {return;}
 
     setError(null);
     setSimulation(null);
@@ -334,7 +335,7 @@ export default function WorkflowSimulator(): React.ReactElement {
   // ─── Optimize ────────────────────────────────────────────────────────────
 
   const handleOptimize = useCallback(async (): Promise<void> => {
-    if (!simulation) return;
+    if (!simulation) {return;}
 
     setOptimization(null);
     setIsOptimizing(true);
@@ -800,10 +801,10 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {return;}
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {return;}
 
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
@@ -815,7 +816,7 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
     // Find bounds of all positions
     const allPositions = simulation.steps.flatMap((s) => [s.position3D.from, s.position3D.to]);
 
-    if (allPositions.length === 0) return;
+    if (allPositions.length === 0) {return;}
 
     const minX = Math.min(...allPositions.map((p) => p.x));
     const maxX = Math.max(...allPositions.map((p) => p.x));
@@ -850,9 +851,9 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
 
       // Color based on distance
       let color: string;
-      if (step.distanceM <= 1.5) color = '#22c55e';
-      else if (step.distanceM <= 3.0) color = '#eab308';
-      else color = '#ef4444';
+      if (step.distanceM <= 1.5) {color = '#22c55e';}
+      else if (step.distanceM <= 3.0) {color = '#eab308';}
+      else {color = '#ef4444';}
 
       // Draw line
       ctx.beginPath();

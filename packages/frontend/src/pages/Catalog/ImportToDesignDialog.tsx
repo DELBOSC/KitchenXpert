@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import { Button, Dialog, Select } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
+
 import type { ImportTarget } from './ProviderCatalog';
 
 interface KitchenSummary {
@@ -32,7 +34,7 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {return;}
     const controller = new AbortController();
     (async () => {
       try {
@@ -40,22 +42,22 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
           credentials: 'include',
           signal: controller.signal,
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
         const json = await res.json();
         const list: KitchenSummary[] = (json.data?.data ?? json.data ?? []).map((k: { id: string; name: string; project?: { name: string } }) => ({
           id: k.id, name: k.name, projectName: k.project?.name,
         }));
         setKitchens(list);
-        if (list[0]) setKitchenId(list[0].id);
+        if (list[0]) {setKitchenId(list[0].id);}
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') setError((err as Error).message);
+        if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}
       }
     })();
     return () => controller.abort();
   }, [open]);
 
   const onSubmit = async (): Promise<void> => {
-    if (!kitchenId) return;
+    if (!kitchenId) {return;}
     setSubmitting(true);
     try {
       const body =

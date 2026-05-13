@@ -9,12 +9,12 @@
  */
 
 import { Router, type Router as RouterType } from 'express';
-import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 
 import { uploadSingleImage, handleUploadError } from '../../middleware/upload-middleware';
 import { renovationController } from '../controllers/renovation-controller';
 import { authenticate } from '../middleware/auth-middleware';
+import { renovationAnalysisRateLimiter } from '../middleware/rate-limit-middleware';
 import { validateBody, validateParams } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
@@ -30,17 +30,9 @@ const createProjectSchema = z.object({
   beforePhotos: z.array(z.string().url()).max(10).optional(),
 });
 
-// Rate limiter for expensive Claude Vision API calls
-const renovationAnalysisRateLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // 10 analyses per hour per user
-  message: {
-    success: false,
-    error: { code: 'RATE_LIMIT', message: 'Trop d\'analyses. Reessayez dans une heure.' },
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// Rate limiter for expensive Claude Vision API calls — defined in
+// rate-limit-middleware.ts (centralised to dodge a ts-jest interop bug
+// with express-rate-limit's default export when imported here directly).
 
 // All routes require authentication
 router.use(authenticate);

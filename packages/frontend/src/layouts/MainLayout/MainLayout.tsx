@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+
 import Header from '../../components/common/Header/Header';
-import Sidebar from '../../components/common/Sidebar/Sidebar';
 import OfflineIndicator from '../../components/common/OfflineIndicator';
+import Sidebar from '../../components/common/Sidebar/Sidebar';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function MainLayout(): React.ReactElement {

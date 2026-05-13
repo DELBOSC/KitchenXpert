@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import LegalLayout from './LegalLayout';
 
 type Summary = {
@@ -18,11 +19,11 @@ export default function PrivacySettings(): React.ReactElement {
     (async () => {
       try {
         const res = await fetch('/api/v1/me/gdpr/summary', { credentials: 'include', signal: controller.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
         const json = await res.json();
         setSummary(json.data);
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') setError((err as Error).message);
+        if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}
       } finally {
         setLoading(false);
       }
@@ -34,7 +35,7 @@ export default function PrivacySettings(): React.ReactElement {
     setBusy('export');
     try {
       const res = await fetch('/api/v1/me/gdpr/export', { credentials: 'include' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -55,7 +56,7 @@ export default function PrivacySettings(): React.ReactElement {
     const confirmed = window.confirm(
       'Cette action anonymisera immédiatement votre compte. Les données non soumises à conservation légale seront purgées sous 30 jours. Continuer ?'
     );
-    if (!confirmed) return;
+    if (!confirmed) {return;}
     setBusy('delete');
     try {
       const res = await fetch('/api/v1/me/gdpr/account', {
@@ -64,7 +65,7 @@ export default function PrivacySettings(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ confirm: true }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
       window.location.href = '/';
     } catch (err) {
       setError((err as Error).message);

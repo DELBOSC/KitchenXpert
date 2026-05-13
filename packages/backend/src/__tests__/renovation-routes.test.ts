@@ -16,6 +16,7 @@ import request from 'supertest';
 // ==================== MOCKS ====================
 
 jest.mock('../utils/logger', () => ({
+  __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
     info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
@@ -94,6 +95,7 @@ jest.mock('../api/middleware/auth-middleware', () => {
 
 jest.mock('../api/middleware/rate-limit-middleware', () => ({
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
+  renovationAnalysisRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
 
 import { errorHandler } from '../api/middleware/error-middleware';

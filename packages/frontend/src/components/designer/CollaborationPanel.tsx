@@ -14,6 +14,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { api } from '../../services/api/api';
 import { API_ENDPOINTS } from '../../services/api/endpoints';
 
@@ -166,7 +167,7 @@ export default function CollaborationPanel({
   // ─── Load members ──────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (!isOpen || !kitchenId) return;
+    if (!isOpen || !kitchenId) {return;}
 
     const controller = new AbortController();
     let cancelled = false;
@@ -182,9 +183,9 @@ export default function CollaborationPanel({
           setMembers(response.data);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
       } finally {
-        if (!cancelled) setIsLoadingMembers(false);
+        if (!cancelled) {setIsLoadingMembers(false);}
       }
     };
 
@@ -199,7 +200,7 @@ export default function CollaborationPanel({
   // ─── Load my invites ───────────────────────────────────────────────────
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
 
     const controller = new AbortController();
     let cancelled = false;
@@ -214,7 +215,7 @@ export default function CollaborationPanel({
           setMyInvites(response.data);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
       }
     };
 
@@ -328,7 +329,7 @@ export default function CollaborationPanel({
 
   // ─── Don't render if closed ───────────────────────────────────────────
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   // Partition members by status
   const acceptedMembers = members.filter((m) => m.status === 'accepted');

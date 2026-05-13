@@ -881,10 +881,12 @@ describe('Project Routes', () => {
     });
 
     it('should return 400 for email exceeding 255 characters', async () => {
-      const longEmail = `${'a'.repeat(246)  }@test.com`;
+      // Strictly OVER 255 chars — schema's .max(255) is inclusive.
+      const longEmail = `${'a'.repeat(260)}@test.com`;
+      mockProjectRepository.findById.mockResolvedValue(mockProject);
 
       const response = await authedRequest(app)
-        .post('/projects/project-1/collaborators')
+        .post('/projects/550e8400-e29b-41d4-a716-446655440000/collaborators')
         .send({ email: longEmail })
         .expect(400);
 
@@ -895,27 +897,32 @@ describe('Project Routes', () => {
   // ==================== DELETE /projects/:id/collaborators/:email ====================
 
   describe('DELETE /projects/:id/collaborators/:email', () => {
+    // DELETE validates :id as a strict UUID. Use valid UUIDs in URLs.
+    const projectUuid = '550e8400-e29b-41d4-a716-446655440000';
+    const otherUuid = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+    const missingUuid = '00000000-0000-0000-0000-000000000000';
+
     it('should remove a collaborator successfully', async () => {
-      mockProjectRepository.findById.mockResolvedValue(mockProject);
+      mockProjectRepository.findById.mockResolvedValue({ ...mockProject, id: projectUuid });
       mockProjectRepository.removeCollaborator.mockResolvedValue(undefined);
 
       const response = await authedRequest(app)
-        .delete('/projects/project-1/collaborators/collab@test.com')
+        .delete(`/projects/${projectUuid}/collaborators/collab@test.com`)
         .expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('removed');
       expect(mockProjectRepository.removeCollaborator).toHaveBeenCalledWith(
-        'project-1',
+        projectUuid,
         'collab@test.com'
       );
     });
 
     it('should return 403 when non-owner tries to remove collaborator (IDOR prevention)', async () => {
-      mockProjectRepository.findById.mockResolvedValue(otherUserProject);
+      mockProjectRepository.findById.mockResolvedValue({ ...otherUserProject, id: otherUuid });
 
       const response = await authedRequest(app)
-        .delete('/projects/project-2/collaborators/collab@test.com')
+        .delete(`/projects/${otherUuid}/collaborators/collab@test.com`)
         .expect(403);
 
       expect(response.body.success).toBe(false);
@@ -925,7 +932,7 @@ describe('Project Routes', () => {
       mockProjectRepository.findById.mockResolvedValue(null);
 
       const response = await authedRequest(app)
-        .delete('/projects/nonexistent/collaborators/collab@test.com')
+        .delete(`/projects/${missingUuid}/collaborators/collab@test.com`)
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -939,8 +946,8 @@ describe('Project Routes', () => {
       const projectWithKitchens = {
         ...mockProject,
         kitchens: [
-          { id: 'kitchen-1', name: 'Main Kitchen' },
-          { id: 'kitchen-2', name: 'Guest Kitchen' },
+          { id: '550e8400-e29b-41d4-a716-446655440000', name: 'Main Kitchen' },
+          { id: '660e8400-e29b-41d4-a716-446655440001', name: 'Guest Kitchen' },
         ],
       };
       // First call is for verifyOwnership, second for findById with relations

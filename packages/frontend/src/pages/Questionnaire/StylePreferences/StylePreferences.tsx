@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, Link } from 'react-router-dom';
+
 import { logger } from '../../../services/logger';
 
 interface StyleData {
@@ -167,10 +168,10 @@ const StylePreferences: React.FC = () => {
 
         if (response.ok) {
           const result = await response.json();
-          if (result.data) setFormData(result.data as StyleData);
+          if (result.data) {setFormData(result.data as StyleData);}
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         logger.debug('Failed to fetch style preferences, using defaults', err instanceof Error ? { error: err.message } : { error: err });
       } finally {
         setIsLoading(false);
@@ -245,7 +246,7 @@ const StylePreferences: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')}></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')} />
       </div>
     );
   }
@@ -532,7 +533,7 @@ const StylePreferences: React.FC = () => {
             {/* AI Tips */}
             {aiTipsLoading && (
               <div className="mt-6 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" />
                 {t('questionnaire.style.aiAnalyzing', 'Analyse IA en cours...')}
               </div>
             )}
@@ -574,7 +575,7 @@ const StylePreferences: React.FC = () => {
                 className={`px-6 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${isSaving ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
               >
                 {isSaving && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {isSaving ? t('common.saving', 'Enregistrement...') : t('common.continue', 'Continue')}
                 {!isSaving && (

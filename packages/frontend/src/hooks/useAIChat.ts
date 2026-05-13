@@ -1,5 +1,6 @@
-import { useState, useCallback, useRef } from 'react';
 import i18next from 'i18next';
+import { useState, useCallback, useRef } from 'react';
+
 import { API_BASE_URL, API_ENDPOINTS } from '../services/api/endpoints';
 
 interface ToolUseEntry {
@@ -51,7 +52,7 @@ export function useAIChat() {
 
   // Save current messages to the active session
   const saveSession = useCallback(async (currentMessages: ChatMessage[]) => {
-    if (!sessionId) return;
+    if (!sessionId) {return;}
     try {
       await fetch(`${API_BASE_URL}${API_ENDPOINTS.AI_CHAT.SESSION_BY_ID(sessionId)}`, {
         method: 'PUT',
@@ -73,7 +74,7 @@ export function useAIChat() {
         credentials: 'include',
         body: JSON.stringify({ title, kitchenId }),
       });
-      if (!res.ok) return null;
+      if (!res.ok) {return null;}
       const json = await res.json() as { success: boolean; data: { id: string } };
       if (json.success) {
         setSessionId(json.data.id);
@@ -92,7 +93,7 @@ export function useAIChat() {
         method: 'GET',
         credentials: 'include',
       });
-      if (!res.ok) return [];
+      if (!res.ok) {return [];}
       const json = await res.json() as { success: boolean; data: SessionInfo[] };
       return json.success ? json.data : [];
     } catch {
@@ -107,7 +108,7 @@ export function useAIChat() {
         method: 'GET',
         credentials: 'include',
       });
-      if (!res.ok) return false;
+      if (!res.ok) {return false;}
       const json = await res.json() as {
         success: boolean;
         data: { id: string; messages: ChatMessage[] };
@@ -128,11 +129,11 @@ export function useAIChat() {
 
     // Auto-create session if none exists
     if (!sessionId) {
-      if (creatingSessionRef.current) return;
+      if (creatingSessionRef.current) {return;}
       creatingSessionRef.current = true;
       try {
         // Use the first few words of the message as title
-        const autoTitle = message.length > 50 ? message.slice(0, 50) + '...' : message;
+        const autoTitle = message.length > 50 ? `${message.slice(0, 50)  }...` : message;
         const newId = await createSession(autoTitle);
         if (!newId) {
           // If session creation fails, continue without persistence
@@ -174,7 +175,7 @@ export function useAIChat() {
       }
 
       const reader = response.body?.getReader();
-      if (!reader) throw new Error('No response body');
+      if (!reader) {throw new Error('No response body');}
 
       const decoder = new TextDecoder();
       let buffer = '';
@@ -182,7 +183,7 @@ export function useAIChat() {
       try {
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
+          if (done) {break;}
 
           buffer += decoder.decode(value, { stream: true });
 
@@ -249,7 +250,7 @@ export function useAIChat() {
         return prev;
       });
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') return;
+      if (err instanceof Error && err.name === 'AbortError') {return;}
       const errorMsg = err instanceof Error
         ? err.message
         : i18next.t('errors.connectionError', 'Connection error');

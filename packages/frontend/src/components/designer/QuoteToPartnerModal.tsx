@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { API_ENDPOINTS, API_BASE_URL } from '../../services/api/endpoints';
+
 import type { RoomDimensions } from './DimensionWizard';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -58,13 +60,13 @@ async function fetchNearbyPartners(params: {
   postalCode?: string;
 }): Promise<PartnerInfo[]> {
   const query = new URLSearchParams();
-  if (params.lat !== undefined) query.set('lat', String(params.lat));
-  if (params.lng !== undefined) query.set('lng', String(params.lng));
-  if (params.postalCode) query.set('postalCode', params.postalCode);
+  if (params.lat !== undefined) {query.set('lat', String(params.lat));}
+  if (params.lng !== undefined) {query.set('lng', String(params.lng));}
+  if (params.postalCode) {query.set('postalCode', params.postalCode);}
 
   const url = `${API_BASE_URL}${API_ENDPOINTS.QUOTES.NEARBY_PARTNERS}?${query.toString()}`;
   const res = await fetch(url, { credentials: 'include' });
-  if (!res.ok) throw new Error('Failed to fetch partners');
+  if (!res.ok) {throw new Error('Failed to fetch partners');}
   const data = await res.json();
   return data.data || [];
 }
@@ -494,7 +496,7 @@ export default function QuoteToPartnerModal({
 
   // Fetch partners by postal code
   const handleSearchPostalCode = useCallback(async () => {
-    if (!postalCode.trim()) return;
+    if (!postalCode.trim()) {return;}
     setIsLoadingPartners(true);
     try {
       const result = await fetchNearbyPartners({ postalCode: postalCode.trim() });
@@ -536,7 +538,7 @@ export default function QuoteToPartnerModal({
   }, []);
 
   const handleSend = useCallback(async () => {
-    if (!selectedPartnerId || !contactInfo.email) return;
+    if (!selectedPartnerId || !contactInfo.email) {return;}
 
     setIsSending(true);
     setSendError(null);
@@ -586,7 +588,7 @@ export default function QuoteToPartnerModal({
     }
   }, [step]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   const stepLabels: Record<ModalStep, string> = {
     summary: t('quote.stepSummary', 'Package'),

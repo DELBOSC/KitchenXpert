@@ -78,6 +78,118 @@ export class ProjectController {
   });
 
   /**
+   * POST /projects/import-sandbox
+   *
+   * Atomically promotes a sandbox project (sent in the body, see
+   * `importSandboxSchema` in project-routes.ts) into a real
+   * Project + Kitchen + KitchenItem chain owned by the authenticated
+   * user. Returns `{ projectId, kitchenId }`.
+   *
+   * The whole graph is created in one Prisma transaction so a partial
+   * failure (e.g. a malformed item) leaves the database untouched.
+   */
+  importSandbox = asyncHandler(async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'User not authenticated' });
+      return;
+    }
+
+    const { project: payload } = req.body as {
+      project: {
+        name: string;
+        fromTemplate: string | null;
+        kitchen: {
+          name: string;
+          layout: 'L_SHAPED' | 'U_SHAPED' | 'GALLEY' | 'ISLAND' | 'PENINSULA' | 'ONE_WALL' | 'OPEN_PLAN';
+          widthCm: number;
+          depthCm: number;
+          heightCm: number;
+          items: Array<{
+            sku: string | null;
+            label: string;
+            providerCode: 'IKEA' | 'LEROY_MERLIN' | 'CASTORAMA' | 'SCHMIDT' | 'BOSCH' | null;
+            unitPrice: number;
+            quantity: number;
+            position: { x: number; y: number; z: number };
+            rotation: number;
+            size: { w: number; d: number; h: number };
+          }>;
+        };
+      };
+    };
+
+    const created = await prisma.$transaction(async (tx) => {
+      const project = await tx.project.create({
+        data: {
+          userId,
+          name: payload.name,
+          description: payload.fromTemplate
+            ? `Importé depuis le template sandbox « ${payload.fromTemplate} »`
+            : 'Importé depuis le mode démo',
+          status: 'in_progress',
+          metadata: { source: 'sandbox', fromTemplate: payload.fromTemplate },
+        },
+      });
+
+      const kitchen = await tx.kitchen.create({
+        data: {
+          projectId: project.id,
+          userId,
+          name: payload.kitchen.name,
+          // Cast to the Prisma enum value names the schema uses; the
+          // route validator already accepted the canonical labels.
+          layout: payload.kitchen.layout.toLowerCase() as never,
+          // The Kitchen schema uses Decimal — Prisma accepts numbers
+          // and serialises them.
+          width: payload.kitchen.widthCm,
+          length: payload.kitchen.depthCm,
+          height: payload.kitchen.heightCm,
+          isGenerated: false,
+          metadata: { source: 'sandbox' },
+          // Default style — user can refine later in the UI.
+          style: 'modern' as never,
+        },
+      });
+
+      if (payload.kitchen.items.length > 0) {
+        await tx.kitchenItem.createMany({
+          data: payload.kitchen.items.map((it) => ({
+            kitchenId: kitchen.id,
+            type: 'cabinet',
+            name: it.label,
+            brand: it.providerCode,
+            model: it.sku ?? undefined,
+            positionX: it.position.x,
+            positionY: it.position.y,
+            positionZ: it.position.z,
+            rotationY: it.rotation,
+            width: it.size.w,
+            depth: it.size.d,
+            height: it.size.h,
+            price: it.unitPrice * it.quantity,
+            metadata: { source: 'sandbox', quantity: it.quantity },
+          })),
+        });
+      }
+
+      return { projectId: project.id, kitchenId: kitchen.id };
+    });
+
+    logger.info('Sandbox project imported', {
+      userId,
+      projectId: created.projectId,
+      itemCount: payload.kitchen.items.length,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: created,
+      message: 'Sandbox project imported successfully',
+    });
+  });
+
+  /**
    * POST /projects
    * Create a new project
    */

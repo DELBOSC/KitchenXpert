@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { SeoHead } from '../../components/seo/SeoHead';
+import { TrustStack } from '../../components/Trust/TrustStack';
+
 // ── Types ──────────────────────────────────────────────────────────────────
 
 interface PricingTier {
@@ -327,6 +330,11 @@ const PricingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <SeoHead
+        title="Tarifs"
+        description="3 plans : Découverte gratuit · Premium 14,90 €/mois · Studio 49 €/mois. Sans engagement, sans CB pour démarrer."
+        canonical="https://kitchenxpert.com/pricing"
+      />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -381,6 +389,14 @@ const PricingPage: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <FeatureComparisonTable />
           </div>
+        </div>
+
+        {/* Trust signals — 8 garanties juste avant le bottom CTA */}
+        <div className="mt-16">
+          <h2 className="mb-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
+            {t('pricing.trust.title', 'Nos engagements, sans conditions')}
+          </h2>
+          <TrustStack layout="grid" />
         </div>
 
         {/* FAQ / Bottom CTA */}

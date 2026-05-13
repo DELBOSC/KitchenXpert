@@ -1,29 +1,45 @@
 /**
  * DigitalTwinAdmin Tests
- * Tests for the admin digital twin management page - rendering, i18n,
- * dark mode classes, container layout, and accessibility
+ * Tests for the admin Digital Twin management page.
+ *
+ * Updated 2026-05-12 to match the redesigned page:
+ * - the page fetches /digital-twin/* on mount and shows a spinner until
+ *   data resolves — tests must mock fetch and waitFor
+ * - heading is "Digital Twin Admin"; description was removed
+ * - layout uses an outer <div class="min-h-screen..."> wrapping an inner
+ *   "max-w-7xl mx-auto" container
+ * - exposes Refresh + Sync All buttons
  */
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import DigitalTwinAdmin from '../../pages/Admin/DigitalTwinAdmin';
 
-// Mock react-i18next
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, fallback: string) => fallback,
-    i18n: { language: 'fr' },
+    t: (key: string, fallback?: string) => fallback ?? key,
+    i18n: { language: 'en' },
   }),
 }));
 
-// Mock api service (imported but not actively used in current render)
-vi.mock('../../services/api/api', () => ({
-  api: { get: vi.fn(), post: vi.fn() },
-}));
-vi.mock('../../services/api/endpoints', () => ({
-  API_ENDPOINTS: {},
-}));
+const mockFetch = vi.fn();
+
+const mockStats = {
+  data: { total: 5, active: 3, syncing: 1, error: 1, lastGlobalSync: '2026-04-01T10:00:00Z' },
+};
+const mockTwins = {
+  data: [
+    {
+      id: 'dt1',
+      kitchenId: 'k1',
+      kitchenName: 'Kitchen One',
+      ownerEmail: 'user@example.com',
+      status: 'active',
+      lastSync: '2026-04-01T10:00:00Z',
+    },
+  ],
+};
 
 const renderDigitalTwinAdmin = () => {
   return render(
@@ -33,243 +49,105 @@ const renderDigitalTwinAdmin = () => {
   );
 };
 
+async function renderAndLoad(): Promise<HTMLElement> {
+  const { container } = renderDigitalTwinAdmin();
+  await waitFor(() => {
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+  });
+  return container;
+}
+
 describe('DigitalTwinAdmin', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    global.fetch = mockFetch as unknown as typeof fetch;
+    mockFetch.mockImplementation((url: string) => {
+      if (typeof url === 'string' && url.includes('/digital-twin')) {
+        if (url.includes('stats')) {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve(mockStats) });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(mockTwins) });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ data: [] }) });
+    });
   });
 
-  // ---------- Rendering ----------
-
   describe('Rendering', () => {
-    it('should render the page heading', () => {
-      renderDigitalTwinAdmin();
-
-      expect(
-        screen.getByRole('heading', { level: 1, name: /digital twin management/i })
-      ).toBeInTheDocument();
+    it('should render an h1 heading once the data has loaded', async () => {
+      await renderAndLoad();
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
     });
 
-    it('should render the description text', () => {
-      renderDigitalTwinAdmin();
-
-      expect(
-        screen.getByText(/manage digital twins for installed kitchens/i)
-      ).toBeInTheDocument();
+    it('should render the Digital Twin Admin title', async () => {
+      await renderAndLoad();
+      expect(screen.getByText(/digital twin admin/i)).toBeInTheDocument();
     });
 
-    it('should render heading with correct translation fallback', () => {
-      renderDigitalTwinAdmin();
-
-      expect(screen.getByText('Digital Twin Management')).toBeInTheDocument();
-    });
-
-    it('should render description with correct translation fallback', () => {
-      renderDigitalTwinAdmin();
-
-      expect(
-        screen.getByText('Manage digital twins for installed kitchens.')
-      ).toBeInTheDocument();
-    });
-
-    it('should render the page container', () => {
-      const { container } = renderDigitalTwinAdmin();
-
+    it('should render the top-level page container', async () => {
+      const container = await renderAndLoad();
       const outerDiv = container.firstChild as HTMLElement;
       expect(outerDiv).toBeInTheDocument();
       expect(outerDiv.tagName).toBe('DIV');
     });
 
-    it('should render the content card', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const card = container.querySelector('.bg-white');
-      expect(card).toBeInTheDocument();
+    it('should render at least one card-style block', async () => {
+      const container = await renderAndLoad();
+      const cards = container.querySelectorAll('.bg-white, .bg-gray-50');
+      expect(cards.length).toBeGreaterThan(0);
     });
   });
 
-  // ---------- Dark Mode Classes ----------
-
-  describe('Dark Mode Classes', () => {
-    it('should have dark:text-white class on the heading', () => {
-      renderDigitalTwinAdmin();
-
+  describe('Dark Mode', () => {
+    it('should mark the heading text white in dark mode', async () => {
+      await renderAndLoad();
       const heading = screen.getByRole('heading', { level: 1 });
       expect(heading.className).toContain('dark:text-white');
     });
 
-    it('should have dark:bg-gray-800 class on the content card', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const card = container.querySelector('.bg-white');
-      expect(card?.className).toContain('dark:bg-gray-800');
-    });
-
-    it('should have dark:text-gray-400 class on the description', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const descriptionEl = container.querySelector('.text-gray-500');
-      expect(descriptionEl?.className).toContain('dark:text-gray-400');
+    it('should mark the outermost background dark', async () => {
+      const container = await renderAndLoad();
+      const outerDiv = container.firstChild as HTMLElement;
+      expect(outerDiv.className).toContain('dark:bg-gray-900');
     });
   });
-
-  // ---------- Layout and Styling ----------
 
   describe('Layout and Styling', () => {
-    it('should have max-w-7xl container class', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const outerDiv = container.firstChild as HTMLElement;
-      expect(outerDiv.className).toContain('max-w-7xl');
+    it('should use a centered max-w-7xl container', async () => {
+      const container = await renderAndLoad();
+      const inner = container.querySelector('.max-w-7xl');
+      expect(inner).not.toBeNull();
+      expect(inner!.className).toContain('mx-auto');
     });
 
-    it('should have mx-auto for centering', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const outerDiv = container.firstChild as HTMLElement;
-      expect(outerDiv.className).toContain('mx-auto');
+    it('should apply responsive horizontal padding', async () => {
+      const container = await renderAndLoad();
+      const inner = container.querySelector('.max-w-7xl')!;
+      expect(inner.className).toContain('px-4');
+      expect(inner.className).toContain('sm:px-6');
+      expect(inner.className).toContain('lg:px-8');
     });
 
-    it('should have padding classes on the container', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const outerDiv = container.firstChild as HTMLElement;
-      expect(outerDiv.className).toContain('px-4');
-      expect(outerDiv.className).toContain('py-8');
-    });
-
-    it('should have rounded-lg and shadow on the card', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const card = container.querySelector('.bg-white');
-      expect(card?.className).toContain('rounded-lg');
-      expect(card?.className).toContain('shadow');
-    });
-
-    it('should have p-6 padding on the card', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const card = container.querySelector('.bg-white');
-      expect(card?.className).toContain('p-6');
-    });
-
-    it('should have mb-6 margin on the heading', () => {
-      renderDigitalTwinAdmin();
-
+    it('should render the h1 in a bold-font, large variant', async () => {
+      await renderAndLoad();
       const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading.className).toContain('mb-6');
-    });
-
-    it('should have text-2xl font-bold on the heading', () => {
-      renderDigitalTwinAdmin();
-
-      const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading.className).toContain('text-2xl');
       expect(heading.className).toContain('font-bold');
-    });
-
-    it('should have responsive padding classes', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const outerDiv = container.firstChild as HTMLElement;
-      expect(outerDiv.className).toContain('sm:px-6');
-      expect(outerDiv.className).toContain('lg:px-8');
+      expect(heading.className).toMatch(/text-(2|3)xl/);
     });
   });
 
-  // ---------- Accessibility ----------
+  describe('Actions', () => {
+    it('should expose Refresh + Sync All buttons', async () => {
+      await renderAndLoad();
+      expect(screen.getByRole('button', { name: /refresh/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /sync all/i })).toBeInTheDocument();
+    });
+  });
 
   describe('Accessibility', () => {
-    it('should have a proper heading hierarchy with h1', () => {
-      renderDigitalTwinAdmin();
-
-      const headings = screen.getAllByRole('heading');
-      expect(headings.length).toBeGreaterThanOrEqual(1);
-      expect(headings[0].tagName).toBe('H1');
-    });
-
-    it('should render description as a paragraph element', () => {
-      renderDigitalTwinAdmin();
-
-      const description = screen.getByText(
-        'Manage digital twins for installed kitchens.'
-      );
-      expect(description.tagName).toBe('P');
-    });
-
-    it('should have text-gray-900 for heading readability', () => {
-      renderDigitalTwinAdmin();
-
-      const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading.className).toContain('text-gray-900');
-    });
-
-    it('should use semantic HTML structure', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      expect(container.querySelector('h1')).toBeInTheDocument();
-      expect(container.querySelector('p')).toBeInTheDocument();
-    });
-  });
-
-  // ---------- Translation Keys ----------
-
-  describe('Translation Keys', () => {
-    it('should use admin.digitalTwin.title translation key', () => {
-      renderDigitalTwinAdmin();
-      expect(screen.getByText('Digital Twin Management')).toBeInTheDocument();
-    });
-
-    it('should use admin.digitalTwin.description translation key', () => {
-      renderDigitalTwinAdmin();
-      expect(
-        screen.getByText('Manage digital twins for installed kitchens.')
-      ).toBeInTheDocument();
-    });
-  });
-
-  // ---------- Component Structure ----------
-
-  describe('Component Structure', () => {
-    it('should have exactly one heading element', () => {
-      renderDigitalTwinAdmin();
-
-      const headings = screen.getAllByRole('heading');
-      expect(headings).toHaveLength(1);
-    });
-
-    it('should have exactly one paragraph element', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const paragraphs = container.querySelectorAll('p');
-      expect(paragraphs).toHaveLength(1);
-    });
-
-    it('should not render any buttons', () => {
-      renderDigitalTwinAdmin();
-
-      const buttons = screen.queryAllByRole('button');
-      expect(buttons).toHaveLength(0);
-    });
-
-    it('should not render any links', () => {
-      renderDigitalTwinAdmin();
-
-      const links = screen.queryAllByRole('link');
-      expect(links).toHaveLength(0);
-    });
-
-    it('should not render any forms', () => {
-      const { container } = renderDigitalTwinAdmin();
-
-      const forms = container.querySelectorAll('form');
-      expect(forms).toHaveLength(0);
-    });
-
-    it('should not render any tables', () => {
-      renderDigitalTwinAdmin();
-
-      const tables = screen.queryAllByRole('table');
-      expect(tables).toHaveLength(0);
+    it('should expose a single h1', async () => {
+      await renderAndLoad();
+      const h1s = screen.getAllByRole('heading', { level: 1 });
+      expect(h1s).toHaveLength(1);
     });
   });
 });

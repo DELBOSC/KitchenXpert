@@ -14,6 +14,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { API_BASE_URL } from '../../services/api/endpoints';
 import { getErrorMessage } from '../../utils/error-handling';
 
@@ -271,10 +272,10 @@ function renderFloorPlan(floorPlan: FloorPlanData): React.ReactElement {
     // Find the wall by matching op.wall to wall index or id key
     const wallIdx = parseInt(op.wall, 10);
     const wall = isNaN(wallIdx) ? walls[0] : (walls[wallIdx] ?? walls[0]);
-    if (!wall) return null;
+    if (!wall) {return null;}
 
     const wLen = wallLengthMeters(wall);
-    if (wLen === 0) return null;
+    if (wLen === 0) {return null;}
 
     const t = Math.min(Math.max(op.position / wLen, 0), 1);
     const cx = scaleX(wall.startX + t * (wall.endX - wall.startX));
@@ -626,9 +627,9 @@ export default function PhotoScanPanel({
 
   // Escape key to close
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {onClose();}
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
@@ -652,7 +653,7 @@ export default function PhotoScanPanel({
 
   const handleFilesChange = useCallback(
     async (selectedFiles: FileList | null) => {
-      if (!selectedFiles) return;
+      if (!selectedFiles) {return;}
 
       const newFiles = Array.from(selectedFiles);
 
@@ -736,7 +737,7 @@ export default function PhotoScanPanel({
   );
 
   const handleAnalyze = useCallback(async () => {
-    if (files.length === 0) return;
+    if (files.length === 0) {return;}
 
     setStep('analyzing');
     setError(null);
@@ -833,7 +834,7 @@ export default function PhotoScanPanel({
     [],
   );
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   const badge = scanResult
     ? confidenceBadge(scanResult.dimensions.confidence, t)

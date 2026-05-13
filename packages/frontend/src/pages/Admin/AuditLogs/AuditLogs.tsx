@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 interface AuditLog {
   id: string;
@@ -107,11 +107,11 @@ const AuditLogs: React.FC = () => {
           limit: pagination.itemsPerPage.toString(),
         });
 
-        if (categoryFilter) params.append('category', categoryFilter);
-        if (severityFilter) params.append('severity', severityFilter);
-        if (dateRange.start) params.append('startDate', dateRange.start);
-        if (dateRange.end) params.append('endDate', dateRange.end);
-        if (searchQuery) params.append('search', searchQuery);
+        if (categoryFilter) {params.append('category', categoryFilter);}
+        if (severityFilter) {params.append('severity', severityFilter);}
+        if (dateRange.start) {params.append('startDate', dateRange.start);}
+        if (dateRange.end) {params.append('endDate', dateRange.end);}
+        if (searchQuery) {params.append('search', searchQuery);}
 
         const response = await fetch(`/api/v1/admin/audit-logs?${params.toString()}`, { credentials: 'include', signal: controller.signal });
 
@@ -123,7 +123,7 @@ const AuditLogs: React.FC = () => {
         setLogs(data.logs);
         setPagination(data.pagination);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : t('admin.audit.errors.unexpected', 'An unexpected error occurred');
         setError(errorMessage);
       } finally {
@@ -145,41 +145,41 @@ const AuditLogs: React.FC = () => {
 
   const handleFilterChange = (): void => {
     const params: Record<string, string> = { page: '1' };
-    if (categoryFilter) params.category = categoryFilter;
-    if (severityFilter) params.severity = severityFilter;
-    if (dateRange.start) params.startDate = dateRange.start;
-    if (dateRange.end) params.endDate = dateRange.end;
-    if (searchQuery) params.search = searchQuery;
+    if (categoryFilter) {params.category = categoryFilter;}
+    if (severityFilter) {params.severity = severityFilter;}
+    if (dateRange.start) {params.startDate = dateRange.start;}
+    if (dateRange.end) {params.endDate = dateRange.end;}
+    if (searchQuery) {params.search = searchQuery;}
     setSearchParams(params);
   };
 
   const handlePageChange = (page: number): void => {
     const params: Record<string, string> = { page: page.toString() };
-    if (categoryFilter) params.category = categoryFilter;
-    if (severityFilter) params.severity = severityFilter;
-    if (dateRange.start) params.startDate = dateRange.start;
-    if (dateRange.end) params.endDate = dateRange.end;
-    if (searchQuery) params.search = searchQuery;
+    if (categoryFilter) {params.category = categoryFilter;}
+    if (severityFilter) {params.severity = severityFilter;}
+    if (dateRange.start) {params.startDate = dateRange.start;}
+    if (dateRange.end) {params.endDate = dateRange.end;}
+    if (searchQuery) {params.search = searchQuery;}
     setSearchParams(params);
   };
 
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExportLogs = async (): Promise<void> => {
-    if (isExporting) return;
+    if (isExporting) {return;}
     setIsExporting(true);
 
     try {
       const params = new URLSearchParams();
-      if (categoryFilter) params.append('category', categoryFilter);
-      if (severityFilter) params.append('severity', severityFilter);
-      if (dateRange.start) params.append('startDate', dateRange.start);
-      if (dateRange.end) params.append('endDate', dateRange.end);
-      if (searchQuery) params.append('search', searchQuery);
+      if (categoryFilter) {params.append('category', categoryFilter);}
+      if (severityFilter) {params.append('severity', severityFilter);}
+      if (dateRange.start) {params.append('startDate', dateRange.start);}
+      if (dateRange.end) {params.append('endDate', dateRange.end);}
+      if (searchQuery) {params.append('search', searchQuery);}
 
       const response = await fetch(`/api/v1/admin/audit-logs/export?${params.toString()}`, { credentials: 'include' });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         throw new Error(t('admin.audit.errors.exportLogs', 'Failed to export logs'));
@@ -225,7 +225,7 @@ const AuditLogs: React.FC = () => {
   if (isLoading && logs.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
       </div>
     );
   }
@@ -245,7 +245,7 @@ const AuditLogs: React.FC = () => {
             className="px-4 py-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-900 dark:hover:bg-gray-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isExporting ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
             ) : (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -492,7 +492,7 @@ const AuditLogs: React.FC = () => {
       {selectedLog && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          onKeyDown={(e) => { if (e.key === 'Escape') setSelectedLog(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape') {setSelectedLog(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="auditDetailTitle" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-start justify-between">

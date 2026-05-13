@@ -90,7 +90,7 @@ import type { PlacedDevice, AutomationRule, CoverageMap } from '../services/smar
 
 const testUserId = 'test-user-id';
 const otherUserId = 'other-user-99';
-const kitchenId = 'kitchen-1';
+const kitchenId = '550e8400-e29b-41d4-a716-446655440000';
 
 const mockKitchen = {
   id: kitchenId,
@@ -426,7 +426,7 @@ describe('SmartHomeService', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.calculateCoverage('nonexistent', { x: 0, y: 0, z: 0 }, 'WiFi'),
+        service.calculateCoverage('00000000-0000-0000-0000-000000000000', { x: 0, y: 0, z: 0 }, 'WiFi'),
       ).rejects.toThrow('Kitchen not found');
     });
 

@@ -273,7 +273,7 @@ describe('AuditController', () => {
     it('should return 404 if audit log not found', async () => {
       mockAuditLogRepository.findById.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getById(req as Request, res as Response);

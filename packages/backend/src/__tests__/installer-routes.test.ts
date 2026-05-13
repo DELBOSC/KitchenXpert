@@ -16,6 +16,7 @@ import request from 'supertest';
 // ==================== MOCKS ====================
 
 jest.mock('../utils/logger', () => ({
+  __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
     info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
@@ -216,7 +217,7 @@ describe('Installer Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Installer not found');
+      expect(JSON.stringify(response.body)).toContain('Installer not found');
     });
   });
 

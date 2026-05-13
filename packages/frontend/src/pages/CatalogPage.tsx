@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   Search, Sparkles, Package, ArchiveRestore, ChefHat, Square, CircleDot, Lightbulb, Wrench,
   ChevronLeft, ChevronRight, XCircle,
 } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import {
+  Badge, Button, Card, Container, EmptyState, ErrorState, Input, PageHeader, Select, Skeleton,
+  fadeUp, stagger,
+} from '../components/ui';
 import {
   fetchProducts,
   selectProducts,
@@ -13,10 +17,7 @@ import {
   type CatalogItem,
   type CatalogState,
 } from '../features/catalog/catalog-slice';
-import {
-  Badge, Button, Card, Container, EmptyState, ErrorState, Input, PageHeader, Select, Skeleton,
-  fadeUp, stagger,
-} from '../components/ui';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 const selectCatalogError = (state: { catalog: CatalogState }): string | null => state.catalog.error;
 const selectCatalogPagination = (state: { catalog: CatalogState }): CatalogState['pagination'] => state.catalog.pagination;
@@ -58,8 +59,8 @@ export default function CatalogPage(): React.ReactElement {
   const loadProducts = useCallback(
     (page: number, search?: string, category?: string | null) => {
       const filters: Record<string, string> = {};
-      if (search) filters.search = search;
-      if (category) filters.category = category;
+      if (search) {filters.search = search;}
+      if (category) {filters.category = category;}
       dispatch(fetchProducts({ page, limit: 20, filters }));
     },
     [dispatch],
@@ -74,13 +75,13 @@ export default function CatalogPage(): React.ReactElement {
   }, [selectedCategory]);
 
   useEffect(() => () => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (aiControllerRef.current) aiControllerRef.current.abort();
+    if (debounceRef.current) {clearTimeout(debounceRef.current);}
+    if (aiControllerRef.current) {aiControllerRef.current.abort();}
   }, []);
 
   const handleSearchChange = (value: string): void => {
     setSearchQuery(value);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (debounceRef.current) {clearTimeout(debounceRef.current);}
     debounceRef.current = setTimeout(() => {
       setCurrentPage(1);
       loadProducts(1, value, selectedCategory);
@@ -88,8 +89,8 @@ export default function CatalogPage(): React.ReactElement {
   };
 
   const handleAISearch = async (): Promise<void> => {
-    if (!aiQuery.trim()) return;
-    if (aiControllerRef.current) aiControllerRef.current.abort();
+    if (!aiQuery.trim()) {return;}
+    if (aiControllerRef.current) {aiControllerRef.current.abort();}
     const controller = new AbortController();
     aiControllerRef.current = controller;
 
@@ -102,11 +103,11 @@ export default function CatalogPage(): React.ReactElement {
         body: JSON.stringify({ query: aiQuery }),
         signal: controller.signal,
       });
-      if (!res.ok) throw new Error('Recherche IA échouée');
+      if (!res.ok) {throw new Error('Recherche IA échouée');}
       const json = await res.json();
       setAiResults(json.data);
     } catch (err) {
-      if ((err as Error).name === 'AbortError') return;
+      if ((err as Error).name === 'AbortError') {return;}
       setAiError((err as Error).message);
     } finally {
       setAiLoading(false);
@@ -116,8 +117,8 @@ export default function CatalogPage(): React.ReactElement {
   const sorted = useMemo(() => {
     const copy = [...products];
     copy.sort((a, b) => {
-      if (sortBy === 'price_asc') return (a.price || 0) - (b.price || 0);
-      if (sortBy === 'price_desc') return (b.price || 0) - (a.price || 0);
+      if (sortBy === 'price_asc') {return (a.price || 0) - (b.price || 0);}
+      if (sortBy === 'price_desc') {return (b.price || 0) - (a.price || 0);}
       return 0;
     });
     return copy;

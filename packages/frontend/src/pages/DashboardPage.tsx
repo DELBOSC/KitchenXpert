@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Plus, FolderOpen, Library, UserCircle2, ArrowRight, TrendingUp, Clock, Euro, Layers } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+
+import { SandboxMigrationBanner } from '../components/sandbox/SandboxMigrationBanner';
+import { Badge, Card, Container, EmptyState, ErrorState, PageHeader, Skeleton, fadeUp, stagger } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   fetchProjects,
   selectProjects,
@@ -12,8 +14,8 @@ import {
   selectProjectError,
   type Project,
 } from '../features/project/project-slice';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { getErrorMessage } from '../utils/error-handling';
-import { Badge, Card, Container, EmptyState, ErrorState, PageHeader, Skeleton, fadeUp, stagger } from '../components/ui';
 
 const STATUS_TONE: Record<string, 'default' | 'info' | 'warning' | 'success'> = {
   draft: 'default',
@@ -55,6 +57,9 @@ export default function DashboardPage(): React.ReactElement {
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
       <Container size="xl" className="py-10">
+        {/* Surfaces a residual sandbox project — renders nothing if absent */}
+        <SandboxMigrationBanner />
+
         <PageHeader
           title={
             <>

@@ -112,16 +112,20 @@ jest.mock('../services/mail.service', () => ({
   })),
 }));
 
-// Mock email token service
-jest.mock('../services/email-token.service', () => ({
-  getEmailTokenService: jest.fn(() => ({
+// Mock email token service — return the SAME instance each call so the
+// controller and tests share mock state.
+jest.mock('../services/email-token.service', () => {
+  const sharedService = {
     generateVerificationToken: jest.fn(),
     generatePasswordResetToken: jest.fn(),
     verifyPasswordResetToken: jest.fn(),
     verifyEmailToken: jest.fn(),
     getUserByVerificationToken: jest.fn(),
-  })),
-}));
+  };
+  return {
+    getEmailTokenService: jest.fn(() => sharedService),
+  };
+});
 
 // Mock config
 jest.mock('../config/app-config', () => ({
@@ -849,7 +853,7 @@ describe('Auth Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Invalid or expired verification token');
+      expect(JSON.stringify(response.body)).toContain('Invalid or expired verification token');
     });
 
     it('should return 400 for expired verification token', async () => {
@@ -1080,7 +1084,7 @@ describe('Auth Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('already verified');
+      expect(JSON.stringify(response.body)).toContain('already verified');
     });
 
     it('should return 401 when not authenticated', async () => {

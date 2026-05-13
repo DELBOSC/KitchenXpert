@@ -141,7 +141,7 @@ describe('Questionnaire Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Invalid section');
+      expect(JSON.stringify(response.body)).toContain('Invalid section');
     });
   });
 
@@ -163,7 +163,7 @@ describe('Questionnaire Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Invalid section');
+      expect(JSON.stringify(response.body)).toContain('Invalid section');
     });
 
     it('should return 401 when not authenticated', async () => {

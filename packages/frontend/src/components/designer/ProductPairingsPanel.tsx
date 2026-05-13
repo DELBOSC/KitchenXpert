@@ -74,9 +74,9 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 function getMatchScoreColor(score: number): { bg: string; text: string; darkBg: string; darkText: string } {
-  if (score >= 0.9) return { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-900/30', darkText: 'dark:text-emerald-300' };
-  if (score >= 0.7) return { bg: 'bg-green-100', text: 'text-green-700', darkBg: 'dark:bg-green-900/30', darkText: 'dark:text-green-300' };
-  if (score >= 0.5) return { bg: 'bg-yellow-100', text: 'text-yellow-700', darkBg: 'dark:bg-yellow-900/30', darkText: 'dark:text-yellow-300' };
+  if (score >= 0.9) {return { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-900/30', darkText: 'dark:text-emerald-300' };}
+  if (score >= 0.7) {return { bg: 'bg-green-100', text: 'text-green-700', darkBg: 'dark:bg-green-900/30', darkText: 'dark:text-green-300' };}
+  if (score >= 0.5) {return { bg: 'bg-yellow-100', text: 'text-yellow-700', darkBg: 'dark:bg-yellow-900/30', darkText: 'dark:text-yellow-300' };}
   return { bg: 'bg-orange-100', text: 'text-orange-700', darkBg: 'dark:bg-orange-900/30', darkText: 'dark:text-orange-300' };
 }
 

@@ -6,7 +6,9 @@
   "description": "KitchenXpert Frontend - Main customer-facing web application",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && node scripts/generate-sitemap.mjs && vite build",
+    "build:analyze": "ANALYZE=1 pnpm build",
+    "sitemap": "node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit",
@@ -16,9 +18,12 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "test:e2e:chromium": "playwright test --project=chromium",
-    "test:e2e:firefox": "playwright test --project=firefox",
-    "test:e2e:webkit": "playwright test --project=webkit"
+    "test:e2e:chromium": "playwright test --project=chromium-desktop",
+    "test:e2e:firefox": "playwright test --project=firefox-desktop",
+    "test:e2e:webkit": "playwright test --project=webkit-desktop",
+    "test:e2e:critical": "PLAYWRIGHT_SUITE=critical playwright test --project=chromium-desktop",
+    "test:e2e:visual": "PLAYWRIGHT_SUITE=critical playwright test e2e-critical/visual-regression.spec.ts --project=chromium-desktop",
+    "test:e2e:visual:update": "PLAYWRIGHT_SUITE=critical playwright test e2e-critical/visual-regression.spec.ts --project=chromium-desktop --update-snapshots"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

@@ -193,6 +193,10 @@ const mockSavedReport = {
   id: 'report-1',
   kitchenId: validKitchenId,
   userId: 'test-user-1',
+  // The new Prisma schema stores totalCO2kg/breakdown as columns, not
+  // inside a JSON `data` blob — surface both fields directly.
+  totalCO2kg: mockCarbonReport.totalCarbonKg,
+  breakdown: mockCarbonReport.breakdown,
   data: JSON.stringify(mockCarbonReport),
   createdAt: new Date('2024-01-01'),
   updatedAt: new Date('2024-01-01'),
@@ -263,6 +267,7 @@ describe('Carbon Routes', () => {
         .expect(200);
 
       expect(response.body.success).toBe(true);
+      // /calculate returns the service output which uses totalCO2e
       expect(response.body.data).toHaveProperty('totalCO2e');
       expect(response.body.data).toHaveProperty('breakdown');
     });
@@ -274,7 +279,7 @@ describe('Carbon Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('kitchenId is required');
+      expect(JSON.stringify(response.body)).toContain('kitchenId is required');
     });
 
     it('should return 400 when items array is missing', async () => {
@@ -284,7 +289,7 @@ describe('Carbon Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('items array is required');
+      expect(JSON.stringify(response.body)).toContain('items array is required');
     });
 
     it('should return 400 when items array is empty', async () => {
@@ -294,7 +299,7 @@ describe('Carbon Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('items array is required');
+      expect(JSON.stringify(response.body)).toContain('items array is required');
     });
 
     it('should return 400 when items is not an array', async () => {
@@ -351,7 +356,7 @@ describe('Carbon Routes', () => {
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data).toHaveProperty('totalCO2e');
+      expect(response.body.data).toHaveProperty('totalCO2kg');
     });
 
     it('should return 404 when no report exists for kitchen', async () => {
@@ -362,7 +367,7 @@ describe('Carbon Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Carbon report not found');
+      expect(JSON.stringify(response.body)).toContain('Carbon report not found');
     });
 
     it('should return 403 when trying to access another user\'s report (IDOR prevention)', async () => {
@@ -373,7 +378,7 @@ describe('Carbon Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('do not have access');
+      expect(JSON.stringify(response.body)).toContain('do not have access');
     });
 
     it('should allow admin to access any report', async () => {
@@ -402,6 +407,8 @@ describe('Carbon Routes', () => {
     it('should return eco score with grade A for low carbon kitchen', async () => {
       const lowCarbonReport = {
         ...mockSavedReport,
+        totalCO2kg: 300,
+        breakdown: [],
         data: JSON.stringify({ totalCarbonKg: 300, breakdown: [] }),
       };
       mockPrisma.carbonReport.findUnique.mockResolvedValue(lowCarbonReport);
@@ -418,6 +425,8 @@ describe('Carbon Routes', () => {
     it('should return eco score with grade B for moderate carbon kitchen', async () => {
       const moderateCarbonReport = {
         ...mockSavedReport,
+        totalCO2kg: 750,
+        breakdown: [],
         data: JSON.stringify({ totalCarbonKg: 750, breakdown: [] }),
       };
       mockPrisma.carbonReport.findUnique.mockResolvedValue(moderateCarbonReport);
@@ -434,6 +443,8 @@ describe('Carbon Routes', () => {
     it('should return eco score with grade C for higher carbon kitchen', async () => {
       const higherCarbonReport = {
         ...mockSavedReport,
+        totalCO2kg: 1500,
+        breakdown: [],
         data: JSON.stringify({ totalCarbonKg: 1500, breakdown: [] }),
       };
       mockPrisma.carbonReport.findUnique.mockResolvedValue(higherCarbonReport);
@@ -449,6 +460,8 @@ describe('Carbon Routes', () => {
     it('should return eco score with grade D for high carbon kitchen', async () => {
       const highCarbonReport = {
         ...mockSavedReport,
+        totalCO2kg: 2500,
+        breakdown: [],
         data: JSON.stringify({ totalCarbonKg: 2500, breakdown: [] }),
       };
       mockPrisma.carbonReport.findUnique.mockResolvedValue(highCarbonReport);
@@ -464,6 +477,8 @@ describe('Carbon Routes', () => {
     it('should return eco score with grade E for very high carbon kitchen', async () => {
       const veryHighCarbonReport = {
         ...mockSavedReport,
+        totalCO2kg: 5000,
+        breakdown: [],
         data: JSON.stringify({ totalCarbonKg: 5000, breakdown: [] }),
       };
       mockPrisma.carbonReport.findUnique.mockResolvedValue(veryHighCarbonReport);
@@ -497,7 +512,7 @@ describe('Carbon Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('do not have access');
+      expect(JSON.stringify(response.body)).toContain('do not have access');
     });
 
     it('should allow admin to access any eco score', async () => {
@@ -522,6 +537,8 @@ describe('Carbon Routes', () => {
     it('should handle report data with "total" field instead of "totalCarbonKg"', async () => {
       const alternateReport = {
         ...mockSavedReport,
+        totalCO2kg: 400,
+        breakdown: [],
         data: JSON.stringify({ total: 400, breakdown: [] }),
       };
       mockPrisma.carbonReport.findUnique.mockResolvedValue(alternateReport);

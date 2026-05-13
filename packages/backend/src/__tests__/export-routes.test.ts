@@ -359,8 +359,8 @@ describe('Export Routes', () => {
         .get('/export/invalid-entity')
         .expect(400);
 
-      expect(response.body.error).toContain('Invalid entity');
-      expect(response.body.error).toContain('users');
+      expect(JSON.stringify(response.body)).toContain('Invalid entity');
+      expect(JSON.stringify(response.body)).toContain('users');
     });
 
     it('should return 400 for unknown entity type', async () => {
@@ -368,7 +368,7 @@ describe('Export Routes', () => {
         .get('/export/subscriptions')
         .expect(400);
 
-      expect(response.body.error).toContain('Invalid entity');
+      expect(JSON.stringify(response.body)).toContain('Invalid entity');
     });
 
     it('should return 400 for invalid format', async () => {
@@ -376,7 +376,7 @@ describe('Export Routes', () => {
         .get('/export/users?format=xml')
         .expect(400);
 
-      expect(response.body.error).toContain('Invalid format');
+      expect(JSON.stringify(response.body)).toContain('Invalid format');
     });
 
     it('should return 400 for another invalid format', async () => {
@@ -384,7 +384,7 @@ describe('Export Routes', () => {
         .get('/export/users?format=pdf')
         .expect(400);
 
-      expect(response.body.error).toContain('Invalid format');
+      expect(JSON.stringify(response.body)).toContain('Invalid format');
     });
   });
 
@@ -398,7 +398,7 @@ describe('Export Routes', () => {
         .get('/export/users')
         .expect(500);
 
-      expect(response.body.error).toContain('Export failed');
+      expect(JSON.stringify(response.body)).toContain('Export failed');
     });
 
     it('should return 500 for unexpected service errors', async () => {
@@ -408,7 +408,7 @@ describe('Export Routes', () => {
         .get('/export/orders?format=json')
         .expect(500);
 
-      expect(response.body.error).toContain('Export failed');
+      expect(JSON.stringify(response.body)).toContain('Export failed');
     });
   });
 

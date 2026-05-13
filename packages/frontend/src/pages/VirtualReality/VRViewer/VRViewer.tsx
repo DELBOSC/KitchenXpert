@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { logger } from '../../../services/logger';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import * as THREE from 'three';
+
+import { logger } from '../../../services/logger';
+
 
 interface VRScene {
   id: string;
@@ -157,7 +159,7 @@ const VRViewer: React.FC = () => {
         const data: VRScene = await response.json();
         setScene(data);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
         setError(errorMessage);
       } finally {
@@ -171,7 +173,7 @@ const VRViewer: React.FC = () => {
 
   // Initialize Three.js renderer when scene is loaded
   useEffect(() => {
-    if (!canvasRef.current || !scene) return;
+    if (!canvasRef.current || !scene) {return;}
 
     const canvas = canvasRef.current;
     const width = canvas.clientWidth || window.innerWidth;
@@ -337,7 +339,7 @@ const VRViewer: React.FC = () => {
   };
 
   const handleExportUSDZ = async (): Promise<void> => {
-    if (!sceneRef.current || usdzExporting) return;
+    if (!sceneRef.current || usdzExporting) {return;}
 
     setUsdzExporting(true);
     try {
@@ -415,7 +417,7 @@ const VRViewer: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4" />
           <p className="text-white text-lg">{t('vrViewer.loading', 'Loading VR Experience...')}</p>
         </div>
       </div>
@@ -730,11 +732,11 @@ const VRViewer: React.FC = () => {
       <div className="bg-gray-800 border-t border-gray-700 px-4 py-2 flex items-center justify-between text-sm">
         <div className="flex items-center gap-4 text-gray-400">
           <span className={`flex items-center gap-1 ${isVRSupported ? 'text-green-400' : 'text-gray-500'}`}>
-            <span className={`w-2 h-2 rounded-full ${isVRSupported ? 'bg-green-400' : 'bg-gray-500'}`}></span>
+            <span className={`w-2 h-2 rounded-full ${isVRSupported ? 'bg-green-400' : 'bg-gray-500'}`} />
             VR {isVRSupported ? t('vrViewer.ready', 'Ready') : t('vrViewer.notAvailable', 'Not Available')}
           </span>
           <span className={`flex items-center gap-1 ${isARSupported ? 'text-green-400' : 'text-gray-500'}`}>
-            <span className={`w-2 h-2 rounded-full ${isARSupported ? 'bg-green-400' : 'bg-gray-500'}`}></span>
+            <span className={`w-2 h-2 rounded-full ${isARSupported ? 'bg-green-400' : 'bg-gray-500'}`} />
             AR {isARSupported ? t('vrViewer.ready', 'Ready') : t('vrViewer.notAvailable', 'Not Available')}
           </span>
         </div>

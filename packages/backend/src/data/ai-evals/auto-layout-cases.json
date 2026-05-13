@@ -1,0 +1,144 @@
+{
+  "$comment": "Eval dataset for the auto-layout pipeline. Each case is a (prompt → expected criteria) pair. Run via `node scripts/run-ai-evals.mjs auto-layout` — the script will call the live use case, then a human reviewer (or Claude-as-judge) scores each criterion. Target score : 8/10 average.",
+  "$schema": "./auto-layout-case.schema.json",
+  "version": 1,
+  "cases": [
+    {
+      "id": "AL-001",
+      "prompt": "Cuisine de 12m² en L, style scandinave, budget 8000€, avec îlot petit-déjeuner",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 12, "style": "scandinavian", "budgetEur": 8000 },
+        "criteria": [
+          "Layout includes L_SHAPED OR ISLAND (both acceptable for 12 m²)",
+          "Total cost ≤ 9 200 € (15% over budget tolerance)",
+          "At least one proposal uses IKEA (best-value scandinavian)",
+          "Color palette in rationale mentions pale wood OR white/light tones",
+          "Work triangle perimeter ≤ 7 m if computable from positions"
+        ]
+      }
+    },
+    {
+      "id": "AL-002",
+      "prompt": "petite cuisine 6m² parallèle, célibataire, j'utilise jamais le four, budget serré 3000€",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 6, "budgetEur": 3000 },
+        "criteria": [
+          "Layout = GALLEY (parallèle is explicit)",
+          "Total cost ≤ 3 450 € (15% tolerance)",
+          "No FOUR (oven) in any proposal (user said 'jamais le four')",
+          "Cooktop present (vitrocéramique or induction)",
+          "At least one proposal under 2 500 € (budget-anchor)"
+        ]
+      }
+    },
+    {
+      "id": "AL-003",
+      "prompt": "Grande cuisine ouverte 18m² avec îlot central, style industriel, budget 25000€, électroménager Bosch haut de gamme",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 18, "style": "industrial", "budgetEur": 25000 },
+        "criteria": [
+          "Layout ∈ {ISLAND, OPEN_PLAN}",
+          "Total cost ≤ 28 750 € (15% tolerance)",
+          "Bosch appliances present in at least 2 proposals",
+          "Style descriptors industrial: dark cabinets, metal, exposed materials",
+          "Triangle d'activité includes the island (sink or cooktop on island)"
+        ]
+      }
+    },
+    {
+      "id": "AL-004",
+      "prompt": "Cuisine en U pour famille de 4 avec deux enfants, beaucoup de rangement, budget 12000€, style moderne",
+      "expected": {
+        "shouldExtract": { "style": "modern", "budgetEur": 12000 },
+        "criteria": [
+          "Layout = U_SHAPED",
+          "≥ 6 cabinets in each proposal (rangement family priority)",
+          "Lave-vaisselle 60 cm present (family of 4)",
+          "Total cost ≤ 13 800 €",
+          "Pas de plaque gaz visible (sécurité enfants)"
+        ]
+      }
+    },
+    {
+      "id": "AL-005",
+      "prompt": "Cuisine PMR accessible fauteuil roulant 15m², plans abaissés, budget 18000€",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 15, "budgetEur": 18000, "extraConstraints": ["accessibilité PMR"] },
+        "criteria": [
+          "Rationale mentions explicitly PMR / wheelchair / accessibilité",
+          "Worktop height differs from default 90 cm (≤ 80 cm for wheelchair clearance)",
+          "Couloir libre ≥ 150 cm (PMR norm)",
+          "Pas de meubles bas sous l'évier (knee clearance)"
+        ]
+      }
+    },
+    {
+      "id": "AL-006",
+      "prompt": "Cuisine japonaise wabi-sabi 10m² parallèle, bois clair, minimaliste, budget 14000€",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 10, "style": "japanese", "budgetEur": 14000 },
+        "criteria": [
+          "Layout = GALLEY",
+          "Style descriptors: bois clair, lignes basses, minimal",
+          "Total cost ≤ 16 100 €",
+          "Score ≥ 70 (Japanese is well-supported style)"
+        ]
+      }
+    },
+    {
+      "id": "AL-007",
+      "prompt": "5m² studio kitchenette, frigo top, plaque 2 feux, évier simple bac, budget 1500€",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 5, "budgetEur": 1500 },
+        "criteria": [
+          "Layout ∈ {ONE_WALL, GALLEY}",
+          "Frigo top (≤ 60 cm h) present",
+          "Plaque 2 feux only (no 4-zone)",
+          "Total cost ≤ 1 725 € (15% tolerance) — tight budget, important to respect"
+        ]
+      }
+    },
+    {
+      "id": "AL-008",
+      "prompt": "Cuisine en U style provençal pour résidence secondaire, 14m², pierre, terre cuite, budget 16000€",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 14, "style": "provencal", "budgetEur": 16000 },
+        "criteria": [
+          "Style descriptors: pierre, terre cuite, cream/beige tones",
+          "At least one cabinet brand ∈ {LAPEYRE, SCHMIDT, MOBALPA} (French heritage brands)",
+          "Total cost ≤ 18 400 €",
+          "Includes farmhouse-style sink (évier grès / fireclay)"
+        ]
+      }
+    },
+    {
+      "id": "AL-009",
+      "prompt": "Cuisine ouverte sur séjour 20m² avec bar de séparation, induction Schmidt, style contemporain laqué noir, budget 30000€",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 20, "style": "contemporary", "budgetEur": 30000 },
+        "criteria": [
+          "Layout ∈ {PENINSULA, OPEN_PLAN, ISLAND}",
+          "At least 1 proposal uses SCHMIDT brand",
+          "Bar / peninsula at least 240 cm long",
+          "Induction (not vitrocéramique) cooktop",
+          "Style descriptors: laqué, noir, brillant",
+          "Total cost ≤ 34 500 €"
+        ]
+      }
+    },
+    {
+      "id": "AL-010",
+      "prompt": "Cuisine 8m² en L, gaucher (évier à droite), 2 ours adultes, lave-vaisselle plein format, four pyrolyse, budget 10000€",
+      "expected": {
+        "shouldExtract": { "surfaceM2": 8, "budgetEur": 10000, "extraConstraints": ["gaucher", "évier à droite"] },
+        "criteria": [
+          "Layout = L_SHAPED",
+          "Évier positioned on the right side of the L (X > widthCm/2)",
+          "Lave-vaisselle 60 cm (plein format, pas 45)",
+          "Four pyrolyse mentioned or implied in label",
+          "Total cost ≤ 11 500 €"
+        ]
+      }
+    }
+  ]
+}

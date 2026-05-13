@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface VRScene {
   id: string;
@@ -66,7 +66,7 @@ export const loadVRScene = createAsyncThunk<VRScene, string>('vr/loadScene', asy
   try {
     const response = await fetch(`${API_URL}/kitchens/${kitchenId}/vr-scene`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -81,7 +81,7 @@ export const saveVRScene = createAsyncThunk<VRScene, { kitchenId: string; sceneD
         method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sceneData),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -95,7 +95,7 @@ export const generateVRPreview = createAsyncThunk<{ imageUrl: string }, string>(
     try {
       const response = await fetch(`${API_URL}/kitchens/${kitchenId}/vr-preview`, { method: 'POST', credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -120,13 +120,13 @@ const vrSlice = createSlice({
     },
     stopWalkthrough: (state) => { state.isWalkthrough = false; state.walkthroughPath = []; },
     updateCameraPosition: (state, action: PayloadAction<{ x: number; y: number; z: number }>) => {
-      if (state.currentScene) state.currentScene.cameraPosition = action.payload;
+      if (state.currentScene) {state.currentScene.cameraPosition = action.payload;}
     },
     updateCameraTarget: (state, action: PayloadAction<{ x: number; y: number; z: number }>) => {
-      if (state.currentScene) state.currentScene.cameraTarget = action.payload;
+      if (state.currentScene) {state.currentScene.cameraTarget = action.payload;}
     },
     setLightingPreset: (state, action: PayloadAction<string>) => {
-      if (state.currentScene) state.currentScene.lightingPreset = action.payload;
+      if (state.currentScene) {state.currentScene.lightingPreset = action.payload;}
     },
     clearError: (state) => { state.error = null; },
     clearScene: (state) => { state.currentScene = null; },

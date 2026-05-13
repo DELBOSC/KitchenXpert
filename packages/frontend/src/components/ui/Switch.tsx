@@ -1,4 +1,5 @@
 import React, { forwardRef, useId } from 'react';
+
 import { cn } from './_utils';
 
 interface SwitchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
@@ -6,10 +7,10 @@ interface SwitchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 
   description?: string;
 }
 
-export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
+export const Switch = forwardRef<HTMLInputElement, SwitchProps>((
   { className, label, description, id, checked, defaultChecked, ...rest },
   ref,
-) {
+) => {
   const autoId = useId();
   const inputId = id || autoId;
   return (

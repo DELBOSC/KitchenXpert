@@ -12,9 +12,9 @@ export interface ConsentState {
 function loadConsent(): ConsentState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
+    if (!raw) {return null;}
     const parsed = JSON.parse(raw) as ConsentState;
-    if (!parsed.decidedAt) return null;
+    if (!parsed.decidedAt) {return null;}
     return parsed;
   } catch {
     return null;
@@ -43,10 +43,10 @@ export default function CookieConsent(): React.ReactElement | null {
   const [marketing, setMarketing] = useState(false);
 
   useEffect(() => {
-    if (!loadConsent()) setVisible(true);
+    if (!loadConsent()) {setVisible(true);}
   }, []);
 
-  if (!visible) return null;
+  if (!visible) {return null;}
 
   const acceptAll = (): void => {
     saveConsent({ analytics: true, marketing: true });

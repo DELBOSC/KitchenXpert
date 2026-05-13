@@ -9,6 +9,7 @@ import { Router, type Request, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
 
 import { prisma } from '../../database/client';
+import { runProviderSync } from '../../jobs/provider-sync.job';
 import { ApplianceRepository } from '../../repositories/appliance-repository';
 import { ProductRepository } from '../../repositories/product-repository';
 import { authenticate, authorize } from '../middleware/auth-middleware';
@@ -212,7 +213,6 @@ export function createProviderRoutes(config: ProviderRouteConfig): Router {
     // this stays well under request budget. Heavy real-scraping should be
     // delegated to the @kitchenxpert/scraper BullMQ pipeline via
     // SCRAPER_BRIDGE_ENABLED=1 — see jobs/sync-sources/scraper-bridge-source.ts.
-    const { runProviderSync } = await import('../../jobs/provider-sync.job.js');
     const [stats] = await runProviderSync(prisma, { providers: [config.providerCode] });
 
     res.status(202).json({

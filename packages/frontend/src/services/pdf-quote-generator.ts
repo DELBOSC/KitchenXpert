@@ -1,9 +1,10 @@
+import i18next from 'i18next';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import i18next from 'i18next';
-import type { KitchenEngine } from '@kitchenxpert/3d-engine';
-import type { BrandProfile } from '@kitchenxpert/3d-engine';
 import * as THREE from 'three';
+
+import type { KitchenEngine , BrandProfile } from '@kitchenxpert/3d-engine';
+
 
 interface ProjectInfo {
   projectName: string;
@@ -197,7 +198,7 @@ export class PDFQuoteGenerator {
     let startY = 30;
 
     for (const category of categories) {
-      if (category.items.length === 0) continue;
+      if (category.items.length === 0) {continue;}
 
       // Category header
       doc.setFontSize(11);
@@ -484,7 +485,7 @@ export class PDFQuoteGenerator {
         y += 5;
       }
 
-      if (y > 270) break;
+      if (y > 270) {break;}
     }
   }
 

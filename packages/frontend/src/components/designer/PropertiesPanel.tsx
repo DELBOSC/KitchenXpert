@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as THREE from 'three';
+
 import {
   KITCHEN_MATERIALS,
   MaterialLibrary,
-  KitchenEngine,
-} from '@kitchenxpert/3d-engine';
-import type { KitchenMaterial } from '@kitchenxpert/3d-engine';
+  type KitchenEngine,
+ type KitchenMaterial } from '@kitchenxpert/3d-engine';
+
+
 
 interface PropertiesPanelProps {
   selectedObject: THREE.Object3D | null;
@@ -129,7 +131,7 @@ export default function PropertiesPanel({
 
   // Close delete confirmation on Escape key
   useEffect(() => {
-    if (!showDeleteConfirm) return;
+    if (!showDeleteConfirm) {return;}
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -142,7 +144,7 @@ export default function PropertiesPanel({
 
   // Focus trap for delete confirmation modal
   useEffect(() => {
-    if (!showDeleteConfirm) return;
+    if (!showDeleteConfirm) {return;}
     requestAnimationFrame(() => {
       const modal = document.querySelector('[data-delete-confirm-modal]');
       if (modal) {
@@ -154,7 +156,7 @@ export default function PropertiesPanel({
 
   // Sync transform state from the selected object
   useEffect(() => {
-    if (!selectedObject) return;
+    if (!selectedObject) {return;}
 
     const updateFromObject = () => {
       setTransform({
@@ -184,7 +186,7 @@ export default function PropertiesPanel({
 
   const updatePosition = useCallback(
     (axis: 'x' | 'y' | 'z', valueMm: number) => {
-      if (!selectedObject) return;
+      if (!selectedObject) {return;}
       const valueMeters = valueMm / 1000;
       selectedObject.position[axis] = valueMeters;
 
@@ -198,7 +200,7 @@ export default function PropertiesPanel({
 
   const updateRotationY = useCallback(
     (degrees: number) => {
-      if (!selectedObject) return;
+      if (!selectedObject) {return;}
       selectedObject.rotation.y = THREE.MathUtils.degToRad(degrees);
       setTransform((prev) => ({ ...prev, rotY: degrees }));
     },
@@ -207,7 +209,7 @@ export default function PropertiesPanel({
 
   const applyMaterial = useCallback(
     (material: KitchenMaterial) => {
-      if (!selectedObject) return;
+      if (!selectedObject) {return;}
       materialLibrary.applyMaterial(selectedObject, material);
       selectedObject.userData.materialId = material.id;
       setSelectedMaterialId(material.id);
@@ -363,7 +365,7 @@ export default function PropertiesPanel({
           <div className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden mb-3">
             {MATERIAL_TYPES.map((group) => {
               const materials = KITCHEN_MATERIALS.filter((m: KitchenMaterial) => m.type === group.type);
-              if (materials.length === 0) return null;
+              if (materials.length === 0) {return null;}
 
               return (
                 <div key={group.type} className="border-b border-gray-100 dark:border-gray-700 last:border-b-0">

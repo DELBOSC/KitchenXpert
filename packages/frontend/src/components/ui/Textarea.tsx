@@ -1,4 +1,5 @@
 import React, { forwardRef, useId } from 'react';
+
 import { cn } from './_utils';
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -7,10 +8,10 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   error?: string;
 }
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((
   { className, label, description, error, id, rows = 4, ...rest },
   ref,
-) {
+) => {
   const autoId = useId();
   const inputId = id || autoId;
   return (

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface Project {
   id: string;
@@ -43,7 +43,7 @@ export const fetchProjects = createAsyncThunk<
     const params = new URLSearchParams({ page: String(page), limit: String(limit), ...filters });
     const response = await fetch(`${API_URL}/projects?${params}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -55,7 +55,7 @@ export const fetchProjectById = createAsyncThunk<Project, string>('project/fetch
   try {
     const response = await fetch(`${API_URL}/projects/${id}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -69,7 +69,7 @@ export const createProject = createAsyncThunk<Project, Partial<Project>>('projec
       method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(projectData),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -83,7 +83,7 @@ export const updateProject = createAsyncThunk<Project, { id: string; updates: Pa
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -95,7 +95,7 @@ export const deleteProject = createAsyncThunk<string, string>('project/deletePro
   try {
     const response = await fetch(`${API_URL}/projects/${id}`, { method: 'DELETE', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -109,7 +109,7 @@ export const updateProjectStatus = createAsyncThunk<Project, { id: string; statu
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -140,17 +140,17 @@ const projectSlice = createSlice({
       .addCase(createProject.fulfilled, (state, action) => { state.projects.unshift(action.payload); state.currentProject = action.payload; })
       .addCase(updateProject.fulfilled, (state, action) => {
         const idx = state.projects.findIndex(p => p.id === action.payload.id);
-        if (idx !== -1) state.projects[idx] = action.payload;
-        if (state.currentProject?.id === action.payload.id) state.currentProject = action.payload;
+        if (idx !== -1) {state.projects[idx] = action.payload;}
+        if (state.currentProject?.id === action.payload.id) {state.currentProject = action.payload;}
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.projects = state.projects.filter(p => p.id !== action.payload);
-        if (state.currentProject?.id === action.payload) state.currentProject = null;
+        if (state.currentProject?.id === action.payload) {state.currentProject = null;}
       })
       .addCase(updateProjectStatus.fulfilled, (state, action) => {
         const idx = state.projects.findIndex(p => p.id === action.payload.id);
-        if (idx !== -1) state.projects[idx] = action.payload;
-        if (state.currentProject?.id === action.payload.id) state.currentProject = action.payload;
+        if (idx !== -1) {state.projects[idx] = action.payload;}
+        if (state.currentProject?.id === action.payload.id) {state.currentProject = action.payload;}
       });
   },
 });

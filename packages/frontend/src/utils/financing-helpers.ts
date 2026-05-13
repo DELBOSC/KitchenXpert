@@ -26,7 +26,7 @@ export function formatMonthlyPrice(
   months: number = 36,
   annualRate: number = 4.7,
 ): string {
-  if (price <= 0 || months <= 0) return '';
+  if (price <= 0 || months <= 0) {return '';}
   if (annualRate <= 0) {
     const monthly = Math.ceil(price / months);
     return `a partir de ${monthly} EUR/mois`;
@@ -50,8 +50,8 @@ export function calculateMonthlyPayment(
   annualRate: number,
   months: number,
 ): number {
-  if (amount <= 0 || months <= 0) return 0;
-  if (annualRate <= 0) return amount / months;
+  if (amount <= 0 || months <= 0) {return 0;}
+  if (annualRate <= 0) {return amount / months;}
 
   const monthlyRate = annualRate / 100 / 12;
   return amount * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));

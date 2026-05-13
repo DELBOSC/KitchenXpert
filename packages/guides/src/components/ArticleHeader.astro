@@ -1,0 +1,108 @@
+---
+/**
+ * ArticleHeader — h1 gradient + meta strip (auteur · date · temps de lecture).
+ *
+ * Visual: same dark aurora gradient as the SPA hero so the editorial
+ * pages feel native, not bolted-on.
+ */
+import { AUTHORS, type AuthorKey } from '../data/authors';
+
+interface Props {
+  title: string;
+  publishedAt: Date;
+  updatedAt?: Date;
+  authorKey: AuthorKey;
+  readingMinutes: number;
+  category?: string; // displayed as a chip above the H1
+}
+
+const { title, publishedAt, updatedAt, authorKey, readingMinutes, category } = Astro.props;
+const author = AUTHORS[authorKey];
+
+const fmt = (d: Date) =>
+  new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+---
+
+<header class="article-header">
+  {category && <div class="chip">{category}</div>}
+
+  <h1 class="title">
+    <span class="title-gradient">{title}</span>
+  </h1>
+
+  <div class="meta">
+    <div class="author">
+      <span class="author-avatar" aria-hidden>{author.initials}</span>
+      <span class="author-name">{author.displayName}</span>
+    </div>
+    <span class="sep" aria-hidden>·</span>
+    <time datetime={publishedAt.toISOString()}>{fmt(publishedAt)}</time>
+    {updatedAt && (
+      <>
+        <span class="sep" aria-hidden>·</span>
+        <span class="updated">Mis à jour le {fmt(updatedAt)}</span>
+      </>
+    )}
+    <span class="sep" aria-hidden>·</span>
+    <span class="reading">{readingMinutes} min de lecture</span>
+  </div>
+</header>
+
+<style>
+  .article-header {
+    margin: 0 auto 3rem;
+    max-width: 720px;
+    text-align: left;
+  }
+  .chip {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    backdrop-filter: blur(8px);
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .title-gradient {
+    background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.6) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .meta {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.875rem;
+  }
+  .author { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .author-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #6366f1, #ec4899);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .author-name { color: rgba(255, 255, 255, 0.85); }
+  .sep { opacity: 0.4; }
+  .updated, .reading { font-variant-numeric: tabular-nums; }
+</style>

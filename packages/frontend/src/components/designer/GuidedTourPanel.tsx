@@ -15,6 +15,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import type { GuidedWalkthrough, WalkthroughState, Waypoint } from '@kitchenxpert/3d-engine';
 
 // ────────────────────────────── Types ──────────────────────────────
@@ -113,7 +114,7 @@ export default function GuidedTourPanel({
 
   // ─── Event listeners ───
   useEffect(() => {
-    if (!walkthrough) return;
+    if (!walkthrough) {return;}
 
     const handleStateChange = ({ state: newState }: { state: WalkthroughState }) => {
       setState(newState);
@@ -169,7 +170,7 @@ export default function GuidedTourPanel({
 
   // ─── Animation loop for update calls ───
   useEffect(() => {
-    if (!walkthrough) return;
+    if (!walkthrough) {return;}
 
     const animate = (time: number) => {
       const delta = lastTimeRef.current ? (time - lastTimeRef.current) / 1000 : 1 / 60;
@@ -195,7 +196,7 @@ export default function GuidedTourPanel({
 
   // ─── Generate and start tour ───
   const handleStartTour = useCallback(() => {
-    if (!walkthrough) return;
+    if (!walkthrough) {return;}
 
     // Convert kitchen items to the format expected by GuidedWalkthrough
     const items = kitchenItems.map((item) => ({
@@ -235,7 +236,7 @@ export default function GuidedTourPanel({
 
   // ─── Controls ───
   const handlePlayPause = useCallback(() => {
-    if (!walkthrough) return;
+    if (!walkthrough) {return;}
 
     if (state === 'playing' || state === 'at_annotation') {
       walkthrough.pause();
@@ -247,7 +248,7 @@ export default function GuidedTourPanel({
   }, [walkthrough, state, handleStartTour]);
 
   const handleStop = useCallback(() => {
-    if (!walkthrough) return;
+    if (!walkthrough) {return;}
     walkthrough.stop();
     setAnnotation(null);
     setProgress(0);

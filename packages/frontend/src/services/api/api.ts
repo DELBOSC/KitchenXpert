@@ -129,7 +129,7 @@ async function request<T>(
 // Refresh token logic — uses httpOnly cookie, no localStorage
 async function refreshAccessToken(): Promise<boolean> {
   // If a refresh is already in progress, wait for it instead of starting a new one
-  if (refreshPromise) return refreshPromise;
+  if (refreshPromise) {return refreshPromise;}
 
   refreshPromise = (async () => {
     try {

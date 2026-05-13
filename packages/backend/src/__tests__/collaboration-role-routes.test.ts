@@ -16,6 +16,7 @@ import request from 'supertest';
 // ==================== MOCKS ====================
 
 jest.mock('../utils/logger', () => ({
+  __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
     info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
@@ -261,7 +262,7 @@ describe('Collaboration Role Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Kitchen not found');
+      expect(JSON.stringify(response.body)).toContain('Kitchen not found');
     });
 
     it('should return 403 when user has no access to the kitchen', async () => {
@@ -276,7 +277,7 @@ describe('Collaboration Role Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
   });
 });

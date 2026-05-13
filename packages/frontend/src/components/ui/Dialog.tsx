@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+
 import { cn } from './_utils';
 
 interface DialogProps {
@@ -36,9 +37,9 @@ export function Dialog({
 
   // Lock body scroll and close on Escape while open.
   useEffect(() => {
-    if (!open) return;
+    if (!open) {return;}
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {onClose();}
     };
     document.addEventListener('keydown', onKey);
     const prevOverflow = document.body.style.overflow;
@@ -51,7 +52,7 @@ export function Dialog({
     };
   }, [open, onClose]);
 
-  if (typeof document === 'undefined') return null;
+  if (typeof document === 'undefined') {return null;}
 
   return createPortal(
     <AnimatePresence>

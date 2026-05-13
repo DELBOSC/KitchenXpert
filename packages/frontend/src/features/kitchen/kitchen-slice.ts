@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 // Types
 export interface Kitchen {
@@ -59,13 +59,13 @@ export const fetchKitchens = createAsyncThunk<
 >('kitchen/fetchKitchens', async ({ page = 1, limit = 20, filters = {} }, { rejectWithValue }) => {
   try {
     const queryParams: Record<string, string> = { page: String(page), limit: String(limit) };
-    if (filters.status) queryParams.status = filters.status;
-    if (filters.projectId) queryParams.projectId = filters.projectId;
-    if (filters.search) queryParams.search = filters.search;
+    if (filters.status) {queryParams.status = filters.status;}
+    if (filters.projectId) {queryParams.projectId = filters.projectId;}
+    if (filters.search) {queryParams.search = filters.search;}
     const params = new URLSearchParams(queryParams);
     const response = await fetch(`${API_URL}/kitchens?${params}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -79,7 +79,7 @@ export const fetchKitchenById = createAsyncThunk<Kitchen, string>(
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -98,7 +98,7 @@ export const createKitchen = createAsyncThunk<Kitchen, Partial<Kitchen>>(
         body: JSON.stringify(kitchenData),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -117,7 +117,7 @@ export const updateKitchen = createAsyncThunk<Kitchen, { id: string; updates: Pa
         body: JSON.stringify(updates),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -132,7 +132,7 @@ export const deleteKitchen = createAsyncThunk<string, string>(
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}`, { method: 'DELETE', credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return id;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -147,7 +147,7 @@ export const duplicateKitchen = createAsyncThunk<Kitchen, string>(
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}/duplicate`, { method: 'POST', credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -165,10 +165,10 @@ const kitchenSlice = createSlice({
     clearCurrentKitchen: (state) => { state.currentKitchen = null; },
     clearError: (state) => { state.error = null; },
     updateLocalKitchen: (state, action: PayloadAction<Partial<Kitchen>>) => {
-      if (state.currentKitchen) state.currentKitchen = { ...state.currentKitchen, ...action.payload };
+      if (state.currentKitchen) {state.currentKitchen = { ...state.currentKitchen, ...action.payload };}
     },
     addItem: (state, action: PayloadAction<KitchenItem>) => {
-      if (state.currentKitchen) state.currentKitchen.items = [...(state.currentKitchen.items || []), action.payload];
+      if (state.currentKitchen) {state.currentKitchen.items = [...(state.currentKitchen.items || []), action.payload];}
     },
     updateItem: (state, action: PayloadAction<{ id: string; updates: Partial<KitchenItem> }>) => {
       if (state.currentKitchen?.items) {
@@ -184,7 +184,7 @@ const kitchenSlice = createSlice({
       }
     },
     removeItem: (state, action: PayloadAction<string>) => {
-      if (state.currentKitchen?.items) state.currentKitchen.items = state.currentKitchen.items.filter(i => i.id !== action.payload);
+      if (state.currentKitchen?.items) {state.currentKitchen.items = state.currentKitchen.items.filter(i => i.id !== action.payload);}
     },
   },
   extraReducers: (builder) => {
@@ -202,12 +202,12 @@ const kitchenSlice = createSlice({
       .addCase(createKitchen.fulfilled, (state, action) => { state.kitchens.unshift(action.payload); state.currentKitchen = action.payload; })
       .addCase(updateKitchen.fulfilled, (state, action) => {
         const idx = state.kitchens.findIndex(k => k.id === action.payload.id);
-        if (idx !== -1) state.kitchens[idx] = action.payload;
-        if (state.currentKitchen?.id === action.payload.id) state.currentKitchen = action.payload;
+        if (idx !== -1) {state.kitchens[idx] = action.payload;}
+        if (state.currentKitchen?.id === action.payload.id) {state.currentKitchen = action.payload;}
       })
       .addCase(deleteKitchen.fulfilled, (state, action) => {
         state.kitchens = state.kitchens.filter(k => k.id !== action.payload);
-        if (state.currentKitchen?.id === action.payload) state.currentKitchen = null;
+        if (state.currentKitchen?.id === action.payload) {state.currentKitchen = null;}
       })
       .addCase(duplicateKitchen.fulfilled, (state, action) => { state.kitchens.unshift(action.payload); });
   },

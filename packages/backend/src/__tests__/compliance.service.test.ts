@@ -64,7 +64,7 @@ describe('ComplianceService', () => {
   const mockUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
   const mockKitchen = {
-    id: 'kitchen-1',
+    id: '550e8400-e29b-41d4-a716-446655440000',
     userId: 'test-user-id',
     width: 400,
     length: 300,
@@ -124,7 +124,7 @@ describe('ComplianceService', () => {
       mockPrisma.complianceRule.findMany.mockResolvedValue(mockRules);
       mockPrisma.complianceCheck.create.mockResolvedValue({
         id: 'check-1',
-        kitchenId: 'kitchen-1',
+        kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         userId: mockUser.userId,
         status: 'passed',
         totalRules: 2,
@@ -134,14 +134,14 @@ describe('ComplianceService', () => {
         checkedAt: new Date(),
       });
 
-      const result = await service.checkKitchenCompliance('kitchen-1', mockUser.userId);
+      const result = await service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId);
 
-      expect(result.kitchenId).toBe('kitchen-1');
+      expect(result.kitchenId).toBe('550e8400-e29b-41d4-a716-446655440000');
       expect(result.userId).toBe(mockUser.userId);
       expect(result.totalRules).toBe(2);
       expect(result.results).toHaveLength(2);
       expect(mockPrisma.kitchen.findUnique).toHaveBeenCalledWith({
-        where: { id: 'kitchen-1' },
+        where: { id: '550e8400-e29b-41d4-a716-446655440000' },
         include: { items: { include: { product: true } } },
       });
     });
@@ -163,7 +163,7 @@ describe('ComplianceService', () => {
       mockPrisma.complianceRule.findMany.mockResolvedValue([]);
 
       await expect(
-        service.checkKitchenCompliance('kitchen-1', mockUser.userId),
+        service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId),
       ).rejects.toThrow('No active compliance rules found');
     });
 
@@ -199,7 +199,7 @@ describe('ComplianceService', () => {
         checkedAt: new Date(),
       });
 
-      const result = await service.checkKitchenCompliance('kitchen-1', mockUser.userId);
+      const result = await service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId);
 
       const failedResult = result.results.find(r => r.status === 'failed');
       expect(failedResult).toBeDefined();
@@ -237,7 +237,7 @@ describe('ComplianceService', () => {
         checkedAt: new Date(),
       });
 
-      const result = await service.checkKitchenCompliance('kitchen-1', mockUser.userId);
+      const result = await service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId);
 
       expect(result.results[0].status).toBe('passed');
     });
@@ -250,11 +250,11 @@ describe('ComplianceService', () => {
         checkedAt: new Date(),
       });
 
-      await service.checkKitchenCompliance('kitchen-1', mockUser.userId);
+      await service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId);
 
       expect(mockPrisma.complianceCheck.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
-          kitchenId: 'kitchen-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
           userId: mockUser.userId,
           totalRules: 2,
         }),
@@ -313,16 +313,16 @@ describe('ComplianceService', () => {
   describe('getCheckHistory', () => {
     it('should return check history for a kitchen ordered by date desc', async () => {
       const mockHistory = [
-        { id: 'check-2', kitchenId: 'kitchen-1', status: 'passed', checkedAt: new Date() },
-        { id: 'check-1', kitchenId: 'kitchen-1', status: 'failed', checkedAt: new Date() },
+        { id: 'check-2', kitchenId: '550e8400-e29b-41d4-a716-446655440000', status: 'passed', checkedAt: new Date() },
+        { id: 'check-1', kitchenId: '550e8400-e29b-41d4-a716-446655440000', status: 'failed', checkedAt: new Date() },
       ];
       mockPrisma.complianceCheck.findMany.mockResolvedValue(mockHistory);
 
-      const result = await service.getCheckHistory('kitchen-1');
+      const result = await service.getCheckHistory('550e8400-e29b-41d4-a716-446655440000');
 
       expect(result).toEqual(mockHistory);
       expect(mockPrisma.complianceCheck.findMany).toHaveBeenCalledWith({
-        where: { kitchenId: 'kitchen-1' },
+        where: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' },
         orderBy: { checkedAt: 'desc' },
         take: 50,
       });

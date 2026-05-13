@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { api } from '../../services/api/api';
 import { API_ENDPOINTS } from '../../services/api/endpoints';
 
@@ -116,7 +117,7 @@ const EQUIPMENT_OPTIONS: Array<{ value: EquipmentType; label: string }> = [
 
 /** Format a price as monthly installment string */
 export function formatMonthlyPrice(price: number, months: number = 36, annualRate: number = 4.7): string {
-  if (price <= 0 || months <= 0) return '0 EUR/mois';
+  if (price <= 0 || months <= 0) {return '0 EUR/mois';}
   const monthlyRate = annualRate / 100 / 12;
   const monthly = price * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
   return `${Math.round(monthly)} EUR/mois`;
@@ -200,7 +201,7 @@ export default function FinancingCalculator(): React.ReactElement {
           setProviders(response.data);
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
       }
     }
 
@@ -213,7 +214,7 @@ export default function FinancingCalculator(): React.ReactElement {
 
   // ── Simulate financing ─────────────────────────────────────────────────
   const runSimulation = useCallback(async () => {
-    if (loanAmount <= 0) return;
+    if (loanAmount <= 0) {return;}
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -238,7 +239,7 @@ export default function FinancingCalculator(): React.ReactElement {
         setSimulationError(response.error?.message || t('financing.simulationError', 'Failed to run simulation'));
       }
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AbortError') return;
+      if (err instanceof Error && err.name === 'AbortError') {return;}
       setSimulationError(t('financing.networkError', 'Network error. Please try again.'));
     } finally {
       setSimulationLoading(false);
@@ -276,7 +277,7 @@ export default function FinancingCalculator(): React.ReactElement {
         setEcoAidsError(response.error?.message || t('financing.ecoAidsError', 'Failed to calculate eco aids'));
       }
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AbortError') return;
+      if (err instanceof Error && err.name === 'AbortError') {return;}
       setEcoAidsError(t('financing.networkError', 'Network error. Please try again.'));
     } finally {
       setEcoAidsLoading(false);
@@ -285,7 +286,7 @@ export default function FinancingCalculator(): React.ReactElement {
 
   // ── Get selected duration data ─────────────────────────────────────────
   const selectedDurationData = useMemo(() => {
-    if (!simulation) return null;
+    if (!simulation) {return null;}
     return simulation.durations.find(d => d.months === selectedDuration) || null;
   }, [simulation, selectedDuration]);
 

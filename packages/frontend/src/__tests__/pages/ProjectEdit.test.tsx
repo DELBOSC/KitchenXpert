@@ -172,7 +172,7 @@ describe('ProjectEdit', () => {
       renderProjectEdit();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /back to projects/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /back to projects|retour aux projets/i })).toBeInTheDocument();
       });
     });
 
@@ -186,10 +186,10 @@ describe('ProjectEdit', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /back to projects/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /back to projects|retour aux projets/i })).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /back to projects/i }));
+      await user.click(screen.getByRole('button', { name: /back to projects|retour aux projets/i }));
 
       expect(mockNavigate).toHaveBeenCalledWith('/projects');
     });
@@ -205,7 +205,8 @@ describe('ProjectEdit', () => {
       renderProjectEdit();
 
       await waitFor(() => {
-        expect(screen.getByText(/error/i)).toBeInTheDocument();
+        // fr.json: errors might be in french too
+        expect(screen.getAllByText(/error|erreur/i).length).toBeGreaterThan(0);
       });
     });
 
@@ -218,7 +219,7 @@ describe('ProjectEdit', () => {
       renderProjectEdit();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /try again|réessayer/i })).toBeInTheDocument();
       });
     });
 
@@ -234,10 +235,10 @@ describe('ProjectEdit', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /try again|réessayer/i })).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /try again/i }));
+      await user.click(screen.getByRole('button', { name: /try again|réessayer/i }));
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -257,7 +258,7 @@ describe('ProjectEdit', () => {
       renderProjectEdit();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /edit project/i })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: /edit project|modifier le projet/i })).toBeInTheDocument();
       });
     });
 
@@ -289,10 +290,12 @@ describe('ProjectEdit', () => {
         expect(statusSelect).toBeInTheDocument();
       });
 
-      expect(screen.getByText(/draft/i)).toBeInTheDocument();
-      expect(screen.getByText(/in progress/i)).toBeInTheDocument();
-      expect(screen.getByText(/completed/i)).toBeInTheDocument();
-      expect(screen.getByText(/archived/i)).toBeInTheDocument();
+      // fr.json: projects.status.draft = "Brouillon", in_progress = "En cours".
+      expect(screen.getByText(/draft|brouillon/i)).toBeInTheDocument();
+      expect(screen.getByText(/in progress|en cours/i)).toBeInTheDocument();
+      // fr.json: completed = "Terminé", archived = "Archivé".
+      expect(screen.getByText(/completed|terminé/i)).toBeInTheDocument();
+      expect(screen.getByText(/archived|archivé/i)).toBeInTheDocument();
     });
 
     it('should render client information section', async () => {
@@ -372,7 +375,11 @@ describe('ProjectEdit', () => {
 
       await user.clear(screen.getByLabelText(/client email/i));
       await user.type(screen.getByLabelText(/client email/i), 'not-an-email');
-      await user.click(screen.getByRole('button', { name: /save changes/i }));
+      // The Save button triggers a real <form> submit; HTML5 type="email"
+      // would block bad values before our validator runs in jsdom. Submit
+      // the form directly to exercise the JS-level validator.
+      const form = screen.getByLabelText(/client email/i).closest('form')!;
+      fireEvent.submit(form);
 
       await waitFor(() => {
         expect(screen.getByText(/valid email address/i)).toBeInTheDocument();
@@ -594,7 +601,9 @@ describe('ProjectEdit', () => {
 
       await waitFor(() => {
         expect(screen.getByRole('dialog')).toBeInTheDocument();
-        expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument();
+        // "Unsaved changes" appears as both the dialog title and inside the
+        // description sentence — use getAllBy to be tolerant.
+        expect(screen.getAllByText(/unsaved changes/i).length).toBeGreaterThan(0);
       });
     });
 
@@ -610,7 +619,9 @@ describe('ProjectEdit', () => {
       await user.click(screen.getByRole('button', { name: /annuler/i }));
 
       await waitFor(() => {
-        expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument();
+        // "Unsaved changes" appears as both the dialog title and inside the
+        // description sentence — use getAllBy to be tolerant.
+        expect(screen.getAllByText(/unsaved changes/i).length).toBeGreaterThan(0);
       });
 
       await user.click(screen.getByRole('button', { name: /stay/i }));
@@ -630,7 +641,9 @@ describe('ProjectEdit', () => {
       await user.click(screen.getByRole('button', { name: /annuler/i }));
 
       await waitFor(() => {
-        expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument();
+        // "Unsaved changes" appears as both the dialog title and inside the
+        // description sentence — use getAllBy to be tolerant.
+        expect(screen.getAllByText(/unsaved changes/i).length).toBeGreaterThan(0);
       });
 
       await user.click(screen.getByRole('button', { name: /leave/i }));

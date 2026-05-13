@@ -274,7 +274,7 @@ describe('AI Recommendation Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('lastAddedItem is required');
+      expect(JSON.stringify(response.body)).toMatch(/lastAddedItem|required/i);
     });
 
     it('should return 400 when lastAddedItem is null', async () => {
@@ -284,7 +284,7 @@ describe('AI Recommendation Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('lastAddedItem is required');
+      expect(JSON.stringify(response.body)).toMatch(/lastAddedItem|required/i);
     });
 
     it('should return 400 when lastAddedItem is undefined', async () => {

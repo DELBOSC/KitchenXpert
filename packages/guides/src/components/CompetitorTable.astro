@@ -1,0 +1,221 @@
+---
+/**
+ * CompetitorTable — tableau comparatif KitchenXpert vs <concurrent>.
+ *
+ * Lit `src/data/competitor-facts.json` à build time. Pour chaque
+ * critère :
+ *   - statut KitchenXpert (✅/⚠️/❌) + commentaire court
+ *   - statut concurrent  (✅/⚠️/❌) + commentaire court avec lien vers source
+ *
+ * Garde-fou : si `verified === false` côté concurrent, le commentaire
+ * affiche « — à vérifier » en italique grisé. Ça impose à Laurent de
+ * passer les facts à `verified: true` avant publication.
+ *
+ * Les criteria « KitchenXpert » sont définis ici (auto-déclaratifs) ;
+ * les criteria « concurrent » viennent de competitor-facts.json.
+ */
+import competitorFacts from '../data/competitor-facts.json';
+
+type Status = 'yes' | 'partial' | 'no';
+
+interface KxCriterion {
+  category: string;
+  criterion: string;
+  status: Status;
+  comment: string;
+}
+
+/**
+ * Auto-déclaration KitchenXpert. Tout est vrai au moment de l'écriture
+ * (vérifiable dans le code). Si une feature est retirée, retire la
+ * ligne — c'est la même règle de conformité que pour le concurrent.
+ */
+const KX_CRITERIA: KxCriterion[] = [
+  // Design & UX
+  { category: 'design_ux',  criterion: 'Interface en français',          status: 'yes',     comment: 'Native FR, pas de traduction automatique.' },
+  { category: 'design_ux',  criterion: 'Mode sombre disponible',         status: 'yes',     comment: 'Dark mode par défaut, palette aurora.' },
+  { category: 'design_ux',  criterion: 'Onboarding sans inscription',    status: 'yes',     comment: 'Designer accessible direct via /designer/sandbox.' },
+
+  // Moteur 3D
+  { category: 'moteur_3d',  criterion: 'Rendu temps réel',               status: 'yes',     comment: 'WebGL2 + Three.js, 60 fps sur GPU récent.' },
+  { category: 'moteur_3d',  criterion: 'Path-tracing',                   status: 'yes',     comment: 'Compte payant uniquement (preview en sandbox).' },
+  { category: 'moteur_3d',  criterion: 'AR / VR',                        status: 'yes',     comment: 'AR iOS 16+ et Android 12+, VR Quest 3 / Vision Pro.' },
+  { category: 'moteur_3d',  criterion: 'Snap intelligent',               status: 'yes',     comment: 'Snap aux murs, axes, centres ; toggle ⌥/Alt.' },
+  { category: 'moteur_3d',  criterion: 'Vue 2D plan coté',               status: 'yes',     comment: 'Plan 2D + élévations + export DXF.' },
+
+  // Catalogue
+  { category: 'catalogue',  criterion: 'Volume du catalogue',            status: 'partial', comment: '~6 000 références IKEA + 4 fournisseurs FR. Pas de prétention « millions ».' },
+  { category: 'catalogue',  criterion: 'Catalogue IKEA officiel',        status: 'yes',     comment: 'Sync quotidienne API IKEA officielle.' },
+  { category: 'catalogue',  criterion: 'Fournisseurs FR',                status: 'yes',     comment: 'Schmidt, Bosch, Leroy Merlin, Castorama.' },
+  { category: 'catalogue',  criterion: 'Dimensions précises (mm)',       status: 'yes',     comment: 'Précision 1 mm sur tout le catalogue.' },
+
+  // IA
+  { category: 'ia',         criterion: 'Auto-layout IA',                 status: 'yes',     comment: 'Anthropic Claude — 3 essais gratuits puis compte.' },
+  { category: 'ia',         criterion: 'Reconnaissance plan import',     status: 'partial', comment: 'Pipeline en cours (PDF + DXF) — voir roadmap publique.' },
+  { category: 'ia',         criterion: 'Recommandations contextuelles',  status: 'yes',     comment: 'Suggestions basées sur le triangle d\'activité + style choisi.' },
+
+  // Conformité
+  { category: 'conformite', criterion: 'Hébergement UE',                 status: 'yes',     comment: 'Postgres OVH Gravelines + Redis Scaleway Paris.' },
+  { category: 'conformite', criterion: 'RGPD compliant',                 status: 'yes',     comment: 'Pages légales complètes, export Art. 15, suppression Art. 17.' },
+  { category: 'conformite', criterion: 'Mentions légales FR',            status: 'yes',     comment: 'Conformes LCEN Art. 6-III + médiation conso L612-1.' },
+  { category: 'conformite', criterion: 'DPO contactable',                status: 'yes',     comment: 'dpo@kitchenxpert.com — réponse sous 30 j RGPD.' },
+
+  // Business
+  { category: 'business',   criterion: 'Plan gratuit',                   status: 'yes',     comment: 'Sandbox illimité, 3 IA gratuites, PDF watermarké.' },
+  { category: 'business',   criterion: 'Prix mensuel plan payant',       status: 'yes',     comment: 'Premium 14,90 € · Studio 49 €. Détail /pricing.' },
+  { category: 'business',   criterion: 'Marketplace installateurs',      status: 'yes',     comment: 'Réseau Qualibat / RGE pré-vérifié.' },
+  { category: 'business',   criterion: 'Support en français',            status: 'yes',     comment: 'support@kitchenxpert.com — réponse < 24 h ouvrées.' },
+  { category: 'business',   criterion: 'Export DXF / IFC',               status: 'yes',     comment: 'DXF inclus Premium, IFC réservé Studio.' },
+];
+
+const CATEGORY_LABEL: Record<string, string> = {
+  design_ux:  '🎨 Design & UX',
+  moteur_3d:  '🧱 Moteur 3D',
+  catalogue:  '📚 Catalogue',
+  ia:         '🤖 IA',
+  conformite: '🛡 Conformité',
+  business:   '💶 Business',
+};
+
+const STATUS_ICON: Record<Status, string> = { yes: '✅', partial: '⚠️', no: '❌' };
+
+interface Props {
+  /** Slug dans competitor-facts.json (ex. "coohom"). */
+  competitorSlug: string;
+}
+
+const { competitorSlug } = Astro.props;
+const competitorData = (competitorFacts.competitors as Record<string, {
+  displayName: string;
+  url: string;
+  facts: Record<string, Array<{ criterion: string; claim: string; source: string; verified: boolean; verifiedAt: string | null }>>;
+}>)[competitorSlug];
+
+if (!competitorData) {
+  throw new Error(`Unknown competitor: ${competitorSlug}. Check src/data/competitor-facts.json.`);
+}
+
+// Facts (verified or not) joined with KX criteria, grouped by category.
+// We render a row even when the competitor fact is missing — surfaced
+// as "— à vérifier" so reviewers can spot gaps.
+type Joined = {
+  criterion: string;
+  kx: KxCriterion;
+  comp: { status: Status | null; comment: string; source: string | null; verified: boolean };
+};
+
+function inferStatus(claim: string): Status | null {
+  // The author writes a free-text claim ; we detect a leading icon for
+  // a quick visual mapping. Otherwise the status stays null and the
+  // table renders "—".
+  if (claim.startsWith('✅')) return 'yes';
+  if (claim.startsWith('⚠️') || claim.startsWith('⚠')) return 'partial';
+  if (claim.startsWith('❌')) return 'no';
+  if (claim.startsWith('TODO_LAURENT')) return null;
+  return null;
+}
+
+const joined: Record<string, Joined[]> = {};
+for (const kx of KX_CRITERIA) {
+  const compArr = competitorData.facts[kx.category] || [];
+  const compFact = compArr.find((f) => f.criterion === kx.criterion);
+  const row: Joined = {
+    criterion: kx.criterion,
+    kx,
+    comp: compFact
+      ? {
+          status: compFact.verified ? inferStatus(compFact.claim) : null,
+          comment: compFact.claim,
+          source: compFact.source,
+          verified: compFact.verified,
+        }
+      : { status: null, comment: 'Critère non renseigné côté concurrent', source: null, verified: false },
+  };
+  (joined[kx.category] ||= []).push(row);
+}
+
+const orderedCategories = Object.keys(CATEGORY_LABEL);
+---
+
+<figure class="ct">
+  <table aria-label={`Comparatif KitchenXpert vs ${competitorData.displayName}`}>
+    <thead>
+      <tr>
+        <th scope="col" class="cat">Critère</th>
+        <th scope="col">KitchenXpert</th>
+        <th scope="col">{competitorData.displayName}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {orderedCategories.map((cat) => (
+        <>
+          <tr class="cat-row">
+            <th colspan="3" scope="rowgroup">{CATEGORY_LABEL[cat]}</th>
+          </tr>
+          {(joined[cat] ?? []).map((row) => (
+            <tr>
+              <th scope="row" class="criterion">{row.criterion}</th>
+              <td class="kx">
+                <span class="icon">{STATUS_ICON[row.kx.status]}</span>
+                <span class="text">{row.kx.comment}</span>
+              </td>
+              <td class={`comp ${!row.comp.verified ? 'unverified' : ''}`}>
+                {row.comp.status === null ? (
+                  <span class="todo">— à vérifier</span>
+                ) : (
+                  <>
+                    <span class="icon">{STATUS_ICON[row.comp.status]}</span>
+                    <span class="text">{row.comp.comment.replace(/^[✅⚠️❌]\s*/, '')}</span>
+                  </>
+                )}
+                {row.comp.source && row.comp.verified && (
+                  <a href={row.comp.source} target="_blank" rel="noopener noreferrer" class="src" title="Source citée">↗</a>
+                )}
+              </td>
+            </tr>
+          ))}
+        </>
+      ))}
+    </tbody>
+  </table>
+</figure>
+
+<style>
+  .ct { margin: 2rem 0; overflow-x: auto; }
+  .ct table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  .ct th, .ct td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: left;
+    vertical-align: top;
+  }
+  .ct thead th {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  .ct .cat-row th {
+    background: rgba(167, 139, 250, 0.06);
+    color: #c4b5fd;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.15);
+  }
+  .ct .criterion { width: 30%; color: rgba(255, 255, 255, 0.85); font-weight: 500; }
+  .ct .kx, .ct .comp { width: 35%; }
+  .ct .icon { display: inline-block; width: 1.25rem; flex-shrink: 0; }
+  .ct .text { color: rgba(255, 255, 255, 0.78); }
+  .ct .src { margin-left: 0.375rem; color: rgba(167, 139, 250, 0.8); text-decoration: none; }
+  .ct .unverified { background: rgba(251, 191, 36, 0.04); }
+  .ct .todo { color: rgba(251, 191, 36, 0.7); font-style: italic; font-size: 0.8125rem; }
+</style>

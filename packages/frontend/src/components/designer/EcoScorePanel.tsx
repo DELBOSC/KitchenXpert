@@ -33,7 +33,7 @@ export interface EcoScoreProps {
 
 /** Energy rating score: A+++ = 100, down to E-G = 10 */
 function energyRatingScore(rating?: string): number {
-  if (!rating) return 0;
+  if (!rating) {return 0;}
   const normalized = rating.toUpperCase().replace(/\s/g, '');
   const map: Record<string, number> = {
     'A+++': 100,
@@ -52,40 +52,40 @@ function energyRatingScore(rating?: string): number {
 
 /** Water consumption score: < 6L = 100, 6-9 = 80, 9-12 = 60, > 12 = 40 */
 function waterScore(liters?: number): number {
-  if (liters == null || liters <= 0) return 0;
-  if (liters < 6) return 100;
-  if (liters < 9) return 80;
-  if (liters <= 12) return 60;
+  if (liters == null || liters <= 0) {return 0;}
+  if (liters < 6) {return 100;}
+  if (liters < 9) {return 80;}
+  if (liters <= 12) {return 60;}
   return 40;
 }
 
 /** Material sustainability score */
 function materialScore(material?: string): number {
-  if (!material) return 30;
+  if (!material) {return 30;}
   const lower = material.toLowerCase();
-  if (lower.includes('fsc') || lower.includes('recycled') || lower.includes('recycle')) return 100;
-  if (lower.includes('sustainable') || lower.includes('bamboo') || lower.includes('bio')) return 75;
-  if (lower.includes('standard') || lower.includes('melamine') || lower.includes('mdf')) return 50;
+  if (lower.includes('fsc') || lower.includes('recycled') || lower.includes('recycle')) {return 100;}
+  if (lower.includes('sustainable') || lower.includes('bamboo') || lower.includes('bio')) {return 75;}
+  if (lower.includes('standard') || lower.includes('melamine') || lower.includes('mdf')) {return 50;}
   return 30;
 }
 
 /** Lifespan score based on warranty years */
 function lifespanScore(warranty?: number): number {
-  if (warranty == null || warranty <= 0) return 30;
-  if (warranty >= 10) return 100;
-  if (warranty >= 5) return 75;
-  if (warranty >= 3) return 50;
+  if (warranty == null || warranty <= 0) {return 30;}
+  if (warranty >= 10) {return 100;}
+  if (warranty >= 5) {return 75;}
+  if (warranty >= 3) {return 50;}
   return 30;
 }
 
 /** Letter grade from numeric score */
 function letterGrade(score: number): string {
-  if (score >= 90) return 'A+';
-  if (score >= 80) return 'A';
-  if (score >= 70) return 'B';
-  if (score >= 60) return 'C';
-  if (score >= 50) return 'D';
-  if (score >= 35) return 'E';
+  if (score >= 90) {return 'A+';}
+  if (score >= 80) {return 'A';}
+  if (score >= 70) {return 'B';}
+  if (score >= 60) {return 'C';}
+  if (score >= 50) {return 'D';}
+  if (score >= 35) {return 'E';}
   return 'F';
 }
 
@@ -111,10 +111,10 @@ function gradeColor(grade: string): { bg: string; text: string; ring: string; da
 
 /** Progress bar color */
 function barColor(score: number): string {
-  if (score >= 80) return 'bg-emerald-500';
-  if (score >= 60) return 'bg-green-500';
-  if (score >= 40) return 'bg-yellow-500';
-  if (score >= 20) return 'bg-orange-500';
+  if (score >= 80) {return 'bg-emerald-500';}
+  if (score >= 60) {return 'bg-green-500';}
+  if (score >= 40) {return 'bg-yellow-500';}
+  if (score >= 20) {return 'bg-orange-500';}
   return 'bg-red-500';
 }
 
@@ -161,7 +161,7 @@ export default function EcoScorePanel({ items, onSuggestionClick }: EcoScoreProp
   // ---- Overall score ----
   const overallScore = useMemo(() => {
     const hasData = categories.some((c) => c.count > 0);
-    if (!hasData) return 0;
+    if (!hasData) {return 0;}
 
     let totalWeight = 0;
     let weightedSum = 0;

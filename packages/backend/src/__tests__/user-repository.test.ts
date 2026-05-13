@@ -52,7 +52,7 @@ describe('UserRepository', () => {
     it('should return null when user not found', async () => {
       mockPrismaClient.user.findUnique.mockResolvedValue(null);
 
-      const result = await repository.findById('nonexistent');
+      const result = await repository.findById('00000000-0000-0000-0000-000000000000');
 
       expect(result).toBeNull();
     });

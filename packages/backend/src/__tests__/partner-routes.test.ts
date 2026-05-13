@@ -420,7 +420,7 @@ describe('Partner Routes', () => {
         .expect(409);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('code already exists');
+      expect(JSON.stringify(response.body)).toContain('code already exists');
     });
 
     it('should return 409 when partner email already exists', async () => {
@@ -433,7 +433,7 @@ describe('Partner Routes', () => {
         .expect(409);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('email already exists');
+      expect(JSON.stringify(response.body)).toContain('email already exists');
     });
 
     it('should return 400 for invalid body (missing name)', async () => {
@@ -554,7 +554,7 @@ describe('Partner Routes', () => {
         .expect(401);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Invalid credentials');
+      expect(JSON.stringify(response.body)).toContain('Invalid credentials');
     });
 
     it('should return 400 for missing credentials in body', async () => {
@@ -616,7 +616,7 @@ describe('Partner Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('private/internal');
+      expect(JSON.stringify(response.body)).toContain('private/internal');
     });
 
     it('should reject integration with private IP endpoint (SSRF prevention)', async () => {
@@ -628,7 +628,7 @@ describe('Partner Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('private/internal');
+      expect(JSON.stringify(response.body)).toContain('private/internal');
     });
 
     it('should reject integration with metadata endpoint (SSRF prevention)', async () => {
@@ -679,7 +679,7 @@ describe('Partner Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Integration not found');
+      expect(JSON.stringify(response.body)).toContain('Integration not found');
     });
   });
 

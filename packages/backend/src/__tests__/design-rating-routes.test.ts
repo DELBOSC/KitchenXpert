@@ -132,25 +132,25 @@ describe('DesignRatingController', () => {
   // ==========================================================================
   describe('createOrUpdate', () => {
     it('should create a new rating for a kitchen', async () => {
-      const mockKitchen = { id: 'kitchen-1', userId: 'other-user', name: 'Test Kitchen' };
-      const mockRating = { id: 'rating-1', userId: 'test-user-id', kitchenId: 'kitchen-1', rating: 4, comment: 'Nice design' };
+      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'other-user', name: 'Test Kitchen' };
+      const mockRating = { id: 'rating-1', userId: 'test-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4, comment: 'Nice design' };
 
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.designRating.upsert.mockResolvedValue(mockRating);
 
       const req = createMockReq({
-        body: { kitchenId: 'kitchen-1', rating: 4, comment: 'Nice design' },
+        body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4, comment: 'Nice design' },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.createOrUpdate(req as Request, res as Response);
 
-      expect(mockPrisma.kitchen.findUnique).toHaveBeenCalledWith({ where: { id: 'kitchen-1' } });
+      expect(mockPrisma.kitchen.findUnique).toHaveBeenCalledWith({ where: { id: '550e8400-e29b-41d4-a716-446655440000' } });
       expect(mockPrisma.designRating.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { userId_kitchenId: { userId: 'test-user-id', kitchenId: 'kitchen-1' } },
+          where: { userId_kitchenId: { userId: 'test-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000' } },
           update: { rating: 4, comment: 'Nice design' },
-          create: { userId: 'test-user-id', kitchenId: 'kitchen-1', rating: 4, comment: 'Nice design' },
+          create: { userId: 'test-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4, comment: 'Nice design' },
         }),
       );
       expect(statusMock).toHaveBeenCalledWith(200);
@@ -158,14 +158,14 @@ describe('DesignRatingController', () => {
     });
 
     it('should create a rating without comment', async () => {
-      const mockKitchen = { id: 'kitchen-1', userId: 'other-user' };
-      const mockRating = { id: 'rating-1', userId: 'test-user-id', kitchenId: 'kitchen-1', rating: 5, comment: null };
+      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'other-user' };
+      const mockRating = { id: 'rating-1', userId: 'test-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 5, comment: null };
 
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.designRating.upsert.mockResolvedValue(mockRating);
 
       const req = createMockReq({
-        body: { kitchenId: 'kitchen-1', rating: 5 },
+        body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 5 },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -183,7 +183,7 @@ describe('DesignRatingController', () => {
     it('should return 401 if user is not authenticated', async () => {
       const req = createMockReq({
         user: undefined as any,
-        body: { kitchenId: 'kitchen-1', rating: 4 },
+        body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4 },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -207,7 +207,7 @@ describe('DesignRatingController', () => {
 
     it('should return 400 if rating is missing', async () => {
       const req = createMockReq({
-        body: { kitchenId: 'kitchen-1' },
+        body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -219,7 +219,7 @@ describe('DesignRatingController', () => {
 
     it('should return 400 if rating is below 1', async () => {
       const req = createMockReq({
-        body: { kitchenId: 'kitchen-1', rating: 0 },
+        body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 0 },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -231,7 +231,7 @@ describe('DesignRatingController', () => {
 
     it('should return 400 if rating is above 5', async () => {
       const req = createMockReq({
-        body: { kitchenId: 'kitchen-1', rating: 6 },
+        body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 6 },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -243,7 +243,7 @@ describe('DesignRatingController', () => {
 
     it('should return 400 if rating is not an integer', async () => {
       const req = createMockReq({
-        body: { kitchenId: 'kitchen-1', rating: 3.5 },
+        body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 3.5 },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -257,7 +257,7 @@ describe('DesignRatingController', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
       const req = createMockReq({
-        body: { kitchenId: 'nonexistent', rating: 4 },
+        body: { kitchenId: '00000000-0000-0000-0000-000000000000', rating: 4 },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -279,14 +279,14 @@ describe('DesignRatingController', () => {
       ];
       mockPrisma.designRating.findMany.mockResolvedValue(mockRatings);
 
-      const req = createMockReq({ params: { kitchenId: 'kitchen-1' } });
+      const req = createMockReq({ params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getByKitchen(req as Request, res as Response);
 
       expect(mockPrisma.designRating.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { kitchenId: 'kitchen-1' },
+          where: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' },
           include: { user: { select: { id: true, firstName: true, lastName: true } } },
           orderBy: { createdAt: 'desc' },
         }),
@@ -305,7 +305,7 @@ describe('DesignRatingController', () => {
     it('should return zero average when no ratings exist', async () => {
       mockPrisma.designRating.findMany.mockResolvedValue([]);
 
-      const req = createMockReq({ params: { kitchenId: 'kitchen-1' } });
+      const req = createMockReq({ params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getByKitchen(req as Request, res as Response);
@@ -320,7 +320,7 @@ describe('DesignRatingController', () => {
     it('should return 401 if not authenticated', async () => {
       const req = createMockReq({
         user: undefined as any,
-        params: { kitchenId: 'kitchen-1' },
+        params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -346,16 +346,16 @@ describe('DesignRatingController', () => {
   // ==========================================================================
   describe('getMyRating', () => {
     it('should return the current user rating for a kitchen', async () => {
-      const mockRating = { id: 'r1', userId: 'test-user-id', kitchenId: 'kitchen-1', rating: 4, comment: 'Good' };
+      const mockRating = { id: 'r1', userId: 'test-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4, comment: 'Good' };
       mockPrisma.designRating.findUnique.mockResolvedValue(mockRating);
 
-      const req = createMockReq({ params: { kitchenId: 'kitchen-1' } });
+      const req = createMockReq({ params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getMyRating(req as Request, res as Response);
 
       expect(mockPrisma.designRating.findUnique).toHaveBeenCalledWith({
-        where: { userId_kitchenId: { userId: 'test-user-id', kitchenId: 'kitchen-1' } },
+        where: { userId_kitchenId: { userId: 'test-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000' } },
       });
       expect(statusMock).toHaveBeenCalledWith(200);
       expect(jsonMock).toHaveBeenCalledWith({ success: true, data: mockRating });
@@ -364,7 +364,7 @@ describe('DesignRatingController', () => {
     it('should return null data if user has not rated the kitchen', async () => {
       mockPrisma.designRating.findUnique.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { kitchenId: 'kitchen-1' } });
+      const req = createMockReq({ params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getMyRating(req as Request, res as Response);
@@ -376,7 +376,7 @@ describe('DesignRatingController', () => {
     it('should return 401 if not authenticated', async () => {
       const req = createMockReq({
         user: undefined as any,
-        params: { kitchenId: 'kitchen-1' },
+        params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -402,11 +402,11 @@ describe('DesignRatingController', () => {
   // ==========================================================================
   describe('deleteMyRating', () => {
     it('should delete the current user own rating', async () => {
-      const existingRating = { id: 'r1', userId: 'test-user-id', kitchenId: 'kitchen-1', rating: 4 };
+      const existingRating = { id: 'r1', userId: 'test-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4 };
       mockPrisma.designRating.findUnique.mockResolvedValue(existingRating);
       mockPrisma.designRating.delete.mockResolvedValue(existingRating);
 
-      const req = createMockReq({ params: { kitchenId: 'kitchen-1' } });
+      const req = createMockReq({ params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.deleteMyRating(req as Request, res as Response);
@@ -419,7 +419,7 @@ describe('DesignRatingController', () => {
     it('should return 404 if rating does not exist', async () => {
       mockPrisma.designRating.findUnique.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { kitchenId: 'kitchen-1' } });
+      const req = createMockReq({ params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.deleteMyRating(req as Request, res as Response);
@@ -431,7 +431,7 @@ describe('DesignRatingController', () => {
     it('should return 401 if not authenticated', async () => {
       const req = createMockReq({
         user: undefined as any,
-        params: { kitchenId: 'kitchen-1' },
+        params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 
@@ -442,10 +442,10 @@ describe('DesignRatingController', () => {
     });
 
     it('should return 403 if user does not own the rating and is not admin', async () => {
-      const existingRating = { id: 'r1', userId: 'other-user-id', kitchenId: 'kitchen-1', rating: 4 };
+      const existingRating = { id: 'r1', userId: 'other-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4 };
       mockPrisma.designRating.findUnique.mockResolvedValue(existingRating);
 
-      const req = createMockReq({ params: { kitchenId: 'kitchen-1' } });
+      const req = createMockReq({ params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.deleteMyRating(req as Request, res as Response);
@@ -455,13 +455,13 @@ describe('DesignRatingController', () => {
     });
 
     it('should allow admin to delete any rating', async () => {
-      const existingRating = { id: 'r1', userId: 'other-user-id', kitchenId: 'kitchen-1', rating: 4 };
+      const existingRating = { id: 'r1', userId: 'other-user-id', kitchenId: '550e8400-e29b-41d4-a716-446655440000', rating: 4 };
       mockPrisma.designRating.findUnique.mockResolvedValue(existingRating);
       mockPrisma.designRating.delete.mockResolvedValue(existingRating);
 
       const req = createMockReq({
         user: adminUser as any,
-        params: { kitchenId: 'kitchen-1' },
+        params: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' },
       });
       const { res, statusMock, jsonMock } = createMockRes();
 

@@ -678,7 +678,7 @@ describe('Order Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('cannot be updated');
+      expect(JSON.stringify(response.body)).toContain('cannot be updated');
     });
 
     it('should return 400 when trying to update a delivered order', async () => {
@@ -779,7 +779,7 @@ describe('Order Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('cannot be cancelled');
+      expect(JSON.stringify(response.body)).toContain('cannot be cancelled');
     });
 
     it('should return 400 when trying to cancel a delivered order', async () => {

@@ -94,7 +94,11 @@ describe('RoleManagement', () => {
 
       renderRoleManagement();
 
-      expect(screen.getByRole('status')).toHaveAttribute('aria-label', expect.stringMatching(/loading/i));
+      // i18n: fr.json maps common.loading to "Chargement...".
+      expect(screen.getByRole('status')).toHaveAttribute(
+        'aria-label',
+        expect.stringMatching(/loading|chargement/i),
+      );
     });
   });
 
@@ -127,7 +131,8 @@ describe('RoleManagement', () => {
       renderRoleManagement();
 
       await waitFor(() => {
-        expect(screen.getByText('Admin')).toBeInTheDocument();
+        // 'Admin' is also a permission category header — use getAllBy.
+        expect(screen.getAllByText('Admin').length).toBeGreaterThan(0);
         expect(screen.getByText('Designer')).toBeInTheDocument();
         expect(screen.getByText('Viewer')).toBeInTheDocument();
       });
@@ -165,9 +170,11 @@ describe('RoleManagement', () => {
       renderRoleManagement();
 
       await waitFor(() => {
-        expect(screen.getByText(/5 utilisateur/i)).toBeInTheDocument();
-        expect(screen.getByText(/12 utilisateur/i)).toBeInTheDocument();
-        expect(screen.getByText(/25 utilisateur/i)).toBeInTheDocument();
+        // Each count appears in role card AND in the role-count summary
+        // strip. Use getAllBy to tolerate both.
+        expect(screen.getAllByText(/5 utilisateur/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/12 utilisateur/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/25 utilisateur/i).length).toBeGreaterThan(0);
       });
     });
 
@@ -185,16 +192,13 @@ describe('RoleManagement', () => {
       renderRoleManagement();
 
       await waitFor(() => {
-        expect(screen.getByText('Admin')).toBeInTheDocument();
+        expect(screen.getAllByText('Admin').length).toBeGreaterThan(0);
       });
 
-      // Admin card should only have edit, not delete
-      const adminCard = screen.getByText('Admin').closest('.bg-white, [class*="bg-white"]')!;
-      const editButtons = adminCard.querySelectorAll('button[title]');
-      const deleteButton = Array.from(editButtons).find(
-        (btn) => btn.getAttribute('title')?.toLowerCase().includes('supprimer')
-      );
-      expect(deleteButton).toBeUndefined();
+      // The Admin (system) role has 2 delete buttons on non-system roles
+      // only — Designer + Viewer. Count delete buttons; expect exactly 2.
+      const deleteButtons = screen.getAllByTitle(/supprimer le r[ôo]le/i);
+      expect(deleteButtons).toHaveLength(2);
     });
 
     it('should show delete button for non-system roles', async () => {
@@ -205,7 +209,7 @@ describe('RoleManagement', () => {
       });
 
       // There should be delete buttons for Designer and Viewer
-      const deleteButtons = screen.getAllByTitle(/supprimer le role/i);
+      const deleteButtons = screen.getAllByTitle(/supprimer le r[ôo]le/i);
       expect(deleteButtons.length).toBe(2);
     });
 
@@ -221,10 +225,11 @@ describe('RoleManagement', () => {
       renderRoleManagement();
 
       await waitFor(() => {
-        // Categories
-        expect(screen.getByText('Projects')).toBeInTheDocument();
-        expect(screen.getByText('Admin')).toBeInTheDocument();
-        expect(screen.getByText('Design')).toBeInTheDocument();
+        // Categories appear as section labels — Admin and Projects can
+        // both be present in multiple places (also a role name + on cards).
+        expect(screen.getAllByText('Projects').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Admin').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Design').length).toBeGreaterThan(0);
       });
     });
   });
@@ -554,10 +559,10 @@ describe('RoleManagement', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getAllByTitle(/supprimer le role/i)).toHaveLength(2);
+        expect(screen.getAllByTitle(/supprimer le r[ôo]le/i)).toHaveLength(2);
       });
 
-      await user.click(screen.getAllByTitle(/supprimer le role/i)[0]);
+      await user.click(screen.getAllByTitle(/supprimer le r[ôo]le/i)[0]);
 
       await waitFor(() => {
         expect(screen.getByRole('dialog')).toBeInTheDocument();
@@ -570,11 +575,11 @@ describe('RoleManagement', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getAllByTitle(/supprimer le role/i)).toHaveLength(2);
+        expect(screen.getAllByTitle(/supprimer le r[ôo]le/i)).toHaveLength(2);
       });
 
       // First delete button is for Designer (index 0 among non-system roles)
-      await user.click(screen.getAllByTitle(/supprimer le role/i)[0]);
+      await user.click(screen.getAllByTitle(/supprimer le r[ôo]le/i)[0]);
 
       await waitFor(() => {
         expect(screen.getByText(/designer/i, { selector: 'p' })).toBeInTheDocument();
@@ -588,16 +593,23 @@ describe('RoleManagement', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getAllByTitle(/supprimer le role/i)).toHaveLength(2);
+        expect(screen.getAllByTitle(/supprimer le r[ôo]le/i)).toHaveLength(2);
       });
 
-      await user.click(screen.getAllByTitle(/supprimer le role/i)[0]);
+      await user.click(screen.getAllByTitle(/supprimer le r[ôo]le/i)[0]);
 
       await waitFor(() => {
         expect(screen.getByRole('dialog')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /^delete$/i }));
+      // Delete confirm button — fr.json common.delete = "Supprimer".
+      // The dialog renders both Annuler + Supprimer; pick the one inside
+      // the dialog.
+      const dialog = screen.getByRole('dialog');
+      const confirmBtn = Array.from(dialog.querySelectorAll('button')).find(
+        (b) => /^(delete|supprimer)$/i.test(b.textContent || ''),
+      )!;
+      await user.click(confirmBtn);
 
       await waitFor(() => {
         const deleteCall = mockFetch.mock.calls.find(
@@ -612,16 +624,21 @@ describe('RoleManagement', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getAllByTitle(/supprimer le role/i)).toHaveLength(2);
+        expect(screen.getAllByTitle(/supprimer le r[ôo]le/i)).toHaveLength(2);
       });
 
-      await user.click(screen.getAllByTitle(/supprimer le role/i)[0]);
+      await user.click(screen.getAllByTitle(/supprimer le r[ôo]le/i)[0]);
 
       await waitFor(() => {
         expect(screen.getByRole('dialog')).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /annuler/i }));
+      // Cancel button lives inside the dialog.
+      const dialog = screen.getByRole('dialog');
+      const cancelBtn = Array.from(dialog.querySelectorAll('button')).find(
+        (b) => /annuler|cancel/i.test(b.textContent || ''),
+      )!;
+      await user.click(cancelBtn);
 
       await waitFor(() => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -669,15 +686,13 @@ describe('RoleManagement', () => {
 
     it('should show error when system role delete is attempted', async () => {
       renderRoleManagement();
-      const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByText('Admin')).toBeInTheDocument();
+        expect(screen.getAllByText('Admin').length).toBeGreaterThan(0);
       });
 
       // System roles should not have delete buttons
-      // This is already tested in rendering, but verify behavior
-      const deleteButtons = screen.getAllByTitle(/supprimer le role/i);
+      const deleteButtons = screen.getAllByTitle(/supprimer le r[ôo]le/i);
       expect(deleteButtons.length).toBe(2); // Only non-system roles
     });
   });
@@ -753,7 +768,7 @@ describe('RoleManagement', () => {
         const editButtons = screen.getAllByTitle(/modifier le role/i);
         expect(editButtons.length).toBe(3);
 
-        const deleteButtons = screen.getAllByTitle(/supprimer le role/i);
+        const deleteButtons = screen.getAllByTitle(/supprimer le r[ôo]le/i);
         expect(deleteButtons.length).toBe(2);
       });
     });

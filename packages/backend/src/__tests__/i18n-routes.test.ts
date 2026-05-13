@@ -449,7 +449,7 @@ describe('I18n Routes', () => {
         .expect(409);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('already exists');
+      expect(JSON.stringify(response.body)).toContain('already exists');
     });
 
     it('should return 400 for invalid body (missing code)', async () => {
@@ -502,7 +502,7 @@ describe('I18n Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Cannot delete default locale');
+      expect(JSON.stringify(response.body)).toContain('Cannot delete default locale');
     });
   });
 
@@ -687,7 +687,7 @@ describe('I18n Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Locale not found');
+      expect(JSON.stringify(response.body)).toContain('Locale not found');
     });
   });
 

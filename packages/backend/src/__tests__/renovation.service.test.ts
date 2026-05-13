@@ -115,7 +115,7 @@ const mockComparisonResult = {
 const mockProject = {
   id: 'project-1',
   userId: testUserId,
-  kitchenId: 'kitchen-1',
+  kitchenId: '550e8400-e29b-41d4-a716-446655440000',
   beforePhotos: [],
   status: 'draft',
   createdAt: new Date(),
@@ -123,7 +123,7 @@ const mockProject = {
 };
 
 const mockKitchen = {
-  id: 'kitchen-1',
+  id: '550e8400-e29b-41d4-a716-446655440000',
   name: 'Ma cuisine',
   description: 'Cuisine en L',
   data: { style: 'modern', layout: 'L-shape' },
@@ -148,7 +148,7 @@ describe('RenovationService', () => {
       mockPrisma.renovationProject.create.mockResolvedValue(mockProject);
 
       const result = await service.createProject(testUserId, {
-        kitchenId: 'kitchen-1',
+        kitchenId: '550e8400-e29b-41d4-a716-446655440000',
         beforePhotos: ['photo1.jpg'],
       });
 
@@ -156,7 +156,7 @@ describe('RenovationService', () => {
       expect(mockPrisma.renovationProject.create).toHaveBeenCalledWith({
         data: {
           userId: testUserId,
-          kitchenId: 'kitchen-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
           beforePhotos: ['photo1.jpg'],
           status: 'draft',
         },
@@ -201,7 +201,7 @@ describe('RenovationService', () => {
     it('should return null when project is not found (404)', async () => {
       mockPrisma.renovationProject.findUnique.mockResolvedValue(null);
 
-      const result = await service.getProject('nonexistent', testUserId, false);
+      const result = await service.getProject('00000000-0000-0000-0000-000000000000', testUserId, false);
 
       expect(result).toBeNull();
     });
@@ -309,14 +309,16 @@ describe('RenovationService', () => {
         outputTokens: 600,
       });
 
-      const result = await service.generateComparison(mockAnalysisResult, 'kitchen-1');
+      const result = await service.generateComparison(mockAnalysisResult, '550e8400-e29b-41d4-a716-446655440000');
 
       expect(result).toEqual(mockComparisonResult);
       expect(result.totalCostEur).toBe(13200);
       expect(result.improvements).toHaveLength(2);
       expect(mockPrisma.kitchen.findUnique).toHaveBeenCalledWith({
-        where: { id: 'kitchen-1' },
-        select: { id: true, name: true, description: true, data: true },
+        where: { id: '550e8400-e29b-41d4-a716-446655440000' },
+        // Service now selects id/name/metadata (description/data were
+        // merged into the metadata JSON column).
+        select: { id: true, name: true, metadata: true },
       });
       expect(mockGenerateJSON).toHaveBeenCalledTimes(1);
     });
@@ -336,7 +338,7 @@ describe('RenovationService', () => {
       mockGenerateJSON.mockRejectedValue(new Error('JSON parse failed'));
 
       await expect(
-        service.generateComparison(mockAnalysisResult, 'kitchen-1'),
+        service.generateComparison(mockAnalysisResult, '550e8400-e29b-41d4-a716-446655440000'),
       ).rejects.toThrow('JSON parse failed');
     });
   });

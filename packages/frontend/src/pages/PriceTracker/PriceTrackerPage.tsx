@@ -12,6 +12,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { api } from '../../services/api/api';
 import { API_ENDPOINTS } from '../../services/api/endpoints';
 
@@ -360,7 +361,7 @@ export default function PriceTrackerPage(): React.ReactElement {
 
   const trackProduct = useCallback(
     (product: Product) => {
-      if (trackedProductIds.includes(product.id)) return;
+      if (trackedProductIds.includes(product.id)) {return;}
 
       setTrackedProductIds((prev) => [...prev, product.id]);
       setProductNames((prev) => ({ ...prev, [product.id]: product.name }));
@@ -392,7 +393,7 @@ export default function PriceTrackerPage(): React.ReactElement {
   // ─── Load price data for tracked products ──────────────────────────────
 
   useEffect(() => {
-    if (trackedProductIds.length === 0) return;
+    if (trackedProductIds.length === 0) {return;}
 
     const controller = new AbortController();
     let cancelled = false;
@@ -430,7 +431,7 @@ export default function PriceTrackerPage(): React.ReactElement {
           Promise.all(bestTimePromises),
         ]);
 
-        if (cancelled) return;
+        if (cancelled) {return;}
 
         // Update histories
         const newHistories: Record<string, PriceHistoryEntry[]> = {};
@@ -457,10 +458,10 @@ export default function PriceTrackerPage(): React.ReactElement {
         }
         setBestTimes(newBestTimes);
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         // Silently fail, data will be empty
       } finally {
-        if (!cancelled) setIsLoadingData(false);
+        if (!cancelled) {setIsLoadingData(false);}
       }
     };
 
@@ -688,7 +689,7 @@ export default function PriceTrackerPage(): React.ReactElement {
                   </div>
 
                   {/* Best time message */}
-                  {bestTime && bestTime.message && (
+                  {bestTime?.message && (
                     <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                       {bestTime.message}
                     </p>
@@ -772,7 +773,7 @@ export default function PriceTrackerPage(): React.ReactElement {
                       }
                     >
                       <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-medium">
-                        {productNames[alert.productId] || alert.productId.substring(0, 8) + '...'}
+                        {productNames[alert.productId] || `${alert.productId.substring(0, 8)  }...`}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                         {alert.targetPrice.toFixed(2)} EUR

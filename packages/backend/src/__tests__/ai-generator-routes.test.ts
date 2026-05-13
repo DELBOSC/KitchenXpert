@@ -217,7 +217,7 @@ const otherUserProject = {
 };
 
 const mockKitchenWithDesigns = {
-  id: 'kitchen-1',
+  id: '550e8400-e29b-41d4-a716-446655440000',
   projectId: validProjectId,
   layout: 'l_shaped',
   designs: {
@@ -337,7 +337,7 @@ describe('AI Generator Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Project not found');
+      expect(JSON.stringify(response.body)).toContain('Project not found');
     });
 
     it('should return 403 when accessing another user\'s project (IDOR prevention)', async () => {
@@ -348,7 +348,7 @@ describe('AI Generator Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should allow admin to access any project preferences', async () => {
@@ -493,7 +493,7 @@ describe('AI Generator Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Generation not found');
+      expect(JSON.stringify(response.body)).toContain('Generation not found');
     });
 
     it('should return 403 when accessing another user\'s generation (IDOR prevention)', async () => {
@@ -504,7 +504,7 @@ describe('AI Generator Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should allow admin to access any generation results', async () => {
@@ -593,7 +593,7 @@ describe('AI Generator Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Generation not found');
+      expect(JSON.stringify(response.body)).toContain('Generation not found');
     });
 
     it('should return 404 when generation belongs to another user (IDOR prevention)', async () => {
@@ -624,7 +624,7 @@ describe('AI Generator Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Design not found');
+      expect(JSON.stringify(response.body)).toContain('Design not found');
     });
 
     it('should return 403 when project belongs to another user', async () => {
@@ -641,7 +641,7 @@ describe('AI Generator Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should create Kitchen and KitchenConfiguration records', async () => {

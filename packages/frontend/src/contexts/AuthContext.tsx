@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
           setUser(null);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -155,7 +155,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
       setUser(data.data);
     } else {
       setUser((prev) => {
-        if (!prev) return null;
+        if (!prev) {return null;}
         return { ...prev, ...userData };
       });
     }

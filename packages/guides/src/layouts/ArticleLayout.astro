@@ -1,0 +1,272 @@
+---
+/**
+ * ArticleLayout — the wrapper used by every MDX article.
+ *
+ * Composes: SEO head + ArticleHeader + TOC (sticky) + slot for body
+ * content + RelatedArticles + JSON-LD (Article + BreadcrumbList +
+ * optional FAQPage).
+ *
+ * Article body is responsible for embedding `<CTABlock variant="inline" />`
+ * mid-article and `<CTABlock variant="final" />` near the end. The
+ * layout doesn't auto-inject them — the author chooses placement.
+ */
+import ArticleHeader from '../components/ArticleHeader.astro';
+import ArticleBody from '../components/ArticleBody.astro';
+import TOC from '../components/TOC.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import { AUTHORS, type AuthorKey } from '../data/authors';
+
+interface MarkdownHeading { depth: number; slug: string; text: string; }
+
+interface Props {
+  title: string;
+  description: string;
+  slug: string;
+  author: AuthorKey;
+  publishedAt: Date;
+  updatedAt?: Date;
+  cover?: string;
+  keywords: string[];
+  related: string[];
+  /** Astro-extracted h2/h3 list, passed by the dynamic page. */
+  headings: MarkdownHeading[];
+  /** Word count from the rendered body — for the reading-time estimate. */
+  wordCount?: number;
+  /** Category chip displayed above the H1 (optional). */
+  category?: string;
+  /** Breadcrumb trail. */
+  breadcrumb: Array<{ label: string; url: string }>;
+  /** FAQ payload for JSON-LD `FAQPage` (optional — pass when the article has a FAQ). */
+  faq?: Array<{ q: string; a: string }>;
+}
+
+const {
+  title, description, slug, author, publishedAt, updatedAt, cover,
+  keywords, related, headings, wordCount, category, breadcrumb, faq,
+} = Astro.props;
+
+const SITE_URL = 'https://kitchenxpert.com';
+const canonical = `${SITE_URL}${Astro.url.pathname}`;
+
+// Reading time = ~220 wpm (French average for non-fiction).
+const readingMinutes = Math.max(1, Math.ceil((wordCount ?? 1500) / 220));
+const ogImage = cover
+  ? `${SITE_URL}${cover}`
+  : `${SITE_URL}/guides/og/${encodeURIComponent(slug)}.png`;
+
+const authorData = AUTHORS[author];
+
+// JSON-LD payloads — generated server-side, rendered as <script>.
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  image: ogImage,
+  datePublished: publishedAt.toISOString(),
+  dateModified: (updatedAt ?? publishedAt).toISOString(),
+  inLanguage: 'fr-FR',
+  keywords: keywords.join(', '),
+  author: {
+    '@type': 'Person',
+    name: authorData.displayName,
+    url: authorData.url,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'KitchenXpert',
+    logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-512.png` },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumb.map((b, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: b.label,
+    item: `${SITE_URL}${b.url}`,
+  })),
+};
+
+const faqJsonLd = faq && faq.length > 0
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>{title} — KitchenXpert</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index,follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="KitchenXpert" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="article:published_time" content={publishedAt.toISOString()} />
+    {updatedAt && <meta property="article:modified_time" content={updatedAt.toISOString()} />}
+    <meta property="article:author" content={authorData.displayName} />
+    {keywords.map((k) => <meta property="article:tag" content={k} />)}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Preload self-hosted Inter (same file the SPA preloads) -->
+    <link rel="preload" href="/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)}></script>
+    {faqJsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)}></script>
+    )}
+
+    <!-- Plausible (cookie-gated by the SPA — script may not be loaded if user refused) -->
+    <link rel="stylesheet" href="/guides/styles/article.css" />
+  </head>
+
+  <body>
+    <a href="#article" class="skip-link">Aller au contenu</a>
+
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      {breadcrumb.map((b, i) => (
+        <>
+          {i > 0 && <span class="sep" aria-hidden>/</span>}
+          {i === breadcrumb.length - 1
+            ? <span aria-current="page">{b.label}</span>
+            : <a href={b.url}>{b.label}</a>}
+        </>
+      ))}
+    </nav>
+
+    <main id="article" class="layout">
+      <article>
+        <ArticleHeader
+          title={title}
+          publishedAt={publishedAt}
+          updatedAt={updatedAt}
+          authorKey={author}
+          readingMinutes={readingMinutes}
+          category={category}
+        />
+        <ArticleBody>
+          <slot />
+        </ArticleBody>
+      </article>
+
+      <aside class="toc-aside">
+        <TOC headings={headings} />
+      </aside>
+    </main>
+
+    <div class="related-wrapper">
+      <RelatedArticles slugs={related} excludeSlug={slug} />
+    </div>
+
+    <footer class="footer">
+      <a href="/">← Retour à kitchenxpert.com</a>
+      <span>© {new Date().getFullYear()} KitchenXpert</span>
+    </footer>
+
+    <style is:global>
+      :root {
+        font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        color-scheme: dark;
+      }
+      html, body {
+        margin: 0;
+        background: #0a0a0f;
+        color: #fff;
+        min-height: 100%;
+      }
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 1rem;
+        z-index: 1000;
+        padding: 0.5rem 1rem;
+        background: #fff;
+        color: #000;
+        border-radius: 0.5rem;
+      }
+      .skip-link:focus { left: 1rem; }
+
+      .breadcrumb {
+        max-width: 1200px;
+        margin: 1.5rem auto 0;
+        padding: 0 1.5rem;
+        font-size: 0.8125rem;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .breadcrumb a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .breadcrumb a:hover { color: #fff; }
+      .breadcrumb .sep { margin: 0 0.5rem; opacity: 0.5; }
+
+      .layout {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem 4rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      @media (min-width: 1024px) {
+        .layout { grid-template-columns: minmax(0, 1fr) 220px; }
+      }
+      .toc-aside { display: none; }
+      @media (min-width: 1024px) { .toc-aside { display: block; } }
+
+      .related-wrapper {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      .footer {
+        max-width: 1200px;
+        margin: 4rem auto 0;
+        padding: 2rem 1.5rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.8125rem;
+      }
+      .footer a { color: inherit; text-decoration: none; }
+      .footer a:hover { color: #fff; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+    </style>
+  </body>
+</html>

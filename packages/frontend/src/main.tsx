@@ -1,7 +1,20 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+
 import App from './App';
 import './index.css';
+import { bootAnalyticsFromConsent, loadPlausible, unloadPlausible } from './analytics/plausible-loader';
+
+// Returning visitors who already accepted analytics → load Plausible now.
+bootAnalyticsFromConsent();
+
+// Fresh visitors → react to the CookieConsent decision when they make it.
+// CookieConsent dispatches `kx:consent-changed` with the new state.
+window.addEventListener('kx:consent-changed', (e) => {
+  const detail = (e as CustomEvent<{ analytics?: boolean }>).detail;
+  if (detail?.analytics) {loadPlausible();}
+  else {unloadPlausible();}
+});
 
 const container = document.getElementById('root');
 

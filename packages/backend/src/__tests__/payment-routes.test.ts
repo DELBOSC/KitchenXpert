@@ -303,7 +303,7 @@ describe('Payment Routes', () => {
         .expect(503);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('not configured');
+      expect(JSON.stringify(response.body)).toContain('not configured');
     });
 
     it('should return 400 on Stripe service error', async () => {
@@ -378,7 +378,7 @@ describe('Payment Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Not authorized');
+      expect(JSON.stringify(response.body)).toContain('Not authorized');
     });
 
     it('should allow admin to view any payment intent', async () => {
@@ -448,7 +448,7 @@ describe('Payment Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Not authorized');
+      expect(JSON.stringify(response.body)).toContain('Not authorized');
     });
 
     it('should allow admin to cancel any payment intent', async () => {
@@ -507,7 +507,7 @@ describe('Payment Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Missing Stripe signature');
+      expect(JSON.stringify(response.body)).toContain('Missing Stripe signature');
     });
 
     it('should return 400 for invalid webhook signature', async () => {
@@ -861,7 +861,7 @@ describe('Payment Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Access denied');
+      expect(JSON.stringify(response.body)).toContain('Access denied');
     });
 
     it('should allow admin to view any customer', async () => {
@@ -889,7 +889,7 @@ describe('Payment Routes', () => {
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('deleted');
+      expect(JSON.stringify(response.body)).toContain('deleted');
     });
 
     it('should return 404 for non-existent customer', async () => {
@@ -1058,7 +1058,7 @@ describe('Payment Routes', () => {
         .expect(403);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('not authorized');
+      expect(JSON.stringify(response.body)).toContain('not authorized');
     });
 
     it('should return 403 for deleted customer', async () => {

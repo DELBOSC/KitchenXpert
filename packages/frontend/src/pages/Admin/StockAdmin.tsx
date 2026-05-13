@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { API_BASE_URL } from '../../services/api/endpoints';
 import { getErrorMessage } from '../../utils/error-handling';
 
@@ -63,8 +64,8 @@ const StockAdmin: React.FC = () => {
           }),
         ]);
 
-        if (!statsRes.ok) throw new Error(t('admin.stock.errors.fetchStats', 'Failed to load stock stats'));
-        if (!resultsRes.ok) throw new Error(t('admin.stock.errors.fetchResults', 'Failed to load stock results'));
+        if (!statsRes.ok) {throw new Error(t('admin.stock.errors.fetchStats', 'Failed to load stock stats'));}
+        if (!resultsRes.ok) {throw new Error(t('admin.stock.errors.fetchResults', 'Failed to load stock results'));}
 
         const statsData = await statsRes.json();
         const resultsData = await resultsRes.json();
@@ -82,7 +83,7 @@ const StockAdmin: React.FC = () => {
           return merged.sort();
         });
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         setError(getErrorMessage(err, t('admin.stock.errors.load', 'Failed to load stock data')));
       } finally {
         setIsLoading(false);
@@ -95,7 +96,7 @@ const StockAdmin: React.FC = () => {
 
   // Auto-dismiss messages after 5 seconds
   useEffect(() => {
-    if (!message) return;
+    if (!message) {return;}
     const timer = setTimeout(() => setMessage(null), 5000);
     return () => clearTimeout(timer);
   }, [message]);
@@ -150,7 +151,7 @@ const StockAdmin: React.FC = () => {
   };
 
   const formatDate = (iso: string | null) => {
-    if (!iso) return t('common.never', 'Never');
+    if (!iso) {return t('common.never', 'Never');}
     return new Date(iso).toLocaleString(i18n.language, {
       day: '2-digit',
       month: 'short',

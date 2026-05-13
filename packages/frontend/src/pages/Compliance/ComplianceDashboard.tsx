@@ -13,8 +13,9 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import { api } from '../../services/api/api';
 import { API_ENDPOINTS } from '../../services/api/endpoints';
 
@@ -151,7 +152,7 @@ export default function ComplianceDashboard(): React.ReactElement {
 
   // ---- Load kitchens if no kitchenId ----
   useEffect(() => {
-    if (selectedKitchenId) return;
+    if (selectedKitchenId) {return;}
 
     const controller = new AbortController();
     setLoadingKitchens(true);
@@ -166,7 +167,7 @@ export default function ComplianceDashboard(): React.ReactElement {
           setKitchens(Array.isArray(response.data) ? response.data : []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         setError(t('compliance.errorLoadingKitchens', 'Failed to load kitchens'));
       } finally {
         if (!controller.signal.aborted) {
@@ -180,7 +181,7 @@ export default function ComplianceDashboard(): React.ReactElement {
 
   // ---- Load history when a kitchen is selected ----
   useEffect(() => {
-    if (!selectedKitchenId) return;
+    if (!selectedKitchenId) {return;}
 
     const controller = new AbortController();
 
@@ -195,7 +196,7 @@ export default function ComplianceDashboard(): React.ReactElement {
           setHistory(Array.isArray(response.data) ? response.data : []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') {return;}
         // Non-critical: history load failure should not block the UI
       }
     })();
@@ -205,7 +206,7 @@ export default function ComplianceDashboard(): React.ReactElement {
 
   // ---- Run compliance check ----
   const runCheck = useCallback(async () => {
-    if (!selectedKitchenId) return;
+    if (!selectedKitchenId) {return;}
 
     setLoading(true);
     setError(null);
@@ -238,7 +239,7 @@ export default function ComplianceDashboard(): React.ReactElement {
 
   // ---- Filter results ----
   const filteredResults = checkResult?.results.filter(r => {
-    if (filter === 'all') return true;
+    if (filter === 'all') {return true;}
     return r.status === filter;
   }) ?? [];
 

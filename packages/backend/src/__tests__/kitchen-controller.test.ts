@@ -151,7 +151,7 @@ describe('KitchenController', () => {
     });
 
     it('should return 404 if kitchen not found', async () => {
-      mockReq.params = { id: 'nonexistent' };
+      mockReq.params = { id: '00000000-0000-0000-0000-000000000000' };
       mockRepository.findById.mockResolvedValue(null);
 
       await controller.getById(mockReq as Request, mockRes as Response);

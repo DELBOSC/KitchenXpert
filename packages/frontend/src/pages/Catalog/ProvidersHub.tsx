@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Library, Package, ChevronRight, ExternalLink } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import { SeoHead } from '../../components/seo/SeoHead';
 import { Badge, Card, Container, ErrorState, PageHeader, Skeleton, fadeUp, stagger } from '../../components/ui';
 
 interface Provider {
@@ -49,11 +51,11 @@ export default function ProvidersHub(): React.ReactElement {
     (async () => {
       try {
         const res = await fetch('/api/v1/providers', { credentials: 'include', signal: controller.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
         const json = await res.json();
         setProviders(json.data);
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') setError((err as Error).message);
+        if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}
       }
     })();
     return () => controller.abort();
@@ -61,6 +63,11 @@ export default function ProvidersHub(): React.ReactElement {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
+      <SeoHead
+        title="Catalogues fournisseurs"
+        description="Parcourez IKEA METOD, Leroy Merlin, Castorama, Schmidt et Bosch — dimensions, prix et import 1-clic dans votre cuisine 3D."
+        canonical="https://kitchenxpert.com/catalog"
+      />
       <Container size="xl" className="py-10">
         <PageHeader
           title="Catalogues fournisseurs"

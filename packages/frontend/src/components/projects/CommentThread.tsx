@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { useAuth } from '../../contexts/AuthContext';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -38,10 +39,10 @@ function getRelativeTime(dateString: string, t: (key: string, defaultValue: stri
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
-  if (diffSec < 60) return t('time.justNow', 'just now');
-  if (diffMin < 60) return t('time.minutesAgo', '{{count}}m ago', { count: diffMin });
-  if (diffHour < 24) return t('time.hoursAgo', '{{count}}h ago', { count: diffHour });
-  if (diffDay < 30) return t('time.daysAgo', '{{count}}d ago', { count: diffDay });
+  if (diffSec < 60) {return t('time.justNow', 'just now');}
+  if (diffMin < 60) {return t('time.minutesAgo', '{{count}}m ago', { count: diffMin });}
+  if (diffHour < 24) {return t('time.hoursAgo', '{{count}}h ago', { count: diffHour });}
+  if (diffDay < 30) {return t('time.daysAgo', '{{count}}d ago', { count: diffDay });}
   return new Date(dateString).toLocaleDateString();
 }
 
@@ -96,7 +97,7 @@ function SingleComment({
   };
 
   const handleSubmitReply = async () => {
-    if (!replyContent.trim()) return;
+    if (!replyContent.trim()) {return;}
     setIsSubmittingReply(true);
     try {
       await onSubmitReply(comment.id, replyContent.trim());
@@ -295,7 +296,7 @@ function DeleteConfirmModal({ onConfirm, onCancel, isDeleting }: DeleteModalProp
       role="dialog"
       aria-modal="true"
       aria-labelledby="delete-comment-modal-title"
-      onKeyDown={(e) => { if (e.key === 'Escape' && !isDeleting) onCancel(); }}
+      onKeyDown={(e) => { if (e.key === 'Escape' && !isDeleting) {onCancel();} }}
     >
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
         <h3 id="delete-comment-modal-title" className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
@@ -345,7 +346,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
 
   // Fetch comments
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectId) {return;}
 
     const controller = new AbortController();
 
@@ -366,7 +367,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
         const data = await response.json();
         setComments(data.data || []);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const msg = err instanceof Error ? err.message : 'Failed to load comments';
         setError(msg);
       } finally {
@@ -380,7 +381,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
 
   // Add a new top-level comment
   const handleAddComment = useCallback(async () => {
-    if (!newComment.trim() || isSubmitting) return;
+    if (!newComment.trim() || isSubmitting) {return;}
 
     setIsSubmitting(true);
     try {
@@ -475,7 +476,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
 
   // Delete a comment
   const handleConfirmDelete = useCallback(async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget) {return;}
 
     setIsDeleting(true);
     try {

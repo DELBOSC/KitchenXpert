@@ -664,22 +664,21 @@ describe('BudgetPlanning', () => {
   });
 
   describe('Navigation on Submit', () => {
-    it('should navigate to /questionnaire/complete on successful save', async () => {
+    it('should POST budget data on Complete Questionnaire submission', async () => {
+      // After 2026 redesign the page is a two-step flow: Complete
+      // Questionnaire saves the budget, and a separate Generate button
+      // (which only appears after save) navigates to /questionnaire/results.
+      // We assert here that the POST is made; the navigate is exercised
+      // separately in the Generate flow.
       mockFetch
-        .mockResolvedValueOnce({
-          ok: false,
-          json: () => Promise.resolve({}),
-        }) // Initial load
+        .mockResolvedValueOnce({ ok: false, json: () => Promise.resolve({}) }) // initial load
         .mockResolvedValueOnce({
           ok: true,
           json: () => Promise.resolve({ success: true }),
         }) // POST submit
         .mockResolvedValueOnce({
           ok: true,
-          json: () =>
-            Promise.resolve({
-              data: { tips: [], warnings: [], suggestions: [] },
-            }),
+          json: () => Promise.resolve({ data: { tips: [], warnings: [], suggestions: [] } }),
         }); // AI tips
 
       renderBudgetPlanning();
@@ -691,16 +690,21 @@ describe('BudgetPlanning', () => {
         ).toBeInTheDocument();
       });
 
-      const budgetInput = screen.getByPlaceholderText(
-        /enter your total budget/i
-      );
+      const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
       await user.type(budgetInput, '20000');
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/questionnaire/complete');
+        const calls = mockFetch.mock.calls.map((c: unknown[]) => c[0] as string);
+        // Verify the budget-planning endpoint was called as a POST.
+        const planningCall = mockFetch.mock.calls.find(
+          (c: unknown[]) =>
+            typeof c[0] === 'string' &&
+            (c[0] as string).includes('/budget-planning') &&
+            (c[1] as RequestInit | undefined)?.method === 'POST',
+        );
+        expect(planningCall).toBeDefined();
+        expect(calls.length).toBeGreaterThan(1);
       });
     });
 

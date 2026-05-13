@@ -387,7 +387,7 @@ describe('AIChatController', () => {
     it('should return 404 if session does not exist', async () => {
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(null);
 
-      const session = await mockPrisma.aIChatSession.findUnique({ where: { id: 'nonexistent' } });
+      const session = await mockPrisma.aIChatSession.findUnique({ where: { id: '00000000-0000-0000-0000-000000000000' } });
       expect(session).toBeNull();
     });
   });
@@ -434,7 +434,7 @@ describe('AIChatController', () => {
     it('should return 404 if session not found', async () => {
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(null);
 
-      const session = await mockPrisma.aIChatSession.findUnique({ where: { id: 'nonexistent' } });
+      const session = await mockPrisma.aIChatSession.findUnique({ where: { id: '00000000-0000-0000-0000-000000000000' } });
       expect(session).toBeNull();
     });
   });
@@ -502,7 +502,7 @@ describe('AIChatController', () => {
     it('should return 404 if session not found', async () => {
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: 'nonexistent' }, body: { title: 'X' } });
+      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' }, body: { title: 'X' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.updateSession(req as Request, res as Response);
@@ -604,7 +604,7 @@ describe('AIChatController', () => {
     it('should return 404 if session not found', async () => {
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { sessionId: 'nonexistent' } });
+      const req = createMockReq({ params: { sessionId: '00000000-0000-0000-0000-000000000000' } });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.getHistory(req as Request, res as Response);

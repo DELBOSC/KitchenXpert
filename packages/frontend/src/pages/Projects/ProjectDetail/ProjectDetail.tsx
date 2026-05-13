@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+
 import CommentThread from '../../../components/projects/CommentThread';
 
 interface Kitchen {
@@ -89,7 +90,7 @@ const ProjectDetail: React.FC = () => {
         const data: Project = await response.json();
         setProject(data);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
+        if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const errorMessage = err instanceof Error ? err.message : t('projects.fetchError');
         setError(errorMessage);
       } finally {
@@ -102,7 +103,7 @@ const ProjectDetail: React.FC = () => {
   }, [projectId, retryCount, t]);
 
   const handleDeleteProject = async (): Promise<void> => {
-    if (!projectId) return;
+    if (!projectId) {return;}
 
     setIsDeleting(true);
 
@@ -112,7 +113,7 @@ const ProjectDetail: React.FC = () => {
         credentials: 'include',
       });
 
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) {return;}
 
       if (!response.ok) {
         throw new Error(t('projects.fetchError'));
@@ -153,7 +154,7 @@ const ProjectDetail: React.FC = () => {
   const formatCurrency = (amount: number, currency: string): string => {
     return new Intl.NumberFormat(i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
       style: 'currency',
-      currency: currency,
+      currency,
     }).format(amount);
   };
 
@@ -442,7 +443,7 @@ const ProjectDetail: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-modal-title"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isDeleting) setShowDeleteModal(false); }}
+          onKeyDown={(e) => { if (e.key === 'Escape' && !isDeleting) {setShowDeleteModal(false);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="delete-modal-title" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('projects.deleteConfirmTitle')}</h2>
@@ -464,7 +465,7 @@ const ProjectDetail: React.FC = () => {
                 className={`px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${isDeleting ? 'bg-red-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
               >
                 {isDeleting && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
                 {isDeleting ? t('projects.deleting', 'Deleting...') : t('projects.deleteProject')}
               </button>

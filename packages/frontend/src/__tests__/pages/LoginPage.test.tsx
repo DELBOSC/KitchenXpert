@@ -58,7 +58,8 @@ describe('LoginPage', () => {
     it('should render login form with all fields', () => {
       renderLoginPage();
 
-      expect(screen.getByRole('heading', { name: /connexion/i })).toBeInTheDocument();
+      // AuthLayout heading is now "Bon retour parmi nous"
+      expect(screen.getByRole('heading', { name: /bon retour|connexion|bienvenue/i })).toBeInTheDocument();
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/mot de passe/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /se connecter/i })).toBeInTheDocument();
@@ -155,7 +156,7 @@ describe('LoginPage', () => {
       });
     });
 
-    it('should show error toast on login failure', async () => {
+    it('should show error message on login failure', async () => {
       mockLogin.mockRejectedValueOnce(new Error('Invalid credentials'));
       renderLoginPage();
       const user = userEvent.setup();
@@ -164,8 +165,9 @@ describe('LoginPage', () => {
       await user.type(screen.getByLabelText(/mot de passe/i), 'wrongpassword');
       await user.click(screen.getByRole('button', { name: /se connecter/i }));
 
+      // LoginPage uses inline form error, not a toast.
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith('Email ou mot de passe incorrect');
+        expect(screen.getByText(/invalid credentials|identifiants invalides/i)).toBeInTheDocument();
       });
     });
 
@@ -181,8 +183,9 @@ describe('LoginPage', () => {
       const submitButton = screen.getByRole('button', { name: /se connecter/i });
       await user.click(submitButton);
 
+      // New Button keeps label + adds a spinner; just check disabled state.
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /connexion\.\.\./i })).toBeDisabled();
+        expect(screen.getByRole('button', { name: /se connecter/i })).toBeDisabled();
       });
     });
 
@@ -195,8 +198,9 @@ describe('LoginPage', () => {
       await user.type(screen.getByLabelText(/mot de passe/i), 'password123');
       await user.click(screen.getByRole('button', { name: /se connecter/i }));
 
+      // Button stays mounted in loading state (disabled + spinner).
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /connexion\.\.\./i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /se connecter/i })).toBeDisabled();
       });
     });
   });
@@ -216,7 +220,7 @@ describe('LoginPage', () => {
       renderLoginPage();
 
       const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading).toHaveTextContent(/connexion/i);
+      expect(heading).toHaveTextContent(/bon retour|connexion|bienvenue/i);
     });
 
     it('should have proper form structure', () => {

@@ -16,7 +16,7 @@ describe('KitchenRepository', () => {
   describe('findById', () => {
     it('should find a kitchen by ID', async () => {
       const mockKitchen = {
-        id: 'kitchen-1',
+        id: '550e8400-e29b-41d4-a716-446655440000',
         name: 'Test Kitchen',
         projectId: 'project-1',
         userId: 'user-1',
@@ -30,10 +30,10 @@ describe('KitchenRepository', () => {
 
       mockPrismaClient.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
-      const result = await repository.findById('kitchen-1');
+      const result = await repository.findById('550e8400-e29b-41d4-a716-446655440000');
 
       expect(mockPrismaClient.kitchen.findUnique).toHaveBeenCalledWith({
-        where: { id: 'kitchen-1', deletedAt: null },
+        where: { id: '550e8400-e29b-41d4-a716-446655440000', deletedAt: null },
         include: undefined,
       });
       expect(result).toEqual(mockKitchen);
@@ -42,14 +42,19 @@ describe('KitchenRepository', () => {
     it('should include relations when requested', async () => {
       mockPrismaClient.kitchen.findUnique.mockResolvedValue({});
 
-      await repository.findById('kitchen-1', true);
+      await repository.findById('550e8400-e29b-41d4-a716-446655440000', true);
 
       expect(mockPrismaClient.kitchen.findUnique).toHaveBeenCalledWith({
-        where: { id: 'kitchen-1', deletedAt: null },
+        where: { id: '550e8400-e29b-41d4-a716-446655440000', deletedAt: null },
         include: {
           configuration: true,
-          items: true,
-          project: true,
+          // Repository now eagerly loads item relations (product/appliance)
+          // and a trimmed project projection.
+          items: {
+            include: { appliance: true, product: true },
+            orderBy: { createdAt: 'asc' },
+          },
+          project: { select: { id: true, name: true, userId: true } },
           user: { select: { id: true, email: true, firstName: true, lastName: true } },
         },
       });
@@ -58,7 +63,7 @@ describe('KitchenRepository', () => {
     it('should return null when kitchen not found', async () => {
       mockPrismaClient.kitchen.findUnique.mockResolvedValue(null);
 
-      const result = await repository.findById('nonexistent');
+      const result = await repository.findById('00000000-0000-0000-0000-000000000000');
 
       expect(result).toBeNull();
     });
@@ -280,12 +285,19 @@ describe('KitchenRepository', () => {
 
   describe('getUserStats', () => {
     it('should get user statistics', async () => {
-      mockPrismaClient.kitchen.count.mockResolvedValueOnce(10).mockResolvedValueOnce(5);
+      // getUserStats now does ONE Promise.all with two groupBy() calls
+      // (by isGenerated + by style) plus aggregate(). The first groupBy
+      // returns isGenerated buckets so we derive totals from there.
+      mockPrismaClient.kitchen.groupBy
+        .mockResolvedValueOnce([
+          { isGenerated: false, _count: { _all: 5 } },
+          { isGenerated: true, _count: { _all: 5 } },
+        ])
+        .mockResolvedValueOnce([
+          { style: 'modern', _count: { style: 6 } },
+          { style: 'traditional', _count: { style: 4 } },
+        ]);
       mockPrismaClient.kitchen.aggregate.mockResolvedValue({ _avg: { score: 8.5 } });
-      mockPrismaClient.kitchen.groupBy.mockResolvedValue([
-        { style: 'modern', _count: { style: 6 } },
-        { style: 'traditional', _count: { style: 4 } },
-      ]);
 
       const result = await repository.getUserStats('user-1');
 
@@ -329,7 +341,7 @@ describe('KitchenRepository', () => {
     it('should throw error if kitchen not found', async () => {
       mockPrismaClient.kitchen.findUnique.mockResolvedValue(null);
 
-      await expect(repository.duplicate('nonexistent')).rejects.toThrow('Kitchen not found');
+      await expect(repository.duplicate('00000000-0000-0000-0000-000000000000')).rejects.toThrow('Kitchen not found');
     });
   });
 });

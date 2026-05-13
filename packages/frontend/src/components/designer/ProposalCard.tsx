@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+
 import type { LayoutProposal } from '@kitchenxpert/3d-engine';
 
 interface ProposalCardProps {

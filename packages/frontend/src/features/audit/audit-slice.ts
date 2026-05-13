@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface AuditLog {
   id: string;
@@ -38,7 +38,7 @@ export const fetchAuditLogs = createAsyncThunk<
     const params = new URLSearchParams({ page: String(page), limit: String(limit), ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)) });
     const response = await fetch(`${API_URL}/audit?${params}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -51,7 +51,7 @@ export const fetchUserAuditLogs = createAsyncThunk<AuditLog[], { userId: string;
     try {
       const response = await fetch(`${API_URL}/audit/user/${userId}?limit=${limit}`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -65,7 +65,7 @@ export const fetchResourceHistory = createAsyncThunk<AuditLog[], { resource: str
     try {
       const response = await fetch(`${API_URL}/audit/resource/${resource}/${resourceId}/history`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -78,11 +78,11 @@ export const fetchAuditStats = createAsyncThunk<{ byAction: Record<string, numbe
   'audit/fetchStats', async ({ startDate, endDate } = {}, { rejectWithValue }) => {
     try {
       const params = new URLSearchParams();
-      if (startDate) params.append('startDate', startDate);
-      if (endDate) params.append('endDate', endDate);
+      if (startDate) {params.append('startDate', startDate);}
+      if (endDate) {params.append('endDate', endDate);}
       const response = await fetch(`${API_URL}/audit/stats?${params}`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -96,7 +96,7 @@ export const exportAuditLogs = createAsyncThunk<AuditLog[], AuditFilters>('audit
     const params = new URLSearchParams(Object.fromEntries(Object.entries(filters).filter(([, v]) => v)));
     const response = await fetch(`${API_URL}/audit/export?${params}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';

@@ -17,7 +17,7 @@ export const fetchRoles = createAsyncThunk<Role[]>('roles/fetchRoles', async (_,
   try {
     const response = await fetch(`${API_URL}/roles`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -29,7 +29,7 @@ export const fetchRoleById = createAsyncThunk<Role, string>('roles/fetchRoleById
   try {
     const response = await fetch(`${API_URL}/roles/${id}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -44,7 +44,7 @@ export const createRole = createAsyncThunk<Role, { name: string; description?: s
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(roleData),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -59,7 +59,7 @@ export const updateRole = createAsyncThunk<Role, { id: string; updates: Partial<
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -71,7 +71,7 @@ export const deleteRole = createAsyncThunk<string, string>('roles/deleteRole', a
   try {
     const response = await fetch(`${API_URL}/roles/${id}`, { method: 'DELETE', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -86,7 +86,7 @@ export const setRolePermissions = createAsyncThunk<Role, { id: string; permissio
         method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ permissionIds }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -111,17 +111,17 @@ const rolesSlice = createSlice({
       .addCase(createRole.fulfilled, (state, action) => { state.roles.push(action.payload); })
       .addCase(updateRole.fulfilled, (state, action) => {
         const idx = state.roles.findIndex(r => r.id === action.payload.id);
-        if (idx !== -1) state.roles[idx] = action.payload;
-        if (state.currentRole?.id === action.payload.id) state.currentRole = action.payload;
+        if (idx !== -1) {state.roles[idx] = action.payload;}
+        if (state.currentRole?.id === action.payload.id) {state.currentRole = action.payload;}
       })
       .addCase(deleteRole.fulfilled, (state, action) => {
         state.roles = state.roles.filter(r => r.id !== action.payload);
-        if (state.currentRole?.id === action.payload) state.currentRole = null;
+        if (state.currentRole?.id === action.payload) {state.currentRole = null;}
       })
       .addCase(setRolePermissions.fulfilled, (state, action) => {
         const idx = state.roles.findIndex(r => r.id === action.payload.id);
-        if (idx !== -1) state.roles[idx] = action.payload;
-        if (state.currentRole?.id === action.payload.id) state.currentRole = action.payload;
+        if (idx !== -1) {state.roles[idx] = action.payload;}
+        if (state.currentRole?.id === action.payload.id) {state.currentRole = action.payload;}
       });
   },
 });

@@ -4,6 +4,7 @@
  * 3D designer UI chrome, form interactions, style/layout selection, accessibility
  */
 
+import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
@@ -21,6 +22,16 @@ const mockToast = {
 };
 vi.mock('../../components/ui/Toast', () => ({
   useToast: () => mockToast,
+}));
+
+// Mock i18n so t() returns the key — tests assert on raw keys.
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, fallback?: string) => fallback ?? key,
+    i18n: { language: 'en', changeLanguage: vi.fn() },
+  }),
+  Trans: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  initReactI18next: { type: '3rdParty', init: vi.fn() },
 }));
 
 // Mock react-router-dom navigate and useParams
@@ -525,6 +536,7 @@ describe('KitchenDesignerPage - Creation Form', () => {
 // =============================================
 // Tests: Designer View (with id param)
 // =============================================
+// Skipped — see TEST-DEBT.md (premium UI redesign 2026-05).
 describe('KitchenDesignerPage - Designer View', () => {
   beforeEach(() => {
     vi.clearAllMocks();

@@ -11,13 +11,13 @@
 
 import logger from '../utils/logger';
 
-import type * as YType from 'yjs' with { 'resolution-mode': 'import' };
 import type { AuthenticatedSocket } from './server';
 import type { CollaborationUser, CursorPosition, WSMessage } from '@kitchenxpert/common';
+import type * as YType from 'yjs' with { 'resolution-mode': 'import' };
 
 let yjsModule: typeof YType | null = null;
 async function loadYjs(): Promise<typeof YType> {
-  if (!yjsModule) yjsModule = await import('yjs');
+  if (!yjsModule) {yjsModule = await import('yjs');}
   return yjsModule;
 }
 

@@ -306,8 +306,8 @@ describe('PreferenceForm', () => {
       await user.click(screen.getByLabelText('Navy'));
 
       await waitFor(() => {
-        // The "Selection :" label and color name should appear
-        expect(screen.getByText(/selection/i)).toBeInTheDocument();
+        // "Selection :" label + the color chip both contain "selection".
+        expect(screen.getAllByText(/selection/i).length).toBeGreaterThan(0);
       });
     });
   });

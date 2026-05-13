@@ -171,7 +171,7 @@ export default function ComplianceOverlay({
                     className={`relative w-6 h-6 rounded-full ${colors.bg} border-2 ${colors.border} shadow-lg flex items-center justify-center cursor-pointer hover:scale-125 transition-transform`}
                     onMouseEnter={() => setHoveredId(violation.ruleId)}
                     onMouseLeave={() => {
-                      if (!isExpanded) setHoveredId(null);
+                      if (!isExpanded) {setHoveredId(null);}
                     }}
                     onClick={() => handleMarkerClick(violation.ruleId)}
                     title={violation.ruleName}

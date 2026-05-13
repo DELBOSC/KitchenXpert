@@ -80,7 +80,7 @@ import { WorkflowSimulationService } from '../services/ai/workflow-simulation.se
 // ---------------------------------------------------------------------------
 
 const testUserId = 'test-user-id';
-const kitchenId = 'kitchen-1';
+const kitchenId = '550e8400-e29b-41d4-a716-446655440000';
 
 const mockKitchen = {
   id: kitchenId,
@@ -389,7 +389,7 @@ describe('WorkflowSimulationService', () => {
       mockPrisma.workflowSimulation.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.optimize('nonexistent', testUserId),
+        service.optimize('00000000-0000-0000-0000-000000000000', testUserId),
       ).rejects.toThrow('Simulation not found');
     });
 

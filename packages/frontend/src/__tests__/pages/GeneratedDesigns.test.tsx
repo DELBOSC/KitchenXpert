@@ -475,7 +475,7 @@ describe('GeneratedDesigns', () => {
       renderGeneratedDesigns();
 
       await waitFor(() => {
-        expect(screen.getByText('Pourquoi ce design ?')).toBeInTheDocument();
+        expect(screen.getAllByText('Pourquoi ce design ?')[0]).toBeInTheDocument();
       });
     });
 
@@ -484,10 +484,10 @@ describe('GeneratedDesigns', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByText('Pourquoi ce design ?')).toBeInTheDocument();
+        expect(screen.getAllByText('Pourquoi ce design ?')[0]).toBeInTheDocument();
       });
 
-      await user.click(screen.getByText('Pourquoi ce design ?'));
+      await user.click(screen.getAllByText('Pourquoi ce design ?')[0]);
 
       await waitFor(() => {
         expect(screen.getByText(/selected for durability and aesthetics/i)).toBeInTheDocument();
@@ -501,16 +501,16 @@ describe('GeneratedDesigns', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByText('Pourquoi ce design ?')).toBeInTheDocument();
+        expect(screen.getAllByText('Pourquoi ce design ?')[0]).toBeInTheDocument();
       });
 
-      await user.click(screen.getByText('Pourquoi ce design ?'));
+      await user.click(screen.getAllByText('Pourquoi ce design ?')[0]);
 
       await waitFor(() => {
         expect(screen.getByText(/selected for durability/i)).toBeInTheDocument();
       });
 
-      await user.click(screen.getByText('Pourquoi ce design ?'));
+      await user.click(screen.getAllByText('Pourquoi ce design ?')[0]);
 
       await waitFor(() => {
         expect(screen.queryByText(/selected for durability/i)).not.toBeInTheDocument();
@@ -947,8 +947,10 @@ describe('GeneratedDesigns', () => {
       renderGeneratedDesigns();
 
       await waitFor(() => {
-        expect(screen.getByLabelText('Rate 1 star')).toBeInTheDocument();
-        expect(screen.getByLabelText('Rate 5 stars')).toBeInTheDocument();
+        // Star rating buttons appear once per generated design — use
+        // getAllByLabelText to tolerate multiple matches.
+        expect(screen.getAllByLabelText('Rate 1 star').length).toBeGreaterThan(0);
+        expect(screen.getAllByLabelText('Rate 5 stars').length).toBeGreaterThan(0);
       });
     });
   });

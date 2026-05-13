@@ -47,7 +47,7 @@ export const fetchWebhooks = createAsyncThunk<Webhook[]>('webhooks/fetchWebhooks
   try {
     const response = await fetch(`${API_URL}/webhooks`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -59,7 +59,7 @@ export const fetchWebhookById = createAsyncThunk<Webhook, string>('webhooks/fetc
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -73,7 +73,7 @@ export const createWebhook = createAsyncThunk<Webhook, Partial<Webhook>>('webhoo
       method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(webhookData),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -87,7 +87,7 @@ export const updateWebhook = createAsyncThunk<Webhook, { id: string; updates: Pa
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -99,7 +99,7 @@ export const deleteWebhook = createAsyncThunk<string, string>('webhooks/delete',
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}`, { method: 'DELETE', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -111,7 +111,7 @@ export const toggleWebhook = createAsyncThunk<Webhook, string>('webhooks/toggle'
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}/toggle`, { method: 'POST', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -123,7 +123,7 @@ export const testWebhook = createAsyncThunk<WebhookEvent, string>('webhooks/test
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}/test`, { method: 'POST', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -135,7 +135,7 @@ export const regenerateSecret = createAsyncThunk<{ secretLast4: string }, string
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}/regenerate-secret`, { method: 'POST', credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -148,7 +148,7 @@ export const fetchWebhookEvents = createAsyncThunk<WebhookEvent[], { id: string;
     try {
       const response = await fetch(`${API_URL}/webhooks/${id}/events?limit=${limit}`, { credentials: 'include' });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -161,7 +161,7 @@ export const fetchFailedEvents = createAsyncThunk<WebhookEvent[]>('webhooks/fetc
   try {
     const response = await fetch(`${API_URL}/webhooks/failed`, { credentials: 'include' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -185,16 +185,16 @@ const webhooksSlice = createSlice({
       .addCase(createWebhook.fulfilled, (state, action) => { state.webhooks.push(action.payload); })
       .addCase(updateWebhook.fulfilled, (state, action) => {
         const idx = state.webhooks.findIndex(w => w.id === action.payload.id);
-        if (idx !== -1) state.webhooks[idx] = action.payload;
-        if (state.currentWebhook?.id === action.payload.id) state.currentWebhook = action.payload;
+        if (idx !== -1) {state.webhooks[idx] = action.payload;}
+        if (state.currentWebhook?.id === action.payload.id) {state.currentWebhook = action.payload;}
       })
       .addCase(deleteWebhook.fulfilled, (state, action) => {
         state.webhooks = state.webhooks.filter(w => w.id !== action.payload);
-        if (state.currentWebhook?.id === action.payload) state.currentWebhook = null;
+        if (state.currentWebhook?.id === action.payload) {state.currentWebhook = null;}
       })
       .addCase(toggleWebhook.fulfilled, (state, action) => {
         const idx = state.webhooks.findIndex(w => w.id === action.payload.id);
-        if (idx !== -1) state.webhooks[idx] = action.payload;
+        if (idx !== -1) {state.webhooks[idx] = action.payload;}
       })
       .addCase(fetchWebhookEvents.fulfilled, (state, action) => { state.events = action.payload; })
       .addCase(fetchFailedEvents.fulfilled, (state, action) => { state.failedEvents = action.payload; });

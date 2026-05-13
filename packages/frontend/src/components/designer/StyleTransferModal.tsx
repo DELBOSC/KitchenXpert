@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { API_BASE_URL, API_ENDPOINTS } from '../../services/api/endpoints';
+
 import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { API_BASE_URL, API_ENDPOINTS } from '../../services/api/endpoints';
 import { getErrorMessage } from '../../utils/error-handling';
 
 // ----------------------------------------------------------------
@@ -76,18 +77,18 @@ function hexToHSL(hex: string): { h: number; s: number; l: number } {
 }
 
 function hexToColorName(hex: string): string {
-  if (!hex || hex.length < 4) return '';
+  if (!hex || hex.length < 4) {return '';}
   try {
     const { h, s, l } = hexToHSL(hex);
-    if (l > 90) return 'Blanc';
-    if (l < 10) return 'Noir';
-    if (s < 20) return 'Gris';
-    if (h < 30 || h >= 330) return 'Rouge / Rose';
-    if (h < 60) return 'Orange / Beige';
-    if (h < 90) return 'Jaune';
-    if (h < 150) return 'Vert';
-    if (h < 210) return 'Cyan / Turquoise';
-    if (h < 270) return 'Bleu';
+    if (l > 90) {return 'Blanc';}
+    if (l < 10) {return 'Noir';}
+    if (s < 20) {return 'Gris';}
+    if (h < 30 || h >= 330) {return 'Rouge / Rose';}
+    if (h < 60) {return 'Orange / Beige';}
+    if (h < 90) {return 'Jaune';}
+    if (h < 150) {return 'Vert';}
+    if (h < 210) {return 'Cyan / Turquoise';}
+    if (h < 270) {return 'Bleu';}
     return 'Violet / Mauve';
   } catch {
     return '';
@@ -148,14 +149,14 @@ function getMaterialStyle(materialName: string, primaryColor?: string): React.CS
 // ----------------------------------------------------------------
 
 function confidenceLabel(confidence: number, t: (key: string, fallback: string) => string): string {
-  if (confidence >= 0.85) return t('styleTransfer.confidenceHigh', 'High confidence');
-  if (confidence >= 0.6) return t('styleTransfer.confidenceMedium', 'Medium confidence');
+  if (confidence >= 0.85) {return t('styleTransfer.confidenceHigh', 'High confidence');}
+  if (confidence >= 0.6) {return t('styleTransfer.confidenceMedium', 'Medium confidence');}
   return t('styleTransfer.confidenceLow', 'Low confidence');
 }
 
 function confidenceColor(confidence: number): string {
-  if (confidence >= 0.85) return 'text-emerald-600 dark:text-emerald-400';
-  if (confidence >= 0.6) return 'text-yellow-600 dark:text-yellow-400';
+  if (confidence >= 0.85) {return 'text-emerald-600 dark:text-emerald-400';}
+  if (confidence >= 0.6) {return 'text-yellow-600 dark:text-yellow-400';}
   return 'text-orange-600 dark:text-orange-400';
 }
 
@@ -335,9 +336,9 @@ export default function StyleTransferModal({
 
   // ── Escape key to close ──
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {return;}
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {onClose();}
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
@@ -346,14 +347,14 @@ export default function StyleTransferModal({
   // ── Cleanup preview URL on unmount ──
   useEffect(() => {
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      if (preview) {URL.revokeObjectURL(preview);}
     };
   }, [preview]);
 
   // ── Handlers: file mode ──
   const handleFileChange = useCallback(
     (selectedFile: File | null) => {
-      if (!selectedFile) return;
+      if (!selectedFile) {return;}
 
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(selectedFile.type)) {
         setError(
@@ -370,7 +371,7 @@ export default function StyleTransferModal({
       setFile(selectedFile);
       setError(null);
 
-      if (preview) URL.revokeObjectURL(preview);
+      if (preview) {URL.revokeObjectURL(preview);}
       setPreview(URL.createObjectURL(selectedFile));
     },
     [preview, t],
@@ -387,7 +388,7 @@ export default function StyleTransferModal({
 
   // ── Handlers: URL mode ──
   const handleUrlPreview = useCallback(async () => {
-    if (!imageUrl.trim()) return;
+    if (!imageUrl.trim()) {return;}
 
     setUrlPreviewError(null);
     setUrlPreviewReady(false);
@@ -408,7 +409,7 @@ export default function StyleTransferModal({
 
       setUrlPreviewReady(true);
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') return;
+      if (err instanceof DOMException && err.name === 'AbortError') {return;}
       setUrlPreviewError(
         t(
           'styleTransfer.urlInaccessible',
@@ -437,8 +438,8 @@ export default function StyleTransferModal({
   // ── Handler: analyze ──
   const handleAnalyze = useCallback(async () => {
     const isFileMode = inputMode === 'file';
-    if (isFileMode && !file) return;
-    if (!isFileMode && !imageUrl.trim()) return;
+    if (isFileMode && !file) {return;}
+    if (!isFileMode && !imageUrl.trim()) {return;}
 
     setStep('analyzing');
     setError(null);
@@ -514,12 +515,12 @@ export default function StyleTransferModal({
 
   // ── Handler: apply (selective) ──
   const buildFilteredResult = useCallback((): StyleExtraction => {
-    if (!result) throw new Error('No result');
+    if (!result) {throw new Error('No result');}
     const filtered: Partial<StyleExtraction> = { ...result };
 
-    if (!applySelections.colors) delete filtered.colorPalette;
-    if (!applySelections.doorStyle) delete filtered.doorStyle;
-    if (!applySelections.handleStyle) delete filtered.handleStyle;
+    if (!applySelections.colors) {delete filtered.colorPalette;}
+    if (!applySelections.doorStyle) {delete filtered.doorStyle;}
+    if (!applySelections.handleStyle) {delete filtered.handleStyle;}
 
     if (!applySelections.cabinetMaterial || !applySelections.countertop || !applySelections.backsplash || !applySelections.flooring) {
       const originalMaterials = result.materials;
@@ -529,9 +530,9 @@ export default function StyleTransferModal({
         delete filteredMaterials.cabinetMaterial;
         delete filteredMaterials.cabinetFinish;
       }
-      if (!applySelections.countertop) delete filteredMaterials.countertopMaterial;
-      if (!applySelections.backsplash) delete filteredMaterials.backsplashMaterial;
-      if (!applySelections.flooring) delete filteredMaterials.flooringMaterial;
+      if (!applySelections.countertop) {delete filteredMaterials.countertopMaterial;}
+      if (!applySelections.backsplash) {delete filteredMaterials.backsplashMaterial;}
+      if (!applySelections.flooring) {delete filteredMaterials.flooringMaterial;}
 
       filtered.materials = filteredMaterials as StyleExtraction['materials'];
     }
@@ -540,7 +541,7 @@ export default function StyleTransferModal({
   }, [result, applySelections]);
 
   const handleApply = useCallback(() => {
-    if (!result) return;
+    if (!result) {return;}
     const filtered = buildFilteredResult();
     onApplyStyle(filtered);
     onClose();
@@ -558,7 +559,7 @@ export default function StyleTransferModal({
     [],
   );
 
-  if (!isOpen) return null;
+  if (!isOpen) {return null;}
 
   const canAnalyze =
     (inputMode === 'file' && file !== null) ||
@@ -570,7 +571,7 @@ export default function StyleTransferModal({
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) {onClose();}
       }}
       role="dialog"
       aria-modal="true"
