@@ -1,3 +1,4 @@
+import { ChefHat, MapPin } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -175,7 +176,7 @@ function HeroVisual(): React.ReactElement {
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             <div className="col-span-2 aspect-[16/10] rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black">
-              <div className="flex h-full items-center justify-center text-6xl">🍳</div>
+              <div className="flex h-full items-center justify-center text-6xl"><ChefHat className="w-16 h-16 text-white/60" aria-hidden="true" /></div>
             </div>
             <div className="flex flex-col gap-3">
               <Panel label="Style" value="Scandinave" />
@@ -493,7 +494,7 @@ function Footer(): React.ReactElement {
       </div>
       <div className="mx-auto mt-10 flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
         <p>© {new Date().getFullYear()} KitchenXpert SAS — Tous droits réservés.</p>
-        <p>Made in France 🇫🇷 · Hébergé dans l'UE</p>
+        <p>Made in France <MapPin className="inline-block w-4 h-4 align-text-bottom" aria-hidden="true" /> · Hébergé dans l'UE</p>
       </div>
     </footer>
   );

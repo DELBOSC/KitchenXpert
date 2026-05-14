@@ -1,3 +1,4 @@
+import { Sparkles } from 'lucide-react';
 import React, { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -107,7 +108,7 @@ export default function SandboxDesignerPage(): React.ReactElement {
           onClick={() => setShowAutoLayout(true)}
           className="absolute right-4 top-4 z-30 inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/15 px-4 py-2 text-sm font-medium text-white shadow-lg backdrop-blur-md transition hover:border-indigo-300/50 hover:shadow-[0_0_30px_rgba(167,139,250,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60"
         >
-          <span aria-hidden>✨</span>
+          <Sparkles className="w-4 h-4" aria-hidden="true" />
           <span>Auto-Layout IA</span>
         </button>
 

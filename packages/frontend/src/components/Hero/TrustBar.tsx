@@ -1,3 +1,4 @@
+import { Globe2, MapPin, ShieldCheck, Zap } from 'lucide-react';
 import React from 'react';
 
 /**
@@ -19,7 +20,7 @@ import React from 'react';
  */
 
 interface ClaimProps {
-  emoji: string;
+  emoji: React.ReactNode;
   label: string;
   /** Détail apparaissant en tooltip au hover/focus. */
   detail: string;
@@ -75,26 +76,26 @@ export function TrustBar(): React.ReactElement {
     >
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-4 px-6 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-8 sm:gap-y-3">
         <Claim
-          emoji="🇫🇷"
+          emoji={<MapPin className="w-4 h-4" aria-hidden="true" />}
           label="Made in France"
           detail="Équipe basée à Toulouse. Conception, code et support en France."
         />
         <span aria-hidden className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block" />
         <Claim
-          emoji="🇪🇺"
+          emoji={<Globe2 className="w-4 h-4" aria-hidden="true" />}
           label="Hébergé en Union Européenne"
           detail="Toutes vos données restent en UE : Postgres OVH (Gravelines), Redis Scaleway (Paris), Object Storage Scaleway. Les APIs IA tierces (Anthropic, Gemini) ne sont sollicitées qu'avec votre consentement explicite."
         />
         <span aria-hidden className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block" />
         <Claim
-          emoji="🔒"
+          emoji={<ShieldCheck className="w-4 h-4" aria-hidden="true" />}
           label="Conforme RGPD · DSP2 · LCEN"
           detail="Mentions légales, politique cookies CNIL, droits d'accès (Art. 15) et d'effacement (Art. 17) accessibles en 2 clics. Paiements DSP2/SCA via Stripe Irlande."
           href="/legal/privacy"
         />
         <span aria-hidden className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block" />
         <Claim
-          emoji="⚡"
+          emoji={<Zap className="w-4 h-4" aria-hidden="true" />}
           label="Sans inscription · Essai illimité"
           detail="Le designer 3D est utilisable immédiatement sans compte ni carte bancaire. Votre projet reste en local jusqu'à ce que vous décidiez de l'enregistrer."
           href="/designer/sandbox"

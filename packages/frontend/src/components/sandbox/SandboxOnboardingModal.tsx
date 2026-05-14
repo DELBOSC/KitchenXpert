@@ -1,3 +1,4 @@
+import { Palette, Ruler, Sparkles } from 'lucide-react';
 import React from 'react';
 
 import { SANDBOX_TEMPLATES, type SandboxTemplate } from '../../sandbox/templates';
@@ -64,20 +65,20 @@ export function SandboxOnboardingModal({
         {tab === 'choose' && (
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <ChoiceCard
-              icon="✨"
+              icon={<Sparkles className="w-8 h-8" aria-hidden="true" />}
               title="Cuisine vide"
               body="Partez d'une pièce vide aux dimensions par défaut (4 × 3,5 m)."
               onClick={onPickEmpty}
             />
             <ChoiceCard
-              icon="📐"
+              icon={<Ruler className="w-8 h-8" aria-hidden="true" />}
               title="Importer un plan"
               body="Glissez votre PDF, DXF ou photo de plan annoté."
               onClick={onImportPlan}
               comingSoon
             />
             <ChoiceCard
-              icon="🎨"
+              icon={<Palette className="w-8 h-8" aria-hidden="true" />}
               title="Choisir un template"
               body="6 layouts pré-configurés : L, U, parallèle, îlot, ouverte, atypique."
               onClick={() => setTab('templates')}
@@ -131,7 +132,7 @@ export function SandboxOnboardingModal({
 function ChoiceCard({
   icon, title, body, onClick, comingSoon = false,
 }: {
-  icon: string; title: string; body: string; onClick: () => void; comingSoon?: boolean;
+  icon: React.ReactNode; title: string; body: string; onClick: () => void; comingSoon?: boolean;
 }): React.ReactElement {
   return (
     <button

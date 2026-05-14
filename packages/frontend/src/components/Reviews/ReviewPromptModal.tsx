@@ -1,3 +1,4 @@
+import { Heart, PartyPopper } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 /**
@@ -210,7 +211,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
         {step === 'thanks-external' && externalUrl && (
           <>
             <h2 id="review-prompt-title" className="text-xl font-semibold text-white">
-              Merci&nbsp;! 🙌
+              Merci&nbsp;! <PartyPopper className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
             </h2>
             <p className="mt-2 text-sm text-white/65">
               Acceptez-vous de partager votre avis sur une plateforme publique&nbsp;?
@@ -241,7 +242,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
         {step === 'thanks-internal' && (
           <>
             <h2 id="review-prompt-title" className="text-xl font-semibold text-white">
-              Bien reçu, merci. 🙏
+              Bien reçu, merci. <Heart className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
             </h2>
             <p className="mt-2 text-sm text-white/65">
               On revient vers vous sous 48 h. En attendant, votre projet vous attend.
