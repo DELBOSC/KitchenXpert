@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { AutoLayoutModal } from '../components/designer/AutoLayoutModal';
-import { SandboxCanvas } from '../components/sandbox/SandboxCanvas';
 import { SandboxOnboardingModal } from '../components/sandbox/SandboxOnboardingModal';
 import { SandboxPalette } from '../components/sandbox/SandboxPalette';
 import { SandboxWatermark } from '../components/sandbox/SandboxWatermark';
 import { SignupPromptModal } from '../components/sandbox/SignupPromptModal';
 import { SeoHead } from '../components/seo/SeoHead';
+import { Skeleton } from '../components/ui/Skeleton';
+
+const SandboxCanvas = React.lazy(() => import('../components/sandbox/SandboxCanvas'));
 import { useSandboxStore, selectHasSandboxProject } from '../sandbox/store';
 import { findTemplate } from '../sandbox/templates';
 import {
@@ -93,7 +95,9 @@ export default function SandboxDesignerPage(): React.ReactElement {
       />
 
       <div className="relative h-screen w-screen overflow-hidden bg-[#0a0a0f] text-white">
-        <SandboxCanvas selectedId={selectedId} onSelect={setSelectedId} />
+        <Suspense fallback={<Skeleton className="absolute inset-0 rounded-none" />}>
+          <SandboxCanvas selectedId={selectedId} onSelect={setSelectedId} />
+        </Suspense>
         <SandboxPalette />
 
         {/* Floating "Auto-Layout IA" trigger — top-right, near the
