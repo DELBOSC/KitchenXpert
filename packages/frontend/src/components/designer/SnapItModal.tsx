@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { Camera, X } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 
 /**
@@ -199,7 +199,7 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
                 </>
               ) : (
                 <>
-                  <div className="text-4xl text-white/30" aria-hidden>📷</div>
+                  <div><Camera className="w-10 h-10 text-white/40" aria-hidden="true" /></div>
                   <div className="mt-3 text-sm font-medium text-white/85">Glisse une photo ici</div>
                   <div className="mt-1 text-xs text-white/40">JPG / PNG / WebP · 8 MB max</div>
                   <button
