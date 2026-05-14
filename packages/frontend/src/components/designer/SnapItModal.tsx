@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 
 /**
@@ -162,7 +163,7 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
           aria-label="Fermer"
           className="absolute right-3 top-3 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
         >
-          <span aria-hidden>×</span>
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
 
         <h2 id="snapit-title" className="text-2xl font-semibold text-white">

@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 import React, { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -203,7 +203,7 @@ function SandboxItemHud({
           aria-label="Désélectionner"
           className="rounded-full px-2 py-1 text-xs text-white/40 transition hover:text-white"
         >
-          ×
+          <X className="w-3 h-3" aria-hidden="true" />
         </button>
       </div>
     </div>

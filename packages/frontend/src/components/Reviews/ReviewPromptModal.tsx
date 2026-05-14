@@ -1,4 +1,4 @@
-import { Heart, PartyPopper } from 'lucide-react';
+import { ArrowUpRight, Heart, PartyPopper, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 /**
@@ -130,7 +130,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
           aria-label="Fermer"
           className="absolute right-3 top-3 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
         >
-          <span aria-hidden>×</span>
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
 
         {step === 'rate' && (
@@ -226,7 +226,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
                 className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 hover:bg-white/90"
               >
                 Partager mon avis
-                <span aria-hidden>↗</span>
+                <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
               </a>
               <button
                 type="button"

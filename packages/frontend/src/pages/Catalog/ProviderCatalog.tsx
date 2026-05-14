@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Search, Package, ArrowLeft, Ruler } from 'lucide-react';
+import { Search, Package, ArrowLeft, ArrowUpRight, Ruler } from 'lucide-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -300,9 +300,10 @@ function CatalogItemCard({
                 href={(item as IkeaSearchResult).url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Ouvrir dans un nouvel onglet"
                 className="kx-focus inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-white/80 hover:bg-white/10"
               >
-                ↗
+                <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
               </a>
             )}
             <Button size="sm" variant="outline" onClick={handleImport}>

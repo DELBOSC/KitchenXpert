@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -52,7 +53,7 @@ const CTAs = ({ align = 'center' }: { align?: 'center' | 'start' }): React.React
       className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(255,255,255,0.12)] transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_8px_60px_rgba(255,255,255,0.25)]"
     >
       Essayer le designer
-      <span className="transition group-hover:translate-x-0.5" aria-hidden>→</span>
+      <ArrowRight className="w-4 h-4 transition group-hover:translate-x-0.5" aria-hidden="true" />
     </Link>
     <Link
       to="/register"

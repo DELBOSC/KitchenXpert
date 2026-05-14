@@ -1,3 +1,4 @@
+import { ArrowRight, X } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -78,7 +79,7 @@ export function SignupPromptModal({
           aria-label="Fermer"
           className="absolute right-3 top-3 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
         >
-          <span aria-hidden>×</span>
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
 
         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs text-amber-300">
@@ -98,7 +99,7 @@ export function SignupPromptModal({
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-white/90"
           >
             {copy.cta}
-            <span aria-hidden>→</span>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
           <button
             type="button"

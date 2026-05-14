@@ -1,4 +1,4 @@
-import { ChefHat, MapPin } from 'lucide-react';
+import { ArrowRight, Check, ChefHat, MapPin } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -107,7 +107,7 @@ function Nav(): React.ReactElement {
           className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-lg shadow-white/10 transition hover:bg-white/90"
         >
           Démarrer
-          <span aria-hidden>→</span>
+          <ArrowRight className="w-4 h-4" aria-hidden="true" />
         </Link>
       </div>
     </nav>
@@ -143,7 +143,7 @@ function Hero({ t }: { t: (k: string) => string }): React.ReactElement {
           className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(255,255,255,0.12)] transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_8px_60px_rgba(255,255,255,0.25)]"
         >
           Essayer le designer
-          <span className="transition group-hover:translate-x-0.5" aria-hidden>→</span>
+          <ArrowRight className="w-4 h-4 transition group-hover:translate-x-0.5" aria-hidden="true" />
         </Link>
         <Link
           to="/register"
@@ -338,7 +338,7 @@ function ShowcaseSplit(): React.ReactElement {
               'Export BIM + liste de commande',
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-sm text-white/80">
-                <span className="mt-1 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-[10px] text-white">✓</span>
+                <span className="mt-1 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-white"><Check className="w-3 h-3" aria-hidden="true" /></span>
                 {item}
               </li>
             ))}
@@ -443,7 +443,7 @@ function CTA({ t }: { t: (k: string) => string }): React.ReactElement {
               className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-gray-900 transition hover:bg-white/90"
             >
               {t('home.startDesign')}
-              <span aria-hidden>→</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
             <Link
               to="/pricing"

@@ -1,4 +1,4 @@
-import { Palette, Ruler, Sparkles } from 'lucide-react';
+import { ArrowLeft, Palette, Ruler, Sparkles, X } from 'lucide-react';
 import React from 'react';
 
 import { SANDBOX_TEMPLATES, type SandboxTemplate } from '../../sandbox/templates';
@@ -52,7 +52,7 @@ export function SandboxOnboardingModal({
           aria-label="Fermer"
           className="absolute right-4 top-4 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
         >
-          <span aria-hidden>×</span>
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
 
         <h2 id="sandbox-onboarding-title" className="text-2xl font-semibold text-white">
@@ -93,7 +93,7 @@ export function SandboxOnboardingModal({
               onClick={() => setTab('choose')}
               className="mb-4 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
             >
-              <span aria-hidden>←</span> Retour
+              <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" /> Retour
             </button>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {SANDBOX_TEMPLATES.map((tpl) => (
