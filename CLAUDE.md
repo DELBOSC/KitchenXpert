@@ -269,17 +269,17 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 ### Priorité P0 (à faire avant tout autre travail design)
 
-- [ ] `tailwind.config.js` : câbler les tokens KitchenXpert (`kx-base`, `kx-elevated`, `kx-brand-from`, `kx-brand-to`, `kx-accent-warm`) pour réduire les arbitrary values
-- [ ] `TrustBar.tsx` : remplacer les 4 emojis (🇫🇷 🇪🇺 🔒 ⚡) par icônes lucide-react équivalentes
-- [ ] `SandboxOnboardingModal.tsx` : remplacer emojis ✨ 📐 🎨 + migrer vers `Dialog` primitif
-- [ ] `ReviewPromptModal.tsx` : remplacer emojis 🙌 🙏 + migrer vers `Dialog` primitif
-- [ ] `SignupPromptModal.tsx` : migrer vers `Dialog` primitif
-- [ ] `SandboxDesignerPage.tsx` : remplacer emoji ✨ dans bouton Auto-Layout IA
-- [ ] `HomePage.tsx` : remplacer emojis 🍳 et 🇫🇷
+- [x] `tailwind.config.js` : câbler les tokens KitchenXpert (`kx-base`, `kx-elevated`, `kx-brand-from`, `kx-brand-to`, `kx-accent-warm`) pour réduire les arbitrary values — commit 1f5129e
+- [x] `TrustBar.tsx` : remplacer les 4 emojis (🇫🇷 🇪🇺 🔒 ⚡) par icônes lucide-react équivalentes — commit aab8f69
+- [x] `SandboxOnboardingModal.tsx` : remplacer emojis ✨ 📐 🎨 + migrer vers `Dialog` primitif — commits aab8f69 + f0d37b6
+- [x] `ReviewPromptModal.tsx` : remplacer emojis 🙌 🙏 + migrer vers `Dialog` primitif — commits aab8f69 + 77a8557
+- [x] `SignupPromptModal.tsx` : migrer vers `Dialog` primitif — commit 7d701d8
+- [x] `SandboxDesignerPage.tsx` : remplacer emoji ✨ dans bouton Auto-Layout IA — commit aab8f69
+- [x] `HomePage.tsx` : remplacer emojis 🍳 et 🇫🇷 — commit aab8f69
 
 ### Priorité P1 (avant lancement)
 
-- [ ] `HomePage.tsx` : supprimer les fonctions Hero/LogoStrip locales dupliquées (code mort)
+- [x] `HomePage.tsx` : supprimer les fonctions Hero/LogoStrip locales dupliquées (code mort) — commit 36c835f
 - [ ] `PricingPage.tsx` : refonte palette → utiliser tokens KitchenXpert au lieu de blue-600/gray-50
 - [ ] `Hero3DInteractive.tsx` : créer le variant B du A/B test (réutiliser archi SandboxCanvas, low-poly, lazy-load Three.js)
 - [ ] `useABVariant` : configurer split HeroVideo (50%) vs Hero3DInteractive (50%) sur HomePage
@@ -298,13 +298,32 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] Tester Fraunces / Inter Tight si données conversion l'exigent
 - [ ] Enrichissement IX (curseur-lampe, boutons magnétiques) en option sections marketing premium
 - [ ] Évaluer mode dark-only forcé selon usage réel des modes light/system
+- [ ] `.gitignore` : ajouter `packages/frontend/public/sitemap.xml` (régénéré à chaque build par scripts/generate-sitemap.mjs, ne devrait pas être versionné). Puis `git rm --cached packages/frontend/public/sitemap.xml` pour le retirer du repo.
+- [ ] RegisterPage : parse `?from=` query param pour enrichir l'event `signup_completed` avec le trigger source. Permet de mesurer la conversion par trigger (pdf_export, ai_use, quote_compare, pathtracer, session_15min).
+- [ ] `LanguageSwitcher.tsx` : exit animation Dialog non observable car `closeSignupPrompt` nulle `trigger` simultanément avec `open=false`. À traiter dans `useSandboxLimits` si l'UX exit animation devient une exigence (mémoiser le dernier trigger valide ou délayer le null).
+- [ ] `SignupPromptModal` : ajouter `data-testid="signup-prompt-dialog"` sur le wrapper racine si futur test E2E veut l'asserter (actuellement seuls le titre et les CTAs ont des data-testid).
 
 ---
 
 ## 12. Historique des décisions
 
 - **14/05/2026** : Audit initial complet. Stratégie "migration douce" validée. Décisions : Pricing 29€/99€ confirmé, scroll marketing complet, TrustBar lucide-react (TrustStack SVG inline gardé), LiveCounter conservé, Hero en A/B test HeroVideo vs Hero3D.
+- **15/05/2026** : Phase 1 P0 terminée (7 tâches cochées). Phase 1 P1 entamée (1 tâche cochée : nettoyage code mort HomePage). 20 commits propres sur la branche `feat/design-system-migration`. Détection de 4 nouvelles dettes ajoutées en P3.
 
 ---
 
-*Dernière mise à jour : 14/05/2026 — audit complet du codebase.*
+## 13. État d'avancement (snapshot 15/05/2026)
+
+| Phase | Statut | Restant |
+|---|---|---|
+| **Phase 1 P0** | ✅ Terminée | 0 |
+| **Phase 1 P1** | 🟡 En cours | 4 tâches |
+| **Phase 1 P2** | ⏳ Non démarrée | 4 tâches |
+| **Phase 1 P3** | ⏳ Non démarrée | 7 tâches (3 initiales + 4 ajoutées 15/05) |
+
+Branche active : `feat/design-system-migration` (20 commits, à jour avec `origin`).
+Prochaine cible : refonte palette PricingPage.tsx.
+
+---
+
+*Dernière mise à jour : 15/05/2026 — Phase 1 P0 terminée, P1 entamée.*
