@@ -269,6 +269,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 ### Priorité P0 (à faire avant tout autre travail design)
 
+- [ ] BUG NAV CRITIQUE en localhost : Plausible script `outbound-links.tagged-events.js` wrap `history.pushState` mais ignore les events sur localhost ("Ignoring Event: localhost") sans forward à pushState original. Conséquence : tous les clics sur `<Link>` React Router déclenchent `handleClick` puis `pushState` mais l'URL ne change jamais. À fixer en désactivant Plausible en dev (`plausible-loader.ts:52`) ou en utilisant Plausible mode "manual" pour pushState. Impact : non bloquant en prod (hostname different) mais bloque tous les tests visuels manuels en local. Détecté 16/05/2026.
 - [x] `tailwind.config.js` : câbler les tokens KitchenXpert (`kx-base`, `kx-elevated`, `kx-brand-from`, `kx-brand-to`, `kx-accent-warm`) pour réduire les arbitrary values — commit 1f5129e
 - [x] `TrustBar.tsx` : remplacer les 4 emojis (🇫🇷 🇪🇺 🔒 ⚡) par icônes lucide-react équivalentes — commit aab8f69
 - [x] `SandboxOnboardingModal.tsx` : remplacer emojis ✨ 📐 🎨 + migrer vers `Dialog` primitif — commits aab8f69 + f0d37b6
@@ -280,11 +281,13 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 ### Priorité P1 (avant lancement)
 
 - [x] `HomePage.tsx` : supprimer les fonctions Hero/LogoStrip locales dupliquées (code mort) — commit 36c835f
-- [ ] `PricingPage.tsx` : refonte palette → utiliser tokens KitchenXpert au lieu de blue-600/gray-50
+- [x] `PricingPage.tsx` : refonte palette → utiliser tokens KitchenXpert au lieu de blue-600/gray-50 — commits 321141b + 5765fc4
 - [ ] `Hero3DInteractive.tsx` : créer le variant B du A/B test (réutiliser archi SandboxCanvas, low-poly, lazy-load Three.js)
 - [ ] `useABVariant` : configurer split HeroVideo (50%) vs Hero3DInteractive (50%) sur HomePage
 - [ ] `tokens.css` : ajouter `--kx-accent-warm: 251 191 36` (amber-400) pour officialiser l'accent chaud
 - [ ] HomePage Section Metrics : déduplication avec LiveCounter
+- [ ] Service Worker `sw.js:33` : "Failed to execute 'put' on 'Cache': Partial response (status code 206) is unsupported". Le SW tente de cacher des réponses partielles HTTP (range requests) sans les filtrer. À fixer en ajoutant un check `response.status !== 206` avant `cache.put()`.
+- [ ] `main.tsx:55` : `navigator.serviceWorker.register('/service-worker.js')` échoue avec "unsupported MIME type 'text/html'" parce que le fichier est servi en HTML par le dev server au lieu de JavaScript. À fixer en configurant Vite pour servir `service-worker.js` ou en désactivant le register en mode `import.meta.env.DEV`.
 
 ### Priorité P2 (après lancement)
 
@@ -292,6 +295,8 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] `SandboxMigrationBanner.tsx` : utiliser primitives `Card` ou `Toast`
 - [ ] `packages/guides/` : décider si le sous-projet Astro câble les tokens KitchenXpert
 - [ ] Évaluer migration TrustStack vers lucide-react après mesure du bénéfice perf réel
+- [ ] `HeroVideo.tsx:47` : warning React "fetchPriority not recognized". Renommer en `fetchpriority` (lowercase) conformément à l'API HTML standard.
+- [ ] Backend `/api/v1/stats/public`, `/api/v1/auth/me`, `/api/v1/me/reviews/pending` retournent 500 en dev quand le backend Express n'est pas démarré. Polluent la console. Soit documenter clairement le besoin de démarrer le backend, soit implémenter un mock côté frontend pour les modes dev sans backend.
 
 ### Priorité P3 (futur, opportunité)
 
@@ -302,6 +307,12 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] RegisterPage : parse `?from=` query param pour enrichir l'event `signup_completed` avec le trigger source. Permet de mesurer la conversion par trigger (pdf_export, ai_use, quote_compare, pathtracer, session_15min).
 - [ ] `LanguageSwitcher.tsx` : exit animation Dialog non observable car `closeSignupPrompt` nulle `trigger` simultanément avec `open=false`. À traiter dans `useSandboxLimits` si l'UX exit animation devient une exigence (mémoiser le dernier trigger valide ou délayer le null).
 - [ ] `SignupPromptModal` : ajouter `data-testid="signup-prompt-dialog"` sur le wrapper racine si futur test E2E veut l'asserter (actuellement seuls le titre et les CTAs ont des data-testid).
+- [ ] Police `/fonts/inter-var-latin.woff2` : "Failed to decode downloaded font: invalid sfntVersion: 1008813135". La police woff2 n'a pas un header valide (sfntVersion 0x3C212144 = '<!DM' = HTML). Probablement le dev server renvoie une page HTML 404 à la place du binaire police. À fixer.
+- [ ] `tokens.css` lignes 3-7 : variables CSS mal définies en `:root` (mode dark) :
+  - `--kx-surface: 255 255 255` (blanc en dark mode, devrait être un gris foncé)
+  - `--kx-border: 255 255 255` (idem)
+  - `--kx-fg-muted: 255 255 255` (idem, devrait être un blanc à 60-70% d'opacité)
+  À corriger pour cohérence avec le reste de la palette.
 
 ---
 
@@ -309,21 +320,22 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 - **14/05/2026** : Audit initial complet. Stratégie "migration douce" validée. Décisions : Pricing 29€/99€ confirmé, scroll marketing complet, TrustBar lucide-react (TrustStack SVG inline gardé), LiveCounter conservé, Hero en A/B test HeroVideo vs Hero3D.
 - **15/05/2026** : Phase 1 P0 terminée (7 tâches cochées). Phase 1 P1 entamée (1 tâche cochée : nettoyage code mort HomePage). 20 commits propres sur la branche `feat/design-system-migration`. Détection de 4 nouvelles dettes ajoutées en P3.
+- **16/05/2026** : PricingPage refonte palette KX terminée (commits 321141b + 5765fc4). 36 tests passent. Vérification visuelle validée (screenshot light mode propre, card Pro gradient indigo→fuchsia, checkmarks cyan, badge -20% amber). Détection de 5+ dettes techniques en environnement dev (Plausible nav bug, sw.js, fonts woff2, tokens.css surface/border) — toutes ajoutées au §11.
 
 ---
 
-## 13. État d'avancement (snapshot 15/05/2026)
+## 13. État d'avancement (snapshot 16/05/2026)
 
 | Phase | Statut | Restant |
 |---|---|---|
-| **Phase 1 P0** | ✅ Terminée | 0 |
-| **Phase 1 P1** | 🟡 En cours | 4 tâches |
-| **Phase 1 P2** | ⏳ Non démarrée | 4 tâches |
-| **Phase 1 P3** | ⏳ Non démarrée | 7 tâches (3 initiales + 4 ajoutées 15/05) |
+| **Phase 1 P0** | 🟡 1 nouvelle dette critique (Plausible nav bug) | 1 tâche |
+| **Phase 1 P1** | 🟡 En cours | 5 tâches (3 originelles + 2 ajoutées 16/05) |
+| **Phase 1 P2** | ⏳ Non démarrée | 6 tâches (4 originelles + 2 ajoutées 16/05) |
+| **Phase 1 P3** | ⏳ Non démarrée | 9 tâches (7 cumulées + 2 ajoutées 16/05) |
 
-Branche active : `feat/design-system-migration` (20 commits, à jour avec `origin`).
-Prochaine cible : refonte palette PricingPage.tsx.
+Branche active : `feat/design-system-migration` (23 commits, à jour avec `origin`).
+Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 15/05/2026 — Phase 1 P0 terminée, P1 entamée.*
+*Dernière mise à jour : 16/05/2026 — PricingPage palette refondue, 5 dettes dev détectées.*
