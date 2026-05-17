@@ -295,7 +295,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] `SandboxMigrationBanner.tsx` : utiliser primitives `Card` ou `Toast`
 - [ ] `packages/guides/` : décider si le sous-projet Astro câble les tokens KitchenXpert
 - [ ] Évaluer migration TrustStack vers lucide-react après mesure du bénéfice perf réel
-- [ ] `HeroVideo.tsx:47` : warning React "fetchPriority not recognized". Renommer en `fetchpriority` (lowercase) conformément à l'API HTML standard.
+- [x] `HeroVideo.tsx` (ligne 173) : warning React "fetchPriority not recognized" résolu via spread cast `{...({ fetchpriority: 'high' } as Record<string, string>)}` injectant l'attribut HTML standard lowercase. Note technique : `@ts-expect-error` ne fonctionne pas sur les attributs JSX (TypeScript #27552 ouvert depuis 2018). Commit 388e5cd.
 - [ ] Backend `/api/v1/stats/public`, `/api/v1/auth/me`, `/api/v1/me/reviews/pending` retournent 500 en dev quand le backend Express n'est pas démarré. Polluent la console. Soit documenter clairement le besoin de démarrer le backend, soit implémenter un mock côté frontend pour les modes dev sans backend.
 
 ### Priorité P3 (futur, opportunité)
@@ -323,6 +323,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **16/05/2026** : PricingPage refonte palette KX terminée (commits 321141b + 5765fc4). 36 tests passent. Vérification visuelle validée (screenshot light mode propre, card Pro gradient indigo→fuchsia, checkmarks cyan, badge -20% amber). Détection de 5+ dettes techniques en environnement dev (Plausible nav bug, sw.js, fonts woff2, tokens.css surface/border) — toutes ajoutées au §11.
 - **17/05/2026** : Fix partiel du bug Plausible nav en dev (commit 5650135). Le wrap pushState Plausible a disparu (le log `[Plausible] disabled in dev` apparaît, le log `Ignoring Event: localhost` a disparu), mais le clic sur `<Link>` ne navigue toujours pas en localhost. Cause secondaire à isoler dans une session ultérieure. Workaround validé : URL directe dans la barre d'adresse fonctionne.
 - **17/05/2026** (suite) : Suppression complète du bloc Metrics sur HomePage (commit 02d41fe). Décision motivée par sécurité juridique pré-launch : les 4 stats étaient soit doublonnées (50k+ vs LiveCounter live), soit aspirationnelles non mesurées (98% satisfaction, < 3 min génération, 24/7 support). Risque pratique commerciale trompeuse au sens article L121-2 du Code de la consommation. Grep projet-wide confirmé zéro occurrence résiduelle de ces claims.
+- **17/05/2026** (suite 2) : Fix du warning console `fetchPriority` sur HeroVideo (commit 388e5cd). Spread cast vers attribut HTML lowercase `fetchpriority`, après tentative `@ts-expect-error` échouée (limitation TypeScript sur attributs JSX). Warning runtime confirmé absent post-fix. Tests 1203/1203 passent.
 
 ---
 
@@ -332,7 +333,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 |---|---|---|
 | **Phase 1 P0** | 🟡 1 nouvelle dette critique (Plausible nav bug) | 1 tâche |
 | **Phase 1 P1** | 🟡 En cours | 3 tâches (originelles -1 Metrics terminé +2 dettes ajoutées 16/05) |
-| **Phase 1 P2** | ⏳ Non démarrée | 6 tâches (4 originelles + 2 ajoutées 16/05) |
+| **Phase 1 P2** | 🟡 En cours | 5 tâches (originelles 4 + 2 ajoutées 16/05 - 1 terminée 17/05) |
 | **Phase 1 P3** | ⏳ Non démarrée | 9 tâches (7 cumulées + 2 ajoutées 16/05) |
 
 Branche active : `feat/design-system-migration` (23 commits, à jour avec `origin`).
@@ -340,4 +341,4 @@ Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 17/05/2026 — Plausible désactivé en dev (fix partiel) + Metrics HomePage supprimé (sécurité juridique).*
+*Dernière mise à jour : 17/05/2026 — fetchPriority warning résolu (29 commits).*
