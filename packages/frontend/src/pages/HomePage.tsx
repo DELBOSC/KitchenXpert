@@ -54,7 +54,6 @@ export default function HomePage(): React.ReactElement {
 
         <Features t={t} />
         <ShowcaseSplit />
-        <Metrics />
         <Testimonial />
         <CTA t={t} />
       </main>
@@ -262,32 +261,6 @@ function ShowcaseSplit(): React.ReactElement {
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Metrics strip
-// ---------------------------------------------------------------------------
-function Metrics(): React.ReactElement {
-  const stats = [
-    { value: '50k+', label: 'Cuisines générées' },
-    { value: '98%', label: 'Taux de satisfaction' },
-    { value: '< 3 min', label: 'Temps moyen de génération' },
-    { value: '24 / 7', label: 'Support technique' },
-  ];
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-16">
-      <div className="grid gap-8 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-10 backdrop-blur sm:grid-cols-2 md:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center">
-            <div className="bg-gradient-to-b from-white to-white/50 bg-clip-text text-4xl font-semibold tracking-tight text-transparent">
-              {s.value}
-            </div>
-            <div className="mt-1 text-sm text-white/50">{s.label}</div>
-          </div>
-        ))}
       </div>
     </section>
   );
