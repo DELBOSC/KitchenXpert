@@ -269,7 +269,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 ### Priorité P0 (à faire avant tout autre travail design)
 
-- [ ] BUG NAV CRITIQUE en localhost : Plausible script `outbound-links.tagged-events.js` wrap `history.pushState` mais ignore les events sur localhost ("Ignoring Event: localhost") sans forward à pushState original. Conséquence : tous les clics sur `<Link>` React Router déclenchent `handleClick` puis `pushState` mais l'URL ne change jamais. À fixer en désactivant Plausible en dev (`plausible-loader.ts:52`) ou en utilisant Plausible mode "manual" pour pushState. Impact : non bloquant en prod (hostname different) mais bloque tous les tests visuels manuels en local. Détecté 16/05/2026.
+- [🟡] BUG NAV PARTIELLEMENT RÉSOLU en localhost : Plausible désactivé en dev via early-return dans `plausible-loader.ts` (commit 5650135). Le wrap `pushState` Plausible a disparu de la console (log `[Plausible] disabled in dev` présent, log `Ignoring Event: localhost` absent). CEPENDANT, le clic sur `<Link>` React Router ne déclenche toujours pas la navigation en localhost. Cause secondaire à isoler — hypothèses : (a) Service Worker actif intercepte les events de navigation malgré "Bypass for network" coché, (b) autre wrapper `pushState` dans le projet (Sentry, OpenReplay, ou middleware custom), (c) le `<Link>` lui-même mal monté dans `HomePage.tsx > Nav` local. Workaround pour le développement : taper l'URL directement dans la barre d'adresse du navigateur (`localhost:3005/fr/pricing` marche, prouvé par tests visuels du 16/05). Non bloquant pour la production (hostname différent). Investigation à reprendre lors d'une session dédiée, idéalement avec un test pushState manuel en console (`window.history.pushState({}, '', '/fr/pricing')`) et bypass complet du SW.
 - [x] `tailwind.config.js` : câbler les tokens KitchenXpert (`kx-base`, `kx-elevated`, `kx-brand-from`, `kx-brand-to`, `kx-accent-warm`) pour réduire les arbitrary values — commit 1f5129e
 - [x] `TrustBar.tsx` : remplacer les 4 emojis (🇫🇷 🇪🇺 🔒 ⚡) par icônes lucide-react équivalentes — commit aab8f69
 - [x] `SandboxOnboardingModal.tsx` : remplacer emojis ✨ 📐 🎨 + migrer vers `Dialog` primitif — commits aab8f69 + f0d37b6
@@ -321,6 +321,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **14/05/2026** : Audit initial complet. Stratégie "migration douce" validée. Décisions : Pricing 29€/99€ confirmé, scroll marketing complet, TrustBar lucide-react (TrustStack SVG inline gardé), LiveCounter conservé, Hero en A/B test HeroVideo vs Hero3D.
 - **15/05/2026** : Phase 1 P0 terminée (7 tâches cochées). Phase 1 P1 entamée (1 tâche cochée : nettoyage code mort HomePage). 20 commits propres sur la branche `feat/design-system-migration`. Détection de 4 nouvelles dettes ajoutées en P3.
 - **16/05/2026** : PricingPage refonte palette KX terminée (commits 321141b + 5765fc4). 36 tests passent. Vérification visuelle validée (screenshot light mode propre, card Pro gradient indigo→fuchsia, checkmarks cyan, badge -20% amber). Détection de 5+ dettes techniques en environnement dev (Plausible nav bug, sw.js, fonts woff2, tokens.css surface/border) — toutes ajoutées au §11.
+- **17/05/2026** : Fix partiel du bug Plausible nav en dev (commit 5650135). Le wrap pushState Plausible a disparu (le log `[Plausible] disabled in dev` apparaît, le log `Ignoring Event: localhost` a disparu), mais le clic sur `<Link>` ne navigue toujours pas en localhost. Cause secondaire à isoler dans une session ultérieure. Workaround validé : URL directe dans la barre d'adresse fonctionne.
 
 ---
 
@@ -338,4 +339,4 @@ Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 16/05/2026 — PricingPage palette refondue, 5 dettes dev détectées.*
+*Dernière mise à jour : 17/05/2026 — Plausible désactivé en dev (fix partiel du bug nav local).*
