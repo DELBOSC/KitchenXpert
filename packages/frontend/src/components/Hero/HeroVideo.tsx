@@ -170,7 +170,8 @@ export function HeroVideo({
           width={1280}
           height={800}
           decoding="async"
-          fetchPriority="high"
+          // HTML spec uses lowercase fetchpriority; @types/react still expects camelCase.
+          {...({ fetchpriority: 'high' } as Record<string, string>)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${isPlaying ? 'opacity-0' : 'opacity-100'}`}
         />
       </picture>
