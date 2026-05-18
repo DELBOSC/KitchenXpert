@@ -53,6 +53,8 @@
 
 **Icônes** : **lucide-react** pour l'UI productive. **Exception assumée** : `TrustStack.tsx` utilise des SVG inline maison pour économiser les bytes (décision documentée). Tout autre composant doit utiliser lucide-react. **Aucun emoji** en UI productive.
 
+**Setup dev** : `pnpm dev` à la racine lance backend (port 4000) + frontend (port 3005) en parallèle via Turbo. **Ne pas lancer le frontend seul** — le proxy Vite tape `localhost:4000` et la console se remplit de 500 si le backend est absent. Si besoin de lancer séparément : `pnpm backend:dev` dans un terminal, `pnpm frontend:dev` dans un autre. Vérifier le backend via `curl http://localhost:4000/health`. Prérequis : PostgreSQL local + `.env` (copié depuis `.env.example`). ⚠️ Sans `.env` à la racine, le backend démarre sur le port 3001 (au lieu du port 4000 attendu par le proxy Vite) — ce qui reproduit les erreurs 500 sur `/api/v1/*`.
+
 ---
 
 ## 4. Composants Maison (à réutiliser systématiquement)
@@ -309,7 +311,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] `packages/guides/` : décider si le sous-projet Astro câble les tokens KitchenXpert
 - [ ] Évaluer migration TrustStack vers lucide-react après mesure du bénéfice perf réel
 - [x] `HeroVideo.tsx` (ligne 173) : warning React "fetchPriority not recognized" résolu via spread cast `{...({ fetchpriority: 'high' } as Record<string, string>)}` injectant l'attribut HTML standard lowercase. Note technique : `@ts-expect-error` ne fonctionne pas sur les attributs JSX (TypeScript #27552 ouvert depuis 2018). Commit 388e5cd.
-- [ ] Backend `/api/v1/stats/public`, `/api/v1/auth/me`, `/api/v1/me/reviews/pending` retournent 500 en dev quand le backend Express n'est pas démarré. Polluent la console. Soit documenter clairement le besoin de démarrer le backend, soit implémenter un mock côté frontend pour les modes dev sans backend.
+- [x] Backend `/api/v1/stats/public`, `/api/v1/auth/me`, `/api/v1/me/reviews/pending` retournaient 500 en dev quand le backend Express n'était pas démarré (proxy Vite → `localhost:4000`). Résolu par documentation : §3 Stack CLAUDE.md + section "⚠️ Frontend seul vs stack complète" dans README.md. La commande recommandée est `pnpm dev` à la racine (Turbo lance backend+frontend).
 
 ### Priorité P3 (futur, opportunité)
 
@@ -334,6 +336,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **17/05/2026** (suite) : Suppression complète du bloc Metrics sur HomePage (commit 02d41fe). Décision motivée par sécurité juridique pré-launch : les 4 stats étaient soit doublonnées (50k+ vs LiveCounter live), soit aspirationnelles non mesurées (98% satisfaction, < 3 min génération, 24/7 support). Risque pratique commerciale trompeuse au sens article L121-2 du Code de la consommation. Grep projet-wide confirmé zéro occurrence résiduelle de ces claims.
 - **17/05/2026** (suite 2) : Fix du warning console `fetchPriority` sur HeroVideo (commit 388e5cd). Spread cast vers attribut HTML lowercase `fetchpriority`, après tentative `@ts-expect-error` échouée (limitation TypeScript sur attributs JSX). Warning runtime confirmé absent post-fix. Tests 1203/1203 passent.
 - **17/05/2026** (suite 3) : Audit de la dette "tokens.css surfaces dark" (§11 P3). Découverte : faux positif. Les variables `--kx-surface`, `--kx-border`, `--kx-fg-muted` documentées comme bugs dark mode sont en réalité du code mort — pattern alpha intentionnel (RGB blanc + opacité à la consommation), mais zéro consommateur dans le projet. Reclassé en "fausse alerte". Aucune modification de tokens.css. Mission menée par audit-first qui a permis d'éviter une fausse correction.
+- **17/05/2026** (suite 4) : Documentation du setup dev complet (frontend+backend via `pnpm dev` à la racine + Turbo). Le script global existait déjà, dette §11 P2 résolue par pure doc dans README.md + CLAUDE.md.
 
 ---
 
@@ -343,7 +346,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 |---|---|---|
 | **Phase 1 P0** | 🟡 1 nouvelle dette critique (Plausible nav bug) | 1 tâche |
 | **Phase 1 P1** | 🟡 En cours | 3 tâches (originelles -1 Metrics terminé +2 dettes ajoutées 16/05) |
-| **Phase 1 P2** | 🟡 En cours | 5 tâches (originelles 4 + 2 ajoutées 16/05 - 1 terminée 17/05) |
+| **Phase 1 P2** | 🟡 En cours | 4 tâches (originelles 4 + 2 ajoutées 16/05 - 2 terminées 17/05) |
 | **Phase 1 P3** | ⏳ Non démarrée | 8 tâches (9 cumulées - 1 fausse alerte reclassée 17/05) |
 
 Branche active : `feat/design-system-migration` (23 commits, à jour avec `origin`).
@@ -351,4 +354,4 @@ Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 17/05/2026 — React Router v7 future flags + reclassement fausse alerte tokens.css (32 commits).*
+*Dernière mise à jour : 17/05/2026 — Doc setup dev complète + reclassement fausse alerte tokens.css (33 commits).*

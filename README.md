@@ -150,6 +150,20 @@ pnpm db:seed
 pnpm dev
 ```
 
+### ⚠️ Frontend seul vs stack complète
+
+`pnpm dev` à la racine lance backend + frontend en parallèle (recommandé en dev).
+
+Si tu lances uniquement le frontend (`pnpm frontend:dev`), la console DevTools affichera en boucle des erreurs **500 sur `/api/v1/...`** : le proxy Vite (port 3005) tape `http://localhost:4000` qui n'écoute pas. Trois options :
+
+- **Stack complète** : `pnpm dev` à la racine (Turbo lance backend + frontend)
+- **Backend seul** dans un autre terminal : `pnpm backend:dev` (port 4000), puis `pnpm frontend:dev` dans un terminal séparé
+- **Vérifier que le backend tourne** : `curl http://localhost:4000/health` doit répondre `{"status":"healthy",...}`
+
+Prérequis backend : PostgreSQL démarré + `.env` configuré à la racine (`cp .env.example .env`). Sans DB, le backend exit après 5 tentatives de reconnexion (~31s).
+
+⚠️ Sans `.env` à la racine, le backend démarre sur le port 3001 (au lieu du port 4000 attendu par le proxy Vite) — ce qui reproduit les erreurs 500 sur `/api/v1/*`.
+
 ### Scripts Disponibles
 
 ```bash
