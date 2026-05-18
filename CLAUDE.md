@@ -308,11 +308,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] `LanguageSwitcher.tsx` : exit animation Dialog non observable car `closeSignupPrompt` nulle `trigger` simultanément avec `open=false`. À traiter dans `useSandboxLimits` si l'UX exit animation devient une exigence (mémoiser le dernier trigger valide ou délayer le null).
 - [ ] `SignupPromptModal` : ajouter `data-testid="signup-prompt-dialog"` sur le wrapper racine si futur test E2E veut l'asserter (actuellement seuls le titre et les CTAs ont des data-testid).
 - [ ] Police `/fonts/inter-var-latin.woff2` : "Failed to decode downloaded font: invalid sfntVersion: 1008813135". La police woff2 n'a pas un header valide (sfntVersion 0x3C212144 = '<!DM' = HTML). Probablement le dev server renvoie une page HTML 404 à la place du binaire police. À fixer.
-- [ ] `tokens.css` lignes 3-7 : variables CSS mal définies en `:root` (mode dark) :
-  - `--kx-surface: 255 255 255` (blanc en dark mode, devrait être un gris foncé)
-  - `--kx-border: 255 255 255` (idem)
-  - `--kx-fg-muted: 255 255 255` (idem, devrait être un blanc à 60-70% d'opacité)
-  À corriger pour cohérence avec le reste de la palette.
+- [⚠️ FAUSSE ALERTE] `tokens.css` lignes 3-7 : initialement documenté comme bug (variables `--kx-surface`, `--kx-border`, `--kx-fg-muted` à `255 255 255` en mode dark). Audit du 17/05/2026 a révélé : (a) les commentaires inline `/* overlays use alpha */`, `/* /10, /15, /20 */`, `/* use /60, /40 */` documentent un pattern volontaire RGB blanc + alpha à la consommation, (b) ces 3 tokens sont en réalité du code mort — aucun consommateur dans le projet (ni Tailwind classes, ni `var()` direct, ni arbitrary values). Pas un bug visuel. Pourrait être nettoyé en mission "dead-code cleanup" séparée si désiré, mais pas urgent — préserve l'option pour usage futur en alpha overlays.
 
 ---
 
@@ -324,6 +320,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **17/05/2026** : Fix partiel du bug Plausible nav en dev (commit 5650135). Le wrap pushState Plausible a disparu (le log `[Plausible] disabled in dev` apparaît, le log `Ignoring Event: localhost` a disparu), mais le clic sur `<Link>` ne navigue toujours pas en localhost. Cause secondaire à isoler dans une session ultérieure. Workaround validé : URL directe dans la barre d'adresse fonctionne.
 - **17/05/2026** (suite) : Suppression complète du bloc Metrics sur HomePage (commit 02d41fe). Décision motivée par sécurité juridique pré-launch : les 4 stats étaient soit doublonnées (50k+ vs LiveCounter live), soit aspirationnelles non mesurées (98% satisfaction, < 3 min génération, 24/7 support). Risque pratique commerciale trompeuse au sens article L121-2 du Code de la consommation. Grep projet-wide confirmé zéro occurrence résiduelle de ces claims.
 - **17/05/2026** (suite 2) : Fix du warning console `fetchPriority` sur HeroVideo (commit 388e5cd). Spread cast vers attribut HTML lowercase `fetchpriority`, après tentative `@ts-expect-error` échouée (limitation TypeScript sur attributs JSX). Warning runtime confirmé absent post-fix. Tests 1203/1203 passent.
+- **17/05/2026** (suite 3) : Audit de la dette "tokens.css surfaces dark" (§11 P3). Découverte : faux positif. Les variables `--kx-surface`, `--kx-border`, `--kx-fg-muted` documentées comme bugs dark mode sont en réalité du code mort — pattern alpha intentionnel (RGB blanc + opacité à la consommation), mais zéro consommateur dans le projet. Reclassé en "fausse alerte". Aucune modification de tokens.css. Mission menée par audit-first qui a permis d'éviter une fausse correction.
 
 ---
 
@@ -334,11 +331,11 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P0** | 🟡 1 nouvelle dette critique (Plausible nav bug) | 1 tâche |
 | **Phase 1 P1** | 🟡 En cours | 3 tâches (originelles -1 Metrics terminé +2 dettes ajoutées 16/05) |
 | **Phase 1 P2** | 🟡 En cours | 5 tâches (originelles 4 + 2 ajoutées 16/05 - 1 terminée 17/05) |
-| **Phase 1 P3** | ⏳ Non démarrée | 9 tâches (7 cumulées + 2 ajoutées 16/05) |
+| **Phase 1 P3** | ⏳ Non démarrée | 8 tâches (9 cumulées - 1 fausse alerte reclassée 17/05) |
 
 Branche active : `feat/design-system-migration` (23 commits, à jour avec `origin`).
 Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 17/05/2026 — fetchPriority warning résolu (29 commits).*
+*Dernière mise à jour : 17/05/2026 — React Router v7 future flags + reclassement fausse alerte tokens.css (32 commits).*
