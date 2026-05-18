@@ -3,6 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { LocalizedLink } from '../i18n/LocalizedLink';
+
 import { HeroA, HeroB, HeroC } from '../components/Hero/HeroVariants';
 import { HowItWorks } from '../components/Hero/HowItWorks';
 import { LogoStrip as BrandLogoStrip } from '../components/Hero/LogoStrip';
@@ -84,30 +86,30 @@ function AuroraBackground(): React.ReactElement {
 function Nav(): React.ReactElement {
   return (
     <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-      <Link to="/" className="flex items-center gap-2">
+      <LocalizedLink to="/" className="flex items-center gap-2">
         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-400 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30" />
         <span className="text-lg font-semibold tracking-tight">KitchenXpert</span>
-      </Link>
+      </LocalizedLink>
       <div className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-        <Link to="/catalog" className="transition hover:text-white">Catalogue</Link>
-        <Link to="/pricing" className="transition hover:text-white">Tarifs</Link>
-        <Link to="/designer" className="transition hover:text-white">Designer 3D</Link>
-        <Link to="/marketplace" className="transition hover:text-white">Marketplace</Link>
+        <LocalizedLink to="/catalog" className="transition hover:text-white">Catalogue</LocalizedLink>
+        <LocalizedLink to="/pricing" className="transition hover:text-white">Tarifs</LocalizedLink>
+        <LocalizedLink to="/designer" className="transition hover:text-white">Designer 3D</LocalizedLink>
+        <LocalizedLink to="/marketplace" className="transition hover:text-white">Marketplace</LocalizedLink>
       </div>
       <div className="flex items-center gap-3">
-        <Link
+        <LocalizedLink
           to="/login"
           className="hidden rounded-full px-4 py-2 text-sm text-white/80 transition hover:text-white md:inline-flex"
         >
           Connexion
-        </Link>
-        <Link
+        </LocalizedLink>
+        <LocalizedLink
           to="/register"
           className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-lg shadow-white/10 transition hover:bg-white/90"
         >
           Démarrer
           <ArrowRight className="w-4 h-4" aria-hidden="true" />
-        </Link>
+        </LocalizedLink>
       </div>
     </nav>
   );
