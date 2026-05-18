@@ -28,6 +28,7 @@
 **Note pricing** : grille validée le 14/05/2026. Toggle annuel -20% disponible (codé). À ré-évaluer après 3 mois de données conversion.
 
 **Implications UX** :
+
 - Le Gratuit doit donner envie de payer, pas frustrer. Friction (paywall) au moment de **valeur créée** (sauvegarde, export HD), jamais avant.
 - Interface identique pour les trois plans. Fonctions Entreprise signalées par badge discret (pas de bannière agressive).
 - Paywall = dialog élégant qui explique la valeur + propose essai 14j + se ferme en 1 clic. **SignupPromptModal et SandboxWatermark sont les références à respecter pour ce pattern.**
@@ -65,6 +66,7 @@ Dans `packages/frontend/src/components/ui/` (17 primitives codées) :
 **Règle absolue** : ne JAMAIS créer un nouveau composant primitif sans justification. Si une variante manque, **étendre via props** (ex : `<Button variant="ghost-warm">`), pas dupliquer. Si un nouveau pattern UI est récurrent, **l'extraire en composant réutilisable**, pas le copier d'écran en écran.
 
 **Dette identifiée** (à corriger lors du polish, voir §11) :
+
 - `SignupPromptModal`, `ReviewPromptModal`, `SandboxOnboardingModal` ré-implémentent un dialog from scratch → migrer vers `Dialog` primitif
 - `HomePage.tsx` contient des Hero/LogoStrip locales dupliquées (code mort) à supprimer
 
@@ -81,17 +83,20 @@ Dans `packages/frontend/src/components/ui/` (17 primitives codées) :
 ### 5.2 Palette (tokens.css existants à respecter)
 
 **Surfaces (CSS variables existantes)** :
+
 - `--kx-bg: 10 10 15` → `#0a0a0f` — fond de page
 - `--kx-bg-elevated: 16 16 22` → `#101016` — surfaces (cards, panels)
 - `#13131c` à `#13131a` — modals et overlays (variantes hardcodées tolérées)
 - `--kx-fg: 255 255 255` → blanc pur (par défaut). Pour textes marketing premium, préférer `text-white/90` (non imposé)
 
 **Accents froids (brand)** :
+
 - `--kx-brand-from: indigo-400` (#818cf8)
 - `--kx-brand-to: fuchsia-400` (#e879f9) ou `fuchsia-500` (#d946ef) selon contexte
 - `--kx-brand-accent: cyan-400` (#22d3ee)
 
 **Accents chauds (usage ponctuel uniquement)** :
+
 - `amber-400` (#fbbf24) — pastilles, étoiles, lumières
 - `#ffb878` — équivalent CSS de la lumière 2700K (utilisé en 3D)
 
@@ -104,6 +109,7 @@ Dans `packages/frontend/src/components/ui/` (17 primitives codées) :
 **Décision** : pas de Fraunces, pas d'Inter Tight pour l'instant. La typographie premium peut être ré-évaluée après lancement si les données conversion l'exigent. Évite la complexité asset/perf inutile en phase pré-lancement.
 
 **Hiérarchie d'usage** :
+
 - Headlines : Inter `font-bold` ou `font-extrabold` + tracking serré (`tracking-tight`, `-0.02em`)
 - Body : Inter `font-medium` ou `font-normal`
 - Captions / labels : Inter `font-medium` avec tailles réduites
@@ -113,6 +119,7 @@ Dans `packages/frontend/src/components/ui/` (17 primitives codées) :
 **`kx-aurora` est la signature visuelle de KitchenXpert** (non plus un anti-pattern). 3 radial-gradients (indigo + fuchsia + cyan) en `::before` sur les sections premium. Usage : sections marketing (Hero, Pricing top), pas dans les écrans produit (éditeur, sandbox).
 
 **Règles d'utilisation** :
+
 - Maximum 1 aurora par viewport (sinon overload visuel)
 - Toujours en `::before` ou conteneur dédié, jamais directement sur le contenu
 - Animation très lente (>20s) ou statique (cohérent avec `prefers-reduced-motion`)
@@ -121,6 +128,7 @@ Dans `packages/frontend/src/components/ui/` (17 primitives codées) :
 ### 5.5 Gradients
 
 Les gradients indigo→fuchsia sont **acceptés comme accents**, pas comme fonds décoratifs systématiques. Préférer :
+
 - Gradients sur titres (`bg-gradient-to-b from-white to-white/60` est OK)
 - Gradients sur CTAs primaires
 - Gradients d'avatar/badge
@@ -135,6 +143,7 @@ Les gradients indigo→fuchsia sont **acceptés comme accents**, pas comme fonds
 L'accueil contient les sections suivantes, dans cet ordre : **Hero + Trust + How It Works + Reviews + Features + Metrics + CTA + Footer**. Stratégie de conversion long-form assumée, alignée avec ton positionnement premium grand public qui exige du contenu pédagogique et de la preuve sociale.
 
 **Implications** :
+
 - Densité contenu OK, mais éviter la redondance (Metrics et LiveCounter ne doivent pas dupliquer les mêmes chiffres)
 - Chaque section a un rôle clair, pas de remplissage marketing
 - Le scroll doit raconter une histoire : Promesse → Réassurance → Démonstration → Preuve → Détails → Conviction → Action
@@ -169,6 +178,7 @@ Toggle wow-effect en démo, outil quotidien Entreprise. Référence : SketchUp S
 ### 6.6 Catalogue dual-track
 
 **Un seul catalogue**, deux niveaux d'info révélés selon le mode :
+
 - Grand public : marques aspirationnelles (IKEA, Schmidt, Mobalpa, Cuisinella), photos lifestyle, prix indicatif
 - Entreprise : références produits exactes, cotes au mm, fiches techniques téléchargeables
 
@@ -235,17 +245,20 @@ L'IX actuelle est minimaliste et fonctionnelle. **Pas d'imposition** du curseur-
 ## 9. Références produits (à étudier)
 
 **Pour le métier (éditeurs 3D)** :
+
 - SketchUp (architecture outils, styles, raccourcis)
 - Cedreo / IKEA Home Planner (catalogue + drag-to-canvas)
 - Figma (palettes flottantes, contextual menus, Dev Mode toggle)
 - Blender (N-panel side properties)
 
 **Pour la direction artistique** :
+
 - Linear (rigueur + identité, référence proche)
 - Arc Browser (chaleur identitaire, grand public)
 - Vercel (aurora signature, à observer pour ne pas copier servilement)
 
 **Pour le pricing/conversion** :
+
 - Figma (free généreux → conversion team)
 - Notion (free → personal pro → team)
 - SketchUp Web → Pro
