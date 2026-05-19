@@ -284,7 +284,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 ### Priorité P0 (à faire avant tout autre travail design)
 
-- [🟡] BUG NAV PARTIELLEMENT RÉSOLU en localhost : Plausible désactivé en dev via early-return dans `plausible-loader.ts` (commit 5650135). Le wrap `pushState` Plausible a disparu de la console (log `[Plausible] disabled in dev` présent, log `Ignoring Event: localhost` absent). CEPENDANT, le clic sur `<Link>` React Router ne déclenche toujours pas la navigation en localhost. Cause secondaire à isoler — hypothèses : (a) Service Worker actif intercepte les events de navigation malgré "Bypass for network" coché, (b) autre wrapper `pushState` dans le projet (Sentry, OpenReplay, ou middleware custom), (c) le `<Link>` lui-même mal monté dans `HomePage.tsx > Nav` local. Workaround pour le développement : taper l'URL directement dans la barre d'adresse du navigateur (`localhost:3005/fr/pricing` marche, prouvé par tests visuels du 16/05). Non bloquant pour la production (hostname différent). Investigation à reprendre lors d'une session dédiée, idéalement avec un test pushState manuel en console (`window.history.pushState({}, '', '/fr/pricing')`) et bypass complet du SW.
+- [x] BUG NAV REACT ROUTER LOCALHOST RÉSOLU (commits 5650135 + c8a1ff4). Investigation 16/05 et 17/05 — cause secondaire identifiée : les `<Link>` du Header et de HomePage.Nav() utilisaient `to='/pricing'` (chemin absolu sans préfixe locale). React Router top-level matche `path='/:lang/*'` avec `lang='pricing'`, LocaleAwareShell vérifie `['fr','en'].includes('pricing')` → false → redirige vers `/fr/`. L'utilisateur voit l'URL changer brièvement puis revenir, perçu comme "rien ne se passe". Fix : import alias `LocalizedLink as Link` dans Header.tsx + HomePage.tsx Nav() (8+7 Link concernés). Bug latent EN PRODUCTION ÉGALEMENT éliminé. Plausible désactivé en dev (5650135) ne résolvait pas tout — c'était une vraie cause secondaire à isoler. Tests runtime confirmés : clic "Tarifs" navigue maintenant correctement.
 - [x] `tailwind.config.js` : câbler les tokens KitchenXpert (`kx-base`, `kx-elevated`, `kx-brand-from`, `kx-brand-to`, `kx-accent-warm`) pour réduire les arbitrary values — commit 1f5129e
 - [x] `TrustBar.tsx` : remplacer les 4 emojis (🇫🇷 🇪🇺 🔒 ⚡) par icônes lucide-react équivalentes — commit aab8f69
 - [x] `SandboxOnboardingModal.tsx` : remplacer emojis ✨ 📐 🎨 + migrer vers `Dialog` primitif — commits aab8f69 + f0d37b6
@@ -303,6 +303,8 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [x] HomePage Section Metrics : suppression complète au lieu de simple déduplication. Tous les chiffres étaient aspirationnels ('98% satisfaction', '< 3 min génération', '24/7 support') ou en doublon avec LiveCounter ('50k+ cuisines'). Risque DGCCRF (L121-2) éliminé. LiveCounter reste seule source de vérité statistique sur la HomePage. Commit 02d41fe.
 - [ ] Service Worker `sw.js:33` : "Failed to execute 'put' on 'Cache': Partial response (status code 206) is unsupported". Le SW tente de cacher des réponses partielles HTTP (range requests) sans les filtrer. À fixer en ajoutant un check `response.status !== 206` avant `cache.put()`.
 - [ ] `main.tsx:55` : `navigator.serviceWorker.register('/service-worker.js')` échoue avec "unsupported MIME type 'text/html'" parce que le fichier est servi en HTML par le dev server au lieu de JavaScript. À fixer en configurant Vite pour servir `service-worker.js` ou en désactivant le register en mode `import.meta.env.DEV`.
+- [ ] HomePage.tsx : 3 `<Link>` résiduels avec chemin absolu non-localisé (même bug que c8a1ff4) : ligne 311 CTA "Commencer gratuitement" → `/register`, ligne 318 CTA "Voir les tarifs" → `/pricing`, ligne 380 FooterCol avec multiples Links. Same root cause, same fix pattern (LocalizedLink alias). Critique pré-launch (CTA principaux cassés en prod).
+- [ ] HomePage.tsx : la fonction Nav() locale (ligne 84-114) n'a PAS été supprimée par le commit 36c835f. Elle est encore appelée ligne 37 et duplique la nav du Header global (visible sur la HomePage où on voit 2x "Tarifs"). À supprimer une fois que tous les CTA HomePage sont migrés vers la nav du Header.
 
 ### Priorité P2 (après lancement)
 
@@ -337,6 +339,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **17/05/2026** (suite 2) : Fix du warning console `fetchPriority` sur HeroVideo (commit 388e5cd). Spread cast vers attribut HTML lowercase `fetchpriority`, après tentative `@ts-expect-error` échouée (limitation TypeScript sur attributs JSX). Warning runtime confirmé absent post-fix. Tests 1203/1203 passent.
 - **17/05/2026** (suite 3) : Audit de la dette "tokens.css surfaces dark" (§11 P3). Découverte : faux positif. Les variables `--kx-surface`, `--kx-border`, `--kx-fg-muted` documentées comme bugs dark mode sont en réalité du code mort — pattern alpha intentionnel (RGB blanc + opacité à la consommation), mais zéro consommateur dans le projet. Reclassé en "fausse alerte". Aucune modification de tokens.css. Mission menée par audit-first qui a permis d'éviter une fausse correction.
 - **17/05/2026** (suite 4) : Documentation du setup dev complet (frontend+backend via `pnpm dev` à la racine + Turbo). Le script global existait déjà, dette §11 P2 résolue par pure doc dans README.md + CLAUDE.md.
+- **17/05/2026** (suite 5) : Résolution du bug nav React Router localhost après investigation 2 jours (commit c8a1ff4). Cause racine identifiée : Links absolus sans préfixe locale → LocaleAwareShell redirige vers /fr/. Découverte que ce bug existait AUSSI en production (CTA Header non fonctionnels pour les utilisateurs finaux). Fix par import alias LocalizedLink. 3 Links résiduels HomePage (CTA + Footer) à traiter en mission séparée. Dette §11 P0 cochée.
 
 ---
 
@@ -344,8 +347,8 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 | Phase | Statut | Restant |
 |---|---|---|
-| **Phase 1 P0** | 🟡 1 nouvelle dette critique (Plausible nav bug) | 1 tâche |
-| **Phase 1 P1** | 🟡 En cours | 3 tâches (originelles -1 Metrics terminé +2 dettes ajoutées 16/05) |
+| **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
+| **Phase 1 P1** | 🟡 En cours | 7 tâches ouvertes (5 cumulées avant + 2 dettes HomePage Links résiduels + Nav() locale ajoutées 17/05) |
 | **Phase 1 P2** | 🟡 En cours | 4 tâches (originelles 4 + 2 ajoutées 16/05 - 2 terminées 17/05) |
 | **Phase 1 P3** | ⏳ Non démarrée | 8 tâches (9 cumulées - 1 fausse alerte reclassée 17/05) |
 
@@ -354,4 +357,4 @@ Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 17/05/2026 — Doc setup dev complète + reclassement fausse alerte tokens.css (33 commits).*
+*Dernière mise à jour : 17/05/2026 — Bug nav React Router RÉSOLU (cause racine Links absolus, 36 commits).*
