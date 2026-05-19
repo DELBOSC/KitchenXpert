@@ -303,8 +303,9 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [x] HomePage Section Metrics : suppression complète au lieu de simple déduplication. Tous les chiffres étaient aspirationnels ('98% satisfaction', '< 3 min génération', '24/7 support') ou en doublon avec LiveCounter ('50k+ cuisines'). Risque DGCCRF (L121-2) éliminé. LiveCounter reste seule source de vérité statistique sur la HomePage. Commit 02d41fe.
 - [ ] Service Worker `sw.js:33` : "Failed to execute 'put' on 'Cache': Partial response (status code 206) is unsupported". Le SW tente de cacher des réponses partielles HTTP (range requests) sans les filtrer. À fixer en ajoutant un check `response.status !== 206` avant `cache.put()`.
 - [ ] `main.tsx:55` : `navigator.serviceWorker.register('/service-worker.js')` échoue avec "unsupported MIME type 'text/html'" parce que le fichier est servi en HTML par le dev server au lieu de JavaScript. À fixer en configurant Vite pour servir `service-worker.js` ou en désactivant le register en mode `import.meta.env.DEV`.
-- [ ] HomePage.tsx : 3 `<Link>` résiduels avec chemin absolu non-localisé (même bug que c8a1ff4) : ligne 311 CTA "Commencer gratuitement" → `/register`, ligne 318 CTA "Voir les tarifs" → `/pricing`, ligne 380 FooterCol avec multiples Links. Same root cause, same fix pattern (LocalizedLink alias). Critique pré-launch (CTA principaux cassés en prod).
-- [ ] HomePage.tsx : la fonction Nav() locale (ligne 84-114) n'a PAS été supprimée par le commit 36c835f. Elle est encore appelée ligne 37 et duplique la nav du Header global (visible sur la HomePage où on voit 2x "Tarifs"). À supprimer une fois que tous les CTA HomePage sont migrés vers la nav du Header.
+- [x] HomePage.tsx : 3 `<Link>` résiduels migrés vers LocalizedLink (commit 4c516e8). CTAs "Commencer gratuitement" + "Voir les tarifs" + FooterCol dynamique tous fixés. Tests adaptés (endsWith pattern). Validation runtime confirmée pour les 2 CTAs sur HomePage.
+- [x] HomePage.tsx Footer : 5 paths problématiques corrigés (commit 534d540). 3 routes inexistantes supprimées (/docs, /blog, /support). 1 path adapté pour respecter CLAUDE.md §6.3 (/designer → /designer/sandbox). 1 path retiré car ProtectedRoute (/marketplace, anonymous bouncé vers /login). Footer passé de 11 liens à 7 liens fonctionnels, grid md:grid-cols-4 → md:grid-cols-3. Header audité au passage : 9/9 paths valides (gating par isAuthenticated).
+- [ ] HomePage.tsx : la fonction Nav() locale (ligne 84-114) n'a PAS été supprimée par le commit 36c835f. Elle est encore appelée ligne 37 et duplique la nav du Header global (visible sur la HomePage où on voit 2x "Tarifs"). À supprimer une fois que tous les CTA HomePage sont migrés vers la nav du Header. Note 17/05 : la suppression de Nav() résoudra automatiquement le `/marketplace` résiduel ligne 96 (effet de bord propre). Pas besoin de patch chirurgical.
 
 ### Priorité P2 (après lancement)
 
@@ -340,6 +341,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **17/05/2026** (suite 3) : Audit de la dette "tokens.css surfaces dark" (§11 P3). Découverte : faux positif. Les variables `--kx-surface`, `--kx-border`, `--kx-fg-muted` documentées comme bugs dark mode sont en réalité du code mort — pattern alpha intentionnel (RGB blanc + opacité à la consommation), mais zéro consommateur dans le projet. Reclassé en "fausse alerte". Aucune modification de tokens.css. Mission menée par audit-first qui a permis d'éviter une fausse correction.
 - **17/05/2026** (suite 4) : Documentation du setup dev complet (frontend+backend via `pnpm dev` à la racine + Turbo). Le script global existait déjà, dette §11 P2 résolue par pure doc dans README.md + CLAUDE.md.
 - **17/05/2026** (suite 5) : Résolution du bug nav React Router localhost après investigation 2 jours (commit c8a1ff4). Cause racine identifiée : Links absolus sans préfixe locale → LocaleAwareShell redirige vers /fr/. Découverte que ce bug existait AUSSI en production (CTA Header non fonctionnels pour les utilisateurs finaux). Fix par import alias LocalizedLink. 3 Links résiduels HomePage (CTA + Footer) à traiter en mission séparée. Dette §11 P0 cochée.
+- **17/05/2026** (suite 6) : Finalisation du fix nav React Router. Commits 4c516e8 (3 Links résiduels HomePage migrés vers LocalizedLink) + 534d540 (5 Footer broken paths corrigés via Strategy C : adapter /designer → /designer/sandbox, supprimer /marketplace + col Ressources). Audit Header au passage : 9/9 paths valides, gating par isAuthenticated, aucune dette latente. Footer passé de 11 à 7 liens 100% fonctionnels. Bug latent en production éliminé. Dette résiduelle Nav() locale documentée pour mission ultérieure.
 
 ---
 
@@ -348,7 +350,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | Phase | Statut | Restant |
 |---|---|---|
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
-| **Phase 1 P1** | 🟡 En cours | 7 tâches ouvertes (5 cumulées avant + 2 dettes HomePage Links résiduels + Nav() locale ajoutées 17/05) |
+| **Phase 1 P1** | 🟡 En cours | 5 tâches restantes (7 cumulées - 2 résolues 17/05 : 3 Links résiduels + Footer broken paths) |
 | **Phase 1 P2** | 🟡 En cours | 4 tâches (originelles 4 + 2 ajoutées 16/05 - 2 terminées 17/05) |
 | **Phase 1 P3** | ⏳ Non démarrée | 8 tâches (9 cumulées - 1 fausse alerte reclassée 17/05) |
 
@@ -357,4 +359,4 @@ Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 17/05/2026 — Bug nav React Router RÉSOLU (cause racine Links absolus, 36 commits).*
+*Dernière mise à jour : 17/05/2026 — Bug nav React Router 100% résolu (Header + Nav + 3 résiduels + Footer paths, 39 commits).*
