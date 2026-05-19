@@ -76,7 +76,7 @@ describe('HomePage', () => {
       renderHomePage();
       const registerLinks = screen
         .getAllByRole('link')
-        .filter((l) => l.getAttribute('href') === '/register');
+        .filter((l) => l.getAttribute('href')?.endsWith('/register'));
       expect(registerLinks.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -84,7 +84,7 @@ describe('HomePage', () => {
       renderHomePage();
       const catalogLinks = screen
         .getAllByRole('link')
-        .filter((l) => l.getAttribute('href') === '/catalog');
+        .filter((l) => l.getAttribute('href')?.endsWith('/catalog'));
       expect(catalogLinks.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -92,7 +92,7 @@ describe('HomePage', () => {
       renderHomePage();
       const pricingLinks = screen
         .getAllByRole('link')
-        .filter((l) => l.getAttribute('href') === '/pricing');
+        .filter((l) => l.getAttribute('href')?.endsWith('/pricing'));
       expect(pricingLinks.length).toBeGreaterThanOrEqual(1);
     });
   });
@@ -135,13 +135,11 @@ describe('HomePage', () => {
 
     it('should link to legal pages (mentions, cgv, privacy, cookies)', () => {
       renderHomePage();
-      const hrefs = screen.getAllByRole('link').map((l) => l.getAttribute('href'));
-      expect(hrefs).toEqual(expect.arrayContaining([
-        '/legal/mentions',
-        '/legal/cgv',
-        '/legal/privacy',
-        '/legal/cookies',
-      ]));
+      const hrefs = screen.getAllByRole('link').map((l) => l.getAttribute('href') ?? '');
+      const legalPaths = ['/legal/mentions', '/legal/cgv', '/legal/privacy', '/legal/cookies'];
+      for (const path of legalPaths) {
+        expect(hrefs.some((h) => h.endsWith(path))).toBe(true);
+      }
     });
   });
 

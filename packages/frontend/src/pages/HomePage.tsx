@@ -1,7 +1,6 @@
 import { ArrowRight, Check, MapPin } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 import { LocalizedLink } from '../i18n/LocalizedLink';
 
@@ -308,19 +307,19 @@ function CTA({ t }: { t: (k: string) => string }): React.ReactElement {
             Démarrez gratuitement. Mettez à niveau quand vous êtes prêt.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
+            <LocalizedLink
               to="/register"
               className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-gray-900 transition hover:bg-white/90"
             >
               {t('home.startDesign')}
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
-            </Link>
-            <Link
+            </LocalizedLink>
+            <LocalizedLink
               to="/pricing"
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-medium text-white/90 backdrop-blur transition hover:bg-white/10"
             >
               Voir les tarifs
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
       </div>
@@ -377,9 +376,9 @@ function FooterCol({ title, links }: { title: string; links: { label: string; hr
       <ul className="space-y-2">
         {links.map((l) => (
           <li key={l.href}>
-            <Link to={l.href} className="text-sm text-white/70 transition hover:text-white">
+            <LocalizedLink to={l.href} className="text-sm text-white/70 transition hover:text-white">
               {l.label}
-            </Link>
+            </LocalizedLink>
           </li>
         ))}
       </ul>
