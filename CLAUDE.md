@@ -325,7 +325,8 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] RegisterPage : parse `?from=` query param pour enrichir l'event `signup_completed` avec le trigger source. Permet de mesurer la conversion par trigger (pdf_export, ai_use, quote_compare, pathtracer, session_15min).
 - [ ] `LanguageSwitcher.tsx` : exit animation Dialog non observable car `closeSignupPrompt` nulle `trigger` simultanément avec `open=false`. À traiter dans `useSandboxLimits` si l'UX exit animation devient une exigence (mémoiser le dernier trigger valide ou délayer le null).
 - [ ] `SignupPromptModal` : ajouter `data-testid="signup-prompt-dialog"` sur le wrapper racine si futur test E2E veut l'asserter (actuellement seuls le titre et les CTAs ont des data-testid).
-- [ ] Police `/fonts/inter-var-latin.woff2` : "Failed to decode downloaded font: invalid sfntVersion: 1008813135". La police woff2 n'a pas un header valide (sfntVersion 0x3C212144 = '<!DM' = HTML). Probablement le dev server renvoie une page HTML 404 à la place du binaire police. À fixer.
+- [x] Police `/fonts/inter-var-latin.woff2` : RÉSOLU (commit ccc32be). Cause racine : le fichier était simplement absent du repo. Vite servait la SPA fallback HTML, ce qui produisait sfntVersion 0x3C212144 (`<!DO` ASCII). Fix : download manuel du fichier officiel `InterVariable.woff2` depuis Inter v4 (rsms.me/inter), placé sous le nom attendu `inter-var-latin.woff2` (352240 bytes, magic bytes wOF2 vérifiés). Le fichier est committé pour build hermétique. La typo Inter Variable rend maintenant correctement au lieu du fallback system-ui.
+- [ ] `packages/frontend/scripts/fetch-fonts.sh` : URL pinned obsolète. Le script pointe vers `github.com/rsms/inter/raw/v4.0/docs/font-files/Inter-roman.var.woff2` qui retourne 404 (path/nom de fichier ont changé dans Inter v4). Mettre à jour vers `InterVariable.woff2` du package Inter v4 actuel. Non bloquant (le fichier est désormais committé), mais script reste cassé pour les futurs setups.
 - [⚠️ FAUSSE ALERTE] `tokens.css` lignes 3-7 : initialement documenté comme bug (variables `--kx-surface`, `--kx-border`, `--kx-fg-muted` à `255 255 255` en mode dark). Audit du 17/05/2026 a révélé : (a) les commentaires inline `/* overlays use alpha */`, `/* /10, /15, /20 */`, `/* use /60, /40 */` documentent un pattern volontaire RGB blanc + alpha à la consommation, (b) ces 3 tokens sont en réalité du code mort — aucun consommateur dans le projet (ni Tailwind classes, ni `var()` direct, ni arbitrary values). Pas un bug visuel. Pourrait être nettoyé en mission "dead-code cleanup" séparée si désiré, mais pas urgent — préserve l'option pour usage futur en alpha overlays.
 
 ---
@@ -342,6 +343,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **17/05/2026** (suite 4) : Documentation du setup dev complet (frontend+backend via `pnpm dev` à la racine + Turbo). Le script global existait déjà, dette §11 P2 résolue par pure doc dans README.md + CLAUDE.md.
 - **17/05/2026** (suite 5) : Résolution du bug nav React Router localhost après investigation 2 jours (commit c8a1ff4). Cause racine identifiée : Links absolus sans préfixe locale → LocaleAwareShell redirige vers /fr/. Découverte que ce bug existait AUSSI en production (CTA Header non fonctionnels pour les utilisateurs finaux). Fix par import alias LocalizedLink. 3 Links résiduels HomePage (CTA + Footer) à traiter en mission séparée. Dette §11 P0 cochée.
 - **17/05/2026** (suite 6) : Finalisation du fix nav React Router. Commits 4c516e8 (3 Links résiduels HomePage migrés vers LocalizedLink) + 534d540 (5 Footer broken paths corrigés via Strategy C : adapter /designer → /designer/sandbox, supprimer /marketplace + col Ressources). Audit Header au passage : 9/9 paths valides, gating par isAuthenticated, aucune dette latente. Footer passé de 11 à 7 liens 100% fonctionnels. Bug latent en production éliminé. Dette résiduelle Nav() locale documentée pour mission ultérieure.
+- **17/05/2026** (suite 7 / fin de session) : Résolution de la dette police Inter (commit ccc32be). File manquant downloadé manuellement depuis Inter v4 et committé pour build hermétique. Découvert au passage que le script fetch-fonts.sh est obsolète (nouvelle dette P3 ajoutée). Session du jour close à 41 commits.
 
 ---
 
@@ -352,11 +354,11 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
 | **Phase 1 P1** | 🟡 En cours | 5 tâches restantes (7 cumulées - 2 résolues 17/05 : 3 Links résiduels + Footer broken paths) |
 | **Phase 1 P2** | 🟡 En cours | 4 tâches (originelles 4 + 2 ajoutées 16/05 - 2 terminées 17/05) |
-| **Phase 1 P3** | ⏳ Non démarrée | 8 tâches (9 cumulées - 1 fausse alerte reclassée 17/05) |
+| **Phase 1 P3** | ⏳ Non démarrée | 8 tâches (9 cumulées + 1 fetch-fonts script ajoutée 17/05 - 2 résolues 17/05) |
 
 Branche active : `feat/design-system-migration` (23 commits, à jour avec `origin`).
 Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 17/05/2026 — Bug nav React Router 100% résolu (Header + Nav + 3 résiduels + Footer paths, 39 commits).*
+*Dernière mise à jour : 17/05/2026 — Police Inter Variable résolue (41 commits). Session du 17/05 close.*
