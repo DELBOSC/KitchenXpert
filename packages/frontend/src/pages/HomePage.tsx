@@ -333,7 +333,7 @@ function CTA({ t }: { t: (k: string) => string }): React.ReactElement {
 function Footer(): React.ReactElement {
   return (
     <footer className="relative z-10 border-t border-white/10 px-6 py-12">
-      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-400 to-fuchsia-500" />
@@ -344,15 +344,9 @@ function Footer(): React.ReactElement {
           </p>
         </div>
         <FooterCol title="Produit" links={[
-          { label: 'Designer 3D', href: '/designer' },
+          { label: 'Designer 3D', href: '/designer/sandbox' },
           { label: 'Catalogue', href: '/catalog' },
           { label: 'Tarifs', href: '/pricing' },
-          { label: 'Marketplace', href: '/marketplace' },
-        ]} />
-        <FooterCol title="Ressources" links={[
-          { label: 'Documentation', href: '/docs' },
-          { label: 'Blog', href: '/blog' },
-          { label: 'Support', href: '/support' },
         ]} />
         <FooterCol title="Légal" links={[
           { label: 'Mentions légales', href: '/legal/mentions' },
