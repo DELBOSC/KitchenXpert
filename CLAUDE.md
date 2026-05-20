@@ -301,8 +301,10 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] `useABVariant` : configurer split HeroVideo (50%) vs Hero3DInteractive (50%) sur HomePage
 - [x] `tokens.css` : `--kx-accent-warm: 251 191 36` (amber-400) — DÉJÀ FAIT, dette non décochée à l'époque. Audit du 18/05/2026 révèle que le token était déjà en place : défini tokens.css ligne 22, câblé tailwind.config.js ligne 31 (`'accent-warm': 'rgb(var(--kx-accent-warm) / <alpha-value>)'`), et déjà consommé par PricingPage.tsx ligne 370 (`bg-kx-accent-warm/20 ... text-kx-accent-warm` pour badge -20% annuel). Probable origine commit 1f5129e (résolution P0 "câbler les tokens KitchenXpert dans tailwind.config.js") qui a ajouté à la fois l'entrée Tailwind et le token CSS source mais a manqué le décochage ici.
 - [x] HomePage Section Metrics : suppression complète au lieu de simple déduplication. Tous les chiffres étaient aspirationnels ('98% satisfaction', '< 3 min génération', '24/7 support') ou en doublon avec LiveCounter ('50k+ cuisines'). Risque DGCCRF (L121-2) éliminé. LiveCounter reste seule source de vérité statistique sur la HomePage. Commit 02d41fe.
-- [ ] Service Worker `sw.js:33` : "Failed to execute 'put' on 'Cache': Partial response (status code 206) is unsupported". Le SW tente de cacher des réponses partielles HTTP (range requests) sans les filtrer. À fixer en ajoutant un check `response.status !== 206` avant `cache.put()`.
-- [ ] `main.tsx:55` : `navigator.serviceWorker.register('/service-worker.js')` échoue avec "unsupported MIME type 'text/html'" parce que le fichier est servi en HTML par le dev server au lieu de JavaScript. À fixer en configurant Vite pour servir `service-worker.js` ou en désactivant le register en mode `import.meta.env.DEV`.
+- [x] Service Worker `sw.js:33` : RÉSOLU (commit 88efb29). Fix Stratégie A élargie : ajout de `if (response.ok && response.status !== 206)` avant cache.put. Couvre le bug 206 (range requests HTML5 video sur intro.mp4/tutorial*.mp4) ET élimine bonus le cache pollué par 4xx/5xx (response.ok = status 200-299). Pattern standard Workbox / Google Web Fundamentals. F14 Full Offline Mode opérationnel pour la première fois depuis l'origine du projet.
+- [x] `main.tsx:55` SW registration failed : RÉSOLU (commit 288e549). DEUX sources d'enregistrement ont été identifiées et fixées :
+  1. main.tsx ligne 35-38 : path corrigé '/service-worker.js' → '/sw.js' + guard `!import.meta.env.DEV` ajouté
+  2. index.html lignes 85-91 : suppression du `<script>` inline duplicate qui registrait /sw.js sans guard dev et avec `.catch(() => {})` silencieux (c'était la VRAIE source du SW actif depuis l'origine du projet, expliquant les bugs 206 quotidiens). Source unique de vérité désormais : main.tsx.
 - [x] HomePage.tsx : 3 `<Link>` résiduels migrés vers LocalizedLink (commit 4c516e8). CTAs "Commencer gratuitement" + "Voir les tarifs" + FooterCol dynamique tous fixés. Tests adaptés (endsWith pattern). Validation runtime confirmée pour les 2 CTAs sur HomePage.
 - [x] HomePage.tsx Footer : 5 paths problématiques corrigés (commit 534d540). 3 routes inexistantes supprimées (/docs, /blog, /support). 1 path adapté pour respecter CLAUDE.md §6.3 (/designer → /designer/sandbox). 1 path retiré car ProtectedRoute (/marketplace, anonymous bouncé vers /login). Footer passé de 11 liens à 7 liens fonctionnels, grid md:grid-cols-4 → md:grid-cols-3. Header audité au passage : 9/9 paths valides (gating par isAuthenticated).
 - [x] `HomePage.tsx` : fonction `Nav()` locale SUPPRIMÉE (commit 974e351, mission D du 18/05/2026). Code mort partiel laissé par 36c835f. Suppression sèche : ~33 lignes retirées de HomePage.tsx (function `Nav` + commentaire bannière + appel `<Nav />`). Test obsolète `should have a <nav> element` retiré de HomePage.test.tsx avec commentaire explicatif. Build vert, 1202/1202 tests verts (–1 obsolète, 0 régression). Header global est désormais l'unique porteur de la navigation. Effet de bord propre : le `/marketplace` résiduel ligne 96 a disparu avec Nav(), pas besoin de patch chirurgical. Validation runtime confirmée : 1 seule barre de navigation visible (Header sticky blanc), plus de duplication "2× Tarifs".
@@ -344,6 +346,12 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **17/05/2026** (suite 5) : Résolution du bug nav React Router localhost après investigation 2 jours (commit c8a1ff4). Cause racine identifiée : Links absolus sans préfixe locale → LocaleAwareShell redirige vers /fr/. Découverte que ce bug existait AUSSI en production (CTA Header non fonctionnels pour les utilisateurs finaux). Fix par import alias LocalizedLink. 3 Links résiduels HomePage (CTA + Footer) à traiter en mission séparée. Dette §11 P0 cochée.
 - **17/05/2026** (suite 6) : Finalisation du fix nav React Router. Commits 4c516e8 (3 Links résiduels HomePage migrés vers LocalizedLink) + 534d540 (5 Footer broken paths corrigés via Strategy C : adapter /designer → /designer/sandbox, supprimer /marketplace + col Ressources). Audit Header au passage : 9/9 paths valides, gating par isAuthenticated, aucune dette latente. Footer passé de 11 à 7 liens 100% fonctionnels. Bug latent en production éliminé. Dette résiduelle Nav() locale documentée pour mission ultérieure.
 - **17/05/2026** (suite 7 / fin de session) : Résolution de la dette police Inter (commit ccc32be). File manquant downloadé manuellement depuis Inter v4 et committé pour build hermétique. Découvert au passage que le script fetch-fonts.sh est obsolète (nouvelle dette P3 ajoutée). Session du jour close à 41 commits.
+- **19/05/2026** : Résolution complète du trio Service Worker (commits 974e351 + b26ac26 + 288e549 + 88efb29). 4 missions en chaîne :
+  - D (974e351) : suppression Nav() locale HomePage (–36 lignes, élimine duplicate "2x Tarifs")
+  - Sync doc (b26ac26) : 2 dettes §11 P1 cochées (accent-warm + Nav())
+  - SW2+SW3 (288e549) : élimination du SW en dev. Découverte critique : 2 sources d'enregistrement existaient (main.tsx + bloc inline index.html). Le bloc inline était l'origine cachée des erreurs SW depuis l'origine du projet.
+  - SW1 (88efb29) : fix Cache.put 206 avec Stratégie A élargie (response.ok && status !== 206). Bonus : élimine cache pollué par 4xx/5xx.
+  Branche feat/design-system-migration safe pour merge main (4 dettes P1 résolues). 46 commits cumulés.
 
 ---
 
@@ -352,7 +360,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | Phase | Statut | Restant |
 |---|---|---|
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
-| **Phase 1 P1** | 🟡 En cours | 5 tâches restantes (7 cumulées - 2 résolues 17/05 : 3 Links résiduels + Footer broken paths) |
+| **Phase 1 P1** | 🟡 En cours | 2 tâches restantes (7 cumulées - 5 résolues : 2 le 17/05, 3 le 19/05) |
 | **Phase 1 P2** | 🟡 En cours | 4 tâches (originelles 4 + 2 ajoutées 16/05 - 2 terminées 17/05) |
 | **Phase 1 P3** | ⏳ Non démarrée | 8 tâches (9 cumulées + 1 fetch-fonts script ajoutée 17/05 - 2 résolues 17/05) |
 
@@ -361,4 +369,4 @@ Prochaine cible : déduplication Metrics/LiveCounter dans HomePage.
 
 ---
 
-*Dernière mise à jour : 17/05/2026 — Police Inter Variable résolue (41 commits). Session du 17/05 close.*
+*Dernière mise à jour : 19/05/2026 — Trio SW résolu + Nav() locale supprimée (46 commits). Branche feat/design-system-migration safe pour merge main.*
