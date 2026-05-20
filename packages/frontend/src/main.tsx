@@ -31,10 +31,11 @@ root.render(
 );
 
 // ─── Service Worker Registration (F14: Full Offline Mode) ───
-if ('serviceWorker' in navigator) {
+// Skipped in dev to avoid HMR interference and stale-cache page blanks.
+if ('serviceWorker' in navigator && !import.meta.env.DEV) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register('/service-worker.js')
+      .register('/sw.js')
       .then((registration) => {
         console.log('[SW] Service Worker registered with scope:', registration.scope);
 
