@@ -155,11 +155,12 @@ describe('HomePage', () => {
       expect(h3s.length).toBeGreaterThanOrEqual(3);
     });
 
-    it('should have a <nav> element', () => {
-      renderHomePage();
-      const nav = document.querySelector('nav');
-      expect(nav).toBeInTheDocument();
-    });
+    // Note (17/05/2026): test "should have a <nav> element" removed.
+    // HomePage no longer renders its own <nav> — the navigation is now
+    // provided by the global Header (Header.tsx) mounted by the Layout,
+    // outside the scope of this isolated HomePage test.
+    // Re-adding a <nav> assertion here would require mounting the Header
+    // in the test setup, which adds coupling without value.
 
     it('should have a <main> element', () => {
       renderHomePage();

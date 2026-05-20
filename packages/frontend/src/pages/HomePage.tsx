@@ -35,8 +35,6 @@ export default function HomePage(): React.ReactElement {
       />
       <AuroraBackground />
 
-      <Nav />
-
       <main className="relative z-10">
         {variant === 'A' && <HeroA />}
         {variant === 'B' && <HeroB />}
@@ -76,41 +74,6 @@ function AuroraBackground(): React.ReactElement {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.06),transparent_50%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
     </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Top navigation
-// ---------------------------------------------------------------------------
-function Nav(): React.ReactElement {
-  return (
-    <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-      <LocalizedLink to="/" className="flex items-center gap-2">
-        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-400 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30" />
-        <span className="text-lg font-semibold tracking-tight">KitchenXpert</span>
-      </LocalizedLink>
-      <div className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-        <LocalizedLink to="/catalog" className="transition hover:text-white">Catalogue</LocalizedLink>
-        <LocalizedLink to="/pricing" className="transition hover:text-white">Tarifs</LocalizedLink>
-        <LocalizedLink to="/designer" className="transition hover:text-white">Designer 3D</LocalizedLink>
-        <LocalizedLink to="/marketplace" className="transition hover:text-white">Marketplace</LocalizedLink>
-      </div>
-      <div className="flex items-center gap-3">
-        <LocalizedLink
-          to="/login"
-          className="hidden rounded-full px-4 py-2 text-sm text-white/80 transition hover:text-white md:inline-flex"
-        >
-          Connexion
-        </LocalizedLink>
-        <LocalizedLink
-          to="/register"
-          className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-lg shadow-white/10 transition hover:bg-white/90"
-        >
-          Démarrer
-          <ArrowRight className="w-4 h-4" aria-hidden="true" />
-        </LocalizedLink>
-      </div>
-    </nav>
   );
 }
 
