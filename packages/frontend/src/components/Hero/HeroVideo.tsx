@@ -156,11 +156,11 @@ export function HeroVideo({
         }}
       />
 
-      {/* Poster — rendered eagerly; this is the LCP element. The SVG
-          fallback is the FIRST <source> so it shows immediately on a
-          fresh checkout when the JPG hasn't been generated yet. The
-          browser walks <source> top-to-bottom and uses the first one
-          whose type is supported (SVG is always supported). */}
+      {/* Poster — rendered eagerly, this is the LCP element. JPEG is
+          the primary source (universally supported) — the browser
+          picks it and loads hero-poster.jpg (or @2x on hi-DPI). The
+          SVG <source> + <img src> are fallbacks for the no-JPEG-
+          decoder edge case and for tools that don't parse <picture>. */}
       <picture>
         <source srcSet={`${poster2x} 2x, ${poster}`} type="image/jpeg" />
         <source srcSet={posterSvg} type="image/svg+xml" />
