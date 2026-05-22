@@ -150,15 +150,31 @@ L'accueil contient les sections suivantes, dans cet ordre : **Hero + Trust + How
 - Chaque section a un rôle clair, pas de remplissage marketing
 - Le scroll doit raconter une histoire : Promesse → Réassurance → Démonstration → Preuve → Détails → Conviction → Action
 
-### 6.2 Hero — A/B Test HeroVideo vs Hero3D Interactif (option C)
+### 6.2 Hero — composant central + 3 layouts A/B/C testés
 
-**Décision** : on garde `HeroVideo` comme variant A (témoignage produit en 15s) et on développe `Hero3DInteractive` comme variant B (vision "lobby d'outil"). Le système `useABVariant` existant gère le split.
+**Décision (22/05/2026)** : un seul composant `HeroVideo` (poster premium image cuisine Krea + vidéo `.webm/.mp4` optionnelle), décliné en **3 layouts** tirés au sort par `useABVariant('hero', ['A','B','C'])` — sticky par visiteur via localStorage. Hero3D temps réel écarté par décision d'architecture (cf §11 P1) — la 3D vit dans le Designer, pas en vitrine marketing.
 
-**Variant A (existant)** : HeroVideo.tsx — vidéo demo auto-play/muted/loop avec IntersectionObserver, poster JPG+SVG, respect `prefers-reduced-motion`.
+**Les 3 layouts** partagent strictement le même headline, la même tagline et les mêmes CTAs. Seul le layout visuel diffère :
 
-**Variant B (à coder)** : Hero3DInteractive.tsx — canvas Three.js léger (réutilise architecture `SandboxCanvas`), cuisine d'exemple en low-poly (~200 tris), drag pour faire tourner, swap vers haute-fidélité après hover/click. Bundle initial visé < 250kb gzipped (lazy-loading Three.js si besoin).
+| Layout | Description | Aspect HeroVideo |
+|---|---|---|
+| **HeroA** | Stacked centré, headline au-dessus, image dessous | `16 / 10` |
+| **HeroB** | Full-bleed, headline en overlay sur l'image + scrim sombre top | `16 / 9` |
+| **HeroC** | Split 2 colonnes (lg+), headline + CTAs à gauche, image à droite | `4 / 3` |
 
-**KPI de décision (après 4 semaines)** : taux de clic CTA principal + temps avant clic + bounce rate. Le variant gagnant devient le default, l'autre est retiré.
+**Tracking opérationnel** : le funnel est slicable par variant dans Plausible via 5 events distincts (suffixe `_ab` évite la collision avec les events `sandbox_signup_*` existants) :
+
+- `ab_assignment` — assignation, props `{ experiment: 'hero', variant }`, 1×/session
+- `hero_cta_primary_click` — clic "Essayer le designer" → `/designer/sandbox`
+- `hero_cta_secondary_click` — clic "Créer un compte" → `/register`
+- `sandbox_signup_intent_ab` — émis par `SignupPromptModal` au clic CTA
+- `sandbox_signup_completed_ab` — émis par `SandboxMigrationBanner` (import OU delete)
+
+Joint automatiquement par `tagConversion()` (cf `useABVariant.ts`, type `HeroABEvent` strict).
+
+**KPI de décision** : taux de clic CTA primary par variant + ratio intent/click + ratio completion/intent. Décision quand le trafic produit un signal statistiquement significatif (post-launch, ≥ 2-4 semaines selon volume).
+
+**Vidéo** : fichiers `.webm/.mp4` absents du repo (cf §11 P3) — le `<video>` ne mount jamais, seul le poster premium s'affiche. Acceptable en l'état. Si encodage un jour : démo produit 15s, lumière 2700K cohérente avec le poster Krea.
 
 ### 6.3 CTA principal : "Ouvrir l'éditeur"
 
@@ -205,7 +221,7 @@ L'IX actuelle est minimaliste et fonctionnelle. **Pas d'imposition** du curseur-
 
 ### 7.3 Performance & seuils
 
-- Bundle hero initial < 250kb gzipped (Three.js lazy-load si Variant B)
+- Bundle hero initial < 250kb gzipped (3 layouts HeroA/B/C partagent un seul HeroVideo, pas de 3D temps réel en vitrine)
 - LCP < 2.5s sur 4G mid-tier
 - Animations critiques (édition 3D, drag) < 16ms latency
 - Animations décoratives < 300ms
@@ -231,7 +247,7 @@ L'IX actuelle est minimaliste et fonctionnelle. **Pas d'imposition** du curseur-
 - ✅ Aurora gradient (`kx-aurora`) — devient signature, plus anti-pattern
 - ✅ LiveCounter avec animation easeOutCubic — assumé comme preuve sociale transparente (polling /api/v1/stats/public)
 - ✅ LogoStrip "catalogues compatibles" — wording neutre, pas un anti-pattern type "ils nous font confiance"
-- ✅ HeroVideo — variant A du A/B test, à conserver
+- ✅ HeroVideo — composant Hero central, décliné en 3 layouts A/B/C testés (cf §6.2)
 - ✅ Light/dark/system via ThemeContext (le dark n'est plus le seul mode supporté)
 - ✅ Inter (pas Fraunces) — décision pragmatique, ré-évaluable plus tard
 - ✅ SVG inline dans TrustStack — décision perf justifiée
@@ -372,8 +388,8 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P3** | ⏳ Non démarrée | 12 tâches (8 + 4 ajoutées 22/05 : Hero vidéos, SVG fallback désaligné, encode-script absent, dormants 0-byte) |
 
 Branche active : `feat/design-system-migration` (47 commits, à jour avec `origin`).
-Prochaine cible : §6.2 (A/B Test Hero) à réécrire suite à décision 22/05 — Hero3D temps réel écarté, stratégie poster premium adoptée par défaut.
+Prochaine cible : laisser tourner l'A/B test Hero en prod pour collecter le premier signal de variant — ou démarrer les 4 dettes P2 restantes (HowItWorks Card, SandboxMigrationBanner Card/Toast, packages/guides tokens, TrustStack perf).
 
 ---
 
-*Dernière mise à jour : 22/05/2026 — Session "poster Hero premium" : Hero3D temps réel écarté par décision d'architecture, poster cassé réparé (commit 7d737e1, 47 commits). Branche feat/design-system-migration toujours safe pour merge main.*
+*Dernière mise à jour : 22/05/2026 — §6.2 réécrit pour refléter la réalité (3 layouts A/B/C testés, Hero3D écarté) + tracking conversion A/B opérationnel via tagConversion (commit 0236f9f, 51 commits). Branche feat/design-system-migration toujours safe pour merge main.*
