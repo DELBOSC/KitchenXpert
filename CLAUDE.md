@@ -250,7 +250,7 @@ L'IX actuelle est minimaliste et fonctionnelle. **Pas d'imposition** du curseur-
 - ✅ HeroVideo — composant Hero central, décliné en 3 layouts A/B/C testés (cf §6.2)
 - ✅ Light/dark/system via ThemeContext (le dark n'est plus le seul mode supporté)
 - ✅ Inter (pas Fraunces) — décision pragmatique, ré-évaluable plus tard
-- ✅ SVG inline dans TrustStack — décision perf justifiée
+- ✅ SVG inline dans TrustStack — décision perf justifiée (confirmée 22/05/2026 — cf §11 P2 #4 fermée comme caduque, alignement définitif)
 
 ### 8.3 Toujours à fuir
 
@@ -329,8 +329,8 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 - [ ] `HowItWorks.tsx` : utiliser primitive `Card` au lieu de `<article>` brut, harmoniser palette
 - [ ] `SandboxMigrationBanner.tsx` : utiliser primitives `Card` ou `Toast`
-- [ ] `packages/guides/` : décider si le sous-projet Astro câble les tokens KitchenXpert
-- [ ] Évaluer migration TrustStack vers lucide-react après mesure du bénéfice perf réel
+- [x] `packages/guides/` tokens : DÉCISION 22/05/2026 — NE PAS câbler. guides reste hors scope §3 (Astro indépendant, build/deploy séparés). Couleurs déjà visuellement alignées (`#0a0a0f` des deux côtés). Câbler = 2-4h d'infra fragile (Windows symlinks, npm script de copy, ou nouveau workspace package) pour bénéfice quasi nul avant launch. À reconsidérer si : refonte palette KitchenXpert, arrivée d'une équipe design, ou guides devient volumineux (>10 articles avec variations visuelles).
+- [x] TrustStack migration lucide-react : DÉCISION 22/05/2026 — CADUQUE. Estimation gain ~0.5-1.5 KB gzipped sur 1 seul call site (`PricingPage.tsx:399`). Négligeable face au risque de churn sur une surface trust stable. §8.2 valide déjà l'inline SVG comme "décision perf justifiée" — cette dette P2 lui était contradictoire (incohérence interne détectée à l'audit du 22/05). Décision retenue : **§8.2 fait foi**, l'inline SVG reste l'approche officielle pour TrustStack. §3 ligne 54 ("Exception assumée") déjà alignée.
 - [x] `HeroVideo.tsx` (ligne 173) : warning React "fetchPriority not recognized" résolu via spread cast `{...({ fetchpriority: 'high' } as Record<string, string>)}` injectant l'attribut HTML standard lowercase. Note technique : `@ts-expect-error` ne fonctionne pas sur les attributs JSX (TypeScript #27552 ouvert depuis 2018). Commit 388e5cd.
 - [x] Backend `/api/v1/stats/public`, `/api/v1/auth/me`, `/api/v1/me/reviews/pending` retournaient 500 en dev quand le backend Express n'était pas démarré (proxy Vite → `localhost:4000`). Résolu par documentation : §3 Stack CLAUDE.md + section "⚠️ Frontend seul vs stack complète" dans README.md. La commande recommandée est `pnpm dev` à la racine (Turbo lance backend+frontend).
 
@@ -384,12 +384,12 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 |---|---|---|
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
 | **Phase 1 P1** | ✅ Terminée (actionnable) | 0 tâche actionnable restante (7 résolues cumulées + 1 résolue 22/05 [poster Hero] + 1 écartée 22/05 [Hero3DInteractive — décision d'architecture, §11 P1]) |
-| **Phase 1 P2** | 🟡 En cours | 4 tâches (originelles 4 + 2 ajoutées 16/05 - 2 terminées 17/05) |
+| **Phase 1 P2** | 🟡 En cours | 2 tâches actionnables (#1 HowItWorks Card + #2 SandboxMigrationBanner Card/Toast). Cumul : 2 résolues 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) |
 | **Phase 1 P3** | ⏳ Non démarrée | 12 tâches (8 + 4 ajoutées 22/05 : Hero vidéos, SVG fallback désaligné, encode-script absent, dormants 0-byte) |
 
 Branche active : `feat/design-system-migration` (47 commits, à jour avec `origin`).
-Prochaine cible : laisser tourner l'A/B test Hero en prod pour collecter le premier signal de variant — ou démarrer les 4 dettes P2 restantes (HowItWorks Card, SandboxMigrationBanner Card/Toast, packages/guides tokens, TrustStack perf).
+Prochaine cible : laisser tourner l'A/B test Hero en prod pour collecter le premier signal de variant — ou démarrer les 2 dettes P2 actionnables restantes (HowItWorks Card primitive + SandboxMigrationBanner Card/Toast).
 
 ---
 
-*Dernière mise à jour : 22/05/2026 — §6.2 réécrit pour refléter la réalité (3 layouts A/B/C testés, Hero3D écarté) + tracking conversion A/B opérationnel via tagConversion (commit 0236f9f, 51 commits). Branche feat/design-system-migration toujours safe pour merge main.*
+*Dernière mise à jour : 22/05/2026 — §6.2 réécrit, tracking conversion A/B opérationnel (commit 0236f9f), 2 dettes P2 fermées par décision (#3 guides hors scope + #4 TrustStack inline confirmé §8.2). 51 commits. Branche feat/design-system-migration toujours safe pour merge main.*
