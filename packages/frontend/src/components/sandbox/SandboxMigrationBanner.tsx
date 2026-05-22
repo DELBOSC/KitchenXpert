@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { tagConversion } from '../../hooks/useABVariant';
 import { migrateSandboxToAccount } from '../../sandbox/migrateSandbox';
 import { clearPersistedSandbox, readPersistedSandbox } from '../../sandbox/store';
 import { trackSandbox } from '../../sandbox/useSandboxAnalytics';
@@ -39,6 +40,7 @@ export function SandboxMigrationBanner(): React.ReactElement | null {
       const projectId = await migrateSandboxToAccount(snapshot);
       clearPersistedSandbox();
       trackSandbox({ type: 'sandbox_signup_completed', props: { imported: 'yes' } });
+      tagConversion('hero', 'sandbox_signup_completed_ab');
       navigate(`/projects/${projectId}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Échec de l\'import. Réessayez.');
@@ -50,6 +52,7 @@ export function SandboxMigrationBanner(): React.ReactElement | null {
   const handleDelete = (): void => {
     clearPersistedSandbox();
     trackSandbox({ type: 'sandbox_signup_completed', props: { imported: 'no' } });
+    tagConversion('hero', 'sandbox_signup_completed_ab');
     setDismissed(true);
   };
 

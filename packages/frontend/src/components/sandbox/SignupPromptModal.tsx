@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { tagConversion } from '../../hooks/useABVariant';
 import { trackSandbox } from '../../sandbox/useSandboxAnalytics';
 import { Dialog } from '../ui';
 
@@ -61,6 +62,7 @@ export function SignupPromptModal({
 
   const handleCtaClick = (): void => {
     trackSandbox({ type: 'sandbox_signup_intent', props: { from: 'modal', trigger } });
+    tagConversion('hero', 'sandbox_signup_intent_ab');
   };
 
   return (

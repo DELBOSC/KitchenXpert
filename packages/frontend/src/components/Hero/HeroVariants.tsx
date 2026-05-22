@@ -2,6 +2,8 @@ import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { tagConversion } from '../../hooks/useABVariant';
+
 import { HeroVideo } from './HeroVideo';
 
 /**
@@ -13,8 +15,12 @@ import { HeroVideo } from './HeroVideo';
  *       or stacked (mobile).
  *
  * All three share the same eyebrow chip + tagline + CTA copy so the
- * only confounding variable is the layout. Conversion attribution
- * happens in the sandbox via `tagConversion('hero', 'sandbox_signup_intent')`.
+ * only confounding variable is the layout.
+ *
+ * Conversion tracking (sliced by variant via `tagConversion`):
+ *   - CTA clicks here → `hero_cta_primary_click` / `hero_cta_secondary_click`
+ *   - Signup intent in SignupPromptModal → `sandbox_signup_intent_ab`
+ *   - Signup completion in SandboxMigrationBanner → `sandbox_signup_completed_ab`
  */
 
 const Eyebrow = (): React.ReactElement => (
@@ -50,6 +56,7 @@ const CTAs = ({ align = 'center' }: { align?: 'center' | 'start' }): React.React
   >
     <Link
       to="/designer/sandbox"
+      onClick={() => tagConversion('hero', 'hero_cta_primary_click')}
       className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(255,255,255,0.12)] transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_8px_60px_rgba(255,255,255,0.25)]"
     >
       Essayer le designer
@@ -57,6 +64,7 @@ const CTAs = ({ align = 'center' }: { align?: 'center' | 'start' }): React.React
     </Link>
     <Link
       to="/register"
+      onClick={() => tagConversion('hero', 'hero_cta_secondary_click')}
       className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white/90 backdrop-blur transition hover:border-white/25 hover:bg-white/10"
     >
       Créer un compte
