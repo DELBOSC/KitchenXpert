@@ -2,8 +2,9 @@ import React from 'react';
 
 import { cn } from './_utils';
 
-type CardProps = React.HTMLAttributes<HTMLDivElement> & {
+type CardProps = React.HTMLAttributes<HTMLElement> & {
   variant?: 'default' | 'elevated' | 'interactive' | 'glass';
+  as?: React.ElementType;
 };
 
 const variants = {
@@ -13,8 +14,8 @@ const variants = {
   glass: 'border border-white/10 bg-white/[0.03] backdrop-blur-xl',
 };
 
-export function Card({ className, variant = 'default', ...rest }: CardProps): React.ReactElement {
-  return <div className={cn('rounded-2xl', variants[variant], className)} {...rest} />;
+export function Card({ as: Component = 'div', className, variant = 'default', ...rest }: CardProps): React.ReactElement {
+  return <Component className={cn('rounded-2xl', variants[variant], className)} {...rest} />;
 }
 
 export function CardHeader({ className, ...rest }: React.HTMLAttributes<HTMLDivElement>): React.ReactElement {
