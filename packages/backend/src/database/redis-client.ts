@@ -16,41 +16,100 @@ const logger = createModuleLogger('redis-client');
 
 const KEY_PREFIX = 'kx:';
 
+// --- Circuit breaker config --------------------------------------------------
+// When connect() fails, we keep the circuit open for COOLDOWN_MS to avoid burning
+// 8s on every getRedisClient() call (login/CSRF latency in prod under Upstash incidents).
+// After the cooldown expires the next call performs a half-open probe; success
+// closes the circuit, failure rearms it.
+const CONNECT_TIMEOUT_MS = 2_000;
+const RECONNECT_MAX_RETRIES = 3;
+const COOLDOWN_MS = 30_000;
+
 let redisClient: RedisClientType | null = null;
 let connectionFailed = false;
+let circuitOpenUntil = 0;
+let pendingConnect: Promise<RedisClientType> | null = null;
+
+class RedisCircuitOpenError extends Error {
+  constructor(msSinceOpen: number) {
+    super(`Redis circuit open (${msSinceOpen}ms ago); retry after cooldown`);
+    this.name = 'RedisCircuitOpenError';
+  }
+}
 
 /**
  * Get or create the Redis client singleton.
  * Returns the connected RedisClientType instance.
- * Throws if connection fails (callers should handle gracefully).
+ * Throws RedisCircuitOpenError immediately if the circuit is open (no new connect attempt).
+ * Throws the underlying error if a connect attempt fails (and arms the circuit).
+ * Callers are expected to handle errors gracefully (token-blacklist, csrf, job-queue all do).
  */
 export async function getRedisClient(): Promise<RedisClientType> {
   if (redisClient && redisClient.isOpen) {
     return redisClient;
   }
 
+  // Circuit open ⇒ short-circuit. Avoids cycling through reconnect retries on every call.
+  const now = Date.now();
+  if (circuitOpenUntil > now) {
+    throw new RedisCircuitOpenError(COOLDOWN_MS - (circuitOpenUntil - now));
+  }
+
+  // Coalesce concurrent callers onto a single in-flight connect attempt.
+  if (pendingConnect) {
+    return pendingConnect;
+  }
+
   const url = process.env.REDIS_URL || 'redis://localhost:6379';
 
-  redisClient = createClient({ url });
+  const client: RedisClientType = createClient({
+    url,
+    socket: {
+      connectTimeout: CONNECT_TIMEOUT_MS,
+      // Returning an Error from reconnectStrategy causes connect()/operations to reject
+      // instead of looping forever. node-redis v4 contract.
+      reconnectStrategy: (retries: number) => {
+        if (retries >= RECONNECT_MAX_RETRIES) {
+          return new Error(`Redis: max reconnect retries (${RECONNECT_MAX_RETRIES}) reached`);
+        }
+        return Math.min(retries * 200, 2_000);
+      },
+    },
+  });
 
-  redisClient.on('error', (err: Error) => {
+  client.on('error', (err: Error) => {
     logger.error('[Redis] Connection error:', { error: err.message });
   });
-
-  redisClient.on('connect', () => {
-    logger.info('[Redis] Connected successfully', {
-      url: url.replace(/\/\/.*@/, '//***@'),
-    });
+  client.on('connect', () => {
+    logger.info('[Redis] Connected successfully', { url: url.replace(/\/\/.*@/, '//***@') });
   });
-
-  redisClient.on('reconnecting', () => {
+  client.on('reconnecting', () => {
     logger.info('[Redis] Reconnecting...');
   });
 
-  await redisClient.connect();
-  connectionFailed = false;
+  pendingConnect = client.connect().then(
+    () => {
+      redisClient = client;
+      connectionFailed = false;
+      circuitOpenUntil = 0;
+      pendingConnect = null;
+      return client;
+    },
+    (err: unknown) => {
+      // Arm the circuit, log once, dispose the orphan client to stop background reconnects.
+      circuitOpenUntil = Date.now() + COOLDOWN_MS;
+      connectionFailed = true;
+      pendingConnect = null;
+      const message = err instanceof Error ? err.message : String(err);
+      logger.warn('[Redis] Connect failed; circuit open', { error: message, cooldownMs: COOLDOWN_MS });
+      // node-redis keeps its own reconnect loop alive on the client; force-stop it.
+      void client.disconnect().catch(() => { /* swallow */ });
+      redisClient = null;
+      throw err;
+    }
+  );
 
-  return redisClient;
+  return pendingConnect;
 }
 
 /**
@@ -61,6 +120,8 @@ export async function closeRedisConnection(): Promise<void> {
     await redisClient.quit();
     redisClient = null;
     connectionFailed = false;
+    circuitOpenUntil = 0;
+    pendingConnect = null;
     logger.info('[Redis] Connection closed');
   }
 }
@@ -81,6 +142,8 @@ export function resetRedisConnection(): void {
   }
   redisClient = null;
   connectionFailed = false;
+  circuitOpenUntil = 0;
+  pendingConnect = null;
 }
 
 // ---------------------------------------------------------------------------
@@ -92,14 +155,17 @@ export function resetRedisConnection(): void {
  * Used by the cache helpers to provide graceful degradation.
  */
 async function getSafeClient(): Promise<RedisClientType | null> {
-  if (connectionFailed) {return null;}
+  // Fast paths: sticky failure flag, or circuit open. Both avoid the 8s reconnect cycle.
+  if (connectionFailed && circuitOpenUntil > Date.now()) {return null;}
 
   try {
     return await getRedisClient();
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
-    logger.warn('Redis not available, caching disabled', { error: err.message });
-    connectionFailed = true;
+    // getRedisClient already armed the circuit and logged; suppress duplicate log here.
+    if (!(err instanceof RedisCircuitOpenError)) {
+      logger.warn('Redis not available, caching disabled', { error: err.message });
+    }
     return null;
   }
 }
