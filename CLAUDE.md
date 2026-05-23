@@ -350,6 +350,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] `hero-poster.svg` fallback désaligné : c'est un gradient aurora abstrait qui ne matche plus la photo cuisine. Mineur car ne s'affiche jamais en pratique (JPG primary via `<source type="image/jpeg">` côté HeroVideo.tsx, et le navigateur ne tombe sur le SVG qu'en cas d'échec JPG — quasi-impossible). Soit régénérer un SVG cohérent avec la cuisine, soit supprimer le fallback et nettoyer le `<picture>`.
 - [ ] `scripts/encode-hero-video.sh` référencé mais absent du repo (même situation que `fetch-fonts.sh`). À créer si on encode les vidéos Hero un jour, sinon retirer les références dans la doc/README.
 - [ ] `packages/frontend/public/assets/videos/*.mp4` (intro.mp4 + tutorial-*.mp4 ×3) sont des placeholders 0-byte dormants. Cleanup : soit produire les vraies vidéos (onboarding/tutorial in-app), soit retirer les références dans le code et supprimer les placeholders pour ne pas polluer les builds.
+- [ ] Backend dotenv cleanup : retirer les 3 `dotenv.config()` redondants (`packages/backend/src/config/app-config.ts:3` + `packages/backend/src/config/env-validator.ts:20-21`) une fois `load-env.ts` validé en place. `load-env.ts` devient la source unique de chargement du `.env` racine. Non bloquant (dotenv est idempotent — les appels redondants ne cassent rien), purement cosmétique. Ajouté lors du fix du crash JWT (cause racine : ordre des imports — auth.service tiré avant env-validator, jwt.service lit `process.env` au module-eval).
 
 ---
 
@@ -385,7 +386,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
 | **Phase 1 P1** | ✅ Terminée (actionnable) | 0 tâche actionnable restante (7 résolues cumulées + 1 résolue 22/05 [poster Hero] + 1 écartée 22/05 [Hero3DInteractive — décision d'architecture, §11 P1]) |
 | **Phase 1 P2** | 🟡 En cours | 2 tâches actionnables (#1 HowItWorks Card + #2 SandboxMigrationBanner Card/Toast). Cumul : 2 résolues 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) |
-| **Phase 1 P3** | ⏳ Non démarrée | 12 tâches (8 + 4 ajoutées 22/05 : Hero vidéos, SVG fallback désaligné, encode-script absent, dormants 0-byte) |
+| **Phase 1 P3** | ⏳ Non démarrée | 13 tâches (8 + 4 ajoutées 22/05 + 1 ajoutée 23/05 : backend dotenv cleanup) |
 
 Branche active : `feat/design-system-migration` (47 commits, à jour avec `origin`).
 Prochaine cible : laisser tourner l'A/B test Hero en prod pour collecter le premier signal de variant — ou démarrer les 2 dettes P2 actionnables restantes (HowItWorks Card primitive + SandboxMigrationBanner Card/Toast).
