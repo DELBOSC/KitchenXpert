@@ -74,8 +74,9 @@ export default defineConfig(async () => {
     },
     server: {
       port: 3005,
+      host: '127.0.0.1',
       proxy: {
-        '/api': { target: 'http://localhost:4000', changeOrigin: true },
+        '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },
       },
     },
     build: {
