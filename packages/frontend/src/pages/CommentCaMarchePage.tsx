@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -62,7 +63,7 @@ function FeatureSection({
               className="group mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/90 transition hover:border-white/30 hover:bg-white/10"
             >
               Tester {title.toLowerCase()}
-              <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
+              <ArrowRight className="w-4 h-4 transition group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
           </div>
 
@@ -220,7 +221,7 @@ export default function CommentCaMarchePage(): React.ReactElement {
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition hover:bg-white/90"
           >
             Ouvrir le designer
-            <span aria-hidden>→</span>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       </section>

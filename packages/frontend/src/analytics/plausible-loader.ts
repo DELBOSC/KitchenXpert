@@ -32,6 +32,14 @@ export function loadPlausible(): void {
   if (typeof document === 'undefined') {return;}
   if (document.getElementById(SCRIPT_ID)) {return;} // already loaded
 
+  // Plausible's outbound-links script wraps history.pushState. On localhost
+  // it logs "Ignoring Event: localhost" and the wrapped pushState becomes a
+  // no-op, which breaks React Router <Link> navigation. Skip entirely in dev.
+  if (import.meta.env.DEV) {
+    console.info('[Plausible] disabled in dev — preserves React Router pushState');
+    return;
+  }
+
   // The official Plausible snippet plus the queue shim so events fired
   // before the script finishes loading are kept and replayed.
   if (!window.plausible) {

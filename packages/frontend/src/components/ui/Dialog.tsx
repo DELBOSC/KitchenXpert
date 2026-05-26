@@ -14,6 +14,31 @@ interface DialogProps {
   footer?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   dismissOnBackdropClick?: boolean;
+  /**
+   * Classes Tailwind appliquées au `<h2>` du titre interne.
+   *
+   * - Si non fourni, classes par défaut : `text-base font-semibold tracking-tight text-white`.
+   * - Si fourni, **remplace entièrement** les classes par défaut (pas de merge).
+   *   L'appelant assume toute la cosmétique du titre (taille, poids, couleur).
+   *
+   * Sans effet si `headerless={true}`.
+   */
+  titleClassName?: string;
+  /**
+   * Si `true`, le bloc header (title + description + séparateur `border-b`)
+   * n'est jamais rendu, même si `title` ou `description` sont fournis.
+   *
+   * Destiné aux modals au layout très custom (ex : SignupPromptModal) où le
+   * header standard ne convient pas.
+   *
+   * ⚠️ Accessibilité : quand `headerless={true}`, le Dialog n'expose plus
+   * `aria-labelledby` ni `aria-describedby`. L'appelant DOIT garantir
+   * l'accessibilité du modal autrement — typiquement en rendant un titre
+   * sémantique (`<h2>`, `<h3>`…) dans `children`. Les lecteurs d'écran
+   * liront alors le contenu mais sans label structuré explicite au niveau
+   * du dialog.
+   */
+  headerless?: boolean;
 }
 
 const sizes = {
@@ -32,6 +57,8 @@ export function Dialog({
   footer,
   size = 'md',
   dismissOnBackdropClick = true,
+  titleClassName,
+  headerless = false,
 }: DialogProps): React.ReactElement | null {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -73,8 +100,8 @@ export function Dialog({
             ref={contentRef}
             role="dialog"
             aria-modal="true"
-            aria-labelledby={title ? 'kx-dialog-title' : undefined}
-            aria-describedby={description ? 'kx-dialog-desc' : undefined}
+            aria-labelledby={title && !headerless ? 'kx-dialog-title' : undefined}
+            aria-describedby={description && !headerless ? 'kx-dialog-desc' : undefined}
             tabIndex={-1}
             initial={{ opacity: 0, y: 16, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -92,10 +119,13 @@ export function Dialog({
             >
               <X className="h-4 w-4" />
             </button>
-            {(title || description) && (
+            {!headerless && (title || description) && (
               <div className="border-b border-white/10 px-6 pb-4 pt-5">
                 {title && (
-                  <h2 id="kx-dialog-title" className="text-base font-semibold tracking-tight text-white">
+                  <h2
+                    id="kx-dialog-title"
+                    className={titleClassName ?? 'text-base font-semibold tracking-tight text-white'}
+                  >
                     {title}
                   </h2>
                 )}

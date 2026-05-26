@@ -1,7 +1,10 @@
+import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { tagConversion } from '../../hooks/useABVariant';
 import { trackSandbox } from '../../sandbox/useSandboxAnalytics';
+import { Dialog } from '../ui';
 
 import type { FrictionTrigger } from '../../sandbox/useSandboxLimits';
 
@@ -53,67 +56,55 @@ export function SignupPromptModal({
   trigger,
   onClose,
 }: SignupPromptModalProps): React.ReactElement | null {
-  if (!open || !trigger) {return null;}
+  if (!trigger) {return null;}
 
   const copy = COPY[trigger];
 
   const handleCtaClick = (): void => {
-    trackSandbox({ type: 'sandbox_signup_intent', props: { from: 'modal' } });
+    trackSandbox({ type: 'sandbox_signup_intent', props: { from: 'modal', trigger } });
+    tagConversion('hero', 'sandbox_signup_intent_ab');
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="sandbox-prompt-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {onClose();}
-      }}
-    >
-      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#13131a] p-6 shadow-2xl">
+    <Dialog open={open} onClose={onClose} headerless size="md">
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs text-amber-300">
+        <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden />
+        Mode démo
+      </div>
+
+      <h2
+        id="sandbox-prompt-title"
+        data-testid="signup-prompt-title"
+        className="text-xl font-semibold text-white"
+      >
+        {copy.title}
+      </h2>
+      <p className="mt-2 text-sm leading-relaxed text-white/65">{copy.body}</p>
+
+      <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+        <Link
+          to={`/register?from=${trigger}`}
+          onClick={handleCtaClick}
+          data-testid="signup-prompt-cta-primary"
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-white/90"
+        >
+          {copy.cta}
+          <ArrowRight className="w-4 h-4" aria-hidden="true" />
+        </Link>
         <button
           type="button"
           onClick={onClose}
-          aria-label="Fermer"
-          className="absolute right-3 top-3 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
+          data-testid="signup-prompt-cta-secondary"
+          className="inline-flex flex-1 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/10"
         >
-          <span aria-hidden>×</span>
+          Continuer en démo
         </button>
-
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs text-amber-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden />
-          Mode démo
-        </div>
-
-        <h2 id="sandbox-prompt-title" className="text-xl font-semibold text-white">
-          {copy.title}
-        </h2>
-        <p className="mt-2 text-sm leading-relaxed text-white/65">{copy.body}</p>
-
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-          <Link
-            to="/register"
-            onClick={handleCtaClick}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-white/90"
-          >
-            {copy.cta}
-            <span aria-hidden>→</span>
-          </Link>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex flex-1 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/10"
-          >
-            Continuer en démo
-          </button>
-        </div>
-
-        <p className="mt-4 text-center text-xs text-white/40">
-          Sans CB · 15 secondes · RGPD
-        </p>
       </div>
-    </div>
+
+      <p className="mt-4 text-center text-xs text-white/40">
+        Sans CB · 15 secondes · RGPD
+      </p>
+    </Dialog>
   );
 }
 

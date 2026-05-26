@@ -1,5 +1,8 @@
+import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
+
+import { Card } from '../ui';
 
 /**
  * "Du croquis au devis signé en 3 étapes" — sits between the hero and
@@ -20,7 +23,11 @@ interface StepProps {
 
 function Step({ index, title, description, illustration }: StepProps): React.ReactElement {
   return (
-    <article className="group relative flex flex-col gap-4 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:from-white/[0.07]">
+    <Card
+      as="article"
+      variant="elevated"
+      className="group relative flex flex-col gap-4 p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:from-white/[0.09]"
+    >
       <div className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-black/40 text-sm font-semibold text-white/80">
         {index}
       </div>
@@ -33,7 +40,7 @@ function Step({ index, title, description, illustration }: StepProps): React.Rea
         <h3 className="text-lg font-semibold text-white">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-white/60">{description}</p>
       </div>
-    </article>
+    </Card>
   );
 }
 
@@ -82,7 +89,7 @@ export function HowItWorks(): React.ReactElement {
           className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-white/90 backdrop-blur transition hover:border-white/30 hover:bg-white/10"
         >
           Essayer maintenant
-          <span className="transition group-hover:translate-x-0.5" aria-hidden>→</span>
+          <ArrowRight className="w-4 h-4 transition group-hover:translate-x-0.5" aria-hidden="true" />
         </Link>
       </div>
     </section>

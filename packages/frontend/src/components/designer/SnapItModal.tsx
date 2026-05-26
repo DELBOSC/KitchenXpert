@@ -1,3 +1,4 @@
+import { Camera, X } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 
 /**
@@ -162,7 +163,7 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
           aria-label="Fermer"
           className="absolute right-3 top-3 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
         >
-          <span aria-hidden>×</span>
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
 
         <h2 id="snapit-title" className="text-2xl font-semibold text-white">
@@ -198,7 +199,7 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
                 </>
               ) : (
                 <>
-                  <div className="text-4xl text-white/30" aria-hidden>📷</div>
+                  <div><Camera className="w-10 h-10 text-white/40" aria-hidden="true" /></div>
                   <div className="mt-3 text-sm font-medium text-white/85">Glisse une photo ici</div>
                   <div className="mt-1 text-xs text-white/40">JPG / PNG / WebP · 8 MB max</div>
                   <button

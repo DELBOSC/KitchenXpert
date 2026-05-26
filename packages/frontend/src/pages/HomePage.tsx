@@ -1,6 +1,8 @@
+import { ArrowRight, Check, MapPin } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+
+import { LocalizedLink } from '../i18n/LocalizedLink';
 
 import { HeroA, HeroB, HeroC } from '../components/Hero/HeroVariants';
 import { HowItWorks } from '../components/Hero/HowItWorks';
@@ -33,8 +35,6 @@ export default function HomePage(): React.ReactElement {
       />
       <AuroraBackground />
 
-      <Nav />
-
       <main className="relative z-10">
         {variant === 'A' && <HeroA />}
         {variant === 'B' && <HeroB />}
@@ -53,7 +53,6 @@ export default function HomePage(): React.ReactElement {
 
         <Features t={t} />
         <ShowcaseSplit />
-        <Metrics />
         <Testimonial />
         <CTA t={t} />
       </main>
@@ -75,146 +74,6 @@ function AuroraBackground(): React.ReactElement {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.06),transparent_50%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
     </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Top navigation
-// ---------------------------------------------------------------------------
-function Nav(): React.ReactElement {
-  return (
-    <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-      <Link to="/" className="flex items-center gap-2">
-        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-400 to-fuchsia-500 shadow-lg shadow-fuchsia-500/30" />
-        <span className="text-lg font-semibold tracking-tight">KitchenXpert</span>
-      </Link>
-      <div className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-        <Link to="/catalog" className="transition hover:text-white">Catalogue</Link>
-        <Link to="/pricing" className="transition hover:text-white">Tarifs</Link>
-        <Link to="/designer" className="transition hover:text-white">Designer 3D</Link>
-        <Link to="/marketplace" className="transition hover:text-white">Marketplace</Link>
-      </div>
-      <div className="flex items-center gap-3">
-        <Link
-          to="/login"
-          className="hidden rounded-full px-4 py-2 text-sm text-white/80 transition hover:text-white md:inline-flex"
-        >
-          Connexion
-        </Link>
-        <Link
-          to="/register"
-          className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-lg shadow-white/10 transition hover:bg-white/90"
-        >
-          Démarrer
-          <span aria-hidden>→</span>
-        </Link>
-      </div>
-    </nav>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Hero
-// ---------------------------------------------------------------------------
-function Hero({ t }: { t: (k: string) => string }): React.ReactElement {
-  return (
-    <section className="mx-auto max-w-7xl px-6 pt-20 pb-24 text-center sm:pt-28">
-      <div className="mx-auto mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-white/80 backdrop-blur">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-        Nouveau — Configurateur IA v2 disponible
-      </div>
-
-      <h1 className="mx-auto max-w-4xl bg-gradient-to-b from-white to-white/60 bg-clip-text text-5xl font-semibold leading-[1.05] tracking-tight text-transparent sm:text-6xl md:text-7xl">
-        La cuisine que vous imaginez,
-        <br />
-        <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-rose-300 bg-clip-text text-transparent">
-          conçue en quelques minutes.
-        </span>
-      </h1>
-
-      <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60 sm:text-xl">
-        {t('home.tagline')}
-      </p>
-
-      <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-        <Link
-          to="/designer/sandbox"
-          className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_40px_rgba(255,255,255,0.12)] transition hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_8px_60px_rgba(255,255,255,0.25)]"
-        >
-          Essayer le designer
-          <span className="transition group-hover:translate-x-0.5" aria-hidden>→</span>
-        </Link>
-        <Link
-          to="/register"
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white/90 backdrop-blur transition hover:border-white/25 hover:bg-white/10"
-        >
-          Créer un compte
-        </Link>
-      </div>
-
-      <p className="mt-6 text-xs text-white/40">
-        Aucun compte requis pour essayer · Sauvegarde locale automatique · RGPD conforme
-      </p>
-
-      <HeroVisual />
-    </section>
-  );
-}
-
-function HeroVisual(): React.ReactElement {
-  return (
-    <div className="relative mx-auto mt-20 max-w-5xl">
-      <div className="absolute -inset-x-8 -inset-y-4 rounded-[2rem] bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-cyan-500/20 blur-2xl" aria-hidden />
-      <div className="relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-2 shadow-2xl backdrop-blur">
-        <div className="rounded-xl border border-white/10 bg-[#0d0d14] p-8">
-          <div className="mb-4 flex items-center gap-1.5">
-            <div className="h-3 w-3 rounded-full bg-red-500/70" />
-            <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
-            <div className="h-3 w-3 rounded-full bg-green-500/70" />
-            <div className="ml-4 text-xs text-white/40">kitchenxpert.com/designer</div>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="col-span-2 aspect-[16/10] rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black">
-              <div className="flex h-full items-center justify-center text-6xl">🍳</div>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Panel label="Style" value="Scandinave" />
-              <Panel label="Layout" value="L-shaped" />
-              <Panel label="Budget" value="12 400 €" />
-              <Panel label="Score IA" value="94 / 100" highlight />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Panel({ label, value, highlight }: { label: string; value: string; highlight?: boolean }): React.ReactElement {
-  return (
-    <div className={`rounded-md border p-3 ${highlight ? 'border-fuchsia-400/30 bg-fuchsia-500/10' : 'border-white/10 bg-white/5'}`}>
-      <div className="text-[10px] uppercase tracking-wider text-white/40">{label}</div>
-      <div className={`mt-1 text-sm font-medium ${highlight ? 'text-fuchsia-200' : 'text-white'}`}>{value}</div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Trust: logo strip
-// ---------------------------------------------------------------------------
-function LogoStrip(): React.ReactElement {
-  const partners = ['IKEA', 'Schmidt', 'Bosch', 'Leroy Merlin', 'Castorama', 'Siemens'];
-  return (
-    <section className="mx-auto max-w-6xl px-6 pb-8">
-      <p className="mb-6 text-center text-xs uppercase tracking-widest text-white/40">
-        Catalogues connectés en direct
-      </p>
-      <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 opacity-60">
-        {partners.map((p) => (
-          <span key={p} className="text-lg font-semibold tracking-tight text-white/70">{p}</span>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -337,7 +196,7 @@ function ShowcaseSplit(): React.ReactElement {
               'Export BIM + liste de commande',
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-sm text-white/80">
-                <span className="mt-1 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-[10px] text-white">✓</span>
+                <span className="mt-1 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-white"><Check className="w-3 h-3" aria-hidden="true" /></span>
                 {item}
               </li>
             ))}
@@ -366,32 +225,6 @@ function ShowcaseSplit(): React.ReactElement {
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Metrics strip
-// ---------------------------------------------------------------------------
-function Metrics(): React.ReactElement {
-  const stats = [
-    { value: '50k+', label: 'Cuisines générées' },
-    { value: '98%', label: 'Taux de satisfaction' },
-    { value: '< 3 min', label: 'Temps moyen de génération' },
-    { value: '24 / 7', label: 'Support technique' },
-  ];
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-16">
-      <div className="grid gap-8 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.01] p-10 backdrop-blur sm:grid-cols-2 md:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center">
-            <div className="bg-gradient-to-b from-white to-white/50 bg-clip-text text-4xl font-semibold tracking-tight text-transparent">
-              {s.value}
-            </div>
-            <div className="mt-1 text-sm text-white/50">{s.label}</div>
-          </div>
-        ))}
       </div>
     </section>
   );
@@ -437,19 +270,19 @@ function CTA({ t }: { t: (k: string) => string }): React.ReactElement {
             Démarrez gratuitement. Mettez à niveau quand vous êtes prêt.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
+            <LocalizedLink
               to="/register"
               className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-gray-900 transition hover:bg-white/90"
             >
               {t('home.startDesign')}
-              <span aria-hidden>→</span>
-            </Link>
-            <Link
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </LocalizedLink>
+            <LocalizedLink
               to="/pricing"
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-medium text-white/90 backdrop-blur transition hover:bg-white/10"
             >
               Voir les tarifs
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
       </div>
@@ -463,7 +296,7 @@ function CTA({ t }: { t: (k: string) => string }): React.ReactElement {
 function Footer(): React.ReactElement {
   return (
     <footer className="relative z-10 border-t border-white/10 px-6 py-12">
-      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-400 to-fuchsia-500" />
@@ -474,15 +307,9 @@ function Footer(): React.ReactElement {
           </p>
         </div>
         <FooterCol title="Produit" links={[
-          { label: 'Designer 3D', href: '/designer' },
+          { label: 'Designer 3D', href: '/designer/sandbox' },
           { label: 'Catalogue', href: '/catalog' },
           { label: 'Tarifs', href: '/pricing' },
-          { label: 'Marketplace', href: '/marketplace' },
-        ]} />
-        <FooterCol title="Ressources" links={[
-          { label: 'Documentation', href: '/docs' },
-          { label: 'Blog', href: '/blog' },
-          { label: 'Support', href: '/support' },
         ]} />
         <FooterCol title="Légal" links={[
           { label: 'Mentions légales', href: '/legal/mentions' },
@@ -493,7 +320,7 @@ function Footer(): React.ReactElement {
       </div>
       <div className="mx-auto mt-10 flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
         <p>© {new Date().getFullYear()} KitchenXpert SAS — Tous droits réservés.</p>
-        <p>Made in France 🇫🇷 · Hébergé dans l'UE</p>
+        <p>Made in France <MapPin className="inline-block w-4 h-4 align-text-bottom" aria-hidden="true" /> · Hébergé dans l'UE</p>
       </div>
     </footer>
   );
@@ -506,9 +333,9 @@ function FooterCol({ title, links }: { title: string; links: { label: string; hr
       <ul className="space-y-2">
         {links.map((l) => (
           <li key={l.href}>
-            <Link to={l.href} className="text-sm text-white/70 transition hover:text-white">
+            <LocalizedLink to={l.href} className="text-sm text-white/70 transition hover:text-white">
               {l.label}
-            </Link>
+            </LocalizedLink>
           </li>
         ))}
       </ul>

@@ -6,6 +6,9 @@
 // auto-instrumentation also has to wrap pg/express *before* they're imported,
 // so we keep it on this same first import line.
 // =============================================================================
+// eslint-disable-next-line import/order -- side-effect import MUST be first
+import './config/load-env';
+
 import { authService } from './auth/auth.service';
 import { config } from './config/app-config';
 import { validateEnv } from './config/env-validator';

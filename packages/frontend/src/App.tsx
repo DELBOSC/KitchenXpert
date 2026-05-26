@@ -27,7 +27,7 @@ function App(): React.ReactElement {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           {/* LanguageProvider must live INSIDE BrowserRouter because it
               reads useLocation/useNavigate. It owns i18n.changeLanguage
               + document.documentElement.lang + the `kx-lang` cookie. */}

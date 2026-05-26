@@ -1,6 +1,8 @@
+import { ArrowLeft, Palette, Ruler, Sparkles } from 'lucide-react';
 import React from 'react';
 
 import { SANDBOX_TEMPLATES, type SandboxTemplate } from '../../sandbox/templates';
+import { Dialog } from '../ui';
 
 /**
  * First-visit modal in the sandbox designer. Three branches:
@@ -32,106 +34,85 @@ export function SandboxOnboardingModal({
 }: SandboxOnboardingModalProps): React.ReactElement | null {
   const [tab, setTab] = React.useState<'choose' | 'templates'>('choose');
 
-  if (!open) {return null;}
-
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="sandbox-onboarding-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {onSkip();}
-      }}
+    <Dialog
+      open={open}
+      onClose={onSkip}
+      title="Comment souhaitez-vous démarrer ?"
+      description="Vous êtes en mode démo. Aucun compte requis. Votre projet est sauvegardé dans ce navigateur."
+      titleClassName="text-2xl font-semibold tracking-tight text-white"
+      size="xl"
     >
-      <div className="relative w-full max-w-3xl rounded-2xl border border-white/10 bg-[#13131a] p-8 shadow-2xl">
+      {tab === 'choose' && (
+        <div className="grid gap-4 sm:grid-cols-3">
+          <ChoiceCard
+            icon={<Sparkles className="w-8 h-8" aria-hidden="true" />}
+            title="Cuisine vide"
+            body="Partez d'une pièce vide aux dimensions par défaut (4 × 3,5 m)."
+            onClick={onPickEmpty}
+          />
+          <ChoiceCard
+            icon={<Ruler className="w-8 h-8" aria-hidden="true" />}
+            title="Importer un plan"
+            body="Glissez votre PDF, DXF ou photo de plan annoté."
+            onClick={onImportPlan}
+            comingSoon
+          />
+          <ChoiceCard
+            icon={<Palette className="w-8 h-8" aria-hidden="true" />}
+            title="Choisir un template"
+            body="6 layouts pré-configurés : L, U, parallèle, îlot, ouverte, atypique."
+            onClick={() => setTab('templates')}
+          />
+        </div>
+      )}
+
+      {tab === 'templates' && (
+        <div>
+          <button
+            type="button"
+            onClick={() => setTab('choose')}
+            className="mb-4 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" /> Retour
+          </button>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {SANDBOX_TEMPLATES.map((tpl) => (
+              <button
+                key={tpl.id}
+                type="button"
+                onClick={() => onPickTemplate(tpl)}
+                className="group flex flex-col gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left transition hover:border-white/20 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              >
+                <div className="aspect-video rounded-lg bg-gradient-to-br from-slate-700 to-slate-900" aria-hidden />
+                <div className="text-sm font-medium text-white">{tpl.name}</div>
+                <div className="text-xs text-white/55">{tpl.blurb}</div>
+                <div className="mt-1 text-[11px] text-white/40">
+                  {tpl.items.length} meubles · {tpl.widthCm}×{tpl.depthCm} cm
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-6 text-center">
         <button
           type="button"
           onClick={onSkip}
-          aria-label="Fermer"
-          className="absolute right-4 top-4 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
+          className="text-xs text-white/40 underline-offset-4 hover:text-white/70 hover:underline"
         >
-          <span aria-hidden>×</span>
+          Passer cette étape
         </button>
-
-        <h2 id="sandbox-onboarding-title" className="text-2xl font-semibold text-white">
-          Comment souhaitez-vous démarrer&nbsp;?
-        </h2>
-        <p className="mt-2 text-sm text-white/60">
-          Vous êtes en mode démo. Aucun compte requis. Votre projet est sauvegardé dans ce navigateur.
-        </p>
-
-        {tab === 'choose' && (
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            <ChoiceCard
-              icon="✨"
-              title="Cuisine vide"
-              body="Partez d'une pièce vide aux dimensions par défaut (4 × 3,5 m)."
-              onClick={onPickEmpty}
-            />
-            <ChoiceCard
-              icon="📐"
-              title="Importer un plan"
-              body="Glissez votre PDF, DXF ou photo de plan annoté."
-              onClick={onImportPlan}
-              comingSoon
-            />
-            <ChoiceCard
-              icon="🎨"
-              title="Choisir un template"
-              body="6 layouts pré-configurés : L, U, parallèle, îlot, ouverte, atypique."
-              onClick={() => setTab('templates')}
-            />
-          </div>
-        )}
-
-        {tab === 'templates' && (
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={() => setTab('choose')}
-              className="mb-4 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
-            >
-              <span aria-hidden>←</span> Retour
-            </button>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {SANDBOX_TEMPLATES.map((tpl) => (
-                <button
-                  key={tpl.id}
-                  type="button"
-                  onClick={() => onPickTemplate(tpl)}
-                  className="group flex flex-col gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left transition hover:border-white/20 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-                >
-                  <div className="aspect-video rounded-lg bg-gradient-to-br from-slate-700 to-slate-900" aria-hidden />
-                  <div className="text-sm font-medium text-white">{tpl.name}</div>
-                  <div className="text-xs text-white/55">{tpl.blurb}</div>
-                  <div className="mt-1 text-[11px] text-white/40">
-                    {tpl.items.length} meubles · {tpl.widthCm}×{tpl.depthCm} cm
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="mt-6 text-center">
-          <button
-            type="button"
-            onClick={onSkip}
-            className="text-xs text-white/40 underline-offset-4 hover:text-white/70 hover:underline"
-          >
-            Passer cette étape
-          </button>
-        </div>
       </div>
-    </div>
+    </Dialog>
   );
 }
 
 function ChoiceCard({
   icon, title, body, onClick, comingSoon = false,
 }: {
-  icon: string; title: string; body: string; onClick: () => void; comingSoon?: boolean;
+  icon: React.ReactNode; title: string; body: string; onClick: () => void; comingSoon?: boolean;
 }): React.ReactElement {
   return (
     <button

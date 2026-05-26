@@ -21,7 +21,7 @@ export type SandboxEvent =
   | { type: 'sandbox_session_start'; props?: { template?: string | null } }
   | { type: 'sandbox_first_action'; props: { action: 'add_item' | 'move_item' | 'change_layout' | 'open_catalog' } }
   | { type: 'sandbox_friction_hit'; props: { trigger: 'pdf_export' | 'ai_use' | 'quote_compare' | 'pathtracer' | 'session_15min' } }
-  | { type: 'sandbox_signup_intent'; props: { from: 'banner' | 'modal' | 'menu' | 'friction' } }
+  | { type: 'sandbox_signup_intent'; props: { from: 'banner' | 'modal' | 'menu' | 'friction'; trigger?: 'pdf_export' | 'ai_use' | 'quote_compare' | 'pathtracer' | 'session_15min' } }
   | { type: 'sandbox_signup_completed'; props: { imported: 'yes' | 'no' } }
   | { type: 'sandbox_session_duration'; props: { seconds: number } }
   | { type: 'sandbox_items_added'; props: { count: number } };

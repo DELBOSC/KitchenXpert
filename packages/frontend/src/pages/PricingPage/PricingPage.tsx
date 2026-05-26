@@ -161,7 +161,7 @@ const featureComparison: FeatureRow[] = [
 
 function CheckIcon(): React.ReactElement {
   return (
-    <svg className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-5 h-5 text-kx-brand-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
     </svg>
   );
@@ -181,37 +181,37 @@ function PricingCard({ tier, annual }: { tier: PricingTier; annual: boolean }): 
     <div
       className={`relative flex flex-col rounded-2xl border-2 p-8 transition-shadow ${
         tier.popular
-          ? 'border-blue-600 dark:border-blue-500 shadow-xl shadow-blue-100 dark:shadow-blue-900/20'
-          : 'border-gray-200 dark:border-gray-700 hover:shadow-lg'
-      } bg-white dark:bg-gray-800`}
+          ? 'border-kx-brand-from shadow-xl shadow-kx-brand-from/20'
+          : 'border-kx-fg/10 hover:shadow-lg'
+      } bg-kx-elevated`}
     >
       {/* Popular badge */}
       {tier.popular && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-          <span className="inline-flex items-center rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white shadow-sm">
+          <span className="inline-flex items-center rounded-full bg-gradient-to-br from-kx-brand-from to-kx-brand-to px-4 py-1 text-sm font-semibold text-white shadow-sm">
             {t('pricing.popular', 'Populaire')}
           </span>
         </div>
       )}
 
       {/* Tier name */}
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t(tier.nameKey, tier.nameDefault)}</h3>
+      <h3 className="text-lg font-semibold text-kx-fg">{t(tier.nameKey, tier.nameDefault)}</h3>
 
       {/* Price */}
       <div className="mt-4 flex items-baseline gap-1">
-        <span className="text-4xl font-bold text-gray-900 dark:text-white">{displayPrice}&euro;</span>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+        <span className="text-4xl font-bold text-kx-fg">{displayPrice}&euro;</span>
+        <span className="text-sm text-kx-fg/60">
           {annual ? t('pricing.billing.perMonth', '/month') : t(tier.periodKey, tier.periodDefault)}
         </span>
       </div>
       {annual && basePrice > 0 && (
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-xs text-kx-fg/60">
           {t('pricing.billing.billedAnnually', 'Billed annually')} ({Math.round(displayPrice * 12)}&euro;{t('pricing.billing.perYear', '/year')})
         </p>
       )}
 
       {/* Description */}
-      <p className="mt-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+      <p className="mt-4 text-sm text-kx-fg/75 leading-relaxed">
         {t(tier.descriptionKey, tier.descriptionDefault)}
       </p>
 
@@ -220,7 +220,7 @@ function PricingCard({ tier, annual }: { tier: PricingTier; annual: boolean }): 
         {tier.featureKeys.map((feature) => (
           <li key={feature.key} className="flex items-start gap-3">
             <CheckIcon />
-            <span className="text-sm text-gray-700 dark:text-gray-300">{t(feature.key, feature.defaultValue)}</span>
+            <span className="text-sm text-kx-fg/80">{t(feature.key, feature.defaultValue)}</span>
           </li>
         ))}
       </ul>
@@ -230,10 +230,10 @@ function PricingCard({ tier, annual }: { tier: PricingTier; annual: boolean }): 
         {isExternal ? (
           <a
             href={tier.ctaLink}
-            className={`block w-full text-center px-6 py-3 rounded-lg text-sm font-semibold transition-colors ${
+            className={`block w-full text-center px-6 py-3 rounded-lg text-sm font-semibold transition ${
               tier.popular
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-gradient-to-br from-kx-brand-from to-kx-brand-to text-white hover:opacity-90'
+                : 'bg-kx-fg/10 text-kx-fg hover:bg-kx-fg/20'
             }`}
           >
             {t(tier.ctaKey, tier.ctaDefault)}
@@ -241,10 +241,10 @@ function PricingCard({ tier, annual }: { tier: PricingTier; annual: boolean }): 
         ) : (
           <Link
             to={tier.ctaLink}
-            className={`block w-full text-center px-6 py-3 rounded-lg text-sm font-semibold transition-colors ${
+            className={`block w-full text-center px-6 py-3 rounded-lg text-sm font-semibold transition ${
               tier.popular
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-gradient-to-br from-kx-brand-from to-kx-brand-to text-white hover:opacity-90'
+                : 'bg-kx-fg/10 text-kx-fg hover:bg-kx-fg/20'
             }`}
           >
             {t(tier.ctaKey, tier.ctaDefault)}
@@ -263,10 +263,10 @@ function renderCellValue(cell: CellValue, t: (key: string, defaultValue: string)
       return cell.value ? (
         <span className="inline-flex justify-center"><CheckIcon /></span>
       ) : (
-        <span className="text-gray-400 dark:text-gray-600">--</span>
+        <span className="text-kx-fg/30">--</span>
       );
     case 'none':
-      return <span className="text-gray-400 dark:text-gray-600">--</span>;
+      return <span className="text-kx-fg/30">--</span>;
     case 'text':
       return t(cell.key, cell.defaultValue);
   }
@@ -279,17 +279,17 @@ function FeatureComparisonTable(): React.ReactElement {
     <div className="overflow-x-auto">
       <table className="w-full text-sm" aria-label={t('pricing.comparison.tableLabel', 'Feature comparison across plans')}>
         <thead>
-          <tr className="border-b border-gray-200 dark:border-gray-700">
-            <th className="py-4 pr-4 text-left font-semibold text-gray-900 dark:text-white">
+          <tr className="border-b border-kx-fg/20">
+            <th className="py-4 pr-4 text-left font-semibold text-kx-fg">
               {t('pricing.comparison.feature', 'Feature')}
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-gray-900 dark:text-white">
+            <th className="py-4 px-4 text-center font-semibold text-kx-fg">
               {t('pricing.plans.free.name', 'Free')}
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-blue-600 dark:text-blue-400">
+            <th className="py-4 px-4 text-center font-semibold text-kx-brand-from">
               {t('pricing.plans.pro.name', 'Pro')}
             </th>
-            <th className="py-4 pl-4 text-center font-semibold text-gray-900 dark:text-white">
+            <th className="py-4 pl-4 text-center font-semibold text-kx-fg">
               {t('pricing.plans.enterprise.name', 'Enterprise')}
             </th>
           </tr>
@@ -298,20 +298,20 @@ function FeatureComparisonTable(): React.ReactElement {
           {featureComparison.map((row, idx) => (
             <tr
               key={row.nameKey}
-              className={`border-b border-gray-100 dark:border-gray-700/50 ${
-                idx % 2 === 0 ? 'bg-gray-50/50 dark:bg-gray-800/50' : ''
+              className={`border-b border-kx-fg/10 ${
+                idx % 2 === 0 ? 'bg-kx-fg/5' : ''
               }`}
             >
-              <td className="py-3 pr-4 text-gray-700 dark:text-gray-300 font-medium">
+              <td className="py-3 pr-4 text-kx-fg/80 font-medium">
                 {t(row.nameKey, row.nameDefault)}
               </td>
-              <td className="py-3 px-4 text-center text-gray-600 dark:text-gray-400">
+              <td className="py-3 px-4 text-center text-kx-fg/60">
                 {renderCellValue(row.free, t)}
               </td>
-              <td className="py-3 px-4 text-center text-gray-600 dark:text-gray-400">
+              <td className="py-3 px-4 text-center text-kx-fg/60">
                 {renderCellValue(row.pro, t)}
               </td>
-              <td className="py-3 pl-4 text-center text-gray-600 dark:text-gray-400">
+              <td className="py-3 pl-4 text-center text-kx-fg/60">
                 {renderCellValue(row.enterprise, t)}
               </td>
             </tr>
@@ -329,7 +329,7 @@ const PricingPage: React.FC = () => {
   const [annual, setAnnual] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-kx-base py-12 px-4 sm:px-6 lg:px-8">
       <SeoHead
         title="Tarifs"
         description="3 plans : Découverte gratuit · Premium 14,90 €/mois · Studio 49 €/mois. Sans engagement, sans CB pour démarrer."
@@ -338,22 +338,22 @@ const PricingPage: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl">
+          <h1 className="text-4xl font-bold text-kx-fg sm:text-5xl">
             {t('pricing.title', 'Tarifs simples, sans surprise')}
           </h1>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-kx-fg/70 max-w-2xl mx-auto">
             {t('pricing.subtitle', 'Choisissez le plan qui correspond a vos besoins. Commencez gratuitement et evoluez quand vous le souhaitez.')}
           </p>
 
           {/* Billing toggle */}
           <div className="mt-8 flex items-center justify-center gap-3">
-            <span className={`text-sm font-medium ${!annual ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+            <span className={`text-sm font-medium ${!annual ? 'text-kx-fg' : 'text-kx-fg/50'}`}>
               {t('pricing.billing.monthly', 'Mensuel')}
             </span>
             <button
               onClick={() => setAnnual(!annual)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                annual ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+                annual ? 'bg-kx-brand-from' : 'bg-kx-fg/20'
               }`}
               role="switch"
               aria-checked={annual}
@@ -365,9 +365,9 @@ const PricingPage: React.FC = () => {
                 }`}
               />
             </button>
-            <span className={`text-sm font-medium ${annual ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+            <span className={`text-sm font-medium ${annual ? 'text-kx-fg' : 'text-kx-fg/50'}`}>
               {t('pricing.billing.annual', 'Annuel')}
-              <span className="ml-1 inline-flex items-center rounded-full bg-green-100 dark:bg-green-900 px-2 py-0.5 text-xs font-medium text-green-800 dark:text-green-300">
+              <span className="ml-1 inline-flex items-center rounded-full bg-kx-accent-warm/20 px-2 py-0.5 text-xs font-medium text-kx-accent-warm">
                 {t('pricing.billing.discount', '-20%')}
               </span>
             </span>
@@ -383,17 +383,17 @@ const PricingPage: React.FC = () => {
 
         {/* Feature Comparison */}
         <div className="mt-20 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
+          <h2 className="text-2xl font-bold text-kx-fg text-center mb-8">
             {t('pricing.comparison.title', 'Comparaison detaillee')}
           </h2>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-kx-elevated rounded-xl shadow-sm border border-kx-fg/10 p-6">
             <FeatureComparisonTable />
           </div>
         </div>
 
         {/* Trust signals — 8 garanties juste avant le bottom CTA */}
         <div className="mt-16">
-          <h2 className="mb-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="mb-6 text-center text-2xl font-bold text-kx-fg">
             {t('pricing.trust.title', 'Nos engagements, sans conditions')}
           </h2>
           <TrustStack layout="grid" />
@@ -401,9 +401,9 @@ const PricingPage: React.FC = () => {
 
         {/* FAQ / Bottom CTA */}
         <div className="mt-16 text-center">
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-kx-fg/60">
             {t('pricing.cta.questions', 'Des questions ? Contactez-nous a')}{' '}
-            <a href="mailto:contact@kitchenxpert.com" className="text-blue-600 dark:text-blue-400 hover:underline">
+            <a href="mailto:contact@kitchenxpert.com" className="text-kx-brand-from hover:text-kx-brand-to hover:underline transition-colors">
               contact@kitchenxpert.com
             </a>
           </p>

@@ -1,3 +1,4 @@
+import { ChefHat, X } from 'lucide-react';
 import React, { useState } from 'react';
 
 import { useSandboxStore, type SandboxItem } from '../../sandbox/store';
@@ -165,7 +166,7 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
           aria-label="Fermer"
           className="absolute right-3 top-3 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
         >
-          <span aria-hidden>×</span>
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
 
         <h2 id="auto-layout-title" className="text-2xl font-semibold text-white">
@@ -252,7 +253,7 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
                   {previewUrls?.[i] ? (
                     <img src={previewUrls[i]} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-4xl">🍳</div>
+                    <div className="flex h-full items-center justify-center text-4xl"><ChefHat className="w-12 h-12 text-white/40" aria-hidden="true" /></div>
                   )}
                 </div>
                 <div className="flex items-baseline justify-between">

@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -96,7 +97,7 @@ export function ReviewsSection({
             className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-white/90 transition hover:border-white/30 hover:bg-white/10"
           >
             Voir tous les avis
-            <span aria-hidden>→</span>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       )}
@@ -119,7 +120,7 @@ function ReviewsPlaceholder({ className = '' }: { className?: string }): React.R
         className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-white/90"
       >
         Essayer le designer
-        <span aria-hidden>→</span>
+        <ArrowRight className="w-4 h-4" aria-hidden="true" />
       </Link>
     </section>
   );

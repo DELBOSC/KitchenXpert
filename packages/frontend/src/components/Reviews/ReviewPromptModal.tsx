@@ -1,4 +1,7 @@
+import { ArrowUpRight, Heart, PartyPopper } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+
+import { Dialog } from '../ui';
 
 /**
  * ReviewPromptModal — modal de satisfaction in-app.
@@ -61,8 +64,6 @@ export function ReviewPromptModal(): React.ReactElement | null {
     return () => { mounted = false; };
   }, []);
 
-  if (!open) {return null;}
-
   const close = async (): Promise<void> => {
     setOpen(false);
     if (request?.id) {
@@ -114,149 +115,140 @@ export function ReviewPromptModal(): React.ReactElement | null {
     }
   };
 
+  const titleByStep: Record<Step, React.ReactNode> = {
+    'rate': <>Comment se passe votre expérience&nbsp;?</>,
+    'feedback-form': <>Qu'est-ce qui pourrait être mieux&nbsp;?</>,
+    'thanks-external': (
+      <>
+        Merci&nbsp;! <PartyPopper className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
+      </>
+    ),
+    'thanks-internal': (
+      <>
+        Bien reçu, merci. <Heart className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
+      </>
+    ),
+  };
+
+  const descriptionByStep: Record<Step, React.ReactNode> = {
+    'rate': <>Votre retour nous aide à améliorer KitchenXpert. Ça prend 30 secondes.</>,
+    'feedback-form': (
+      <>
+        Votre message va directement à l'équipe produit — il n'est PAS publié.
+        Nous lisons et répondons généralement sous 48 h.
+      </>
+    ),
+    'thanks-external': (
+      <>
+        Acceptez-vous de partager votre avis sur une plateforme publique&nbsp;?
+        Ça nous aide énormément à exister face à la concurrence.
+      </>
+    ),
+    'thanks-internal': <>On revient vers vous sous 48 h. En attendant, votre projet vous attend.</>,
+  };
+
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="review-prompt-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) {void close();} }}
+    <Dialog
+      open={open}
+      onClose={() => void close()}
+      title={titleByStep[step]}
+      description={descriptionByStep[step]}
+      titleClassName="text-xl font-semibold text-white"
+      size="md"
     >
-      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#13131a] p-6 shadow-2xl">
-        <button
-          type="button"
-          onClick={() => void close()}
-          aria-label="Fermer"
-          className="absolute right-3 top-3 rounded-full p-2 text-white/50 transition hover:bg-white/5 hover:text-white"
-        >
-          <span aria-hidden>×</span>
-        </button>
-
-        {step === 'rate' && (
-          <>
-            <h2 id="review-prompt-title" className="text-xl font-semibold text-white">
-              Comment se passe votre expérience&nbsp;?
-            </h2>
-            <p className="mt-2 text-sm text-white/65">
-              Votre retour nous aide à améliorer KitchenXpert. Ça prend 30 secondes.
-            </p>
-
-            <div
-              role="radiogroup"
-              aria-label="Note de 1 à 5 étoiles"
-              className="mt-6 flex justify-center gap-2"
-              onMouseLeave={() => setHover(0)}
-            >
-              {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  role="radio"
-                  aria-checked={rating === n}
-                  aria-label={`${n} étoile${n > 1 ? 's' : ''}`}
-                  onMouseEnter={() => setHover(n)}
-                  onClick={() => pickRating(n)}
-                  className="rounded-full p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-                  disabled={submitting}
-                >
-                  <Star filled={(hover || rating) >= n} />
-                </button>
-              ))}
-            </div>
-
-            <p className="mt-4 text-center text-xs text-white/40">
-              4–5 étoiles → partage sur G2/Capterra/Trustpilot · 1–3 étoiles → feedback privé
-            </p>
-          </>
-        )}
-
-        {step === 'feedback-form' && (
-          <>
-            <h2 id="review-prompt-title" className="text-xl font-semibold text-white">
-              Qu'est-ce qui pourrait être mieux&nbsp;?
-            </h2>
-            <p className="mt-2 text-sm text-white/65">
-              Votre message va directement à l'équipe produit — il n'est PAS publié.
-              Nous lisons et répondons généralement sous 48 h.
-            </p>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={5}
-              maxLength={2000}
-              placeholder="Décrivez le souci ou la fonctionnalité manquante…"
-              className="mt-4 w-full rounded-lg border border-white/10 bg-white/[0.03] p-3 text-sm text-white placeholder-white/30 focus:border-white/30 focus:outline-none"
-            />
-            <div className="mt-4 flex justify-end gap-2">
+      {step === 'rate' && (
+        <>
+          <div
+            role="radiogroup"
+            aria-label="Note de 1 à 5 étoiles"
+            className="flex justify-center gap-2"
+            onMouseLeave={() => setHover(0)}
+          >
+            {[1, 2, 3, 4, 5].map((n) => (
               <button
+                key={n}
                 type="button"
-                onClick={() => void close()}
-                className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
+                role="radio"
+                aria-checked={rating === n}
+                aria-label={`${n} étoile${n > 1 ? 's' : ''}`}
+                onMouseEnter={() => setHover(n)}
+                onClick={() => pickRating(n)}
+                className="rounded-full p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                disabled={submitting}
               >
-                Annuler
+                <Star filled={(hover || rating) >= n} />
               </button>
-              <button
-                type="button"
-                onClick={() => void submitResponse(rating, message || undefined)}
-                disabled={submitting || message.trim().length < 5}
-                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 transition hover:bg-white/90 disabled:opacity-50"
-              >
-                {submitting ? 'Envoi…' : 'Envoyer'}
-              </button>
-            </div>
-          </>
-        )}
+            ))}
+          </div>
 
-        {step === 'thanks-external' && externalUrl && (
-          <>
-            <h2 id="review-prompt-title" className="text-xl font-semibold text-white">
-              Merci&nbsp;! 🙌
-            </h2>
-            <p className="mt-2 text-sm text-white/65">
-              Acceptez-vous de partager votre avis sur une plateforme publique&nbsp;?
-              Ça nous aide énormément à exister face à la concurrence.
-            </p>
-            <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-              <a
-                href={externalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => void close()}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 hover:bg-white/90"
-              >
-                Partager mon avis
-                <span aria-hidden>↗</span>
-              </a>
-              <button
-                type="button"
-                onClick={() => void close()}
-                className="inline-flex flex-1 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10"
-              >
-                Une autre fois
-              </button>
-            </div>
-          </>
-        )}
+          <p className="mt-4 text-center text-xs text-white/40">
+            4–5 étoiles → partage sur G2/Capterra/Trustpilot · 1–3 étoiles → feedback privé
+          </p>
+        </>
+      )}
 
-        {step === 'thanks-internal' && (
-          <>
-            <h2 id="review-prompt-title" className="text-xl font-semibold text-white">
-              Bien reçu, merci. 🙏
-            </h2>
-            <p className="mt-2 text-sm text-white/65">
-              On revient vers vous sous 48 h. En attendant, votre projet vous attend.
-            </p>
+      {step === 'feedback-form' && (
+        <>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={5}
+            maxLength={2000}
+            placeholder="Décrivez le souci ou la fonctionnalité manquante…"
+            className="w-full rounded-lg border border-white/10 bg-white/[0.03] p-3 text-sm text-white placeholder-white/30 focus:border-white/30 focus:outline-none"
+          />
+          <div className="mt-4 flex justify-end gap-2">
             <button
               type="button"
               onClick={() => void close()}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 hover:bg-white/90"
+              className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
             >
-              Fermer
+              Annuler
             </button>
-          </>
-        )}
-      </div>
-    </div>
+            <button
+              type="button"
+              onClick={() => void submitResponse(rating, message || undefined)}
+              disabled={submitting || message.trim().length < 5}
+              className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 transition hover:bg-white/90 disabled:opacity-50"
+            >
+              {submitting ? 'Envoi…' : 'Envoyer'}
+            </button>
+          </div>
+        </>
+      )}
+
+      {step === 'thanks-external' && externalUrl && (
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <a
+            href={externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => void close()}
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 hover:bg-white/90"
+          >
+            Partager mon avis
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+          </a>
+          <button
+            type="button"
+            onClick={() => void close()}
+            className="inline-flex flex-1 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white/80 hover:bg-white/10"
+          >
+            Une autre fois
+          </button>
+        </div>
+      )}
+
+      {step === 'thanks-internal' && (
+        <button
+          type="button"
+          onClick={() => void close()}
+          className="inline-flex w-full items-center justify-center rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-gray-900 hover:bg-white/90"
+        >
+          Fermer
+        </button>
+      )}
+    </Dialog>
   );
 }
 

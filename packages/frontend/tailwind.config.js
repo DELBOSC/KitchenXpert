@@ -21,6 +21,15 @@ export default {
           900: '#1e3a8a',
           950: '#172554',
         },
+        kx: {
+          base: 'rgb(var(--kx-bg) / <alpha-value>)',
+          elevated: 'rgb(var(--kx-bg-elevated) / <alpha-value>)',
+          fg: 'rgb(var(--kx-fg) / <alpha-value>)',
+          'brand-from': 'rgb(var(--kx-brand-from) / <alpha-value>)',
+          'brand-to': 'rgb(var(--kx-brand-to) / <alpha-value>)',
+          'brand-accent': 'rgb(var(--kx-brand-accent) / <alpha-value>)',
+          'accent-warm': 'rgb(var(--kx-accent-warm) / <alpha-value>)',
+        },
       },
       fontFamily: {
         sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],

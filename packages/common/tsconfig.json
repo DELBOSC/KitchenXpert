@@ -5,10 +5,17 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    // baseUrl removed (deprecated). No `paths` here, so nothing else to do.
-    // module + moduleResolution come from tsconfig.lib.json
-    // (ESNext + bundler) — the modern, deprecation-free combo for a
-    // library consumed by other workspace packages.
+    // module/moduleResolution overridden from tsconfig.lib.json (ESNext + bundler).
+    // Reason: common is consumed by two runtimes — the Vite frontend (handles both
+    // CJS and ESM transparently) AND the Node CJS backend via ts-node. Under ESNext,
+    // dist/index.js emits `export * from './types'` (bare directory specifier).
+    // Node 22 auto-detects this as ESM and the ESM resolver rejects directory
+    // imports → ERR_UNSUPPORTED_DIR_IMPORT at backend startup. CJS output produces
+    // `__exportStar(require('./types'), exports)` which resolves directories
+    // naturally via Node's CJS algorithm. Consistent with the monorepo convention
+    // documented in tsconfig.node.json ("nothing declares type: module").
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "lib": ["ES2022", "DOM"],
     "types": ["node"]
   },

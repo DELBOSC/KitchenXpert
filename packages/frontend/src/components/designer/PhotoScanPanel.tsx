@@ -12,6 +12,7 @@
  *   results   → Editable dimensions, interactive SVG floor plan, walls/openings lists
  */
 
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -556,9 +557,9 @@ function GuideStep({ onStart }: { onStart: () => void }): React.ReactElement {
       {/* CTA */}
       <button
         onClick={onStart}
-        className="w-full py-2.5 px-4 text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+        className="w-full py-2.5 px-4 text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors inline-flex items-center justify-center gap-2"
       >
-        Commencer l'upload →
+        Commencer l'upload <ArrowRight className="w-4 h-4" aria-hidden="true" />
       </button>
     </div>
   );
@@ -1035,9 +1036,9 @@ export default function PhotoScanPanel({
             {/* Tip: go back to guide */}
             <button
               onClick={() => setStep('guide')}
-              className="text-[11px] text-blue-500 dark:text-blue-400 hover:underline w-full text-center"
+              className="text-[11px] text-blue-500 dark:text-blue-400 hover:underline w-full text-center inline-flex items-center justify-center gap-1"
             >
-              ← Revoir les conseils photo
+              <ArrowLeft className="w-3 h-3" aria-hidden="true" /> Revoir les conseils photo
             </button>
 
             {/* Analyze Button */}

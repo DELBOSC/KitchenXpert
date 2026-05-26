@@ -85,11 +85,31 @@ export function useABVariant<T extends string>(
 }
 
 /**
- * Tag a downstream conversion with the current AB variant. Call from
- * the conversion site (e.g. `sandbox_signup_completed`) so Plausible
- * can build a per-variant funnel without bespoke joins.
+ * Conversion events that can be tagged with the Hero A/B variant.
+ *
+ * Naming convention: the `_ab` suffix on `sandbox_signup_*_ab` keeps these
+ * distinct from the generic `sandbox_signup_intent` / `sandbox_signup_completed`
+ * events emitted by `trackSandbox` — so Plausible counts the funnel without
+ * double-counting the totals.
  */
-export function tagConversion(experimentId: string, eventName: string): void {
+export type HeroABEvent =
+  | 'hero_cta_primary_click'
+  | 'hero_cta_secondary_click'
+  | 'sandbox_signup_intent_ab'
+  | 'sandbox_signup_completed_ab';
+
+/**
+ * Tag a downstream conversion with the current AB variant. Call from the
+ * conversion site so Plausible can slice the funnel by variant without a
+ * server-side join. Reads the variant from localStorage; emits `unknown`
+ * if the visitor has no recorded assignment (SSR / private browsing).
+ *
+ * Call sites (Hero experiment):
+ *   - HeroVariants.tsx CTAs → 'hero_cta_primary_click' / 'hero_cta_secondary_click'
+ *   - SignupPromptModal     → 'sandbox_signup_intent_ab'
+ *   - SandboxMigrationBanner → 'sandbox_signup_completed_ab'
+ */
+export function tagConversion(experimentId: string, eventName: HeroABEvent): void {
   if (typeof window === 'undefined') {return;}
   if (typeof window.plausible !== 'function') {return;}
   let variant: string | null = null;

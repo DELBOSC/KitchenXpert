@@ -9,7 +9,7 @@
   },
   "packageManager": "pnpm@8.15.0",
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --filter=@kitchenxpert/backend --filter=@kitchenxpert/frontend",
     "build": "turbo run build",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
@@ -50,7 +50,7 @@
     "type-check:frontend": "pnpm --filter frontend type-check",
     "build:backend": "pnpm --filter backend build",
     "build:frontend": "pnpm --filter frontend build",
-    "infisical:dev": "infisical run --env=dev -- turbo run dev",
+    "infisical:dev": "infisical run --env=dev -- turbo run dev --filter=@kitchenxpert/backend --filter=@kitchenxpert/frontend",
     "infisical:backend": "infisical run --env=dev -- pnpm --filter backend dev",
     "infisical:frontend": "infisical run --env=dev -- pnpm --filter frontend dev",
     "infisical:build": "infisical run --env=prod -- turbo run build",

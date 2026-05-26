@@ -1,13 +1,16 @@
-import React from 'react';
+import { Sparkles, X } from 'lucide-react';
+import React, { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { AutoLayoutModal } from '../components/designer/AutoLayoutModal';
-import { SandboxCanvas } from '../components/sandbox/SandboxCanvas';
 import { SandboxOnboardingModal } from '../components/sandbox/SandboxOnboardingModal';
 import { SandboxPalette } from '../components/sandbox/SandboxPalette';
 import { SandboxWatermark } from '../components/sandbox/SandboxWatermark';
 import { SignupPromptModal } from '../components/sandbox/SignupPromptModal';
 import { SeoHead } from '../components/seo/SeoHead';
+import { Skeleton } from '../components/ui/Skeleton';
+
+const SandboxCanvas = React.lazy(() => import('../components/sandbox/SandboxCanvas'));
 import { useSandboxStore, selectHasSandboxProject } from '../sandbox/store';
 import { findTemplate } from '../sandbox/templates';
 import {
@@ -93,7 +96,9 @@ export default function SandboxDesignerPage(): React.ReactElement {
       />
 
       <div className="relative h-screen w-screen overflow-hidden bg-[#0a0a0f] text-white">
-        <SandboxCanvas selectedId={selectedId} onSelect={setSelectedId} />
+        <Suspense fallback={<Skeleton className="absolute inset-0 rounded-none" />}>
+          <SandboxCanvas selectedId={selectedId} onSelect={setSelectedId} />
+        </Suspense>
         <SandboxPalette />
 
         {/* Floating "Auto-Layout IA" trigger — top-right, near the
@@ -103,7 +108,7 @@ export default function SandboxDesignerPage(): React.ReactElement {
           onClick={() => setShowAutoLayout(true)}
           className="absolute right-4 top-4 z-30 inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/15 px-4 py-2 text-sm font-medium text-white shadow-lg backdrop-blur-md transition hover:border-indigo-300/50 hover:shadow-[0_0_30px_rgba(167,139,250,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/60"
         >
-          <span aria-hidden>✨</span>
+          <Sparkles className="w-4 h-4" aria-hidden="true" />
           <span>Auto-Layout IA</span>
         </button>
 
@@ -198,7 +203,7 @@ function SandboxItemHud({
           aria-label="Désélectionner"
           className="rounded-full px-2 py-1 text-xs text-white/40 transition hover:text-white"
         >
-          ×
+          <X className="w-3 h-3" aria-hidden="true" />
         </button>
       </div>
     </div>

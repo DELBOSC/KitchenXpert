@@ -74,8 +74,9 @@ export default defineConfig(async () => {
     },
     server: {
       port: 3005,
+      host: '127.0.0.1',
       proxy: {
-        '/api': { target: 'http://localhost:4000', changeOrigin: true },
+        '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },
       },
     },
     build: {
@@ -95,11 +96,17 @@ export default defineConfig(async () => {
           assetFileNames: 'assets/[name].[hash][extname]',
           chunkFileNames: 'assets/[name].[hash].js',
           entryFileNames: 'assets/[name].[hash].js',
+          // Heaviest, route-specific deps go into their own chunk so
+          // /login, /register, /legal/* etc. don't have to download them.
+          // Everything else (React + redux + zustand + helpers) lands in a
+          // single `vendor` chunk — the previous `react-vendor` split
+          // created a circular dependency with `vendor` (broad `id.includes
+          // ('react')` caught transitive helpers that vendor packages also
+          // depend on) and bought nothing in practice since every route
+          // already loads both chunks.
           manualChunks: (id: string): string | undefined => {
             if (!id.includes('node_modules')) return undefined;
 
-            // Heaviest deps split into their own chunk so /login,
-            // /register, /legal/* etc. don't have to download them.
             if (id.includes('three') || id.includes('@react-three'))
               return 'three';
             if (id.includes('@kitchenxpert/3d-engine'))
@@ -110,12 +117,6 @@ export default defineConfig(async () => {
               return 'stripe';
             if (id.includes('react-i18next') || id.includes('i18next'))
               return 'i18n';
-            if (
-              id.includes('react') ||
-              id.includes('scheduler') ||
-              id.includes('@tanstack/react-query')
-            )
-              return 'react-vendor';
             return 'vendor';
           },
         },

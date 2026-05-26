@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -129,7 +130,7 @@ function ToastItem({
         className="text-white/80 hover:text-white"
         aria-label={t('common.close', 'Close')}
       >
-        ×
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
     </div>
   );

@@ -1,10 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../../contexts/AuthContext';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { LanguageSwitcher } from '../../../i18n/LanguageSwitcher';
+import { LocalizedLink as Link } from '../../../i18n/LocalizedLink';
 
 interface HeaderProps {
   onToggleSidebar: () => void;

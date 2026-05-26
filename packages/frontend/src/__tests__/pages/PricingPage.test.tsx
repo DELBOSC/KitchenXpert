@@ -295,10 +295,10 @@ describe('PricingPage', () => {
     it('should show check icons for boolean true values', () => {
       renderPricingPage();
 
-      // VR / 3D Preview is boolean true for Pro and Enterprise
-      // The check icons are SVG elements with text-green class
-      const greenChecks = document.querySelectorAll('.text-green-500, .text-green-400');
-      expect(greenChecks.length).toBeGreaterThan(0);
+      // VR / 3D Preview is boolean true for Pro and Enterprise.
+      // CheckIcon renders an SVG with the brand-accent (cyan) token.
+      const checks = document.querySelectorAll('svg.text-kx-brand-accent');
+      expect(checks.length).toBeGreaterThan(0);
     });
 
     it('should show dashes for none/unavailable features', () => {
@@ -310,19 +310,23 @@ describe('PricingPage', () => {
     });
   });
 
-  describe('Dark Mode', () => {
-    it('should have dark mode classes on the page container', () => {
+  describe('Theme Tokens', () => {
+    // PricingPage uses KitchenXpert design tokens (kx-base, kx-elevated)
+    // that auto-adapt to light/dark via the .light override in tokens.css —
+    // no dark: prefix needed.
+
+    it('should apply the page background token on the container', () => {
       renderPricingPage();
 
-      const container = document.querySelector('.dark\\:bg-gray-900');
+      const container = document.querySelector('.bg-kx-base');
       expect(container).toBeInTheDocument();
     });
 
-    it('should have dark mode classes on pricing cards', () => {
+    it('should apply the elevated surface token on pricing cards', () => {
       renderPricingPage();
 
-      const darkCards = document.querySelectorAll('.dark\\:bg-gray-800');
-      expect(darkCards.length).toBeGreaterThan(0);
+      const elevatedSurfaces = document.querySelectorAll('.bg-kx-elevated');
+      expect(elevatedSurfaces.length).toBeGreaterThan(0);
     });
   });
 

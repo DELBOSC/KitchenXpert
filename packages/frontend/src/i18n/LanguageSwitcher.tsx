@@ -1,3 +1,4 @@
+import { Check, ChevronDown, Languages } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useLanguage, SUPPORTED_LANGUAGES, type SupportedLanguage } from './LanguageProvider';
@@ -17,9 +18,9 @@ import { useLanguage, SUPPORTED_LANGUAGES, type SupportedLanguage } from './Lang
  *   - Tu n'as pas besoin de penser à la cohérence URL/cookie/i18n
  */
 
-const LABEL: Record<SupportedLanguage, { flag: string; full: string }> = {
-  fr: { flag: '🇫🇷', full: 'Français' },
-  en: { flag: '🇬🇧', full: 'English' },
+const LABEL: Record<SupportedLanguage, string> = {
+  fr: 'Français',
+  en: 'English',
 };
 
 export function LanguageSwitcher(): React.ReactElement {
@@ -64,13 +65,13 @@ export function LanguageSwitcher(): React.ReactElement {
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={`Langue actuelle : ${LABEL[language].full}. Changer de langue.`}
+        aria-label={`Langue actuelle : ${LABEL[language]}. Changer de langue.`}
         onClick={() => setOpen((o) => !o)}
         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-white/85 transition hover:bg-white/[0.07] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
       >
-        <span aria-hidden>{LABEL[language].flag}</span>
+        <Languages className="w-4 h-4" aria-hidden="true" />
         <span className="font-medium uppercase tracking-wide">{language}</span>
-        <span aria-hidden className={`transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
+        <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
       </button>
 
       {open && (
@@ -95,10 +96,9 @@ export function LanguageSwitcher(): React.ReactElement {
                     : 'text-white/75 hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <span aria-hidden className="text-base">{LABEL[lang].flag}</span>
-                <span>{LABEL[lang].full}</span>
+                <span>{LABEL[lang]}</span>
                 {active && (
-                  <span aria-hidden className="ml-auto text-white/50">✓</span>
+                  <Check className="ml-auto w-4 h-4 text-white/50" aria-hidden="true" />
                 )}
               </button>
             );
