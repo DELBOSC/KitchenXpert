@@ -49,11 +49,15 @@
 
 **Analytics** : Plausible (privacy-first), `useABVariant` pour A/B testing.
 
+**Base de données** : **Supabase PostgreSQL cloud** (région `eu-west-3`, pooler Supavisor session-mode port 5432, SSL forcé). Schema déployé via `prisma db push` (63 tables). `directUrl` ajouté au datasource Prisma (commit 70f96b3) pour les migrations qui nécessitent le path direct sans pooler. Prérequis local : `.env` racine avec `DATABASE_URL` + `DB_HOST/PORT/USER/PASSWORD/NAME` + `DB_SSL=true`. **Plus d'installation Postgres locale requise.**
+
+**Cache & file de jobs** : **Upstash Redis cloud** (TLS via `rediss://`). Client `redis@4` côté backend avec **circuit breaker production-grade** dans `redis-client.ts` (commit d3b5a51) : bound boot connect, half-open retry, fail-fast en cooldown. Token Upstash dans `.env` (`REDIS_URL`).
+
 **Sous-projet séparé** : `packages/guides/` est un site Astro v5 indépendant (build/deploy séparé via reverse proxy) pour le contenu SEO. **Hors scope de ce CLAUDE.md** — son design évolue séparément.
 
 **Icônes** : **lucide-react** pour l'UI productive. **Exception assumée** : `TrustStack.tsx` utilise des SVG inline maison pour économiser les bytes (décision documentée). Tout autre composant doit utiliser lucide-react. **Aucun emoji** en UI productive.
 
-**Setup dev** : `pnpm dev` à la racine lance backend (port 4000) + frontend (port 3005) en parallèle via Turbo. **Ne pas lancer le frontend seul** — le proxy Vite tape `localhost:4000` et la console se remplit de 500 si le backend est absent. Si besoin de lancer séparément : `pnpm backend:dev` dans un terminal, `pnpm frontend:dev` dans un autre. Vérifier le backend via `curl http://localhost:4000/health`. Prérequis : PostgreSQL local + `.env` (copié depuis `.env.example`). ⚠️ Sans `.env` à la racine, le backend démarre sur le port 3001 (au lieu du port 4000 attendu par le proxy Vite) — ce qui reproduit les erreurs 500 sur `/api/v1/*`.
+**Setup dev** : `pnpm dev` à la racine lance backend (port 4000) + frontend (port 3005) en parallèle via Turbo. **Ne pas lancer le frontend seul** — le proxy Vite tape `localhost:4000` et la console se remplit de 500 si le backend est absent. Si besoin de lancer séparément : `pnpm backend:dev` dans un terminal, `pnpm frontend:dev` dans un autre. Vérifier le backend via `curl http://localhost:4000/health`. Prérequis : `.env` racine valide (DB Supabase + Redis Upstash + JWT secrets). ⚠️ Sans `.env` à la racine, le backend démarre sur le port 3001 (au lieu du port 4000 attendu par le proxy Vite) — ce qui reproduit les erreurs 500 sur `/api/v1/*`. Vite frontend bind explicitement `host: '127.0.0.1'` (commit a7de96d) — fix Windows IPv6-only qui causait `ERR_CONNECTION_REFUSED` sur `localhost`.
 
 ---
 
@@ -327,7 +331,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 ### Priorité P2 (après lancement)
 
-- [ ] `HowItWorks.tsx` : utiliser primitive `Card` au lieu de `<article>` brut, harmoniser palette
+- [x] `HowItWorks.tsx` : migration vers primitive `Card` polymorphique terminée. Commits **594c63b** (feat ui : Card étendue d'un prop `as` polymorphique générique) + **ee1869c** (refactor : HowItWorks Step utilise Card primitive avec `as="article"`). Pattern Card polymorphique réutilisable désormais sur toutes les surfaces type "carte" du projet, quelle que soit la balise sémantique cible.
 - [ ] `SandboxMigrationBanner.tsx` : utiliser primitives `Card` ou `Toast`
 - [x] `packages/guides/` tokens : DÉCISION 22/05/2026 — NE PAS câbler. guides reste hors scope §3 (Astro indépendant, build/deploy séparés). Couleurs déjà visuellement alignées (`#0a0a0f` des deux côtés). Câbler = 2-4h d'infra fragile (Windows symlinks, npm script de copy, ou nouveau workspace package) pour bénéfice quasi nul avant launch. À reconsidérer si : refonte palette KitchenXpert, arrivée d'une équipe design, ou guides devient volumineux (>10 articles avec variations visuelles).
 - [x] TrustStack migration lucide-react : DÉCISION 22/05/2026 — CADUQUE. Estimation gain ~0.5-1.5 KB gzipped sur 1 seul call site (`PricingPage.tsx:399`). Négligeable face au risque de churn sur une surface trust stable. §8.2 valide déjà l'inline SVG comme "décision perf justifiée" — cette dette P2 lui était contradictoire (incohérence interne détectée à l'audit du 22/05). Décision retenue : **§8.2 fait foi**, l'inline SVG reste l'approche officielle pour TrustStack. §3 ligne 54 ("Exception assumée") déjà alignée.
@@ -356,6 +360,8 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] Recherche catalogue : vérifier que l'index GIN full-text français (`gin_trgm_ops` ou `to_tsvector('french', ...)`) est présent côté Supabase après `prisma db push`. `db push` ne porte pas les index hors-schéma `prisma.schema` — si la recherche catalogue dépend d'un index `CREATE INDEX ... USING GIN` posé en raw SQL, il a probablement été perdu lors de la migration Supabase. À vérifier via `\d table_name` sur la base prod, puis poser une migration Prisma explicite ou un seed SQL.
 - [ ] Commandes Prisma (`pnpm prisma:push`, `prisma generate`, etc.) : `pnpm --filter @kitchenxpert/backend prisma:push` met le CWD dans `packages/backend/` où il n'y a plus de `.env` (root-only depuis commit 5126f4b). Résultat : `DATABASE_URL is not defined` si l'utilisateur exécute la commande depuis le subpath sans charger l'env. Invoquer Prisma depuis la racine, ou exporter `DATABASE_URL` avant l'appel filter, ou ajouter un `dotenv -e ../../.env --` en wrapper du script `prisma:push`. Documenter dans README + CLAUDE.md §3.
 - [ ] Backend Redis : ajouter healthcheck `/api/v1/health/redis` qui retourne `{ status: 'up' | 'down' | 'cooldown', circuitOpenUntil?, lastError? }` en lisant l'état du circuit breaker exposé par `redis-client.ts`. Permet à monitoring/uptime d'alerter sur dégradation Redis sans attendre un timeout côté client. Exposer également via OTel metric `redis_circuit_state` (gauge 0/1/2).
+- [ ] **Bug Prisma `/api/v1/stats/public`** : `prisma.installer.count()` est appelé avec `where: { status: ... }` — le modèle `Installer` n'a **pas** de champ `status` (champs réels : `isVerified`, `isActive`). Résultat : Prisma log un `prisma:error` à chaque hit, l'endpoint catch silencieusement et renvoie un 200 partiel (LiveCounter fonctionne sur les autres compteurs, mais le compteur "pros vérifiés" est faussé/manquant). **Fix** : remplacer `status: ...` par `isVerified: true` (sémantique attendue : compter les pros vérifiés). Localiser le call site via `grep -r "installer.count" packages/backend/src/`.
+- [ ] **Hygiène git** : 36 branches locales+remote sur le repo. Faire un ménage : lister les branches mergées (`git branch -a --merged main`) — au minimum `feat/design-system-migration` peut être supprimée (mergée via PR #44). Arbitrer aussi les branches abandonnées. Branche courante à conserver : `feat/seeds`.
 
 ---
 
@@ -381,21 +387,62 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - **22/05/2026** : Session "poster Hero premium". Deux phases :
   1. **Tentative Hero3DInteractive ABANDONNÉE** — création d'un composant Three.js low-poly programmatique (28 meshes, cuisine basique). Résultat visuellement décevant (cuboïdes sombres, rendu pas premium, ambiance loin du fil rouge marketing). Revert complet, aucun fichier conservé. DÉCISION D'ARCHITECTURE : la 3D temps réel n'a pas sa place dans le Hero d'une homepage marketing — elle vit dans le Designer (SandboxCanvas) où l'utilisateur conçoit. Vérification concurrentielle : IKEA Home Planner, Schmidt, Houzz utilisent tous photo/vidéo en Hero, pas de 3D temps réel. Variant B du A/B test §6.2 écarté (cf §11 P1 reclassement).
   2. **Poster Hero premium réparé (commit 7d737e1)**. Bug latent découvert : le `<picture>` de HeroVideo.tsx affichait une image cassée (broken icon + alt text visible) depuis l'origine du projet. Cause : 8/9 assets Hero manquaient — `hero-poster.jpg`, `@2x.jpg`, et 6 vidéos .webm/.mp4 jamais committés. Seul `hero-poster.svg` existait, mais le `<picture>` essayait d'abord le JPG. Le commentaire JSX du `<picture>` mentait sur l'ordre des `<source>`. Résolution : génération image cuisine premium via Krea.ai (modèle Krea 2 Grand + amplificateur 2x) — cuisine minimaliste, marbre noir, hotte inox, lumière 2700K, ambiance architecturale haut de gamme. Optimisée en `hero-poster.jpg` (1280×710, 92KB) + `@2x.jpg` (2048×1136, 207KB). Commentaire `<picture>` corrigé. 4 dettes résiduelles non bloquantes basculées en §11 P3 (vidéos manquantes, SVG fallback désaligné, encode-script absent, dormants 0-byte).
+- **23/05/2026** : **HowItWorks migré vers primitive Card** (dernière dette P2 actionnable hors SandboxMigrationBanner). Commits **594c63b** (feat ui : prop polymorphique `as` ajouté à Card, pattern générique réutilisable) + **ee1869c** (refactor : HowItWorks Step utilise `<Card as="article">` au lieu d'un `<article>` brut). Card primitive est désormais le wrapper canonique pour toutes les surfaces type "carte" du projet, quelle que soit la balise sémantique cible (article, section, div, …). Décochage rétroactif effectué le 27/05.
+- **24-25/05/2026** : **Migration cloud effective.** Trois chantiers en parallèle :
+  1. **Supabase PostgreSQL** : projet créé en `eu-west-3`, schema Prisma déployé via `prisma db push` (63 tables). Commits 70f96b3 (datasource directUrl), 5126f4b (load root .env), ff69267 (common compile CJS — fix backend ESM dir-import crash), 2335acb (dev scope backend+frontend — fix Turbo concurrency), bbb2a91 (turbo v1 `tasks` → `pipeline`). Le `.env` racine devient source unique des credentials DB.
+  2. **Upstash Redis** : connexion TLS `rediss://`. **Circuit breaker production-grade** implémenté dans `redis-client.ts` (commit d3b5a51) : bound boot connect (le boot ne reste pas bloqué si Redis est down), half-open retry (réessaie périodiquement après cooldown), fail-fast en cooldown (pas de timeout côté caller). Le backend démarre même Redis injoignable.
+  3. **Vite frontend** : binding IPv4 explicite `host: '127.0.0.1'` (commit a7de96d). Fix Windows IPv6-only ERR_CONNECTION_REFUSED qui bloquait l'accès au dev server sur certaines configs.
+- **26/05/2026** : **PR #44 — merge `feat/design-system-migration` → `main`** (commit de merge `7f8e228`, **62 commits** intégrés à main, fast-forward propre, zéro conflit). Lancement de la branche `feat/seeds` : application du seed runner sur Supabase (7 seeds, **~160 rows** : 5 rôles, 7 users démo bcrypt SALT=12, 21 permissions + mappings, 8 catégories + ~42 produits IKEA/LM/Castorama/Schmidt + 11 appliances Bosch, 4 projets + 2 collaborateurs, 4 cuisines). LiveCounter affiche désormais "4" cuisines — premier signal stat public réel.
+- **27/05/2026** : **Rangement CLAUDE.md.** Décochage rétroactif HowItWorks (oublié au moment du commit du 23/05). §3 Stack mise à jour pour refléter le cloud effectif (Supabase + Upstash + Vite host IPv4). §13 recompte (P2 : 1 actionnable restante = SandboxMigrationBanner ; P3 : 20 actionnables après ajout des 2 nouvelles). Ajout §14 **Roadmap Production** dédiée (sécurité secrets exposés, infra prod séparée dev/prod, CI/CD GitHub Actions facturation, CORS/SSL) — sujets discutés en sessions 24-26/05 mais jamais tracés dans le fichier. Nouvelles dettes P3 : bug `prisma.installer.count(status)` sur `/api/v1/stats/public` + hygiène 36 branches.
 
 ---
 
-## 13. État d'avancement (snapshot 16/05/2026)
+## 13. État d'avancement (snapshot 27/05/2026)
 
 | Phase | Statut | Restant |
 |---|---|---|
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
 | **Phase 1 P1** | ✅ Terminée (actionnable) | 0 tâche actionnable restante (7 résolues cumulées + 1 résolue 22/05 [poster Hero] + 1 écartée 22/05 [Hero3DInteractive — décision d'architecture, §11 P1]) |
-| **Phase 1 P2** | 🟡 En cours | 2 tâches actionnables (#1 HowItWorks Card + #2 SandboxMigrationBanner Card/Toast). Cumul : 2 résolues 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) |
-| **Phase 1 P3** | ⏳ Non démarrée | 18 tâches (8 + 4 ajoutées 22/05 + 1 ajoutée 23/05 backend dotenv + 5 ajoutées 23/05 Redis prod-grade) |
+| **Phase 1 P2** | 🟡 En cours | **1 tâche actionnable restante** : #2 SandboxMigrationBanner Card/Toast. Cumul : 2 résolues 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) + **1 résolue 23/05 (#1 HowItWorks → Card polymorphique, commits 594c63b+ee1869c)**. |
+| **Phase 1 P3** | ⏳ Non démarrée | **20 tâches** (8 + 4 ajoutées 22/05 + 1 ajoutée 23/05 backend dotenv + 5 ajoutées 23/05 Redis prod-grade + 2 ajoutées 27/05 : bug prisma.installer.count + hygiène 36 branches) |
+| **§14 Roadmap Production** | ⏳ Non démarrée | 13 items (3 sécurité secrets, 5 infra, 2 CI/CD, 3 CORS/SSL/cookies). **Bloque le déploiement prod.** |
 
-Branche active : `feat/design-system-migration` (47 commits, à jour avec `origin`).
-Prochaine cible : laisser tourner l'A/B test Hero en prod pour collecter le premier signal de variant — ou démarrer les 2 dettes P2 actionnables restantes (HowItWorks Card primitive + SandboxMigrationBanner Card/Toast).
+`feat/design-system-migration` **mergée vers `main` via PR #44** (commit de merge `7f8e228`, 62 commits intégrés, fast-forward propre). Branche courante : `feat/seeds` (application des seeds Supabase + dettes restantes).
+Prochaine cible : démarrer §14 Roadmap Production (priorité 14.1 sécurité secrets) + laisser tourner l'A/B test Hero en prod réelle pour collecter le premier signal de variant.
 
 ---
 
-*Dernière mise à jour : 22/05/2026 — §6.2 réécrit, tracking conversion A/B opérationnel (commit 0236f9f), 2 dettes P2 fermées par décision (#3 guides hors scope + #4 TrustStack inline confirmé §8.2). 51 commits. Branche feat/design-system-migration toujours safe pour merge main.*
+## 14. Roadmap Production
+
+> Sujets stratégiques de prep launch discutés en sessions 24-26/05/2026 mais non encore actionnés. **Bloque le déploiement prod tant que 14.1 n'est pas fait.** À cocher au fur et à mesure.
+
+### 14.1 Sécurité — secrets compromis en dev (PRIORITÉ HAUTE)
+
+Tout secret qui a été visible en dev local ou historisé dans des sessions de debug est à considérer comme grillé. À régénérer **avant tout déploiement** :
+
+- [ ] **Régénérer `JWT_ACCESS_SECRET`** + **`JWT_REFRESH_SECRET`**. Générer via `openssl rand -base64 64`. Remplacer uniquement dans `.env` de prod (jamais commit). Conséquence : tous les tokens existants (refresh inclus) seront invalidés au déploiement — comportement attendu pour le premier launch.
+- [ ] **Régénérer le token Upstash Redis** (REST + connection string `rediss://`) depuis le dashboard Upstash. Mettre à jour `REDIS_URL` dans `.env` prod uniquement.
+- [ ] **Ajouter `DATA_ENCRYPTION_KEY`** : un warning au boot signale son absence. Générer 32 bytes aléatoires base64 (`openssl rand -base64 32`), injecter dans `.env`. Vérifier le call site backend qui émet le warning pour confirmer le format attendu et le scope d'utilisation.
+
+### 14.2 Infrastructure prod — séparer dev / prod
+
+- [ ] **Projet Supabase prod distinct** (eu-west-3 ou autre selon coût/latence cible). Le projet actuel reste dev/staging. Interdiction de partager les données utilisateur entre dev et prod. Cloner le schema via `prisma db push` + relancer le seed runner (sans `SEED_USER_PASSWORD` exposé).
+- [ ] **Upstash Redis prod distinct**. Idem séparation stricte. Aucun partage de cache/queue entre environnements.
+- [ ] **Hébergement backend Express** : évaluer Railway / Render / Fly.io. Critères : (a) support websockets pour collab Yjs/ws, (b) cold start tolérable (l'API est appelée par le frontend dès chargement), (c) prix prévisible, (d) région EU pour latence DB Supabase eu-west-3. Documenter le choix dans une décision §12.
+- [ ] **Hébergement frontend** : Vercel (alignement React/Vite standard, preview deployments automatiques par PR, compatible Plausible). Configurer build root `packages/frontend/`, env vars publiques, domaine custom.
+- [ ] **Budget Upstash** : le polling 5s actuel de `job-queue.ts` (cf §11 P3 BLPOP) consomme ~17 280 commandes Redis/jour/instance en idle. Sous quota cloud, c'est coûteux. **Bloquer le déploiement prod tant que la migration BLPOP n'est pas faite**, ou monitorer le compteur Upstash très près en J+1 et basculer en urgence si nécessaire.
+
+### 14.3 CI/CD GitHub Actions
+
+- [ ] **Régler la facturation/quota GitHub Actions** : workflows actuellement en échec faute de minutes disponibles. À traiter côté GitHub billing avant tout autre workflow. Auditer les minutes consommées par workflow pour calibrer le forfait.
+- [ ] **Optimiser les workflows lourds** : Frontend (build + tests Vitest), Backend (tests Jest), E2E (Playwright 9 flux), Lighthouse CI, CodeQL. Stratégies à étudier : (a) exécution conditionnelle par paths (ex. Lighthouse uniquement sur changements frontend), (b) parallélisation des jobs, (c) cache pnpm + cache Playwright browsers, (d) désactivation CodeQL en draft PR, (e) skip E2E sur les PR doc-only.
+
+### 14.4 CORS / domaine / SSL / cookies prod
+
+- [ ] **Domaine de prod** (`kitchenxpert.com` ?) : acheter / pointer. Vérifier la cohérence avec `ORGANIZATION_JSONLD`, `WEBSITE_JSONLD`, `SOFTWARE_JSONLD` (URLs canoniques, OG images, schema.org).
+- [ ] **CORS strict** : configurer `CORS_ORIGINS` en `.env` prod pour autoriser uniquement le domaine de prod (pas de wildcard, pas de `localhost`). Tester avec un navigateur fresh sans cache.
+- [ ] **Cookies httpOnly + secure + sameSite** : vérifier que `secure: true` est bien forcé en prod (cf `auth-middleware.ts`) et que `sameSite: 'lax'` ou `'strict'` est aligné avec le domaine frontend. SSL géré automatiquement par Vercel (frontend) + plateforme backend choisie. Supabase n'accepte déjà que SSL (`DB_SSL=true`).
+
+---
+
+*Dernière mise à jour : 27/05/2026 — `feat/design-system-migration` mergée vers `main` (PR #44, 62 commits). Migration cloud effective (Supabase PostgreSQL + Upstash Redis + circuit breaker). Seeds Supabase appliqués (~160 rows). Branche courante : `feat/seeds`. Ajout §14 Roadmap Production. Décochage rétroactif P2 #1 HowItWorks. Nouvelles dettes P3 (bug prisma stats + hygiène branches).*
