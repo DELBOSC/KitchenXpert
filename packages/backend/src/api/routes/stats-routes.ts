@@ -42,10 +42,8 @@ async function computeStats(): Promise<CachedStats['data']> {
     (prisma as unknown as { quote?: { count: (args: { where: object }) => Promise<number> } })
       .quote?.count?.({ where: { createdAt: { gte: monthStart } } })
       .catch(() => 0) ?? 0,
-    // Installateurs avec un statut "verified" sur la marketplace
-    (prisma as unknown as { installer?: { count: (args: { where: object }) => Promise<number> } })
-      .installer?.count?.({ where: { status: 'verified' } })
-      .catch(() => 0) ?? 0,
+    // Installateurs vérifiés et actifs sur la marketplace
+    prisma.installer.count({ where: { isVerified: true, isActive: true } }).catch(() => 0),
   ]);
 
   return {
