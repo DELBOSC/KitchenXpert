@@ -21,7 +21,7 @@
     "@kitchenxpert/common": "workspace:*",
     "@kitchenxpert/design-system": "workspace:*",
     "lucide-react": "^0.309.0",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.3.11"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^8.0.0",

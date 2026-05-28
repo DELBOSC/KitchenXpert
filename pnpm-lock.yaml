@@ -731,8 +731,8 @@ importers:
         specifier: ^0.309.0
         version: 0.309.0(react@18.3.1)
       styled-components:
-        specifier: ^6.1.8
-        version: 6.3.8(react-dom@18.3.1)(react@18.3.1)
+        specifier: ^6.3.11
+        version: 6.3.11(react-dom@18.3.1)(react@18.3.1)
     devDependencies:
       '@storybook/addon-a11y':
         specifier: ^8.0.0
@@ -13042,8 +13042,8 @@ packages:
   /strnum@2.1.2:
     resolution: {integrity: sha512-l63NF9y/cLROq/yqKXSLtcMeeyOfnSQlfMSlzFt/K73oIaD8DGaQWd7Z34X9GPiKqP5rbSh84Hl4bOlLcjiSrQ==}
 
-  /styled-components@6.3.8(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-Kq/W41AKQloOqKM39zfaMdJ4BcYDw/N5CIq4/GTI0YjU6pKcZ1KKhk6b4du0a+6RA9pIfOP/eu94Ge7cu+PDCA==}
+  /styled-components@6.3.11(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-opzgceGlQ5rdZdGwf9ddLW7EM2F4L7tgsgLn6fFzQ2JgE5EVQ4HZwNkcgB1p8WfOBx1GEZP3fa66ajJmtXhSrA==}
     engines: {node: '>= 16'}
     peerDependencies:
       react: '>= 16.8.0'
