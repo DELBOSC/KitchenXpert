@@ -362,6 +362,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 - [ ] Backend Redis : ajouter healthcheck `/api/v1/health/redis` qui retourne `{ status: 'up' | 'down' | 'cooldown', circuitOpenUntil?, lastError? }` en lisant l'état du circuit breaker exposé par `redis-client.ts`. Permet à monitoring/uptime d'alerter sur dégradation Redis sans attendre un timeout côté client. Exposer également via OTel metric `redis_circuit_state` (gauge 0/1/2).
 - [ ] **Bug Prisma `/api/v1/stats/public`** : `prisma.installer.count()` est appelé avec `where: { status: ... }` — le modèle `Installer` n'a **pas** de champ `status` (champs réels : `isVerified`, `isActive`). Résultat : Prisma log un `prisma:error` à chaque hit, l'endpoint catch silencieusement et renvoie un 200 partiel (LiveCounter fonctionne sur les autres compteurs, mais le compteur "pros vérifiés" est faussé/manquant). **Fix** : remplacer `status: ...` par `isVerified: true` (sémantique attendue : compter les pros vérifiés). Localiser le call site via `grep -r "installer.count" packages/backend/src/`.
 - [ ] **Hygiène git** : 36 branches locales+remote sur le repo. Faire un ménage : lister les branches mergées (`git branch -a --merged main`) — au minimum `feat/design-system-migration` peut être supprimée (mergée via PR #44). Arbitrer aussi les branches abandonnées. Branche courante à conserver : `feat/seeds`.
+- [ ] **Audit `pnpm.overrides`** : passer en revue chaque entrée du bloc `pnpm.overrides` racine avant prod. Précédent : `"path-to-regexp": "^6.3.0"` était toxique (cassait Express 4 au runtime, cf §12 27/05 soir), retiré PR #47. Reste à vérifier `nodemailer: ^7.0.4` désynchro avec la dep backend (déclarée `^6.9.8`, possible breaking change v6→v7 — cf audit Dependabot PR #22). Règle : un override doit avoir (a) un consommateur réel dans le lockfile, (b) une raison documentée (CVE, fix, pin volontaire). Sinon → supprimer.
 
 ---
 
@@ -394,6 +395,13 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
   3. **Vite frontend** : binding IPv4 explicite `host: '127.0.0.1'` (commit a7de96d). Fix Windows IPv6-only ERR_CONNECTION_REFUSED qui bloquait l'accès au dev server sur certaines configs.
 - **26/05/2026** : **PR #44 — merge `feat/design-system-migration` → `main`** (commit de merge `7f8e228`, **62 commits** intégrés à main, fast-forward propre, zéro conflit). Lancement de la branche `feat/seeds` : application du seed runner sur Supabase (7 seeds, **~160 rows** : 5 rôles, 7 users démo bcrypt SALT=12, 21 permissions + mappings, 8 catégories + ~42 produits IKEA/LM/Castorama/Schmidt + 11 appliances Bosch, 4 projets + 2 collaborateurs, 4 cuisines). LiveCounter affiche désormais "4" cuisines — premier signal stat public réel.
 - **27/05/2026** : **Rangement CLAUDE.md.** Décochage rétroactif HowItWorks (oublié au moment du commit du 23/05). §3 Stack mise à jour pour refléter le cloud effectif (Supabase + Upstash + Vite host IPv4). §13 recompte (P2 : 1 actionnable restante = SandboxMigrationBanner ; P3 : 20 actionnables après ajout des 2 nouvelles). Ajout §14 **Roadmap Production** dédiée (sécurité secrets exposés, infra prod séparée dev/prod, CI/CD GitHub Actions facturation, CORS/SSL) — sujets discutés en sessions 24-26/05 mais jamais tracés dans le fichier. Nouvelles dettes P3 : bug `prisma.installer.count(status)` sur `/api/v1/stats/public` + hygiène 36 branches.
+- **27/05/2026 (soir)** : **Chantier Dependabot lancé + découverte d'un override pnpm toxique.**
+  1. **Audit des 32 PRs Dependabot ouvertes** (révélées par `git fetch --prune` lors du ménage des branches). Classement en 4 lots de risque (cf §14.5) : 🟢 Lot 1 (11 patchs/minors sûrs), 🟡 Lot 2 (6 GitHub Actions + dotenv), 🟠 Lot 3 (5 minors à churn three/lucide), 🔴 Lot 4 (8 MAJEURES : prisma 5→7, react-router 6→7, node 20→26, typescript 6, redis 4→5, zod 3→4, nodemailer 6→8, @typescript-eslint 6→8).
+  2. **Lot 1 entamé — 5 PRs mergées (Squash sur `main`)** : #25 `@types/node` 20.19.33, #18 `react-hook-form` 7.71.2, #29 `styled-components` 6.3.11, #28 `jspdf` 4.2.0, #30 `@google/genai` 1.42.0. Site validé post-merge (LiveCounter à 4, UI intacte).
+  3. **Régression au smoke test backend** : crash `TypeError: pathRegexp is not a function` sur Express 4.22.1. **Cause racine** : un `pnpm.overrides "path-to-regexp": "^6.3.0"` **dormant** depuis le 13/05 (commit edb726b) s'est **réveillé** quand les PRs Dependabot ont régénéré `pnpm-lock.yaml`. Express 4 appelle path-to-regexp comme une **fonction** (API v0.1.x default export callable) ; v6 exporte un **objet** (named exports) → crash immédiat. Express est le **seul consommateur** de path-to-regexp dans tout l'arbre — l'override était à la fois **inutile** (CVE-2024-45296 déjà backportée en 0.1.10+) ET **nuisible** (cassait Express 4 dès régénération propre du lockfile).
+  4. **Fix (PR #47, merge `41aa00e`)** : suppression sèche de la ligne d'override + `pnpm install`. Express retombe naturellement sur `path-to-regexp@0.1.13`. Backend redémarre OK. Diff net : `+1 -1` package, aucun autre paquet déplacé.
+  5. **Bonus** : fix `Installer.count()` (PR #46, mergée plus tôt dans la journée) validé en live dans les logs serveur : la requête utilise bien `isVerified: true` + `isActive: true`, `/api/v1/stats/public` renvoie 200 sans `prisma:error` résiduel. Dette §11 P3 "bug Prisma stats" effectivement résolue.
+  6. **Réflexe lockfile noté** : si `git pull` râle sur `pnpm-lock.yaml` après merge GitHub, faire `git checkout -- pnpm-lock.yaml` avant pull (le lockfile local est obsolète vs main, le repo cloud est la source de vérité). Méthode validée par lot : merger par paquets, `pnpm install + pnpm dev` après chaque paquet — c'est ce qui a permis d'attraper la régression Express avant qu'elle ne s'enchaîne avec les lots suivants.
 
 ---
 
@@ -404,11 +412,12 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
 | **Phase 1 P1** | ✅ Terminée (actionnable) | 0 tâche actionnable restante (7 résolues cumulées + 1 résolue 22/05 [poster Hero] + 1 écartée 22/05 [Hero3DInteractive — décision d'architecture, §11 P1]) |
 | **Phase 1 P2** | 🟡 En cours | **1 tâche actionnable restante** : #2 SandboxMigrationBanner Card/Toast. Cumul : 2 résolues 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) + **1 résolue 23/05 (#1 HowItWorks → Card polymorphique, commits 594c63b+ee1869c)**. |
-| **Phase 1 P3** | ⏳ Non démarrée | **20 tâches** (8 + 4 ajoutées 22/05 + 1 ajoutée 23/05 backend dotenv + 5 ajoutées 23/05 Redis prod-grade + 2 ajoutées 27/05 : bug prisma.installer.count + hygiène 36 branches) |
+| **Phase 1 P3** | ⏳ Non démarrée | **21 tâches** (8 + 4 ajoutées 22/05 + 1 ajoutée 23/05 backend dotenv + 5 ajoutées 23/05 Redis prod-grade + 2 ajoutées 27/05 matin : bug prisma.installer.count + hygiène 36 branches + 1 ajoutée 27/05 soir : audit `pnpm.overrides`). Note : "bug prisma stats" effectivement résolue par PR #46 (cf §12 27/05 soir #5) — comptée dans le total mais à décocher au prochain rangement. |
 | **§14 Roadmap Production** | ⏳ Non démarrée | 13 items (3 sécurité secrets, 5 infra, 2 CI/CD, 3 CORS/SSL/cookies). **Bloque le déploiement prod.** |
+| **§14.5 Chantier Dependabot** | 🟡 En cours | **5/11 PRs Lot 1 mergées** (27/05 soir). Reste : 6 PRs Lot 1 + 6 PRs Lot 2 + 5 PRs Lot 3 + 8 PRs Lot 4. Régression Express interceptée et corrigée (PR #47). |
 
-`feat/design-system-migration` **mergée vers `main` via PR #44** (commit de merge `7f8e228`, 62 commits intégrés, fast-forward propre). Branche courante : `feat/seeds` (application des seeds Supabase + dettes restantes).
-Prochaine cible : démarrer §14 Roadmap Production (priorité 14.1 sécurité secrets) + laisser tourner l'A/B test Hero en prod réelle pour collecter le premier signal de variant.
+`feat/design-system-migration` **mergée vers `main` via PR #44** (commit de merge `7f8e228`, 62 commits intégrés, fast-forward propre). Branche courante : `docs/session-27-05-dependabot` (synchronisation post-merge des 5 PRs Lot 1 + PR #47 fix override).
+Prochaine cible : finir le Lot 1 Dependabot (6 PRs restantes) puis démarrer §14 Roadmap Production (priorité 14.1 sécurité secrets).
 
 ---
 
@@ -443,6 +452,59 @@ Tout secret qui a été visible en dev local ou historisé dans des sessions de 
 - [ ] **CORS strict** : configurer `CORS_ORIGINS` en `.env` prod pour autoriser uniquement le domaine de prod (pas de wildcard, pas de `localhost`). Tester avec un navigateur fresh sans cache.
 - [ ] **Cookies httpOnly + secure + sameSite** : vérifier que `secure: true` est bien forcé en prod (cf `auth-middleware.ts`) et que `sameSite: 'lax'` ou `'strict'` est aligné avec le domaine frontend. SSL géré automatiquement par Vercel (frontend) + plateforme backend choisie. Supabase n'accepte déjà que SSL (`DB_SSL=true`).
 
+### 14.5 Mise à jour des dépendances (chantier Dependabot)
+
+> Contexte : `git fetch --prune` du 27/05 a révélé **32 PRs Dependabot ouvertes** (le repo accumulait silencieusement les bumps depuis ~mai). Audit du 27/05 (soir) → classement en 4 lots de risque. Méthode validée : merger **par paquets**, `pnpm install + pnpm dev` après chaque paquet pour intercepter les régressions (a permis d'attraper le crash Express override toxique au lot 1 — cf §12 27/05 soir).
+
+#### Lot 1 — 🟢 patchs/minors sûrs (risque très faible)
+
+- [x] #25 `@types/node` 20.19.29 → 20.19.33
+- [x] #18 `react-hook-form` 7.71.0 → 7.71.2
+- [x] #29 `styled-components` 6.3.8 → 6.3.11
+- [x] #28 `jspdf` 4.1.0 → 4.2.0
+- [x] #30 `@google/genai` 1.41.0 → 1.42.0
+- [ ] #31 `@storybook/react` (à confirmer version cible)
+- [ ] #23 `@storybook/react-vite` (à confirmer version cible)
+- [ ] #26 `@aws-sdk/client-s3` (à confirmer version cible)
+- [ ] #21 `pg` (à confirmer version cible — vérifier compat Prisma/Supabase)
+- [ ] #32 `prettier` (à confirmer version cible)
+- [ ] #27 `playwright` (à confirmer version cible — re-rouler les 9 flux E2E après merge)
+
+#### Lot 2 — 🟡 GitHub Actions + dotenv (risque modéré, à valider quand 14.3 facturation Actions OK)
+
+- [ ] Bump `actions/cache` v6 (nécessite re-warm cache pnpm + Playwright browsers)
+- [ ] Bump `actions/checkout` v6
+- [ ] Bump `actions/setup-node` v6 (vérifier compat node 20.x range)
+- [ ] Bump `docker/build-push-action` v6
+- [ ] Bump `slack-actions/slack-action` v2 — ⚠️ **format payload change** (object → string JSON, à adapter dans les workflows utilisant le notif Slack)
+- [ ] Bump `dotenv` 16 → 17 (vérifier API parse, le backend l'utilise via `load-env.ts` + 3 appels redondants à nettoyer cf §11 P3 backend dotenv cleanup)
+
+#### Lot 3 — 🟠 minors à churn (risque réel, audit ciblé requis)
+
+- [ ] Bump nginx 1.31 (image Docker prod — vérifier compat config existante config/docker/nginx.conf)
+- [ ] Bump python 3.14 (utilisé par `packages/ai-modules`, scripts setup — vérifier compat venv + deps Python)
+- [ ] Bump `jest-environment-jsdom` 30 — **BLOQUÉ tant que `jest` reste à 29**. Attendre Lot 4 ou bump jest en cascade.
+- [ ] Bump `lucide-react` 0.309 → 0.575 (saut majeur de versions, **grep toutes les icônes utilisées** avant merge — certaines ont pu être renommées/supprimées).
+- [ ] Bump `three` + `@types/three` 0.183 — **#10 et #12 EN PAIRE obligatoire** (mismatch types/runtime three.js casse `@kitchenxpert/3d-engine` au build).
+
+#### Lot 4 — 🔴 MAJEURES (sessions dédiées par bump, NE PAS chaîner)
+
+- [ ] Bump `prisma` 5 → 7 : ~65 fichiers à re-vérifier (call sites Prisma Client), **re-test Supabase complet** (regenerate client + push schema + smoke seeds + RLS si activées).
+- [ ] Bump `react-router` 6 → 7 : ~90 fichiers concernés, refonte API (data routers obligatoires, `<RouterProvider>`, loaders). Impact sur `LocaleAwareShell` + `LocalizedLink` à anticiper.
+- [ ] Bump node 20 → 26 : **rebuild images Docker prod**, vérifier toutes les natives (`bcrypt`, `sharp` éventuel, `prisma engines`).
+- [ ] Bump `typescript` 5 → 6 : **TOUS les workspaces ensemble** (impossible de mixer 5/6 entre packages partagés), bumper `@types/node` 20 → 25 en pair.
+- [ ] Bump `redis` 4 → 5 : **refonte de `redis-client.ts`** (API changed, BLPOP/SUBSCRIBE différents). Profiter pour fixer la dette `ioredis` non déclarée (cf §11 P3) — soit déclarer explicitement, soit unifier sur `node-redis` v5.
+- [ ] Bump `zod` 3 → 4 : ~25 schémas à re-vérifier (`.transform`, `.refine` ont changé), valider le middleware `validate(schema)` sur toutes les routes.
+- [ ] Bump `nodemailer` 6 → 8 : ⚠️ **un override `nodemailer: ^7.0.4` existe dans `pnpm.overrides` racine** — désynchro vs dep backend `^6.9.8`. Avant ce bump, **résoudre l'override** (cf §11 P3 audit overrides), puis aligner toutes les sources (override + dep backend + scraper si concerné).
+- [ ] Bump `@typescript-eslint/eslint-plugin` + `@typescript-eslint/parser` 6 → 8 : couplé à la migration TS 6 (Lot 4 ci-dessus) + bumper `eslint` 8 → 9 (déjà déprécié, warning au boot).
+
+#### Règles transverses du chantier
+
+- Toujours `pnpm install` + smoke test backend + frontend après chaque paquet de PRs mergé.
+- Si une régression apparaît, **isoler par bisect** (re-tester chaque PR du paquet une par une) — c'est ce qui a permis d'identifier l'override path-to-regexp comme cause racine (pas une PR Dependabot elle-même).
+- Réflexe `git pull` : si conflit sur `pnpm-lock.yaml`, faire `git checkout -- pnpm-lock.yaml` avant pull, puis `pnpm install` après pull (le cloud main est source de vérité).
+- Tenir à jour la coche `[x]` au fur et à mesure des merges.
+
 ---
 
-*Dernière mise à jour : 27/05/2026 — `feat/design-system-migration` mergée vers `main` (PR #44, 62 commits). Migration cloud effective (Supabase PostgreSQL + Upstash Redis + circuit breaker). Seeds Supabase appliqués (~160 rows). Branche courante : `feat/seeds`. Ajout §14 Roadmap Production. Décochage rétroactif P2 #1 HowItWorks. Nouvelles dettes P3 (bug prisma stats + hygiène branches).*
+*Dernière mise à jour : 27/05/2026 (soir) — Chantier Dependabot lancé, 5/11 PRs Lot 1 mergées (#25, #18, #29, #28, #30). Découverte/fix d'un override pnpm toxique `path-to-regexp: ^6.3.0` qui cassait Express 4 au runtime (PR #47, merge 41aa00e). Fix Installer.count() (PR #46) validé en live (stats 200 sans prisma:error). Ajout §14.5 dédiée au chantier Dependabot (4 lots de risque, 32 PRs auditées). Nouvelle dette P3 : audit `pnpm.overrides` (path-to-regexp retiré, nodemailer à vérifier). Branche courante : `docs/session-27-05-dependabot`.*
