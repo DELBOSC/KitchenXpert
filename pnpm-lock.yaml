@@ -392,11 +392,11 @@ importers:
         specifier: ^25.8.6
         version: 25.8.6(typescript@5.9.3)
       jspdf:
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.2.0
+        version: 4.2.0
       jspdf-autotable:
         specifier: ^5.0.7
-        version: 5.0.7(jspdf@4.1.0)
+        version: 5.0.7(jspdf@4.2.0)
       lucide-react:
         specifier: ^0.309.0
         version: 0.309.0(react@18.3.1)
@@ -10477,16 +10477,16 @@ packages:
       semver: 7.7.3
     dev: false
 
-  /jspdf-autotable@5.0.7(jspdf@4.1.0):
+  /jspdf-autotable@5.0.7(jspdf@4.2.0):
     resolution: {integrity: sha512-2wr7H6liNDBYNwt25hMQwXkEWFOEopgKIvR1Eukuw6Zmprm/ZcnmLTQEjW7Xx3FCbD3v7pflLcnMAv/h1jFDQw==}
     peerDependencies:
       jspdf: ^2 || ^3 || ^4
     dependencies:
-      jspdf: 4.1.0
+      jspdf: 4.2.0
     dev: false
 
-  /jspdf@4.1.0:
-    resolution: {integrity: sha512-xd1d/XRkwqnsq6FP3zH1Q+Ejqn2ULIJeDZ+FTKpaabVpZREjsJKRJwuokTNgdqOU+fl55KgbvgZ1pRTSWCP2kQ==}
+  /jspdf@4.2.0:
+    resolution: {integrity: sha512-hR/hnRevAXXlrjeqU5oahOE+Ln9ORJUB5brLHHqH67A+RBQZuFr5GkbI9XQI8OUFSEezKegsi45QRpc4bGj75Q==}
     dependencies:
       '@babel/runtime': 7.28.6
       fast-png: 6.4.0
