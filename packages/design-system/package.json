@@ -23,7 +23,7 @@
     "@storybook/addon-links": "^8.0.0",
     "@storybook/blocks": "^8.0.0",
     "@storybook/react": "^8.6.18",
-    "@storybook/react-vite": "^8.0.0",
+    "@storybook/react-vite": "^8.6.18",
     "storybook": "^8.0.0",
     "@types/node": "^20.19.33",
     "@types/react": "^18.2.48",

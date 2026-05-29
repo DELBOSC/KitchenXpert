@@ -30,7 +30,7 @@
     "@storybook/addon-a11y": "^8.0.0",
     "@storybook/blocks": "^8.0.0",
     "@storybook/react": "^8.6.18",
-    "@storybook/react-vite": "^8.0.0",
+    "@storybook/react-vite": "^8.6.18",
     "@storybook/testing-library": "^0.2.2",
     "storybook": "^8.0.0",
     "@types/node": "^20.19.33",
