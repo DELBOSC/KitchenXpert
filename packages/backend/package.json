@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
-    "@aws-sdk/client-s3": "^3.500.0",
+    "@aws-sdk/client-s3": "^3.1056.0",
     "@aws-sdk/s3-request-presigner": "^3.500.0",
     "@google/genai": "^1.42.0",
     "@kitchenxpert/common": "workspace:*",
