@@ -402,6 +402,14 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
   4. **Fix (PR #47, merge `41aa00e`)** : suppression sèche de la ligne d'override + `pnpm install`. Express retombe naturellement sur `path-to-regexp@0.1.13`. Backend redémarre OK. Diff net : `+1 -1` package, aucun autre paquet déplacé.
   5. **Bonus** : fix `Installer.count()` (PR #46, mergée plus tôt dans la journée) validé en live dans les logs serveur : la requête utilise bien `isVerified: true` + `isActive: true`, `/api/v1/stats/public` renvoie 200 sans `prisma:error` résiduel. Dette §11 P3 "bug Prisma stats" effectivement résolue.
   6. **Réflexe lockfile noté** : si `git pull` râle sur `pnpm-lock.yaml` après merge GitHub, faire `git checkout -- pnpm-lock.yaml` avant pull (le lockfile local est obsolète vs main, le repo cloud est la source de vérité). Méthode validée par lot : merger par paquets, `pnpm install + pnpm dev` après chaque paquet — c'est ce qui a permis d'attraper la régression Express avant qu'elle ne s'enchaîne avec les lots suivants.
+- **27/05/2026 (fin de soirée)** : **Lot 1 Dependabot complet (11/11 PRs traitées).** Finalisation des 6 PRs restantes via `@dependabot recreate` (capture les bumps survenus entre l'audit du début de soirée et le merge) :
+  - #31 `@storybook/react` → **8.6.18** (versionné en avant via recreate)
+  - #23 `@storybook/react-vite` → **8.6.18**
+  - #26 `@aws-sdk/client-s3` → **3.1056.0**
+  - #21 `pg` → **8.18.0** — driver Postgres backend, **validé live** sur Supabase via Prisma : aucune régression sur les endpoints `/api/v1/stats/public`, `/api/v1/auth/me`, queries seeds/projets. Le bump était le seul risque réel du lot (pg = couche base de la prod data path).
+  - #32 `prettier` → **3.8.3**
+  - #27 `playwright` — **PR auto-closed** par Dependabot (probable rebump intermédiaire) ; pas d'action requise, Playwright reste à la version actuelle du lockfile. À re-vérifier si une nouvelle PR ré-ouvre.
+  **Smoke test ~1h10 stable** post-merge sur `pnpm dev` : Express 4.22.1 tient toujours (fix override path-to-regexp de la soirée robuste), `Installer.count()` fix (PR #46) validé en live à nouveau dans les logs (`/api/v1/stats/public` 200, zéro `prisma:error`). Frontend Vite intact (LiveCounter affiche les seeds, navigation OK, HMR fonctionnel). Branche `docs/session-27-05-dependabot` prête pour décision merge → main. Prochaine cible : Lot 2 (GitHub Actions + dotenv), conditionné par §14.3 facturation Actions.
 
 ---
 
@@ -414,10 +422,10 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P2** | 🟡 En cours | **1 tâche actionnable restante** : #2 SandboxMigrationBanner Card/Toast. Cumul : 2 résolues 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) + **1 résolue 23/05 (#1 HowItWorks → Card polymorphique, commits 594c63b+ee1869c)**. |
 | **Phase 1 P3** | ⏳ Non démarrée | **21 tâches** (8 + 4 ajoutées 22/05 + 1 ajoutée 23/05 backend dotenv + 5 ajoutées 23/05 Redis prod-grade + 2 ajoutées 27/05 matin : bug prisma.installer.count + hygiène 36 branches + 1 ajoutée 27/05 soir : audit `pnpm.overrides`). Note : "bug prisma stats" effectivement résolue par PR #46 (cf §12 27/05 soir #5) — comptée dans le total mais à décocher au prochain rangement. |
 | **§14 Roadmap Production** | ⏳ Non démarrée | 13 items (3 sécurité secrets, 5 infra, 2 CI/CD, 3 CORS/SSL/cookies). **Bloque le déploiement prod.** |
-| **§14.5 Chantier Dependabot** | 🟡 En cours | **5/11 PRs Lot 1 mergées** (27/05 soir). Reste : 6 PRs Lot 1 + 6 PRs Lot 2 + 5 PRs Lot 3 + 8 PRs Lot 4. Régression Express interceptée et corrigée (PR #47). |
+| **§14.5 Chantier Dependabot** | 🟢 Lot 1 complet | **Lot 1 ✅ 11/11 (27/05 fin de soirée).** Reste : 6 PRs Lot 2 + 5 PRs Lot 3 + 8 PRs Lot 4. Régression Express interceptée et corrigée (PR #47). pg 8.18.0 validé live sur Supabase. |
 
-`feat/design-system-migration` **mergée vers `main` via PR #44** (commit de merge `7f8e228`, 62 commits intégrés, fast-forward propre). Branche courante : `docs/session-27-05-dependabot` (synchronisation post-merge des 5 PRs Lot 1 + PR #47 fix override).
-Prochaine cible : finir le Lot 1 Dependabot (6 PRs restantes) puis démarrer §14 Roadmap Production (priorité 14.1 sécurité secrets).
+`feat/design-system-migration` **mergée vers `main` via PR #44** (commit de merge `7f8e228`, 62 commits intégrés, fast-forward propre). Branche courante : `docs/lot1-complete`.
+Prochaine cible : **Lot 2 Dependabot** (GitHub Actions + dotenv, 6 PRs) — conditionné par §14.3 facturation Actions OK. En parallèle : démarrer §14.1 sécurité secrets dès que possible (priorité prod).
 
 ---
 
@@ -456,19 +464,19 @@ Tout secret qui a été visible en dev local ou historisé dans des sessions de 
 
 > Contexte : `git fetch --prune` du 27/05 a révélé **32 PRs Dependabot ouvertes** (le repo accumulait silencieusement les bumps depuis ~mai). Audit du 27/05 (soir) → classement en 4 lots de risque. Méthode validée : merger **par paquets**, `pnpm install + pnpm dev` après chaque paquet pour intercepter les régressions (a permis d'attraper le crash Express override toxique au lot 1 — cf §12 27/05 soir).
 
-#### Lot 1 — 🟢 patchs/minors sûrs (risque très faible)
+#### Lot 1 — ✅ Complet (11/11 traitées, 27/05 fin de soirée)
 
 - [x] #25 `@types/node` 20.19.29 → 20.19.33
 - [x] #18 `react-hook-form` 7.71.0 → 7.71.2
 - [x] #29 `styled-components` 6.3.8 → 6.3.11
 - [x] #28 `jspdf` 4.1.0 → 4.2.0
 - [x] #30 `@google/genai` 1.41.0 → 1.42.0
-- [ ] #31 `@storybook/react` (à confirmer version cible)
-- [ ] #23 `@storybook/react-vite` (à confirmer version cible)
-- [ ] #26 `@aws-sdk/client-s3` (à confirmer version cible)
-- [ ] #21 `pg` (à confirmer version cible — vérifier compat Prisma/Supabase)
-- [ ] #32 `prettier` (à confirmer version cible)
-- [ ] #27 `playwright` (à confirmer version cible — re-rouler les 9 flux E2E après merge)
+- [x] #31 `@storybook/react` → 8.6.18 (bonus version via `@dependabot recreate`)
+- [x] #23 `@storybook/react-vite` → 8.6.18 (bonus version via `@dependabot recreate`)
+- [x] #26 `@aws-sdk/client-s3` → 3.1056.0 (bonus version via `@dependabot recreate`)
+- [x] #21 `pg` → 8.18.0 — validé live (driver Postgres côté backend, aucune régression observée sur Supabase via Prisma)
+- [x] #32 `prettier` → 3.8.3 (bonus version via `@dependabot recreate`)
+- [x] #27 `playwright` — PR **auto-closed** par Dependabot (probable rebump entre-temps ; à re-vérifier si une nouvelle PR ré-ouvre, sinon Playwright reste sur la version actuelle du lockfile)
 
 #### Lot 2 — 🟡 GitHub Actions + dotenv (risque modéré, à valider quand 14.3 facturation Actions OK)
 
@@ -507,4 +515,4 @@ Tout secret qui a été visible en dev local ou historisé dans des sessions de 
 
 ---
 
-*Dernière mise à jour : 27/05/2026 (soir) — Chantier Dependabot lancé, 5/11 PRs Lot 1 mergées (#25, #18, #29, #28, #30). Découverte/fix d'un override pnpm toxique `path-to-regexp: ^6.3.0` qui cassait Express 4 au runtime (PR #47, merge 41aa00e). Fix Installer.count() (PR #46) validé en live (stats 200 sans prisma:error). Ajout §14.5 dédiée au chantier Dependabot (4 lots de risque, 32 PRs auditées). Nouvelle dette P3 : audit `pnpm.overrides` (path-to-regexp retiré, nodemailer à vérifier). Branche courante : `docs/session-27-05-dependabot`.*
+*Dernière mise à jour : 27/05/2026 (fin de soirée) — **Lot 1 Dependabot complet (11/11)**. Finalisation via `@dependabot recreate` : #31 + #23 storybook 8.6.18, #26 aws-sdk 3.1056.0, #21 pg 8.18.0 (validé live Supabase/Prisma), #32 prettier 3.8.3, #27 playwright auto-closed. Smoke test ~1h10 stable : Express 4.22.1 tient (fix override path-to-regexp robuste), Installer.count() (PR #46) renvoie 200 sans `prisma:error`, frontend Vite intact. Prochaine cible : Lot 2 (GitHub Actions + dotenv) conditionné par §14.3 facturation. Branche courante : `docs/lot1-complete`.*
