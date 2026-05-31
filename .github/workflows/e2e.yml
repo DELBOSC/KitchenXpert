@@ -74,11 +74,11 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm --filter frontend exec playwright install --with-deps chromium
 
-      - name: Migrate + seed test DB
+      - name: Provision + seed test DB
         working-directory: packages/backend
         run: |
-          pnpm prisma migrate deploy
-          pnpm db:seed:test
+          pnpm prisma:push
+          pnpm db:seed
 
       - name: Build frontend (production bundle)
         run: pnpm --filter frontend build
