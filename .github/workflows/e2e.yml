@@ -42,6 +42,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://kx_e2e:kx_e2e_pw@localhost:5432/kitchenxpert_e2e
+      DIRECT_URL: postgresql://kx_e2e:kx_e2e_pw@localhost:5432/kitchenxpert_e2e
       REDIS_URL: redis://localhost:6379
       NODE_ENV: test
       JWT_ACCESS_SECRET: e2e_access_secret_must_be_long_enough_for_validation_xxxxxxxxxxxxxx
