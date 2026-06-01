@@ -32,7 +32,10 @@ jobs:
 
       # Production build — measures what users actually load.
       - name: Build frontend (production)
-        run: pnpm --filter frontend build
+        # Use turbo so workspace dependencies (3d-engine, common, api-client,
+        # design-system, ui-components) are built in topological order first.
+        # turbo.json declares `@kitchenxpert/frontend#build` dependsOn ["^build"].
+        run: pnpm turbo run build --filter @kitchenxpert/frontend
 
       - name: Serve dist on :3005
         working-directory: packages/frontend
