@@ -42,6 +42,15 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://kx_e2e:kx_e2e_pw@localhost:5432/kitchenxpert_e2e
+      DIRECT_URL: postgresql://kx_e2e:kx_e2e_pw@localhost:5432/kitchenxpert_e2e
+      # pg native client reads discrete DB_* vars (cf packages/backend/src/config/app-config.ts:14-21).
+      # Values mirror DATABASE_URL above -- kept literal because GitHub Actions
+      # does not support YAML anchors in env: blocks (actions/runner#1182).
+      DB_HOST: localhost
+      DB_PORT: '5432'
+      DB_USER: kx_e2e
+      DB_PASSWORD: kx_e2e_pw
+      DB_NAME: kitchenxpert_e2e
       REDIS_URL: redis://localhost:6379
       NODE_ENV: test
       JWT_ACCESS_SECRET: e2e_access_secret_must_be_long_enough_for_validation_xxxxxxxxxxxxxx
@@ -74,11 +83,11 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm --filter frontend exec playwright install --with-deps chromium
 
-      - name: Migrate + seed test DB
+      - name: Provision + seed test DB
         working-directory: packages/backend
         run: |
-          pnpm prisma migrate deploy
-          pnpm db:seed:test
+          pnpm prisma:push
+          pnpm db:seed
 
       - name: Build frontend (production bundle)
         run: pnpm --filter frontend build
