@@ -393,8 +393,8 @@ importers:
         specifier: ^2.0.1
         version: 2.11.2(react-redux@9.2.0)(react@18.3.1)
       '@tanstack/react-query':
-        specifier: ^5.17.19
-        version: 5.90.18(react@18.3.1)
+        specifier: ^5.100.14
+        version: 5.100.14(react@18.3.1)
       date-fns:
         specifier: ^3.2.0
         version: 3.6.0
@@ -5620,16 +5620,16 @@ packages:
       storybook: 8.6.15(prettier@3.8.3)
     dev: true
 
-  /@tanstack/query-core@5.90.18:
-    resolution: {integrity: sha512-rbGx6bHgPNVzutP7BEr+53UPKohpckqlMAad+To9UxTbeaQ+kC/1SDRj+QzkwbQ7qhLT/1IKp34yS6thda6fzA==}
+  /@tanstack/query-core@5.100.14:
+    resolution: {integrity: sha512-5X41dGpxgeaHISCRW2oYwcSycZeULZzAunaudXT9ov1KOTj9xwt0CH6hbwqP1/z74ZWF7rYFnDpyYH07XFcZew==}
     dev: false
 
-  /@tanstack/react-query@5.90.18(react@18.3.1):
-    resolution: {integrity: sha512-KqNZX0C5IFz4639zR1ilnQ288tQdJrMNLtzmlzyJ14xauBkhtLEy3mPU/V4KiHsr41eL1ILZbDP36TB12lYfCQ==}
+  /@tanstack/react-query@5.100.14(react@18.3.1):
+    resolution: {integrity: sha512-oOr6aRdSFEwWhzxEkD/9ZcItM3+LjBSkeVmadWKwUssAHTsqd/7bOjWrX4AbvEkoEhgAxzN0Xk6H/aYzXiYBAw==}
     peerDependencies:
       react: ^18 || ^19
     dependencies:
-      '@tanstack/query-core': 5.90.18
+      '@tanstack/query-core': 5.100.14
       react: 18.3.1
     dev: false
 
