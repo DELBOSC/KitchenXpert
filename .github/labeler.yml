@@ -1,76 +1,105 @@
 # Auto-labeling configuration for Pull Requests
+# Syntax: actions/labeler@v5 (changed-files + any-glob-to-any-file)
 
 # Frontend
 frontend:
-  - packages/frontend/**/*
-  - packages/ui-components/**/*
-  - packages/design-system/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/frontend/**/*'
+          - 'packages/ui-components/**/*'
+          - 'packages/design-system/**/*'
 
 # Backend
 backend:
-  - packages/backend/**/*
-  - packages/api-client/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/backend/**/*'
+          - 'packages/api-client/**/*'
 
 # 3D Engine
 3d-engine:
-  - packages/3d-engine/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/3d-engine/**/*'
 
 # Common
 common:
-  - packages/common/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/common/**/*'
 
 # Catalog Providers
 catalog:
-  - catalog-providers/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'catalog-providers/**/*'
 
 # AI Modules
 ai:
-  - packages/ai-modules/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/ai-modules/**/*'
 
 # Configuration
 config:
-  - config/**/*
-  - '*.config.js'
-  - '*.config.ts'
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'config/**/*'
+          - '*.config.js'
+          - '*.config.ts'
 
 # CI/CD
 ci-cd:
-  - .github/workflows/**/*
-  - .github/dependabot.yml
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**/*'
+          - '.github/dependabot.yml'
 
 # Documentation
 documentation:
-  - '**/*.md'
-  - docs/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**/*'
 
 # Tests
 tests:
-  - '**/*.test.ts'
-  - '**/*.test.tsx'
-  - '**/*.spec.ts'
-  - '**/*.spec.tsx'
-  - packages/*/tests/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.test.ts'
+          - '**/*.test.tsx'
+          - '**/*.spec.ts'
+          - '**/*.spec.tsx'
+          - 'packages/*/tests/**/*'
 
 # Dependencies
 dependencies:
-  - package.json
-  - pnpm-lock.yaml
-  - packages/*/package.json
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'pnpm-lock.yaml'
+          - 'packages/*/package.json'
 
 # Docker
 docker:
-  - '**/Dockerfile*'
-  - '**/docker-compose*.yml'
-  - config/docker/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/Dockerfile*'
+          - '**/docker-compose*.yml'
+          - 'config/docker/**/*'
 
 # Database
 database:
-  - migrations/**/*
-  - seeds/**/*
-  - config/database/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'migrations/**/*'
+          - 'seeds/**/*'
+          - 'config/database/**/*'
 
 # Security
 security:
-  - config/security/**/*
-  - packages/backend/src/auth/**/*
-  - .github/SECURITY.md
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'config/security/**/*'
+          - 'packages/backend/src/auth/**/*'
+          - '.github/SECURITY.md'
