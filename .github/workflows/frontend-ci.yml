@@ -102,7 +102,7 @@ jobs:
         run: pnpm format:check
 
       - name: 📝 TypeScript type check
-        run: pnpm type-check:frontend
+        run: pnpm turbo run type-check --filter @kitchenxpert/frontend
 
   # Job 3: Unit Tests
   test-unit:
@@ -141,7 +141,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🧪 Run unit tests
-        run: pnpm test:frontend --coverage
+        run: pnpm turbo run test:coverage --filter @kitchenxpert/frontend
 
       - name: 📊 Upload coverage to Codecov
         if: ${{ env.CODECOV_TOKEN != '' }}
@@ -187,7 +187,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🏗️ Build frontend
-        run: pnpm build:frontend
+        run: pnpm turbo run build --filter @kitchenxpert/frontend
         env:
           NODE_ENV: production
 
