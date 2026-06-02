@@ -194,3 +194,8 @@ packages/frontend/public/sitemap.xml
 *.tgz
 .npm/
 .env*.backup
+
+# ====================
+# Orphan external clones (not git submodules — no .gitmodules)
+# ====================
+external/
