@@ -30,7 +30,11 @@ const PUBLIC_PAGES: Array<{ name: string; url: string }> = [
 for (const { name, url } of PUBLIC_PAGES) {
   test(`@critical a11y — ${name}`, async ({ page }, testInfo) => {
     await page.goto(url);
-    await page.waitForLoadState('networkidle');
+    // `networkidle` never settles here: the production build (vite preview)
+    // registers a network-first Service Worker (main.tsx) and Playwright
+    // officially discourages networkidle for SPAs. Wait for React to render
+    // into #root instead — deterministic, page-agnostic, no network race.
+    await page.locator('#root > *').first().waitFor({ timeout: 15_000 });
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])

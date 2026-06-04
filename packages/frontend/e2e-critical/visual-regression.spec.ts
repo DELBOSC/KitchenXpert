@@ -54,7 +54,10 @@ async function mockAuthed(page: import('@playwright/test').Page) {
 /** Wait for fonts + lazy images so the screenshot is deterministic. */
 async function settle(page: import('@playwright/test').Page) {
   await page.evaluate(() => document.fonts.ready);
-  await page.waitForLoadState('networkidle');
+  // `load` (not `networkidle`): the prod build's network-first Service Worker
+  // keeps traffic alive so networkidle never settles (20s timeout). Fonts are
+  // already awaited above; `load` guarantees images are in for the screenshot.
+  await page.waitForLoadState('load');
   // Disable any CSS transition that would otherwise animate during capture
   await page.addStyleTag({
     content: `*, *::before, *::after {
