@@ -109,10 +109,6 @@ const envSchema = z.object({
 
   // Redis - RECOMMENDED for production
   REDIS_URL: redisUrlSchema,
-  REDIS_HOST: z.string().optional(),
-  REDIS_PORT: z.coerce.number().int().positive().optional(),
-  REDIS_PASSWORD: z.string().optional(),
-  REDIS_DB: z.coerce.number().int().min(0).optional(),
 
   // JWT - REQUIRED
   JWT_ACCESS_SECRET: jwtSecretSchema,
