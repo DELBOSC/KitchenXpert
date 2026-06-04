@@ -35,13 +35,6 @@ export const config = {
     maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),
   },
 
-  // Redis (optional)
-  redis: {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379', 10),
-    password: process.env.REDIS_PASSWORD || '',
-  },
-
   // Email (legacy - kept for backward compatibility)
   email: {
     host: process.env.SMTP_HOST || '',
