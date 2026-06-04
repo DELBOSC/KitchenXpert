@@ -79,6 +79,18 @@ export default defineConfig(async () => {
         '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },
       },
     },
+    // `vite preview` serves the production build (used by the E2E suite via
+    // `pnpm preview`). It does NOT inherit `server.proxy`, so without this the
+    // app's relative `/api/v1/*` calls hit the static preview server and get
+    // the SPA fallback instead of the backend → every UI flow that talks to
+    // the API (login, signup, …) fails. Mirror the dev proxy here.
+    preview: {
+      port: 3005,
+      host: '127.0.0.1',
+      proxy: {
+        '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },
+      },
+    },
     build: {
       outDir: 'dist',
       // Sourcemaps in prod leak source. Keep them for staging only via
