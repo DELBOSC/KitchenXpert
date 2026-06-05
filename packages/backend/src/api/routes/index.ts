@@ -72,6 +72,10 @@ const router: RouterType = Router();
 const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // 10 requests per window for auth
+  // Skip under NODE_ENV=test so the E2E suite isn't throttled (mirrors the
+  // skipFunction in rate-limit-middleware.ts). This is the second auth limiter
+  // — it wraps the whole /auth mount, in addition to the per-route limiters.
+  skip: () => process.env.NODE_ENV === 'test',
   message: { error: 'Too many authentication attempts. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
