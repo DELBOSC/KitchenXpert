@@ -74,6 +74,13 @@ const rateLimitHandler = (_req: Request, res: Response): void => {
 
 // Skip rate limiting for certain conditions
 const skipFunction = (req: Request): boolean => {
+  // Skip entirely under NODE_ENV=test so the E2E suite (many register/login
+  // calls across flows + retries) is not throttled by the hardcoded auth
+  // limiter (max 5 / 15 min). Never true in production.
+  if (process.env.NODE_ENV === 'test') {
+    return true;
+  }
+
   // Skip for health checks
   if (req.path === '/health' || req.path === '/api/health') {
     return true;
