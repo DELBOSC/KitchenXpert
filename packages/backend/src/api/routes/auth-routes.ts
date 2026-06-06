@@ -26,7 +26,11 @@ if (process.env.NODE_ENV !== 'production') {
       try {
         const user = await prisma.user.update({
           where: { email },
-          data: { emailVerified: new Date(), emailVerifiedAt: new Date() } as never,
+          // User.emailVerified is a Boolean (schema.prisma) — there is no
+          // emailVerifiedAt field. The previous `new Date()` values + `as never`
+          // cast made prisma.user.update throw → caught as a misleading 404
+          // ("User not found") → the E2E fixture reported "backdoor missing".
+          data: { emailVerified: true },
         });
         res.status(200).json({ success: true, data: { id: user.id } });
       } catch {
