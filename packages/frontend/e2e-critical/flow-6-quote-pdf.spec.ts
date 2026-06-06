@@ -46,7 +46,7 @@ test.describe('@critical Flow 6 — Quote + PDF export', () => {
     }
 
     // ---- Open the quote view ----
-    await page.goto(`/projects/${pData.id}/kitchens/${kData.id}/quote`);
+    await page.goto(`/fr/projects/${pData.id}/kitchens/${kData.id}/quote`);
 
     // Total visible and matches sum (2 × 199.99 = 399.98 ; allow display
     // variation: "399,98 €", "399.98 €", "399,98€", etc.)

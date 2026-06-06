@@ -35,7 +35,7 @@ test.describe('@critical Flow 4 — Catalog → Import', () => {
     const { data: kitchenData } = await kitchen.json();
 
     // 2. Open catalog hub
-    await page.goto('/catalog');
+    await page.goto('/fr/catalog');
     await expect(page.getByRole('heading', { name: /catalogue|catalog/i }).first())
       .toBeVisible();
 

@@ -35,7 +35,7 @@ test.describe('@critical Flow 5 — Designer', () => {
     });
     const { data: kData } = await kitchen.json();
 
-    await page.goto(`/projects/${pData.id}/kitchens/${kData.id}/designer`);
+    await page.goto(`/fr/projects/${pData.id}/kitchens/${kData.id}/designer`);
 
     const canvas = page.locator('[data-testid="designer-canvas"]')
       .or(page.locator('canvas').first());

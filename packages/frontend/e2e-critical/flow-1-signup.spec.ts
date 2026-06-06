@@ -16,7 +16,7 @@ import { test, expect, API_BASE, newTestUser } from './_fixtures';
 
 test.describe('@critical Flow 1 — Signup', () => {
   test('blocks submission when password is too short', async ({ page }) => {
-    await page.goto('/register');
+    await page.goto('/fr/register');
 
     await page.getByLabel(/email/i).fill('weak@e2e.local');
     await page.getByLabel(/^mot de passe|^password$/i).fill('short');
@@ -33,7 +33,7 @@ test.describe('@critical Flow 1 — Signup', () => {
   test('completes signup → verify → reaches dashboard', async ({ page, request }) => {
     const user = newTestUser();
 
-    await page.goto('/register');
+    await page.goto('/fr/register');
     await page.getByLabel(/prénom|first name/i).fill(user.firstName);
     await page.getByLabel(/nom|last name/i).fill(user.lastName);
     await page.getByLabel(/email/i).fill(user.email);
@@ -61,7 +61,7 @@ test.describe('@critical Flow 1 — Signup', () => {
 
     // Re-login from a clean state to confirm cookies are usable
     await page.context().clearCookies();
-    await page.goto('/login');
+    await page.goto('/fr/login');
     await page.getByLabel(/email/i).fill(user.email);
     await page.getByLabel(/mot de passe|password/i).fill(user.password);
     await Promise.all([
@@ -74,7 +74,7 @@ test.describe('@critical Flow 1 — Signup', () => {
   });
 
   test('rejects duplicate email', async ({ page, freshUser }) => {
-    await page.goto('/register');
+    await page.goto('/fr/register');
     await page.getByLabel(/email/i).fill(freshUser.email);
     await page.getByLabel(/^mot de passe|^password$/i).fill('Another!Pass123');
     await page.getByLabel(/confirm/i).fill('Another!Pass123');
