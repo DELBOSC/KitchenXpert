@@ -71,34 +71,34 @@ async function settle(page: import('@playwright/test').Page) {
 
 test.describe('Visual regression', () => {
   test('home page', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/fr/');
     await settle(page);
     await expect(page).toHaveScreenshot('home.png', { fullPage: true });
   });
 
   test('login page', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/fr/login');
     await settle(page);
     await expect(page).toHaveScreenshot('login.png', { fullPage: true });
   });
 
   test('dashboard (mocked auth)', async ({ page }) => {
     await mockAuthed(page);
-    await page.goto('/dashboard');
+    await page.goto('/fr/dashboard');
     await settle(page);
     await expect(page).toHaveScreenshot('dashboard.png', { fullPage: true });
   });
 
   test('catalog (mocked)', async ({ page }) => {
     await mockAuthed(page);
-    await page.goto('/catalog');
+    await page.goto('/fr/catalog');
     await settle(page);
     await expect(page).toHaveScreenshot('catalog.png', { fullPage: true });
   });
 
   test('designer placeholder (mocked)', async ({ page }) => {
     await mockAuthed(page);
-    await page.goto('/projects/visual-project/kitchens/visual-kitchen/designer');
+    await page.goto('/fr/projects/visual-project/kitchens/visual-kitchen/designer');
     await settle(page);
     // Designer is heavy → just the chrome, mask the canvas which is
     // GPU-dependent and would never match across runners.

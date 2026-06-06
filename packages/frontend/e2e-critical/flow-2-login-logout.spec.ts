@@ -51,7 +51,7 @@ test.describe('@critical Flow 2 — Login + Logout', () => {
     ).toHaveLength(0);
 
     // Direct navigation to a protected route must redirect to /login
-    await page.goto('/dashboard');
+    await page.goto('/fr/dashboard');
     await expect(page).toHaveURL(/\/login/);
   });
 });

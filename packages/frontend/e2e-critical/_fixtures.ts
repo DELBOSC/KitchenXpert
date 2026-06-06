@@ -94,7 +94,7 @@ export async function deleteUser(
 
 /** Submit the login form and wait for the dashboard redirect. */
 export async function loginUI(page: Page, user: TestUser): Promise<void> {
-  await page.goto('/login');
+  await page.goto('/fr/login');
   await page.getByLabel(/email/i).fill(user.email);
   await page.getByLabel(/mot de passe|password/i).fill(user.password);
   await Promise.all([

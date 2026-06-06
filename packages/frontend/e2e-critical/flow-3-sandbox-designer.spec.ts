@@ -18,7 +18,7 @@ import { test, expect, API_BASE, newTestUser, registerAndVerify } from './_fixtu
 test.describe('@critical Flow 3 — Sandbox designer', () => {
   test('opens the designer without auth and shows the onboarding modal', async ({ page }) => {
     await page.context().clearCookies();
-    await page.goto('/designer/sandbox');
+    await page.goto('/fr/designer/sandbox');
 
     // No redirect to /login
     await expect(page).toHaveURL(/\/designer\/sandbox/);
@@ -50,9 +50,12 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
 
   test('template URL skips onboarding and pre-loads the layout', async ({ page }) => {
     await page.context().clearCookies();
+    // Navigate to the app origin BEFORE touching localStorage — on about:blank
+    // (no navigation yet) window.localStorage throws SecurityError.
+    await page.goto('/fr/designer/sandbox');
     await page.evaluate(() => window.localStorage.removeItem('kx-sandbox-project-v1'));
 
-    await page.goto('/designer/sandbox/u-shape-medium');
+    await page.goto('/fr/designer/sandbox/u-shape-medium');
 
     // Template loaded → no modal
     await expect(page.getByRole('dialog')).toBeHidden();
@@ -70,7 +73,7 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
 
   test('unknown template id bounces to clean sandbox URL', async ({ page }) => {
     await page.context().clearCookies();
-    await page.goto('/designer/sandbox/does-not-exist');
+    await page.goto('/fr/designer/sandbox/does-not-exist');
     await expect(page).toHaveURL(/\/designer\/sandbox$/);
   });
 });

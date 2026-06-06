@@ -22,7 +22,7 @@ test.describe('@critical Flow 8 — RGPD', () => {
     const cookies = await captureCookies(page);
 
     // Navigate to /profil → "Mes données" tab → "Exporter mes données"
-    await page.goto('/profile');
+    await page.goto('/fr/profile');
     await page.getByRole('tab', { name: /données|data|rgpd/i })
       .or(page.getByRole('link', { name: /données|data|rgpd/i }))
       .first()
@@ -59,7 +59,7 @@ test.describe('@critical Flow 8 — RGPD', () => {
     await loginUI(page, freshUser);
     const cookies = await captureCookies(page);
 
-    await page.goto('/profile');
+    await page.goto('/fr/profile');
     await page.getByRole('tab', { name: /données|data|rgpd/i })
       .or(page.getByRole('link', { name: /données|data|rgpd/i }))
       .first()
@@ -87,7 +87,7 @@ test.describe('@critical Flow 8 — RGPD', () => {
     expect(login.status(), 'login should be rejected after deletion').toBe(401);
 
     // Belt-and-braces: same check via the UI
-    await page.goto('/login');
+    await page.goto('/fr/login');
     await page.getByLabel(/email/i).fill(freshUser.email);
     await page.getByLabel(/mot de passe|password/i).fill(freshUser.password);
     await page.getByRole('button', { name: /se connecter|sign in/i }).click();

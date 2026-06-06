@@ -29,7 +29,9 @@ const PUBLIC_PAGES: Array<{ name: string; url: string }> = [
 
 for (const { name, url } of PUBLIC_PAGES) {
   test(`@critical a11y — ${name}`, async ({ page }, testInfo) => {
-    await page.goto(url);
+    // Routes are locale-prefixed (LocaleAwareShell): a bare `/login` is treated
+    // as locale "login" and bounced to `/fr/`. Prefix every page with `/fr`.
+    await page.goto(`/fr${url === '/' ? '' : url}`);
     // `networkidle` never settles here: the production build (vite preview)
     // registers a network-first Service Worker (main.tsx) and Playwright
     // officially discourages networkidle for SPAs. Wait for React to render

@@ -32,7 +32,7 @@ test.describe('@critical Flow 7 — Stripe payment', () => {
     const cookies = await captureCookies(page);
 
     // Click "S'abonner Premium" on the pricing page
-    await page.goto('/pricing');
+    await page.goto('/fr/pricing');
     await page.getByRole('button', { name: /premium/i })
       .or(page.getByRole('link', { name: /premium/i }))
       .first()
