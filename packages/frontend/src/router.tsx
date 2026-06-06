@@ -7,6 +7,7 @@ import ErrorFallback from './components/common/ErrorFallback/ErrorFallback';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { useAuth } from './contexts/AuthContext';
 import { useLanguage, SUPPORTED_LANGUAGES, type SupportedLanguage } from './i18n/LanguageProvider';
+import { localizeUnknownLangPath } from './i18n/localize-path';
 import MainLayout from './layouts/MainLayout/MainLayout';
 
 // Lazy load pages for code splitting
@@ -154,9 +155,11 @@ function LocaleAwareShell(): React.ReactElement {
   const { lang } = useParams<{ lang: string }>();
   const { pathname, search, hash } = useLocation();
   if (!lang || !(SUPPORTED_LANGUAGES as readonly string[]).includes(lang)) {
-    // Unknown lang segment — strip it and let RedirectToLang handle it.
-    const stripped = pathname.replace(/^\/[^/]+/, '') || '/';
-    return <Navigate to={`/fr${stripped}${search}${hash}`} replace />;
+    // The first segment is NOT a supported locale → the whole path is
+    // locale-less (e.g. `/login`). Prepend the default locale to the FULL
+    // path instead of stripping the first segment (which dropped it →
+    // `/fr/`). See localizeUnknownLangPath for the rationale.
+    return <Navigate to={localizeUnknownLangPath(pathname, search, hash)} replace />;
   }
   return <AppRouteTree />;
 }
