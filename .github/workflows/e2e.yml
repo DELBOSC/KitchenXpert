@@ -95,6 +95,14 @@ jobs:
         # turbo.json declares `@kitchenxpert/frontend#build` dependsOn ["^build"].
         run: pnpm turbo run build --filter @kitchenxpert/frontend
 
+      - name: Build backend (compile dist/ for `node dist/index.js`)
+        # "Start backend" below runs `pnpm start` = `node dist/index.js`, which
+        # needs packages/backend/dist/. The frontend build above does NOT build
+        # the backend (it isn't a frontend dependency), so build it explicitly.
+        # turbo `@kitchenxpert/backend#build` dependsOn ["^build", "prisma:generate"]
+        # → builds @kitchenxpert/common + generates the Prisma client + tsc.
+        run: pnpm turbo run build --filter @kitchenxpert/backend
+
       - name: Start backend (background)
         working-directory: packages/backend
         run: |
