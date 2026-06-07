@@ -30,7 +30,14 @@ if (process.env.NODE_ENV !== 'production') {
           // emailVerifiedAt field. The previous `new Date()` values + `as never`
           // cast made prisma.user.update throw → caught as a misleading 404
           // ("User not found") → the E2E fixture reported "backdoor missing".
-          data: { emailVerified: true },
+          //
+          // Also flip status → 'active': register creates the user as 'pending'
+          // and login rejects non-'active' accounts (auth.service.ts ~l.281,
+          // "Account is not active" → 401). The REAL verification flow already
+          // activates the account (email-token.service.ts ~l.183-184); this
+          // dev backdoor must mirror it, otherwise a registered+verified E2E
+          // user still gets a 401 at login.
+          data: { emailVerified: true, status: 'active' },
         });
         res.status(200).json({ success: true, data: { id: user.id } });
       } catch {
