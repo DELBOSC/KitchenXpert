@@ -1,18 +1,21 @@
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import AuthLayout from './AuthLayout';
 import { SeoHead } from '../../components/seo/SeoHead';
 import { Button, Input, Checkbox, Separator } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../i18n/LanguageProvider';
 
 export default function LoginPage(): React.ReactElement {
   const { t } = useTranslation();
   const { login } = useAuth();
   const toast = useToast();
+  const navigate = useNavigate();
+  const { withPrefix } = useLanguage();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,6 +38,10 @@ export default function LoginPage(): React.ReactElement {
     try {
       await login(email, password);
       toast.success(t('auth.loginSuccess', 'Connexion réussie'));
+      // Redirect to the dashboard on success. Locale-aware so we land on
+      // /<lang>/dashboard (a bare /dashboard would be read as a bad locale by
+      // LocaleAwareShell). Without this the user stayed on /login after login.
+      navigate(withPrefix('/dashboard'));
     } catch (err) {
       const message = err instanceof Error ? err.message : t('auth.loginError', 'Identifiants invalides');
       setErrors({ form: message });
