@@ -167,7 +167,7 @@ export default function ProviderCatalog(): React.ReactElement {
               onChange={(e) => setSearch(e.target.value)}
               leftIcon={<Search className="h-4 w-4" />}
             />
-            <Select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} className="w-full sm:w-auto">
+            <Select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} aria-label="Trier les produits" className="w-full sm:w-auto">
               <option value="name">Nom A-Z</option>
               <option value="price_asc">Prix croissant</option>
               <option value="price_desc">Prix décroissant</option>
