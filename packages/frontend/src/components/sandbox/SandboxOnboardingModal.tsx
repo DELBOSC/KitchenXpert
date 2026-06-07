@@ -100,7 +100,7 @@ export function SandboxOnboardingModal({
         <button
           type="button"
           onClick={onSkip}
-          className="text-xs text-white/40 underline-offset-4 hover:text-white/70 hover:underline"
+          className="text-xs text-white/55 underline-offset-4 hover:text-white/70 hover:underline"
         >
           Passer cette étape
         </button>

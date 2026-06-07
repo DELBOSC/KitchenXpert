@@ -82,7 +82,7 @@ export default function PrivacySettings(): React.ReactElement {
       {summary && (
         <>
           <div className="not-prose rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <div className="mb-4 text-xs uppercase tracking-widest text-white/40">Compte</div>
+            <div className="mb-4 text-xs uppercase tracking-widest text-white/55">Compte</div>
             <div className="space-y-1 text-sm">
               <div><span className="text-white/50">Email&nbsp;:</span> {summary.account.email}</div>
               <div><span className="text-white/50">Créé le&nbsp;:</span> {new Date(summary.account.createdAt).toLocaleDateString('fr-FR')}</div>

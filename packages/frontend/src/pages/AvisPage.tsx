@@ -83,7 +83,7 @@ export default function AvisPage(): React.ReactElement {
                     }`}
                   >
                     {p === 'all' ? 'Tous' : PLATFORM_LABEL[p]}
-                    <span className="ml-1.5 text-[10px] text-white/40">{count}</span>
+                    <span className="ml-1.5 text-[10px] text-white/55">{count}</span>
                   </button>
                 );
               })}
@@ -101,7 +101,7 @@ export default function AvisPage(): React.ReactElement {
             KitchenXpert est en phase de lancement. Nous attendons que nos premiers utilisateurs
             partagent leur expérience sur G2, Capterra ou Trustpilot — ils seront listés ici dès publication.
           </p>
-          <p className="mt-2 text-sm text-white/45">
+          <p className="mt-2 text-sm text-white/55">
             Vous voulez tester&nbsp;? <Link to="/designer/sandbox" className="text-white underline">Ouvrir le designer démo</Link>.
           </p>
         </main>
@@ -126,7 +126,7 @@ export default function AvisPage(): React.ReactElement {
               </a>
             ))}
           </div>
-          <p className="mt-4 text-[11px] text-white/40">
+          <p className="mt-4 text-[11px] text-white/55">
             Aucune incitation matérielle. Ces plateformes interdisent le paiement de reviews.
           </p>
         </div>

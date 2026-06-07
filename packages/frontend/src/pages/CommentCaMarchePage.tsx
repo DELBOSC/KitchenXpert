@@ -44,7 +44,7 @@ function FeatureSection({
       <div className="mx-auto max-w-6xl px-6">
         <div className={`grid items-center gap-12 lg:grid-cols-2 ${imageRight ? '' : 'lg:[direction:rtl]'}`}>
           <div className="lg:[direction:ltr]">
-            <div className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white/40">
+            <div className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white/55">
               <span className="font-mono tabular-nums">{String(index).padStart(2, '0')}</span>
               <span aria-hidden>·</span>
               <span>Fonctionnalité</span>
@@ -85,7 +85,7 @@ const PlaceholderCapture = ({ label }: { label: string }): React.ReactElement =>
   <div className="flex aspect-[16/10] items-center justify-center">
     <div className="text-center">
       <div className="mx-auto mb-3 h-2 w-12 rounded-full bg-white/10" />
-      <div className="text-xs font-medium uppercase tracking-widest text-white/40">{label}</div>
+      <div className="text-xs font-medium uppercase tracking-widest text-white/55">{label}</div>
       <div className="mt-1 text-[10px] text-white/25">Capture à fournir — voir docs/HERO-VIDEO.md</div>
     </div>
   </div>

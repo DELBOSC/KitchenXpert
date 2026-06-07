@@ -90,7 +90,7 @@ export default function ForgotPasswordPage(): React.ReactElement {
             </div>
             <Link
               to="/login"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-kx-brand-strong hover:underline dark:text-kx-brand-from"
             >
               {t('auth.backToLogin', 'Back to login')}
             </Link>
@@ -133,7 +133,7 @@ export default function ForgotPasswordPage(): React.ReactElement {
             </form>
 
             <p className="mt-6 text-center">
-              <Link to="/login" className="text-sm text-blue-600 hover:underline">
+              <Link to="/login" className="text-sm text-kx-brand-strong hover:underline dark:text-kx-brand-from">
                 {t('auth.backToLogin', 'Back to login')}
               </Link>
             </p>
