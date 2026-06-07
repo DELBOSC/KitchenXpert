@@ -36,7 +36,9 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
 
     // Pick "Cuisine vide" → modal closes + project lands in localStorage
     await page.getByRole('button', { name: /cuisine vide/i }).click();
-    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+    ).toBeHidden();
 
     const stored = await page.evaluate(() =>
       window.localStorage.getItem('kx-sandbox-project-v1'),
@@ -49,7 +51,9 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
     // Reload preserves the project AND skips the onboarding modal
     await page.reload();
     await expect(page.getByText(/mode démo/i).first()).toBeVisible();
-    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+    ).toBeHidden();
   });
 
   test('template URL skips onboarding and pre-loads the layout', async ({ page }) => {
