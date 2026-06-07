@@ -403,7 +403,7 @@ const PricingPage: React.FC = () => {
         <div className="mt-16 text-center">
           <p className="text-kx-fg/60">
             {t('pricing.cta.questions', 'Des questions ? Contactez-nous a')}{' '}
-            <a href="mailto:contact@kitchenxpert.com" className="text-kx-brand-strong hover:text-kx-brand-to hover:underline transition-colors dark:text-kx-brand-from">
+            <a href="mailto:contact@kitchenxpert.com" className="text-kx-brand-strong underline hover:text-kx-brand-to transition-colors dark:text-kx-brand-from">
               contact@kitchenxpert.com
             </a>
           </p>
