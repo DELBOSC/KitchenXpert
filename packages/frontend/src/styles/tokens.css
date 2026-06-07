@@ -20,6 +20,11 @@
   --kx-brand-to: 232 121 249;    /* fuchsia-400 */
   --kx-brand-accent: 34 211 238; /* cyan-400 */
   --kx-accent-warm: 251 191 36;  /* amber-400 — accent chaud officiel */
+  /* AA-compliant variants for brand/warm TEXT on LIGHT surfaces (indigo/amber
+   * 400 fail WCAG AA on white). Pair with a `dark:` variant to fall back to the
+   * bright token on dark surfaces. */
+  --kx-brand-strong: 79 70 229;       /* indigo-600 — ≈6.3:1 on #fff */
+  --kx-accent-warm-strong: 146 64 14; /* amber-800 — ≈6.4:1 on amber/20 light */
 
   /* Semantic */
   --kx-success: 52 211 153;

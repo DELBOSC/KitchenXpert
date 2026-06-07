@@ -286,7 +286,7 @@ function FeatureComparisonTable(): React.ReactElement {
             <th className="py-4 px-4 text-center font-semibold text-kx-fg">
               {t('pricing.plans.free.name', 'Free')}
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-kx-brand-from">
+            <th className="py-4 px-4 text-center font-semibold text-kx-brand-strong dark:text-kx-brand-from">
               {t('pricing.plans.pro.name', 'Pro')}
             </th>
             <th className="py-4 pl-4 text-center font-semibold text-kx-fg">
@@ -305,13 +305,13 @@ function FeatureComparisonTable(): React.ReactElement {
               <td className="py-3 pr-4 text-kx-fg/80 font-medium">
                 {t(row.nameKey, row.nameDefault)}
               </td>
-              <td className="py-3 px-4 text-center text-kx-fg/60">
+              <td className="py-3 px-4 text-center text-kx-fg/70">
                 {renderCellValue(row.free, t)}
               </td>
-              <td className="py-3 px-4 text-center text-kx-fg/60">
+              <td className="py-3 px-4 text-center text-kx-fg/70">
                 {renderCellValue(row.pro, t)}
               </td>
-              <td className="py-3 pl-4 text-center text-kx-fg/60">
+              <td className="py-3 pl-4 text-center text-kx-fg/70">
                 {renderCellValue(row.enterprise, t)}
               </td>
             </tr>
@@ -347,7 +347,7 @@ const PricingPage: React.FC = () => {
 
           {/* Billing toggle */}
           <div className="mt-8 flex items-center justify-center gap-3">
-            <span className={`text-sm font-medium ${!annual ? 'text-kx-fg' : 'text-kx-fg/50'}`}>
+            <span className={`text-sm font-medium ${!annual ? 'text-kx-fg' : 'text-kx-fg/70'}`}>
               {t('pricing.billing.monthly', 'Mensuel')}
             </span>
             <button
@@ -365,9 +365,9 @@ const PricingPage: React.FC = () => {
                 }`}
               />
             </button>
-            <span className={`text-sm font-medium ${annual ? 'text-kx-fg' : 'text-kx-fg/50'}`}>
+            <span className={`text-sm font-medium ${annual ? 'text-kx-fg' : 'text-kx-fg/70'}`}>
               {t('pricing.billing.annual', 'Annuel')}
-              <span className="ml-1 inline-flex items-center rounded-full bg-kx-accent-warm/20 px-2 py-0.5 text-xs font-medium text-kx-accent-warm">
+              <span className="ml-1 inline-flex items-center rounded-full bg-kx-accent-warm/20 px-2 py-0.5 text-xs font-medium text-kx-accent-warm-strong dark:text-kx-accent-warm">
                 {t('pricing.billing.discount', '-20%')}
               </span>
             </span>
@@ -403,7 +403,7 @@ const PricingPage: React.FC = () => {
         <div className="mt-16 text-center">
           <p className="text-kx-fg/60">
             {t('pricing.cta.questions', 'Des questions ? Contactez-nous a')}{' '}
-            <a href="mailto:contact@kitchenxpert.com" className="text-kx-brand-from hover:text-kx-brand-to hover:underline transition-colors">
+            <a href="mailto:contact@kitchenxpert.com" className="text-kx-brand-strong hover:text-kx-brand-to hover:underline transition-colors dark:text-kx-brand-from">
               contact@kitchenxpert.com
             </a>
           </p>
