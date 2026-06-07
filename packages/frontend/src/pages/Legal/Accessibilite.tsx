@@ -94,7 +94,7 @@ export default function Accessibilite(): React.ReactElement {
             aria-label="Pourcentage de critères RGAA respectés"
           />
         </div>
-        <p className="mt-4 text-xs text-white/40">
+        <p className="mt-4 text-xs text-white/55">
           Calculé par {AUDIT_TOOL} le {fmtDate} sur les 8 pages publiques
           (accueil, login, inscription, tarifs, catalogue, IKEA, mentions
           légales, CGV).

@@ -28,7 +28,9 @@ export default {
           'brand-from': 'rgb(var(--kx-brand-from) / <alpha-value>)',
           'brand-to': 'rgb(var(--kx-brand-to) / <alpha-value>)',
           'brand-accent': 'rgb(var(--kx-brand-accent) / <alpha-value>)',
+          'brand-strong': 'rgb(var(--kx-brand-strong) / <alpha-value>)',
           'accent-warm': 'rgb(var(--kx-accent-warm) / <alpha-value>)',
+          'accent-warm-strong': 'rgb(var(--kx-accent-warm-strong) / <alpha-value>)',
         },
       },
       fontFamily: {

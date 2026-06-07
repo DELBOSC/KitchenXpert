@@ -43,7 +43,7 @@ export default function LegalLayout({ title, children }: { title: string; childr
 
         <div className="grid gap-12 md:grid-cols-[240px_1fr]">
           <aside>
-            <div className="text-xs uppercase tracking-widest text-white/40 mb-4">Espace légal</div>
+            <div className="text-xs uppercase tracking-widest text-white/55 mb-4">Espace légal</div>
             <nav className="flex flex-col gap-1">
               {NAV.map((n) => {
                 const active = pathname === n.to;

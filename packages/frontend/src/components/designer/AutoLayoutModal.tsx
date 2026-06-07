@@ -286,7 +286,7 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
             <button
               type="button"
               onClick={() => { setProposals(null); setPreviewUrls(undefined); }}
-              className="text-xs text-white/40 underline-offset-4 hover:text-white/70 hover:underline"
+              className="text-xs text-white/55 underline-offset-4 hover:text-white/70 hover:underline"
             >
               Reformuler ma demande
             </button>

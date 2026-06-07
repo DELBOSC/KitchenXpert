@@ -148,7 +148,7 @@ function Stat({
       <div className="text-2xl font-semibold text-white sm:text-3xl">
         {hasData ? <RollingNumber value={value} reduced={reduced} /> : <span className="text-white/30">—</span>}
       </div>
-      <div className="mt-1 text-xs uppercase tracking-widest text-white/40">{label}</div>
+      <div className="mt-1 text-xs uppercase tracking-widest text-white/55">{label}</div>
     </div>
   );
 }
