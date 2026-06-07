@@ -35,7 +35,8 @@ test.describe('@critical Flow 1 — Signup', () => {
 
     await page.goto('/fr/register');
     await page.getByLabel(/prénom|first name/i).fill(user.firstName);
-    await page.getByLabel(/nom|last name/i).fill(user.lastName);
+    // Anchored so "Nom" doesn't also match "Prénom" (strict-mode 2-element error).
+    await page.getByLabel(/^nom$|^last name$/i).fill(user.lastName);
     await page.getByLabel(/email/i).fill(user.email);
     await page.getByLabel(/^mot de passe|^password$/i).fill(user.password);
     await page.getByLabel(/confirm/i).fill(user.password);

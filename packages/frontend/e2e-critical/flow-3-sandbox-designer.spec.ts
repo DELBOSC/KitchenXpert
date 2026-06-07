@@ -26,13 +26,19 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
     // Watermark visible over the canvas
     await expect(page.getByText(/mode démo/i).first()).toBeVisible();
 
-    // Onboarding modal opens on first visit
-    await expect(page.getByRole('dialog')).toBeVisible();
+    // Onboarding modal opens on first visit. Scope by name: a fresh context
+    // also renders the cookie-consent dialog, so an unscoped getByRole('dialog')
+    // resolves to 2 elements (strict-mode error).
+    await expect(
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+    ).toBeVisible();
     await expect(page.getByText(/comment souhaitez-vous démarrer/i)).toBeVisible();
 
     // Pick "Cuisine vide" → modal closes + project lands in localStorage
     await page.getByRole('button', { name: /cuisine vide/i }).click();
-    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+    ).toBeHidden();
 
     const stored = await page.evaluate(() =>
       window.localStorage.getItem('kx-sandbox-project-v1'),
@@ -45,7 +51,9 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
     // Reload preserves the project AND skips the onboarding modal
     await page.reload();
     await expect(page.getByText(/mode démo/i).first()).toBeVisible();
-    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+    ).toBeHidden();
   });
 
   test('template URL skips onboarding and pre-loads the layout', async ({ page }) => {
@@ -57,8 +65,11 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
 
     await page.goto('/fr/designer/sandbox/u-shape-medium');
 
-    // Template loaded → no modal
-    await expect(page.getByRole('dialog')).toBeHidden();
+    // Template loaded → onboarding modal gone (scope by name: the cookie-consent
+    // dialog may still be present and would break an unscoped getByRole).
+    await expect(
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+    ).toBeHidden();
 
     const stored = await page.evaluate(() =>
       window.localStorage.getItem('kx-sandbox-project-v1'),
