@@ -135,7 +135,11 @@ jobs:
         env:
           PLAYWRIGHT_SUITE: critical
           CI: 'true'
-        run: pnpm --filter frontend exec playwright test --project=chromium-desktop
+        # Exclude the visual-regression suite: it is mock-driven and deterministic
+        # only in the frontend-only `visual-regression` job. Here the real backend
+        # is up, so data-driven pages (e.g. dashboard) render differently than the
+        # baselines → false mismatches. Visual regression has its own dedicated job.
+        run: pnpm --filter frontend exec playwright test --project=chromium-desktop --grep-invert "Visual regression"
 
       - name: Upload Playwright traces on failure
         if: failure()
@@ -156,7 +160,9 @@ jobs:
   visual-regression:
     name: Visual regression (5 pages)
     runs-on: ubuntu-latest
-    needs: critical-flows
+    # Self-contained (own frontend build + preview + route mocks, no backend),
+    # so it does NOT depend on critical-flows — gating it on that (currently red)
+    # job would pointlessly skip it. Runs independently on PRs.
     if: github.event_name == 'pull_request'
     timeout-minutes: 10
 
@@ -180,6 +186,10 @@ jobs:
       - name: Run visual regression
         env:
           E2E_BASE_URL: http://localhost:3005
+          # PLAYWRIGHT_SUITE=critical → testDir=./e2e-critical (else ./e2e and
+          # the spec is outside testDir → "No tests found"). Pre-existing gap in
+          # this job, surfaced while generating baselines.
+          PLAYWRIGHT_SUITE: critical
         run: |
           pnpm --filter frontend exec playwright test \
             e2e-critical/visual-regression.spec.ts \
