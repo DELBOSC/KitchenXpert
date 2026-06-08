@@ -156,8 +156,9 @@ jobs:
   visual-regression:
     name: Visual regression (5 pages)
     runs-on: ubuntu-latest
-    # TEMP(baselines): `needs` removed so this runs independently of the (currently
-    # red) critical-flows job, to generate the missing chromium-desktop baselines.
+    # Self-contained (own frontend build + preview + route mocks, no backend),
+    # so it does NOT depend on critical-flows — gating it on that (currently red)
+    # job would pointlessly skip it. Runs independently on PRs.
     if: github.event_name == 'pull_request'
     timeout-minutes: 10
 
@@ -189,18 +190,7 @@ jobs:
           pnpm --filter frontend exec playwright test \
             e2e-critical/visual-regression.spec.ts \
             --project=chromium-desktop \
-            --update-snapshots \
             --reporter=line
-
-      # TEMP(baselines): publish the freshly generated linux baselines so they can
-      # be downloaded and committed. Removed once baselines are in the repo.
-      - name: Upload generated baselines
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: visual-baselines-${{ github.run_id }}
-          path: packages/frontend/e2e-critical/visual-regression.spec.ts-snapshots/
-          retention-days: 7
 
       - name: Upload visual diffs on failure
         if: failure()
