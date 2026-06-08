@@ -135,7 +135,11 @@ jobs:
         env:
           PLAYWRIGHT_SUITE: critical
           CI: 'true'
-        run: pnpm --filter frontend exec playwright test --project=chromium-desktop
+        # Exclude the visual-regression suite: it is mock-driven and deterministic
+        # only in the frontend-only `visual-regression` job. Here the real backend
+        # is up, so data-driven pages (e.g. dashboard) render differently than the
+        # baselines → false mismatches. Visual regression has its own dedicated job.
+        run: pnpm --filter frontend exec playwright test --project=chromium-desktop --grep-invert "Visual regression"
 
       - name: Upload Playwright traces on failure
         if: failure()
