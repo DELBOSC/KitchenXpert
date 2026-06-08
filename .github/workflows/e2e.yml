@@ -181,6 +181,10 @@ jobs:
       - name: Run visual regression
         env:
           E2E_BASE_URL: http://localhost:3005
+          # PLAYWRIGHT_SUITE=critical → testDir=./e2e-critical (else ./e2e and
+          # the spec is outside testDir → "No tests found"). Pre-existing gap in
+          # this job, surfaced while generating baselines.
+          PLAYWRIGHT_SUITE: critical
         run: |
           pnpm --filter frontend exec playwright test \
             e2e-critical/visual-regression.spec.ts \
