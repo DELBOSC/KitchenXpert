@@ -119,6 +119,30 @@ type Fixtures = {
 };
 
 export const test = base.extend<Fixtures>({
+  // Dismiss the cookie-consent banner for every critical-flow test. It renders
+  // fixed at the bottom (z-100) and its subtree intercepts pointer events on
+  // full-width controls — notably the register submit button, which made all of
+  // Flow 1 time out. Pre-seed the stored decision so the banner never mounts.
+  // (Verified locally: banner present → submit click intercepted; pre-seeded →
+  // banner absent → click passes.)
+  page: async ({ page }, use) => {
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem(
+          'kx.cookie-consent.v1',
+          JSON.stringify({
+            necessary: true,
+            analytics: false,
+            marketing: false,
+            decidedAt: new Date().toISOString(),
+          }),
+        );
+      } catch {
+        /* localStorage not available before first navigation — ignored */
+      }
+    });
+    await use(page);
+  },
   freshUser: async ({ request }, use) => {
     const user = newTestUser();
     await registerAndVerify(request, user);
