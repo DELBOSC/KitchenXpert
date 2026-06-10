@@ -29,8 +29,11 @@ test.describe('@critical Flow 5 — Designer', () => {
     const kitchen = await request.post(`${API_BASE}/kitchens`, {
       headers: { Cookie: cookies },
       data: {
+        // POST /kitchens validates width/length/height (createKitchenSchema),
+        // not the *Cm names — the previous widthCm/depthCm/heightCm failed Zod
+        // validation (NaN) → kitchen creation 400 → kData undefined → crash.
         projectId: pData.id, name: 'D-Kitchen',
-        widthCm: 400, depthCm: 350, heightCm: 270,
+        width: 400, length: 350, height: 270,
       },
     });
     const { data: kData } = await kitchen.json();
