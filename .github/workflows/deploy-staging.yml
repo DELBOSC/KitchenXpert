@@ -162,6 +162,13 @@ jobs:
             pnpm install --prod --frozen-lockfile
 
             # Run migrations
+            # False-green guard (#115 pattern): `pnpm migrate:staging` delegates to
+            # backend `db:migrate:staging`, which does NOT exist (backend defines
+            # only db:migrate/db:seed/db:reset). pnpm would print "None of the
+            # selected packages has the script" and exit 0 — a SILENT no-op
+            # migration on a real staging deploy. Fail loudly instead.
+            grep -q '"db:migrate:staging"' packages/backend/package.json \
+              || { echo "ERROR: backend db:migrate:staging script missing — refusing a silent no-op migration on staging deploy (implement it or fix the migrate:staging chain)"; exit 1; }
             pnpm migrate:staging
 
             # Restart services
