@@ -43,7 +43,13 @@ test.describe('@critical Flow 1 — Signup', () => {
 
     // CGV / Privacy checkboxes (some flows have one, some have two)
     for (const cb of await page.getByRole('checkbox').all()) {
-      if (await cb.isVisible()) await cb.check();
+      // The Checkbox primitive hides the native <input> with `sr-only`; clicking
+      // the input directly (even force) does not reliably toggle it. Click the
+      // visible peer box (the aria-hidden sibling span) instead — that's what a
+      // user does. Idempotent: only toggle when not already checked.
+      if (!(await cb.isChecked())) {
+        await cb.locator('xpath=following-sibling::span[1]').click();
+      }
     }
 
     await page.getByRole('button', { name: /créer|sign up|register/i }).click();
@@ -80,7 +86,13 @@ test.describe('@critical Flow 1 — Signup', () => {
     await page.getByLabel(/^mot de passe|^password$/i).fill('Another!Pass123');
     await page.getByLabel(/confirm/i).fill('Another!Pass123');
     for (const cb of await page.getByRole('checkbox').all()) {
-      if (await cb.isVisible()) await cb.check();
+      // The Checkbox primitive hides the native <input> with `sr-only`; clicking
+      // the input directly (even force) does not reliably toggle it. Click the
+      // visible peer box (the aria-hidden sibling span) instead — that's what a
+      // user does. Idempotent: only toggle when not already checked.
+      if (!(await cb.isChecked())) {
+        await cb.locator('xpath=following-sibling::span[1]').click();
+      }
     }
     await page.getByRole('button', { name: /créer|sign up|register/i }).click();
 
