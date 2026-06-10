@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -21,5 +22,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+  },
+  // partner-portal currently has no tests (the 22 *.test.tsx files were empty
+  // 0-byte stubs, never wired to CI; removed). passWithNoTests keeps
+  // `vitest run` green until real tests are written, instead of erroring.
+  test: {
+    passWithNoTests: true,
   },
 });
