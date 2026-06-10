@@ -28,7 +28,9 @@ test.describe('@critical Flow 6 — Quote + PDF export', () => {
       headers: { Cookie: cookies },
       data: {
         projectId: pData.id, name: 'Q-Kitchen',
-        widthCm: 400, depthCm: 350, heightCm: 270,
+        // POST /kitchens validates width/length/height (createKitchenSchema),
+        // not the *Cm names.
+        width: 400, length: 350, height: 270,
       },
     });
     const { data: kData } = await kitchen.json();
