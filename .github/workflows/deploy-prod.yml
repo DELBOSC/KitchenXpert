@@ -296,7 +296,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🧪 Run production smoke tests
-        run: pnpm test:smoke:prod
+        # False-green guard (#115 pattern): `pnpm test:smoke:prod` exits 0 when
+        # the script is absent — and it IS (root package.json only defines
+        # `test:smoke`, no `:prod` variant). Without this guard the prod deploy
+        # would report passing smoke tests it never ran. Fail loudly until a real
+        # `test:smoke:prod` exists (or rename the call to `test:smoke`).
+        run: |
+          grep -q '"test:smoke:prod"' package.json \
+            || { echo "::error::No root test:smoke:prod script — refusing to report a false-green prod smoke test (implement it or call test:smoke)"; exit 1; }
+          pnpm test:smoke:prod
         env:
           API_URL: https://api.kitchenxpert.com
           FRONTEND_URL: https://kitchenxpert.com
