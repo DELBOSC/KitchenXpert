@@ -232,7 +232,15 @@ jobs:
         run: pnpm db:seed
 
       - name: 🔗 Run integration tests
-        run: pnpm test:integration
+        # False-green guard: `pnpm test:integration` exits 0 when the script is
+        # absent (it is — root delegates `--filter backend`, which has no such
+        # script), so this job was reporting green without running a single test.
+        # Fail loudly until real integration tests exist. (Integration coverage
+        # currently lives in the e2e.yml critical-flow suite vs a real backend+DB.)
+        run: |
+          grep -q '"test:integration"' packages/backend/package.json \
+            || { echo "::error::No backend test:integration script — refusing to report a false-green no-op (implement integration tests or remove this job)"; exit 1; }
+          pnpm test:integration
         env:
           NODE_ENV: test
           POSTGRES_HOST: localhost
@@ -362,7 +370,13 @@ jobs:
           PORT: 4000
 
       - name: 📡 Run API tests with Newman
-        run: pnpm test:api
+        # False-green guard: same as integration above — `pnpm test:api` is a
+        # no-op (script absent) that exited 0. Fail loudly until a real Newman
+        # collection + script exist.
+        run: |
+          grep -q '"test:api"' packages/backend/package.json \
+            || { echo "::error::No backend test:api script — refusing to report a false-green no-op (add the Newman collection + script or remove this job)"; exit 1; }
+          pnpm test:api
 
       - name: 📊 Generate API test report
         if: always()
