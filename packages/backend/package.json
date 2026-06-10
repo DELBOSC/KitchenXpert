@@ -33,7 +33,7 @@
     "@kitchenxpert/common": "workspace:*",
     "@prisma/client": "^5.10.0",
     "@sendgrid/mail": "^8.1.0",
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
     "compression": "^1.7.4",
     "cookie": "^1.1.1",
     "cookie-parser": "^1.4.7",
@@ -57,7 +57,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
+    "@types/bcrypt": "^6.0.0",
     "@types/compression": "^1.7.5",
     "@types/cookie": "^1.0.0",
     "@types/cookie-parser": "^1.4.10",
