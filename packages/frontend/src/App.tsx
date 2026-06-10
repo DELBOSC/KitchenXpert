@@ -1,6 +1,7 @@
 import './i18n/i18n';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import CookieConsent from './components/common/CookieConsent';
@@ -11,6 +12,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './i18n/LanguageProvider';
 import { AppRouter } from './router';
+import { store } from './store';
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -26,6 +28,7 @@ const queryClient = new QueryClient({
 function App(): React.ReactElement {
   return (
     <ErrorBoundary>
+      <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           {/* LanguageProvider must live INSIDE BrowserRouter because it
@@ -47,6 +50,7 @@ function App(): React.ReactElement {
           </LanguageProvider>
         </BrowserRouter>
       </QueryClientProvider>
+      </Provider>
     </ErrorBoundary>
   );
 }
