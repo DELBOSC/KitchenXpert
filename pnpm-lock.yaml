@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  axios: ^1.12.0
+  axios: ^1.17.0
   nodemailer: ^7.0.4
   dompurify: ^3.2.4
   jspdf: ^3.0.0
@@ -21,8 +21,8 @@ importers:
   .:
     dependencies:
       axios:
-        specifier: ^1.12.0
-        version: 1.13.2
+        specifier: ^1.17.0
+        version: 1.17.0
       csv-parse:
         specifier: ^5.5.3
         version: 5.6.0
@@ -134,8 +134,8 @@ importers:
         specifier: workspace:*
         version: link:../common
       axios:
-        specifier: ^1.12.0
-        version: 1.13.2
+        specifier: ^1.17.0
+        version: 1.17.0
     devDependencies:
       '@types/jest':
         specifier: ^29.5.11
@@ -571,8 +571,8 @@ importers:
         specifier: ^2.0.1
         version: 2.11.2(react-redux@9.2.0)(react@18.3.1)
       axios:
-        specifier: ^1.12.0
-        version: 1.13.2
+        specifier: ^1.17.0
+        version: 1.17.0
       date-fns:
         specifier: ^3.2.0
         version: 3.6.0
@@ -656,8 +656,8 @@ importers:
         specifier: ^5.10.0
         version: 5.22.0(prisma@5.22.0)
       axios:
-        specifier: ^1.12.0
-        version: 1.13.2
+        specifier: ^1.17.0
+        version: 1.17.0
       bullmq:
         specifier: ^5.0.0
         version: 5.66.5
@@ -4568,9 +4568,10 @@ packages:
     engines: {node: '>=12.*'}
     dependencies:
       '@sendgrid/helpers': 8.0.0
-      axios: 1.13.2
+      axios: 1.17.0
     transitivePeerDependencies:
       - debug
+      - supports-color
     dev: false
 
   /@sendgrid/helpers@8.0.0:
@@ -4588,6 +4589,7 @@ packages:
       '@sendgrid/helpers': 8.0.0
     transitivePeerDependencies:
       - debug
+      - supports-color
     dev: false
 
   /@shikijs/core@3.23.0:
@@ -7100,14 +7102,16 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios@1.13.2:
-    resolution: {integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==}
+  /axios@1.17.0:
+    resolution: {integrity: sha512-J8SwNxprqqpbfenehxWYXE7CW+wM1BB4w3+N+g+/Wx40xM4rsLrfPmHHxSWIxJLYDgSY/HqlFPIYb2/S3rxafw==}
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.5
-      proxy-from-env: 1.1.0
+      https-proxy-agent: 5.0.1
+      proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
+      - supports-color
     dev: false
 
   /axobject-query@4.1.0:
@@ -9784,7 +9788,7 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       es-set-tostringtag: 2.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       mime-types: 2.1.35
 
   /formdata-polyfill@4.0.10:
@@ -10223,6 +10227,7 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       function-bind: 1.1.2
+    dev: true
 
   /hasown@2.0.4:
     resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
@@ -13801,6 +13806,11 @@ packages:
 
   /proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
+
+  /proxy-from-env@2.1.0:
+    resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+    engines: {node: '>=10'}
     dev: false
 
   /psl@1.15.0:
