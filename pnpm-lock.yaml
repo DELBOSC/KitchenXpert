@@ -6,7 +6,7 @@ settings:
 
 overrides:
   axios: ^1.17.0
-  nodemailer: ^7.0.4
+  nodemailer: ^8.0.10
   dompurify: ^3.2.4
   tar: ^6.2.1
   fast-xml-parser: ^4.5.0
@@ -212,8 +212,8 @@ importers:
         specifier: 1.4.5-lts.2
         version: 1.4.5-lts.2
       nodemailer:
-        specifier: ^7.0.4
-        version: 7.0.13
+        specifier: ^8.0.10
+        version: 8.0.10
       pg:
         specifier: ^8.18.0
         version: 8.21.0
@@ -12950,8 +12950,8 @@ packages:
     resolution: {integrity: sha512-GYVXHE2KnrzAfsAjl4uP++evGFCrAU1jta4ubEjIG7YWt/64Gqv66a30yKwWczVjA6j3bM4nBwH7Pk1JmDHaxQ==}
     engines: {node: '>=18'}
 
-  /nodemailer@7.0.13:
-    resolution: {integrity: sha512-PNDFSJdP+KFgdsG3ZzMXCgquO7I6McjY2vlqILjtJd0hy8wEvtugS9xKRF2NWlPNGxvLCXlTNIae4serI7dinw==}
+  /nodemailer@8.0.10:
+    resolution: {integrity: sha512-BLFuSth7QtHOkBzyqTehWWyub0NTRDuK2Q2SQfnGLsrJnzyU+Yeh4WpV1eZGuARFj1xQJHIdnTuJZLP+b9R1GQ==}
     engines: {node: '>=6.0.0'}
     dev: false
 
