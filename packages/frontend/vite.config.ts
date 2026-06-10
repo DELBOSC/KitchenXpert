@@ -141,7 +141,11 @@ export default defineConfig(async () => {
       include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
       exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', 'e2e', 'e2e-critical'],
       coverage: {
-        provider: 'v8',
+        // istanbul, not v8: vitest 1.6.1's v8 provider crashes in
+        // convertCoverage/reportCoverage (provider.js:2446) AFTER all tests
+        // pass → exit 1. istanbul instruments via babel, same vitest version,
+        // tests unaffected. (Also drops the @vitest/coverage-v8 audit vuln.)
+        provider: 'istanbul',
         reporter: ['text', 'json', 'html'],
         exclude: [
           'node_modules/',

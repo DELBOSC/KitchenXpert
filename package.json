@@ -89,7 +89,6 @@
       "dompurify": "^3.2.4",
       "jspdf": "^3.0.0",
       "tar": "^6.2.1",
-      "minimatch": "^9.0.5",
       "fast-xml-parser": "^4.5.0",
       "undici": "^6.21.0",
       "basic-ftp": "^5.0.5",
