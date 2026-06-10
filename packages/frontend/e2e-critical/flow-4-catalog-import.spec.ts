@@ -29,7 +29,9 @@ test.describe('@critical Flow 4 — Catalog → Import', () => {
       data: {
         projectId: projectData.id,
         name: 'E2E Kitchen',
-        widthCm: 400, depthCm: 350, heightCm: 270,
+        // POST /kitchens validates width/length/height (createKitchenSchema),
+        // not the *Cm names.
+        width: 400, length: 350, height: 270,
       },
     });
     const { data: kitchenData } = await kitchen.json();
