@@ -270,7 +270,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🏗️ Build backend
-        run: pnpm build:backend
+        # Build via turbo so workspace deps (@kitchenxpert/common) are compiled
+        # first — `pnpm build:backend` alone can tsc against a missing common/dist.
+        # Same pattern as frontend-ci (#75) / e2e (#72).
+        run: pnpm turbo run build --filter @kitchenxpert/backend
         env:
           NODE_ENV: production
 
