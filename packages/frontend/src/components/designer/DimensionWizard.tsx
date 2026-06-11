@@ -749,7 +749,7 @@ function ProgressIndicator({
             .replace('${total}', String(totalSteps))}
         </span>
         <span className="text-xs font-medium text-blue-500 dark:text-blue-400">
-          {stepLabels[currentStep - 1] || ''}
+          {stepLabels[currentStep - 1] ?? ''}
         </span>
       </div>
 
@@ -792,15 +792,15 @@ export default function DimensionWizard({
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('left');
 
   // Form state
-  const [shape, setShape] = useState<RoomShape>(initialDimensions?.shape || 'rectangular');
+  const [shape, setShape] = useState<RoomShape>(initialDimensions?.shape ?? 'rectangular');
   const [walls, setWalls] = useState<WallDef[]>(() => {
     if (initialDimensions?.walls && initialDimensions.walls.length > 0) {
       return initialDimensions.walls;
     }
-    return createDefaultWalls(initialDimensions?.shape || 'rectangular');
+    return createDefaultWalls(initialDimensions?.shape ?? 'rectangular');
   });
   const [height, setHeight] = useState<number>(initialDimensions?.height || 250);
-  const [obstacles, setObstacles] = useState<ObstacleDef[]>(initialDimensions?.obstacles || []);
+  const [obstacles, setObstacles] = useState<ObstacleDef[]>(initialDimensions?.obstacles ?? []);
 
   // Build dimensions object
   const dimensions: RoomDimensions = useMemo(() => ({
@@ -1054,9 +1054,9 @@ function validateDimensions(
 
   // L-shape wall sum validation
   if (dims.shape === 'l_shaped' && dims.walls.length === 6) {
-    const outerHorizontal = dims.walls[0]?.length || 0;
-    const innerHorizontal = dims.walls[2]?.length || 0;
-    const bottomHorizontal = dims.walls[4]?.length || 0;
+    const outerHorizontal = dims.walls[0]?.length ?? 0;
+    const innerHorizontal = dims.walls[2]?.length ?? 0;
+    const bottomHorizontal = dims.walls[4]?.length ?? 0;
 
     if (outerHorizontal > 0 && innerHorizontal > 0 && bottomHorizontal > 0) {
       if (Math.abs(outerHorizontal - (innerHorizontal + bottomHorizontal)) > 5) {
@@ -1073,7 +1073,7 @@ function validateDimensions(
 
   // Window/door width must not exceed wall length
   dims.walls.forEach((wall, idx) => {
-    const openingWidth = (wall.hasWindow ? (wall.windowWidth || 0) : 0) + (wall.hasDoor ? (wall.doorWidth || 0) : 0);
+    const openingWidth = (wall.hasWindow ? (wall.windowWidth ?? 0) : 0) + (wall.hasDoor ? (wall.doorWidth ?? 0) : 0);
     if (wall.length > 0 && openingWidth > wall.length) {
       issues.push({
         field: `wall-${idx}-openings`,
