@@ -60,11 +60,11 @@ const CarbonAdmin: React.FC = () => {
         if (!statsRes.ok) {throw new Error(t('admin.carbon.errors.fetchStats', 'Failed to load carbon stats'));}
         if (!reportsRes.ok) {throw new Error(t('admin.carbon.errors.fetchReports', 'Failed to load carbon reports'));}
 
-        const statsData = await statsRes.json();
-        const reportsData = await reportsRes.json();
+        const statsData = (await statsRes.json()) as CarbonStats | { data: CarbonStats };
+        const reportsData = (await reportsRes.json()) as CarbonReport[] | { data: CarbonReport[] };
 
-        setCarbonStats(statsData.data ?? statsData);
-        setReports(reportsData.data ?? reportsData);
+        setCarbonStats('data' in statsData ? statsData.data : statsData);
+        setReports('data' in reportsData ? reportsData.data : reportsData);
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {return;}
         setError(getErrorMessage(err, t('admin.carbon.errors.load', 'Failed to load carbon data')));
@@ -96,7 +96,7 @@ const CarbonAdmin: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => null);
+        const body = (await res.json().catch(() => null)) as { message?: string } | null;
         throw new Error(body?.message ?? t('admin.carbon.errors.recalcFailed', 'Recalculation failed'));
       }
       setMessage({ type: 'success', text: t('admin.carbon.success.recalcAll', 'Recalculation launched successfully') });

@@ -86,21 +86,26 @@ async function request<T>(
       }
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as {
+      data?: T;
+      meta?: ApiResponse<T>['meta'];
+      error?: ApiResponse<T>['error'];
+      message?: string;
+    };
 
     if (!response.ok) {
       return {
         success: false,
-        error: data.error || {
+        error: data.error ?? {
           code: `HTTP_${response.status}`,
-          message: data.message || response.statusText,
+          message: data.message ?? response.statusText,
         },
       };
     }
 
     return {
       success: true,
-      data: data.data ?? data,
+      data: (data.data ?? data) as T,
       meta: data.meta,
     };
   } catch (error) {

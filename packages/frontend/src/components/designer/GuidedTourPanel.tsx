@@ -15,6 +15,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import * as THREE from 'three';
 
 import type { GuidedWalkthrough, WalkthroughState, Waypoint } from '@kitchenxpert/3d-engine';
 
@@ -213,14 +214,14 @@ export default function GuidedTourPanel({
       waypoints = walkthrough.generateWorkTriangleTour(
         items.map((i) => ({
           ...i,
-          position: new (window as any).THREE.Vector3(i.position.x, i.position.y, i.position.z),
+          position: new THREE.Vector3(i.position.x, i.position.y, i.position.z),
         }))
       );
     } else {
       waypoints = walkthrough.generateFullTour(
         items.map((i) => ({
           ...i,
-          position: new (window as any).THREE.Vector3(i.position.x, i.position.y, i.position.z),
+          position: new THREE.Vector3(i.position.x, i.position.y, i.position.z),
         })),
         roomDimensions
       );

@@ -10,7 +10,14 @@ export function getErrorMessage(err: unknown, defaultMessage: string = 'An error
   if (typeof err === 'string') {return err;}
   if (typeof err === 'object' && err !== null) {
     const obj = err as Record<string, unknown>;
-    if (typeof (obj as any).error?.message === 'string') {return (obj as any).error.message;}
+    const nestedError = obj.error;
+    if (
+      typeof nestedError === 'object' &&
+      nestedError !== null &&
+      typeof (nestedError as Record<string, unknown>).message === 'string'
+    ) {
+      return (nestedError as Record<string, unknown>).message as string;
+    }
     if (typeof obj.message === 'string') {return obj.message;}
     if (typeof obj.detail === 'string') {return obj.detail;}
   }

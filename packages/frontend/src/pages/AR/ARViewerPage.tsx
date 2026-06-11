@@ -5,6 +5,8 @@ import * as THREE from 'three';
 
 import { logger } from '../../services/logger';
 
+import type { ARLiveOverlay } from '@kitchenxpert/3d-engine';
+
 
 // ---------------------------------------------------------------------------
 // Types
@@ -77,7 +79,7 @@ const ARViewerPage: React.FC = () => {
   const kitchenGroupRef = useRef<THREE.Group | null>(null);
 
   // Ref for AR overlay
-  const arOverlayRef = useRef<any>(null);
+  const arOverlayRef = useRef<ARLiveOverlay | null>(null);
   const arContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Check AR support

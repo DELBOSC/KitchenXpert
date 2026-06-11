@@ -76,8 +76,11 @@ const DesignComparison: React.FC = () => {
           );
         }
 
-        const json = await response.json();
-        const data: AIGenerationResult = json.data || json;
+        const json = (await response.json()) as
+          | { data?: AIGenerationResult }
+          | AIGenerationResult;
+        const data: AIGenerationResult =
+          ('data' in json && json.data ? json.data : json) as AIGenerationResult;
 
         if (mountedRef.current) {
           setResult(data);

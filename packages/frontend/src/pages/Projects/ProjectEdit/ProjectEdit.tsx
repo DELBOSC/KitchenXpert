@@ -21,6 +21,22 @@ interface FormErrors {
   clientPhone?: string;
 }
 
+/** Project fields consumed by the edit form (subset of the API project payload). */
+interface ProjectResponse {
+  name?: string;
+  description?: string;
+  status?: ProjectFormData['status'];
+  address?: string;
+  clientName?: string;
+  clientEmail?: string;
+  clientPhone?: string;
+}
+
+/** Error envelope returned by a failed PUT /api/v1/projects/:id. */
+interface ApiErrorBody {
+  message?: string;
+}
+
 const ProjectEdit: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -84,7 +100,7 @@ const ProjectEdit: React.FC = () => {
           throw new Error(t('projects.fetchError', 'Failed to load project'));
         }
 
-        const data = await response.json();
+        const data = (await response.json()) as ProjectResponse;
 
         if (!mountedRef.current) {return;}
 
@@ -198,7 +214,7 @@ const ProjectEdit: React.FC = () => {
       if (!mountedRef.current) {return;}
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = (await response.json().catch(() => ({}))) as ApiErrorBody;
         throw new Error(errorData.message || t('projects.updateError', 'Failed to update project'));
       }
 

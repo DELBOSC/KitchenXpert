@@ -140,11 +140,11 @@ const CreateProject: React.FC = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || t('projects.createError', 'Failed to create project'));
+        const errorData = (await response.json().catch(() => ({}))) as { message?: string };
+        throw new Error(errorData.message ?? t('projects.createError', 'Failed to create project'));
       }
 
-      const newProject = await response.json();
+      const newProject = (await response.json()) as { id: string };
       navigate(`/projects/${newProject.id}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');

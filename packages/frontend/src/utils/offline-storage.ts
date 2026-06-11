@@ -189,7 +189,7 @@ export class OfflineStorage {
    * Generic helper to get all records from a store.
    */
   private async getAll<T>(storeName: string): Promise<T[]> {
-    return this.transaction<T[]>(storeName, 'readonly', (store) => store.getAll());
+    return this.transaction<T[]>(storeName, 'readonly', (store) => store.getAll() as IDBRequest<T[]>);
   }
 
   // ────────────────────────────── Kitchen Operations ──────────────────────────────
@@ -216,7 +216,7 @@ export class OfflineStorage {
       const result = await this.transaction<KitchenData | undefined>(
         STORES.KITCHENS,
         'readonly',
-        (store) => store.get(kitchenId)
+        (store) => store.get(kitchenId) as IDBRequest<KitchenData | undefined>
       );
       return result ?? null;
     } catch {
@@ -313,8 +313,8 @@ export class OfflineStorage {
           );
           result.synced++;
         } else {
-          const data = await response.json().catch(() => null);
-          const errorMsg = data?.error || `HTTP ${response.status}`;
+          const data = (await response.json().catch(() => null)) as { error?: string } | null;
+          const errorMsg = data?.error ?? `HTTP ${response.status}`;
           result.errors.push(`${change.type} ${change.kitchenId}: ${errorMsg}`);
           result.failed++;
         }
@@ -446,7 +446,7 @@ export class OfflineStorage {
       const result = await this.transaction<UserPreference | undefined>(
         STORES.USER_PREFERENCES,
         'readonly',
-        (store) => store.get(key)
+        (store) => store.get(key) as IDBRequest<UserPreference | undefined>
       );
       return result ? (result.value as T) : null;
     } catch {

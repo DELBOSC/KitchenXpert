@@ -494,13 +494,19 @@ function KitchenDesigner({
     const categoryMap = new Map<string, number>();
     let total = 0;
     engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-      if (!child.userData.id || child.userData.type === 'wall' || child.userData.type === 'floor') {return;}
-      if (child.userData.isGenerated) {return;}
-      const itemType = child.userData.type || 'unknown';
-      const price = child.userData.price || DEFAULT_PRICES[itemType] || 0;
+      const userData = child.userData as {
+        id?: string;
+        type?: string;
+        isGenerated?: boolean;
+        price?: number;
+      };
+      if (!userData.id || userData.type === 'wall' || userData.type === 'floor') {return;}
+      if (userData.isGenerated) {return;}
+      const itemType = userData.type ?? 'unknown';
+      const price = userData.price ?? DEFAULT_PRICES[itemType] ?? 0;
       total += price;
-      const category = BUDGET_CATEGORY_MAP[itemType] || t('designer.budgetCategory.other', 'Autre');
-      categoryMap.set(category, (categoryMap.get(category) || 0) + price);
+      const category = BUDGET_CATEGORY_MAP[itemType] ?? t('designer.budgetCategory.other', 'Autre');
+      categoryMap.set(category, (categoryMap.get(category) ?? 0) + price);
     });
     setBudgetSpent(total);
     setBudgetBreakdown(

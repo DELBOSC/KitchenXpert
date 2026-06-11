@@ -24,13 +24,27 @@ interface ObjectTransform {
   rotY: number;
 }
 
+/** Shape of the userData KitchenXpert attaches to scene objects (set by CatalogPanel). */
+interface KitchenObjectUserData {
+  dimensions?: { width: number; height: number; depth: number };
+  materialId?: string;
+  type?: string;
+  id?: string;
+  name?: string;
+}
+
+function getUserData(object: THREE.Object3D): KitchenObjectUserData {
+  return object.userData as KitchenObjectUserData;
+}
+
 function getObjectDimensions(object: THREE.Object3D): { width: number; height: number; depth: number } {
   // Try userData first (set by CatalogPanel)
-  if (object.userData.dimensions) {
+  const dimensions = getUserData(object).dimensions;
+  if (dimensions) {
     return {
-      width: Math.round(object.userData.dimensions.width * 1000),
-      height: Math.round(object.userData.dimensions.height * 1000),
-      depth: Math.round(object.userData.dimensions.depth * 1000),
+      width: Math.round(dimensions.width * 1000),
+      height: Math.round(dimensions.height * 1000),
+      depth: Math.round(dimensions.depth * 1000),
     };
   }
 
@@ -180,7 +194,7 @@ export default function PropertiesPanel({
       setSelectedMaterialId(null);
       return;
     }
-    const matId = selectedObject.userData.materialId || null;
+    const matId = getUserData(selectedObject).materialId ?? null;
     setSelectedMaterialId(matId);
   }, [selectedObject]);
 
@@ -235,9 +249,10 @@ export default function PropertiesPanel({
   }
 
   const dimensions = getObjectDimensions(selectedObject);
-  const objectType = selectedObject.userData.type || t('designer.properties.unknownType', 'Inconnu');
-  const objectId = selectedObject.userData.id || selectedObject.uuid.slice(0, 8);
-  const objectName = selectedObject.userData.name || objectType;
+  const userData = getUserData(selectedObject);
+  const objectType = userData.type ?? t('designer.properties.unknownType', 'Inconnu');
+  const objectId = userData.id ?? selectedObject.uuid.slice(0, 8);
+  const objectName = userData.name ?? objectType;
 
   return (
     <div className="w-72 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 h-full flex flex-col overflow-hidden">

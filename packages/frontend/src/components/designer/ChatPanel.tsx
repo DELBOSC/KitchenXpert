@@ -167,6 +167,10 @@ function extractSceneContext(engine: KitchenEngine): SceneContext {
     const box = new THREE.Box3().setFromObject(child);
     const size = box.getSize(new THREE.Vector3());
 
+    const userDimensions = child.userData.dimensions as
+      | { width?: number; height?: number; depth?: number }
+      | undefined;
+
     items.push({
       id: child.userData.id as string,
       type: (child.userData.type as string) || 'unknown',
@@ -177,9 +181,9 @@ function extractSceneContext(engine: KitchenEngine): SceneContext {
         z: child.position.z,
       },
       dimensions: {
-        width: (child.userData.dimensions?.width as number) || size.x,
-        height: (child.userData.dimensions?.height as number) || size.y,
-        depth: (child.userData.dimensions?.depth as number) || size.z,
+        width: userDimensions?.width || size.x,
+        height: userDimensions?.height || size.y,
+        depth: userDimensions?.depth || size.z,
       },
     });
   });

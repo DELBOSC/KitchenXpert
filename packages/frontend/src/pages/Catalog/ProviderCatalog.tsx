@@ -87,8 +87,8 @@ export default function ProviderCatalog(): React.ReactElement {
             : '/api/v1/ikea/kitchen/cabinets?limit=40';
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
           if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
-          const json = await res.json();
-          const results = (json.data?.results ?? []) as IkeaSearchResult[];
+          const json = (await res.json()) as { data?: { results?: IkeaSearchResult[] } };
+          const results = json.data?.results ?? [];
           setItems(results.map((r) => ({ ...r, _kind: 'ikea' as const })));
         } else if (isAppliance) {
           const url = search
@@ -96,8 +96,8 @@ export default function ProviderCatalog(): React.ReactElement {
             : `/api/v1/${providerCode}/appliances?limit=40`;
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
           if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
-          const json = await res.json();
-          const results = (json.data ?? []) as DBAppliance[];
+          const json = (await res.json()) as { data?: DBAppliance[] };
+          const results = json.data ?? [];
           setItems(results.map((r) => ({ ...r, _kind: 'appliance' as const })));
         } else {
           const url = search
@@ -105,8 +105,8 @@ export default function ProviderCatalog(): React.ReactElement {
             : `/api/v1/${providerCode}/products?limit=40`;
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
           if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
-          const json = await res.json();
-          const results = (json.data ?? []) as DBProduct[];
+          const json = (await res.json()) as { data?: DBProduct[] };
+          const results = json.data ?? [];
           setItems(results.map((r) => ({ ...r, _kind: 'product' as const })));
         }
       } catch (err) {

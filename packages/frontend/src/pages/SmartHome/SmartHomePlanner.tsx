@@ -167,8 +167,11 @@ const SmartHomePlanner: React.FC = () => {
           signal: controller.signal,
         });
         if (res.ok) {
-          const data = await res.json();
-          setKitchens(data.data ?? data ?? []);
+          const data = (await res.json()) as
+            | { data?: Array<{ id: string; name: string }> }
+            | Array<{ id: string; name: string }>;
+          const list = Array.isArray(data) ? data : data.data ?? [];
+          setKitchens(list);
         }
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {return;}
@@ -191,7 +194,7 @@ const SmartHomePlanner: React.FC = () => {
           signal: controller.signal,
         });
         if (res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as { data?: SmartDevice[] };
           setCatalog(data.data ?? []);
         }
       } catch (err) {
@@ -218,7 +221,7 @@ const SmartHomePlanner: React.FC = () => {
           signal: controller.signal,
         });
         if (res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as { data?: SmartHomePlan | null };
           setPlan(data.data ?? null);
         } else if (res.status === 404) {
           setPlan(null);
@@ -258,11 +261,11 @@ const SmartHomePlanner: React.FC = () => {
       });
 
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
+        const errData = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(errData.error ?? 'Failed to generate smart home plan');
       }
 
-      const data = await res.json();
+      const data = (await res.json()) as { data?: SmartHomePlan | null };
       setPlan(data.data ?? null);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'An unexpected error occurred';
@@ -296,7 +299,7 @@ const SmartHomePlanner: React.FC = () => {
         throw new Error('Failed to save plan');
       }
 
-      const data = await res.json();
+      const data = (await res.json()) as { data?: SmartHomePlan | null };
       setPlan(data.data ?? plan);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'An unexpected error occurred';
@@ -393,7 +396,7 @@ const SmartHomePlanner: React.FC = () => {
         { credentials: 'include' },
       );
       if (res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as { data?: CoverageMap | null };
         setPlan((prev) =>
           prev ? { ...prev, wifiCoverage: data.data ?? null } : prev,
         );

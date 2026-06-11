@@ -119,7 +119,7 @@ const AuditLogs: React.FC = () => {
           throw new Error(t('admin.audit.errors.fetchLogs', 'Failed to fetch audit logs'));
         }
 
-        const data: AuditLogsResponse = await response.json();
+        const data = (await response.json()) as AuditLogsResponse;
         setLogs(data.logs);
         setPagination(data.pagination);
       } catch (err) {

@@ -19,6 +19,20 @@ interface AuthContextType {
   clearError: () => void;
 }
 
+interface ApiErrorEnvelope {
+  error?: { message?: string };
+  message?: string;
+}
+
+interface UserEnvelope {
+  success?: boolean;
+  data?: User;
+}
+
+interface AuthEnvelope {
+  data?: { user?: User };
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }): React.ReactElement {
@@ -39,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as UserEnvelope;
           if (data.success && data.data) {
             setUser(data.data);
           } else {
@@ -72,13 +86,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
       });
 
       if (!response.ok) {
-        const data = await response.json().catch(() => null);
+        const data = (await response.json().catch(() => null)) as ApiErrorEnvelope | null;
         const message = data?.error?.message || data?.message || 'Login failed';
         setError(message);
         throw new Error(message);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as AuthEnvelope;
       if (data.data?.user) {
         setUser(data.data.user);
       }
@@ -104,13 +118,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
       });
 
       if (!response.ok) {
-        const data = await response.json().catch(() => null);
+        const data = (await response.json().catch(() => null)) as ApiErrorEnvelope | null;
         const message = data?.error?.message || data?.message || 'Registration failed';
         setError(message);
         throw new Error(message);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as AuthEnvelope;
       if (data.data?.user) {
         setUser(data.data.user);
       }
@@ -146,11 +160,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
     });
 
     if (!response.ok) {
-      const data = await response.json().catch(() => null);
+      const data = (await response.json().catch(() => null)) as ApiErrorEnvelope | null;
       throw new Error(data?.error?.message || data?.message || 'Profile update failed');
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as UserEnvelope;
     if (data.success && data.data) {
       setUser(data.data);
     } else {

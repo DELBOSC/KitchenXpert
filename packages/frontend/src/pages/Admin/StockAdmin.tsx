@@ -67,11 +67,11 @@ const StockAdmin: React.FC = () => {
         if (!statsRes.ok) {throw new Error(t('admin.stock.errors.fetchStats', 'Failed to load stock stats'));}
         if (!resultsRes.ok) {throw new Error(t('admin.stock.errors.fetchResults', 'Failed to load stock results'));}
 
-        const statsData = await statsRes.json();
-        const resultsData = await resultsRes.json();
+        const statsData = (await statsRes.json()) as StockStats | { data: StockStats };
+        const resultsData = (await resultsRes.json()) as StockResult[] | { data: StockResult[] };
 
-        const stats: StockStats = statsData.data ?? statsData;
-        const results: StockResult[] = resultsData.data ?? resultsData;
+        const stats: StockStats = 'data' in statsData ? statsData.data : statsData;
+        const results: StockResult[] = 'data' in resultsData ? resultsData.data : resultsData;
 
         setStockStats(stats);
         setStockResults(results);
@@ -118,7 +118,7 @@ const StockAdmin: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => null);
+        const body = (await res.json().catch(() => null)) as { message?: string } | null;
         throw new Error(body?.message ?? t('admin.stock.errors.checkFailed', 'Stock check failed'));
       }
       setMessage({ type: 'success', text: t('admin.stock.success.checkAll', 'Stock check launched successfully') });

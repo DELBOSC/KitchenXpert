@@ -109,8 +109,8 @@ const VRViewer: React.FC = () => {
   useEffect(() => {
     const checkVRSupport = async (): Promise<void> => {
       try {
-        if ('xr' in navigator) {
-          const xr = (navigator as Navigator & { xr: { isSessionSupported: (mode: string) => Promise<boolean> } }).xr;
+        const xr = navigator.xr;
+        if (xr) {
           const vrSupported = await xr.isSessionSupported('immersive-vr');
           const arSupported = await xr.isSessionSupported('immersive-ar');
           setIsVRSupported(vrSupported);
@@ -156,7 +156,7 @@ const VRViewer: React.FC = () => {
           throw new Error('Failed to load VR scene');
         }
 
-        const data: VRScene = await response.json();
+        const data = (await response.json()) as VRScene;
         setScene(data);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {return;}
@@ -278,7 +278,11 @@ const VRViewer: React.FC = () => {
     }
 
     try {
-      const xr = (navigator as any).xr;
+      const xr = navigator.xr;
+      if (!xr) {
+        setError('VR is not supported on this device');
+        return;
+      }
       const session = await xr.requestSession('immersive-vr', {
         requiredFeatures: ['local-floor'],
         optionalFeatures: ['bounded-floor', 'hand-tracking'],
@@ -304,11 +308,15 @@ const VRViewer: React.FC = () => {
     }
 
     try {
-      const xr = (navigator as any).xr;
+      const xr = navigator.xr;
+      if (!xr) {
+        setError('AR is not supported on this device');
+        return;
+      }
       const session = await xr.requestSession('immersive-ar', {
         requiredFeatures: ['local-floor', 'hit-test'],
         optionalFeatures: ['dom-overlay', 'light-estimation'],
-        domOverlay: { root: document.getElementById('ar-overlay') || document.body },
+        domOverlay: { root: document.getElementById('ar-overlay') ?? document.body },
       });
       xrSessionRef.current = session;
 
@@ -323,7 +331,9 @@ const VRViewer: React.FC = () => {
 
       // Setup hit-testing for floor detection
       const viewerSpace = await session.requestReferenceSpace('viewer');
-      await session.requestHitTestSource({ space: viewerSpace });
+      if (session.requestHitTestSource) {
+        await session.requestHitTestSource({ space: viewerSpace });
+      }
       setArPlacementReady(true);
 
       session.addEventListener('end', () => {
@@ -346,7 +356,7 @@ const VRViewer: React.FC = () => {
       const { USDZExporter } = await import('three/examples/jsm/exporters/USDZExporter.js');
       const exporter = new USDZExporter();
       const usdzBuffer = await exporter.parse(sceneRef.current);
-      const blob = new Blob([usdzBuffer as unknown as BlobPart], { type: 'model/vnd.usdz+zip' });
+      const blob = new Blob([usdzBuffer as BufferSource], { type: 'model/vnd.usdz+zip' });
       const url = URL.createObjectURL(blob);
 
       // Create an anchor element - on iOS, this will trigger Quick Look

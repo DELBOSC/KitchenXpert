@@ -176,13 +176,20 @@ export default function WorkflowSimulator(): React.ReactElement {
           throw new Error('Failed to load kitchens');
         }
 
-        const data = await response.json();
+        const data = (await response.json()) as {
+          success?: boolean;
+          data?: { kitchens?: Kitchen[] } | Kitchen[] | null;
+          error?: string;
+        };
         if (mountedRef.current && data.success) {
-          const kitchenList = data.data?.kitchens || data.data || [];
+          const payload = data.data;
+          const kitchenList: Kitchen[] = Array.isArray(payload)
+            ? payload
+            : payload?.kitchens ?? [];
           setKitchens(kitchenList);
 
           // Pre-select kitchen from URL if not already set
-          if (urlKitchenId && kitchenList.some((k: Kitchen) => k.id === urlKitchenId)) {
+          if (urlKitchenId && kitchenList.some((k) => k.id === urlKitchenId)) {
             setSelectedKitchenId(urlKitchenId);
           }
         }
@@ -222,9 +229,13 @@ export default function WorkflowSimulator(): React.ReactElement {
           throw new Error('Failed to load scenarios');
         }
 
-        const data = await response.json();
+        const data = (await response.json()) as {
+          success?: boolean;
+          data?: ScenarioDefinition[] | null;
+          error?: string;
+        };
         if (mountedRef.current && data.success) {
-          setScenarios(data.data || []);
+          setScenarios(data.data ?? []);
         }
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {return;}
@@ -267,9 +278,13 @@ export default function WorkflowSimulator(): React.ReactElement {
           throw new Error('Failed to load history');
         }
 
-        const data = await response.json();
+        const data = (await response.json()) as {
+          success?: boolean;
+          data?: SimulationResult[] | null;
+          error?: string;
+        };
         if (mountedRef.current && data.success) {
-          setHistory(data.data || []);
+          setHistory(data.data ?? []);
         }
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {return;}
@@ -309,12 +324,18 @@ export default function WorkflowSimulator(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = (await response
+          .json()
+          .catch(() => ({}))) as { error?: string };
         throw new Error(errorData.error || 'Simulation failed');
       }
 
-      const data = await response.json();
-      if (data.success) {
+      const data = (await response.json()) as {
+        success?: boolean;
+        data?: SimulationResult | null;
+        error?: string;
+      };
+      if (data.success && data.data) {
         setSimulation(data.data);
       } else {
         throw new Error(data.error || 'Simulation failed');
@@ -347,12 +368,18 @@ export default function WorkflowSimulator(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = (await response
+          .json()
+          .catch(() => ({}))) as { error?: string };
         throw new Error(errorData.error || 'Optimization failed');
       }
 
-      const data = await response.json();
-      if (data.success) {
+      const data = (await response.json()) as {
+        success?: boolean;
+        data?: OptimizationResult | null;
+        error?: string;
+      };
+      if (data.success && data.data) {
         setOptimization(data.data);
       } else {
         throw new Error(data.error || 'Optimization failed');

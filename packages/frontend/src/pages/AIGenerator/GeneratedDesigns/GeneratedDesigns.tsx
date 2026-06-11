@@ -208,7 +208,9 @@ const GeneratedDesigns: React.FC = () => {
         throw new Error('Failed to save design before generating BOM');
       }
 
-      const saveResult = await saveResponse.json();
+      const saveResult = (await saveResponse.json()) as {
+        data?: { kitchenId?: string };
+      };
       const kitchenId = saveResult.data?.kitchenId;
 
       if (!kitchenId) {
@@ -227,7 +229,7 @@ const GeneratedDesigns: React.FC = () => {
         throw new Error('Failed to generate Bill of Materials');
       }
 
-      const bomResult = await bomResponse.json();
+      const bomResult = (await bomResponse.json()) as { data: BillOfMaterials };
       if (mountedRef.current) {
         setBomData(bomResult.data);
       }
@@ -268,7 +270,9 @@ const GeneratedDesigns: React.FC = () => {
           throw new Error('Failed to fetch generation results');
         }
 
-        const json = await response.json();
+        const json = (await response.json()) as AIGenerationResult & {
+          data?: AIGenerationResult;
+        };
         const data: AIGenerationResult = json.data || json;
         setResult(data);
 
@@ -290,7 +294,9 @@ const GeneratedDesigns: React.FC = () => {
                 { signal, credentials: 'include' },
               );
               if (pollResponse.ok) {
-                const pollJson = await pollResponse.json();
+                const pollJson = (await pollResponse.json()) as AIGenerationResult & {
+                  data?: AIGenerationResult;
+                };
                 const pollData: AIGenerationResult = pollJson.data || pollJson;
                 setResult(pollData);
 
@@ -353,8 +359,11 @@ const GeneratedDesigns: React.FC = () => {
         throw new Error('Failed to save design');
       }
 
-      const savedResult = await response.json();
-      const savedDesign = savedResult.data || savedResult;
+      type SavedDesign = { projectId: string; kitchenId: string };
+      const savedResult = (await response.json()) as SavedDesign & {
+        data?: SavedDesign;
+      };
+      const savedDesign: SavedDesign = savedResult.data || savedResult;
       navigate(`/projects/${savedDesign.projectId}/kitchens/${savedDesign.kitchenId}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save design';

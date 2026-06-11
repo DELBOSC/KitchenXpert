@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import { logger } from '../../services/logger';
 
+import type { ARLiveOverlay } from '@kitchenxpert/3d-engine';
+
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -41,7 +44,7 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [splitViewEnabled, setSplitViewEnabled] = useState(false);
 
-  const arOverlayRef = useRef<any>(null);
+  const arOverlayRef = useRef<ARLiveOverlay | null>(null);
   const arContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Check AR support on mount

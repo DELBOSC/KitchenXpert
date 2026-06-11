@@ -104,8 +104,8 @@ const UserDetailPage: React.FC = () => {
           throw new Error(t('admin.fetchUserError', 'Failed to load user details'));
         }
 
-        const data = await response.json();
-        const userData = data.data || data;
+        const data = (await response.json()) as { data?: UserDetail } & Partial<UserDetail>;
+        const userData = (data.data ?? data) as UserDetail;
 
         if (!mountedRef.current) {return;}
 

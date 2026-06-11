@@ -6,6 +6,15 @@ import { AIAssistant, SmartPlacement, type KitchenEngine, ModelLoader, AddObject
 
 
 
+/** Shape stored on Three.js Object3D.userData for placed kitchen items. */
+interface KitchenItemUserData {
+  id?: string;
+  type?: string;
+  dimensions?: { width?: number; height?: number; depth?: number };
+  catalogId?: string;
+  price?: number;
+}
+
 interface AIAssistantPanelProps {
   engine: KitchenEngine | null;
   onOpenProposals?: () => void;
@@ -138,7 +147,8 @@ function extractPlacedItems(engine: KitchenEngine): PlacedItem3D[] {
   const scene = engine.scene.getThreeScene();
 
   scene.traverse((child) => {
-    if (!child.userData.id || child.userData.type === 'wall' || child.userData.type === 'floor') {
+    const ud = child.userData as KitchenItemUserData;
+    if (!ud.id || ud.type === 'wall' || ud.type === 'floor') {
       return;
     }
 
@@ -146,17 +156,17 @@ function extractPlacedItems(engine: KitchenEngine): PlacedItem3D[] {
     const size = box.getSize(new THREE.Vector3());
 
     items.push({
-      id: child.userData.id,
-      type: child.userData.type || 'unknown',
+      id: ud.id,
+      type: ud.type || 'unknown',
       position: child.position.clone(),
       rotation: child.rotation.y,
       dimensions: {
-        width: child.userData.dimensions?.width || size.x,
-        height: child.userData.dimensions?.height || size.y,
-        depth: child.userData.dimensions?.depth || size.z,
+        width: ud.dimensions?.width || size.x,
+        height: ud.dimensions?.height || size.y,
+        depth: ud.dimensions?.depth || size.z,
       },
-      productId: child.userData.catalogId,
-      price: child.userData.price,
+      productId: ud.catalogId,
+      price: ud.price,
     });
   });
 
