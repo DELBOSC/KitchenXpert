@@ -62,7 +62,7 @@ export const fetchMaterials = createAsyncThunk<Material[], { type?: string; cate
     try {
       const params = new URLSearchParams(Object.fromEntries(Object.entries(filters).filter(([, v]) => v)));
       const response = await fetch(`${API_URL}/materials?${params.toString()}`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Material[]; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -79,7 +79,7 @@ export const analyzeSurfaces = createAsyncThunk<SurfaceRecommendation[], { kitch
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kitchenId, style }),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: { recommendations: SurfaceRecommendation[] }; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data.recommendations;
     } catch (error) {
@@ -96,7 +96,7 @@ export const generateColorPalette = createAsyncThunk<string[], { baseColor: stri
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ baseColor, style }),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: { colors: string[] }; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data.colors;
     } catch (error) {

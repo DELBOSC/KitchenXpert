@@ -37,7 +37,7 @@ export const fetchAuditLogs = createAsyncThunk<
   try {
     const params = new URLSearchParams({ page: String(page), limit: String(limit), ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)) });
     const response = await fetch(`${API_URL}/audit?${params.toString()}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: AuditLog[]; meta: { total: number; page: number; totalPages: number }; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
@@ -50,7 +50,7 @@ export const fetchUserAuditLogs = createAsyncThunk<AuditLog[], { userId: string;
   'audit/fetchUserLogs', async ({ userId, limit = 100 }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/audit/user/${userId}?limit=${limit}`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: AuditLog[]; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -64,7 +64,7 @@ export const fetchResourceHistory = createAsyncThunk<AuditLog[], { resource: str
   'audit/fetchResourceHistory', async ({ resource, resourceId }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/audit/resource/${resource}/${resourceId}/history`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: AuditLog[]; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -81,7 +81,7 @@ export const fetchAuditStats = createAsyncThunk<{ byAction: Record<string, numbe
       if (startDate) {params.append('startDate', startDate);}
       if (endDate) {params.append('endDate', endDate);}
       const response = await fetch(`${API_URL}/audit/stats?${params.toString()}`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: { byAction: Record<string, number>; byResource: Record<string, number> }; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -95,7 +95,7 @@ export const exportAuditLogs = createAsyncThunk<AuditLog[], AuditFilters>('audit
   try {
     const params = new URLSearchParams(Object.fromEntries(Object.entries(filters).filter(([, v]) => v)));
     const response = await fetch(`${API_URL}/audit/export?${params.toString()}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: AuditLog[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {

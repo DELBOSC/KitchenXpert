@@ -18,7 +18,7 @@ const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 export const fetchPermissions = createAsyncThunk<Permission[]>('permissions/fetchPermissions', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/permissions`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Permission[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -30,7 +30,7 @@ export const fetchPermissions = createAsyncThunk<Permission[]>('permissions/fetc
 export const fetchGroupedPermissions = createAsyncThunk<GroupedPermissions>('permissions/fetchGrouped', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/permissions/grouped`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: GroupedPermissions; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -42,7 +42,7 @@ export const fetchGroupedPermissions = createAsyncThunk<GroupedPermissions>('per
 export const fetchResources = createAsyncThunk<string[]>('permissions/fetchResources', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/permissions/resources`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: string[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -54,7 +54,7 @@ export const fetchResources = createAsyncThunk<string[]>('permissions/fetchResou
 export const fetchActions = createAsyncThunk<string[]>('permissions/fetchActions', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/permissions/actions`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: string[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -69,7 +69,7 @@ export const createPermission = createAsyncThunk<Permission, { name: string; res
       const response = await fetch(`${API_URL}/permissions`, {
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(permData),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Permission; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -82,7 +82,7 @@ export const createPermission = createAsyncThunk<Permission, { name: string; res
 export const deletePermission = createAsyncThunk<string, string>('permissions/delete', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/permissions/${id}`, { method: 'DELETE', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
@@ -94,7 +94,7 @@ export const deletePermission = createAsyncThunk<string, string>('permissions/de
 export const seedPermissions = createAsyncThunk<void>('permissions/seed', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/permissions/seed`, { method: 'POST', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return;
   } catch (error) {

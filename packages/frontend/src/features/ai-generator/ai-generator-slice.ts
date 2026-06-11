@@ -22,15 +22,15 @@ export interface GenerationInput {
     accessibility?: boolean;
   };
   constraints?: {
-    existingLayout?: any;
+    existingLayout?: unknown;
     mustInclude?: string[];
     mustExclude?: string[];
   };
 }
 
 export interface GenerationOutput {
-  layout?: any;
-  products?: { id: string; name: string; quantity: number; position: any }[];
+  layout?: unknown;
+  products?: { id: string; name: string; quantity: number; position: unknown }[];
   materials?: { surfaceType: string; materialId: string; color: string }[];
   estimatedCost?: number;
   designNotes?: string[];
@@ -122,7 +122,7 @@ export const generateLayout = createAsyncThunk<GenerationRequest, GenerationInpu
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'layout', ...input }),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: GenerationRequest; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -139,7 +139,7 @@ export const generateDesign = createAsyncThunk<GenerationRequest, GenerationInpu
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: GenerationRequest; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -156,7 +156,7 @@ export const optimizeLayout = createAsyncThunk<GenerationRequest, { kitchenId: s
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kitchenId, goals }),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: GenerationRequest; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -171,7 +171,7 @@ export const getSuggestions = createAsyncThunk<GenerationOutput, { kitchenId: st
     try {
       const params = new URLSearchParams({ kitchenId, ...(category && { category }) });
       const response = await fetch(`${API_URL}/kitchen-generator/suggestions?${params.toString()}`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: GenerationOutput; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -185,7 +185,7 @@ export const fetchGenerationHistory = createAsyncThunk<GenerationRequest[], { li
   'aiGenerator/fetchHistory', async ({ limit = 10 } = {}, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/kitchen-generator/history?limit=${limit}`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: GenerationRequest[]; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -202,7 +202,7 @@ export const applyGeneration = createAsyncThunk<void, { kitchenId: string; gener
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kitchenId, generationId }),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return;
     } catch (error) {

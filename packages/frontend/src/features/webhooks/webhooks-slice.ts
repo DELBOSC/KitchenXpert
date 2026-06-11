@@ -19,7 +19,7 @@ export interface WebhookEvent {
   id: string;
   webhookId: string;
   eventType: string;
-  payload: any;
+  payload: unknown;
   status: 'PENDING' | 'DELIVERED' | 'FAILED';
   responseCode?: number;
   responseTime?: number;
@@ -46,7 +46,7 @@ const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 export const fetchWebhooks = createAsyncThunk<Webhook[]>('webhooks/fetchWebhooks', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/webhooks`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Webhook[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -58,7 +58,7 @@ export const fetchWebhooks = createAsyncThunk<Webhook[]>('webhooks/fetchWebhooks
 export const fetchWebhookById = createAsyncThunk<Webhook, string>('webhooks/fetchById', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Webhook; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -72,7 +72,7 @@ export const createWebhook = createAsyncThunk<Webhook, Partial<Webhook>>('webhoo
     const response = await fetch(`${API_URL}/webhooks`, {
       method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(webhookData),
     });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Webhook; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -86,7 +86,7 @@ export const updateWebhook = createAsyncThunk<Webhook, { id: string; updates: Pa
     const response = await fetch(`${API_URL}/webhooks/${id}`, {
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Webhook; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -98,7 +98,7 @@ export const updateWebhook = createAsyncThunk<Webhook, { id: string; updates: Pa
 export const deleteWebhook = createAsyncThunk<string, string>('webhooks/delete', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}`, { method: 'DELETE', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
@@ -110,7 +110,7 @@ export const deleteWebhook = createAsyncThunk<string, string>('webhooks/delete',
 export const toggleWebhook = createAsyncThunk<Webhook, string>('webhooks/toggle', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}/toggle`, { method: 'POST', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Webhook; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -122,7 +122,7 @@ export const toggleWebhook = createAsyncThunk<Webhook, string>('webhooks/toggle'
 export const testWebhook = createAsyncThunk<WebhookEvent, string>('webhooks/test', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}/test`, { method: 'POST', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: WebhookEvent; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -134,7 +134,7 @@ export const testWebhook = createAsyncThunk<WebhookEvent, string>('webhooks/test
 export const regenerateSecret = createAsyncThunk<{ secretLast4: string }, string>('webhooks/regenerateSecret', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/webhooks/${id}/regenerate-secret`, { method: 'POST', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: { secretLast4: string }; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -147,7 +147,7 @@ export const fetchWebhookEvents = createAsyncThunk<WebhookEvent[], { id: string;
   'webhooks/fetchEvents', async ({ id, limit = 50 }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/webhooks/${id}/events?limit=${limit}`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: WebhookEvent[]; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -160,7 +160,7 @@ export const fetchWebhookEvents = createAsyncThunk<WebhookEvent[], { id: string;
 export const fetchFailedEvents = createAsyncThunk<WebhookEvent[]>('webhooks/fetchFailed', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/webhooks/failed`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: WebhookEvent[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {

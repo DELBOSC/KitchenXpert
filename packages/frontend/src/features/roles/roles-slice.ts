@@ -16,7 +16,7 @@ const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 export const fetchRoles = createAsyncThunk<Role[]>('roles/fetchRoles', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/roles`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Role[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -28,7 +28,7 @@ export const fetchRoles = createAsyncThunk<Role[]>('roles/fetchRoles', async (_,
 export const fetchRoleById = createAsyncThunk<Role, string>('roles/fetchRoleById', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/roles/${id}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Role; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -43,7 +43,7 @@ export const createRole = createAsyncThunk<Role, { name: string; description?: s
       const response = await fetch(`${API_URL}/roles`, {
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(roleData),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Role; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -58,7 +58,7 @@ export const updateRole = createAsyncThunk<Role, { id: string; updates: Partial<
     const response = await fetch(`${API_URL}/roles/${id}`, {
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Role; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -70,7 +70,7 @@ export const updateRole = createAsyncThunk<Role, { id: string; updates: Partial<
 export const deleteRole = createAsyncThunk<string, string>('roles/deleteRole', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/roles/${id}`, { method: 'DELETE', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
@@ -85,7 +85,7 @@ export const setRolePermissions = createAsyncThunk<Role, { id: string; permissio
       const response = await fetch(`${API_URL}/roles/${id}/permissions`, {
         method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ permissionIds }),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Role; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {

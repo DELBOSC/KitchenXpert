@@ -65,7 +65,7 @@ const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 export const loadVRScene = createAsyncThunk<VRScene, string>('vr/loadScene', async (kitchenId, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/kitchens/${kitchenId}/vr-scene`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: VRScene; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -80,7 +80,7 @@ export const saveVRScene = createAsyncThunk<VRScene, { kitchenId: string; sceneD
       const response = await fetch(`${API_URL}/kitchens/${kitchenId}/vr-scene`, {
         method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sceneData),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: VRScene; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -94,7 +94,7 @@ export const generateVRPreview = createAsyncThunk<{ imageUrl: string }, string>(
   'vr/generatePreview', async (kitchenId, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/kitchens/${kitchenId}/vr-preview`, { method: 'POST', credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: { imageUrl: string }; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
