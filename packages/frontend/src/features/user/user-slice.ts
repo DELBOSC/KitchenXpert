@@ -37,7 +37,7 @@ export const fetchUsers = createAsyncThunk<
   try {
     const params = new URLSearchParams({ page: String(page), limit: String(limit), ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== undefined)) });
     const response = await fetch(`${API_URL}/users?${params.toString()}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: User[]; meta: { total: number; page: number; totalPages: number }; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
@@ -49,7 +49,7 @@ export const fetchUsers = createAsyncThunk<
 export const fetchUserById = createAsyncThunk<User, string>('user/fetchUserById', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/users/${id}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: User; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -63,7 +63,7 @@ export const updateUser = createAsyncThunk<User, { id: string; updates: Partial<
     const response = await fetch(`${API_URL}/users/${id}`, {
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
-    const data = await response.json();
+    const data = (await response.json()) as { data: User; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -75,7 +75,7 @@ export const updateUser = createAsyncThunk<User, { id: string; updates: Partial<
 export const deleteUser = createAsyncThunk<string, string>('user/deleteUser', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/users/${id}`, { method: 'DELETE', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
@@ -87,7 +87,7 @@ export const deleteUser = createAsyncThunk<string, string>('user/deleteUser', as
 export const toggleUserActive = createAsyncThunk<User, string>('user/toggleUserActive', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/admin/users/${id}/toggle-active`, { method: 'PUT', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: User; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {

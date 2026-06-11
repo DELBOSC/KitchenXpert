@@ -121,7 +121,7 @@ export const saveResponses = createAsyncThunk(
         throw new Error('Failed to save responses');
       }
 
-      return response.json();
+      return (await response.json()) as { sessionId?: string };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
@@ -139,7 +139,11 @@ export const loadResponses = createAsyncThunk(
         throw new Error('Failed to load responses');
       }
 
-      return response.json();
+      return (await response.json()) as {
+        responses?: QuestionnaireState['responses'];
+        currentSectionIndex?: number;
+        visitedSections?: string[];
+      };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
@@ -360,9 +364,9 @@ const questionnaireSlice = createSlice({
       })
       .addCase(loadResponses.fulfilled, (state, action) => {
         state.isLoadingResponses = false;
-        state.responses = action.payload.responses || {};
-        state.currentSectionIndex = action.payload.currentSectionIndex || 0;
-        state.visitedSections = action.payload.visitedSections || [];
+        state.responses = action.payload.responses ?? {};
+        state.currentSectionIndex = action.payload.currentSectionIndex ?? 0;
+        state.visitedSections = action.payload.visitedSections ?? [];
       })
       .addCase(loadResponses.rejected, (state, action) => {
         state.isLoadingResponses = false;

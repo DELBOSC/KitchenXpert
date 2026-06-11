@@ -64,7 +64,11 @@ export const fetchKitchens = createAsyncThunk<
     if (filters.search) {queryParams.search = filters.search;}
     const params = new URLSearchParams(queryParams);
     const response = await fetch(`${API_URL}/kitchens?${params.toString()}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as {
+      data: Kitchen[];
+      meta: { total: number; page: number; totalPages: number };
+      error?: string;
+    };
     if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
@@ -78,7 +82,7 @@ export const fetchKitchenById = createAsyncThunk<Kitchen, string>(
   async (id, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}`, { credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Kitchen; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -97,7 +101,7 @@ export const createKitchen = createAsyncThunk<Kitchen, Partial<Kitchen>>(
         credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(kitchenData),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Kitchen; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -116,7 +120,7 @@ export const updateKitchen = createAsyncThunk<Kitchen, { id: string; updates: Pa
         credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Kitchen; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {
@@ -131,7 +135,7 @@ export const deleteKitchen = createAsyncThunk<string, string>(
   async (id, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}`, { method: 'DELETE', credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return id;
     } catch (error) {
@@ -146,7 +150,7 @@ export const duplicateKitchen = createAsyncThunk<Kitchen, string>(
   async (id, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}/duplicate`, { method: 'POST', credentials: 'include' });
-      const data = await response.json();
+      const data = (await response.json()) as { data: Kitchen; error?: string };
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
     } catch (error) {

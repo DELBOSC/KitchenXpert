@@ -42,7 +42,7 @@ export const fetchProjects = createAsyncThunk<
   try {
     const params = new URLSearchParams({ page: String(page), limit: String(limit), ...filters });
     const response = await fetch(`${API_URL}/projects?${params.toString()}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Project[]; meta: { total: number; page: number; totalPages: number }; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
@@ -54,7 +54,7 @@ export const fetchProjects = createAsyncThunk<
 export const fetchProjectById = createAsyncThunk<Project, string>('project/fetchProjectById', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/projects/${id}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Project; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -68,7 +68,7 @@ export const createProject = createAsyncThunk<Project, Partial<Project>>('projec
     const response = await fetch(`${API_URL}/projects`, {
       method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(projectData),
     });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Project; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -82,7 +82,7 @@ export const updateProject = createAsyncThunk<Project, { id: string; updates: Pa
     const response = await fetch(`${API_URL}/projects/${id}`, {
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
     });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Project; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -94,7 +94,7 @@ export const updateProject = createAsyncThunk<Project, { id: string; updates: Pa
 export const deleteProject = createAsyncThunk<string, string>('project/deleteProject', async (id, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/projects/${id}`, { method: 'DELETE', credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return id;
   } catch (error) {
@@ -108,7 +108,7 @@ export const updateProjectStatus = createAsyncThunk<Project, { id: string; statu
     const response = await fetch(`${API_URL}/projects/${id}/status`, {
       method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }),
     });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Project; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
