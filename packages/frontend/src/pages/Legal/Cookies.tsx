@@ -80,24 +80,24 @@ export default function Cookies(): React.ReactElement {
   return (
     <LegalLayout title="Politique cookies">
       <p className="text-sm text-white/50">
-        Conforme à la Directive ePrivacy 2002/58/CE, à l'article 82 de la
+        Conforme à la Directive ePrivacy 2002/58/CE, à l&apos;article 82 de la
         loi Informatique et Libertés et aux lignes directrices CNIL du
         17 septembre 2020. Version en vigueur depuis le {fmtDate}.
       </p>
 
-      <h2>1. Qu'est-ce qu'un cookie&nbsp;?</h2>
+      <h2>1. Qu&apos;est-ce qu&apos;un cookie&nbsp;?</h2>
       <p>
         Un cookie est un petit fichier texte déposé par un site web sur
         votre appareil (ordinateur, mobile, tablette) lors de la
-        consultation d'une page. Il permet au site de reconnaître votre
+        consultation d&apos;une page. Il permet au site de reconnaître votre
         appareil lors des visites suivantes, de retenir vos préférences,
-        d'authentifier votre session ou de mesurer l'audience.
+        d&apos;authentifier votre session ou de mesurer l&apos;audience.
       </p>
       <p>
         Les <em>traceurs assimilés</em> (pixels invisibles, fingerprinting,
         local storage, session storage, IndexedDB, cache HTTP, etc.) sont
         soumis au même régime juridique que les cookies. La présente
-        politique couvre l'ensemble de ces dispositifs.
+        politique couvre l&apos;ensemble de ces dispositifs.
       </p>
 
       <h2>2. Notre engagement</h2>
@@ -105,16 +105,16 @@ export default function Cookies(): React.ReactElement {
         Nous respectons les principes suivants&nbsp;:
       </p>
       <ul>
-        <li>Aucun cookie non essentiel n'est déposé tant que vous
-          n'avez pas donné votre consentement explicite.</li>
+        <li>Aucun cookie non essentiel n&apos;est déposé tant que vous
+          n&apos;avez pas donné votre consentement explicite.</li>
         <li>Le bouton <strong>« Tout refuser »</strong> est aussi
           accessible et visible que <strong>« Tout accepter »</strong>{' '}
           (exigence CNIL 2020).</li>
         <li>Vous pouvez retirer votre consentement à tout moment, en un
           clic, sans perte de fonctionnalité essentielle.</li>
-        <li>La durée de vie des cookies non-essentiels n'excède pas
+        <li>La durée de vie des cookies non-essentiels n&apos;excède pas
           13&nbsp;mois&nbsp;; le consentement est redemandé au-delà.</li>
-        <li>Aucune information n'est partagée avec des tiers à des
+        <li>Aucune information n&apos;est partagée avec des tiers à des
           fins commerciales sans votre accord exprès.</li>
       </ul>
 

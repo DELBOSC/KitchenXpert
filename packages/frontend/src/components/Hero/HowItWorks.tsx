@@ -58,7 +58,7 @@ export function HowItWorks(): React.ReactElement {
           Du croquis au devis signé en 3 étapes
         </h2>
         <p className="mt-4 text-base text-white/55">
-          Pas de RDV magasin. Pas d'appel commercial. Vous concevez, vous comparez, vous décidez.
+          Pas de RDV magasin. Pas d&apos;appel commercial. Vous concevez, vous comparez, vous décidez.
         </p>
       </div>
 

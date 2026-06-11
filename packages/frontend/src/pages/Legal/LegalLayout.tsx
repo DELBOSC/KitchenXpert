@@ -38,7 +38,7 @@ export default function LegalLayout({ title, children }: { title: string; childr
       />
       <div className="mx-auto max-w-6xl px-6 py-16">
         <Link to="/" className="mb-8 inline-flex items-center gap-2 text-sm text-white/60 hover:text-white">
-          <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Retour à l'accueil
+          <ArrowLeft className="w-4 h-4" aria-hidden="true" /> Retour à l&apos;accueil
         </Link>
 
         <div className="grid gap-12 md:grid-cols-[240px_1fr]">

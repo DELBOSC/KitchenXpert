@@ -183,7 +183,7 @@ export default function RegisterPage(): React.ReactElement {
             onChange={(e) => setAcceptTerms(e.target.checked)}
             label={
               <>
-                J'accepte les{' '}
+                J&apos;accepte les{' '}
                 <Link to="/legal/cgv" className="underline hover:text-white">CGV</Link>
                 {' '}et la{' '}
                 <Link to="/legal/privacy" className="underline hover:text-white">politique de confidentialité</Link>.

@@ -39,7 +39,7 @@ export default function AuthLayout({ title, subtitle, children, footer, aside }:
             {footer && <div className="mt-8 text-sm text-white/60">{footer}</div>}
           </motion.div>
 
-          <p className="text-xs text-white/30">© {new Date().getFullYear()} KitchenXpert — Hébergé dans l'UE</p>
+          <p className="text-xs text-white/30">© {new Date().getFullYear()} KitchenXpert — Hébergé dans l&apos;UE</p>
         </div>
 
         {/* Right: marketing panel */}
@@ -73,7 +73,7 @@ function DefaultAside(): React.ReactElement {
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500" />
         <div>
           <div className="text-sm font-semibold">Camille Laroche</div>
-          <div className="text-xs text-white/50">Architecte d'intérieur · Studio Maison</div>
+          <div className="text-xs text-white/50">Architecte d&apos;intérieur · Studio Maison</div>
         </div>
       </div>
     </motion.div>

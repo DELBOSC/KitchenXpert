@@ -135,7 +135,7 @@ export default function ProvidersHub(): React.ReactElement {
             <div>
               <div className="font-semibold">IKEA en direct</div>
               <p className="mt-1 text-sm text-white/60">
-                Le catalogue IKEA est interrogé en direct via l'API officielle.
+                Le catalogue IKEA est interrogé en direct via l&apos;API officielle.
                 Les dimensions sont extraites en temps réel.
               </p>
             </div>

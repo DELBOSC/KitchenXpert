@@ -179,7 +179,7 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
           Décris ta cuisine idéale
         </h2>
         <p className="mt-2 text-sm text-white/65">
-          L'IA propose 3 layouts complets en moins de 15 secondes — dimensions, meubles, budget.
+          L&apos;IA propose 3 layouts complets en moins de 15 secondes — dimensions, meubles, budget.
         </p>
 
         {/* ── Input ──────────────────────────────────────────────────── */}

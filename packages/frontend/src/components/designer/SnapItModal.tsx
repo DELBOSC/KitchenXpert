@@ -183,7 +183,7 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
           SnapIt — identifie depuis une photo
         </h2>
         <p className="mt-2 text-sm text-white/65">
-          Uploade une photo (cuisine actuelle ou inspiration) — l'IA détecte les meubles + propose
+          Uploade une photo (cuisine actuelle ou inspiration) — l&apos;IA détecte les meubles + propose
           les équivalents dans nos catalogues.
         </p>
 
@@ -237,7 +237,7 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
             {/* Right : context + options */}
             <div className="flex flex-col gap-4">
               <div>
-                <span id="snapit-source-label" className="text-xs font-medium uppercase tracking-widest text-white/40">Type d'image</span>
+                <span id="snapit-source-label" className="text-xs font-medium uppercase tracking-widest text-white/40">Type d&apos;image</span>
                 <div className="mt-2 grid grid-cols-1 gap-2" role="group" aria-labelledby="snapit-source-label">
                   {[
                     { val: 'user-kitchen',          label: 'Ma cuisine actuelle' },
