@@ -13,6 +13,7 @@ overrides:
   basic-ftp: ^5.3.1
   protobufjs: ^7.6.3
   follow-redirects: ^1.16.0
+  uuid: ^11.1.1
   handlebars: ^4.7.9
   storybook: ^8.6.18
   lodash: ^4.18.0
@@ -728,9 +729,6 @@ importers:
       user-agents:
         specifier: ^1.1.0
         version: 1.1.669
-      uuid:
-        specifier: ^9.0.0
-        version: 9.0.1
       winston:
         specifier: ^3.11.0
         version: 3.19.0
@@ -5040,7 +5038,7 @@ packages:
       dequal: 2.0.3
       polished: 4.3.1
       storybook: 8.6.18(prettier@3.8.3)
-      uuid: 9.0.1
+      uuid: 11.1.1
     dev: true
 
   /@storybook/addon-backgrounds@8.6.14(storybook@8.6.18):
@@ -7556,7 +7554,7 @@ packages:
       node-abort-controller: 3.1.1
       semver: 7.7.3
       tslib: 2.8.1
-      uuid: 11.1.0
+      uuid: 11.1.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -9459,7 +9457,7 @@ packages:
       saxes: 5.0.1
       tmp: 0.2.7
       unzipper: 0.10.14
-      uuid: 8.3.2
+      uuid: 11.1.1
     dev: false
 
   /execa@5.1.1:
@@ -16086,18 +16084,8 @@ packages:
     dev: false
     optional: true
 
-  /uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
-    hasBin: true
-    dev: false
-
-  /uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    hasBin: true
-    dev: false
-
-  /uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+  /uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
   /v8-compile-cache-lib@3.0.1:
