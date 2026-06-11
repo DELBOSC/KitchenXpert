@@ -49,13 +49,13 @@ const AuditLogs: React.FC = () => {
   useEffect(() => () => { mountedRef.current = false; }, []);
 
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
-  const [categoryFilter, setCategoryFilter] = useState<string>(searchParams.get('category') || '');
-  const [severityFilter, setSeverityFilter] = useState<string>(searchParams.get('severity') || '');
+  const [categoryFilter, setCategoryFilter] = useState<string>(searchParams.get('category') ?? '');
+  const [severityFilter, setSeverityFilter] = useState<string>(searchParams.get('severity') ?? '');
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: searchParams.get('startDate') || '',
-    end: searchParams.get('endDate') || '',
+    start: searchParams.get('startDate') ?? '',
+    end: searchParams.get('endDate') ?? '',
   });
-  const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('search') || '');
+  const [searchQuery, setSearchQuery] = useState<string>(searchParams.get('search') ?? '');
   const [dateRangeError, setDateRangeError] = useState<string | null>(null);
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
@@ -214,12 +214,12 @@ const AuditLogs: React.FC = () => {
 
   const getSeverityColor = (severity: AuditLog['severity']): string => {
     const severityObj = severities.find((s) => s.value === severity);
-    return severityObj?.color || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    return severityObj?.color ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
   };
 
   const getCategoryIcon = (category: AuditLog['category']): string => {
     const categoryObj = categories.find((c) => c.value === category);
-    return categoryObj?.icon || 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z';
+    return categoryObj?.icon ?? 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z';
   };
 
   if (isLoading && logs.length === 0) {
@@ -388,7 +388,7 @@ const AuditLogs: React.FC = () => {
                         <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={getCategoryIcon(log.category)} />
                         </svg>
-                        <span className="text-sm text-gray-900 dark:text-gray-200">{categoryLabels[log.category] || log.category}</span>
+                        <span className="text-sm text-gray-900 dark:text-gray-200">{categoryLabels[log.category] ?? log.category}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
@@ -406,7 +406,7 @@ const AuditLogs: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${getSeverityColor(log.severity)}`}>
-                        {severityLabels[log.severity] || log.severity}
+                        {severityLabels[log.severity] ?? log.severity}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -519,7 +519,7 @@ const AuditLogs: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">{t('admin.audit.category', 'Categorie')}</label>
-                  <p className="text-gray-900 dark:text-gray-200">{categoryLabels[selectedLog.category] || selectedLog.category}</p>
+                  <p className="text-gray-900 dark:text-gray-200">{categoryLabels[selectedLog.category] ?? selectedLog.category}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">{t('admin.audit.action', 'Action')}</label>
@@ -528,7 +528,7 @@ const AuditLogs: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">{t('admin.audit.severity', 'Severite')}</label>
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${getSeverityColor(selectedLog.severity)}`}>
-                    {severityLabels[selectedLog.severity] || selectedLog.severity}
+                    {severityLabels[selectedLog.severity] ?? selectedLog.severity}
                   </span>
                 </div>
                 <div>
