@@ -658,7 +658,7 @@ export function useKitchenEngine(
     };
 
     try {
-      itemData = JSON.parse(jsonData);
+      itemData = JSON.parse(jsonData) as typeof itemData;
     } catch {
       return;
     }

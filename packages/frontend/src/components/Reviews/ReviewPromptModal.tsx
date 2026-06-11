@@ -54,7 +54,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
   useEffect(() => {
     let mounted = true;
     fetch(`${API_BASE}/me/reviews/pending`, { credentials: 'include' })
-      .then((r) => (r.ok ? r.json() : null))
+      .then((r) => (r.ok ? (r.json() as Promise<{ data: PendingRequest | null }>) : null))
       .then((json) => {
         if (!mounted || !json?.data) {return;}
         setRequest(json.data);

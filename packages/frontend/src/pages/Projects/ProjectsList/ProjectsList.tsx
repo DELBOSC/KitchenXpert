@@ -61,7 +61,7 @@ const ProjectsList: React.FC = () => {
           throw new Error(t('projects.fetchError', 'Failed to fetch projects'));
         }
 
-        const data: ProjectsResponse = await response.json();
+        const data = (await response.json()) as ProjectsResponse;
         setProjects(data.projects);
         setPagination(data.pagination);
       } catch (err) {

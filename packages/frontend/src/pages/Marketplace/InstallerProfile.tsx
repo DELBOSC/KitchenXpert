@@ -106,7 +106,7 @@ export default function InstallerProfilePage(): React.ReactElement {
           return;
         }
 
-        const result = await response.json();
+        const result = (await response.json()) as { data: InstallerProfile };
         setInstaller(result.data);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {return;}
@@ -135,8 +135,8 @@ export default function InstallerProfilePage(): React.ReactElement {
         signal: controller.signal,
       });
       if (response.ok) {
-        const result = await response.json();
-        setKitchens(result.data || []);
+        const result = (await response.json()) as { data?: Kitchen[] };
+        setKitchens(result.data ?? []);
       }
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {return;}
@@ -177,9 +177,9 @@ export default function InstallerProfilePage(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const result = await response.json();
+        const result = (await response.json()) as { error?: string };
         throw new Error(
-          result.error || t('marketplace.requestError', 'Erreur lors de la demande'),
+          result.error ?? t('marketplace.requestError', 'Erreur lors de la demande'),
         );
       }
 
@@ -223,9 +223,9 @@ export default function InstallerProfilePage(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const result = await response.json();
+        const result = (await response.json()) as { error?: string };
         throw new Error(
-          result.error || t('marketplace.reviewError', 'Erreur lors de l\'envoi de l\'avis'),
+          result.error ?? t('marketplace.reviewError', 'Erreur lors de l\'envoi de l\'avis'),
         );
       }
 
@@ -328,13 +328,13 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   // ─── Error ─────────────────────────────────────────────────────────────────
 
-  if (error || !installer) {
+  if (error != null || !installer) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-12 text-center">
             <p className="text-red-600 dark:text-red-400 mb-4">
-              {error || t('marketplace.installerNotFound', 'Installateur introuvable')}
+              {error ?? t('marketplace.installerNotFound', 'Installateur introuvable')}
             </p>
             <div className="flex justify-center gap-4">
               <button

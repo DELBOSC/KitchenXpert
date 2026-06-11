@@ -101,7 +101,7 @@ const UserManagement: React.FC = () => {
           throw new Error(t('admin.errors.fetchUsers', 'Failed to fetch users'));
         }
 
-        const data: UsersResponse = await response.json();
+        const data = (await response.json()) as UsersResponse;
         setUsers(data.users);
         setPagination(data.pagination);
       } catch (err) {

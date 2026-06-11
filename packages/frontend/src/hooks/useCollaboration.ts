@@ -91,7 +91,7 @@ export function useCollaboration(
 
       ws.onmessage = (event) => {
         try {
-          const message: WSMessage = JSON.parse(event.data);
+          const message = JSON.parse(event.data as string) as WSMessage;
           handleMessage(message, doc);
         } catch {
           // Ignore malformed messages

@@ -16,6 +16,18 @@ interface Preferences {
   notifications?: boolean;
 }
 
+interface ProfileData {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+}
+
+interface ApiEnvelope<T> {
+  data?: T;
+  error?: string;
+  success?: boolean;
+}
+
 export default function ProfilePage(): React.ReactElement {
   const { user, logout, updateUser } = useAuth();
   const toast = useToast();
@@ -47,7 +59,7 @@ export default function ProfilePage(): React.ReactElement {
           fetch('/api/v1/users/me/preferences', { credentials: 'include', signal: controller.signal }),
         ]);
         if (profileRes.status === 'fulfilled' && profileRes.value.ok) {
-          const data = await profileRes.value.json();
+          const data = (await profileRes.value.json()) as ApiEnvelope<ProfileData>;
           if (mountedRef.current && data.data) {
             setFirstName(data.data.firstName || '');
             setLastName(data.data.lastName || '');
@@ -55,7 +67,7 @@ export default function ProfilePage(): React.ReactElement {
           }
         }
         if (prefRes.status === 'fulfilled' && prefRes.value.ok) {
-          const data = await prefRes.value.json();
+          const data = (await prefRes.value.json()) as ApiEnvelope<Preferences>;
           if (mountedRef.current && data.data) {setPreferences(data.data);}
         }
       } catch (err) {

@@ -100,9 +100,12 @@ export default function InstallerMarketplace(): React.ReactElement {
           );
         }
 
-        const result = await response.json();
-        setInstallers(result.data || []);
-        setTotal(result.meta?.total || 0);
+        const result = (await response.json()) as {
+          data?: Installer[];
+          meta?: { total?: number };
+        };
+        setInstallers(result.data ?? []);
+        setTotal(result.meta?.total ?? 0);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {return;}
         const message =

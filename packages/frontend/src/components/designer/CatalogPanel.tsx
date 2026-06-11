@@ -35,6 +35,19 @@ type CatalogCategory =
   | 'worktops'
   | 'sinks';
 
+/** Shape of a product returned by the catalog/products API (only fields consumed here). */
+interface CatalogProduct {
+  id: string;
+  type?: string;
+  name: string;
+  width?: number;
+  height?: number;
+  depth?: number;
+  color?: number;
+  category?: string;
+  price?: number;
+}
+
 const CATEGORY_CONFIG: Record<CatalogCategory, { labelKey: string; defaultLabel: string; icon: React.ReactNode }> = {
   base_cabinets: {
     labelKey: 'designer.catalog.base_cabinets',
@@ -258,11 +271,11 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
     const fetchCatalog = async () => {
       setIsLoadingCatalog(true);
       try {
-        const res = await api.get<{ data: any[] }>(API_ENDPOINTS.PRODUCTS?.BASE || '/products', {
+        const res = await api.get<{ data: CatalogProduct[] }>(API_ENDPOINTS.PRODUCTS?.BASE || '/products', {
           signal: controller.signal,
         });
         if (res.success && res.data?.data && res.data.data.length > 0) {
-          const mapped: CatalogItem[] = res.data.data.map((p: any) => ({
+          const mapped: CatalogItem[] = res.data.data.map((p) => ({
             id: p.id,
             type: p.type || 'base_cabinet',
             name: p.name,
@@ -270,7 +283,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
             height: p.height || 720,
             depth: p.depth || 560,
             color: p.color || 0xD4A574,
-            category: mapCategory(p.category || p.type),
+            category: mapCategory(p.category || p.type || ''),
             price: p.price || 0,
           }));
           if (mounted) {setCatalogItems(mapped);}
@@ -317,9 +330,11 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
 
     const mesh = loader.createProceduralFallback(item.type, dimensions, item.color);
 
+    const objectId = `${item.id}-${Date.now()}`;
+
     // Attach metadata to the object
     mesh.userData = {
-      id: `${item.id}-${Date.now()}`,
+      id: objectId,
       type: item.type,
       catalogId: item.id,
       name: item.name,
@@ -332,7 +347,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
       mesh.position.y = mmToM(brandProfile.wall.bottomY);
     }
 
-    addObject(mesh.userData.id, mesh);
+    addObject(objectId, mesh);
   };
 
   const toggleCategory = (category: CatalogCategory) => {

@@ -96,7 +96,7 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
   });
-  const data = await res.json();
+  const data = (await res.json()) as T & { error?: string; message?: string };
   if (!res.ok) {
     throw new Error(data.error || data.message || `HTTP ${res.status}`);
   }

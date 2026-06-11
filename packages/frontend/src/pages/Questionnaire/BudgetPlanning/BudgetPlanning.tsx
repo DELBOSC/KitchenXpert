@@ -28,6 +28,17 @@ interface FormErrors {
   totalBudget?: string;
 }
 
+interface AiTips {
+  tips: string[];
+  warnings: string[];
+  suggestions: string[];
+  budgetReality?: {
+    isRealistic: boolean;
+    explanation: string;
+    suggestedRange: { min: number; max: number };
+  };
+}
+
 const BudgetPlanning: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -59,16 +70,7 @@ const BudgetPlanning: React.FC = () => {
   const [questionnaireSaved, setQuestionnaireSaved] = useState<boolean>(false);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
-  const [aiTips, setAiTips] = useState<{
-    tips: string[];
-    warnings: string[];
-    suggestions: string[];
-    budgetReality?: {
-      isRealistic: boolean;
-      explanation: string;
-      suggestedRange: { min: number; max: number };
-    };
-  } | null>(null);
+  const [aiTips, setAiTips] = useState<AiTips | null>(null);
   const [aiTipsLoading, setAiTipsLoading] = useState<boolean>(false);
 
   const currencies = [
@@ -141,8 +143,8 @@ const BudgetPlanning: React.FC = () => {
         });
 
         if (response.ok) {
-          const result = await response.json();
-          if (result.data) {setFormData(result.data as BudgetData);}
+          const result = (await response.json()) as { data?: BudgetData };
+          if (result.data) {setFormData(result.data);}
         }
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {return;}
@@ -240,8 +242,8 @@ const BudgetPlanning: React.FC = () => {
           body: JSON.stringify(formData),
         });
         if (tipsResponse.ok) {
-          const tipsResult = await tipsResponse.json();
-          setAiTips(tipsResult.data);
+          const tipsResult = (await tipsResponse.json()) as { data?: AiTips };
+          if (tipsResult.data) {setAiTips(tipsResult.data);}
         }
       } catch {
         /* AI tips are optional */
@@ -279,14 +281,18 @@ const BudgetPlanning: React.FC = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = (await response.json().catch(() => ({}))) as { error?: string };
         throw new Error(
           errorData.error ||
           t('questionnaire.budget.errors.generateFailed', 'Failed to generate designs'),
         );
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as {
+        success?: boolean;
+        error?: string;
+        data?: { designs: unknown; generationId: unknown };
+      };
       if (result.success && result.data) {
         navigate('/questionnaire/results', {
           state: {

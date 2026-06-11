@@ -470,7 +470,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
         throw new Error('Photo analysis failed');
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as Omit<RoomScanResult, 'method'>;
       const result: RoomScanResult = {
         ...data,
         method: 'photo',

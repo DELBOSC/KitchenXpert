@@ -20,7 +20,7 @@ export default function PrivacySettings(): React.ReactElement {
       try {
         const res = await fetch('/api/v1/me/gdpr/summary', { credentials: 'include', signal: controller.signal });
         if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
-        const json = await res.json();
+        const json = (await res.json()) as { data: Summary };
         setSummary(json.data);
       } catch (err) {
         if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}

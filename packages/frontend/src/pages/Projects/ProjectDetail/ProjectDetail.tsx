@@ -98,7 +98,7 @@ const ProjectDetail: React.FC = () => {
           throw new Error(t('projects.fetchError'));
         }
 
-        const data: Project = await response.json();
+        const data = (await response.json()) as Project;
         setProject(data);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {return;}

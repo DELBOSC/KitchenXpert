@@ -235,8 +235,8 @@ export default function RenovationPage(): React.ReactElement {
         throw new Error(`Failed to create project: HTTP ${createRes.status}`);
       }
 
-      const createData = await createRes.json();
-      const newProjectId = createData.data?.id;
+      const createData = (await createRes.json()) as { data?: { id?: string } };
+      const newProjectId = createData.data?.id ?? null;
       setProjectId(newProjectId);
 
       // Then analyze the photo
@@ -254,16 +254,20 @@ export default function RenovationPage(): React.ReactElement {
       });
 
       if (!analyzeRes.ok) {
-        const errData = await analyzeRes.json().catch(() => null);
+        const errData = (await analyzeRes
+          .json()
+          .catch(() => null)) as { error?: { message?: string } } | null;
         throw new Error(errData?.error?.message || `HTTP ${analyzeRes.status}`);
       }
 
-      const analyzeData = await analyzeRes.json();
+      const analyzeData = (await analyzeRes.json()) as {
+        data?: ExistingKitchenAnalysis;
+      };
 
       clearInterval(progressInterval);
       setProgress(100);
 
-      setAnalysis(analyzeData.data || null);
+      setAnalysis(analyzeData.data ?? null);
       setCurrentStep(2);
     } catch (err) {
       clearInterval(progressInterval);
@@ -303,13 +307,15 @@ export default function RenovationPage(): React.ReactElement {
       // If comparison fails because no design linked yet, we need a PATCH endpoint
       // Use the create approach: store in state and proceed
       if (!compareRes.ok) {
-        const errData = await compareRes.json().catch(() => null);
+        const errData = (await compareRes
+          .json()
+          .catch(() => null)) as { error?: { message?: string } } | null;
         // If the error is about missing design, that's expected on first call
         throw new Error(errData?.error?.message || `HTTP ${compareRes.status}`);
       }
 
-      const compareData = await compareRes.json();
-      setComparison(compareData.data || null);
+      const compareData = (await compareRes.json()) as { data?: ComparisonData };
+      setComparison(compareData.data ?? null);
       setCurrentStep(4);
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {

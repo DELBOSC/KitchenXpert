@@ -62,11 +62,11 @@ const DigitalTwinAdmin: React.FC = () => {
         if (!statsRes.ok) {throw new Error(t('admin.digitalTwin.errors.fetchStats', 'Failed to load stats'));}
         if (!twinsRes.ok) {throw new Error(t('admin.digitalTwin.errors.fetchList', 'Failed to load twins'));}
 
-        const statsData = await statsRes.json();
-        const twinsData = await twinsRes.json();
+        const statsData = (await statsRes.json()) as DigitalTwinStats | { data: DigitalTwinStats };
+        const twinsData = (await twinsRes.json()) as DigitalTwin[] | { data: DigitalTwin[] };
 
-        setStats(statsData.data ?? statsData);
-        setTwins(twinsData.data ?? twinsData);
+        setStats('data' in statsData ? statsData.data : statsData);
+        setTwins('data' in twinsData ? twinsData.data : twinsData);
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {return;}
         setError(getErrorMessage(err, t('admin.digitalTwin.errors.load', 'Failed to load digital twins')));
@@ -98,7 +98,7 @@ const DigitalTwinAdmin: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => null);
+        const body = (await res.json().catch(() => null)) as { message?: string } | null;
         throw new Error(body?.message ?? t('admin.digitalTwin.errors.syncFailed', 'Sync failed'));
       }
       setMessage({ type: 'success', text: t('admin.digitalTwin.success.syncAll', 'Global sync launched successfully') });
@@ -116,8 +116,8 @@ const DigitalTwinAdmin: React.FC = () => {
         credentials: 'include',
       });
       if (!res.ok) {throw new Error(t('admin.digitalTwin.errors.fetchDetail', 'Failed to load twin details'));}
-      const data = await res.json();
-      setSelectedTwin(data.data ?? data);
+      const data = (await res.json()) as DigitalTwin | { data: DigitalTwin };
+      setSelectedTwin('kitchenId' in data ? data : data.data);
     } catch (err) {
       setMessage({ type: 'error', text: getErrorMessage(err, t('admin.digitalTwin.errors.detailUnknown', 'Failed to load details')) });
     }

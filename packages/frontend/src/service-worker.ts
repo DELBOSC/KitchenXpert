@@ -238,8 +238,13 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 
 // ────────────────────────────── Message Handler ──────────────────────────────
 
+interface SwMessage {
+  type?: string;
+  payload?: { url?: string; data?: unknown };
+}
+
 self.addEventListener('message', (event: ExtendableMessageEvent) => {
-  const { type, payload } = event.data || {};
+  const { type, payload } = (event.data ?? {}) as SwMessage;
 
   switch (type) {
     case 'SKIP_WAITING':
@@ -257,12 +262,13 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
     case 'CACHE_API_RESPONSE':
       // Allow manual caching of API responses for offline use
       if (payload?.url && payload?.data) {
+        const { url: cacheUrl, data: cacheData } = payload;
         event.waitUntil(
           caches.open(API_CACHE).then((cache) => {
-            const response = new Response(JSON.stringify(payload.data), {
+            const response = new Response(JSON.stringify(cacheData), {
               headers: { 'Content-Type': 'application/json' },
             });
-            return cache.put(payload.url, response);
+            return cache.put(cacheUrl, response);
           })
         );
       }

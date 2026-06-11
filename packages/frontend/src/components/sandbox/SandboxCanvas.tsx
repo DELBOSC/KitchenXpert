@@ -100,7 +100,9 @@ export function SandboxCanvas({
         const c = itemGroup.children[0];
         if (!c) {break;}
         itemGroup.remove(c);
-        if (c instanceof THREE.Mesh) {c.geometry.dispose();}
+        if (c instanceof THREE.Mesh) {
+          (c.geometry as THREE.BufferGeometry).dispose();
+        }
       }
       for (const it of list) {
         const geo = new THREE.BoxGeometry(

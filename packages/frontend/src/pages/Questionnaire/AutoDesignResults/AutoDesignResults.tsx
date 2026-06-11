@@ -80,6 +80,15 @@ interface LocationState {
   generationId?: string;
 }
 
+interface AutoGenerateResponse {
+  success?: boolean;
+  error?: string;
+  data?: {
+    designs: SingleDesignResult[];
+    generationId: string;
+  };
+}
+
 // ============================================================================
 // TIER STYLES CONFIG
 // ============================================================================
@@ -348,14 +357,14 @@ const AutoDesignResults: React.FC = () => {
         });
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
+          const errorData = (await response.json().catch(() => ({}))) as AutoGenerateResponse;
           throw new Error(
             errorData.error ||
             t('autoDesign.errors.generationFailed', 'Failed to generate designs'),
           );
         }
 
-        const result = await response.json();
+        const result = (await response.json()) as AutoGenerateResponse;
         if (result.success && result.data) {
           setDesigns(result.data.designs);
           setGenerationId(result.data.generationId);

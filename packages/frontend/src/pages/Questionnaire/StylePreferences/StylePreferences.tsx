@@ -167,8 +167,8 @@ const StylePreferences: React.FC = () => {
         const response = await fetch('/api/v1/questionnaire/style-preferences', { credentials: 'include', signal: controller.signal });
 
         if (response.ok) {
-          const result = await response.json();
-          if (result.data) {setFormData(result.data as StyleData);}
+          const result = (await response.json()) as { data?: StyleData };
+          if (result.data) {setFormData(result.data);}
         }
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {return;}
@@ -225,8 +225,10 @@ const StylePreferences: React.FC = () => {
           body: JSON.stringify(formData),
         });
         if (tipsResponse.ok) {
-          const tipsResult = await tipsResponse.json();
-          setAiTips(tipsResult.data);
+          const tipsResult = (await tipsResponse.json()) as {
+            data?: { tips: string[]; warnings: string[]; suggestions: string[] } | null;
+          };
+          setAiTips(tipsResult.data ?? null);
         }
       } catch {
         /* AI tips are optional */

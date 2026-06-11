@@ -43,8 +43,14 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
           signal: controller.signal,
         });
         if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
-        const json = await res.json();
-        const list: KitchenSummary[] = (json.data?.data ?? json.data ?? []).map((k: { id: string; name: string; project?: { name: string } }) => ({
+        interface KitchenApiRow { id: string; name: string; project?: { name: string } }
+        const json = (await res.json()) as {
+          data?: KitchenApiRow[] | { data?: KitchenApiRow[] };
+        };
+        const rows: KitchenApiRow[] = Array.isArray(json.data)
+          ? json.data
+          : json.data?.data ?? [];
+        const list: KitchenSummary[] = rows.map((k) => ({
           id: k.id, name: k.name, projectName: k.project?.name,
         }));
         setKitchens(list);
@@ -72,7 +78,9 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
         body: JSON.stringify(body),
       });
       if (!res.ok) {
-        const errBody = await res.json().catch(() => null);
+        const errBody = (await res.json().catch(() => null)) as {
+          error?: { message?: string };
+        } | null;
         throw new Error(errBody?.error?.message ?? `HTTP ${res.status}`);
       }
       toast.success(`${target.name} ajouté à votre cuisine`);

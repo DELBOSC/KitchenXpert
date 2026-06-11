@@ -93,8 +93,8 @@ const PreferenceForm: React.FC = () => {
         });
 
         if (response.ok) {
-          const result = await response.json();
-          if (result.data) {setPreferences(result.data as AIPreferences);}
+          const result = (await response.json()) as { data?: AIPreferences };
+          if (result.data) {setPreferences(result.data);}
         }
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {return;}
@@ -121,10 +121,13 @@ const PreferenceForm: React.FC = () => {
         if (!mountedRef.current) {return;}
 
         if (response.ok) {
-          const result = await response.json();
-          const data = result.data || result;
+          const result = (await response.json()) as {
+            data?: { completedSections?: string[] };
+            completedSections?: string[];
+          };
+          const data = result.data ?? result;
           // Consider questionnaire available if any section is completed
-          const completedSections = data.completedSections || [];
+          const completedSections = data.completedSections ?? [];
           setHasQuestionnaire(completedSections.length > 0);
         } else {
           setHasQuestionnaire(false);
@@ -188,12 +191,15 @@ const PreferenceForm: React.FC = () => {
       if (!mountedRef.current) {return;}
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = (await response.json().catch(() => ({}))) as { message?: string };
         throw new Error(errorData.message || t('aiGenerator.generationFailed', 'Failed to start AI generation'));
       }
 
-      const result = await response.json();
-      const generationId = result.data?.generationId || result.generationId;
+      const result = (await response.json()) as {
+        data?: { generationId?: string };
+        generationId?: string;
+      };
+      const generationId = result.data?.generationId ?? result.generationId;
       navigate(`/ai-generator/results/${generationId}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');

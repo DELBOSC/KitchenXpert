@@ -59,8 +59,8 @@ const RoleManagement: React.FC = () => {
           throw new Error(t('admin.fetchRolesError', 'Failed to fetch roles and permissions'));
         }
 
-        const rolesData: Role[] = await rolesResponse.json();
-        const permissionsData: Permission[] = await permissionsResponse.json();
+        const rolesData = (await rolesResponse.json()) as Role[];
+        const permissionsData = (await permissionsResponse.json()) as Permission[];
 
         setRoles(rolesData);
         setPermissions(permissionsData);
@@ -109,7 +109,7 @@ const RoleManagement: React.FC = () => {
         throw new Error(t('admin.roles.createFailed', 'Echec de la creation du role'));
       }
 
-      const createdRole: Role = await response.json();
+      const createdRole = (await response.json()) as Role;
       setRoles((prev) => [...prev, createdRole]);
       setIsCreating(false);
       setNewRole({ name: '', description: '', permissions: [] });
@@ -146,7 +146,7 @@ const RoleManagement: React.FC = () => {
         throw new Error(t('admin.roles.updateFailed', 'Echec de la mise a jour du role'));
       }
 
-      const updatedRole: Role = await response.json();
+      const updatedRole = (await response.json()) as Role;
       setRoles((prev) => prev.map((r) => (r.id === updatedRole.id ? updatedRole : r)));
       setEditingRole(null);
     } catch (err) {

@@ -115,8 +115,8 @@ export default function InstallationTracker(): React.ReactElement {
           return;
         }
 
-        const result = await response.json();
-        const proj = result.data as InstallationProject;
+        const result = (await response.json()) as { data: InstallationProject };
+        const proj = result.data;
         setProject(proj);
 
         // Determine if current user is the installer
@@ -161,7 +161,7 @@ export default function InstallationTracker(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const result = await response.json();
+        const result = (await response.json()) as { error?: string };
         throw new Error(result.error || t('tracker.updateError', 'Erreur lors de la mise a jour'));
       }
 
@@ -200,7 +200,7 @@ export default function InstallationTracker(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const result = await response.json();
+        const result = (await response.json()) as { error?: string };
         throw new Error(result.error || t('tracker.milestoneError', 'Erreur lors de l\'ajout'));
       }
 

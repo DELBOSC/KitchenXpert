@@ -22,6 +22,29 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 const selectCatalogError = (state: { catalog: CatalogState }): string | null => state.catalog.error;
 const selectCatalogPagination = (state: { catalog: CatalogState }): CatalogState['pagination'] => state.catalog.pagination;
 
+/** Shape of a product returned by the AI catalog search (raw DB row subset consumed by the UI). */
+interface AISearchProduct {
+  id: string;
+  name: string;
+  brand?: string | null;
+  material?: string | null;
+  price?: number | string | null;
+  currency?: string | null;
+}
+
+interface AISearchResult {
+  results: AISearchProduct[];
+  explanation: string;
+  suggestions: string[];
+}
+
+/** API envelope for POST /api/v1/ai-search/catalog. */
+interface AISearchResponse {
+  success: boolean;
+  data: AISearchResult;
+  error?: string;
+}
+
 type CategoryDef = { id: string; nameKey: string; icon: React.ReactNode };
 
 const CATEGORIES: CategoryDef[] = [
@@ -50,7 +73,7 @@ export default function CatalogPage(): React.ReactElement {
   // AI Search
   const [aiQuery, setAiQuery] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiResults, setAiResults] = useState<{ results: any[]; explanation: string; suggestions: string[] } | null>(null);
+  const [aiResults, setAiResults] = useState<AISearchResult | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -104,11 +127,11 @@ export default function CatalogPage(): React.ReactElement {
         signal: controller.signal,
       });
       if (!res.ok) {throw new Error('Recherche IA échouée');}
-      const json = await res.json();
+      const json = (await res.json()) as AISearchResponse;
       setAiResults(json.data);
     } catch (err) {
-      if ((err as Error).name === 'AbortError') {return;}
-      setAiError((err as Error).message);
+      if (err instanceof Error && err.name === 'AbortError') {return;}
+      setAiError(err instanceof Error ? err.message : 'Une erreur est survenue');
     } finally {
       setAiLoading(false);
     }
@@ -188,7 +211,7 @@ export default function CatalogPage(): React.ReactElement {
                   )}
                   {aiResults.results?.length > 0 ? (
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                      {aiResults.results.map((p: any) => (
+                      {aiResults.results.map((p) => (
                         <AIResultCard key={p.id} product={p} />
                       ))}
                     </div>
@@ -382,7 +405,7 @@ function ProductCard({ product }: { product: CatalogItem }): React.ReactElement 
   );
 }
 
-function AIResultCard({ product }: { product: any }): React.ReactElement {
+function AIResultCard({ product }: { product: AISearchProduct }): React.ReactElement {
   return (
     <div className="rounded-lg border border-white/10 bg-white/[0.04] p-3 transition hover:border-white/20">
       <h4 className="line-clamp-2 text-sm font-medium text-white">{product.name}</h4>

@@ -371,7 +371,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
           throw new Error('Failed to load comments');
         }
 
-        const data = await response.json();
+        const data = (await response.json()) as { data?: Comment[] };
         setComments(data.data || []);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {return;}
@@ -403,7 +403,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
         throw new Error('Failed to add comment');
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as { data: Comment };
       setComments((prev) => [{ ...data.data, replies: [] }, ...prev]);
       setNewComment('');
     } catch (err) {
@@ -427,7 +427,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
       throw new Error('Failed to add reply');
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as { data: Comment };
 
     setComments((prev) =>
       prev.map((c) => {
@@ -454,7 +454,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
         throw new Error('Failed to edit comment');
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as { data: { content: string; updatedAt: string } };
 
       setComments((prev) =>
         prev.map((c) => {

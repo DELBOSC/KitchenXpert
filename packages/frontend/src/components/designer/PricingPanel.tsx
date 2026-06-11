@@ -62,17 +62,24 @@ const CATEGORY_KEY_MAP: Record<string, string> = {
 function extractPriceItems(engine: KitchenEngine): PriceItem[] {
   const items: PriceItem[] = [];
   engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-    if (!child.userData.id || child.userData.type === 'wall' || child.userData.type === 'floor') {
+    const ud = child.userData as {
+      id?: string;
+      type?: string;
+      isGenerated?: boolean;
+      price?: number;
+      name?: string;
+    };
+    if (!ud.id || ud.type === 'wall' || ud.type === 'floor') {
       return;
     }
-    if (child.userData.isGenerated) {return;} // Skip auto-generated worktops/plinths
+    if (ud.isGenerated) {return;} // Skip auto-generated worktops/plinths
 
-    const type = child.userData.type || 'unknown';
-    const price = child.userData.price || DEFAULT_PRICES[type] || 0;
+    const type = ud.type || 'unknown';
+    const price = ud.price || DEFAULT_PRICES[type] || 0;
 
     items.push({
-      id: child.userData.id,
-      name: child.userData.name || type,
+      id: ud.id,
+      name: ud.name || type,
       type,
       price,
     });

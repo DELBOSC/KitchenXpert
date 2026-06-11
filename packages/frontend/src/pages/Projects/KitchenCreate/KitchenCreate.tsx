@@ -71,9 +71,9 @@ const KitchenCreate: React.FC = () => {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as { name?: string };
           if (mountedRef.current) {
-            setProjectName(data.name || '');
+            setProjectName(data.name ?? '');
           }
         }
       } catch (err) {
@@ -186,15 +186,15 @@ const KitchenCreate: React.FC = () => {
       if (!mountedRef.current) {return;}
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || t('kitchens.createError', 'Failed to create kitchen'));
+        const errorData = (await response.json().catch(() => ({}))) as { message?: string };
+        throw new Error(errorData.message ?? t('kitchens.createError', 'Failed to create kitchen'));
       }
 
-      const newKitchen = await response.json();
+      const newKitchen = (await response.json()) as { id?: string; data?: { id?: string } };
       toast.success(t('kitchens.createSuccess', 'Kitchen created successfully'));
 
       // Navigate to the kitchen designer page
-      navigate(`/designer/${newKitchen.id || newKitchen.data?.id}`);
+      navigate(`/designer/${newKitchen.id ?? newKitchen.data?.id ?? ''}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');
       toast.error(errorMessage);

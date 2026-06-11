@@ -71,7 +71,7 @@ const EnrichmentDashboard: React.FC = () => {
         signal,
       });
       if (!res.ok) {throw new Error(t('admin.enrichment.errors.fetchStats', 'Failed to fetch stats'));}
-      const data = await res.json();
+      const data = (await res.json()) as { data: EnrichmentStats };
       setStats(data.data);
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {return;}
@@ -97,7 +97,7 @@ const EnrichmentDashboard: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => null);
+        const body = (await res.json().catch(() => null)) as { message?: string } | null;
         throw new Error(body?.message || t('admin.enrichment.errors.actionFailed', 'Action failed'));
       }
       setMessage({ type: 'success', text: successText });

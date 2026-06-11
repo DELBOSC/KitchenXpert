@@ -67,7 +67,7 @@ async function fetchNearbyPartners(params: {
   const url = `${API_BASE_URL}${API_ENDPOINTS.QUOTES.NEARBY_PARTNERS}?${query.toString()}`;
   const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) {throw new Error('Failed to fetch partners');}
-  const data = await res.json();
+  const data = (await res.json()) as { data?: PartnerInfo[] };
   return data.data || [];
 }
 
@@ -86,10 +86,10 @@ async function sendQuoteRequest(body: {
     body: JSON.stringify(body),
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: 'Failed to send quote' }));
+    const err = (await res.json().catch(() => ({ error: 'Failed to send quote' }))) as { error?: string };
     throw new Error(err.error || 'Failed to send quote');
   }
-  const data = await res.json();
+  const data = (await res.json()) as { data?: { reference?: string; partnerName?: string } };
   return {
     reference: data.data?.reference || '',
     partnerName: data.data?.partnerName || '',

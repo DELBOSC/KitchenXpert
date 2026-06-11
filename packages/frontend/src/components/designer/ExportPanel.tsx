@@ -211,7 +211,7 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       };
 
       const cutList = cncExporter.generateCutList(sceneData);
-      (cncExporter as any).downloadCSV(cutList, 'kitchen-cut-list');
+      cncExporter.downloadCSV(cutList, 'kitchen-cut-list');
 
       setExportStatus(t('designer.export.cncSuccess', 'Export CNC reussi !'));
     } catch (error) {
@@ -357,18 +357,28 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       const items: string[][] = [];
       let totalPrice = 0;
       scene.traverse((obj) => {
-        if (obj.userData.catalogItem || obj.userData.type === 'cabinet' || obj.userData.type === 'appliance') {
-          const name = obj.userData.name || obj.name || 'Element';
-          const type = obj.userData.type || '-';
-          const brand = obj.userData.brand || '-';
+        const ud = obj.userData as {
+          catalogItem?: unknown;
+          type?: string;
+          name?: string;
+          brand?: string;
+          width?: number | string;
+          height?: number | string;
+          depth?: number | string;
+          price?: number | string;
+        };
+        if (ud.catalogItem || ud.type === 'cabinet' || ud.type === 'appliance') {
+          const name = ud.name || obj.name || 'Element';
+          const type = ud.type || '-';
+          const brand = ud.brand || '-';
           const pos = `(${obj.position.x.toFixed(2)}, ${obj.position.y.toFixed(2)}, ${obj.position.z.toFixed(2)})`;
 
           let dims = '-';
-          if (obj.userData.width && obj.userData.height && obj.userData.depth) {
-            dims = `${obj.userData.width}x${obj.userData.height}x${obj.userData.depth}`;
+          if (ud.width && ud.height && ud.depth) {
+            dims = `${ud.width}x${ud.height}x${ud.depth}`;
           }
 
-          const price = obj.userData.price ? Number(obj.userData.price) : 0;
+          const price = ud.price ? Number(ud.price) : 0;
           totalPrice += price;
 
           items.push([name, type, brand, pos, dims, price > 0 ? `${price.toFixed(2)} EUR` : '-']);
