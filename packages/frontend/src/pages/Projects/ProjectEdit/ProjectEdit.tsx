@@ -105,13 +105,13 @@ const ProjectEdit: React.FC = () => {
         if (!mountedRef.current) {return;}
 
         setFormData({
-          name: data.name || '',
-          description: data.description || '',
-          status: data.status || 'draft',
-          address: data.address || '',
-          clientName: data.clientName || '',
-          clientEmail: data.clientEmail || '',
-          clientPhone: data.clientPhone || '',
+          name: data.name ?? '',
+          description: data.description ?? '',
+          status: data.status ?? 'draft',
+          address: data.address ?? '',
+          clientName: data.clientName ?? '',
+          clientEmail: data.clientEmail ?? '',
+          clientPhone: data.clientPhone ?? '',
         });
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {return;}
