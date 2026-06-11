@@ -63,7 +63,7 @@ export const fetchKitchens = createAsyncThunk<
     if (filters.projectId) {queryParams.projectId = filters.projectId;}
     if (filters.search) {queryParams.search = filters.search;}
     const params = new URLSearchParams(queryParams);
-    const response = await fetch(`${API_URL}/kitchens?${params}`, { credentials: 'include' });
+    const response = await fetch(`${API_URL}/kitchens?${params.toString()}`, { credentials: 'include' });
     const data = await response.json();
     if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };

@@ -124,7 +124,7 @@ const UserProfile: React.FC = () => {
       }
     };
 
-    fetchUserProfile();
+    void fetchUserProfile();
     return () => controller.abort();
   }, []);
 

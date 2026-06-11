@@ -121,7 +121,7 @@ const VRViewer: React.FC = () => {
       }
     };
 
-    checkVRSupport();
+    void checkVRSupport();
   }, []);
 
   useEffect(() => {
@@ -167,7 +167,7 @@ const VRViewer: React.FC = () => {
       }
     };
 
-    loadScene();
+    void loadScene();
     return () => controller.abort();
   }, [projectId, kitchenId, generationId, retryCount]);
 
@@ -582,7 +582,7 @@ const VRViewer: React.FC = () => {
               <button
                 onClick={() => {
                   if (xrSessionRef.current) {
-                    xrSessionRef.current.end();
+                    void xrSessionRef.current.end();
                   }
                 }}
                 className="px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors font-medium"

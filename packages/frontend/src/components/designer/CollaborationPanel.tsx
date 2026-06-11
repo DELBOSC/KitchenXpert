@@ -189,7 +189,7 @@ export default function CollaborationPanel({
       }
     };
 
-    loadMembers();
+    void loadMembers();
 
     return () => {
       cancelled = true;
@@ -219,7 +219,7 @@ export default function CollaborationPanel({
       }
     };
 
-    loadInvites();
+    void loadInvites();
 
     return () => {
       cancelled = true;

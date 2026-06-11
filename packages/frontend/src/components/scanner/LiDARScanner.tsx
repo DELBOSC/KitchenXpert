@@ -161,7 +161,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       }
     };
 
-    checkLiDARSupport();
+    void checkLiDARSupport();
   }, []);
 
   // ─── Cleanup XR session and upload controller on unmount ─────────────────

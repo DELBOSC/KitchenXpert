@@ -121,7 +121,7 @@ export default function InstallerMarketplace(): React.ReactElement {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchInstallers(controller, page);
+    void fetchInstallers(controller, page);
     return () => controller.abort();
   }, [fetchInstallers, page, retryCount]);
 

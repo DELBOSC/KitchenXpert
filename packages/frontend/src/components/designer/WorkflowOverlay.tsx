@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -119,7 +119,7 @@ export default function WorkflowOverlay({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
   const [animationProgress, setAnimationProgress] = useState(0);
-  const [hoveredStep, setHoveredStep] = useState<number | null>(null);
+  const [hoveredStep] = useState<number | null>(null);
 
   // ─── Coordinate mapping ─────────────────────────────────────────────────
 

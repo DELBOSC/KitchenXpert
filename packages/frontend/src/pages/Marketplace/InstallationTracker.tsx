@@ -141,7 +141,7 @@ export default function InstallationTracker(): React.ReactElement {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchProject(controller);
+    void fetchProject(controller);
     return () => controller.abort();
   }, [fetchProject, retryCount]);
 

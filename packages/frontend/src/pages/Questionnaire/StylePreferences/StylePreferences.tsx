@@ -178,7 +178,7 @@ const StylePreferences: React.FC = () => {
       }
     };
 
-    fetchStyleData();
+    void fetchStyleData();
     return () => controller.abort();
   }, []);
 

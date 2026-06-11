@@ -1,9 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { bootAnalyticsFromConsent, loadPlausible, unloadPlausible } from './analytics/plausible-loader';
 import App from './App';
 import './index.css';
-import { bootAnalyticsFromConsent, loadPlausible, unloadPlausible } from './analytics/plausible-loader';
 
 // Returning visitors who already accepted analytics → load Plausible now.
 bootAnalyticsFromConsent();

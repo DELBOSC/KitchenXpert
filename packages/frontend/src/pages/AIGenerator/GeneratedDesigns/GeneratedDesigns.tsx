@@ -99,6 +99,26 @@ const GeneratedDesigns: React.FC = () => {
   const [bomError, setBomError] = useState<string | null>(null);
   const [showBomModal, setShowBomModal] = useState<boolean>(false);
 
+  // Close the BOM modal on Escape (document-level to keep the dialog container non-interactive)
+  useEffect(() => {
+    if (!showBomModal) {return;}
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') { setShowBomModal(false); setBomData(null); setBomError(null); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showBomModal]);
+
+  // Close the design detail modal on Escape
+  useEffect(() => {
+    if (!selectedDesign) {return;}
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') { setSelectedDesign(null); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [selectedDesign]);
+
   /**
    * Retry handler: resets error/loading state and bumps retryCount to
    * re-trigger the useEffect instead of doing a full page reload (L-1).
@@ -254,7 +274,7 @@ const GeneratedDesigns: React.FC = () => {
 
         // If still processing, poll for updates
         if (data.status === 'pending' || data.status === 'processing') {
-          pollInterval = setInterval(async () => {
+          const pollOnce = async (): Promise<void> => {
             // M-2: Check whether we have exceeded the maximum poll duration
             if (Date.now() - pollStartTime >= MAX_POLL_DURATION) {
               if (pollInterval) {clearInterval(pollInterval);}
@@ -286,7 +306,8 @@ const GeneratedDesigns: React.FC = () => {
               }
               // Otherwise continue polling -- transient network errors are expected
             }
-          }, POLL_INTERVAL);
+          };
+          pollInterval = setInterval(() => { void pollOnce(); }, POLL_INTERVAL);
         }
       } catch (err) {
         // Ignore abort errors triggered by cleanup
@@ -300,7 +321,7 @@ const GeneratedDesigns: React.FC = () => {
       }
     };
 
-    fetchGenerationResult();
+    void fetchGenerationResult();
 
     // M-1: Cleanup -- abort in-flight requests AND clear the poll interval
     return () => {
@@ -457,7 +478,6 @@ const GeneratedDesigns: React.FC = () => {
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
         role="dialog"
         aria-modal="true"
-        onKeyDown={(e) => { if (e.key === 'Escape') { setShowBomModal(false); setBomData(null); setBomError(null); } }}
       >
         <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
           <div className="p-6">
@@ -837,7 +857,6 @@ const GeneratedDesigns: React.FC = () => {
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
           role="dialog"
           aria-modal="true"
-          onKeyDown={(e) => { if (e.key === 'Escape') {setSelectedDesign(null);} }}
         >
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <div className="relative h-64 sm:h-80 bg-gray-200">

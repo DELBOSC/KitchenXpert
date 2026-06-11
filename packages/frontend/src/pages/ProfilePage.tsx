@@ -1,6 +1,5 @@
 import { KeyRound, LogOut, Shield, Mail, Phone, Check } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -19,7 +18,6 @@ interface Preferences {
 
 export default function ProfilePage(): React.ReactElement {
   const { user, logout, updateUser } = useAuth();
-  const { t } = useTranslation();
   const toast = useToast();
   const mountedRef = useRef(true);
 
@@ -42,7 +40,7 @@ export default function ProfilePage(): React.ReactElement {
     mountedRef.current = true;
     const controller = new AbortController();
 
-    (async () => {
+    void (async () => {
       try {
         const [profileRes, prefRes] = await Promise.allSettled([
           fetch('/api/v1/users/me', { credentials: 'include', signal: controller.signal }),

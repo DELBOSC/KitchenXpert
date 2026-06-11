@@ -64,7 +64,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
     return () => { mounted = false; };
   }, []);
 
-  const close = async (): Promise<void> => {
+  const close = (): void => {
     setOpen(false);
     if (request?.id) {
       // Soft-dismiss so the cooldown kicks in even if they didn't rate.
@@ -161,6 +161,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
           <div
             role="radiogroup"
             aria-label="Note de 1 à 5 étoiles"
+            tabIndex={0}
             className="flex justify-center gap-2"
             onMouseLeave={() => setHover(0)}
           >

@@ -56,6 +56,26 @@ const UserManagement: React.FC = () => {
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
 
+  // Close the single-user action modal on Escape (document-level to keep the dialog container non-interactive)
+  useEffect(() => {
+    if (!showActionModal) {return;}
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape' && !isProcessing) { setShowActionModal(null); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showActionModal, isProcessing]);
+
+  // Close the bulk action modal on Escape
+  useEffect(() => {
+    if (!showBulkModal) {return;}
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape' && !isBulkProcessing) { setShowBulkModal(null); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showBulkModal, isBulkProcessing]);
+
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
   useEffect(() => {
@@ -93,7 +113,7 @@ const UserManagement: React.FC = () => {
       }
     };
 
-    fetchUsers();
+    void fetchUsers();
     return () => controller.abort();
   }, [currentPage, searchQuery, roleFilter, statusFilter, pagination.itemsPerPage]);
 
@@ -575,7 +595,6 @@ const UserManagement: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="actionModalTitle"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) {setShowActionModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="actionModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -623,7 +642,6 @@ const UserManagement: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="bulkModalTitle"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isBulkProcessing) {setShowBulkModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="bulkModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -676,7 +694,6 @@ const UserManagement: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="bulkRoleModalTitle"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isBulkProcessing) {setShowBulkModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="bulkRoleModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">

@@ -106,7 +106,7 @@ const ProjectEdit: React.FC = () => {
       }
     };
 
-    fetchProject();
+    void fetchProject();
     return () => controller.abort();
   }, [id, retryCount, t]);
 

@@ -73,7 +73,7 @@ const CarbonAdmin: React.FC = () => {
       }
     };
 
-    fetchData();
+    void fetchData();
     return () => controller.abort();
   }, [retryCount, currentPage, t]);
 

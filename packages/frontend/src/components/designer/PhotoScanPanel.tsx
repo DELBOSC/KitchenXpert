@@ -951,7 +951,7 @@ export default function PhotoScanPanel({
                         <div key={idx} className="relative">
                           <img
                             src={url}
-                            alt={`Photo ${idx + 1}`}
+                            alt={`Pièce ${idx + 1}`}
                             className={`w-20 h-20 rounded-lg object-cover ${
                               isLowRes
                                 ? 'ring-2 ring-red-400 dark:ring-red-500'

@@ -9,8 +9,6 @@ import { SandboxWatermark } from '../components/sandbox/SandboxWatermark';
 import { SignupPromptModal } from '../components/sandbox/SignupPromptModal';
 import { SeoHead } from '../components/seo/SeoHead';
 import { Skeleton } from '../components/ui/Skeleton';
-
-const SandboxCanvas = React.lazy(() => import('../components/sandbox/SandboxCanvas'));
 import { useSandboxStore, selectHasSandboxProject } from '../sandbox/store';
 import { findTemplate } from '../sandbox/templates';
 import {
@@ -18,6 +16,8 @@ import {
   useSandboxSessionTracking,
 } from '../sandbox/useSandboxAnalytics';
 import { useSandboxLimits } from '../sandbox/useSandboxLimits';
+
+const SandboxCanvas = React.lazy(() => import('../components/sandbox/SandboxCanvas'));
 
 /**
  * Sandbox designer entry. Two URL forms:

@@ -22,8 +22,8 @@ export function CardHeader({ className, ...rest }: React.HTMLAttributes<HTMLDivE
   return <div className={cn('border-b border-white/5 px-6 py-4', className)} {...rest} />;
 }
 
-export function CardTitle({ className, ...rest }: React.HTMLAttributes<HTMLHeadingElement>): React.ReactElement {
-  return <h3 className={cn('text-base font-semibold tracking-tight text-white', className)} {...rest} />;
+export function CardTitle({ className, children, ...rest }: React.HTMLAttributes<HTMLHeadingElement>): React.ReactElement {
+  return <h3 className={cn('text-base font-semibold tracking-tight text-white', className)} {...rest}>{children}</h3>;
 }
 
 export function CardDescription({ className, ...rest }: React.HTMLAttributes<HTMLParagraphElement>): React.ReactElement {

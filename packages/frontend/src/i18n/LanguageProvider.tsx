@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import i18n, {
+import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
   type SupportedLanguage,
@@ -125,10 +125,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }): R
     () => (next: SupportedLanguage): void => {
       writeCookie(next);
       // Rewrite the URL so the source of truth (URL) reflects the choice.
+      // Note: even FR gets a /fr prefix for consistency + hreflang.
       const stripped = stripPrefixFn(location.pathname);
-      const target = next === DEFAULT_LANGUAGE && false
-        ? stripped // disabled — even FR gets a /fr prefix for consistency + hreflang
-        : `/${next}${stripped}`;
+      const target = `/${next}${stripped}`;
       navigate(target + location.search + location.hash);
       void i18nHook.changeLanguage(next);
       if (typeof document !== 'undefined') {

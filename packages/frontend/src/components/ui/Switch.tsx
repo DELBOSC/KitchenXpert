@@ -44,3 +44,5 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>((
     </label>
   );
 });
+
+Switch.displayName = 'Switch';

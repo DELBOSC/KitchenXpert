@@ -69,3 +69,5 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((
     </motion.button>
   );
 });
+
+Button.displayName = 'Button';

@@ -43,7 +43,7 @@ export function isSupported(lang: string): lang is SupportedLanguage {
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(lang);
 }
 
-i18n.use(initReactI18next).init({
+void i18n.use(initReactI18next).init({
   resources: {
     fr: { translation: fr },
     en: { translation: en },

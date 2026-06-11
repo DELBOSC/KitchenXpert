@@ -123,7 +123,7 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
       }
     };
 
-    fetchData();
+    void fetchData();
     return () => controller.abort();
   }, [isOpen, kitchenId, t]);
 

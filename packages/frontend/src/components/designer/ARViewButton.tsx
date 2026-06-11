@@ -56,7 +56,7 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
         setArSupported(false);
       }
     };
-    checkSupport();
+    void checkSupport();
   }, []);
 
   // Launch AR overlay

@@ -92,7 +92,7 @@ const DesignComparison: React.FC = () => {
       }
     };
 
-    fetchResults();
+    void fetchResults();
     return () => controller.abort();
   }, [generationId, retryCount]);
 

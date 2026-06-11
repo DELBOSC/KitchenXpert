@@ -52,7 +52,7 @@ const EnrichmentDashboard: React.FC = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchStats(controller.signal);
+    void fetchStats(controller.signal);
     return () => controller.abort();
   }, [retryCount]);
 
@@ -126,7 +126,7 @@ const EnrichmentDashboard: React.FC = () => {
       setMessage({ type: 'error', text: t('admin.enrichment.errors.brandRequired', 'Veuillez renseigner les deux identifiants de marque') });
       return;
     }
-    runAction(
+    void runAction(
       'cross-match',
       API_ENDPOINTS.ENRICHMENT.MATCH_BRANDS(brandA.trim(), brandB.trim()),
       t('admin.enrichment.success.crossMatch', { brandA: brandA.trim(), brandB: brandB.trim(), defaultValue: 'Cross-match entre {{brandA}} et {{brandB}} lance' }),

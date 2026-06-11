@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 interface Permission {
   id: string;
@@ -74,7 +73,7 @@ const RoleManagement: React.FC = () => {
       }
     };
 
-    fetchData();
+    void fetchData();
     return () => controller.abort();
   }, []);
 
@@ -160,7 +159,7 @@ const RoleManagement: React.FC = () => {
 
   const [deleteConfirm, setDeleteConfirm] = useState<Role | null>(null);
 
-  const handleDeleteRole = async (role: Role): Promise<void> => {
+  const handleDeleteRole = (role: Role): void => {
     if (role.isSystem) {
       setError(t('admin.roles.systemCannotDelete', 'Les roles systeme ne peuvent pas etre supprimes'));
       return;

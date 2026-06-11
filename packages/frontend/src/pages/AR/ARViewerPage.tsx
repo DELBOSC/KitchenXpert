@@ -92,7 +92,7 @@ const ARViewerPage: React.FC = () => {
         setArSupported(false);
       }
     };
-    check();
+    void check();
   }, []);
 
   // Load kitchen data
@@ -144,7 +144,7 @@ const ARViewerPage: React.FC = () => {
       }
     };
 
-    loadKitchen();
+    void loadKitchen();
     return () => controller.abort();
   }, [kitchenId, projectId, arSupported, retryCount]);
 

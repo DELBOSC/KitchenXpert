@@ -284,7 +284,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
       if (mounted) {setCatalogItems(localCatalogItems);}
     };
 
-    fetchCatalog();
+    void fetchCatalog();
     return () => { mounted = false; controller.abort(); };
   }, [localCatalogItems]);
 

@@ -2,9 +2,9 @@ import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { HeroVideo } from './HeroVideo';
 import { tagConversion } from '../../hooks/useABVariant';
 
-import { HeroVideo } from './HeroVideo';
 
 /**
  * 3 hero variants, A/B/C-tested via `useABVariant('hero', ['A','B','C'])`.

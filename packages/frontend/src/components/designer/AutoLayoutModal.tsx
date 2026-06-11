@@ -152,14 +152,20 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="auto-layout-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) {onClose();} }}
-    >
-      <div className="relative w-full max-w-5xl rounded-2xl border border-white/10 bg-[#13131a] p-6 shadow-2xl sm:p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button
+        type="button"
+        aria-label="Fermer"
+        tabIndex={-1}
+        onClick={onClose}
+        className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auto-layout-title"
+        className="relative w-full max-w-5xl rounded-2xl border border-white/10 bg-[#13131a] p-6 shadow-2xl sm:p-8"
+      >
         <button
           type="button"
           onClick={onClose}

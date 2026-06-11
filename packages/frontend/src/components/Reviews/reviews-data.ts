@@ -85,8 +85,8 @@ export const STATIC_REVIEWS: Review[] = [
  *
  * For now this stub returns the static array.
  */
-export async function fetchExternalReviews(): Promise<Review[]> {
-  return STATIC_REVIEWS;
+export function fetchExternalReviews(): Promise<Review[]> {
+  return Promise.resolve(STATIC_REVIEWS);
 }
 
 /** Average rating across the provided pool — null if pool is empty. */

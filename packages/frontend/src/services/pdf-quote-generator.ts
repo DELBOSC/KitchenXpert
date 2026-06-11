@@ -3,6 +3,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as THREE from 'three';
 
+import { AIAssistant } from '@kitchenxpert/3d-engine';
+
 import type { KitchenEngine , BrandProfile } from '@kitchenxpert/3d-engine';
 
 
@@ -157,7 +159,7 @@ export class PDFQuoteGenerator {
 
   // --- Page 2: Plan 2D ---
 
-  private async renderPlanPage(doc: jsPDF, pageWidth: number, margin: number): Promise<void> {
+  private renderPlanPage(doc: jsPDF, pageWidth: number, margin: number): Promise<void> {
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
@@ -179,6 +181,8 @@ export class PDFQuoteGenerator {
       doc.setFontSize(10);
       doc.text(i18next.t('pdfQuote.plan.unavailable', 'Vue 2D non disponible'), pageWidth / 2, 80, { align: 'center' });
     }
+
+    return Promise.resolve();
   }
 
   // --- Page 3: BOM ---
@@ -401,7 +405,7 @@ export class PDFQuoteGenerator {
       price: item.price,
     }));
 
-    const ai = new (require('@kitchenxpert/3d-engine').AIAssistant)(this.brandProfile);
+    const ai = new AIAssistant(this.brandProfile);
     const score = ai.scoreConfiguration(placedItems, room);
     const suggestions = ai.getSuggestions(placedItems, room);
     const triangle = ai.calculateWorkTriangle(placedItems);

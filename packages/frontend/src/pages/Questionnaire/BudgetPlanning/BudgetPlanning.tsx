@@ -152,7 +152,7 @@ const BudgetPlanning: React.FC = () => {
       }
     };
 
-    fetchBudgetData();
+    void fetchBudgetData();
     return () => controller.abort();
   }, []);
 
@@ -313,7 +313,6 @@ const BudgetPlanning: React.FC = () => {
   };
 
   const formatCurrency = (amount: number): string => {
-    const currency = currencies.find((c) => c.code === formData.currency);
     return new Intl.NumberFormat(i18n.language, {
       style: 'currency',
       currency: formData.currency,
@@ -566,18 +565,19 @@ const BudgetPlanning: React.FC = () => {
 
             {/* Financing */}
             <section>
-              <label className="flex items-center gap-3 cursor-pointer p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <label htmlFor="financingNeeded" aria-label={t('questionnaire.budget.financing', "I'm interested in financing options")} className="flex items-center gap-3 cursor-pointer p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <input
+                  id="financingNeeded"
                   type="checkbox"
                   name="financingNeeded"
                   checked={formData.financingNeeded}
                   onChange={handleInputChange}
                   className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 focus-visible:ring-blue-500"
                 />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">{t('questionnaire.budget.financing', "I'm interested in financing options")}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('questionnaire.budget.financingDesc', "We'll provide information about available financing plans")}</p>
-                </div>
+                <span>
+                  <span className="block font-medium text-gray-900 dark:text-white">{t('questionnaire.budget.financing', "I'm interested in financing options")}</span>
+                  <span className="block text-sm text-gray-500 dark:text-gray-400">{t('questionnaire.budget.financingDesc', "We'll provide information about available financing plans")}</span>
+                </span>
               </label>
             </section>
 

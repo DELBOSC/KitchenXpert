@@ -176,7 +176,7 @@ export default function FinancingCalculator(): React.ReactElement {
   const [ecoAidsError, setEcoAidsError] = useState<string>('');
 
   // ── Providers ──────────────────────────────────────────────────────────
-  const [providers, setProviders] = useState<FinancingProvider[]>([]);
+  const [, setProviders] = useState<FinancingProvider[]>([]);
 
   // ── Cleanup on unmount ─────────────────────────────────────────────────
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function FinancingCalculator(): React.ReactElement {
       }
     }
 
-    fetchProviders();
+    void fetchProviders();
 
     return () => {
       controller.abort();
@@ -247,7 +247,7 @@ export default function FinancingCalculator(): React.ReactElement {
   }, [totalAmount, downPayment, loanAmount, searchParams, t, retryCount]);
 
   useEffect(() => {
-    runSimulation();
+    void runSimulation();
   }, [runSimulation]);
 
   // ── Calculate eco aids ─────────────────────────────────────────────────

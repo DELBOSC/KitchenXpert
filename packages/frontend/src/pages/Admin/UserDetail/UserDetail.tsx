@@ -66,6 +66,16 @@ const UserDetailPage: React.FC = () => {
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
 
+  // Close the action modal on Escape (document-level to keep the dialog container non-interactive)
+  useEffect(() => {
+    if (!showActionModal) {return;}
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape' && !isProcessing) { setShowActionModal(null); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showActionModal, isProcessing]);
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -110,7 +120,7 @@ const UserDetailPage: React.FC = () => {
       }
     };
 
-    fetchUser();
+    void fetchUser();
     return () => controller.abort();
   }, [id, retryCount, t]);
 
@@ -422,7 +432,7 @@ const UserDetailPage: React.FC = () => {
         {/* Tabs */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="border-b border-gray-200 dark:border-gray-700">
-            <nav className="flex -mb-px" role="tablist">
+            <div className="flex -mb-px" role="tablist">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -438,7 +448,7 @@ const UserDetailPage: React.FC = () => {
                   {tab.label}
                 </button>
               ))}
-            </nav>
+            </div>
           </div>
 
           <div className="p-6">
@@ -630,7 +640,6 @@ const UserDetailPage: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="action-modal-heading"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) {setShowActionModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="action-modal-heading" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -677,7 +686,6 @@ const UserDetailPage: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="role-modal-heading"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isProcessing) {setShowActionModal(null);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="role-modal-heading" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">

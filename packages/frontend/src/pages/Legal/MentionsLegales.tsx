@@ -11,7 +11,6 @@ import { LEGAL, formatAddressLines } from '../../config/legal';
  */
 export default function MentionsLegales(): React.ReactElement {
   const { editor, hosting, mediator } = LEGAL;
-  const editorAddr = formatAddressLines(editor.address);
   const hostingAddr = formatAddressLines(hosting.address);
 
   return (

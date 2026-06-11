@@ -73,7 +73,7 @@ export const fetchProducts = createAsyncThunk<
     if (filters.maxPrice !== undefined) {queryParams.maxPrice = String(filters.maxPrice);}
     if (filters.search) {queryParams.search = filters.search;}
     const params = new URLSearchParams(queryParams);
-    const url = catalogId ? `${API_URL}/catalog/${catalogId}/products?${params}` : `${API_URL}/products?${params}`;
+    const url = catalogId ? `${API_URL}/catalog/${catalogId}/products?${params.toString()}` : `${API_URL}/products?${params.toString()}`;
     const response = await fetch(url, { credentials: 'include' });
     const data = await response.json();
     if (!response.ok) {throw new Error(data.error);}

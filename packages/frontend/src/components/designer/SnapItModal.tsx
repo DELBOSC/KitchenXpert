@@ -1,5 +1,5 @@
 import { Camera, X } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * SnapItModal — upload a photo (kitchen or inspiration) and Gemini
@@ -68,6 +68,13 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
   const [result, setResult] = useState<ApiResponse['data'] | null>(null);
   const [selectedItem, setSelectedItem] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) {return;}
+    const onKey = (e: KeyboardEvent): void => { if (e.key === 'Escape') {onClose();} };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
 
   if (!open) {return null;}
 
@@ -154,8 +161,14 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
       aria-modal="true"
       aria-labelledby="snapit-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) {onClose();} }}
     >
+      <button
+        type="button"
+        aria-label="Fermer"
+        onClick={onClose}
+        className="absolute inset-0 h-full w-full cursor-default"
+        tabIndex={-1}
+      />
       <div className="relative w-full max-w-5xl rounded-2xl border border-white/10 bg-[#13131a] p-6 shadow-2xl sm:p-8">
         <button
           type="button"
@@ -224,8 +237,8 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
             {/* Right : context + options */}
             <div className="flex flex-col gap-4">
               <div>
-                <label className="text-xs font-medium uppercase tracking-widest text-white/40">Type d'image</label>
-                <div className="mt-2 grid grid-cols-1 gap-2">
+                <span id="snapit-source-label" className="text-xs font-medium uppercase tracking-widest text-white/40">Type d'image</span>
+                <div className="mt-2 grid grid-cols-1 gap-2" role="group" aria-labelledby="snapit-source-label">
                   {[
                     { val: 'user-kitchen',          label: 'Ma cuisine actuelle' },
                     { val: 'inspiration-pinterest', label: 'Inspiration Pinterest' },
@@ -244,8 +257,9 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
               </div>
 
               <div>
-                <label className="text-xs font-medium uppercase tracking-widest text-white/40">Note (optionnel)</label>
+                <label htmlFor="snapit-context-note" className="text-xs font-medium uppercase tracking-widest text-white/40">Note (optionnel)</label>
                 <textarea
+                  id="snapit-context-note"
                   value={contextNote}
                   onChange={(e) => setContextNote(e.target.value)}
                   rows={3}
@@ -314,10 +328,13 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
               )}
 
               {result.recognition.detectedItems.map((item, i) => (
-                <article
+                <div
                   key={i}
+                  role="button"
+                  tabIndex={0}
                   className={`rounded-lg border p-3 transition ${selectedItem === i ? 'border-amber-400/40 bg-amber-500/[0.05]' : 'border-white/10 bg-white/[0.02] hover:border-white/20'}`}
                   onClick={() => setSelectedItem(i)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedItem(i); } }}
                 >
                   <div className="flex items-baseline justify-between gap-3">
                     <div className="text-sm text-white">
@@ -340,7 +357,7 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
                   ) : (
                     <div className="mt-2 text-[11px] text-white/40 italic">Aucune correspondance — élargis ta cuisine ou tente une autre photo.</div>
                   )}
-                </article>
+                </div>
               ))}
             </div>
           </div>
