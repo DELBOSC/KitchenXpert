@@ -52,7 +52,7 @@ const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 export const fetchCatalogs = createAsyncThunk<Catalog[]>('catalog/fetchCatalogs', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/catalog`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: Catalog[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -75,7 +75,11 @@ export const fetchProducts = createAsyncThunk<
     const params = new URLSearchParams(queryParams);
     const url = catalogId ? `${API_URL}/catalog/${catalogId}/products?${params.toString()}` : `${API_URL}/products?${params.toString()}`;
     const response = await fetch(url, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as {
+      data: CatalogItem[];
+      meta: { total: number; page: number; totalPages: number };
+      error?: string;
+    };
     if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };
   } catch (error) {
@@ -87,7 +91,7 @@ export const fetchProducts = createAsyncThunk<
 export const searchProducts = createAsyncThunk<CatalogItem[], string>('catalog/searchProducts', async (query, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/catalog/search?q=${encodeURIComponent(query)}`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: CatalogItem[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
@@ -99,7 +103,7 @@ export const searchProducts = createAsyncThunk<CatalogItem[], string>('catalog/s
 export const fetchCategories = createAsyncThunk<string[]>('catalog/fetchCategories', async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(`${API_URL}/products/categories`, { credentials: 'include' });
-    const data = await response.json();
+    const data = (await response.json()) as { data: string[]; error?: string };
     if (!response.ok) {throw new Error(data.error);}
     return data.data;
   } catch (error) {
