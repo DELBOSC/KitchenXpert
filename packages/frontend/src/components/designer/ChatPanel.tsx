@@ -55,7 +55,7 @@ function mapDirection(dir: string): string {
     gauche: 'left', droite: 'right', devant: 'forward', 'derrière': 'backward',
     left: 'left', right: 'right', forward: 'forward', backward: 'backward',
   };
-  return map[dir.toLowerCase()] || dir;
+  return map[dir.toLowerCase()] ?? dir;
 }
 
 function mapItemType(item: string): string {
@@ -64,7 +64,7 @@ function mapItemType(item: string): string {
     'évier': 'sink', sink: 'sink', frigo: 'fridge', fridge: 'fridge',
     four: 'oven', oven: 'oven', 'lave-vaisselle': 'dishwasher', dishwasher: 'dishwasher',
   };
-  return map[item.toLowerCase()] || item;
+  return map[item.toLowerCase()] ?? item;
 }
 
 function mapView(view: string): string {
@@ -73,7 +73,7 @@ function mapView(view: string): string {
     droite: 'right', right: 'right', gauche: 'left', left: 'left',
     perspective: '3d', '3d': '3d',
   };
-  return map[view.toLowerCase()] || view;
+  return map[view.toLowerCase()] ?? view;
 }
 
 const LOCAL_VOICE_COMMANDS: Array<{
@@ -224,7 +224,7 @@ function ToolActionCard({
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
         <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">
-          {toolLabels[tool.name] || tool.name}
+          {toolLabels[tool.name] ?? tool.name}
         </span>
       </div>
 
@@ -328,7 +328,7 @@ export default function ChatPanel({ engine, onClose, onToolAction }: ChatPanelPr
 
   // Show a brief toast confirming a voice command was executed
   const showVoiceCommandToast = useCallback((toolName: string) => {
-    const label = toolLabels[toolName] || toolName;
+    const label = toolLabels[toolName] ?? toolName;
     setVoiceCommandToast(label);
     if (voiceToastTimerRef.current) {
       clearTimeout(voiceToastTimerRef.current);

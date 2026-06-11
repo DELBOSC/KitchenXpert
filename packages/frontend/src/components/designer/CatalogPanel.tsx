@@ -140,7 +140,7 @@ function mapCategory(cat: string): CatalogCategory {
     worktop: 'worktops',
     sink: 'sinks',
   };
-  return mapping[cat] || 'base_cabinets';
+  return mapping[cat] ?? 'base_cabinets';
 }
 
 export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelProps): React.ReactElement {
@@ -284,7 +284,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
             depth: p.depth || 560,
             color: p.color || 0xD4A574,
             category: mapCategory(p.category || p.type || ''),
-            price: p.price || 0,
+            price: p.price ?? 0,
           }));
           if (mounted) {setCatalogItems(mapped);}
           return;
@@ -409,7 +409,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
         )}
         {CATEGORIES.map((category) => {
           const config = CATEGORY_CONFIG[category];
-          const items = itemsByCategory.get(category) || [];
+          const items = itemsByCategory.get(category) ?? [];
           const isExpanded = expandedCategory === category;
 
           if (searchQuery && items.length === 0) {return null;}

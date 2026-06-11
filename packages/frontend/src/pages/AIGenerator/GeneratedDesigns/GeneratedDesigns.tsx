@@ -273,7 +273,7 @@ const GeneratedDesigns: React.FC = () => {
         const json = (await response.json()) as AIGenerationResult & {
           data?: AIGenerationResult;
         };
-        const data: AIGenerationResult = json.data || json;
+        const data: AIGenerationResult = json.data ?? json;
         setResult(data);
 
         // If still processing, poll for updates
@@ -297,7 +297,7 @@ const GeneratedDesigns: React.FC = () => {
                 const pollJson = (await pollResponse.json()) as AIGenerationResult & {
                   data?: AIGenerationResult;
                 };
-                const pollData: AIGenerationResult = pollJson.data || pollJson;
+                const pollData: AIGenerationResult = pollJson.data ?? pollJson;
                 setResult(pollData);
 
                 if (pollData.status === 'completed' || pollData.status === 'failed') {
@@ -363,7 +363,7 @@ const GeneratedDesigns: React.FC = () => {
       const savedResult = (await response.json()) as SavedDesign & {
         data?: SavedDesign;
       };
-      const savedDesign: SavedDesign = savedResult.data || savedResult;
+      const savedDesign: SavedDesign = savedResult.data ?? savedResult;
       navigate(`/projects/${savedDesign.projectId}/kitchens/${savedDesign.kitchenId}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save design';
@@ -772,7 +772,7 @@ const GeneratedDesigns: React.FC = () => {
                   {/* Star Rating */}
                   <StarRating
                     designId={design.id}
-                    rating={designRatings[design.id] || 0}
+                    rating={designRatings[design.id] ?? 0}
                     onRate={handleRateDesign}
                     disabled={ratingSaving === design.id}
                   />
@@ -904,7 +904,7 @@ const GeneratedDesigns: React.FC = () => {
                 <h2 className="text-2xl font-bold text-gray-900">{selectedDesign.name}</h2>
                 <StarRating
                   designId={selectedDesign.id}
-                  rating={designRatings[selectedDesign.id] || 0}
+                  rating={designRatings[selectedDesign.id] ?? 0}
                   onRate={handleRateDesign}
                   disabled={ratingSaving === selectedDesign.id}
                 />
