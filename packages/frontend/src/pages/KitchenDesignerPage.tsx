@@ -6,27 +6,25 @@ import * as THREE from 'three';
 import { BRAND_PROFILES, getAllBrandIds, getBrandProfile, recomputeWithThickness, mmToM } from '@kitchenxpert/3d-engine';
 
 import AIAssistantPanel from '../components/designer/AIAssistantPanel';
-import PricingPanel from '../components/designer/PricingPanel';
-import PlanView2DOverlay from '../components/designer/PlanView2DOverlay';
-import CollaboratorCursors from '../components/designer/CollaboratorCursors';
-import PresenceBar from '../components/designer/PresenceBar';
-import VersionHistoryPanel from '../components/designer/VersionHistoryPanel';
-import KeyboardShortcutsModal from '../components/designer/KeyboardShortcutsModal';
-import ShoppingListPanel from '../components/designer/ShoppingListPanel';
 import BudgetBar from '../components/designer/BudgetBar';
 import CatalogPanel from '../components/designer/CatalogPanel';
 import ChatPanel from '../components/designer/ChatPanel';
-import EcoScorePanel from '../components/designer/EcoScorePanel';
-import DimensionWizard from '../components/designer/DimensionWizard';
+import CollaboratorCursors from '../components/designer/CollaboratorCursors';
 import DesignDiffOverlay from '../components/designer/DesignDiffOverlay';
-import DisplacementCostOverlay from '../components/designer/DisplacementCostOverlay';
+import DimensionWizard from '../components/designer/DimensionWizard';
+import EcoScorePanel from '../components/designer/EcoScorePanel';
 import ExportPanel from '../components/designer/ExportPanel';
+import KeyboardShortcutsModal from '../components/designer/KeyboardShortcutsModal';
+import PlanView2DOverlay from '../components/designer/PlanView2DOverlay';
+import PresenceBar from '../components/designer/PresenceBar';
+import PricingPanel from '../components/designer/PricingPanel';
 import ProductPairingsPanel from '../components/designer/ProductPairingsPanel';
 import PropertiesPanel from '../components/designer/PropertiesPanel';
 import QuoteToPartnerModal from '../components/designer/QuoteToPartnerModal';
-import StockIndicator from '../components/designer/StockIndicator';
+import ShoppingListPanel from '../components/designer/ShoppingListPanel';
 import StyleTransferModal from '../components/designer/StyleTransferModal';
 import Toolbar from '../components/designer/Toolbar';
+import VersionHistoryPanel from '../components/designer/VersionHistoryPanel';
 import LiDARScanner from '../components/scanner/LiDARScanner';
 import { useToast } from '../components/ui/Toast';
 import { useCollaboration } from '../hooks/useCollaboration';
@@ -135,7 +133,7 @@ function KitchenCreateForm(): React.ReactElement {
       }
       setLoadingProjects(false);
     };
-    fetchProjects();
+    void fetchProjects();
     return () => controller.abort();
   }, []);
 
@@ -561,7 +559,7 @@ function KitchenDesigner({
       }
       setLoading(false);
     };
-    fetchKitchen();
+    void fetchKitchen();
     return () => controller.abort();
   }, [kitchenId, navigate, toast, t]);
 
@@ -714,7 +712,7 @@ function KitchenDesigner({
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         if (hasChanges && !saving) {
-          handleSave();
+          void handleSave();
         }
         return;
       }
@@ -1166,7 +1164,7 @@ function KitchenDesigner({
           // Reload kitchen data after restore
           setLoading(true);
           const controller = new AbortController();
-          api.get<Kitchen>(API_ENDPOINTS.KITCHENS.BY_ID(kitchenId), { signal: controller.signal }).then((res) => {
+          void api.get<Kitchen>(API_ENDPOINTS.KITCHENS.BY_ID(kitchenId), { signal: controller.signal }).then((res) => {
             if (res.success && res.data) {
               const k = res.data;
               setKitchen(k);

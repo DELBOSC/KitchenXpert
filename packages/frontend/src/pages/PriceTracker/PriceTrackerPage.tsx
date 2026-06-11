@@ -329,20 +329,22 @@ export default function PriceTrackerPage(): React.ReactElement {
         return;
       }
 
-      searchTimeoutRef.current = setTimeout(async () => {
-        setIsSearching(true);
-        try {
-          const response = await api.get<Product[]>(API_ENDPOINTS.PRODUCTS.SEARCH, {
-            params: { q: query, limit: 10 },
-          });
-          if (response.success && response.data) {
-            setSearchResults(response.data);
+      searchTimeoutRef.current = setTimeout(() => {
+        void (async () => {
+          setIsSearching(true);
+          try {
+            const response = await api.get<Product[]>(API_ENDPOINTS.PRODUCTS.SEARCH, {
+              params: { q: query, limit: 10 },
+            });
+            if (response.success && response.data) {
+              setSearchResults(response.data);
+            }
+          } catch {
+            // Silently fail search
+          } finally {
+            setIsSearching(false);
           }
-        } catch {
-          // Silently fail search
-        } finally {
-          setIsSearching(false);
-        }
+        })();
       }, 300);
     },
     [],
@@ -465,7 +467,7 @@ export default function PriceTrackerPage(): React.ReactElement {
       }
     };
 
-    loadData();
+    void loadData();
 
     return () => {
       cancelled = true;
@@ -491,7 +493,7 @@ export default function PriceTrackerPage(): React.ReactElement {
 
   useEffect(() => {
     const controller = new AbortController();
-    loadAlerts();
+    void loadAlerts();
     return () => controller.abort();
   }, [loadAlerts, retryCount]);
 

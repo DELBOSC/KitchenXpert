@@ -86,7 +86,7 @@ const KitchenCreate: React.FC = () => {
       }
     };
 
-    fetchProject();
+    void fetchProject();
     return () => controller.abort();
   }, [projectId]);
 

@@ -36,7 +36,7 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
   useEffect(() => {
     if (!open) {return;}
     const controller = new AbortController();
-    (async () => {
+    void (async () => {
       try {
         const res = await fetch('/api/v1/kitchens?limit=100', {
           credentials: 'include',

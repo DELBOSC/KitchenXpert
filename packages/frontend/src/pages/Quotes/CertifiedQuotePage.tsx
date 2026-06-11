@@ -13,8 +13,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAuth } from '../../contexts/AuthContext';
-
 // ────────────────────────────── Types ──────────────────────────────
 
 interface QuoteLineItem {
@@ -109,7 +107,6 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
 
 export default function CertifiedQuotePage(): React.ReactElement {
   const { t } = useTranslation();
-  const { user } = useAuth();
 
   // State
   const [view, setView] = useState<ViewMode>('list');
@@ -167,7 +164,7 @@ export default function CertifiedQuotePage(): React.ReactElement {
   }, [retryCount]);
 
   useEffect(() => {
-    loadQuotes();
+    void loadQuotes();
     return () => {
       controllerRef.current?.abort();
     };
@@ -625,62 +622,72 @@ export default function CertifiedQuotePage(): React.ReactElement {
                 {formItems.map((item, index) => (
                   <div key={index} className="flex flex-wrap gap-3 items-end p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <div className="w-24">
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Ref.</label>
-                      <input
-                        type="text"
-                        required
-                        value={item.ref}
-                        onChange={(e) => updateItem(index, 'ref', e.target.value)}
-                        className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      />
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        <span className="block mb-1">Ref.</span>
+                        <input
+                          type="text"
+                          required
+                          value={item.ref}
+                          onChange={(e) => updateItem(index, 'ref', e.target.value)}
+                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        />
+                      </label>
                     </div>
                     <div className="flex-1 min-w-[150px]">
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Designation</label>
-                      <input
-                        type="text"
-                        required
-                        value={item.name}
-                        onChange={(e) => updateItem(index, 'name', e.target.value)}
-                        className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      />
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        <span className="block mb-1">Designation</span>
+                        <input
+                          type="text"
+                          required
+                          value={item.name}
+                          onChange={(e) => updateItem(index, 'name', e.target.value)}
+                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        />
+                      </label>
                     </div>
                     <div className="w-16">
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Qte</label>
-                      <input
-                        type="number"
-                        min={1}
-                        required
-                        value={item.qty}
-                        onChange={(e) => updateItem(index, 'qty', Number(e.target.value))}
-                        className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      />
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        <span className="block mb-1">Qte</span>
+                        <input
+                          type="number"
+                          min={1}
+                          required
+                          value={item.qty}
+                          onChange={(e) => updateItem(index, 'qty', Number(e.target.value))}
+                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        />
+                      </label>
                     </div>
                     <div className="w-28">
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">P.U. HT</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={0.01}
-                        required
-                        value={item.unitPriceHT}
-                        onChange={(e) => updateItem(index, 'unitPriceHT', Number(e.target.value))}
-                        className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      />
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        <span className="block mb-1">P.U. HT</span>
+                        <input
+                          type="number"
+                          min={0}
+                          step={0.01}
+                          required
+                          value={item.unitPriceHT}
+                          onChange={(e) => updateItem(index, 'unitPriceHT', Number(e.target.value))}
+                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        />
+                      </label>
                     </div>
                     <div className="w-24">
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">TVA %</label>
-                      <select
-                        value={item.tvaRate}
-                        onChange={(e) => updateItem(index, 'tvaRate', Number(e.target.value))}
-                        className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      >
-                        {TVA_RATES.map((r) => (
-                          <option key={r.value} value={r.value}>{r.value}%</option>
-                        ))}
-                      </select>
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                        <span className="block mb-1">TVA %</span>
+                        <select
+                          value={item.tvaRate}
+                          onChange={(e) => updateItem(index, 'tvaRate', Number(e.target.value))}
+                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        >
+                          {TVA_RATES.map((r) => (
+                            <option key={r.value} value={r.value}>{r.value}%</option>
+                          ))}
+                        </select>
+                      </label>
                     </div>
                     <div className="w-28 text-right">
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Total HT</label>
+                      <span className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Total HT</span>
                       <p className="text-sm font-medium text-gray-900 dark:text-white py-1.5">
                         {formatPrice(item.qty * item.unitPriceHT)}
                       </p>

@@ -170,7 +170,7 @@ export const getSuggestions = createAsyncThunk<GenerationOutput, { kitchenId: st
   'aiGenerator/suggestions', async ({ kitchenId, category }, { rejectWithValue }) => {
     try {
       const params = new URLSearchParams({ kitchenId, ...(category && { category }) });
-      const response = await fetch(`${API_URL}/kitchen-generator/suggestions?${params}`, { credentials: 'include' });
+      const response = await fetch(`${API_URL}/kitchen-generator/suggestions?${params.toString()}`, { credentials: 'include' });
       const data = await response.json();
       if (!response.ok) {throw new Error(data.error);}
       return data.data;

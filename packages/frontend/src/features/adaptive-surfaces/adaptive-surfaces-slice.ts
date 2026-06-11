@@ -61,7 +61,7 @@ export const fetchMaterials = createAsyncThunk<Material[], { type?: string; cate
   'adaptiveSurfaces/fetchMaterials', async (filters = {}, { rejectWithValue }) => {
     try {
       const params = new URLSearchParams(Object.fromEntries(Object.entries(filters).filter(([, v]) => v)));
-      const response = await fetch(`${API_URL}/materials?${params}`, { credentials: 'include' });
+      const response = await fetch(`${API_URL}/materials?${params.toString()}`, { credentials: 'include' });
       const data = await response.json();
       if (!response.ok) {throw new Error(data.error);}
       return data.data;
@@ -107,7 +107,7 @@ export const generateColorPalette = createAsyncThunk<string[], { baseColor: stri
 );
 
 export const applyMaterialToSurface = createAsyncThunk<Surface, { surfaceId: string; materialId: string }>(
-  'adaptiveSurfaces/applyMaterial', async ({ surfaceId, materialId }, { rejectWithValue, getState }) => {
+  'adaptiveSurfaces/applyMaterial', ({ surfaceId, materialId }, { rejectWithValue, getState }) => {
     try {
       const state = getState() as { adaptiveSurfaces: AdaptiveSurfacesState };
       const surface = state.adaptiveSurfaces.surfaces.find(s => s.id === surfaceId);

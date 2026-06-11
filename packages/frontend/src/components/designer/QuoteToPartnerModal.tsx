@@ -489,11 +489,6 @@ export default function QuoteToPartnerModal({
     }
   }, [isOpen]);
 
-  const selectedPartner = useMemo(
-    () => partners.find((p) => p.id === selectedPartnerId) || null,
-    [partners, selectedPartnerId],
-  );
-
   // Fetch partners by postal code
   const handleSearchPostalCode = useCallback(async () => {
     if (!postalCode.trim()) {return;}
@@ -575,7 +570,7 @@ export default function QuoteToPartnerModal({
     switch (step) {
       case 'summary': setStep('partner'); break;
       case 'partner': setStep('details'); break;
-      case 'details': handleSend(); break;
+      case 'details': void handleSend(); break;
       default: break;
     }
   }, [step, handleSend]);

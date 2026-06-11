@@ -290,13 +290,20 @@ interface DeleteModalProps {
 function DeleteConfirmModal({ onConfirm, onCancel, isDeleting }: DeleteModalProps): React.ReactElement {
   const { t } = useTranslation();
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape' && !isDeleting) {onCancel();}
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isDeleting, onCancel]);
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="delete-comment-modal-title"
-      onKeyDown={(e) => { if (e.key === 'Escape' && !isDeleting) {onCancel();} }}
     >
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
         <h3 id="delete-comment-modal-title" className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
@@ -375,7 +382,7 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
       }
     };
 
-    fetchComments();
+    void fetchComments();
     return () => controller.abort();
   }, [projectId, retryCount]);
 

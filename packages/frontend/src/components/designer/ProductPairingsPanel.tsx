@@ -80,7 +80,7 @@ function getMatchScoreColor(score: number): { bg: string; text: string; darkBg: 
   return { bg: 'bg-orange-100', text: 'text-orange-700', darkBg: 'dark:bg-orange-900/30', darkText: 'dark:text-orange-300' };
 }
 
-function getCategoryLabel(category: string, t: Function): string {
+function getCategoryLabel(category: string, t: (key: string, defaultValue: string) => string): string {
   const labels: Record<string, string> = {
     countertop: t('pairings.categories.countertop', 'Countertops'),
     backsplash: t('pairings.categories.backsplash', 'Backsplash'),

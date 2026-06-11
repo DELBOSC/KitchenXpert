@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
-import { useAuth } from '../../contexts/AuthContext';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -138,7 +137,6 @@ function getScoreBgColor(score: number): string {
 
 export default function WorkflowSimulator(): React.ReactElement {
   const { kitchenId: urlKitchenId } = useParams<{ kitchenId?: string }>();
-  const { user } = useAuth();
   const { t } = useTranslation();
 
   // State
@@ -153,7 +151,7 @@ export default function WorkflowSimulator(): React.ReactElement {
   const [isLoadingScenarios, setIsLoadingScenarios] = useState(true);
   const [isSimulating, setIsSimulating] = useState(false);
   const [isOptimizing, setIsOptimizing] = useState(false);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [, setIsLoadingHistory] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [showHistory, setShowHistory] = useState(false);
@@ -198,7 +196,7 @@ export default function WorkflowSimulator(): React.ReactElement {
       }
     };
 
-    loadKitchens();
+    void loadKitchens();
 
     return () => {
       mountedRef.current = false;
@@ -238,7 +236,7 @@ export default function WorkflowSimulator(): React.ReactElement {
       }
     };
 
-    loadScenarios();
+    void loadScenarios();
 
     return () => {
       mountedRef.current = false;
@@ -281,7 +279,7 @@ export default function WorkflowSimulator(): React.ReactElement {
       }
     };
 
-    loadHistory();
+    void loadHistory();
 
     return () => {
       mountedRef.current = false;

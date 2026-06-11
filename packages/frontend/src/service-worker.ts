@@ -28,9 +28,7 @@ const MODEL_CACHE = `kitchenxpert-models-${CACHE_VERSION}`;
 const ALL_CACHES = [APP_SHELL_CACHE, API_CACHE, IMAGE_CACHE, MODEL_CACHE];
 
 // Maximum sizes for caches (number of entries)
-const IMAGE_CACHE_MAX = 200;
 const API_CACHE_MAX = 100;
-const MODEL_CACHE_MAX = 50;
 
 // ────────────────────────────── App Shell Files ──────────────────────────────
 
@@ -99,7 +97,7 @@ async function cacheFirst(request: Request, cacheName: string): Promise<Response
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
       const cache = await caches.open(cacheName);
-      cache.put(request, networkResponse.clone());
+      void cache.put(request, networkResponse.clone());
     }
     return networkResponse;
   } catch {
@@ -128,10 +126,10 @@ async function networkFirst(request: Request, cacheName: string): Promise<Respon
     // Only cache successful GET responses
     if (networkResponse.ok && request.method === 'GET') {
       const cache = await caches.open(cacheName);
-      cache.put(request, networkResponse.clone());
+      void cache.put(request, networkResponse.clone());
 
       // Trim cache if over limit
-      trimCache(cacheName, API_CACHE_MAX);
+      void trimCache(cacheName, API_CACHE_MAX);
     }
 
     return networkResponse;
@@ -169,7 +167,7 @@ async function staleWhileRevalidate(request: Request, cacheName: string): Promis
   const fetchPromise = fetch(request)
     .then((networkResponse) => {
       if (networkResponse.ok) {
-        cache.put(request, networkResponse.clone());
+        void cache.put(request, networkResponse.clone());
       }
       return networkResponse;
     })
@@ -245,13 +243,13 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
 
   switch (type) {
     case 'SKIP_WAITING':
-      self.skipWaiting();
+      void self.skipWaiting();
       break;
 
     case 'CLEAR_CACHE':
       event.waitUntil(
         Promise.all(ALL_CACHES.map((name) => caches.delete(name))).then(() => {
-          notifyClients({ type: 'CACHE_CLEARED' });
+          void notifyClients({ type: 'CACHE_CLEARED' });
         })
       );
       break;
@@ -273,7 +271,7 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
     case 'GET_CACHE_STATUS':
       event.waitUntil(
         getCacheStatus().then((status) => {
-          notifyClients({ type: 'CACHE_STATUS', payload: status });
+          void notifyClients({ type: 'CACHE_STATUS', payload: status });
         })
       );
       break;

@@ -73,7 +73,7 @@ const ProjectsList: React.FC = () => {
       }
     };
 
-    fetchProjects();
+    void fetchProjects();
     return () => controller.abort();
   }, [currentPage, searchQuery, pagination.itemsPerPage, retryCount]);
 

@@ -151,6 +151,14 @@ export default function VersionHistoryPanel({
   const [diffExpanded, setDiffExpanded] = useState(true);
 
   const panelRef = useRef<HTMLDivElement>(null);
+  const saveInputRef = useRef<HTMLInputElement>(null);
+
+  // ---- Focus the save-label input when it appears ----
+  useEffect(() => {
+    if (showSaveInput) {
+      saveInputRef.current?.focus();
+    }
+  }, [showSaveInput]);
 
   // ---- Fetch versions ----
   useEffect(() => {
@@ -181,7 +189,7 @@ export default function VersionHistoryPanel({
       }
     };
 
-    fetchVersions();
+    void fetchVersions();
     return () => controller.abort();
   }, [isOpen, kitchenId, retryCount, t]);
 
@@ -365,14 +373,14 @@ export default function VersionHistoryPanel({
           {showSaveInput ? (
             <div className="space-y-2">
               <input
+                ref={saveInputRef}
                 type="text"
                 value={saveLabel}
                 onChange={(e) => setSaveLabel(e.target.value)}
                 placeholder={t('designer.versions.labelPlaceholder', 'Nom de version (optionnel)')}
                 className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-                autoFocus
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {handleSaveVersion();}
+                  if (e.key === 'Enter') {void handleSaveVersion();}
                 }}
               />
               <div className="flex gap-2">

@@ -45,13 +45,13 @@ function Claim({ emoji, label, detail, href }: ClaimProps): React.ReactElement {
       {content}
     </a>
   ) : (
-    <span
-      tabIndex={0}
+    <button
+      type="button"
       aria-describedby={`tip-${label.replace(/\s+/g, '-')}`}
       className="inline-flex items-center gap-2 rounded-full px-1 text-sm text-white/75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
     >
       {content}
-    </span>
+    </button>
   );
 
   return (

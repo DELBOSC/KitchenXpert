@@ -41,7 +41,7 @@ export const fetchProjects = createAsyncThunk<
 >('project/fetchProjects', async ({ page = 1, limit = 20, filters = {} }, { rejectWithValue }) => {
   try {
     const params = new URLSearchParams({ page: String(page), limit: String(limit), ...filters });
-    const response = await fetch(`${API_URL}/projects?${params}`, { credentials: 'include' });
+    const response = await fetch(`${API_URL}/projects?${params.toString()}`, { credentials: 'include' });
     const data = await response.json();
     if (!response.ok) {throw new Error(data.error);}
     return { data: data.data, ...data.meta };

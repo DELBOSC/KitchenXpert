@@ -453,7 +453,7 @@ export default function ChatPanel({ engine, onClose, onToolAction }: ChatPanelPr
     }
 
     const sceneContext = extractSceneContext(engine);
-    sendMessage(trimmed, sceneContext);
+    void sendMessage(trimmed, sceneContext);
     setInput('');
   }, [input, isStreaming, engine, sendMessage, executeLocalVoiceCommand]);
 
@@ -467,7 +467,7 @@ export default function ChatPanel({ engine, onClose, onToolAction }: ChatPanelPr
   const handleQuickSuggestion = useCallback((suggestion: string) => {
     if (isStreaming || !engine) {return;}
     const sceneContext = extractSceneContext(engine);
-    sendMessage(suggestion, sceneContext);
+    void sendMessage(suggestion, sceneContext);
   }, [isStreaming, engine, sendMessage]);
 
   const handleToolApply = useCallback((toolName: string, toolInput: Record<string, unknown>) => {

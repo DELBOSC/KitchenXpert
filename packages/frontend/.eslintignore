@@ -4,6 +4,13 @@
 **/*.spec.ts
 **/*.spec.tsx
 
+# Test setup dirs — excluded from tsconfig.json (see its `exclude`), so the
+# type-aware ESLint parser (parserOptions.project) cannot parse them and raises
+# a "TSConfig does not include this file" parse error. Mirror the tsconfig
+# exclude here so the two configs stay coherent.
+src/__tests__/**
+src/test/**
+
 # Build outputs
 .next
 out

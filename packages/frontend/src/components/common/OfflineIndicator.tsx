@@ -43,10 +43,10 @@ export default function OfflineIndicator(): React.ReactElement | null {
   }, []);
 
   useEffect(() => {
-    refreshPendingCount();
+    void refreshPendingCount();
 
     // Poll every 5 seconds for pending changes
-    pendingPollRef.current = setInterval(refreshPendingCount, 5000);
+    pendingPollRef.current = setInterval(() => { void refreshPendingCount(); }, 5000);
 
     return () => {
       if (pendingPollRef.current) {
@@ -105,7 +105,7 @@ export default function OfflineIndicator(): React.ReactElement | null {
 
       // Auto-sync when reconnected
       if (pendingCount > 0) {
-        performSync();
+        void performSync();
       }
 
       timerRef.current = setTimeout(() => {

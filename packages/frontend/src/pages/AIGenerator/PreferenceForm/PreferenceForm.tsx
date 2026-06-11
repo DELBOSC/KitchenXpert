@@ -104,7 +104,7 @@ const PreferenceForm: React.FC = () => {
       }
     };
 
-    fetchExistingPreferences();
+    void fetchExistingPreferences();
     return () => controller.abort();
   }, [projectId]);
 
@@ -135,7 +135,7 @@ const PreferenceForm: React.FC = () => {
       }
     };
 
-    checkQuestionnaire();
+    void checkQuestionnaire();
     return () => controller.abort();
   }, []);
 

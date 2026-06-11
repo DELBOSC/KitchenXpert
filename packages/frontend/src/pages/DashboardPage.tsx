@@ -11,7 +11,6 @@ import {
   fetchProjects,
   selectProjects,
   selectProjectLoading,
-  selectProjectError,
   type Project,
 } from '../features/project/project-slice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -33,7 +32,6 @@ export default function DashboardPage(): React.ReactElement {
 
   const projects = useAppSelector(selectProjects);
   const isLoading = useAppSelector(selectProjectLoading);
-  const reduxError = useAppSelector(selectProjectError);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 

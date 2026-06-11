@@ -372,7 +372,7 @@ const AutoDesignResults: React.FC = () => {
       }
     };
 
-    generateDesigns();
+    void generateDesigns();
     return () => controller.abort();
   }, [retryCount, locationState, t]);
 

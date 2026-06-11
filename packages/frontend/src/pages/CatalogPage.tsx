@@ -61,7 +61,7 @@ export default function CatalogPage(): React.ReactElement {
       const filters: Record<string, string> = {};
       if (search) {filters.search = search;}
       if (category) {filters.category = category;}
-      dispatch(fetchProducts({ page, limit: 20, filters }));
+      void dispatch(fetchProducts({ page, limit: 20, filters }));
     },
     [dispatch],
   );

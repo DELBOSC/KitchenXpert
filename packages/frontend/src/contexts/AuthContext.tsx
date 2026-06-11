@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
       }
     };
 
-    checkAuth();
+    void checkAuth();
     return () => controller.abort();
   }, []);
 

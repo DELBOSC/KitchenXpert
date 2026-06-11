@@ -2,7 +2,6 @@ import { ArrowRight, Check, MapPin } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LocalizedLink } from '../i18n/LocalizedLink';
 
 import { HeroA, HeroB, HeroC } from '../components/Hero/HeroVariants';
 import { HowItWorks } from '../components/Hero/HowItWorks';
@@ -17,6 +16,7 @@ import {
 } from '../components/seo/SeoHead';
 import { LiveCounter } from '../components/Trust/LiveCounter';
 import { useABVariant } from '../hooks/useABVariant';
+import { LocalizedLink } from '../i18n/LocalizedLink';
 
 export default function HomePage(): React.ReactElement {
   const { t } = useTranslation();

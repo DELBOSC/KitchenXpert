@@ -64,21 +64,6 @@ interface ComparisonData {
   summary: string;
 }
 
-interface RenovationProject {
-  id: string;
-  userId: string;
-  kitchenId?: string;
-  beforePhotos: string[];
-  detectedLayout?: ExistingKitchenAnalysis;
-  afterDesignId?: string;
-  estimatedDemoCost?: number;
-  estimatedRenoCost?: number;
-  comparisonData?: ComparisonData;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 type StepId = 1 | 2 | 3 | 4;
 
 // ----------------------------------------------------------------
@@ -87,7 +72,7 @@ type StepId = 1 | 2 | 3 | 4;
 
 function conditionLabel(
   condition: string,
-  t: Function,
+  t: (key: string, fallback: string) => string,
 ): { label: string; color: string } {
   switch (condition) {
     case 'good':
@@ -120,7 +105,7 @@ function conditionLabel(
 
 function overallConditionLabel(
   condition: string,
-  t: Function,
+  t: (key: string, fallback: string) => string,
 ): string {
   switch (condition) {
     case 'full_renovation':

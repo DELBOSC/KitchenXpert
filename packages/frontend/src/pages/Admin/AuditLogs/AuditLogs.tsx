@@ -131,7 +131,7 @@ const AuditLogs: React.FC = () => {
       }
     };
 
-    fetchLogs();
+    void fetchLogs();
     return () => controller.abort();
   }, [currentPage, categoryFilter, severityFilter, dateRange.start, dateRange.end, searchQuery, pagination.itemsPerPage]);
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '../../contexts/AuthContext';
 import { logger } from '../../services/logger';
 
 // ---------------------------------------------------------------------------
@@ -130,7 +129,6 @@ const SmartHomePlanner: React.FC = () => {
   const { kitchenId: urlKitchenId } = useParams<{ kitchenId?: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user } = useAuth();
 
   // State
   const [kitchenId, setKitchenId] = useState<string>(urlKitchenId ?? '');
@@ -178,7 +176,7 @@ const SmartHomePlanner: React.FC = () => {
       }
     };
 
-    fetchKitchens();
+    void fetchKitchens();
     return () => controller.abort();
   }, []);
 
@@ -202,7 +200,7 @@ const SmartHomePlanner: React.FC = () => {
       }
     };
 
-    fetchCatalog();
+    void fetchCatalog();
     return () => controller.abort();
   }, []);
 
@@ -236,7 +234,7 @@ const SmartHomePlanner: React.FC = () => {
       }
     };
 
-    fetchPlan();
+    void fetchPlan();
     return () => controller.abort();
   }, [kitchenId, retryCount]);
 

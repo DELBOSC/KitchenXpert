@@ -190,7 +190,7 @@ function ColorSwatch({ name, hex, size }: ColorSwatchProps): React.ReactElement 
   const radius = size === 'large' ? 12 : 10;
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(hex).then(() => {
+    void navigator.clipboard.writeText(hex).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     });
@@ -568,18 +568,18 @@ export default function StyleTransferModal({
   const primaryColor = result?.colorPalette.primary;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {onClose();}
-      }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="style-transfer-title"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        className="absolute inset-0"
+        aria-hidden="true"
+        onClick={onClose}
+      />
       <div
         ref={dialogRef}
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] flex flex-col overflow-hidden"
+        className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] flex flex-col overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="style-transfer-title"
       >
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">

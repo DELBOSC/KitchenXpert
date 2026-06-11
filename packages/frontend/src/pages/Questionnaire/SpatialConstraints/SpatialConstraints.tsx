@@ -124,7 +124,7 @@ const SpatialConstraints: React.FC = () => {
       }
     };
 
-    fetchSpatialData();
+    void fetchSpatialData();
     return () => controller.abort();
   }, []);
 
@@ -292,9 +292,9 @@ const SpatialConstraints: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Unit Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <span className="block text-sm font-medium text-gray-700 mb-2">
                 Measurement Unit
-              </label>
+              </span>
               <div className="flex gap-4">
                 <label className={`flex items-center px-4 py-2 border rounded-lg cursor-pointer ${
                   formData.unit === 'meters' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'

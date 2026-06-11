@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as THREE from 'three';
 
-import { AIAssistant, SmartPlacement, type KitchenEngine, ModelLoader, AddObjectCommand, BatchCommand, AccessibilityChecker , type ConfigurationScore, type Suggestion, type PlacedItem3D, type RoomConfig, type AutoCompleteResult, type AccessibilityScore, type AccessibilityViolation } from '@kitchenxpert/3d-engine';
+import { AIAssistant, SmartPlacement, type KitchenEngine, ModelLoader, AddObjectCommand, BatchCommand, type ConfigurationScore, type Suggestion, type PlacedItem3D, type RoomConfig, type AutoCompleteResult, type AccessibilityScore, type AccessibilityViolation } from '@kitchenxpert/3d-engine';
 
 
 

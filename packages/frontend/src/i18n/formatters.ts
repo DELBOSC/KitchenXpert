@@ -135,7 +135,6 @@ export function useUnitSystem(): UnitSystem {
 
 /** Convert centimetres to the right unit string for the active locale. */
 export function useFormatLength(): (cm: number) => string {
-  const { i18n } = useTranslation();
   const units = useUnitSystem();
   const numberFmt = useFormatNumber();
   return (cm) => {

@@ -6,7 +6,7 @@ import ErrorBoundary from './components/common/ErrorBoundary/ErrorBoundary';
 import ErrorFallback from './components/common/ErrorFallback/ErrorFallback';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { useAuth } from './contexts/AuthContext';
-import { useLanguage, SUPPORTED_LANGUAGES, type SupportedLanguage } from './i18n/LanguageProvider';
+import { useLanguage, SUPPORTED_LANGUAGES } from './i18n/LanguageProvider';
 import { localizeUnknownLangPath } from './i18n/localize-path';
 import MainLayout from './layouts/MainLayout/MainLayout';
 

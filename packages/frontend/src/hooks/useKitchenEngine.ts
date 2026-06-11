@@ -139,7 +139,7 @@ export function useKitchenEngine(
     };
 
     // Initialize async controls
-    engine.initializeControls().then(() => {
+    void engine.initializeControls().then(() => {
       // Selection callback
       engine.selection.onSelectionChanged((event: SelectionEvent) => {
         setSelectedObjects(event.objects);

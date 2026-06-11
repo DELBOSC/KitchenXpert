@@ -62,6 +62,17 @@ const ProjectDetail: React.FC = () => {
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
 
+  // Close delete modal on Escape (document-level listener keeps the dialog
+  // backdrop free of keyboard handlers — see jsx-a11y/no-noninteractive-element-interactions).
+  useEffect(() => {
+    if (!showDeleteModal) {return undefined;}
+    const onKeyDown = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape' && !isDeleting) {setShowDeleteModal(false);}
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [showDeleteModal, isDeleting]);
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -98,7 +109,7 @@ const ProjectDetail: React.FC = () => {
       }
     };
 
-    fetchProject();
+    void fetchProject();
     return () => controller.abort();
   }, [projectId, retryCount, t]);
 
@@ -443,7 +454,6 @@ const ProjectDetail: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-modal-title"
-          onKeyDown={(e) => { if (e.key === 'Escape' && !isDeleting) {setShowDeleteModal(false);} }}
         >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
             <h2 id="delete-modal-title" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('projects.deleteConfirmTitle')}</h2>

@@ -162,19 +162,21 @@ function Row({
   onChange?: (v: boolean) => void;
   disabled?: boolean;
 }): React.ReactElement {
+  const inputId = React.useId();
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-md p-2 transition hover:bg-white/5">
+    <div className="flex cursor-pointer items-start gap-3 rounded-md p-2 transition hover:bg-white/5">
       <input
+        id={inputId}
         type="checkbox"
         checked={checked}
         disabled={disabled}
         onChange={(e) => onChange?.(e.target.checked)}
         className="mt-1 h-4 w-4 rounded border-white/30 bg-white/10 accent-fuchsia-400"
       />
-      <div>
-        <div className="text-sm font-medium">{label}</div>
-        <div className="text-xs text-white/60">{desc}</div>
-      </div>
-    </label>
+      <label htmlFor={inputId} className="cursor-pointer">
+        <span className="block text-sm font-medium">{label}</span>
+        <span className="block text-xs text-white/60">{desc}</span>
+      </label>
+    </div>
   );
 }

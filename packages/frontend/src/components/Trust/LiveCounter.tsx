@@ -117,7 +117,7 @@ export function LiveCounter({
       } catch {
         // Silent — pas de toast pour un compteur marketing.
       } finally {
-        if (mounted) {timer = setTimeout(fetchStats, POLL_MS);}
+        if (mounted) {timer = setTimeout(() => { void fetchStats(); }, POLL_MS);}
       }
     };
 

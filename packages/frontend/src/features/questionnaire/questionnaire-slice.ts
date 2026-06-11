@@ -64,7 +64,7 @@ export interface QuestionnaireState {
   };
 
   // Analysis Results
-  analysisResults: unknown | null;
+  analysisResults: unknown;
   analysisStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   analysisError: string | null;
 

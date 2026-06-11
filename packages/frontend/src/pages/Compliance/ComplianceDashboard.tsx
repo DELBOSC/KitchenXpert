@@ -70,7 +70,7 @@ interface ComplianceHistoryItem {
 // Severity badge helpers
 // ----------------------------------------------------------------
 
-function severityBadge(severity: string, t: Function): { label: string; className: string } {
+function severityBadge(severity: string, t: (key: string, fallback: string) => string): { label: string; className: string } {
   switch (severity) {
     case 'error':
       return {
@@ -157,7 +157,7 @@ export default function ComplianceDashboard(): React.ReactElement {
     const controller = new AbortController();
     setLoadingKitchens(true);
 
-    (async () => {
+    void (async () => {
       try {
         const response = await api.get<KitchenSummary[]>(API_ENDPOINTS.KITCHENS.BASE, {
           signal: controller.signal,
@@ -185,7 +185,7 @@ export default function ComplianceDashboard(): React.ReactElement {
 
     const controller = new AbortController();
 
-    (async () => {
+    void (async () => {
       try {
         const response = await api.get<ComplianceHistoryItem[]>(
           API_ENDPOINTS.COMPLIANCE.HISTORY(selectedKitchenId),

@@ -122,7 +122,7 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchInstaller(controller);
+    void fetchInstaller(controller);
     return () => controller.abort();
   }, [fetchInstaller, retryCount]);
 
@@ -147,7 +147,7 @@ export default function InstallerProfilePage(): React.ReactElement {
   useEffect(() => {
     if (showRequestModal) {
       const controller = new AbortController();
-      fetchKitchens(controller);
+      void fetchKitchens(controller);
       return () => controller.abort();
     }
     return undefined;

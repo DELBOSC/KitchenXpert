@@ -16,7 +16,7 @@ export default function PrivacySettings(): React.ReactElement {
 
   useEffect(() => {
     const controller = new AbortController();
-    (async () => {
+    void (async () => {
       try {
         const res = await fetch('/api/v1/me/gdpr/summary', { credentials: 'include', signal: controller.signal });
         if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
