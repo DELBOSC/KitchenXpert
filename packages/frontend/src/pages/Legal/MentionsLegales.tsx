@@ -16,8 +16,8 @@ export default function MentionsLegales(): React.ReactElement {
   return (
     <LegalLayout title="Mentions légales">
       <p className="text-sm text-white/50">
-        Conformes à l'article 6-III de la loi n° 2004-575 du 21 juin 2004
-        pour la confiance dans l'économie numérique (LCEN).
+        Conformes à l&apos;article 6-III de la loi n° 2004-575 du 21 juin 2004
+        pour la confiance dans l&apos;économie numérique (LCEN).
       </p>
 
       {/* ─────────────────────────────────────────────────────────── */}
@@ -56,11 +56,11 @@ export default function MentionsLegales(): React.ReactElement {
       {/* ─────────────────────────────────────────────────────────── */}
       <h2>4. Propriété intellectuelle</h2>
       <p>
-        L'ensemble des éléments constituant le site {editor.brandName} —
+        L&apos;ensemble des éléments constituant le site {editor.brandName} —
         textes, graphismes, logiciels, photographies, vidéos, plans 3D
         générés par notre moteur, marques, logos, dénominations
         commerciales — est la propriété exclusive de {editor.socialName}
-        ou fait l'objet d'une concession contractuelle de la part de ses
+        ou fait l&apos;objet d&apos;une concession contractuelle de la part de ses
         partenaires (notamment IKEA, Schmidt, Bosch, Leroy Merlin,
         Castorama pour leurs catalogues et marques respectives).
       </p>
@@ -68,7 +68,7 @@ export default function MentionsLegales(): React.ReactElement {
         Toute reproduction, représentation, modification, publication,
         adaptation ou exploitation, totale ou partielle, des éléments du
         site, quel que soit le moyen ou le procédé utilisé, est interdite
-        sans l'autorisation écrite préalable de {editor.socialName} —
+        sans l&apos;autorisation écrite préalable de {editor.socialName} —
         sauf exceptions limitativement prévues par les articles L122-5 et
         L122-6-1 du Code de la propriété intellectuelle (courte citation,
         copie privée, etc.).
@@ -76,7 +76,7 @@ export default function MentionsLegales(): React.ReactElement {
       <p>
         La marque <strong>{editor.brandName}</strong> et le logo associé
         sont des marques déposées. Toute utilisation non autorisée
-        constitue une contrefaçon sanctionnée par l'article L335-2 du
+        constitue une contrefaçon sanctionnée par l&apos;article L335-2 du
         Code de la propriété intellectuelle.
       </p>
 
@@ -107,7 +107,7 @@ export default function MentionsLegales(): React.ReactElement {
       <p>
         Le consommateur peut également recourir à la plateforme
         européenne de règlement en ligne des litiges (RLL) accessible à
-        l'adresse&nbsp;:{' '}
+        l&apos;adresse&nbsp;:{' '}
         <a
           href="https://ec.europa.eu/consumers/odr"
           target="_blank"
@@ -122,15 +122,15 @@ export default function MentionsLegales(): React.ReactElement {
       <h2>6. Loi applicable et juridiction compétente</h2>
       <p>
         Les présentes mentions légales sont régies par la loi française.
-        Tout litige relatif à l'utilisation du site fera l'objet d'une
+        Tout litige relatif à l&apos;utilisation du site fera l&apos;objet d&apos;une
         recherche de solution amiable préalable. À défaut, et sous
         réserve des dispositions légales plus protectrices applicables au
         consommateur, le litige sera porté devant les tribunaux français
-        du ressort du siège social de l'éditeur, soit le tribunal
+        du ressort du siège social de l&apos;éditeur, soit le tribunal
         compétent de {editor.address.city || mediator.address.city}.
       </p>
       <p>
-        Le consommateur est libre de saisir, selon son choix, l'un des
+        Le consommateur est libre de saisir, selon son choix, l&apos;un des
         tribunaux territorialement compétents en vertu du Code de
         procédure civile, ou la juridiction du lieu où il demeurait au
         moment de la conclusion du contrat ou de la survenance du fait
@@ -140,12 +140,12 @@ export default function MentionsLegales(): React.ReactElement {
       {/* ─────────────────────────────────────────────────────────── */}
       <h2>7. Signaler un contenu illicite</h2>
       <p>
-        Conformément à l'article 6-I-5 de la LCEN, tout signalement de
-        contenu illicite, violation des droits d'auteur ou usage abusif
+        Conformément à l&apos;article 6-I-5 de la LCEN, tout signalement de
+        contenu illicite, violation des droits d&apos;auteur ou usage abusif
         peut être adressé à&nbsp;:{' '}
         <a href="mailto:abuse@kitchenxpert.com">abuse@kitchenxpert.com</a>.
-        Le signalement doit comporter la date, l'identité du déclarant,
-        l'adresse URL du contenu litigieux et la motivation juridique
+        Le signalement doit comporter la date, l&apos;identité du déclarant,
+        l&apos;adresse URL du contenu litigieux et la motivation juridique
         précise.
       </p>
     </LegalLayout>

@@ -74,7 +74,7 @@ export default function CookieConsent(): React.ReactElement | null {
         </h2>
         <p id="cookie-consent-desc" className="mt-2 text-sm text-white/70">
           Nous utilisons des cookies strictement nécessaires pour faire fonctionner le site.
-          Avec votre accord, nous utilisons aussi des cookies de mesure d'audience et marketing.
+          Avec votre accord, nous utilisons aussi des cookies de mesure d&apos;audience et marketing.
           Vous pouvez accepter, refuser ou personnaliser à tout moment.{' '}
           <a href="/legal/cookies" className="underline underline-offset-2 hover:text-white">
             En savoir plus

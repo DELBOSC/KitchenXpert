@@ -36,7 +36,7 @@ export default function Privacy(): React.ReactElement {
       {/* ─────────────────────────────────────────────────────────── */}
       <h2>1. Responsable du traitement</h2>
       <p>
-        Le responsable du traitement, au sens de l'article 4(7) du RGPD,
+        Le responsable du traitement, au sens de l&apos;article 4(7) du RGPD,
         est&nbsp;:
       </p>
       <p>
@@ -46,7 +46,7 @@ export default function Privacy(): React.ReactElement {
         Email&nbsp;: <a href={`mailto:${editor.email}`}>{editor.email}</a>
       </p>
       <p>
-        Conformément à l'article 37 du RGPD, un Délégué à la Protection
+        Conformément à l&apos;article 37 du RGPD, un Délégué à la Protection
         des Données (DPO) est désigné pour traiter toutes les questions
         relatives à la protection des données&nbsp;:{' '}
         <a href={`mailto:${editor.dpoEmail}`}>{editor.dpoEmail}</a>.
@@ -75,22 +75,22 @@ export default function Privacy(): React.ReactElement {
 
       <h3>2.3 Paiement et facturation</h3>
       <ul>
-        <li><strong>Données collectées</strong>&nbsp;: nom du titulaire, email, montant, devise, identifiant Stripe (le numéro de carte est <em>tokenisé</em> par Stripe et n'est jamais stocké chez nous).</li>
+        <li><strong>Données collectées</strong>&nbsp;: nom du titulaire, email, montant, devise, identifiant Stripe (le numéro de carte est <em>tokenisé</em> par Stripe et n&apos;est jamais stocké chez nous).</li>
         <li><strong>Finalité</strong>&nbsp;: traitement des paiements, lutte contre la fraude (DSP2/SCA), édition des factures.</li>
         <li><strong>Base légale</strong>&nbsp;: exécution du contrat (Art. 6-1-b) + obligation légale (Art. 6-1-c) pour la conservation comptable.</li>
       </ul>
 
       <h3>2.4 Communications transactionnelles</h3>
       <ul>
-        <li><strong>Données collectées</strong>&nbsp;: email, statut d'ouverture, statut de livraison.</li>
+        <li><strong>Données collectées</strong>&nbsp;: email, statut d&apos;ouverture, statut de livraison.</li>
         <li><strong>Finalité</strong>&nbsp;: envoi des emails de vérification, réinitialisation de mot de passe, notifications de devis et confirmations de commande.</li>
         <li><strong>Base légale</strong>&nbsp;: exécution du contrat (Art. 6-1-b RGPD).</li>
       </ul>
 
-      <h3>2.5 Mesure d'audience et amélioration du service</h3>
+      <h3>2.5 Mesure d&apos;audience et amélioration du service</h3>
       <ul>
         <li><strong>Données collectées</strong>&nbsp;: pages visitées, durée de session, parcours, statistiques agrégées anonymisées.</li>
-        <li><strong>Finalité</strong>&nbsp;: comprendre l'usage et améliorer l'ergonomie.</li>
+        <li><strong>Finalité</strong>&nbsp;: comprendre l&apos;usage et améliorer l&apos;ergonomie.</li>
         <li><strong>Base légale</strong>&nbsp;: <strong>consentement</strong> (Art. 6-1-a RGPD), recueilli via la bannière cookies. Vous pouvez retirer ce consentement à tout moment depuis <a href="/legal/cookies">la page cookies</a>.</li>
       </ul>
 
@@ -98,20 +98,20 @@ export default function Privacy(): React.ReactElement {
       <ul>
         <li><strong>Données collectées</strong>&nbsp;: email, prénom, préférences déclarées.</li>
         <li><strong>Finalité</strong>&nbsp;: newsletters, informations sur les nouveautés, offres ciblées.</li>
-        <li><strong>Base légale</strong>&nbsp;: <strong>consentement</strong> (Art. 6-1-a RGPD), <em>opt-in</em> explicite à l'inscription. Désinscription possible à tout moment via le lien présent dans chaque email ou depuis votre <a href="/profile">profil</a>.</li>
+        <li><strong>Base légale</strong>&nbsp;: <strong>consentement</strong> (Art. 6-1-a RGPD), <em>opt-in</em> explicite à l&apos;inscription. Désinscription possible à tout moment via le lien présent dans chaque email ou depuis votre <a href="/profile">profil</a>.</li>
       </ul>
 
-      <h3>2.7 Génération d'images et assistant IA (sur demande)</h3>
+      <h3>2.7 Génération d&apos;images et assistant IA (sur demande)</h3>
       <ul>
         <li><strong>Données collectées</strong>&nbsp;: descriptions textuelles fournies, identifiants pseudonymisés des cuisines.</li>
-        <li><strong>Finalité</strong>&nbsp;: production de rendus photoréalistes via Google Gemini, conversation avec l'assistant Claude.</li>
+        <li><strong>Finalité</strong>&nbsp;: production de rendus photoréalistes via Google Gemini, conversation avec l&apos;assistant Claude.</li>
         <li><strong>Base légale</strong>&nbsp;: <strong>consentement</strong> exprès recueilli au moment où la fonctionnalité est utilisée pour la première fois. Les données ne sont pas utilisées pour entraîner les modèles tiers.</li>
       </ul>
 
-      <h3>2.8 Sécurité et journaux d'audit</h3>
+      <h3>2.8 Sécurité et journaux d&apos;audit</h3>
       <ul>
         <li><strong>Données collectées</strong>&nbsp;: actions sensibles (connexion, changement de mot de passe, suppression de compte, paiement), IP, user-agent, horodatage.</li>
-        <li><strong>Finalité</strong>&nbsp;: sécurité, prévention de la fraude, preuve en cas de litige, exigence d'audit (Stripe, RGPD).</li>
+        <li><strong>Finalité</strong>&nbsp;: sécurité, prévention de la fraude, preuve en cas de litige, exigence d&apos;audit (Stripe, RGPD).</li>
         <li><strong>Base légale</strong>&nbsp;: intérêt légitime (Art. 6-1-f RGPD).</li>
       </ul>
 
@@ -120,7 +120,7 @@ export default function Privacy(): React.ReactElement {
       <p>
         Les données ne sont conservées que pendant la durée strictement
         nécessaire aux finalités pour lesquelles elles sont traitées,
-        conformément à l'article 5(1)(e) du RGPD&nbsp;:
+        conformément à l&apos;article 5(1)(e) du RGPD&nbsp;:
       </p>
       <table className="w-full border-collapse text-sm">
         <thead>
@@ -132,9 +132,9 @@ export default function Privacy(): React.ReactElement {
         <tbody className="[&>tr]:border-b [&>tr]:border-white/5">
           <tr><td className="py-2 pr-4">Compte utilisateur (actif)</td><td className="py-2">Toute la durée du contrat</td></tr>
           <tr><td className="py-2 pr-4">Compte utilisateur (inactif)</td><td className="py-2">3 ans après la dernière activité, puis suppression ou anonymisation</td></tr>
-          <tr><td className="py-2 pr-4">Compte supprimé (droit à l'oubli)</td><td className="py-2">Anonymisation immédiate, purge complète à J+30</td></tr>
+          <tr><td className="py-2 pr-4">Compte supprimé (droit à l&apos;oubli)</td><td className="py-2">Anonymisation immédiate, purge complète à J+30</td></tr>
           <tr><td className="py-2 pr-4">Factures et données comptables</td><td className="py-2">10 ans (Art. L123-22 Code de commerce)</td></tr>
-          <tr><td className="py-2 pr-4">Logs d'audit (sécurité)</td><td className="py-2">1 an</td></tr>
+          <tr><td className="py-2 pr-4">Logs d&apos;audit (sécurité)</td><td className="py-2">1 an</td></tr>
           <tr><td className="py-2 pr-4">Tokens de session JWT</td><td className="py-2">15 minutes (access) / 7 jours (refresh)</td></tr>
           <tr><td className="py-2 pr-4">Cookies analytiques</td><td className="py-2">13 mois maximum (recommandation CNIL)</td></tr>
           <tr><td className="py-2 pr-4">Demande de renseignement (sans suite)</td><td className="py-2">3 ans à compter du dernier contact</td></tr>
@@ -147,7 +147,7 @@ export default function Privacy(): React.ReactElement {
       <p>
         Les données sont exclusivement traitées par le personnel habilité
         de {editor.socialName} et par les sous-traitants suivants,
-        encadrés par un contrat conforme à l'article 28 du RGPD&nbsp;:
+        encadrés par un contrat conforme à l&apos;article 28 du RGPD&nbsp;:
       </p>
       <table className="w-full border-collapse text-sm">
         <thead>
@@ -177,12 +177,12 @@ export default function Privacy(): React.ReactElement {
       {/* ─────────────────────────────────────────────────────────── */}
       <h2>5. Transferts hors Union européenne</h2>
       <p>
-        Lorsqu'un transfert vers un pays tiers est nécessaire (par
-        exemple vers les États-Unis pour notre fournisseur d'emails ou
-        notre fournisseur de suivi d'erreurs), le transfert est encadré
+        Lorsqu&apos;un transfert vers un pays tiers est nécessaire (par
+        exemple vers les États-Unis pour notre fournisseur d&apos;emails ou
+        notre fournisseur de suivi d&apos;erreurs), le transfert est encadré
         par les <strong>Clauses Contractuelles Types (CCT)</strong> adoptées
-        par la Commission européenne dans sa décision d'exécution
-        2021/914 du 4 juin 2021, conformément à l'article 46(2)(c) du
+        par la Commission européenne dans sa décision d&apos;exécution
+        2021/914 du 4 juin 2021, conformément à l&apos;article 46(2)(c) du
         RGPD.
       </p>
       <p>
@@ -197,16 +197,16 @@ export default function Privacy(): React.ReactElement {
       <h2>6. Vos droits</h2>
       <p>
         Conformément aux articles 15 à 22 du RGPD, vous disposez des
-        droits suivants à l'égard des données vous concernant&nbsp;:
+        droits suivants à l&apos;égard des données vous concernant&nbsp;:
       </p>
       <ul>
-        <li><strong>Droit d'accès</strong> (Art. 15) — obtenir la
+        <li><strong>Droit d&apos;accès</strong> (Art. 15) — obtenir la
           confirmation que vos données sont traitées et en recevoir une
           copie.</li>
         <li><strong>Droit de rectification</strong> (Art. 16) — corriger
           des données inexactes ou compléter des données incomplètes.</li>
-        <li><strong>Droit à l'effacement</strong> (Art. 17) — dit «&nbsp;droit
-          à l'oubli&nbsp;», sous réserve des exceptions prévues
+        <li><strong>Droit à l&apos;effacement</strong> (Art. 17) — dit «&nbsp;droit
+          à l&apos;oubli&nbsp;», sous réserve des exceptions prévues
           (obligations légales notamment comptables).</li>
         <li><strong>Droit à la limitation</strong> (Art. 18) — geler le
           traitement dans certaines conditions.</li>
@@ -214,8 +214,8 @@ export default function Privacy(): React.ReactElement {
           vos données dans un format structuré, lisible par machine
           (JSON), et les transmettre à un autre responsable de
           traitement.</li>
-        <li><strong>Droit d'opposition</strong> (Art. 21) — vous opposer
-          à un traitement fondé sur l'intérêt légitime ou à la
+        <li><strong>Droit d&apos;opposition</strong> (Art. 21) — vous opposer
+          à un traitement fondé sur l&apos;intérêt légitime ou à la
           prospection commerciale.</li>
         <li><strong>Droit de retirer votre consentement</strong> (Art. 7-3)
           — à tout moment, sans que cela compromette la licéité du
@@ -229,14 +229,14 @@ export default function Privacy(): React.ReactElement {
         <a href="/legal/privacy-settings">Mes données</a> (export en un
         clic, suppression définitive) ou écrire au DPO à{' '}
         <a href={`mailto:${editor.dpoEmail}`}>{editor.dpoEmail}</a>.
-        Nous nous engageons à répondre dans un délai d'<strong>un (1)
+        Nous nous engageons à répondre dans un délai d&apos;<strong>un (1)
         mois</strong>, prolongeable de deux (2) mois en cas de demande
         complexe (Art. 12-3 RGPD).
       </p>
       <p>
-        Une pièce d'identité pourra vous être demandée en cas de doute
-        raisonnable sur l'identité du demandeur (Art. 12-6 RGPD), afin
-        d'éviter toute usurpation. Cette pièce sera supprimée
+        Une pièce d&apos;identité pourra vous être demandée en cas de doute
+        raisonnable sur l&apos;identité du demandeur (Art. 12-6 RGPD), afin
+        d&apos;éviter toute usurpation. Cette pièce sera supprimée
         immédiatement après vérification.
       </p>
 
@@ -244,7 +244,7 @@ export default function Privacy(): React.ReactElement {
       <p>
         Si vous estimez, après nous avoir contactés, que vos droits ne
         sont pas respectés, vous pouvez introduire une réclamation auprès
-        de la Commission Nationale de l'Informatique et des Libertés
+        de la Commission Nationale de l&apos;Informatique et des Libertés
         (CNIL)&nbsp;:
       </p>
       <p>
@@ -266,22 +266,22 @@ export default function Privacy(): React.ReactElement {
       <p>
         Notre algorithme de génération de cuisines produit des
         suggestions de configuration à partir des préférences déclarées
-        et des dimensions de la pièce. Ces décisions <strong>n'ont pas
-        d'effet juridique sur vous</strong> et restent toujours révisables
+        et des dimensions de la pièce. Ces décisions <strong>n&apos;ont pas
+        d&apos;effet juridique sur vous</strong> et restent toujours révisables
         manuellement&nbsp;: vous pouvez modifier, supprimer ou ignorer
         chaque suggestion sans aucune conséquence.
       </p>
       <p>
-        Vos données ne sont jamais utilisées pour l'entraînement des
+        Vos données ne sont jamais utilisées pour l&apos;entraînement des
         modèles de Google Gemini, Anthropic Claude ou de tout autre
         modèle tiers, sauf consentement explicite et révocable de votre
-        part. À ce jour, ce consentement n'est jamais demandé.
+        part. À ce jour, ce consentement n&apos;est jamais demandé.
       </p>
 
       {/* ─────────────────────────────────────────────────────────── */}
       <h2>8. Sécurité</h2>
       <p>
-        Conformément à l'article 32 du RGPD, nous mettons en œuvre les
+        Conformément à l&apos;article 32 du RGPD, nous mettons en œuvre les
         mesures techniques et organisationnelles suivantes pour protéger
         vos données&nbsp;:
       </p>
@@ -297,7 +297,7 @@ export default function Privacy(): React.ReactElement {
         <li>Tests de pénétration et audits de sécurité réguliers.</li>
       </ul>
       <p>
-        En cas de violation de données susceptible d'engendrer un risque
+        En cas de violation de données susceptible d&apos;engendrer un risque
         pour les droits et libertés des personnes, nous notifierons la
         CNIL dans un délai de 72 heures (Art. 33 RGPD) et informerons les
         personnes concernées dans les meilleurs délais lorsque le risque
@@ -307,8 +307,8 @@ export default function Privacy(): React.ReactElement {
       {/* ─────────────────────────────────────────────────────────── */}
       <h2>9. Cookies</h2>
       <p>
-        L'utilisation de cookies sur le Site fait l'objet d'une
-        information détaillée et d'un recueil de consentement conformes
+        L&apos;utilisation de cookies sur le Site fait l&apos;objet d&apos;une
+        information détaillée et d&apos;un recueil de consentement conformes
         aux lignes directrices de la CNIL de septembre 2020. Voir notre
         page dédiée <a href="/legal/cookies">Politique cookies</a>.
       </p>
@@ -319,8 +319,8 @@ export default function Privacy(): React.ReactElement {
         La présente Politique de confidentialité peut être mise à jour
         pour refléter une évolution réglementaire ou un changement
         substantiel dans nos traitements. Toute modification importante
-        vous sera notifiée par email avant sa prise d'effet, ou
-        directement dans l'application au prochain accès.
+        vous sera notifiée par email avant sa prise d&apos;effet, ou
+        directement dans l&apos;application au prochain accès.
       </p>
     </LegalLayout>
   );

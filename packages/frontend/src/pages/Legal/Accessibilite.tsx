@@ -72,7 +72,7 @@ export default function Accessibilite(): React.ReactElement {
       <p>
         Le site <strong>{LEGAL.editor.brandName}</strong> ({LEGAL.editor.socialName})
         est en <strong>conformité partielle</strong> avec le Référentiel
-        général d'amélioration de l'accessibilité (RGAA) version 4.1.2,
+        général d&apos;amélioration de l&apos;accessibilité (RGAA) version 4.1.2,
         en raison des non-conformités énumérées ci-dessous.
       </p>
 
@@ -103,7 +103,7 @@ export default function Accessibilite(): React.ReactElement {
 
       <h2>Résultats des tests</h2>
       <p>
-        L'audit a été conduit par notre équipe interne avec les outils
+        L&apos;audit a été conduit par notre équipe interne avec les outils
         suivants&nbsp;:
       </p>
       <ul>
@@ -134,7 +134,7 @@ export default function Accessibilite(): React.ReactElement {
       <h3>Dérogations pour charge disproportionnée</h3>
       <p>Aucune.</p>
 
-      <h3>Contenus non soumis à l'obligation d'accessibilité</h3>
+      <h3>Contenus non soumis à l&apos;obligation d&apos;accessibilité</h3>
       <p>
         Les rendus 3D générés par notre moteur WebGL (canvas) sont par
         nature non textuels. Une vue alternative en liste structurée est
@@ -148,9 +148,9 @@ export default function Accessibilite(): React.ReactElement {
         WAI-ARIA, CSS, JavaScript (React), WebGL (Three.js).
       </p>
 
-      <h2>Retour d'information et contact</h2>
+      <h2>Retour d&apos;information et contact</h2>
       <p>
-        Si vous n'arrivez pas à accéder à un contenu ou à un service,
+        Si vous n&apos;arrivez pas à accéder à un contenu ou à un service,
         vous pouvez nous contacter pour être orienté vers une alternative
         accessible ou obtenir le contenu sous une autre forme&nbsp;:
       </p>
@@ -170,8 +170,8 @@ export default function Accessibilite(): React.ReactElement {
       <p>
         Cette procédure est à utiliser dans le cas suivant&nbsp;: vous
         avez signalé au responsable du site internet un défaut
-        d'accessibilité qui vous empêche d'accéder à un contenu ou à un
-        service du portail et vous n'avez pas obtenu de réponse
+        d&apos;accessibilité qui vous empêche d&apos;accéder à un contenu ou à un
+        service du portail et vous n&apos;avez pas obtenu de réponse
         satisfaisante.
       </p>
       <ul>

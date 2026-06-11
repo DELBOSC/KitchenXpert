@@ -559,7 +559,7 @@ function GuideStep({ onStart }: { onStart: () => void }): React.ReactElement {
         onClick={onStart}
         className="w-full py-2.5 px-4 text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors inline-flex items-center justify-center gap-2"
       >
-        Commencer l'upload <ArrowRight className="w-4 h-4" aria-hidden="true" />
+        Commencer l&apos;upload <ArrowRight className="w-4 h-4" aria-hidden="true" />
       </button>
     </div>
   );
@@ -922,7 +922,7 @@ export default function PhotoScanPanel({
         {step === 'upload' && (
           <div className="space-y-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Deposez 1 a 3 photos de votre piece. L'IA detectera les murs, ouvertures, prises et estimera les dimensions.
+              Deposez 1 a 3 photos de votre piece. L&apos;IA detectera les murs, ouvertures, prises et estimera les dimensions.
             </p>
 
             {/* Drop Zone */}
@@ -982,7 +982,7 @@ export default function PhotoScanPanel({
                   </p>
                   {files.length < 3 && (
                     <p className="text-xs text-blue-600 dark:text-blue-400">
-                      Cliquez ou deposez pour ajouter d'autres photos
+                      Cliquez ou deposez pour ajouter d&apos;autres photos
                     </p>
                   )}
                 </div>
@@ -1008,7 +1008,7 @@ export default function PhotoScanPanel({
                     ou cliquez pour parcourir
                   </p>
                   <p className="text-[10px] text-gray-400 dark:text-gray-500">
-                    JPEG, PNG, WebP — Max 10 Mo chacune, jusqu'a 3 photos
+                    JPEG, PNG, WebP — Max 10 Mo chacune, jusqu&apos;a 3 photos
                   </p>
                 </div>
               )}
@@ -1134,7 +1134,7 @@ export default function PhotoScanPanel({
                 ))}
               </div>
               <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 text-center">
-                Valeurs pre-remplies par l'IA — modifiables avant application
+                Valeurs pre-remplies par l&apos;IA — modifiables avant application
               </p>
             </div>
 

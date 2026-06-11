@@ -215,7 +215,7 @@ export default function CommentCaMarchePage(): React.ReactElement {
       <section className="border-t border-white/5 py-20 text-center">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="text-3xl font-semibold tracking-tight">Prêt à dessiner ?</h2>
-          <p className="mt-4 text-white/60">Sans compte, sans CB. Votre projet reste en local jusqu'à ce que vous décidiez de l'enregistrer.</p>
+          <p className="mt-4 text-white/60">Sans compte, sans CB. Votre projet reste en local jusqu&apos;à ce que vous décidiez de l&apos;enregistrer.</p>
           <Link
             to="/designer/sandbox?utm_source=how&utm_medium=cta&utm_campaign=footer"
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition hover:bg-white/90"

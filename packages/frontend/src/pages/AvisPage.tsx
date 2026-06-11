@@ -47,7 +47,7 @@ export default function AvisPage(): React.ReactElement {
           Avis clients vérifiés
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-white/60">
-          Chaque avis est publié sur une plateforme tierce indépendante. Aucun avis n'est édité ou supprimé par KitchenXpert.
+          Chaque avis est publié sur une plateforme tierce indépendante. Aucun avis n&apos;est édité ou supprimé par KitchenXpert.
         </p>
 
         {agg && (

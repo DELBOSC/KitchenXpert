@@ -76,7 +76,7 @@ export function ReviewsSection({
           id="reviews-heading"
           className="bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl"
         >
-          Ce qu'en pensent les utilisateurs
+          Ce qu&apos;en pensent les utilisateurs
         </h2>
 
         <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2">
@@ -112,7 +112,7 @@ function ReviewsPlaceholder({ className = '' }: { className?: string }): React.R
         Lancement 2026 — les premiers avis arrivent
       </h2>
       <p className="mx-auto mt-4 max-w-xl text-base text-white/65">
-        KitchenXpert vient d'ouvrir. Si vous testez le designer, votre retour est précieux —
+        KitchenXpert vient d&apos;ouvrir. Si vous testez le designer, votre retour est précieux —
         et il vous donne accès au badge <strong className="text-white">Founding Reviewer</strong> sur votre profil.
       </p>
       <Link

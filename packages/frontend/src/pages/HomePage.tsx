@@ -247,7 +247,7 @@ function Testimonial(): React.ReactElement {
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500" />
         <div className="text-left">
           <div className="text-sm font-semibold">Camille Laroche</div>
-          <div className="text-xs text-white/50">Architecte d'intérieur · Studio Maison</div>
+          <div className="text-xs text-white/50">Architecte d&apos;intérieur · Studio Maison</div>
         </div>
       </div>
     </section>
@@ -320,7 +320,7 @@ function Footer(): React.ReactElement {
       </div>
       <div className="mx-auto mt-10 flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
         <p>© {new Date().getFullYear()} KitchenXpert SAS — Tous droits réservés.</p>
-        <p>Made in France <MapPin className="inline-block w-4 h-4 align-text-bottom" aria-hidden="true" /> · Hébergé dans l'UE</p>
+        <p>Made in France <MapPin className="inline-block w-4 h-4 align-text-bottom" aria-hidden="true" /> · Hébergé dans l&apos;UE</p>
       </div>
     </footer>
   );

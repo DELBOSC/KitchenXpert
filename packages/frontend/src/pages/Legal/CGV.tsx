@@ -26,56 +26,56 @@ export default function CGV(): React.ReactElement {
     <LegalLayout title="Conditions Générales de Vente">
       <p className="text-sm text-white/50">
         Version en vigueur depuis le {fmtDate}. Applicables à tout
-        consommateur au sens de l'article liminaire du Code de la
+        consommateur au sens de l&apos;article liminaire du Code de la
         consommation.
       </p>
 
-      <h2>Article 1 — Objet et champ d'application</h2>
+      <h2>Article 1 — Objet et champ d&apos;application</h2>
       <p>
         Les présentes Conditions Générales de Vente (ci-après «&nbsp;CGV&nbsp;»)
-        régissent, sans restriction ni réserve, l'ensemble des
+        régissent, sans restriction ni réserve, l&apos;ensemble des
         prestations de service proposées par <strong>{editor.socialName}</strong>{' '}
-        (ci-après «&nbsp;{editor.brandName}&nbsp;» ou «&nbsp;l'Éditeur&nbsp;») sur le site
-        accessible à l'adresse{' '}
+        (ci-après «&nbsp;{editor.brandName}&nbsp;» ou «&nbsp;l&apos;Éditeur&nbsp;») sur le site
+        accessible à l&apos;adresse{' '}
         <a href="https://www.kitchenxpert.com">www.kitchenxpert.com</a>{' '}
         (ci-après «&nbsp;le Site&nbsp;»).
       </p>
       <p>
         Les services concernent&nbsp;: la conception assistée par ordinateur
         de cuisines en 3D, la génération automatisée de configurations
-        par intelligence artificielle, l'accès aux catalogues de nos
-        partenaires fabricants, l'émission de devis fournisseurs, la mise
-        en relation avec des installateurs et la souscription d'un
+        par intelligence artificielle, l&apos;accès aux catalogues de nos
+        partenaires fabricants, l&apos;émission de devis fournisseurs, la mise
+        en relation avec des installateurs et la souscription d&apos;un
         abonnement payant.
       </p>
       <p>
-        Les présentes CGV s'appliquent exclusivement aux ventes conclues
+        Les présentes CGV s&apos;appliquent exclusivement aux ventes conclues
         à distance, en ligne, avec des consommateurs résidant en France
-        métropolitaine, dans les départements et régions d'outre-mer ou
-        dans un État membre de l'Union européenne. Toute commande passée
-        sur le Site implique l'acceptation pleine et entière des CGV.
+        métropolitaine, dans les départements et régions d&apos;outre-mer ou
+        dans un État membre de l&apos;Union européenne. Toute commande passée
+        sur le Site implique l&apos;acceptation pleine et entière des CGV.
       </p>
 
       <h2>Article 2 — Acceptation des CGV</h2>
       <p>
         Lors de la création de son compte, le client est invité à lire et
-        à accepter expressément les CGV au moyen d'une case à cocher,
-        accompagnée d'un lien vers le présent document. Cette acceptation
+        à accepter expressément les CGV au moyen d&apos;une case à cocher,
+        accompagnée d&apos;un lien vers le présent document. Cette acceptation
         est horodatée et conservée à titre de preuve dans nos systèmes
         pendant toute la durée du contrat, et au-delà aux fins probatoires.
       </p>
       <p>
-        L'Éditeur se réserve le droit de modifier les CGV à tout moment.
+        L&apos;Éditeur se réserve le droit de modifier les CGV à tout moment.
         Les CGV applicables à toute commande sont celles en vigueur au
         moment de la validation de la commande. En cas de modification
         substantielle des CGV, les clients existants sont informés par
-        email au moins trente (30) jours avant l'entrée en vigueur des
+        email au moins trente (30) jours avant l&apos;entrée en vigueur des
         modifications.
       </p>
 
       <h2>Article 3 — Description des services et formules</h2>
       <p>
-        L'Éditeur propose les formules d'abonnement suivantes&nbsp;:
+        L&apos;Éditeur propose les formules d&apos;abonnement suivantes&nbsp;:
       </p>
       <ul>
         {pricingTiers.map((tier) => (
@@ -90,7 +90,7 @@ export default function CGV(): React.ReactElement {
       </ul>
       <p>
         Les fonctionnalités précises de chaque formule sont détaillées
-        sur la page <a href="/pricing">Tarifs</a>. L'Éditeur peut faire
+        sur la page <a href="/pricing">Tarifs</a>. L&apos;Éditeur peut faire
         évoluer le périmètre fonctionnel des formules sans modification
         des présentes CGV, à condition que la valeur globale du service
         soit maintenue ou améliorée.
@@ -101,65 +101,65 @@ export default function CGV(): React.ReactElement {
         Les prix indiqués sont en euros, toutes taxes comprises (TTC), au
         taux de TVA en vigueur au jour de la commande. Le client est
         informé que le taux de TVA peut évoluer en application de la
-        législation, ce qui entraînera l'ajustement automatique du prix
+        législation, ce qui entraînera l&apos;ajustement automatique du prix
         TTC sans préavis.
       </p>
       <p>
-        Le paiement s'effectue par carte bancaire (Visa, Mastercard,
+        Le paiement s&apos;effectue par carte bancaire (Visa, Mastercard,
         American Express, CB) via notre prestataire <strong>Stripe
         Payments Europe Ltd.</strong>, certifié PCI-DSS niveau 1. Aucune
-        donnée de carte ne transite ni n'est stockée sur les serveurs de
-        l'Éditeur.
+        donnée de carte ne transite ni n&apos;est stockée sur les serveurs de
+        l&apos;Éditeur.
       </p>
       <p>
         Conformément à la directive (UE) 2015/2366 (DSP2) et au règlement
         délégué (UE) 2018/389, tout paiement supérieur à 30&nbsp;€ fait
-        l'objet d'une procédure d'<strong>authentification forte du client
-        (SCA)</strong> via 3-D Secure. L'absence d'authentification réussie
+        l&apos;objet d&apos;une procédure d&apos;<strong>authentification forte du client
+        (SCA)</strong> via 3-D Secure. L&apos;absence d&apos;authentification réussie
         entraîne le refus de la transaction.
       </p>
       <p>
         Les abonnements mensuels sont prélevés à la date anniversaire de
-        la souscription. En cas d'échec de prélèvement, l'Éditeur procède
+        la souscription. En cas d&apos;échec de prélèvement, l&apos;Éditeur procède
         à trois (3) tentatives sur sept (7) jours&nbsp;; au-delà,
-        l'abonnement est suspendu et l'accès aux fonctionnalités
-        premium désactivé jusqu'à régularisation.
+        l&apos;abonnement est suspendu et l&apos;accès aux fonctionnalités
+        premium désactivé jusqu&apos;à régularisation.
       </p>
 
       <h2>Article 5 — Droit de rétractation</h2>
       <p>
         Conformément aux articles L221-18 et suivants du Code de la
-        consommation, le consommateur dispose d'un délai de{' '}
+        consommation, le consommateur dispose d&apos;un délai de{' '}
         <strong>quatorze (14) jours francs</strong> à compter de la
         conclusion du contrat pour exercer son droit de rétractation,
         sans avoir à justifier de motif ni à payer de pénalité, à
-        l'exclusion des frais éventuels mentionnés à l'article L221-23.
+        l&apos;exclusion des frais éventuels mentionnés à l&apos;article L221-23.
       </p>
       <p>
         Pour exercer ce droit, le consommateur doit notifier sa décision
         de rétractation par email à{' '}
         <a href={`mailto:${editor.email}`}>{editor.email}</a> en
         utilisant le formulaire-type ci-dessous, ou par toute autre
-        déclaration dénuée d'ambiguïté.
+        déclaration dénuée d&apos;ambiguïté.
       </p>
       <p>
         <strong>Exception — service pleinement exécuté.</strong> En
-        application de l'article L221-28 1° du Code de la consommation,
-        le droit de rétractation ne s'applique pas&nbsp;:
+        application de l&apos;article L221-28 1° du Code de la consommation,
+        le droit de rétractation ne s&apos;applique pas&nbsp;:
       </p>
       <ul>
         <li>
           Aux contrats de fourniture de services pleinement exécutés
           avant la fin du délai de rétractation, à condition que le
           consommateur ait donné son accord préalable exprès et ait
-          renoncé expressément à son droit de rétractation. C'est
+          renoncé expressément à son droit de rétractation. C&apos;est
           notamment le cas lorsque le consommateur déclenche la
-          génération d'une cuisine par notre IA, télécharge un devis
+          génération d&apos;une cuisine par notre IA, télécharge un devis
           certifié ou exporte un fichier BIM&nbsp;;
         </li>
         <li>
-          À la fourniture d'un contenu numérique non fourni sur un
-          support matériel dont l'exécution a commencé avec l'accord
+          À la fourniture d&apos;un contenu numérique non fourni sur un
+          support matériel dont l&apos;exécution a commencé avec l&apos;accord
           préalable exprès du consommateur (Art. L221-28 13°).
         </li>
       </ul>
@@ -173,7 +173,7 @@ export default function CGV(): React.ReactElement {
 
       <h2>Article 6 — Garanties légales</h2>
       <p>
-        L'Éditeur est tenu de plein droit à la <strong>garantie légale
+        L&apos;Éditeur est tenu de plein droit à la <strong>garantie légale
         de conformité</strong> mentionnée aux articles L217-3 et
         suivants du Code de la consommation. Cette garantie est
         applicable pendant <strong>deux (2) ans</strong> à compter de la
@@ -181,14 +181,14 @@ export default function CGV(): React.ReactElement {
         numérique.
       </p>
       <p>
-        L'Éditeur est également tenu à la <strong>garantie des vices
+        L&apos;Éditeur est également tenu à la <strong>garantie des vices
         cachés</strong> définie aux articles 1641 à 1648 du Code civil,
         permettant au client de choisir entre la résolution de la vente
         ou une réduction du prix, dans un délai de deux (2) ans à
         compter de la découverte du vice.
       </p>
       <p>
-        Pour mettre en œuvre l'une de ces garanties, le client doit
+        Pour mettre en œuvre l&apos;une de ces garanties, le client doit
         contacter le service client à{' '}
         <a href={`mailto:${editor.email}`}>{editor.email}</a> en
         décrivant précisément le défaut constaté.
@@ -197,35 +197,35 @@ export default function CGV(): React.ReactElement {
       <h2>Article 7 — Responsabilité</h2>
       <p>
         Les prestations fournies par {editor.brandName} sont des
-        <em> prestations de service de la société de l'information</em>{' '}
-        au sens de la directive 2000/31/CE. L'Éditeur s'engage à apporter
-        tout le soin nécessaire à la conception, l'exploitation et la
+        <em> prestations de service de la société de l&apos;information</em>{' '}
+        au sens de la directive 2000/31/CE. L&apos;Éditeur s&apos;engage à apporter
+        tout le soin nécessaire à la conception, l&apos;exploitation et la
         maintenance du Site.
       </p>
       <p>
-        L'Éditeur ne saurait toutefois être tenu pour responsable&nbsp;:
+        L&apos;Éditeur ne saurait toutefois être tenu pour responsable&nbsp;:
       </p>
       <ul>
         <li>
           des défaillances techniques imputables à des facteurs externes
-          (panne de l'opérateur télécoms du client, indisponibilité
-          d'infrastructures tierces, force majeure)&nbsp;;
+          (panne de l&apos;opérateur télécoms du client, indisponibilité
+          d&apos;infrastructures tierces, force majeure)&nbsp;;
         </li>
         <li>
-          de l'inadéquation entre les designs générés par l'IA et la
-          réalité technique du chantier (présence d'une canalisation
+          de l&apos;inadéquation entre les designs générés par l&apos;IA et la
+          réalité technique du chantier (présence d&apos;une canalisation
           imprévue, charpente non conforme, etc.). Les <strong>devis
           générés constituent une aide à la décision et ne se substituent
-          en aucun cas à l'avis d'un professionnel qualifié</strong>{' '}
+          en aucun cas à l&apos;avis d&apos;un professionnel qualifié</strong>{' '}
           (cuisiniste, architecte, plombier, électricien)&nbsp;;
         </li>
         <li>
           des dommages indirects (perte de chance, préjudice commercial,
-          atteinte à l'image) résultant de l'utilisation du Site.
+          atteinte à l&apos;image) résultant de l&apos;utilisation du Site.
         </li>
       </ul>
       <p>
-        En tout état de cause, la responsabilité de l'Éditeur est plafonnée
+        En tout état de cause, la responsabilité de l&apos;Éditeur est plafonnée
         au montant total des sommes effectivement versées par le client au
         cours des douze (12) derniers mois précédant le fait générateur du
         dommage.
@@ -234,7 +234,7 @@ export default function CGV(): React.ReactElement {
       <h2>Article 8 — Données à caractère personnel</h2>
       <p>
         Le traitement des données personnelles collectées dans le cadre
-        de l'exécution du présent contrat est régi par notre{' '}
+        de l&apos;exécution du présent contrat est régi par notre{' '}
         <a href="/legal/privacy">Politique de confidentialité</a>, qui
         détaille les finalités, les bases légales, les durées de
         conservation, les destinataires, les transferts hors UE et les
@@ -250,7 +250,7 @@ export default function CGV(): React.ReactElement {
 
       <h2>Article 9 — Médiation à la consommation</h2>
       <p>
-        Conformément à l'article L612-1 du Code de la consommation, en
+        Conformément à l&apos;article L612-1 du Code de la consommation, en
         cas de litige non résolu après une réclamation écrite préalable
         adressée au service client, le consommateur peut recourir
         gratuitement au médiateur suivant&nbsp;:
@@ -268,7 +268,7 @@ export default function CGV(): React.ReactElement {
       <h2>Article 10 — Loi applicable et juridiction compétente</h2>
       <p>
         Les présentes CGV sont régies par la loi française. Les parties
-        s'efforceront de résoudre à l'amiable tout différend relatif à
+        s&apos;efforceront de résoudre à l&apos;amiable tout différend relatif à
         leur interprétation ou leur exécution. À défaut, et sous réserve
         des dispositions plus favorables au consommateur, le litige sera
         porté devant les juridictions françaises compétentes
@@ -277,7 +277,7 @@ export default function CGV(): React.ReactElement {
       </p>
       <p>
         Le consommateur peut saisir, à son choix, soit le tribunal du
-        ressort du siège social de l'Éditeur, soit la juridiction du lieu
+        ressort du siège social de l&apos;Éditeur, soit la juridiction du lieu
         où il demeurait au moment de la conclusion du contrat ou de la
         survenance du fait dommageable (art. R631-3 du Code de la
         consommation).

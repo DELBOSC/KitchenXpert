@@ -104,7 +104,7 @@ export default function PrivacySettings(): React.ReactElement {
       <h2>Vos droits</h2>
       <ul>
         <li>
-          <strong>Portabilité (Art. 20)</strong> — Téléchargez l'intégralité de vos données au format JSON.
+          <strong>Portabilité (Art. 20)</strong> — Téléchargez l&apos;intégralité de vos données au format JSON.
         </li>
         <li>
           <strong>Effacement (Art. 17)</strong> — Anonymisation immédiate et purge complète sous 30 jours.

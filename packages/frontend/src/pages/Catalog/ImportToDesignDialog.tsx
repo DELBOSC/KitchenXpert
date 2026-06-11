@@ -109,7 +109,7 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
 
       {kitchens && kitchens.length === 0 && (
         <p className="text-sm text-white/70">
-          Vous n'avez encore aucune cuisine. Créez-en une depuis vos projets, puis revenez ici.
+          Vous n&apos;avez encore aucune cuisine. Créez-en une depuis vos projets, puis revenez ici.
         </p>
       )}
 

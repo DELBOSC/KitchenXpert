@@ -117,7 +117,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
 
   const titleByStep: Record<Step, React.ReactNode> = {
     'rate': <>Comment se passe votre expérience&nbsp;?</>,
-    'feedback-form': <>Qu'est-ce qui pourrait être mieux&nbsp;?</>,
+    'feedback-form': <>Qu&apos;est-ce qui pourrait être mieux&nbsp;?</>,
     'thanks-external': (
       <>
         Merci&nbsp;! <PartyPopper className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
@@ -134,7 +134,7 @@ export function ReviewPromptModal(): React.ReactElement | null {
     'rate': <>Votre retour nous aide à améliorer KitchenXpert. Ça prend 30 secondes.</>,
     'feedback-form': (
       <>
-        Votre message va directement à l'équipe produit — il n'est PAS publié.
+        Votre message va directement à l&apos;équipe produit — il n&apos;est PAS publié.
         Nous lisons et répondons généralement sous 48 h.
       </>
     ),
