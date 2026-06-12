@@ -119,6 +119,34 @@ type Fixtures = {
 };
 
 export const test = base.extend<Fixtures>({
+  // Pre-dismiss the global cookie-consent banner. It is rendered globally
+  // (`<CookieConsent>` in App.tsx) as `role="dialog"` `fixed inset-x-0 bottom-0
+  // z-[100]` and shows on a fresh context, so its overlay intercepts pointer
+  // events on the fullWidth submit buttons at the bottom of the register/login
+  // forms — confirmed at runtime 12/06 (`…cookie dialog… subtree intercepts
+  // pointer events`). Seeding the consent key before the app mounts makes
+  // `loadConsent()` return non-null, so `setVisible(true)` never fires.
+  // Test-only (no app change); applies to every flow via the shared `test`.
+  // (NB: this was reverted 08/06 on a misdiagnosed "flow-2 regression" that was
+  //  actually the store-null crash since fixed by #109 — now safe.)
+  page: async ({ page }, use) => {
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem(
+          'kx.cookie-consent.v1',
+          JSON.stringify({
+            necessary: true,
+            analytics: false,
+            marketing: false,
+            decidedAt: new Date().toISOString(),
+          }),
+        );
+      } catch {
+        /* ignore (storage unavailable) */
+      }
+    });
+    await use(page);
+  },
   freshUser: async ({ request }, use) => {
     const user = newTestUser();
     await registerAndVerify(request, user);
