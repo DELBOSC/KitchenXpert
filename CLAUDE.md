@@ -635,6 +635,68 @@ Tout secret qui a été visible en dev local ou historisé dans des sessions de 
 
 ---
 
+## 15. Chantier MAJEUR — Catalogue réel (vrais SKU) + Scraper + Matcher IA + Rendu 3D photoréaliste
+
+> Acté 12/06/2026 (décision Laurent). **Chantier pluri-semaines, à attaquer à froid par lots validés** (pas en fin de marathon). **PAS un simple MVP** — voir ci-dessous.
+
+### 15.0 Objectif (non négociable)
+
+L'IA qui propose des configurations de cuisine doit **piocher intelligemment dans de VRAIS SKU achetables** — référence produit réelle + **cotes précises au mm** + prix + dispo — pour **toutes les marques** (meuble **ET** électroménager), afin que chaque config soit **adaptée au mm près** et débouche sur un **devis commandable** (pas un « joli plan » conceptuel). Les **rendus d'images doivent être d'une qualité exceptionnelle et réaliste**.
+
+> ⚠️ **EXIGENCE EXPLICITE LAURENT (12/06)** : **« je ne veux pas d'un simple MVP »**. La cible est le **système complet** (toutes marques, meuble + électroménager, catalogue vivant). La **tranche verticale IKEA** décidée ci-dessous n'est qu'une **preuve de chaîne end-to-end pour dérisquer**, **PAS le périmètre final**. Une fois la chaîne prouvée, le périmètre = **exhaustif** (récupérer TOUS les articles de n'importe quelle marque).
+
+### 15.1 Pourquoi c'est critique
+
+Sans ça, **aucune valeur commerciale** : aujourd'hui le « catalogue » = **~100 produits seedés à la main** (`'Sample Catalog Items'` : Schmidt/Bosch/IKEA/Leroy/Castorama) + quelques CSV statiques (`catalog-providers/sample-catalogs/`). **Aucun flux live.** L'IA génère de **vrais multi-designs depuis les cotes** (✅ Claude + fallback algo) mais avec des **matériaux génériques**, non rattachés à des SKU achetables.
+
+### 15.2 Audit par preuve (11-12/06/2026)
+
+- **3d-engine (rendu)** ✅ base **PBR déjà présente** : `MeshStandardMaterial` (roughness/metalness/normalMap/aoMap/map/aoMap), chargement **GLTF/GLB** (`scene.ts:334`), IA layout/placement déjà dans le moteur (`ai/layout-generator`, `cabinet-solver`, `smart-placement`). **Manque pour « photoréaliste exceptionnel »** : environnement **HDRI** + éventuel **pathtracing**.
+- **Scraper** (`packages/scraper`) : **vraie base** — `ikea.ts` (773 l., utilise endpoints + **JSON-LD** IKEA, extrait `sku`/prix/dimensions), scrapers concrets pour 8 marques (ikea/leroy-merlin/castorama/schmidt/mobalpa/cuisinella/but/nobilia), `base-scraper` puppeteer+cheerio, modèles avec **cotes mm normalisées** (`width/height/depth // mm`, `reference`, `priceTTC`, `brandId`). **MAIS** : 🔴 **0 test**, jamais validé live ; 🔴 seul **`puppeteer-core`** installé (pas de Chromium bundlé) → **ne lance pas de navigateur en l'état** ; DB Prisma **séparée** du catalogue principal.
+- **catalog-providers/** (15+ groupes électroménager : BSH/Bosch, Miele, Samsung, LG, Electrolux, Whirlpool, Haier, Smeg…) = **scaffolding** (api-client/transformer/validator/schema-mapper par marque) tapant un endpoint **générique `…/products?…` hypothétique**, `credentials.example.json` (pas de vraies clés). **Les « APIs officielles » annoncées (Home Connect / SmartThings / ThinQ) sont des APIs de CONTRÔLE d'appareils connectés, PAS des catalogues produit** → **fausse piste**, aucun accès catalogue live électroménager réel.
+- **Catalogue principal** : modèle `CatalogItem` existe (dims) — **à étendre** (réf SKU, mm entiers, `dimensionConfidence`, stock, brand, images, compatibilité).
+
+### 15.3 Architecture cible — **hybride + normalisé** (PAS « un scraper universel »)
+
+Reality-check assumé : un scraper est **par-site** (≠ universel), **fragile** (sélecteurs cassent), à **maintenir** ; « au mm près » **dépend de la source** (IKEA = données structurées propres ; beaucoup d'autres = marketing sans cotes fiables) ; **légal/anti-bot = risque business** (CGU, copyright images/specs, RGPD, proxies/stealth à l'échelle) à cadrer **avant de scaler**.
+
+```
+SOURCES (par fiabilité)                         →  NORMALISATION              →  USAGE IA
+1. Feeds officiels/structurés (IKEA JSON-LD,       Schéma produit UNIFIÉ :       MATCHER IA↔catalogue :
+   flux affiliés Awin/Effiliation, PIM/GS1)         reference(SKU), brand,        l'IA propose un layout →
+2. Scraping ciblé par marque (stealth+rate-limit,    category, dims **mm int**,    on sélectionne les VRAIS
+   JSON-LD d'abord, sélecteurs de secours)           dimensionConfidence,          SKU qui rentrent **au mm**
+3. Data partenaire/manuelle (marques sans flux)      priceTTC, stock, images[],    dans chaque emplacement
+   ⮕ chaque source alimente le MÊME schéma           compatibility                 (dims + style + budget)
+```
+
+### 15.4 Deux tracks
+
+- **Track A — « l'intelligence » (le VRAI maillon manquant)** — **buildable + validable hors-infra (tests)** :
+  1. **Schéma produit unifié** (Prisma, catalogue principal) avec cotes **mm entières** + `dimensionConfidence`.
+  2. **Normaliseur de cotes** : parse tout format (`cm`, `"L60×H80"`, `mm`…) → **mm entiers** + flag de fiabilité ; **l'IA ne pioche QUE dans les SKU à cotes fiables** (garantie « au mm près » réelle, pas illusoire).
+  3. **Matcher IA ↔ catalogue** : transforme « plan conceptuel » en **sélection de vrais SKU** (contrainte dims/style/budget par slot) → **devis réel** (réf + prix + total). Validable avec **fixtures** (SKU seedés + samples).
+- **Track B — scraping réel** — **nécessite une infra dédiée (pas l'env de dev courant)** :
+  - Stratégie navigateur : **Chromium + stealth + proxies rotatifs + rate-limit** (remplacer le `puppeteer-core` nu).
+  - Durcir les scrapers (**JSON-LD d'abord**, sélecteurs de secours), **tests sur fixtures HTML** (validable) + runs live (validables seulement sur l'infra).
+  - **Légal** (CGU/affiliation) = décision business **préalable** au scaling.
+  - Ingestion scraper-DB → catalogue principal **via le normaliseur**.
+
+### 15.5 Décisions actées (12/06)
+
+- **Stratégie** : commencer par **une tranche verticale IKEA bout-en-bout** (meilleure source, données structurées) pour **prouver la chaîne** (scrape→normalise mm→catalogue→l'IA pioche de vrais SKU IKEA→devis→rendu) — **MAIS périmètre final = exhaustif toutes marques** (cf 15.0, **pas un MVP**). Commencer par le **Track A** (débloque la valeur + valide par preuve) ; Track B se durcit en parallèle, se valide sur infra.
+- **Images** : ✅ **rendu 3D photoréaliste** de la cuisine **assemblée à partir des vrais SKU** (PBR + HDRI sur le `@kitchenxpert/3d-engine`) = wow **ET** fidèle à la config au mm. ❌ **NE PAS utiliser l'IA image-gen pour les images PRODUIT du devis** (hallucine les SKU → image ≠ produits réels = risque commercial/juridique) ; IA-image réservée au **moodboard/ambiance**.
+- **Électroménager** : même schéma unifié + matcher ; sources via feeds/scraping ciblé (les « APIs officielles » device-control sont à **écarter** comme source catalogue).
+
+### 15.6 Prérequis / risques
+
+- Infra scraping (Chrome + proxies) — bloque Track B live.
+- Cadrage **légal** (CGU/affiliation/RGPD/copyright images) — bloque le scaling multi-marques.
+- Qualité **données mm** hétérogène selon source — le `dimensionConfidence` est le garde-fou.
+- `@kitchenxpert/guides` (Astro) hors scope §3 — sans rapport.
+
+---
+
 *Dernière mise à jour : 10/06/2026 — **Session STACK-UP : ROOT CAUSE `<Provider store={store}>` jamais câblé (3 PRs : #109 Provider + #110 kitchen-fields flow-4/5/6 + #106 span-click flow-1)**. 1ʳᵉ session stack montée en local (backend :4000 + preview prod :3005). Le login UI atteint /dashboard MAIS DashboardPage (et Catalog/SandboxDesigner) **crashent** `Cannot destructure 'store' … null` — le store Redux n'était **jamais fourni** à l'arbre (App.tsx sans `<Provider>`). **Prouvé 3 axes** (code/runtime/git pickaxe), masqué par `vi.mock('store/hooks')`. Mon diagnostic 09/06 (« régression consent / nav login→dashboard ») était **FAUX** = c'était ce crash. Fix #109 (3 lignes) → **flow-2 2/2 PASS**, catalog/designer rendent. Triage traîne : kitchen-fields `widthCm→width/length/height` (#110, flow-4/5/6 `POST /kitchens` 400→crash), span-click checkbox sr-only (#106). Restant = couches per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe). **Leçons** : stack-up trouve des bugs invisibles aux unit tests mockés + logs CI ; **comparaison de runs ≠ causation** (ma « régression consent » du 08/06 était corrélation) ; fixer la racine puis trier honnêtement (pas de brute-force WebGL/externe). main HEAD = `f99f4d1`. Branche courante : `docs/stackup-redux-provider`.
 
 **+ 10/06 (suite — audit « câblages silencieux »)** : généralisation de #109 (« quoi d'autre a manqué silencieusement ? »). Verdict A providers (tous câblés, 4 contextes ont leur Provider, `VITE_*` toutes avec fallback, Suspense couvre les lazy). **1 piège de la même classe trouvé+fixé → #112** : 10 slices redux complets+testés mais non enregistrés (kitchen/user/permissions/roles/audit/questionnaire/vr/webhooks/adaptiveSurfaces/aiGenerator) → un futur `useAppSelector(s=>s.kitchen…)` aurait crashé ; les 12 enregistrés (build vert, slices 103/103). Reliquat mineur : react-query inutilisé (no-op, tracé §11 P3). main HEAD = `b1d0220`. Branche courante : `docs/audit-providers-slices`.
