@@ -15,6 +15,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:smoke": "node scripts/smoke-test.mjs",
     "db:migrate": "node -r ts-node/register src/database/migrate.ts",
     "db:seed": "node -r ts-node/register src/database/seed.ts",
     "db:reset": "pnpm run db:migrate && pnpm run db:seed",
