@@ -732,6 +732,108 @@ SOURCES (par fiabilité)                         →  NORMALISATION             
 
 **Acquit méthodo** : (a) un test live de 2 navigations a tranché ce que 0 test laissait flou depuis l'origine ; (b) le maillon dur n'est PAS le parsing mais **API-vs-HTML + anti-bot** ; (c) auto-challenge a corrigé 2 faux (puppeteer-core ; root node_modules vide alors que pnpm hoiste).
 
+### 15.8 — Stratégie d'ingestion catalogue v1.0 (décisions consolidées 14/06)
+
+> **Dépendance** : se chaîne après §15.7 (PR #161). Cette section est doc-only ; les PRs de code (`feat/ikea-api-first-strategy` et suivantes) référenceront §15.8 comme source de vérité stratégique.
+
+**Contexte.** Suite à l'audit §15.7 (PR #161) prouvant que le scraper actuel est à **3 corrections** d'être fonctionnel via l'**API interne IKEA**, et au web search état de l'art scraping 2026 (Crawlee, Firecrawl/Crawl4AI, proxies). 5 décisions structurantes formalisées en session 14/06 (Q1, Q2.a/b/c, Q3.a) ; Q3.b–Q5 tranchées par délégation explicite Laurent (« tu as compris, je suis tes reco »).
+
+#### Les 7 principes
+
+**Principe 1 — Cascade d'ingestion par marque (Q1)**
+
+Pour chaque marque, dans l'ordre :
+
+- **N1** — API officielle gratuite + JSON-LD (rare, checké par marque)
+- **N2** — API interne site (cas IKEA prouvé : `sik.search.blue.cdtapps.com`)
+- **N3** — Scraping HTML cheerio
+- **N4** — Playwright + stealth (sites anti-bot)
+- ❌ **N5** — SaaS payant (Apify / Bright Data / Firecrawl) **EXCLU**
+
+Justification : preuve IKEA niveau 2 (§15.7), état de l'art 2026 confirme l'approche cascade, règle « API gratuite ou scraping maison ; jamais de SaaS payant » (Q2.c).
+
+**Principe 2 — Strategy pattern + Adapters (Q3.a)**
+
+- 1 `IngestionOrchestrator` (router cascade)
+- 4 Adapters réutilisables : `ApiAdapter`, `JsonLdAdapter`, `HtmlAdapter`, `PlaywrightAdapter`
+- N Strategies par marque (~30 à terme)
+- Refonte progressive : `ikea.ts` → `IkeaStrategy`, puis les 7 autres scrapers
+
+Justification : capitaliser les **22 495 lignes existantes** en restructurant (cf §15.7). Strategy pattern éprouvé. Évolutif (ajout marque = ajout Strategy).
+
+**Principe 3 — Schéma de sortie unifié strict (Q3.b)**
+
+`backend.Product` = socle DB unique. À enrichir :
+
+- `dimensionConfidence: Float` (0.0–1.0)
+- `sourceLevel: Int` (1–4) du niveau cascade ayant fourni la donnée
+- `sourceUrl: String` (traçabilité légale)
+- `lastVerifiedAt: DateTime` (drift detection)
+
+Champs métier marque → `specifications Json` (déjà existant). Validation **Zod stricte** en sortie de chaque Strategy : invalide → log warning + skip (pas de crash).
+
+**Principe 4 — Validation stratifiée (Q4)**
+
+- **Couche 1 — Tests fixtures par strategy** : `<brand>.fixture.html`/`.json` + tests Vitest
+- **Couche 2 — Validation Zod** à l'output
+- **Couche 3 — Monitoring drift sélecteurs** : metric `extraction_success_rate` / marque / 24h ; alert si chute > 50%
+- **Couche 4 — Observabilité runtime** : OpenTelemetry (déjà backend §11) + Sentry + winston JSON
+
+**Principe 5 — Légal défensif (Q2.a/b)**
+
+- **Mode test interne** tant que pas d'avocat IT/PI consulté
+- **Skip Awin/Effiliation** (Q2.b)
+- Documentation rigoureuse (sources, dates, méthodes) pour défense éventuelle
+- robots.txt respecté, rate-limit éthique, UA identifiant
+
+**Principe 6 — DB unifiée `backend.Product` (Q3.c)**
+
+- Suppression **progressive** de la DB scraper séparée (25 modèles granulaires Cabinet/Worktop/Facade/Handle/Appliance)
+- Champs métier → `backend.Product.specifications` Json
+- Scraper Prisma garde UNIQUEMENT les tables opérationnelles (`ScrapeLog`, `PriceHistory`, `ScrapeCache`, RateLimit state)
+
+**Principe 7 — Hébergement reporté à §14.2 (Q5)**
+
+- Run **local manuel** pour les premiers mois
+- BullMQ + Upstash Redis prêt mais **pas** utilisé en cron
+- Décision auto-scheduling : après §14.2 tranché + 3-5 marques validées
+
+#### Optionnel à valider plus tard
+
+**BIMobject API** — découverte session 14/06 :
+
+- API REST OAuth 2.0 publique (1000+ marques, 300k BIM objects paramétriques)
+- SDK MIT open-source ; inscription développeur gratuite
+- ⚠️ Free tier **commercial** à valider (probablement payant pour usage commercial sérieux)
+- Cohérence avec Q2.c « jamais payant » : à tester gratuitement avant de décider (~30 min inscription + exploration)
+- Si free tier commercial valide → BIMobject devient **niveau 1 enrichi** pour cotes/specifications (prix toujours scraping). Sinon exclu.
+
+#### Roadmap §15 (étapes priorisées)
+
+| # | Étape | Effort | Statut |
+|---|-------|--------|--------|
+| a | Fix `ikea.ts` → `IkeaStrategy` API-first (PR1) | 4-6h | **À FAIRE (priorité immédiate)** |
+| b | Tester pattern sur 1 autre marque (PR2) | 3-4h | Après PR1 |
+| c | Refondre les 7 autres scrapers en Strategies | progressive | Après validation pattern |
+| d | Migration DB + suppression scraper Prisma séparée | 2-3h | Après PRs a-c |
+| e | Observabilité runtime (drift detection + alerts) | 2-3h | Après volume justifie |
+| f | Test BIMobject API (free tier ?) | 30 min | Quand temps |
+| g | Décision auto-scheduling (Q5) | TBD | Après §14.2 + 3-5 marques OK |
+
+#### Acquit méthodologique consolidé
+
+**Nouvelle règle (cumul session 14/06)** :
+
+> « API gratuite > scraping maison ; jamais de SaaS payant »
+
+Justifications cumulées : cohérence positionnement micro-entrepreneur (CapEx temps > OpEx mensuel récurrent) ; indépendance des vendors externes ; pas de dépendance contractuelle (Apify/Bright Data → terms changent) ; système 100 % sous contrôle interne.
+
+**Acquit complémentaire (13-14/06, cf §15.7)** :
+
+> « API-first avant scraping HTML : taper l'endpoint interne du site retourne du JSON propre, plus rapide et fiable »
+
+Pattern de découverte : (1) DevTools Network sur page catalogue → (2) filtrer XHR/Fetch → (3) identifier les endpoints internes utilisés par le site → (4) souvent JSON propre sans Cloudflare → (5) taper directement = plus rapide, plus fiable, moins coûteux qu'un browser.
+
 ---
 
 *Dernière mise à jour : 10/06/2026 — **Session STACK-UP : ROOT CAUSE `<Provider store={store}>` jamais câblé (3 PRs : #109 Provider + #110 kitchen-fields flow-4/5/6 + #106 span-click flow-1)**. 1ʳᵉ session stack montée en local (backend :4000 + preview prod :3005). Le login UI atteint /dashboard MAIS DashboardPage (et Catalog/SandboxDesigner) **crashent** `Cannot destructure 'store' … null` — le store Redux n'était **jamais fourni** à l'arbre (App.tsx sans `<Provider>`). **Prouvé 3 axes** (code/runtime/git pickaxe), masqué par `vi.mock('store/hooks')`. Mon diagnostic 09/06 (« régression consent / nav login→dashboard ») était **FAUX** = c'était ce crash. Fix #109 (3 lignes) → **flow-2 2/2 PASS**, catalog/designer rendent. Triage traîne : kitchen-fields `widthCm→width/length/height` (#110, flow-4/5/6 `POST /kitchens` 400→crash), span-click checkbox sr-only (#106). Restant = couches per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe). **Leçons** : stack-up trouve des bugs invisibles aux unit tests mockés + logs CI ; **comparaison de runs ≠ causation** (ma « régression consent » du 08/06 était corrélation) ; fixer la racine puis trier honnêtement (pas de brute-force WebGL/externe). main HEAD = `f99f4d1`. Branche courante : `docs/stackup-redux-provider`.
