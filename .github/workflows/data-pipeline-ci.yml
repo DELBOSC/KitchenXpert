@@ -2,14 +2,14 @@ name: 🔄 Data Pipeline CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'packages/scraper/**'
       - 'packages/common/**'
       - 'pnpm-lock.yaml'
       - '.github/workflows/data-pipeline-ci.yml'
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'packages/scraper/**'
       - 'packages/common/**'

@@ -2,12 +2,12 @@ name: 🤖 AI Modules CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'packages/ai-modules/**'
       - '.github/workflows/ai-modules-ci.yml'
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'packages/ai-modules/**'
 

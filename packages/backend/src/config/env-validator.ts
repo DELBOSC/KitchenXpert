@@ -79,7 +79,12 @@ const jwtSecretSchema = z.string().min(32, {
 /**
  * Node environment validator
  */
-const nodeEnvSchema = z.enum(['development', 'production', 'test']).default('development');
+// NODE_ENV is REQUIRED (no .default): a missing/invalid value must fail the
+// boot loudly (validateEnv → process.exit(1)) instead of silently defaulting to
+// 'development' in production — which would activate the dev-only auth backdoor
+// (/auth/dev/verify-email, guarded on NODE_ENV !== 'production') and
+// secure:false cookies. Security hardening (audit 12/06).
+const nodeEnvSchema = z.enum(['development', 'production', 'test']);
 
 /**
  * Mail provider validator

@@ -2,7 +2,7 @@ name: 🔧 Backend CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'packages/backend/**'
       - 'packages/common/**'
@@ -11,7 +11,7 @@ on:
       - 'pnpm-lock.yaml'
       - '.github/workflows/backend-ci.yml'
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - 'packages/backend/**'
       - 'packages/common/**'
