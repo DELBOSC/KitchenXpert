@@ -659,7 +659,7 @@ Sans ça, **aucune valeur commerciale** : aujourd'hui le « catalogue » = **~10
 ### 15.2 Audit par preuve (11-12/06/2026)
 
 - **3d-engine (rendu)** ✅ base **PBR déjà présente** : `MeshStandardMaterial` (roughness/metalness/normalMap/aoMap/map/aoMap), chargement **GLTF/GLB** (`scene.ts:334`), IA layout/placement déjà dans le moteur (`ai/layout-generator`, `cabinet-solver`, `smart-placement`). **Manque pour « photoréaliste exceptionnel »** : environnement **HDRI** + éventuel **pathtracing**.
-- **Scraper** (`packages/scraper`) : **vraie base** — `ikea.ts` (773 l., utilise endpoints + **JSON-LD** IKEA, extrait `sku`/prix/dimensions), scrapers concrets pour 8 marques (ikea/leroy-merlin/castorama/schmidt/mobalpa/cuisinella/but/nobilia), `base-scraper` puppeteer+cheerio, modèles avec **cotes mm normalisées** (`width/height/depth // mm`, `reference`, `priceTTC`, `brandId`). **MAIS** : 🔴 **0 test**, jamais validé live ; 🔴 seul **`puppeteer-core`** installé (pas de Chromium bundlé) → **ne lance pas de navigateur en l'état** ; DB Prisma **séparée** du catalogue principal.
+- **Scraper** (`packages/scraper`) : **vraie base** — `ikea.ts` (773 l., utilise endpoints + **JSON-LD** IKEA, extrait `sku`/prix/dimensions), scrapers concrets pour 8 marques (ikea/leroy-merlin/castorama/schmidt/mobalpa/cuisinella/but/nobilia), `base-scraper` puppeteer+cheerio, modèles avec **cotes mm normalisées** (`width/height/depth // mm`, `reference`, `priceTTC`, `brandId`). **MAIS** : 🔴 **0 test**, jamais validé live ; DB Prisma **séparée** du catalogue principal. **⚠️ CORRECTION 14/06 (test live, cf §15.7)** : l'affirmation « seul `puppeteer-core`, pas de Chromium → ne lance pas de navigateur » était **FAUSSE** — c'est **`puppeteer` ^22 full + Chromium téléchargé** (lance un browser, **bypasse Cloudflare** prouvé) ; les vrais problèmes sont ailleurs : **client Prisma scraper jamais généré** (typecheck RED, couche `scrape-manager` cassée) + **URLs/JSON-LD périmés** (chemin HTML mort en 2026). Inventaire réel : **22 495 lignes** (pas « base mince ») — 8 scrapers réels (650-900 l.) sur framework anti-détection de 1330 l.
 - **catalog-providers/** (15+ groupes électroménager : BSH/Bosch, Miele, Samsung, LG, Electrolux, Whirlpool, Haier, Smeg…) = **scaffolding** (api-client/transformer/validator/schema-mapper par marque) tapant un endpoint **générique `…/products?…` hypothétique**, `credentials.example.json` (pas de vraies clés). **Les « APIs officielles » annoncées (Home Connect / SmartThings / ThinQ) sont des APIs de CONTRÔLE d'appareils connectés, PAS des catalogues produit** → **fausse piste**, aucun accès catalogue live électroménager réel.
 - **Catalogue principal** : modèle `CatalogItem` existe (dims) — **à étendre** (réf SKU, mm entiers, `dimensionConfidence`, stock, brand, images, compatibilité).
 
@@ -701,6 +701,36 @@ SOURCES (par fiabilité)                         →  NORMALISATION             
 - Cadrage **légal** (CGU/affiliation/RGPD/copyright images) — bloque le scaling multi-marques.
 - Qualité **données mm** hétérogène selon source — le `dimensionConfidence` est le garde-fou.
 - `@kitchenxpert/guides` (Astro) hors scope §3 — sans rapport.
+
+### 15.7 Audit par preuve + test live IKEA (14/06/2026) — corrige §15.1/15.2/15.4
+
+> Session audit-first (lecture seule) puis **test live autorisé par Laurent** (bypass Cloudflare assumé, research 10 produits, branche jetable, 0 commit src). Méthode « preuve > estimation ». Plusieurs claims de l'audit 11-12/06 étaient imprécis.
+
+**A. Existant scraper (`packages/scraper`) — bien plus charnu que §15.2** : **22 495 lignes RÉELLES** (pas « base mince »). 8 scrapers (650-900 l. chacun, 31-44 sélecteurs cheerio, 0 stub) sur `base-scraper` (1330 l. : stealth, proxy-manager, rate-limiter, retry-handler, circuit-breaker, robots-parser, UA rotation) + 25 services + API server. Contrat abstrait uniforme (4 méthodes), sortie `ScrapedProduct` unifiée. **Correction §15.2** : `puppeteer` ^22 **full + Chromium installé** (≠ « core nu »). **Junk** : `tests/services/Document.rtf` = **76 Mo** commité (à nettoyer).
+
+**B. `catalog-providers/` (racine, pas un package)** : **578 fichiers `.ts` VIDES (0 o)** par-marque (83 marques × api-client/transformer/validator/schema-mapper, API hypothétique morte) **+ 24 fichiers RÉELS** = framework d'import **file-based déclaratif** (common/ + universal-importer/ + bulk-import/ + cli/generate-provider). → la couche API par-marque est du scaffolding mort ; l'infra file-based est réelle et réutilisable.
+
+**C. Track A « intelligence » — EXISTE massivement (≠ greenfield §15.4)** : backend a **25 services AI réels, 9237 lignes, 0 vide** (`anthropic.service`, `catalog-search`, `bom-generator`, `product-matcher`, `product-enrichment`, `auto-design-pipeline`, `design-generator`, `tool-use-3d`…). Pièces §15.4 :
+  - **Normaliseur** : `data-normalizer` (970 l.) snap aux dims standard **mm** + mapping FR/EN + `NormalizationResult{errors,warnings,changes}` (proto-confiance, pas de `dimensionConfidence` numérique).
+  - **`catalog-search` = BON pattern** : Claude extrait des filtres → **`prisma.product.findMany` réel** (filtre dims `width` gte/lte + prix) → vrais SKU, **zéro hallucination**. = backbone du matcher.
+  - **`bom-generator` = à REFONDRE** : demande à **Claude d'inventer prix + `catalogRef`** → devis **hallucinable, pas commandable** (anti-objectif §15.0).
+  - **`product-matcher`** : équivalence produit↔produit cross-fournisseur (Claude + pré-filtre dim±10%/prix±20% + batch) — **technique réutilisable** pour le matcher layout→SKU.
+  - **Gap réel §15.4** = (1) catalogue vide, (2) bom-generator hallucine, (3) **binding layout→SKU absent** (3d-engine `layout-generator`/`cabinet-solver` non joints à `catalog-search`), (4) pas de `dimensionConfidence` + **0 test d'intégration**.
+
+**D. 🎯 TEST LIVE IKEA — verdict B+ (le code n'est pas à jeter)** :
+  - 🟢 **Stealth bat Cloudflare** : puppeteer-stealth a récupéré 526 Ko de vrai HTML, **sans challenge, sans proxy**. Le framework anti-détection (1330 l.) **marche en 2026** = l'asset le plus précieux.
+  - 🔴 **Chemin HTML/JSON-LD mort** : URLs hardcodées périmées (produit + catégorie → landing « Tous nos produits »), **0 bloc JSON-LD** (pages SPA `__next`), or `ikea.ts` en dépend (ikea.ts:372). Typecheck RED (Prisma scraper jamais généré).
+  - 🟢 **SOLUTION PROUVÉE = chemin API** : IKEA expose `https://sik.search.blue.cdtapps.com/fr/fr/search-result-page?q=<kw>` — **pas de Cloudflare** (host CDN séparé), **JSON structuré** (`itemNoGlobal`=SKU, `itemMeasureReferenceText`=cotes, `salesPrice`=prix, `pipUrl`, `colors`). **64 SKU IKEA réels extraits + normalisés en mm + dimensionConfidence** en une passe (ex. METOD 600×600×800mm/34€). Records **directement consommables par le matcher**.
+  - **Bug exact dans `ikea.ts` `fetchCategoryProducts` (3 corrections)** : (1) endpoint périmé `/search?q=*&category=<id>` (**404**) → `/search-result-page?q=<kw>` (**200**) ; (2) mapping faux `response.products` → `searchResultPage.products.main.items[].product` ; (3) parser `"60x60x80 cm"`→ mm int (prouvé). Preuves dans `.scrape-output/` (gitignored).
+
+**E. Décisions stack — orientation fondée sur preuve (à formaliser)** :
+  1. **NE PAS migrer vers Crawlee/Firecrawl** : le stealth existant bat déjà Cloudflare ; migrer perdrait un asset qui marche, et Crawlee ne résout pas Cloudflare gratuitement.
+  2. **Stratégie API/feeds-first, scraping HTML en secours** (prouvé sur IKEA) — confirme §15.3. Pour les retailers à API (sik.search est un backend IKEA standard), zéro HTML/anti-bot.
+  3. **Normaliseur** : étendre `Product` d'un `dimensionConfidence` ; réutiliser `data-normalizer` + le parser de cotes prouvé.
+  4. **Matcher** : brancher les SKU normalisés sur le backbone `catalog-search` (filtre dims/prix) + technique `product-matcher` ; **refondre `bom-generator`** pour sourcer de vrais SKU (fin de l'hallucination).
+  5. **Reste cohérent** : rendu 3D photoréaliste (PBR+HDRI sur 3d-engine, cf §15.5) inchangé.
+
+**Acquit méthodo** : (a) un test live de 2 navigations a tranché ce que 0 test laissait flou depuis l'origine ; (b) le maillon dur n'est PAS le parsing mais **API-vs-HTML + anti-bot** ; (c) auto-challenge a corrigé 2 faux (puppeteer-core ; root node_modules vide alors que pnpm hoiste).
 
 ---
 

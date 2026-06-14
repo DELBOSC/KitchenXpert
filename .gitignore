@@ -199,3 +199,4 @@ packages/frontend/public/sitemap.xml
 # Orphan external clones (not git submodules — no .gitmodules)
 # ====================
 external/
+/.scrape-output/
