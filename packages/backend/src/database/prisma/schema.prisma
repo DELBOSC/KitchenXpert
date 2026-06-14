@@ -494,6 +494,14 @@ model Product {
   updatedAt    DateTime @updatedAt
   deletedAt    DateTime?
 
+  // Ingestion metadata (CLAUDE.md §15.8 Principe 3). Nullable/additive: the
+  // unified ingestion pipeline (IkeaStrategy...) populates these; legacy rows
+  // and non-ingested products leave them null.
+  dimensionConfidence Float?
+  sourceLevel         Int?
+  sourceUrl           String?  @db.Text
+  lastVerifiedAt      DateTime?
+
   // Relations
   catalog      Catalog?         @relation(fields: [catalogId], references: [id])
   provider     CatalogProvider? @relation(fields: [providerId], references: [id])
@@ -508,6 +516,8 @@ model Product {
   @@index([brand])
   @@index([name])
   @@index([isActive])
+  @@index([sourceLevel])
+  @@index([lastVerifiedAt])
 }
 
 model ProductCategory {
