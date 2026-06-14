@@ -1,0 +1,182 @@
+{
+  "catalogEntryView": [
+    {
+      "partNumber": "FPC8937243",
+      "uniqueID": "3074457345616780005",
+      "name": "Cuisine Lapeyre tout en 1",
+      "shortDescription": "Cuisine Lapeyre tout en 1",
+      "catalogEntryTypeCode": "ProductBean",
+      "buyable": "true",
+      "thumbnail": "/dx/api/dam/custom/mobileList/547/171/202547171.jpg",
+      "price": [
+        {
+          "usage": "Display",
+          "currency": "EUR",
+          "value": "1602.97"
+        },
+        {
+          "usage": "Offer",
+          "currency": "EUR",
+          "value": "1495.0"
+        }
+      ],
+      "seo": {
+        "href": "/cuisine-lapeyre-tout-en-1-7804590"
+      },
+      "attributes": [
+        {
+          "identifier": "categorieGoogle",
+          "values": [
+            {
+              "identifier": "7741124012288393787",
+              "sequence": "0.0",
+              "value": "8161",
+              "uniqueID": "7741124012288393787"
+            },
+            {
+              "identifier": "7741124012288560227",
+              "sequence": "0.0",
+              "value": "8161",
+              "uniqueID": "7741124012288560227"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partNumber": "FPC3093022",
+      "uniqueID": "3074457345616693868",
+      "name": "Mitigeur évier START noir",
+      "shortDescription": "Mitigeur start inox",
+      "catalogEntryTypeCode": "ProductBean",
+      "buyable": "true",
+      "thumbnail": "/dx/api/dam/custom/mobileList/442/386/202442386.jpg",
+      "price": [
+        {
+          "usage": "Display",
+          "currency": "EUR",
+          "value": "131.9"
+        },
+        {
+          "usage": "Offer",
+          "currency": "EUR",
+          "value": "131.9"
+        }
+      ],
+      "seo": {
+        "href": "/mitigeur-evier-start-cuisine-noir-1249857"
+      },
+      "attributes": [
+        {
+          "identifier": "categorieGoogle",
+          "values": [
+            {
+              "identifier": "7741124012283929888",
+              "sequence": "0.0",
+              "value": "2032",
+              "uniqueID": "7741124012283929888"
+            },
+            {
+              "identifier": "7741124012283929978",
+              "sequence": "0.0",
+              "value": "2032",
+              "uniqueID": "7741124012283929978"
+            },
+            {
+              "identifier": "7741124012283930070",
+              "sequence": "0.0",
+              "value": "2032",
+              "uniqueID": "7741124012283930070"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partNumber": "FPC3093025",
+      "uniqueID": "3074457345616693871",
+      "name": "Mitigeur évier START chromé bec bas avec douchette",
+      "shortDescription": "mitigeur douchette start chromé",
+      "catalogEntryTypeCode": "ProductBean",
+      "buyable": "true",
+      "thumbnail": "/dx/api/dam/custom/mobileList/131/935/202131935.jpg",
+      "price": [
+        {
+          "usage": "Display",
+          "currency": "EUR",
+          "value": "159.9"
+        },
+        {
+          "usage": "Offer",
+          "currency": "EUR",
+          "value": "159.9"
+        }
+      ],
+      "seo": {
+        "href": "/mitigeur-evier-avec-douchette-start-cuisine-chrome-3051350"
+      },
+      "attributes": [
+        {
+          "identifier": "categorieGoogle",
+          "values": [
+            {
+              "identifier": "7741124012283930087",
+              "sequence": "0.0",
+              "value": "2032",
+              "uniqueID": "7741124012283930087"
+            },
+            {
+              "identifier": "7741124012283930178",
+              "sequence": "0.0",
+              "value": "2032",
+              "uniqueID": "7741124012283930178"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partNumber": "FPC3093019",
+      "uniqueID": "3074457345616693866",
+      "name": "Mitigeur évier START chromé bec bas",
+      "shortDescription": "Mitigeur start chromé",
+      "catalogEntryTypeCode": "ProductBean",
+      "buyable": "true",
+      "thumbnail": "/dx/api/dam/custom/mobileList/131/933/202131933.jpg",
+      "price": [
+        {
+          "usage": "Display",
+          "currency": "EUR",
+          "value": "97.7"
+        },
+        {
+          "usage": "Offer",
+          "currency": "EUR",
+          "value": "97.7"
+        }
+      ],
+      "seo": {
+        "href": "/mitigeur-evier-start-cuisine-chrome-3051330"
+      },
+      "attributes": [
+        {
+          "identifier": "categorieGoogle",
+          "values": [
+            {
+              "identifier": "7741124012283929780",
+              "sequence": "0.0",
+              "value": "2032",
+              "uniqueID": "7741124012283929780"
+            },
+            {
+              "identifier": "7741124012283929871",
+              "sequence": "0.0",
+              "value": "2032",
+              "uniqueID": "7741124012283929871"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
