@@ -1,0 +1,144 @@
+{
+  "searchResultPage": {
+    "products": {
+      "main": {
+        "items": [
+          {
+            "product": {
+              "name": "METOD",
+              "typeName": "Rangement",
+              "itemNo": "50205626",
+              "itemNoGlobal": "50205626",
+              "itemType": "ART",
+              "pipUrl": "https://www.ikea.com/fr/fr/p/metod-rangement-blanc-50205626/",
+              "mainImageUrl": "https://www.ikea.com/fr/fr/images/products/metod-rangement-blanc__0626285_pe692681_s5.jpg",
+              "itemMeasureReferenceText": "60x60x80 cm",
+              "salesPrice": {
+                "numeral": 34,
+                "currencyCode": "EUR"
+              },
+              "colors": [
+                {
+                  "name": "blanc"
+                }
+              ],
+              "categoryPath": [
+                {
+                  "name": "Cuisine & électroménager"
+                },
+                {
+                  "name": "Meubles de cuisine"
+                },
+                {
+                  "name": "METOD meubles bas cuisine"
+                }
+              ]
+            }
+          },
+          {
+            "product": {
+              "name": "METOD",
+              "typeName": "Colonne",
+              "itemNo": "60212565",
+              "itemNoGlobal": "60212565",
+              "itemType": "ART",
+              "pipUrl": "https://www.ikea.com/fr/fr/p/metod-colonne-blanc-60212565/",
+              "mainImageUrl": "https://www.ikea.com/fr/fr/images/products/metod-colonne-blanc__0156902_pe314951_s5.jpg",
+              "itemMeasureReferenceText": "60x60x200 cm",
+              "salesPrice": {
+                "numeral": 70,
+                "currencyCode": "EUR"
+              },
+              "colors": [
+                {
+                  "name": "blanc"
+                }
+              ],
+              "categoryPath": [
+                {
+                  "name": "Cuisine & électroménager"
+                },
+                {
+                  "name": "Meubles de cuisine"
+                },
+                {
+                  "name": "METOD colonne de cuisine"
+                }
+              ]
+            }
+          },
+          {
+            "product": {
+              "name": "METOD",
+              "typeName": "Rangement mural",
+              "itemNo": "30205528",
+              "itemNoGlobal": "30205528",
+              "itemType": "ART",
+              "pipUrl": "https://www.ikea.com/fr/fr/p/metod-rangement-mural-blanc-30205528/",
+              "mainImageUrl": "https://www.ikea.com/fr/fr/images/products/metod-rangement-mural-blanc__0156838_pe314888_s5.jpg",
+              "itemMeasureReferenceText": "60x37x80 cm",
+              "salesPrice": {
+                "numeral": 30,
+                "currencyCode": "EUR"
+              },
+              "colors": [
+                {
+                  "name": "blanc"
+                }
+              ],
+              "categoryPath": [
+                {
+                  "name": "Cuisine & électroménager"
+                },
+                {
+                  "name": "Meubles de cuisine"
+                },
+                {
+                  "name": "METOD meubles hauts cuisine"
+                }
+              ]
+            }
+          },
+          {
+            "product": {
+              "name": "METOD",
+              "typeName": "Pied pour élément",
+              "itemNo": "70556067",
+              "itemNoGlobal": "70556067",
+              "itemType": "ART",
+              "pipUrl": "https://www.ikea.com/fr/fr/p/metod-pied-pour-element-70556067/",
+              "mainImageUrl": "https://www.ikea.com/fr/fr/images/products/metod-pied-pour-element__1301901_pe937585_s5.jpg",
+              "itemMeasureReferenceText": "8 cm",
+              "salesPrice": {
+                "numeral": 5,
+                "currencyCode": "EUR"
+              },
+              "colors": [
+                {
+                  "name": "noir"
+                }
+              ],
+              "categoryPath": [
+                {
+                  "name": "Cuisine & électroménager"
+                },
+                {
+                  "name": "Solutions cuisine équipée"
+                },
+                {
+                  "name": "METOD cuisines"
+                },
+                {
+                  "name": "METOD meubles de cuisine et façades"
+                },
+                {
+                  "name": "Structures, pieds et plinthes"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
