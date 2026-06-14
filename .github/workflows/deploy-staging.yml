@@ -1,8 +1,11 @@
 name: 🚀 Deploy to Staging
 
 on:
-  push:
-    branches: [develop]
+  # No `push` trigger: the only branch that exists is `main`, and this staging
+  # deploy targets infra that isn't provisioned yet (§14.2). The previous
+  # `push: branches:[develop]` never auto-fired (no develop branch, 0 runs) —
+  # dead config. Triggered manually via workflow_dispatch until a develop
+  # branch + a real staging environment exist.
   workflow_dispatch:
     inputs:
       reason:

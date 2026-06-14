@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { prisma } from '../../database/client';
 import { authController } from '../controllers/auth-controller';
+import logger from '../../utils/logger';
 import { authenticate } from '../middleware/auth-middleware';
 import { loginRateLimiter, authRateLimiter, passwordResetRateLimiter } from '../middleware/rate-limit-middleware';
 import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';
@@ -23,6 +24,14 @@ if (process.env.NODE_ENV !== 'production') {
     validateBody(verifyDevSchema),
     async (req: Request, res: Response) => {
       const { email } = req.body as { email: string };
+      // Audit trail: this dev-only backdoor bypasses email verification and
+      // activates the account. It must never be reachable in production (the
+      // route is not mounted when NODE_ENV === 'production'); logging every
+      // call makes an accidental non-prod exposure visible in the logs.
+      logger.warn('[SECURITY] dev backdoor /auth/dev/verify-email invoked', {
+        email,
+        nodeEnv: process.env.NODE_ENV,
+      });
       try {
         const user = await prisma.user.update({
           where: { email },
