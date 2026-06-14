@@ -1,0 +1,37 @@
+{
+  "contents": [
+    {
+      "attributes": [],
+      "items": [
+        {
+          "attributes": [
+            {
+              "identifier": "DIMENSIONS-COMMUNES-DIM-LARGEUR",
+              "values": [
+                {
+                  "value": "28"
+                }
+              ]
+            },
+            {
+              "identifier": "DIMENSIONS-COMMUNES-DIM-HAUTEUR",
+              "values": [
+                {
+                  "value": "6.5"
+                }
+              ]
+            },
+            {
+              "identifier": "DIMENSIONS-COMMUNES-DIM-PROFONDEUR",
+              "values": [
+                {
+                  "value": "32"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

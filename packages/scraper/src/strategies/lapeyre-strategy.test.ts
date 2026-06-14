@@ -8,9 +8,18 @@ import { LapeyreStrategy } from './lapeyre-strategy';
 import type { ApiAdapter } from '../adapters/api-adapter';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const fixture = JSON.parse(readFileSync(join(here, '__fixtures__/lapeyre-sample.json'), 'utf8'));
+const discovery = JSON.parse(readFileSync(join(here, '__fixtures__/lapeyre-sample.json'), 'utf8'));
+const v2detail = JSON.parse(readFileSync(join(here, '__fixtures__/lapeyre-v2-detail.json'), 'utf8'));
 
-function mockApi(response: unknown = fixture): ApiAdapter {
+/** URL-aware mock: bySearchTerm/byId -> discovery ; /api/v2/products -> v2 detail (dims). */
+function mockApi(): ApiAdapter {
+  const fetchJson = vi.fn(async (url: string) =>
+    url.includes('/api/v2/products') ? v2detail : discovery,
+  );
+  return { fetchJson } as unknown as ApiAdapter;
+}
+/** Fixed-response mock (same object for every URL) — edge cases. */
+function mockApiFixed(response: unknown): ApiAdapter {
   return { fetchJson: vi.fn().mockResolvedValue(response) } as unknown as ApiAdapter;
 }
 
@@ -36,30 +45,48 @@ describe('LapeyreStrategy', () => {
     expect(p.name).toBe('Cuisine Lapeyre tout en 1');
     expect(p.brand).toBe('Lapeyre');
     expect(p.currency).toBe('EUR');
-    // 'Offer' (1495.0) preferred over 'Display' (1602.97) -> cents
-    expect(p.priceEurCents).toBe(149500);
-    // seo.href -> absolute URL
+    expect(p.priceEurCents).toBe(149500); // Offer preferred over Display
     expect(p.sourceUrl).toMatch(/^https:\/\/www\.lapeyre\.fr\//);
     expect(p.sourceLevel).toBe(2);
   });
 
-  it('emits dimensions null + dimensionConfidence 0 (Lapeyre API has no cotes)', async () => {
+  it('ENRICHES cotes from the v2 detail API (cm -> mm int + confidence)', async () => {
     const s = new LapeyreStrategy(mockApi());
-    const results = await s.fetchProductsByCategory('cuisine');
-    for (const r of results) {
-      expect(r.product!.widthMm).toBeNull();
-      expect(r.product!.heightMm).toBeNull();
-      expect(r.product!.depthMm).toBeNull();
-      expect(r.product!.dimensionConfidence).toBe(0);
-      // convention §15.8: rawMeasureText present (null) when no cote extracted
-      expect(r.product!.specifications?.rawMeasureText).toBeNull();
-    }
+    const [first] = await s.fetchProductsByCategory('cuisine');
+    const p = first.product!;
+    // v2 fixture (SKU child items[0]): LARGEUR=28, HAUTEUR=6.5, PROFONDEUR=32 cm -> mm
+    expect(p.widthMm).toBe(280);
+    expect(p.heightMm).toBe(65);
+    expect(p.depthMm).toBe(320);
+    expect(p.dimensionConfidence).toBe(1);
+    expect(p.specifications?.rawMeasureText).toBe('L28×H6.5×P32 cm');
+  });
+
+  it('falls back to dims null + confidence 0 when v2 detail has no cotes', async () => {
+    const s = new LapeyreStrategy(mockApiFixed(discovery)); // no `contents` -> enrichDims null
+    const [first] = await s.fetchProductsByCategory('cuisine');
+    expect(first.product!.widthMm).toBeNull();
+    expect(first.product!.dimensionConfidence).toBe(0);
+    expect(first.product!.specifications?.rawMeasureText).toBeNull();
+  });
+
+  it('partial dims (2 of 3) -> confidence 0.5', async () => {
+    const partial = { contents: [{ attributes: [
+      { identifier: 'DIMENSIONS-COMMUNES-DIM-LARGEUR', values: [{ value: '60' }] },
+      { identifier: 'DIMENSIONS-COMMUNES-DIM-HAUTEUR', values: [{ value: '80' }] },
+    ] }] };
+    const api = { fetchJson: vi.fn(async (u: string) => (u.includes('/api/v2/') ? partial : discovery)) } as unknown as ApiAdapter;
+    const s = new LapeyreStrategy(api);
+    const [first] = await s.fetchProductsByCategory('x');
+    expect(first.product!.widthMm).toBe(600);
+    expect(first.product!.heightMm).toBe(800);
+    expect(first.product!.depthMm).toBeNull();
+    expect(first.product!.dimensionConfidence).toBe(0.5);
   });
 
   it('absolutises relative WCS thumbnails to valid URLs', async () => {
     const s = new LapeyreStrategy(mockApi());
     const [first] = await s.fetchProductsByCategory('cuisine');
-    // fixture thumbnails are relative (/dx/api/dam/…) -> must become absolute https URLs
     expect(first.product!.imageUrls?.[0]).toMatch(/^https:\/\/www\.lapeyre\.fr\/dx\/api\/dam\//);
   });
 
@@ -68,18 +95,16 @@ describe('LapeyreStrategy', () => {
     const byKey = Object.fromEntries(
       (await s.fetchProductsByCategory('x')).map((r) => [r.product!.sku, r.product!.type]),
     );
-    expect(byKey['FPC8937243']).toBe('cabinet'); // "Cuisine Lapeyre tout en 1"
-    expect(byKey['FPC3093022']).toBe('tap'); // "Mitigeur évier START noir"
+    expect(byKey['FPC8937243']).toBe('cabinet');
+    expect(byKey['FPC3093022']).toBe('tap');
   });
 
   it('falls back to Display price when no Offer', async () => {
-    const resp = {
-      catalogEntryView: [
-        { partNumber: 'X1', name: 'Plan de travail compact', seo: { href: '/x-1' },
-          price: [{ usage: 'Display', currency: 'EUR', value: '249.00' }] },
-      ],
-    };
-    const s = new LapeyreStrategy(mockApi(resp));
+    const resp = { catalogEntryView: [
+      { partNumber: 'X1', name: 'Plan de travail compact', seo: { href: '/x-1' },
+        price: [{ usage: 'Display', currency: 'EUR', value: '249.00' }] },
+    ] };
+    const s = new LapeyreStrategy(mockApiFixed(resp));
     const [r] = await s.fetchProductsByCategory('x');
     expect(r.success).toBe(true);
     expect(r.product!.priceEurCents).toBe(24900);
@@ -87,11 +112,10 @@ describe('LapeyreStrategy', () => {
   });
 
   it('fetchProductByUrl extracts the trailing numeric id', async () => {
-    const api = mockApi({ catalogEntryView: [fixture.catalogEntryView[1]] });
+    const api = mockApiFixed({ catalogEntryView: [discovery.catalogEntryView[1]] });
     const s = new LapeyreStrategy(api);
     const r = await s.fetchProductByUrl('https://www.lapeyre.fr/mitigeur-evier-start-cuisine-noir-1249857');
     expect(r.success).toBe(true);
-    // assert the byId URL carried the extracted id
     const calledUrl = (api.fetchJson as unknown as { mock: { calls: string[][] } }).mock.calls[0][0];
     expect(calledUrl).toContain('/byId/1249857');
   });
@@ -104,12 +128,12 @@ describe('LapeyreStrategy', () => {
   });
 
   it('returns skip-not-crash on empty response', async () => {
-    const s = new LapeyreStrategy(mockApi({ catalogEntryView: [] }));
+    const s = new LapeyreStrategy(mockApiFixed({ catalogEntryView: [] }));
     expect(await s.fetchProductsByCategory('zzz')).toEqual([]);
   });
 
   it('skips an entry without SKU (Zod fail, no throw)', async () => {
-    const s = new LapeyreStrategy(mockApi({ catalogEntryView: [{ name: 'no sku', seo: { href: '/x' }, price: [] }] }));
+    const s = new LapeyreStrategy(mockApiFixed({ catalogEntryView: [{ name: 'no sku', seo: { href: '/x' }, price: [] }] }));
     const [r] = await s.fetchProductsByCategory('x');
     expect(r.success).toBe(false);
     expect(r.errors.join(' ')).toMatch(/sku/i);
