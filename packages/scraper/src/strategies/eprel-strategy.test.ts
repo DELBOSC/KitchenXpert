@@ -14,6 +14,30 @@ function mockFetcher(response: unknown): JsonFetcher {
   return { fetchJson: vi.fn().mockResolvedValue(response) };
 }
 
+/** Mock JsonFetcher paginé : honore `_page`/`_limit`, total = `size`. */
+function paginatedFetcher(total: number): JsonFetcher {
+  return {
+    fetchJson: vi.fn(async (url: string) => {
+      const u = new URL(url);
+      const page = Number(u.searchParams.get('_page'));
+      const limit = Number(u.searchParams.get('_limit'));
+      const start = (page - 1) * limit;
+      const hits = [];
+      for (let i = start; i < Math.min(start + limit, total); i++) {
+        hits.push({
+          eprelRegistrationNumber: i,
+          modelIdentifier: `M${i}`,
+          supplierOrTrademark: 'Brand',
+          dimensionWidth: 60,
+          dimensionHeight: 85,
+          dimensionDepth: 60,
+        });
+      }
+      return { size: total, hits };
+    }),
+  };
+}
+
 describe('EprelApplianceStrategy', () => {
   it('exposes brandId=eprel + sourceLevel N1', () => {
     const s = new EprelApplianceStrategy(mockFetcher(dishwashers));
@@ -35,7 +59,7 @@ describe('EprelApplianceStrategy', () => {
     const [first] = await s.fetchProductsByCategory('dishwashers2019');
     expect(first.success).toBe(true);
     const p = first.product!;
-    expect(p.sku).toBe('DFN38532X'); // 1er token du modelIdentifier
+    expect(p.sku).toBe('DFN38532X-7609003477'); // modelIdentifier complet normalisé
     expect(p.brand).toBe('BEKO');
     expect(p.type).toBe('appliance');
     // dishwashers2019 = cm connu -> ×10
@@ -103,11 +127,37 @@ describe('EprelApplianceStrategy', () => {
     const s = new EprelApplianceStrategy(mockFetcher(dishwashers));
     const r = await s.fetchProductByUrl('https://eprel.ec.europa.eu/screen/product/dishwashers2019/123456');
     expect(r.success).toBe(true);
-    expect(r.product!.sku).toBe('DFN38532X');
+    expect(r.product!.sku).toBe('DFN38532X-7609003477');
   });
 
   it('EPREL_KITCHEN_GROUPS expose les groupes cuisine prouvés', () => {
     expect(EPREL_KITCHEN_GROUPS).toContain('dishwashers2019');
     expect(EPREL_KITCHEN_GROUPS).toContain('refrigeratingappliances2019');
+  });
+
+  it('pagine sur plusieurs pages jusqu au plafond maxProducts', async () => {
+    const fetcher = paginatedFetcher(100);
+    const s = new EprelApplianceStrategy(fetcher, { pageSize: 2, maxProducts: 5 });
+    const r = await s.fetchProductsByCategory('dishwashers2019');
+    expect(r).toHaveLength(5); // 2 + 2 + 1
+    expect(r.map((x) => x.product!.sku)).toEqual(['M0', 'M1', 'M2', 'M3', 'M4']);
+    // 3 requêtes : pages 1,2 (limit 2) + page 3 (limit 1, reste du plafond)
+    expect((fetcher.fetchJson as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(3);
+  });
+
+  it('s arrête quand le groupe est épuisé (size), sans dépasser', async () => {
+    const fetcher = paginatedFetcher(3); // seulement 3 produits dans le groupe
+    const s = new EprelApplianceStrategy(fetcher, { pageSize: 2, maxProducts: 1000 });
+    const r = await s.fetchProductsByCategory('ovens');
+    expect(r).toHaveLength(3); // page 1 (2) + page 2 (1 < limit -> stop)
+    expect((fetcher.fetchJson as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(2);
+  });
+
+  it('par défaut : 1 page (pas de pagination involontaire)', async () => {
+    const fetcher = paginatedFetcher(1000);
+    const s = new EprelApplianceStrategy(fetcher); // défaut maxProducts = pageSize = 100
+    const r = await s.fetchProductsByCategory('dishwashers2019');
+    expect(r).toHaveLength(100);
+    expect((fetcher.fetchJson as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(1);
   });
 });

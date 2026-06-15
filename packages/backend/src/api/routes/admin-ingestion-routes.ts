@@ -32,6 +32,9 @@ const runSchema = z.object({
   // Pour EPREL : un code de groupe (ex. dishwashers2019). Pour ikea/lapeyre :
   // un mot-clé/catégorie produit (ex. "metod", "plan de travail").
   query: z.string().min(1, 'query is required'),
+  // EPREL uniquement : plafond de produits à ingérer ce run (la Strategy
+  // pagine jusque-là). Ignoré par ikea/lapeyre. Garde-fou 1..5000.
+  maxProducts: z.coerce.number().int().min(1).max(5000).optional(),
 });
 
 /**
@@ -40,9 +43,9 @@ const runSchema = z.object({
  */
 router.post('/run', validateBody(runSchema), async (req, res, next) => {
   try {
-    const { brand, query } = req.body as z.infer<typeof runSchema>;
+    const { brand, query, maxProducts } = req.body as z.infer<typeof runSchema>;
     const orchestrator = new IngestionOrchestrator(new HttpJsonFetcher());
-    const strategy = orchestrator.strategyFor(brand);
+    const strategy = orchestrator.strategyFor(brand, { maxProducts });
     const service = new CatalogIngestionService(new ProductRepository(prisma), strategy, logger);
     const result = await service.ingestByCategory(query);
     res.json({ success: true, data: result });

@@ -9,17 +9,20 @@
 import type { IngestionStrategy, JsonFetcher } from './ingestion-strategy';
 import { IkeaStrategy } from './ikea-strategy';
 import { LapeyreStrategy } from './lapeyre-strategy';
-import { EprelApplianceStrategy } from './eprel-strategy';
+import { EprelApplianceStrategy, type EprelStrategyOptions } from './eprel-strategy';
 
 /** Marques actuellement câblées (un Strategy chacune). */
 export type BrandId = 'ikea' | 'lapeyre' | 'eprel';
 
 export const SUPPORTED_BRANDS: readonly BrandId[] = ['ikea', 'lapeyre', 'eprel'];
 
-const FACTORIES: Record<BrandId, (fetcher: JsonFetcher) => IngestionStrategy> = {
+/** Options par run, transmises à la Strategy (pagination EPREL pour l'instant). */
+export type IngestionOptions = EprelStrategyOptions;
+
+const FACTORIES: Record<BrandId, (fetcher: JsonFetcher, opts: IngestionOptions) => IngestionStrategy> = {
   ikea: (f) => new IkeaStrategy(f),
   lapeyre: (f) => new LapeyreStrategy(f),
-  eprel: (f) => new EprelApplianceStrategy(f),
+  eprel: (f, o) => new EprelApplianceStrategy(f, o),
 };
 
 /** Type guard : `brand` est-il une marque supportée ? */
@@ -39,13 +42,13 @@ export class IngestionOrchestrator {
     return SUPPORTED_BRANDS;
   }
 
-  /** Instancie la Strategy d'une marque. Throw si marque inconnue. */
-  strategyFor(brand: string): IngestionStrategy {
+  /** Instancie la Strategy d'une marque (options par run). Throw si inconnue. */
+  strategyFor(brand: string, options: IngestionOptions = {}): IngestionStrategy {
     if (!isSupportedBrand(brand)) {
       throw new Error(
         `Unknown ingestion brand: "${brand}". Supported: ${SUPPORTED_BRANDS.join(', ')}`,
       );
     }
-    return FACTORIES[brand](this.fetcher);
+    return FACTORIES[brand](this.fetcher, options);
   }
 }

@@ -75,27 +75,61 @@ interface NormalizedDims {
   rawMeasureText: string | null;
 }
 
+/** Options de pagination/volume pour un run EPREL. */
+export interface EprelStrategyOptions {
+  /** Produits par requête (défaut 100). EPREL pagine via `_page` + `_limit`. */
+  pageSize?: number;
+  /**
+   * Plafond de produits par run (défaut = pageSize, soit 1 page). Monter pour
+   * ingérer davantage : la Strategy boucle les pages jusqu'à ce plafond ou
+   * l'épuisement du groupe (`size`). Garde-fou contre un run illimité.
+   */
+  maxProducts?: number;
+}
+
 export class EprelApplianceStrategy implements IngestionStrategy {
   readonly brandId = 'eprel';
   readonly sourceLevel = 1 as const; // registre officiel (§15.8 N1)
 
-  /** @param pageSize nb de produits par requête de groupe (défaut 50). */
+  private readonly pageSize: number;
+  private readonly maxProducts: number;
+
   constructor(
     private readonly api: JsonFetcher,
-    private readonly pageSize = 50,
-  ) {}
+    options: EprelStrategyOptions = {},
+  ) {
+    this.pageSize = Math.max(1, options.pageSize ?? 100);
+    this.maxProducts = Math.max(1, options.maxProducts ?? this.pageSize);
+  }
 
   /**
    * `categoryOrKeyword` = un code de groupe EPREL (ex. `dishwashers2019`).
-   * Récupère une page du groupe (pagination = enrichissement futur).
+   * Boucle les pages (`_page`/`_limit`) jusqu'à `maxProducts` ou l'épuisement
+   * du groupe (`size`). Le rate-limit/retry est porté par le JsonFetcher injecté.
    */
   async fetchProductsByCategory(categoryOrKeyword: string): Promise<ParseResult[]> {
     const group = categoryOrKeyword;
-    const url = `${EPREL_API}/${encodeURIComponent(group)}?_page=1&_limit=${this.pageSize}`;
-    const json = await this.api.fetchJson<EprelResponse>(url, {
-      headers: { Origin: EPREL_ORIGIN, Referer: `${EPREL_ORIGIN}/` },
-    });
-    return (json.hits ?? []).map((h) => this.mapHit(h, group));
+    const out: ParseResult[] = [];
+    let page = 1;
+    let total = Infinity;
+    // `_limit` reste CONSTANT (= pageSize) : EPREL calcule l'offset comme
+    // (page-1)×limit, donc faire varier limit en cours de route décalerait les
+    // pages. On plafonne plutôt via un break interne sur maxProducts.
+    while (out.length < this.maxProducts && (page - 1) * this.pageSize < total) {
+      const url = `${EPREL_API}/${encodeURIComponent(group)}?_page=${page}&_limit=${this.pageSize}`;
+      const json = await this.api.fetchJson<EprelResponse>(url, {
+        headers: { Origin: EPREL_ORIGIN, Referer: `${EPREL_ORIGIN}/` },
+      });
+      if (typeof json.size === 'number') total = json.size;
+      const hits = json.hits ?? [];
+      for (const h of hits) {
+        if (out.length >= this.maxProducts) break;
+        out.push(this.mapHit(h, group));
+      }
+      if (hits.length < this.pageSize) break; // dernière page atteinte
+      page += 1;
+    }
+    return out;
   }
 
   /**
@@ -126,7 +160,11 @@ export class EprelApplianceStrategy implements IngestionStrategy {
   // ── internals ──────────────────────────────────────────────────────────────
 
   private mapHit(h: EprelHit, group: string): ParseResult {
-    const sku = (h.modelIdentifier ?? '').trim().split(/\s+/)[0]; // model code
+    // SKU = modelIdentifier COMPLET normalisé. Le 1er token seul collisionne sur
+    // des modèles DISTINCTS (ex. "MFA 310 W" vs "MFA 420 W") -> perte à l'upsert.
+    // Le modelIdentifier complet est unique (prouvé live) ; un doublon exact =
+    // vraie ré-immatriculation du même modèle -> dedup correct.
+    const sku = (h.modelIdentifier ?? '').trim().replace(/\s+/g, '-');
     const brand = h.supplierOrTrademark ?? h.organisation?.organisationName ?? '';
     const dims = this.normalizeDims(group, h.dimensionWidth, h.dimensionHeight, h.dimensionDepth);
 
