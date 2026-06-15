@@ -834,6 +834,53 @@ Justifications cumulées : cohérence positionnement micro-entrepreneur (CapEx t
 
 Pattern de découverte : (1) DevTools Network sur page catalogue → (2) filtrer XHR/Fetch → (3) identifier les endpoints internes utilisés par le site → (4) souvent JSON propre sans Cloudflare → (5) taper directement = plus rapide, plus fiable, moins coûteux qu'un browser.
 
+### 15.8.1 — Sources tierces gratuites (audit b-ter, 15/06/2026)
+
+> Audit-first pur (curl + parsing, ~17 URLs, UA `KitchenXpert-research/0.2`, rate-limit, aucun bypass anti-bot). 3 POC pour combler les gaps **cotes/prix/catégorie** sur les marques bloquées (LM/But/Castorama anti-bot) et la catégorie **électroménager** mal couverte par les Strategies retailer.
+
+#### POC 1 — EPREL (registre UE) → 🟢 **GO MASSIF**
+
+**Source** : European Product Registry for Energy Labelling, créé par **Règlement (UE) 2017/1369**. Public, gratuit, **légalement propre** (transparence consommateur obligatoire = réutilisation prévue par le texte).
+
+**Endpoint** (prouvé live) : `GET https://eprel.ec.europa.eu/api/products/{group}?_page=1&_limit=N` **avec header `Origin: https://eprel.ec.europa.eu`** (sans le header → 403 ; c'est l'API publique que le SPA du site appelle lui-même, **pas de clé API, pas un bypass anti-bot**). Sans Origin, l'API REST « registered » (`/api/public/*`) exige une clé EU-Login (gratuite mais sur inscription).
+
+**Couverture cuisine** (≈ 118k SKU, comptes `size` réels) :
+
+- `refrigeratingappliances2019` : **54 446** (cotes présentes, ex. `580/1730/580`)
+- `ovens` : **26 952** (⚠️ `dimension*` top-level vides → cotes sous d'autres champs/cavité, à creuser)
+- `rangehoods` : **22 873** (⚠️ idem fours)
+- `dishwashers2019` : **13 864** (cotes présentes, ex. `60/85/60`)
+- Plaques (`cookinghobs`) + caves à vin : à inventorier
+
+**Schéma par hit** : `modelIdentifier` (réf fabricant), `supplierOrTrademark`/`organisation.organisationName` (marque), `eprelRegistrationNumber`, `dimensionWidth/Height/Depth`, `energyClass`, `noise`, `ratedCapacity`…
+
+**⚠️ Piège normaliseur — unité variable par groupe** : lave-vaisselle en **cm** (`60/85/60`), frigos en **mm** (`580/1730/580`). L'`EprelApplianceStrategy` doit porter une **table d'unité par `implementingAct`** + bornes de sanity (ex. dishwasher `60` < 300 ⇒ cm). Le framework `dimensionConfidence` + `rawMeasureText` (§15.0) couvre exactement ce risque.
+
+**Usages cumulables** : (1) **source directe** appliance (catalogue électroménager complet) ; (2) **enrichisseur** — matcher un SKU appliance retailer ↔ EPREL par `brand + modelIdentifier` (technique `product-matcher` §15.4).
+
+**Limite** : **pas de prix** (registre énergie ≠ catalogue commercial). Le prix reste à sourcer ailleurs (retailer).
+
+**Impact mapper (PR #172)** : **aucun**. EPREL respecte le contrat `UnifiedProduct` → `mapUnifiedProductToUpsert` le traite tel quel ; unité-par-groupe + match = **niveau Strategy**, pas mapper ; `energyClass`/`noise`/`eprelRegistrationNumber` → `specifications` (déjà spread). La raison de « hold » de #172 tombe : l'enrichment arrive comme **nouvelles sources alimentant le même UnifiedProduct** → mapper enrichment-agnostic, #172 mergeable tel quel.
+
+#### POC 2 — Sites fabricants amont → 🟡 **NO-GO maintenant**
+
+Sites des fabricants tiers vendus sur Lapeyre/LM. Audit : `espe.it` ouvert + JSON-LD (1 bloc) ; `louka.fr` **403** ; `bosch-home.fr` 200 mais **pas de JSON-LD** en home (et EPREL couvre déjà Bosch). NO-GO car : (a) cotes meuble Lapeyre déjà fournies par XHR (#165) → faible valeur ; (b) matching brand+model par-fabricant = effort élevé / couverture niche ; (c) 1/3 bloqué. À reconsidérer **par marque** si un besoin cotes-meuble précis émerge.
+
+#### POC 3 — Sitemaps retailers N4 → 🔴 **NO-GO**
+
+Les sitemaps **ne contournent pas** l'anti-bot :
+
+- **LM** : `robots.txt` = **`Disallow: /`** + aucun sitemap public. **Exclusion structurelle explicite** (≠ un anti-bot N4 que le stealth « autoriserait ») → LM **hors scope scraping toutes méthodes**, y compris Playwright (le faire violerait robots.txt — à proscrire, §15.8 Principe 5).
+- **But** : sitemap index 200 mais `sitemap-produits-*.xml` → **403** (DataDome étendu).
+- **Castorama** : non retesté (CloudFront 503 déjà connu).
+
+#### Mise à jour roadmap §15.8
+
+- **(b-ter)** EprelApplianceStrategy — source N1 électroménager (~118k SKU), à insérer après (b-bis) cotes Lapeyre (#165). Effort ≈ 4-6h. Réutilise `UnifiedProduct` + `ApiAdapter` générique + `data-normalizer` (table d'unité par groupe). Recommandée **après la Phase 4** (persistance live IKEA/Lapeyre prouvée d'abord).
+- **LM = exclusion structurelle** retirée du backlog scraping (pivot éventuel : feeds B2B / partenariats marchands / abandon).
+
+**Acquit b-ter** : un registre **réglementaire** (EPREL) bat le scraping retailer sur l'électroménager — données officielles, gratuites, légalement propres, structurées — là où §15.2 ne voyait « aucune source catalogue live ». Le header `Origin` distingue l'API publique (sans clé) de l'API registered (clé EU-Login) : tester avec les headers du SPA avant de conclure « auth requise ».
+
 ---
 
 *Dernière mise à jour : 10/06/2026 — **Session STACK-UP : ROOT CAUSE `<Provider store={store}>` jamais câblé (3 PRs : #109 Provider + #110 kitchen-fields flow-4/5/6 + #106 span-click flow-1)**. 1ʳᵉ session stack montée en local (backend :4000 + preview prod :3005). Le login UI atteint /dashboard MAIS DashboardPage (et Catalog/SandboxDesigner) **crashent** `Cannot destructure 'store' … null` — le store Redux n'était **jamais fourni** à l'arbre (App.tsx sans `<Provider>`). **Prouvé 3 axes** (code/runtime/git pickaxe), masqué par `vi.mock('store/hooks')`. Mon diagnostic 09/06 (« régression consent / nav login→dashboard ») était **FAUX** = c'était ce crash. Fix #109 (3 lignes) → **flow-2 2/2 PASS**, catalog/designer rendent. Triage traîne : kitchen-fields `widthCm→width/length/height` (#110, flow-4/5/6 `POST /kitchens` 400→crash), span-click checkbox sr-only (#106). Restant = couches per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe). **Leçons** : stack-up trouve des bugs invisibles aux unit tests mockés + logs CI ; **comparaison de runs ≠ causation** (ma « régression consent » du 08/06 était corrélation) ; fixer la racine puis trier honnêtement (pas de brute-force WebGL/externe). main HEAD = `f99f4d1`. Branche courante : `docs/stackup-redux-provider`.
