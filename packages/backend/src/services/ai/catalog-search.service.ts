@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { AnthropicService } from './anthropic.service';
+import { buildTypeWhereOr } from './catalog-type-mapping';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
@@ -64,10 +65,13 @@ export class AICatalogSearchService {
 
     // Step 2: Build Prisma query from filters
     const where: Record<string, unknown> = { isActive: true, deletedAt: null };
+    // OR-groups combinés via AND (évite la collision de clé `OR` entre type et query).
+    const and: Record<string, unknown>[] = [];
 
-    // Map type filter to category name search
+    // type -> category.name (legacy) OU specifications.applianceGroup/productType
+    // (débloque les SKU ingérés avec categoryId NULL, cf catalog-type-mapping).
     if (extracted.filters.type) {
-      where.category = { name: { contains: extracted.filters.type, mode: 'insensitive' } };
+      and.push({ OR: buildTypeWhereOr(extracted.filters.type) });
     }
     if (extracted.filters.brand) {
       where.brand = { contains: extracted.filters.brand, mode: 'insensitive' };
@@ -89,10 +93,16 @@ export class AICatalogSearchService {
       where.color = { contains: extracted.filters.color, mode: 'insensitive' };
     }
     if (extracted.filters.query) {
-      where.OR = [
-        { name: { contains: extracted.filters.query, mode: 'insensitive' } },
-        { description: { contains: extracted.filters.query, mode: 'insensitive' } },
-      ];
+      and.push({
+        OR: [
+          { name: { contains: extracted.filters.query, mode: 'insensitive' } },
+          { description: { contains: extracted.filters.query, mode: 'insensitive' } },
+        ],
+      });
+    }
+
+    if (and.length > 0) {
+      where.AND = and;
     }
 
     // Step 3: Query DB
