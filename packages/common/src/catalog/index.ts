@@ -6,3 +6,4 @@
  */
 export * from './unified-product.schema';
 export * from './ingestion-strategy';
+export * from './eprel-strategy';
