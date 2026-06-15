@@ -31,7 +31,19 @@ export interface CreateProductDto {
   images?: string[];
   specifications?: Record<string, unknown>;
   availability?: string;
+  // Ingestion provenance (CLAUDE.md §15.8 step d) — populated by the catalog
+  // ingestion pipeline from a UnifiedProduct. All nullable/additive.
+  dimensionConfidence?: number;
+  sourceLevel?: number;
+  sourceUrl?: string;
+  lastVerifiedAt?: Date;
 }
+
+/**
+ * Payload for {@link ProductRepository.upsertBySku} — every creatable field
+ * except `sku` (which is the upsert key, passed separately).
+ */
+export type UpsertProductDto = Omit<CreateProductDto, 'sku'>;
 
 export interface UpdateProductDto {
   name?: string;
@@ -49,6 +61,10 @@ export interface UpdateProductDto {
   specifications?: Record<string, unknown>;
   availability?: string;
   isActive?: boolean;
+  dimensionConfidence?: number;
+  sourceLevel?: number;
+  sourceUrl?: string;
+  lastVerifiedAt?: Date;
 }
 
 export interface ProductFilters {
@@ -212,6 +228,49 @@ export class ProductRepository {
         specifications: p.specifications as any,
       })),
       skipDuplicates: true
+    });
+  }
+
+  /**
+   * Upsert (create-or-update) a product by its unique SKU.
+   *
+   * Used by the catalog ingestion pipeline (CLAUDE.md §15.8 step d): each run
+   * re-ingests the same SKUs, so this is idempotent — `lastVerifiedAt` and the
+   * ingestion provenance fields are refreshed on every pass. `sku` is the
+   * upsert key (passed separately); `data` carries every other writable field.
+   * Prisma manages `createdAt`/`updatedAt` automatically.
+   */
+  async upsertBySku(sku: string, data: UpsertProductDto): Promise<Product> {
+    const write = {
+      catalogId: data.catalogId,
+      providerId: data.providerId,
+      categoryId: data.categoryId,
+      name: data.name,
+      description: data.description,
+      brand: data.brand,
+      model: data.model,
+      price: data.price,
+      currency: data.currency || 'EUR',
+      width: data.width,
+      depth: data.depth,
+      height: data.height,
+      weight: data.weight,
+      color: data.color,
+      material: data.material,
+      finish: data.finish,
+      images: data.images as any,
+      specifications: data.specifications as any,
+      availability: data.availability || 'in_stock',
+      dimensionConfidence: data.dimensionConfidence,
+      sourceLevel: data.sourceLevel,
+      sourceUrl: data.sourceUrl,
+      lastVerifiedAt: data.lastVerifiedAt ?? new Date(),
+    };
+
+    return this.prisma.product.upsert({
+      where: { sku },
+      create: { sku, ...write },
+      update: write,
     });
   }
 
