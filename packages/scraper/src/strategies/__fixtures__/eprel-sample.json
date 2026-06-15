@@ -1,0 +1,34 @@
+{
+  "size": 13864,
+  "hits": [
+    {
+      "eprelRegistrationNumber": 123456,
+      "modelIdentifier": "DFN38532X 7609003477",
+      "supplierOrTrademark": "BEKO",
+      "organisation": { "organisationName": "BEKO EUROPE MANAGEMENT S.R.L." },
+      "energyClass": "B",
+      "dimensionWidth": 60,
+      "dimensionHeight": 85,
+      "dimensionDepth": 60,
+      "noise": 43,
+      "noiseClass": "B",
+      "ratedCapacity": 15,
+      "onMarketEndDate": null
+    },
+    {
+      "eprelRegistrationNumber": 222222,
+      "modelIdentifier": "SMS4HVI01E",
+      "supplierOrTrademark": "Bosch",
+      "energyClass": "C",
+      "dimensionWidth": 60,
+      "dimensionHeight": 85
+    },
+    {
+      "eprelRegistrationNumber": 333333,
+      "supplierOrTrademark": "NoModel",
+      "dimensionWidth": 60,
+      "dimensionHeight": 85,
+      "dimensionDepth": 60
+    }
+  ]
+}
