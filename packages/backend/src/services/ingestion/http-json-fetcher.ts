@@ -8,9 +8,9 @@
  * package scraper (lourd, puppeteer). Le rate-limit fin / retry vit côté
  * Strategy/source ; ici on reste volontairement simple.
  */
-import type { JsonFetcher } from '@kitchenxpert/common';
+import type { JsonFetcher, HtmlFetcher } from '@kitchenxpert/common';
 
-export class HttpJsonFetcher implements JsonFetcher {
+export class HttpJsonFetcher implements JsonFetcher, HtmlFetcher {
   constructor(
     private readonly userAgent = 'KitchenXpert/1.0 (+catalog ingestion)',
     private readonly timeoutMs = 15_000,
@@ -20,17 +20,28 @@ export class HttpJsonFetcher implements JsonFetcher {
     url: string,
     options?: { headers?: Record<string, string> },
   ): Promise<T> {
+    const res = await this.request(url, 'application/json', options);
+    return (await res.json()) as T;
+  }
+
+  /** Récupère du HTML/texte (PDP, sitemap XML) pour les Strategies N3. */
+  async fetchText(url: string, options?: { headers?: Record<string, string> }): Promise<string> {
+    const res = await this.request(url, 'text/html,application/xhtml+xml,application/xml', options);
+    return res.text();
+  }
+
+  private async request(
+    url: string,
+    accept: string,
+    options?: { headers?: Record<string, string> },
+  ): Promise<Response> {
     const res = await fetch(url, {
-      headers: {
-        Accept: 'application/json',
-        'User-Agent': this.userAgent,
-        ...options?.headers,
-      },
+      headers: { Accept: accept, 'User-Agent': this.userAgent, ...options?.headers },
       signal: AbortSignal.timeout(this.timeoutMs),
     });
     if (!res.ok) {
       throw new Error(`HTTP ${res.status} ${res.statusText} on ${url}`);
     }
-    return (await res.json()) as T;
+    return res;
   }
 }

@@ -25,7 +25,7 @@ router.use(authenticate);
 router.use(authorize(['admin']));
 
 const runSchema = z.object({
-  brand: z.enum(['ikea', 'lapeyre', 'eprel'], {
+  brand: z.enum(['ikea', 'lapeyre', 'eprel', 'castorama'], {
     required_error: 'brand is required',
     invalid_type_error: `brand must be one of: ${SUPPORTED_BRANDS.join(', ')}`,
   }),
