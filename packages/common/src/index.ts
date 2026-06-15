@@ -40,3 +40,9 @@ export * as Models from './models';
 
 // Re-export i18n as a namespace to avoid conflicts with utils formatting
 export * as i18n from './i18n';
+
+// Catalog ingestion contracts (§15.8) — unified product schema + Strategy
+// interface, single source of truth shared by the scraper (producer) and the
+// backend (consumer, roadmap step d). No name collisions with the exports
+// above (audited 15/06).
+export * from './catalog';

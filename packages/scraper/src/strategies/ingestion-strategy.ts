@@ -1,23 +1,8 @@
 /**
- * IngestionStrategy (CLAUDE.md §15.8 Principe 2)
+ * IngestionStrategy — re-export shim (CLAUDE.md §15.8 Q3.b).
  *
- * Contract every brand Strategy implements. The IngestionOrchestrator (roadmap
- * step c) will route across brands; each Strategy resolves its own cascade
- * level and returns skip-not-crash ParseResults validated against the unified
- * schema.
+ * The contract now lives in @kitchenxpert/common as the SINGLE SOURCE OF TRUTH
+ * (shared with the backend persistence layer, roadmap step d). This shim
+ * preserves the original local import path `./ingestion-strategy(.js)`.
  */
-import type { ParseResult } from '../schemas/unified-product.schema.js';
-import type { SourceLevel } from '../schemas/unified-product.schema.js';
-
-export interface IngestionStrategy {
-  /** Stable brand id (matches brands.config + backend.Product.brand). */
-  readonly brandId: string;
-  /** Cascade level this strategy operates at (§15.8 Principe 1). */
-  readonly sourceLevel: SourceLevel;
-
-  /** Resolve a single product from its canonical URL. */
-  fetchProductByUrl(url: string): Promise<ParseResult>;
-
-  /** Resolve a batch from a category/keyword query. */
-  fetchProductsByCategory(categoryOrKeyword: string): Promise<ParseResult[]>;
-}
+export type { IngestionStrategy } from '@kitchenxpert/common';
