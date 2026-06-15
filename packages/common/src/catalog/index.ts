@@ -6,7 +6,10 @@
  */
 export * from './unified-product.schema';
 export * from './ingestion-strategy';
+export * from './html-fetcher';
+export * from './jsonld';
 export * from './ikea-strategy';
 export * from './lapeyre-strategy';
 export * from './eprel-strategy';
+export * from './castorama-strategy';
 export * from './ingestion-orchestrator';
