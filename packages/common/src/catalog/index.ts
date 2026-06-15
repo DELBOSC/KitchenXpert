@@ -6,4 +6,7 @@
  */
 export * from './unified-product.schema';
 export * from './ingestion-strategy';
+export * from './ikea-strategy';
+export * from './lapeyre-strategy';
 export * from './eprel-strategy';
+export * from './ingestion-orchestrator';

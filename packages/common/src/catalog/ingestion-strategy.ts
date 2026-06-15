@@ -13,6 +13,19 @@
  */
 import type { ParseResult, SourceLevel } from './unified-product.schema';
 
+/**
+ * Minimal JSON-over-HTTP port every API-first Strategy depends on. The
+ * scraper's ApiAdapter (retry/backoff/rate-limit) satisfies it structurally, as
+ * does a plain native-fetch wrapper — so a Strategy stays decoupled from any
+ * concrete HTTP client and from the heavy scraper package.
+ */
+export interface JsonFetcher {
+  fetchJson<T = unknown>(
+    url: string,
+    options?: { headers?: Record<string, string> },
+  ): Promise<T>;
+}
+
 export interface IngestionStrategy {
   /** Stable brand id (matches brands.config + backend.Product.brand). */
   readonly brandId: string;
