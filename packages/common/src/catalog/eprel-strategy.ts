@@ -19,7 +19,7 @@
  * Limite : EPREL ne porte PAS de prix (registre énergie ≠ catalogue
  * commercial) -> priceEurCents=null ; le prix se source ailleurs (retailer).
  */
-import type { IngestionStrategy } from './ingestion-strategy';
+import type { IngestionStrategy, JsonFetcher } from './ingestion-strategy';
 import {
   validateUnifiedProduct,
   type ParseResult,
@@ -28,17 +28,6 @@ import {
 
 const EPREL_API = 'https://eprel.ec.europa.eu/api/products';
 const EPREL_ORIGIN = 'https://eprel.ec.europa.eu';
-
-/**
- * Port minimal d'un client JSON (l'ApiAdapter du scraper le satisfait
- * structurellement). Garde la Strategy découplée du package scraper lourd.
- */
-export interface JsonFetcher {
-  fetchJson<T = unknown>(
-    url: string,
-    options?: { headers?: Record<string, string> },
-  ): Promise<T>;
-}
 
 /**
  * Groupes EPREL pertinents cuisine (codes `implementingAct`). Les 4 premiers

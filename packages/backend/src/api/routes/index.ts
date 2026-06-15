@@ -2,6 +2,7 @@ import { Router, type Router as RouterType } from 'express';
 import rateLimit from 'express-rate-limit';
 
 import abandonmentRoutes from './abandonment-routes';
+import adminIngestionRoutes from './admin-ingestion-routes';
 import adminRoutes from './admin-routes';
 import aiAdminRoutes from './ai-admin-routes';
 import aiChatRoutes from './ai-chat-routes';
@@ -156,6 +157,7 @@ router.use('/roles', roleRoutes);
 router.use('/permissions', permissionRoutes);
 router.use('/audit', auditRoutes);
 router.use('/admin', adminRoutes);
+router.use('/admin/ingestion', adminIngestionRoutes);
 router.use('/monitoring', monitoringRoutes);
 router.use('/export', exportRoutes);
 router.use('/ai-admin', aiAdminRoutes);
