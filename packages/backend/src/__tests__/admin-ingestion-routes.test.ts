@@ -14,7 +14,13 @@ jest.mock('../utils/logger', () => ({
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
 }));
 
-jest.mock('../database/client', () => ({ prisma: { $disconnect: jest.fn() } }));
+jest.mock('../database/client', () => ({
+  prisma: {
+    $disconnect: jest.fn(),
+    // PrismaCategoryResolver (Phase 2) charge le référentiel slug->id ; [] -> ids null.
+    productCategory: { findMany: jest.fn().mockResolvedValue([]) },
+  },
+}));
 
 // Repository mocké : upsertBySku ne touche pas la DB.
 const mockUpsertBySku = jest.fn().mockResolvedValue({ id: 'p1' });

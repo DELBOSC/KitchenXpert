@@ -95,4 +95,16 @@ describe('mapUnifiedProductToUpsert', () => {
     const { data } = mapUnifiedProductToUpsert(makeUP({ ean: '7350094711234' }));
     expect((data.specifications as Record<string, unknown>).ean).toBe('7350094711234');
   });
+
+  it('pose categoryId + specifications.categoryDetection quand category fourni (§15.8 Phase 2)', () => {
+    const { data } = mapUnifiedProductToUpsert(makeUP(), { categoryId: 'cat-1', detection: 'inferred' });
+    expect(data.categoryId).toBe('cat-1');
+    expect((data.specifications as Record<string, unknown>).categoryDetection).toBe('inferred');
+  });
+
+  it('aucun categoryId/detection si category non fourni (backward-compat)', () => {
+    const { data } = mapUnifiedProductToUpsert(makeUP());
+    expect(data.categoryId).toBeUndefined();
+    expect((data.specifications as Record<string, unknown>).categoryDetection).toBeUndefined();
+  });
 });

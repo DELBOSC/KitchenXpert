@@ -15,6 +15,7 @@ import { validateBody } from '../middleware/validation-middleware';
 import { prisma } from '../../database/client';
 import { ProductRepository } from '../../repositories/product-repository';
 import { CatalogIngestionService } from '../../services/ingestion/catalog-ingestion.service';
+import { PrismaCategoryResolver } from '../../services/ingestion/category-resolver';
 import { HttpJsonFetcher } from '../../services/ingestion/http-json-fetcher';
 import logger from '../../utils/logger';
 
@@ -46,7 +47,12 @@ router.post('/run', validateBody(runSchema), async (req, res, next) => {
     const { brand, query, maxProducts } = req.body as z.infer<typeof runSchema>;
     const orchestrator = new IngestionOrchestrator(new HttpJsonFetcher());
     const strategy = orchestrator.strategyFor(brand, { maxProducts });
-    const service = new CatalogIngestionService(new ProductRepository(prisma), strategy, logger);
+    const service = new CatalogIngestionService(
+      new ProductRepository(prisma),
+      strategy,
+      logger,
+      new PrismaCategoryResolver(prisma),
+    );
     const result = await service.ingestByCategory(query);
     res.json({ success: true, data: result });
   } catch (err) {

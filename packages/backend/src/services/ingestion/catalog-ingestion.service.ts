@@ -10,10 +10,19 @@
  * invalid ParseResult, or a single failed upsert never aborts the run — each is
  * counted and recorded so the caller gets an honest tally.
  */
-import type { IngestionStrategy } from '@kitchenxpert/common';
+import { resolveCategorySlug, type IngestionStrategy, type CategorySlug, type UnifiedProduct } from '@kitchenxpert/common';
 
 import type { ProductRepository } from '../../repositories/product-repository';
 import { mapUnifiedProductToUpsert } from './unified-product-mapper';
+
+/**
+ * Résout un slug de catégorie (§15.8 Phase 2) en categoryId. Injecté pour
+ * garder le service testable + découplé de Prisma. Si absent -> pas de
+ * categoryId posé (comportement Phase 1, backward-compat).
+ */
+export interface CategoryIdResolver {
+  idForSlug(slug: CategorySlug): Promise<string | null> | string | null;
+}
 
 /** Outcome of a single {@link CatalogIngestionService.ingestByCategory} run. */
 export interface IngestResult {
@@ -36,6 +45,7 @@ export class CatalogIngestionService {
     private readonly repo: ProductRepository,
     private readonly strategy: IngestionStrategy,
     private readonly logger?: IngestionLogger,
+    private readonly categoryResolver?: CategoryIdResolver,
   ) {}
 
   /**
@@ -74,7 +84,8 @@ export class CatalogIngestionService {
         continue;
       }
       try {
-        const { sku, data } = mapUnifiedProductToUpsert(r.product);
+        const category = await this.resolveCategory(r.product);
+        const { sku, data } = mapUnifiedProductToUpsert(r.product, category);
         await this.repo.upsertBySku(sku, data);
         result.ingested++;
       } catch (e) {
@@ -88,5 +99,24 @@ export class CatalogIngestionService {
         `${result.ingested}/${result.fetched} ingested, ${result.skipped} skipped`,
     );
     return result;
+  }
+
+  /**
+   * Résout la catégorie (§15.8 Phase 2) : slug via le mapper pur, puis id via le
+   * resolver injecté. Sans resolver -> {} (pas de categoryId). Slug absent du
+   * référentiel -> categoryId null + warning (skip-not-crash).
+   */
+  private async resolveCategory(product: UnifiedProduct): Promise<{
+    categoryId?: string | null;
+    detection?: 'explicit' | 'inferred' | null;
+  }> {
+    if (!this.categoryResolver) return {};
+    const { slug, detection } = resolveCategorySlug(product);
+    if (!slug) return { detection };
+    const categoryId = await this.categoryResolver.idForSlug(slug);
+    if (categoryId == null) {
+      this.logger?.warn(`[ingestion] category slug "${slug}" introuvable -> categoryId NULL`);
+    }
+    return { categoryId, detection };
   }
 }

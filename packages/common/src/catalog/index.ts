@@ -12,4 +12,5 @@ export * from './ikea-strategy';
 export * from './lapeyre-strategy';
 export * from './eprel-strategy';
 export * from './castorama-strategy';
+export * from './category-slug-mapper';
 export * from './ingestion-orchestrator';

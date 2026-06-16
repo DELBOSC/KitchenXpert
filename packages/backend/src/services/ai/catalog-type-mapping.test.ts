@@ -1,68 +1,68 @@
-import { buildTypeWhereOr, TYPE_TO_SPEC_FILTERS } from './catalog-type-mapping';
+import { buildTypeWhereOr, TYPE_TO_CATEGORY_SLUGS } from './catalog-type-mapping';
 
-/** Helper : extrait les valeurs spec (applianceGroup/productType) d'un OR. */
-function specValues(or: Record<string, unknown>[]): { groups: string[]; types: string[] } {
-  const groups: string[] = [];
-  const types: string[] = [];
-  for (const cond of or) {
-    const spec = cond.specifications as { path?: string[]; equals?: string } | undefined;
-    if (spec?.path?.[0] === 'applianceGroup' && spec.equals) groups.push(spec.equals);
-    if (spec?.path?.[0] === 'productType' && spec.equals) types.push(spec.equals);
-  }
-  return { groups, types };
+/** Slugs d'un OR `category.slug IN [...]` (ou [] si fallback legacy name). */
+function slugsOf(or: Record<string, unknown>[]): string[] {
+  const cat = or[0]?.category as { slug?: { in?: string[] } } | undefined;
+  return cat?.slug?.in ?? [];
+}
+function isLegacyNameFallback(or: Record<string, unknown>[]): boolean {
+  const cat = or[0]?.category as { name?: { contains?: string } } | undefined;
+  return or.length === 1 && typeof cat?.name?.contains === 'string';
 }
 
-describe('buildTypeWhereOr', () => {
-  it('inclut TOUJOURS le filtre legacy category.name (1er élément)', () => {
-    const or = buildTypeWhereOr('dishwasher');
-    expect(or[0]).toEqual({ category: { name: { contains: 'dishwasher', mode: 'insensitive' } } });
+describe('buildTypeWhereOr (Phase 2.4 — filtre par category.slug)', () => {
+  it('électroménager -> slugs électroménager', () => {
+    expect(slugsOf(buildTypeWhereOr('dishwasher'))).toEqual(['electromenager-lavage']);
+    expect(slugsOf(buildTypeWhereOr('oven'))).toEqual(['electromenager-cuisson']);
+    expect(slugsOf(buildTypeWhereOr('hood'))).toEqual(['electromenager-cuisson']);
+    expect(slugsOf(buildTypeWhereOr('refrigerator'))).toEqual(['electromenager-froid']);
+    expect(slugsOf(buildTypeWhereOr('appliance')).sort()).toEqual([
+      'electromenager-cuisson', 'electromenager-froid', 'electromenager-lavage',
+    ]);
   });
 
-  it('appliance EPREL -> applianceGroup', () => {
-    expect(specValues(buildTypeWhereOr('dishwasher')).groups).toEqual(['dishwashers2019']);
-    expect(specValues(buildTypeWhereOr('oven')).groups).toEqual(['ovens']);
-    expect(specValues(buildTypeWhereOr('hood')).groups).toEqual(['rangehoods']);
-    expect(specValues(buildTypeWhereOr('refrigerator')).groups).toEqual(['refrigeratingappliances2019']);
+  it('cabinet (coarse) -> bas/hauts/colonnes ; sous-types -> 1 slug', () => {
+    expect(slugsOf(buildTypeWhereOr('cabinet')).sort()).toEqual(['colonnes', 'meubles-bas', 'meubles-hauts']);
+    expect(slugsOf(buildTypeWhereOr('base_cabinet'))).toEqual(['meubles-bas']);
+    expect(slugsOf(buildTypeWhereOr('wall_cabinet'))).toEqual(['meubles-hauts']);
+    expect(slugsOf(buildTypeWhereOr('tall_cabinet'))).toEqual(['colonnes']);
   });
 
-  it('meuble -> productType', () => {
-    expect(specValues(buildTypeWhereOr('cabinet')).types).toEqual(['cabinet']);
-    expect(specValues(buildTypeWhereOr('countertop')).types).toEqual(['worktop']);
-    expect(specValues(buildTypeWhereOr('sink')).types).toEqual(['sink']);
-    expect(specValues(buildTypeWhereOr('faucet')).types).toEqual(['tap']);
+  it('worktop / sink / tap / facade -> bon slug', () => {
+    expect(slugsOf(buildTypeWhereOr('countertop'))).toEqual(['plans-de-travail']);
+    expect(slugsOf(buildTypeWhereOr('sink'))).toEqual(['eviers-robinetterie']);
+    expect(slugsOf(buildTypeWhereOr('faucet'))).toEqual(['eviers-robinetterie']);
+    expect(slugsOf(buildTypeWhereOr('facade'))).toEqual(['facades']);
+    expect(slugsOf(buildTypeWhereOr('façade'))).toEqual(['facades']);
   });
 
-  it('accessory et facade sont DISTINCTS', () => {
-    expect(specValues(buildTypeWhereOr('accessory')).types).toEqual(['accessory']);
-    expect(specValues(buildTypeWhereOr('facade')).types).toEqual(['facade']);
-    expect(specValues(buildTypeWhereOr('façade')).types).toEqual(['facade']);
+  it('synonymes français', () => {
+    expect(slugsOf(buildTypeWhereOr('lave-vaisselle'))).toEqual(['electromenager-lavage']);
+    expect(slugsOf(buildTypeWhereOr('frigo'))).toEqual(['electromenager-froid']);
+    expect(slugsOf(buildTypeWhereOr('four'))).toEqual(['electromenager-cuisson']);
+    expect(slugsOf(buildTypeWhereOr('caisson')).sort()).toEqual(['colonnes', 'meubles-bas', 'meubles-hauts']);
+    expect(slugsOf(buildTypeWhereOr('plan de travail'))).toEqual(['plans-de-travail']);
+    expect(slugsOf(buildTypeWhereOr('mitigeur'))).toEqual(['eviers-robinetterie']);
   });
 
-  it('synonymes français -> même filtre', () => {
-    expect(specValues(buildTypeWhereOr('lave-vaisselle')).groups).toEqual(['dishwashers2019']);
-    expect(specValues(buildTypeWhereOr('frigo')).groups).toEqual(['refrigeratingappliances2019']);
-    expect(specValues(buildTypeWhereOr('four')).groups).toEqual(['ovens']);
-    expect(specValues(buildTypeWhereOr('hotte')).groups).toEqual(['rangehoods']);
-    expect(specValues(buildTypeWhereOr('caisson')).types).toEqual(['cabinet']);
-    expect(specValues(buildTypeWhereOr('plan de travail')).types).toEqual(['worktop']);
-    expect(specValues(buildTypeWhereOr('mitigeur')).types).toEqual(['tap']);
-    expect(specValues(buildTypeWhereOr('évier')).types).toEqual(['sink']);
+  it('normalise lowercase + trim', () => {
+    expect(slugsOf(buildTypeWhereOr('  Four '))).toEqual(['electromenager-cuisson']);
+    expect(slugsOf(buildTypeWhereOr('CABINET')).length).toBe(3);
   });
 
-  it('normalise (lowercase + trim) avant lookup', () => {
-    expect(specValues(buildTypeWhereOr('  Four ')).groups).toEqual(['ovens']);
-    expect(specValues(buildTypeWhereOr('CABINET')).types).toEqual(['cabinet']);
-  });
-
-  it('type INCONNU -> legacy SEUL (pas d\'OR vide, forward-compat)', () => {
+  it('type INCONNU -> fallback legacy category.name (forward-compat, jamais vide)', () => {
     const or = buildTypeWhereOr('zzz-unknown');
-    expect(or).toHaveLength(1);
+    expect(isLegacyNameFallback(or)).toBe(true);
     expect(or[0]).toEqual({ category: { name: { contains: 'zzz-unknown', mode: 'insensitive' } } });
   });
 
-  it('cooktop/microwave NON mappés (retirés volontairement)', () => {
-    expect(TYPE_TO_SPEC_FILTERS.cooktop).toBeUndefined();
-    expect(TYPE_TO_SPEC_FILTERS.microwave).toBeUndefined();
-    expect(buildTypeWhereOr('cooktop')).toHaveLength(1); // legacy seul
+  it('cooktop/microwave non mappés -> fallback legacy', () => {
+    expect(TYPE_TO_CATEGORY_SLUGS.cooktop).toBeUndefined();
+    expect(isLegacyNameFallback(buildTypeWhereOr('cooktop'))).toBe(true);
+  });
+
+  it('plus de fallback specifications (Phase 1 retiré)', () => {
+    const or = buildTypeWhereOr('dishwasher');
+    expect(or.some((c) => 'specifications' in c)).toBe(false);
   });
 });

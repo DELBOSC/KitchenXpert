@@ -1,105 +1,77 @@
 /**
- * Catalog type -> specifications mapping (CLAUDE.md §15.8 — fix hybride Phase 1).
+ * Catalog type -> category mapping (CLAUDE.md §15.8 Phase 2.4 — categoryId propre).
  *
- * Les SKU ingérés (EPREL/Castorama/…) ont `categoryId = NULL` mais portent leur
- * type dans `specifications` :
- *   - `specifications.productType`  (TOUS : appliance/cabinet/worktop/sink/…)
- *   - `specifications.applianceGroup` (EPREL : dishwashers2019/…)
- * Ce module mappe le `type` extrait par l'IA vers ces champs pour débloquer la
- * recherche SANS toucher la donnée (Phase 2 = vrai categoryId à l'ingestion).
+ * Depuis le backfill Phase 2.3, TOUS les produits (ingérés + seeds) portent un
+ * `categoryId` -> on filtre le `type` IA par `category.slug` (indexé), plus par
+ * le fallback `specifications` de la Phase 1 (#178, retiré ici).
+ *
+ * Un type IA (+ synonymes FR) mappe vers 1..N slugs de catégorie (ex. `cabinet`
+ * = bas/hauts/colonnes ; `appliance` = les 3 électroménagers). Type inconnu ->
+ * fallback legacy `category.name contains` (forward-compat).
  */
+import type { CategorySlug } from '@kitchenxpert/common';
 
-export interface SpecFilter {
-  applianceGroups?: string[];
-  productTypes?: string[];
-}
+const APPLIANCE_ALL: CategorySlug[] = [
+  'electromenager-cuisson',
+  'electromenager-froid',
+  'electromenager-lavage',
+];
+const CABINETS: CategorySlug[] = ['meubles-bas', 'meubles-hauts', 'colonnes'];
 
-const APPLIANCE: SpecFilter = { productTypes: ['appliance'] };
-const DISHWASHER: SpecFilter = { applianceGroups: ['dishwashers2019'] };
-const FRIDGE: SpecFilter = { applianceGroups: ['refrigeratingappliances2019'] };
-const OVEN: SpecFilter = { applianceGroups: ['ovens'] };
-const HOOD: SpecFilter = { applianceGroups: ['rangehoods'] };
-const CABINET: SpecFilter = { productTypes: ['cabinet'] };
-const WORKTOP: SpecFilter = { productTypes: ['worktop'] };
-const SINK: SpecFilter = { productTypes: ['sink'] };
-const TAP: SpecFilter = { productTypes: ['tap'] };
-const LIGHTING: SpecFilter = { productTypes: ['lighting'] };
-const HARDWARE: SpecFilter = { productTypes: ['handle'] };
-const ACCESSORY: SpecFilter = { productTypes: ['accessory'] };
-const FACADE: SpecFilter = { productTypes: ['facade'] };
+/** Type IA (+ synonymes FR, clés normalisées lowercase) -> slugs de catégorie. */
+export const TYPE_TO_CATEGORY_SLUGS: Record<string, CategorySlug[]> = {
+  // Électroménager
+  appliance: APPLIANCE_ALL,
+  'électroménager': APPLIANCE_ALL,
+  electromenager: APPLIANCE_ALL,
+  dishwasher: ['electromenager-lavage'],
+  'lave-vaisselle': ['electromenager-lavage'],
+  fridge: ['electromenager-froid'],
+  refrigerator: ['electromenager-froid'],
+  frigo: ['electromenager-froid'],
+  'réfrigérateur': ['electromenager-froid'],
+  refrigerateur: ['electromenager-froid'],
+  oven: ['electromenager-cuisson'],
+  four: ['electromenager-cuisson'],
+  hood: ['electromenager-cuisson'],
+  hotte: ['electromenager-cuisson'],
+  // cooktop / microwave : pas de catégorie dédiée ingérée -> fallback legacy.
 
-/** Type IA (+ synonymes FR, clés normalisées lowercase) -> filtres spec. */
-export const TYPE_TO_SPEC_FILTERS: Record<string, SpecFilter> = {
-  // Électroménager (EPREL)
-  appliance: APPLIANCE,
-  'électroménager': APPLIANCE,
-  electromenager: APPLIANCE,
-  dishwasher: DISHWASHER,
-  'lave-vaisselle': DISHWASHER,
-  fridge: FRIDGE,
-  refrigerator: FRIDGE,
-  frigo: FRIDGE,
-  'réfrigérateur': FRIDGE,
-  refrigerateur: FRIDGE,
-  oven: OVEN,
-  four: OVEN,
-  hood: HOOD,
-  hotte: HOOD,
-  // cooktop / microwave : RETIRÉS volontairement (aucun groupe EPREL ingéré ;
-  // un fallback "appliance" polluerait les résultats). À activer quand
-  // cookinghobs / microwaves2019 seront ingérés.
-
-  // Meuble (Castorama/IKEA/Lapeyre)
-  cabinet: CABINET,
-  caisson: CABINET,
-  meuble: CABINET,
-  base: CABINET,
-  wall: CABINET,
-  tall: CABINET,
-  base_cabinet: CABINET,
-  wall_cabinet: CABINET,
-  tall_cabinet: CABINET,
-  worktop: WORKTOP,
-  countertop: WORKTOP,
-  'plan de travail': WORKTOP,
-  sink: SINK,
-  'évier': SINK,
-  evier: SINK,
-  tap: TAP,
-  faucet: TAP,
-  robinet: TAP,
-  mitigeur: TAP,
-  lighting: LIGHTING,
-  'éclairage': LIGHTING,
-  eclairage: LIGHTING,
-  luminaire: LIGHTING,
-  hardware: HARDWARE,
-  'poignée': HARDWARE,
-  poignee: HARDWARE,
-  accessory: ACCESSORY,
-  accessoire: ACCESSORY,
-  facade: FACADE,
-  'façade': FACADE,
+  // Meuble
+  cabinet: CABINETS,
+  caisson: CABINETS,
+  meuble: CABINETS,
+  base: CABINETS,
+  wall: CABINETS,
+  tall: CABINETS,
+  base_cabinet: ['meubles-bas'],
+  wall_cabinet: ['meubles-hauts'],
+  tall_cabinet: ['colonnes'],
+  worktop: ['plans-de-travail'],
+  countertop: ['plans-de-travail'],
+  'plan de travail': ['plans-de-travail'],
+  sink: ['eviers-robinetterie'],
+  'évier': ['eviers-robinetterie'],
+  evier: ['eviers-robinetterie'],
+  tap: ['eviers-robinetterie'],
+  faucet: ['eviers-robinetterie'],
+  robinet: ['eviers-robinetterie'],
+  mitigeur: ['eviers-robinetterie'],
+  facade: ['facades'],
+  'façade': ['facades'],
+  // lighting/hardware/accessory : absents du référentiel (YAGNI) -> fallback legacy.
 };
 
 /**
  * Construit la clause `OR` pour un filtre type :
- *  - TOUJOURS le filtre legacy `category.name contains type` (backward + forward
- *    compat : un type inconnu retombe sur CE seul filtre, jamais un OR vide).
- *  - + si le type est mappé : `specifications.applianceGroup`/`productType`.
+ *  - type mappé -> `category.slug IN [...]` (indexé, couvre ingérés + seeds).
+ *  - type INCONNU -> fallback legacy `category.name contains` (forward-compat,
+ *    jamais d'OR vide).
  */
 export function buildTypeWhereOr(rawType: string): Record<string, unknown>[] {
-  const or: Record<string, unknown>[] = [
-    { category: { name: { contains: rawType, mode: 'insensitive' } } },
-  ];
-  const spec = TYPE_TO_SPEC_FILTERS[rawType.toLowerCase().trim()];
-  if (spec) {
-    for (const g of spec.applianceGroups ?? []) {
-      or.push({ specifications: { path: ['applianceGroup'], equals: g } });
-    }
-    for (const pt of spec.productTypes ?? []) {
-      or.push({ specifications: { path: ['productType'], equals: pt } });
-    }
+  const slugs = TYPE_TO_CATEGORY_SLUGS[rawType.toLowerCase().trim()];
+  if (slugs && slugs.length > 0) {
+    return [{ category: { slug: { in: slugs } } }];
   }
-  return or;
+  return [{ category: { name: { contains: rawType, mode: 'insensitive' } } }];
 }
