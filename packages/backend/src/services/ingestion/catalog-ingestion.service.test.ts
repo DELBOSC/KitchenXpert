@@ -123,4 +123,45 @@ describe('CatalogIngestionService.ingestByCategory', () => {
     expect(logger.info).toHaveBeenCalledTimes(1);
     expect(logger.warn).not.toHaveBeenCalled();
   });
+
+  it('résout + pose categoryId via le resolver injecté (§15.8 Phase 2)', async () => {
+    const upsert = jest.fn().mockResolvedValue({});
+    const { repo } = makeRepo(upsert);
+    const resolver = { idForSlug: jest.fn().mockResolvedValue('cat-froid') };
+    const strategy = makeStrategy([
+      ok(makeProduct({ type: 'appliance', specifications: { applianceGroup: 'refrigeratingappliances2019' } })),
+    ]);
+    const svc = new CatalogIngestionService(repo, strategy, undefined, resolver);
+
+    const res = await svc.ingestByCategory('x');
+
+    expect(res.ingested).toBe(1);
+    expect(resolver.idForSlug).toHaveBeenCalledWith('electromenager-froid');
+    const [, data] = upsert.mock.calls[0];
+    expect(data.categoryId).toBe('cat-froid');
+    expect(data.specifications.categoryDetection).toBe('explicit');
+  });
+
+  it('slug introuvable dans le resolver -> categoryId NULL + warn, pas de crash', async () => {
+    const upsert = jest.fn().mockResolvedValue({});
+    const { repo } = makeRepo(upsert);
+    const logger = { info: jest.fn(), warn: jest.fn() };
+    const resolver = { idForSlug: jest.fn().mockResolvedValue(null) };
+    const strategy = makeStrategy([ok(makeProduct({ type: 'worktop' }))]);
+    const svc = new CatalogIngestionService(repo, strategy, logger, resolver);
+
+    const res = await svc.ingestByCategory('x');
+
+    expect(res.ingested).toBe(1); // pas de crash
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringMatching(/plans-de-travail.*NULL/));
+  });
+
+  it('sans resolver : aucun categoryId posé (backward-compat Phase 1)', async () => {
+    const upsert = jest.fn().mockResolvedValue({});
+    const { repo } = makeRepo(upsert);
+    const svc = new CatalogIngestionService(repo, makeStrategy([ok(makeProduct())]));
+    await svc.ingestByCategory('x');
+    const [, data] = upsert.mock.calls[0];
+    expect(data.categoryId).toBeUndefined();
+  });
 });

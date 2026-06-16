@@ -28,7 +28,8 @@ export const CatalogsSeed: Seed = {
         ('c1000000-0000-0000-0000-000000000005', 'Electromenager cuisson', 'electromenager-cuisson', 'Plaques, fours, hottes', 5, true, $1, $1),
         ('c1000000-0000-0000-0000-000000000006', 'Electromenager froid', 'electromenager-froid', 'Refrigerateurs et congelateurs', 6, true, $1, $1),
         ('c1000000-0000-0000-0000-000000000007', 'Eviers et robinetterie', 'eviers-robinetterie', 'Eviers, robinets', 7, true, $1, $1),
-        ('c1000000-0000-0000-0000-000000000008', 'Electromenager lavage', 'electromenager-lavage', 'Lave-vaisselle, lave-linge', 8, true, $1, $1)
+        ('c1000000-0000-0000-0000-000000000008', 'Electromenager lavage', 'electromenager-lavage', 'Lave-vaisselle, lave-linge', 8, true, $1, $1),
+        ('c1000000-0000-0000-0000-000000000009', 'Facades', 'facades', 'Facades et fronts (portes, tiroirs)', 9, true, $1, $1)
       ON CONFLICT (slug) DO NOTHING
     `, [now]);
 
@@ -108,12 +109,12 @@ export const CatalogsSeed: Seed = {
       ON CONFLICT (sku) DO NOTHING
     `, [now]);
 
-    logger.info('[Seed] Created catalog with 8 categories and 12 products');
+    logger.info('[Seed] Created catalog with 9 categories and 12 products');
   },
 
   async cleanup(tx: Transaction): Promise<void> {
     await tx.execute(`DELETE FROM "Product" WHERE sku LIKE 'MB-%' OR sku LIKE 'MH-%' OR sku LIKE 'PI-%' OR sku LIKE 'FE-%' OR sku LIKE 'RF-%' OR sku LIKE 'LV-%' OR sku LIKE 'EV-%' OR sku LIKE 'PDT-%'`);
-    await tx.execute(`DELETE FROM "ProductCategory" WHERE slug IN ('meubles-bas','meubles-hauts','colonnes','plans-de-travail','electromenager-cuisson','electromenager-froid','eviers-robinetterie','electromenager-lavage')`);
+    await tx.execute(`DELETE FROM "ProductCategory" WHERE slug IN ('meubles-bas','meubles-hauts','colonnes','plans-de-travail','electromenager-cuisson','electromenager-froid','eviers-robinetterie','electromenager-lavage','facades')`);
   },
 };
 

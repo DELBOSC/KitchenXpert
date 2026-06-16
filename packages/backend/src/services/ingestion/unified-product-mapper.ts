@@ -24,11 +24,24 @@ function mmToCm(mm: number | null): number | undefined {
   return mm == null ? undefined : Number((mm / 10).toFixed(2));
 }
 
+/** Catégorie résolue (Phase 2 categoryId first-class), optionnelle. */
+export interface ResolvedCategory {
+  categoryId?: string | null;
+  detection?: 'explicit' | 'inferred' | null;
+}
+
 /**
  * Map a validated {@link UnifiedProduct} to the `{ sku, data }` pair expected by
  * `ProductRepository.upsertBySku`. The returned `sku` is brand-namespaced.
+ *
+ * `category` (Phase 2) : si fourni, `categoryId` est posé sur la donnée et
+ * `specifications.categoryDetection` trace l'origine ('explicit'/'inferred').
+ * Reste PUR (la résolution slug->id se fait en amont, dans le service).
  */
-export function mapUnifiedProductToUpsert(up: UnifiedProduct): {
+export function mapUnifiedProductToUpsert(
+  up: UnifiedProduct,
+  category: ResolvedCategory = {},
+): {
   sku: string;
   data: UpsertProductDto;
 } {
@@ -44,6 +57,7 @@ export function mapUnifiedProductToUpsert(up: UnifiedProduct): {
     productType: up.type,
     ...(up.ean != null && { ean: up.ean }),
     ...(priceMissing && { priceMissing: true }),
+    ...(category.detection != null && { categoryDetection: category.detection }),
   };
 
   return {
@@ -51,6 +65,7 @@ export function mapUnifiedProductToUpsert(up: UnifiedProduct): {
     data: {
       name: up.name,
       brand: up.brand,
+      ...(category.categoryId != null && { categoryId: category.categoryId }),
       price: Number(priceEur.toFixed(2)),
       currency: up.currency || 'EUR',
       width: mmToCm(up.widthMm),
