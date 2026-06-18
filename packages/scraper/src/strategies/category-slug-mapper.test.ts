@@ -14,6 +14,20 @@ function up(over: Partial<UnifiedProduct> = {}): UnifiedProduct {
 }
 
 describe('resolveCategorySlug', () => {
+  it('override explicite specifications.categorySlug = autoritaire (ingestion par cat_id)', () => {
+    // type cabinet + applianceGroup ovens, mais categorySlug impose plans-de-travail
+    const r = resolveCategorySlug(up({
+      type: 'cabinet',
+      specifications: { applianceGroup: 'ovens', categorySlug: 'plans-de-travail' },
+    }));
+    expect(r).toEqual({ slug: 'plans-de-travail', detection: 'explicit' });
+  });
+
+  it('override ignoré si slug invalide -> fallback logique normale', () => {
+    const r = resolveCategorySlug(up({ type: 'worktop', specifications: { categorySlug: 'pas-un-slug' } }));
+    expect(r.slug).toBe('plans-de-travail'); // via productType
+  });
+
   it('EPREL applianceGroup -> catégorie (explicit)', () => {
     const cases: Array<[string, string]> = [
       ['dishwashers2019', 'electromenager-lavage'],

@@ -29,6 +29,13 @@ export interface CategoryResolution {
   detection: 'explicit' | 'inferred' | null;
 }
 
+/** Slugs valides du référentiel (pour valider un override explicite). */
+const VALID_SLUGS: readonly CategorySlug[] = [
+  'meubles-bas', 'meubles-hauts', 'colonnes', 'plans-de-travail',
+  'electromenager-cuisson', 'electromenager-froid', 'electromenager-lavage',
+  'eviers-robinetterie', 'facades',
+];
+
 /** EPREL applianceGroup -> catégorie (mapping explicit). */
 const APPLIANCE_GROUP_TO_SLUG: Record<string, CategorySlug> = {
   dishwashers2019: 'electromenager-lavage',
@@ -39,6 +46,13 @@ const APPLIANCE_GROUP_TO_SLUG: Record<string, CategorySlug> = {
 
 export function resolveCategorySlug(product: UnifiedProduct): CategoryResolution {
   const specs = (product.specifications ?? {}) as Record<string, unknown>;
+
+  // 0. Override explicite (ingestion PAR CATÉGORIE, ex. Castorama cat_id) :
+  // la catégorie est connue par construction -> autoritaire.
+  const explicit = specs.categorySlug;
+  if (typeof explicit === 'string' && (VALID_SLUGS as readonly string[]).includes(explicit)) {
+    return { slug: explicit as CategorySlug, detection: 'explicit' };
+  }
 
   // 1. EPREL applianceGroup (explicit, prioritaire)
   const group = specs.applianceGroup;

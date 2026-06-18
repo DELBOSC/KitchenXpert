@@ -1,20 +1,22 @@
 /**
  * CastoramaStrategy (CLAUDE.md §15.8 roadmap — Tier N3, scraping HTML+JSON-LD).
  *
- * Castorama : PDP accessibles (200, pas d'anti-bot), inventaire via
- * sitemap-prd.xml (~50k). Chaque PDP porte un JSON-LD `Product` propre
- * (nom, prix via offers[], gtin13/EAN, catégorie) — prouvé live 15/06.
+ * Castorama : PDP accessibles (200, pas d'anti-bot). Chaque PDP porte un JSON-LD
+ * `Product` propre (nom, prix via offers[], gtin13/EAN, catégorie) + les cotes
+ * LABELLISÉES dans le NOM ("… L. 200 cm", "L59xP52cm").
  *
- * ⚠️ COTES SPÉCIFIQUES À LA MARQUE : Castorama ne met PAS les cotes dans le
- * JSON-LD ; elles sont LABELLISÉES dans le NOM ("… L. 200 cm", "H.201 L.60").
- * On les parse ici (parseCastoramaDims). Pour TOUTE autre marque N3, auditer
- * d'abord où vivent les cotes (nom / DOM / JSON-LD / API) — NE PAS réutiliser
- * ce parseur en aveugle (formats hétérogènes). Couverture cuisine mesurée ~60%
- * (les structurants — caissons/colonnes/plans — ont leurs cotes dans le nom ;
- * les accessoires souvent non -> dimensionConfidence 0, honnête).
+ * MODE PRIMAIRE = ingestion PAR CATÉGORIE (cat_id officiel). On pagine la page
+ * catégorie (?page=N via rel=next), on collecte les URLs PDP, on parse chacune.
+ * Avantage décisif : la catégorie est CONNUE par construction -> catégorisation
+ * propre (plus de "ventilateur colonne" dans les colonnes cuisine) et complète
+ * (~2100 produits cuisine vs un échantillon mot-clé bruité). La catégorie est
+ * passée explicitement (specifications.categorySlug -> override du mapper).
+ *
+ * MODE LEGACY = filtre du sitemap par mot-clé (gardé en repli, déconseillé).
  */
 import type { HtmlFetcher } from './html-fetcher';
 import type { IngestionStrategy } from './ingestion-strategy';
+import type { CategorySlug } from './category-slug-mapper';
 import { extractJsonLdProducts, priceCentsFromOffers, currencyFromOffers } from './jsonld';
 import {
   validateUnifiedProduct,
@@ -22,17 +24,43 @@ import {
   type ProductType,
 } from './unified-product.schema';
 
-const CASTORAMA_SITEMAP = 'https://www.castorama.fr/fstrz/sm/sitemap-prd.xml';
+const CASTORAMA_BASE = 'https://www.castorama.fr';
+const CASTORAMA_SITEMAP = `${CASTORAMA_BASE}/fstrz/sm/sitemap-prd.xml`;
 // L'edge Castorama (CloudFront/Fastly) 503 les UA non-navigateur. UA
-// Mozilla-COMPATIBLE qui nous IDENTIFIE quand même (§15.8 P5 légal défensif) —
-// pas un bypass anti-bot (aucun stealth), juste la string attendue par l'edge.
+// Mozilla-COMPATIBLE qui nous IDENTIFIE quand même (§15.8 P5 légal défensif).
 const UA_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (compatible; KitchenXpert-research/0.2; +catalog ingestion)',
 };
 
-/** Options par run Castorama. */
+/** Catégorie cuisine officielle Castorama : chemin cat_id + catégorie/type cibles. */
+interface KitchenCategory {
+  path: string; // chemin de la page catégorie (cat_id officiel)
+  slug: CategorySlug; // catégorie du référentiel (autoritaire, override mapper)
+  type: ProductType; // famille UnifiedProduct
+}
+
+/**
+ * Catégories cuisine DESIGN-pertinentes (cartographiées 16/06 depuis cat_id_826).
+ * Clés = identifiants passés à fetchProductsByCategory.
+ */
+export const CASTORAMA_KITCHEN_CATEGORIES: Record<string, KitchenCategory> = {
+  plaque: { path: '/cuisine/electromenager/plaque-de-cuisson/cat_id_832.cat', slug: 'electromenager-cuisson', type: 'appliance' },
+  four: { path: '/cuisine/electromenager/four/cat_id_829.cat', slug: 'electromenager-cuisson', type: 'appliance' },
+  hotte: { path: '/cuisine/electromenager/hotte/cat_id_830.cat', slug: 'electromenager-cuisson', type: 'appliance' },
+  'lave-vaisselle': { path: '/cuisine/electromenager/lave-vaisselle/cat_id_831.cat', slug: 'electromenager-lavage', type: 'appliance' },
+  evier: { path: '/cuisine/evier-et-robinet-de-cuisine/evier-de-cuisine/cat_id_838.cat', slug: 'eviers-robinetterie', type: 'sink' },
+  robinet: { path: '/cuisine/evier-et-robinet-de-cuisine/robinet-de-cuisine/cat_id_865.cat', slug: 'eviers-robinetterie', type: 'tap' },
+  'meuble-bas': { path: '/cuisine/meuble-de-cuisine/meuble-bas-de-cuisine/cat_id_5087.cat', slug: 'meubles-bas', type: 'cabinet' },
+  'meuble-haut': { path: '/cuisine/meuble-de-cuisine/meuble-haut-de-cuisine/cat_id_5086.cat', slug: 'meubles-hauts', type: 'cabinet' },
+  colonne: { path: '/colonne-de-cuisine/cat_id_0002254.cat', slug: 'colonnes', type: 'cabinet' },
+  facade: { path: '/cuisine/meuble-de-cuisine/facade-de-cuisine/cat_id_5088.cat', slug: 'facades', type: 'facade' },
+  'plan-travail': { path: '/cuisine/plan-de-travail-credence-et-fond-de-hotte/plan-de-travail/cat_id_857.cat', slug: 'plans-de-travail', type: 'worktop' },
+};
+
+export const CASTORAMA_KITCHEN_CATEGORY_KEYS = Object.keys(CASTORAMA_KITCHEN_CATEGORIES);
+
 export interface CastoramaStrategyOptions {
-  /** Plafond de PDP fetchées par fetchProductsByCategory (défaut 24). */
+  /** Plafond de PDP fetchées par run (défaut 24). Monter pour une catégorie entière. */
   maxProducts?: number;
 }
 
@@ -55,12 +83,63 @@ export class CastoramaStrategy implements IngestionStrategy {
   }
 
   /**
-   * `categoryOrKeyword` filtre les URLs du sitemap produit (ex. `plan-de-travail`,
-   * `caisson`, `colonne`). Fetch jusqu'à maxProducts PDP, skip-not-crash par PDP.
+   * `key` = une clé de CASTORAMA_KITCHEN_CATEGORIES (ex. `plaque`, `meuble-bas`)
+   * -> ingestion par catégorie officielle (pagination + contexte catégorie).
+   * Sinon -> repli legacy : filtre du sitemap par mot-clé.
    */
-  async fetchProductsByCategory(categoryOrKeyword: string): Promise<ParseResult[]> {
+  async fetchProductsByCategory(key: string): Promise<ParseResult[]> {
+    const cat = CASTORAMA_KITCHEN_CATEGORIES[key];
+    if (!cat) return this.fetchBySitemapKeyword(key);
+
+    const urls = await this.collectCategoryPdpUrls(cat.path);
+    const out: ParseResult[] = [];
+    for (const url of urls) {
+      try {
+        const page = await this.html.fetchText(url, { headers: UA_HEADERS });
+        out.push(this.mapPdp(page, url, cat));
+      } catch (e) {
+        out.push({ success: false, errors: [e instanceof Error ? e.message : String(e)], warnings: [] });
+      }
+    }
+    return out;
+  }
+
+  // ── catégorie (mode primaire) ───────────────────────────────────────────────
+
+  /** Pagine la page catégorie (?page=N, suit rel=next) -> URLs PDP (jusqu'à max). */
+  private async collectCategoryPdpUrls(catPath: string): Promise<string[]> {
+    const seen = new Set<string>();
+    let page = 1;
+    while (seen.size < this.maxProducts) {
+      const pageUrl = `${CASTORAMA_BASE}${catPath}?page=${page}`;
+      const html = await this.html.fetchText(pageUrl, { headers: UA_HEADERS });
+      const pdps = this.extractPdpUrls(html);
+      const before = seen.size;
+      for (const u of pdps) {
+        if (seen.size >= this.maxProducts) break;
+        seen.add(u);
+      }
+      // arrêt : aucune nouvelle PDP, ou plus de page suivante déclarée.
+      if (seen.size === before || !/rel="next"/i.test(html)) break;
+      page += 1;
+    }
+    return [...seen];
+  }
+
+  /** Extrait les URLs PDP (`/slug/{id}_CAFR.prd`) d'une page catégorie, absolutisées. */
+  private extractPdpUrls(html: string): string[] {
+    const re = /href="(\/[^"]*?\d{6,}_CAFR\.prd)"/gi;
+    const set = new Set<string>();
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(html)) !== null) set.add(`${CASTORAMA_BASE}${m[1]}`);
+    return [...set];
+  }
+
+  // ── legacy (repli mot-clé sitemap) ──────────────────────────────────────────
+
+  private async fetchBySitemapKeyword(keyword: string): Promise<ParseResult[]> {
     const sitemap = await this.html.fetchText(CASTORAMA_SITEMAP, { headers: UA_HEADERS });
-    const kw = categoryOrKeyword.toLowerCase();
+    const kw = keyword.toLowerCase();
     const urls: string[] = [];
     const re = /<loc>([^<]+)<\/loc>/g;
     let m: RegExpExecArray | null;
@@ -79,9 +158,10 @@ export class CastoramaStrategy implements IngestionStrategy {
     return out;
   }
 
-  // ── internals ──────────────────────────────────────────────────────────────
+  // ── parsing PDP ─────────────────────────────────────────────────────────────
 
-  private mapPdp(html: string, url: string): ParseResult {
+  /** `ctx` (mode catégorie) impose le type + la categorySlug (autoritaire). */
+  private mapPdp(html: string, url: string, ctx?: KitchenCategory): ParseResult {
     const product = extractJsonLdProducts(html)[0];
     if (!product) {
       return { success: false, errors: [`No Product JSON-LD at ${url}`], warnings: [] };
@@ -92,13 +172,11 @@ export class CastoramaStrategy implements IngestionStrategy {
     const dims = parseCastoramaDims(name);
 
     const candidate = {
-      // SKU = EAN (gtin13), unique et clé de matching cross-source. Fallback: id
-      // du slug (..._CAFR.prd) si l'EAN manque.
       sku: ean ?? this.idFromUrl(url) ?? '',
       ean,
       name,
       brand: 'Castorama',
-      type: this.detectType(name, category),
+      type: ctx?.type ?? this.detectType(name, category),
       widthMm: dims.widthMm,
       heightMm: dims.heightMm,
       depthMm: dims.depthMm,
@@ -112,6 +190,8 @@ export class CastoramaStrategy implements IngestionStrategy {
         rawMeasureText: dims.rawMeasureText, // = le nom (convention §15.8)
         category,
         gtin13: ean ?? null,
+        // Override autoritaire de la catégorie quand l'ingestion est par cat_id.
+        ...(ctx && { categorySlug: ctx.slug }),
       },
       imageUrls: this.imageUrls(product.image),
     };
@@ -146,10 +226,9 @@ export class CastoramaStrategy implements IngestionStrategy {
 }
 
 /**
- * Cotes Castorama depuis le NOM (labels L/H/P, valeurs en cm -> mm entiers).
- * "Structure … L. 200 cm" -> width 2000. "… H.201 L.60" -> h 2010 / w 600.
- * SPÉCIFIQUE Castorama (cf en-tête). confidence = nb de cotes / 3 ; le nom
- * complet est conservé en rawMeasureText.
+ * Cotes Castorama depuis le NOM (labels L/H/P, valeurs cm|mm -> mm entiers).
+ * "Structure … L. 200 cm" -> width 2000 ; "L59xP52cm" -> w 590 / d 520.
+ * SPÉCIFIQUE Castorama. confidence = nb de cotes / 3 ; nom conservé en rawMeasureText.
  */
 export function parseCastoramaDims(name: string): {
   widthMm: number | null;
@@ -159,10 +238,6 @@ export function parseCastoramaDims(name: string): {
   rawMeasureText: string | null;
 } {
   const grab = (label: string): number | null => {
-    // label précédé d'un non-lettre (évite de matcher un L/H/P dans un mot),
-    // séparateur souple (. - espace), nombre, puis unité optionnelle mm|cm.
-    // Castorama mélange les deux (ex. "Hauteur 100 mm" vs "L. 200 cm") -> on
-    // détecte l'unité par cote ; défaut cm (×10) si absente.
     const re = new RegExp(`(?:^|[^A-Za-zÀ-ÿ])${label}\\.?\\s*-?\\s*(\\d{1,4}(?:[.,]\\d+)?)\\s*(mm|cm)?`, 'i');
     const mm = name.match(re);
     if (!mm) return null;
