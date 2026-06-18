@@ -6,6 +6,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 import {
   CastoramaStrategy,
+  CASTORAMA_KITCHEN_CATEGORIES,
   parseCastoramaDims,
   type HtmlFetcher,
 } from '@kitchenxpert/common';
@@ -13,11 +14,23 @@ import {
 const here = dirname(fileURLToPath(import.meta.url));
 const pdpHtml = readFileSync(join(here, '__fixtures__/castorama-pdp.html'), 'utf8');
 const sitemapXml = readFileSync(join(here, '__fixtures__/castorama-sitemap.xml'), 'utf8');
+const categoryHtml = readFileSync(join(here, '__fixtures__/castorama-category.html'), 'utf8');
 
 /** Mock HtmlFetcher : sitemap pour l'URL sitemap, sinon la PDP fixture. */
 function mockHtml(pdp = pdpHtml): HtmlFetcher {
   return {
     fetchText: vi.fn(async (url: string) => (url.includes('sitemap') ? sitemapXml : pdp)),
+  };
+}
+
+/** Mock URL-aware : page catégorie / PDP / sitemap. */
+function mockCategory(): HtmlFetcher {
+  return {
+    fetchText: vi.fn(async (url: string) => {
+      if (url.includes('sitemap')) return sitemapXml;
+      if (url.includes('_CAFR.prd')) return pdpHtml;
+      return categoryHtml; // page catégorie (cat_id_*.cat?page=N)
+    }),
   };
 }
 
@@ -99,5 +112,30 @@ describe('CastoramaStrategy', () => {
     const s = new CastoramaStrategy(fetcher, { maxProducts: 1 });
     const r = await s.fetchProductsByCategory('caisson');
     expect(r).toHaveLength(1);
+  });
+
+  it('MODE CATÉGORIE : pagine la page cat_id, déduplique, impose type+categorySlug', async () => {
+    const s = new CastoramaStrategy(mockCategory(), { maxProducts: 10 });
+    const r = await s.fetchProductsByCategory('plaque');
+    expect(r).toHaveLength(2); // 2 PDP distinctes (le doublon est dédupliqué)
+    expect(r.every((x) => x.success)).toBe(true);
+    const p = r[0].product!;
+    // contexte catégorie autoritaire (cat_id_832 = plaque) :
+    expect(p.type).toBe('appliance');
+    expect(p.specifications?.categorySlug).toBe('electromenager-cuisson');
+    expect(p.brand).toBe('Castorama');
+  });
+
+  it('mode catégorie respecte maxProducts', async () => {
+    const s = new CastoramaStrategy(mockCategory(), { maxProducts: 1 });
+    expect(await s.fetchProductsByCategory('plaque')).toHaveLength(1);
+  });
+
+  it('CASTORAMA_KITCHEN_CATEGORIES expose les catégories cuisine + slugs valides', () => {
+    expect(CASTORAMA_KITCHEN_CATEGORIES.plaque?.slug).toBe('electromenager-cuisson');
+    expect(CASTORAMA_KITCHEN_CATEGORIES.evier?.type).toBe('sink');
+    expect(CASTORAMA_KITCHEN_CATEGORIES.robinet?.type).toBe('tap');
+    expect(CASTORAMA_KITCHEN_CATEGORIES['lave-vaisselle']?.slug).toBe('electromenager-lavage');
+    expect(Object.keys(CASTORAMA_KITCHEN_CATEGORIES)).toContain('meuble-bas');
   });
 });
