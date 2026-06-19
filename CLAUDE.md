@@ -881,6 +881,50 @@ Les sitemaps **ne contournent pas** l'anti-bot :
 
 **Acquit b-ter** : un registre **réglementaire** (EPREL) bat le scraping retailer sur l'électroménager — données officielles, gratuites, légalement propres, structurées — là où §15.2 ne voyait « aucune source catalogue live ». Le header `Origin` distingue l'API publique (sans clé) de l'API registered (clé EU-Login) : tester avec les headers du SPA avant de conclure « auth requise ».
 
+### 15.8.2 — Audit qualité cotes web cooking (19/06/2026)
+
+**Contexte.** Sweep web multi-agents §15.8 a ajouté 277 cotes fours/hottes (PRs #172-#181). Audit qualité manuel 20 SKU stratifiés (18/06) → 70% match, 3 mismatches critiques (Beko 10cm, LG 3cm, Cata 4cm), 2 partiels.
+
+**Méthode.** Calibration empirique avant règles : 8 sondes SQL read-only sur la distribution réelle, buckets dimensions, valeurs distinctes, extrêmes par groupe. Résultat → règles plages inefficaces (les 3 mismatches sont dans les plages attendues). Stratégie pivotée : intervention chirurgicale par cas plutôt que filtre par règle.
+
+**Constats empiriques.**
+
+- Modulo cuisinière `{50, 60, 70, 90}` majoritaire, variants légitimes 53.5/88/89 (slim Meireles, Oranier)
+- Width fours encastrables : 14 valeurs distinctes (59.2/59.4/59.5/59.6/59.8/60) toutes légitimes — drift fabricant normal
+- Ovens = 3 populations height : countertop <40, compact 40-49, encastrable 58-60, freestanding 80+
+- Rangehoods height : distribution continue 8cm (slim) → 119cm (cheminée déployée), pas de pic clair
+
+**Actions appliquées (harness `.scrape-output/apply-quality-corrections.ts`, gitignored).**
+
+- **2 UPDATE cotes** (qualityFlag='audit_corrected') :
+  - `BEKO-511-FSM58301XCDT` width 60→50 (cuisinière slim, source manomano avait pris largeur four interne du titre marketing)
+  - `LG ELECTRONICS INC.-WSED7613B` height 59.4→56.4 (la valeur 59.4 = hauteur min niche, pas hauteur produit)
+- **13 SOFT-DELETE** (qualityFlag tracé dans `specifications`, `isActive=false`, `deletedAt` set, **reversibles**) :
+  - 2 Cookwise air fryer countertop mal classifiés (`wrong_category_countertop_airfryer`)
+  - 1 Meireles MF 1604 depth atypique non vérifié (`atypical_depth_49_9_unverified`)
+  - 5 Karinear/Disaenvir/Karienvir depth 47 marques obscures (`obscure_brand_atypical_depth_47`)
+  - 1 Firegas hotte sans height ni depth (`missing_height_and_depth`)
+  - 4 hottes sans height : Cata SIRIN GWH (= SKU audit #10), Steel EKL100, 2 Edesa ECV-98321 (`missing_height`)
+
+**État post-apply.** Cooking actif **277 → 264** (ovens 195, rangehoods 69). Tous les soft-delete sont reversibles (`isActive=false` + `deletedAt`). Pas de destruction de données. Tracé via `specifications.chantier = 'cooking-dims-quality-v2-2026-06-19'`.
+
+**Leçons capitalisées.**
+
+- **L1. Modulo cuisinière non strict.** Variants 53.5/88/89 sont des vrais produits (Meireles slim, Oranier cuisinière classique) → règle modulo = WARN, pas CRITICAL.
+- **L2. Drift mesure four encastrable.** Width 59.2/59.4/59.5/59.6/59.8/60.0 = même catégorie produit → le scraper doit accepter ce drift sans flag.
+- **L3. Piège niche vs produit.** Sources commerciales (manua.ls, manomano) confondent souvent hauteur produit four encastrable (~56cm) avec hauteur min niche (~59-60cm). À documenter dans les prompts sweep web.
+- **L4. Piège titre marketing.** Cuisinière "60 cm" annoncée dans le titre = largeur du four interne, pas du produit (Beko FSM58301XCDT vraie largeur 50cm confirmée). À documenter aussi.
+- **L5. Marques obscures + dimensions atypiques = exclusion prudente.** Karinear/Disaenvir/Karienvir/Firegas tous depth 47cm exact = marques chinoises low-cost Amazon, possibles erreurs de scraping, exclues prudemment.
+
+**Pendings tracés.**
+
+- **P1. Doublons SKU.** `COOKWISE-AFO--17D-RC3` vs `COOKWISE-AFO-17D-RC3` (double tiret), trailing spaces dans `modelIdentifier` (`'E 911 '`, `'AFO- 17D-RC3   '`) → chantier `scraper-normalize` séparé.
+- **P2. Brands non normalisés.** `'CATA'` vs `'Cata '` (trailing space) vs `'Cata'`, `'comfee'` vs `'Comfee'`, possible typo `'Karinear'` → `'Karienvir'`. Hors scope.
+- **P3. Précision réelle cotes web ≈ 70-85%, pas 100%.** Acceptée. À gérer via `dimensionConfidence` dans le matcher catalogue↔design à venir (alerte designer si conf < seuil).
+- **P4. VRAI fix long-terme = MATCHER catalogue↔design** (priorité #1 prochain chantier, §15.7 dette `bom-generator hallucine catalogRef`), avec fallback gracieux si `dimensionConfidence < seuil`.
+
+**Méthodologie réutilisable.** Pour tout futur audit qualité de cotes scrapées : (a) audit manuel stratifié 20 SKU pour mesurer le taux d'erreur réel ; (b) calibration empirique par sondes SQL avant de figer des règles ; (c) intervention chirurgicale par cas si les valeurs fausses sont dans les plages attendues (filtre statistique inefficace) ; (d) harness `.scrape-output/` gitignored + PR doc-only pour la traçabilité.
+
 ---
 
 *Dernière mise à jour : 10/06/2026 — **Session STACK-UP : ROOT CAUSE `<Provider store={store}>` jamais câblé (3 PRs : #109 Provider + #110 kitchen-fields flow-4/5/6 + #106 span-click flow-1)**. 1ʳᵉ session stack montée en local (backend :4000 + preview prod :3005). Le login UI atteint /dashboard MAIS DashboardPage (et Catalog/SandboxDesigner) **crashent** `Cannot destructure 'store' … null` — le store Redux n'était **jamais fourni** à l'arbre (App.tsx sans `<Provider>`). **Prouvé 3 axes** (code/runtime/git pickaxe), masqué par `vi.mock('store/hooks')`. Mon diagnostic 09/06 (« régression consent / nav login→dashboard ») était **FAUX** = c'était ce crash. Fix #109 (3 lignes) → **flow-2 2/2 PASS**, catalog/designer rendent. Triage traîne : kitchen-fields `widthCm→width/length/height` (#110, flow-4/5/6 `POST /kitchens` 400→crash), span-click checkbox sr-only (#106). Restant = couches per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe). **Leçons** : stack-up trouve des bugs invisibles aux unit tests mockés + logs CI ; **comparaison de runs ≠ causation** (ma « régression consent » du 08/06 était corrélation) ; fixer la racine puis trier honnêtement (pas de brute-force WebGL/externe). main HEAD = `f99f4d1`. Branche courante : `docs/stackup-redux-provider`.
