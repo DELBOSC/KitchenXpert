@@ -18,6 +18,7 @@ import type { HtmlFetcher } from './html-fetcher';
 import type { IngestionStrategy } from './ingestion-strategy';
 import type { CategorySlug } from './category-slug-mapper';
 import { extractJsonLdProducts, priceCentsFromOffers, currencyFromOffers } from './jsonld';
+import { parseSpecTable, type SpecTableResult } from './castorama-spec-table';
 import {
   validateUnifiedProduct,
   type ParseResult,
@@ -169,33 +170,80 @@ export class CastoramaStrategy implements IngestionStrategy {
     const name = typeof product.name === 'string' ? product.name.trim() : '';
     const ean = product.gtin13 != null ? String(product.gtin13) : undefined;
     const category = typeof product.category === 'string' ? product.category : null;
-    const dims = parseCastoramaDims(name);
+    const type = ctx?.type ?? this.detectType(name, category);
+
+    // §15.8.3 : la table specifications de la PDP (déjà chargée ici) est plus
+    // riche que le name-parse -> fusion table > nom (cf fuseDims).
+    const spec = parseSpecTable(html, type);
+    const nameDims = parseCastoramaDims(name);
+    const fused = this.fuseDims(spec, nameDims, name);
 
     const candidate = {
       sku: ean ?? this.idFromUrl(url) ?? '',
       ean,
       name,
+      // IMPÉRATIF : brand reste 'Castorama' -> SKU upsert = CASTORAMA-{ean}
+      // (idempotence prouvée Étape A). La VRAIE marque (table "Marque", ex.
+      // GoodHome) va dans specifications.brand pour ne PAS changer le namespace.
       brand: 'Castorama',
-      type: ctx?.type ?? this.detectType(name, category),
-      widthMm: dims.widthMm,
-      heightMm: dims.heightMm,
-      depthMm: dims.depthMm,
-      dimensionConfidence: dims.confidence,
+      type,
+      widthMm: fused.widthMm,
+      heightMm: fused.heightMm,
+      depthMm: fused.depthMm,
+      dimensionConfidence: fused.confidence,
       priceEurCents: priceCentsFromOffers(product.offers),
       currency: currencyFromOffers(product.offers),
       sourceLevel: this.sourceLevel,
       sourceUrl: typeof product.url === 'string' ? product.url : url,
       lastVerifiedAt: new Date(),
       specifications: {
-        rawMeasureText: dims.rawMeasureText, // = le nom (convention §15.8)
+        rawMeasureText: fused.rawMeasureText,
         category,
         gtin13: ean ?? null,
         // Override autoritaire de la catégorie quand l'ingestion est par cat_id.
         ...(ctx && { categorySlug: ctx.slug }),
+        // Bonus enrichissement table (brand réel conservé ici, pas en top-level).
+        ...(spec.brand && { brand: spec.brand }),
+        ...(spec.material && { material: spec.material }),
+        ...(spec.color && { color: spec.color }),
+        ...(spec.finish && { finish: spec.finish }),
+        ...(spec.qualityFlags.length > 0 && { specTableFlags: spec.qualityFlags }),
       },
       imageUrls: this.imageUrls(product.image),
     };
     return validateUnifiedProduct(candidate);
+  }
+
+  /**
+   * Fusion table > name-parse (§15.8.3 décision 4) :
+   *  - table >= 2 cotes : cotes table, complétées par le nom pour la manquante,
+   *    conf = spec.confidence (1.0 si 3, 0.7 si 2) ;
+   *  - table == 1 cote : la cote table prime, les autres viennent du nom, conf 0.4 ;
+   *  - table vide : repli total name-parse (conf name-parse historique).
+   * rawMeasureText (§15.8.3 A5) : paires table sérialisées si la table fournit des
+   * cotes, sinon le nom (comportement historique).
+   */
+  private fuseDims(
+    spec: SpecTableResult,
+    nameDims: ReturnType<typeof parseCastoramaDims>,
+    name: string,
+  ): { widthMm: number | null; heightMm: number | null; depthMm: number | null; confidence: number; rawMeasureText: string | null } {
+    if (spec.dimCount === 0) {
+      return {
+        widthMm: nameDims.widthMm,
+        heightMm: nameDims.heightMm,
+        depthMm: nameDims.depthMm,
+        confidence: nameDims.confidence,
+        rawMeasureText: nameDims.rawMeasureText,
+      };
+    }
+    return {
+      widthMm: spec.widthMm ?? nameDims.widthMm,
+      heightMm: spec.heightMm ?? nameDims.heightMm,
+      depthMm: spec.depthMm ?? nameDims.depthMm,
+      confidence: spec.dimCount >= 2 ? spec.confidence : 0.4,
+      rawMeasureText: spec.rawMeasureText ?? name,
+    };
   }
 
   private idFromUrl(url: string): string | undefined {
