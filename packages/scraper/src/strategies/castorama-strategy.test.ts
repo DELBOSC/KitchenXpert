@@ -14,6 +14,7 @@ import {
 const here = dirname(fileURLToPath(import.meta.url));
 const pdpHtml = readFileSync(join(here, '__fixtures__/castorama-pdp.html'), 'utf8');
 const pdpEnrichedHtml = readFileSync(join(here, '__fixtures__/castorama-pdp-enriched.html'), 'utf8');
+const pdpApplianceHtml = readFileSync(join(here, '__fixtures__/castorama-pdp-appliance.html'), 'utf8');
 const sitemapXml = readFileSync(join(here, '__fixtures__/castorama-sitemap.xml'), 'utf8');
 const categoryHtml = readFileSync(join(here, '__fixtures__/castorama-category.html'), 'utf8');
 
@@ -107,6 +108,20 @@ describe('CastoramaStrategy', () => {
     expect(p.specifications?.finish).toBe('Mat');
     // rawMeasureText = paires table serialisees (pas le nom).
     expect(String(p.specifications?.rawMeasureText)).toContain('Hauteur (cm):85cm');
+  });
+
+  it('§15.8.3 : appliance (plaque) -> 3 cotes table dont hauteur 6.2cm, conf 1.0', async () => {
+    const s = new CastoramaStrategy(mockHtml(pdpApplianceHtml));
+    const r = await s.fetchProductByUrl('https://www.castorama.fr/plaque-induction-ciarra/5056668703949_CAFR.prd');
+    expect(r.success).toBe(true);
+    const p = r.product!;
+    expect(p.type).toBe('appliance');
+    // Nom = L59xP52 (2 cotes) ; table = H6.2 L59 P52 (3 cotes, hauteur acceptee).
+    expect([p.widthMm, p.heightMm, p.depthMm]).toEqual([590, 62, 520]);
+    expect(p.dimensionConfidence).toBe(1.0);
+    expect(p.brand).toBe('Castorama');
+    expect(p.specifications?.brand).toBe('Ciarra');
+    expect(p.specifications?.specTableFlags).toBeUndefined(); // aucun out_of_bounds
   });
 
   it('skip-not-crash si pas de Product JSON-LD', async () => {

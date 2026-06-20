@@ -76,6 +76,30 @@ describe('parseSpecTable', () => {
     expect(r.confidence).toBe(0.4);
   });
 
+  it('appliance (plaque) : 3 cotes valides dont hauteur 6.2cm (epaisseur) -> conf 1.0', () => {
+    const r = parseSpecTable(
+      table([['Hauteur (cm)', '6.2cm'], ['Largeur (cm)', '59cm'], ['Profondeur (cm)', '52cm']]),
+      'appliance',
+    );
+    expect(r.heightMm).toBe(62); // 6.2cm accepte (plancher appliance = 5cm)
+    expect(r.widthMm).toBe(590);
+    expect(r.depthMm).toBe(520);
+    expect(r.dimCount).toBe(3);
+    expect(r.confidence).toBe(1.0);
+    expect(r.qualityFlags).toHaveLength(0);
+  });
+
+  it('appliance : Profondeur aberrante 300cm -> rejetee + out_of_bounds_depth', () => {
+    const r = parseSpecTable(
+      table([['Largeur (cm)', '59cm'], ['Profondeur (cm)', '300cm']]),
+      'appliance',
+    );
+    expect(r.widthMm).toBe(590);
+    expect(r.depthMm).toBeNull(); // 300 > depth max 70
+    expect(r.qualityFlags).toContain('out_of_bounds_depth');
+    expect(r.dimCount).toBe(1);
+  });
+
   it('table absente -> resultat vide (fallback name-parse en amont)', () => {
     const r = parseSpecTable('<html><body><p>aucune table</p></body></html>', 'cabinet');
     expect(r.dimCount).toBe(0);

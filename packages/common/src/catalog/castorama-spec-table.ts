@@ -43,6 +43,10 @@ type LabelKey = 'hauteur' | 'largeur' | 'profondeur' | 'longueur';
 /** Bornes plausibles EN CM par type, appliquées sur la cote mappée. */
 const BOUNDS: Record<string, Partial<Record<DimTarget, [number, number]>>> = {
   cabinet: { width: [15, 120], height: [30, 220], depth: [30, 65] },
+  // appliance : bornes larges (POC 20/06 four 59.5 / plaque hauteur 6.2cm). Le
+  // plancher height=5 accepte l'épaisseur plaque (induction 5-8cm) sans rejeter
+  // la diversité — seul l'aberrant (300) est filtré (décision A 20/06).
+  appliance: { width: [30, 120], height: [5, 200], depth: [30, 70] },
   worktop: { width: [50, 400], depth: [40, 80] }, // width = LONGUEUR (cf JSDoc)
   facade: { width: [10, 100], height: [30, 220] },
   sink: { width: [25, 120], depth: [25, 65] },
@@ -95,6 +99,7 @@ function labelKey(label: string): LabelKey | null {
  */
 function mapTarget(type: ProductType, key: LabelKey, cm: number): DimTarget | 'ambiguous' | null {
   switch (type) {
+    case 'appliance': // four/plaque/hotte/LV : sémantique H/L/P identique au caisson
     case 'cabinet':
       return key === 'hauteur' ? 'height' : key === 'largeur' ? 'width' : key === 'profondeur' ? 'depth' : null;
     case 'facade':
