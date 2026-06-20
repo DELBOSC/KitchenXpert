@@ -536,19 +536,22 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P0** | ✅ Terminée | 0 tâche restante |
 | **Phase 1 P1** | ✅ Terminée (actionnable) | 0 tâche actionnable restante (7 résolues cumulées + 1 résolue 22/05 [poster Hero] + 1 écartée 22/05 [Hero3DInteractive — décision d'architecture, §11 P1]) |
 | **Phase 1 P2** | 🟡 En cours | **2 tâches actionnables restantes** : #2 SandboxMigrationBanner Card/Toast + **Backend dotenv cleanup (reclassé P3→P2 le 31/05/26 après audit, cf §12 31/05)**. Cumul résolu : 2 le 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) + 1 résolue 23/05 (#1 HowItWorks → Card polymorphique, commits 594c63b+ee1869c). |
-| **Phase 1 P3** | 🟡 Entamée (couches CI 02-03/06) | **~27 tâches actionnables internes**. Recompte 02/06 : baseline ≈ 27 (la ligne "20" du 31/05 matin n'intégrait pas les 7 dettes du 31/05 soir) ; −2 résolues (#3 PR #75, #4 PR #76), −1 résolue (#5 PR #77), −1 caduque (#7), −1 reclassée BLOQUÉ EXTERNE (#2 CodeQL), +5 nouvelles 02/06 = 27. **03/06 : −1 (couche 6) +1 (7b) = 27. 06/06 : couche 7 INFRA résolue — 7b/7c/7d/7e-verify + #92 préfixe-locale (cause racine) = 6 PRs (#86-#90, #92). 07/06 : couche 7f facettes 1+2 RÉSOLUES — selectors (#97), color-contrast 14 pages (#98), blockers niveau A link-in-text-block+select-name (#99). 08/06 : couche 7f facette 3 login 401 RÉSOLUE (#102 backdoor status:active + #103 LoginPage redirect, flow-2+3b verts) + visual-regression baselines générées sur runner (#104, job dédié 5/5). 10/06 (STACK-UP) : ROOT CAUSE `<Provider store>` jamais câblé (#109, crash dashboard/catalog/designer, flow-2 2/2) + kitchen-fields flow-4/5/6 (#110) + span-click flow-1 (#106). Reste 7f facette 3 = longue traîne per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe) = chantier LOCAL/mock. 10/06 (audit câblages) : verdict A providers + #112 (10 slices redux non enregistrés = piège latent désamorcé) ; reliquat mineur react-query inutilisé. 10/06 (5 dettes CI 02/06) : #114 turbo + #115 false-green + #116 minimatch override toxique → ESLint+coverage débloqués (coverage istanbul exit 0/1226 tests). Reste : ~1551 erreurs lint réelles (chantier) + 102 vulns security (Lot 4).** |
+| **Phase 1 P3** | 🟡 Entamée (couches CI 02-03/06) | **~27 tâches actionnables internes**. Recompte 02/06 : baseline ≈ 27 (la ligne "20" du 31/05 matin n'intégrait pas les 7 dettes du 31/05 soir) ; −2 résolues (#3 PR #75, #4 PR #76), −1 résolue (#5 PR #77), −1 caduque (#7), −1 reclassée BLOQUÉ EXTERNE (#2 CodeQL), +5 nouvelles 02/06 = 27. **03/06 : −1 (couche 6) +1 (7b) = 27. 06/06 : couche 7 INFRA résolue — 7b/7c/7d/7e-verify + #92 préfixe-locale (cause racine) = 6 PRs (#86-#90, #92). 07/06 : couche 7f facettes 1+2 RÉSOLUES — selectors (#97), color-contrast 14 pages (#98), blockers niveau A link-in-text-block+select-name (#99). 08/06 : couche 7f facette 3 login 401 RÉSOLUE (#102 backdoor status:active + #103 LoginPage redirect, flow-2+3b verts) + visual-regression baselines générées sur runner (#104, job dédié 5/5). 10/06 (STACK-UP) : ROOT CAUSE `<Provider store>` jamais câblé (#109, crash dashboard/catalog/designer, flow-2 2/2) + kitchen-fields flow-4/5/6 (#110) + span-click flow-1 (#106). Reste 7f facette 3 = longue traîne per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe) = chantier LOCAL/mock. 10/06 (audit câblages) : verdict A providers + #112 (10 slices redux non enregistrés = piège latent désamorcé) ; reliquat mineur react-query inutilisé. 10/06 (5 dettes CI 02/06) : #114 turbo + #115 false-green + #116 minimatch override toxique → ESLint+coverage débloqués (coverage istanbul exit 0/1226 tests). Reste : ~1551 erreurs lint réelles (chantier) + 102 vulns security (Lot 4). **18-20/06 (sessions catalogue) : 4 PRs livrées** — #182 audit qualité cooking (264 actifs, méthodo §15.8.2), #183 matcher déterministe (DesignCatalogMatcher TS standalone, cascade 4 niveaux), #184 parseSpecTable v2 (regex dep-free common, 6 mappings, sanity bounds), #185 doc §15.8.3 (Castorama re-ingestion v2 incomplet 7497 SKU, déséquilibre volumétrique acté) + §15.8.4 (pivot stratégique chatbot couleur, archi 3 niveaux gammes/variants/rendu, POC dédup conservé bloc réutilisable 7497→6081 canoniques, PAS appliqué en DB).** |
 | **§14 Roadmap Production** | ⏳ Non démarrée | 13 items (3 sécurité secrets, 5 infra, 2 CI/CD, 3 CORS/SSL/cookies). **Bloque le déploiement prod.** |
 | **§14.5 Chantier Dependabot** | 🟢 Lot 1 complet | **Lot 1 ✅ 11/11.** Lot 2 débloqué après résolution facturation Actions 31/05 soir (§14.3) — PR #15 (dotenv 16→17) prouvée safe en isolat 31/05 matin, peut être mergée après `chore/dotenv-17-minimal` audit. Reste : 5 PRs Lot 2 + 5 PRs Lot 3 + 8 PRs Lot 4. |
 
 **Branches actives** :
 
-- `main` (HEAD `57958c3`, post-#116 — #109/#110/#106/#112 + 5 dettes CI 02/06 : #114 turbo, #115 false-green, #116 minimatch+coverage)
+- `main` (HEAD `e370065`, post-#184 — sessions 18-20/06 : #182 cooking-dims-quality-v2, #183 matcher déterministe, #184 parseSpecTable v2 ; pivot stratégique gammes/variants §15.8.4 tracé doc #185)
 - `origin/chore/dotenv-17-minimal` (commit `a10f4aa`, **remote-only**) — artefact d'audit, **NE PAS merger** (laisser Dependabot rebaser PR #15).
 - `docs/ci-debts-resolved` (branche courante, ce doc)
+- `feat/claude-md-15.8.3-15.8.4` (HEAD post-amend) — PR #185 OPEN : §15.8.3/§15.8.4 + maj §13/footer pour alignement avant nouvelle session
 
 Branches mergées et supprimées 06/06 : `fix/e2e-couche7c-preview-proxy` (#86), `fix/e2e-couche7b-networkidle` (#87), `fix/e2e-couche7d-rate-limit` (#88), `fix/e2e-couche7d-inline-auth-limiter` (#89), `fix/e2e-couche7e-verify-email-backdoor` (#90), `ci/e2e-build-backend` (#79), `docs/session-couche7-e2e` (#91), `fix/e2e-couche7e-locale-prefix` (#92). Antérieures 02-03/06 (#75-#85) prunées également.
 
 Prochaine cible : (a) **7f facette 3 — longue traîne per-flow** (follow-ups ciblés, stack-up) : flow-6 quote-total (contrat items/page quote), flow-8 RGPD tab ; **dur/externe** (mock/infra) : flow-5 WebGL canvas, flow-4 IKEA live, flow-7 Stripe ; flow-1 (2&3) cookie-consent submit-intercept (re-test post-Provider) ; (b) **infra prod §14.2** — prérequis secrets §14.1 ; (c) **Lot 2 Dependabot**. Couche 7f **facettes 1+2 + login facette 3 + ROOT CAUSE Provider redux RÉSOLUES** (#97-#99, #102/#103/#104, #106/#109/#110) ; e2e sur main = rouge informatif (traîne per-flow) ; CodeQL (#2) reporté repo public.
+
+**Prochaine session CATALOGUE (priorité principale après merge #185)** : (a) Refactor schema gammes/variants (§15.8.4 P4) — migration prisma `parentSku` FK + `isCanonical` boolean ; (b) Service `ProductCanonicalizer` (§15.8.4 P5) — applique POC canonicalisation ; (c) Matcher #183 v2 (§15.8.4 P6) — filtre isCanonical=true + lecture specifications.brand ; (d) Re-run 6 cats Castorama manquantes (§15.8.3 P1) — plafond 300-500/cat, throttle 800ms, retry-503 ; (e) Audit qualité Castorama post-complet (méthodologie §15.8.2).
 
 ---
 
@@ -925,7 +928,74 @@ Les sitemaps **ne contournent pas** l'anti-bot :
 
 **Méthodologie réutilisable.** Pour tout futur audit qualité de cotes scrapées : (a) audit manuel stratifié 20 SKU pour mesurer le taux d'erreur réel ; (b) calibration empirique par sondes SQL avant de figer des règles ; (c) intervention chirurgicale par cas si les valeurs fausses sont dans les plages attendues (filtre statistique inefficace) ; (d) harness `.scrape-output/` gitignored + PR doc-only pour la traçabilité.
 
+### 15.8.3 — Castorama re-ingestion v2 (20/06/2026)
+
+**Contexte.** Suite audit qualité §15.8.2 (cooking propre), chantier de fond Castorama meubles : cotes incomplètes (name-parse Castorama → 11-14% cotes complètes meuble). Objectif : enrichir catalogue Castorama pour matcher catalogue↔design.
+
+**PR #184 mergée — parseSpecTable v2.** Parser HTML PDP `table[aria-labelledby="specifications"]` (regex dep-free, packages/common). 6 mappings ProductType (cabinet/worktop/facade/sink/tap/appliance) + sanity bounds par type. Brand réelle dans `specifications.brand` (SKU stable, pas écrasement top-level). Validation live POC : 8/10 plaques uplift à 3 cotes (vs 0 avant), parser fonctionne.
+
+**Run rebaseline 20/06 incomplet.** Lancé avec MAX=5000 (mode exhaustif) → 7497 SKU ingérés en ~3h, mais :
+- Volumes très sous-estimés initialement : façade 4140, meuble-haut 992, lavage 245 (vs estimations §15.8 "56/67/125")
+- 6 catégories échouées sur CloudFront 503 : meuble-bas (sauf 4 "joues finition"), evier, robinet, four, hotte, plaque (jamais atteintes)
+- Audit DOM Castorama prouve : extractPdpUrls est correct (24 liens grille `data-testid="product"`, zéro cross-sell). Le bug n'était pas dans le scraper.
+- Vraie taxonomie meuble Castorama : la page meuble-bas cat_id_5087 liste de vrais caissons jamais ingérés. La baseline "43 meuble-bas" pré-19/06 était des "Joues de finition" mal taggées comme caissons.
+
+**Sûreté EPREL préservée.** Audit Étape A (19/06) avait prouvé namespaces disjoints (CASTORAMA-{ean} vs BEKO-, LG-, etc.) + UPSERT-OVERWRITE qui omet isActive/deletedAt. Post-run : 15 SKU audit §15.8.2 intacts (BEKO width=50, LG height=56.4, 13 soft-deletes EPREL inactifs).
+
+**État DB post-run.** 7497 CASTORAMA-* actifs, dont ~440 avec 3 cotes complètes (vs 40 avant) grâce à parseSpecTable v2. Déséquilibre volumétrique acté (façade 4140 vs meuble-bas 4), à corriger en prochaine session via plafond par cat ou refactor archi (§15.8.4).
+
+**Leçons capitalisées.**
+- **L1. Volumes réels Castorama ≠ estimations §15.8.** Toujours re-mesurer par sondes DOM avant un run exhaustif.
+- **L2. Plafond `maxProducts` mal calibré = marathon CloudFront 503.** 7000+ requêtes/cat = trigger rate-limit. Throttle 400ms insuffisant pour les grosses cats.
+- **L3. parseSpecTable v2 = chantier critique acquis.** Pattern HTML stable, regex dep-free, 6 mappings, sanity bounds. Réutilisable IKEA / autres scrapers HTML.
+- **L4. Audit DOM avant blâmer le scraper.** Mon hypothèse "cross-sell" était fausse. Toujours auditer un VRAI DOM live avant de modifier du code scraper.
+
+**Pendings tracés.**
+- P1. Re-run 6 cats manquantes (meuble-bas/evier/robinet/four/hotte/plaque) — sera fait après refactor gammes/variants §15.8.4.
+- P2. Plafond `maxProducts` par cat à recalibrer (300-500/cat ?), throttle 800ms, retry-503 avec backoff.
+- P3. Déséquilibre volumétrique catalogue : façade 4140 vs autres cats. À résoudre via refactor gammes/variants §15.8.4 (ne PAS appliquer dédup canonique simple).
+
+### 15.8.4 — Pivot stratégique : chatbot couleur + architecture gammes/variants (20/06/2026)
+
+**Insight Laurent (20/06).** Au lieu de stocker chaque variante couleur comme SKU séparé (~5000 façades Castorama = 17 couleurs × N gammes), proposition :
+1. Génération cuisine produit des SKU "neutres" sur forme/dimensions/agencement
+2. Customisation post-design via chatbot IA : user choisit la couleur, système applique (rendu 3D + resolve SKU final)
+
+**Alignement industrie.** Les logiciels pro (IKEA Home Planner, Chief Architect, Homestyler, 2020 Design) utilisent ce pattern : forme/structure d'abord, finitions/couleur en post (cf. recherche §15.8.2). Notre approche initiale "1 SKU = 1 variante" était une mauvaise interprétation.
+
+**Architecture 3 niveaux validée.**
+
+- **Niveau 1 — GAMMES (canoniques)** : ce que le matcher #183 cherche. 1 entrée par (brand × gamme × dimensions). Champs : prix base/min/max, dimensions. Sans couleur fixe.
+- **Niveau 2 — VARIANTS (déclinaisons)** : ce que le chatbot couleur propose. 1 entrée par couleur × finition disponible, liée à une gamme via `parentSku` FK. Garde les vrais SKU Castorama existants.
+- **Niveau 3 — RENDU 3D** : couleur appliquée dynamiquement (texture/matériau). Indépendant du SKU exact si user veut une couleur non-disponible chez fournisseur.
+
+**POC dédup 20/06 conservé comme bloc réutilisable.** Le POC `castorama-dedup-poc.ts` (clustering + signature gamme + extraction couleur dict 6-tiers + extraction taille du nom) FOURNIT les briques :
+- Algorithme de canonicalisation (clustering par gamme × dimensions)
+- Dictionnaire couleurs FR tendance 2026 (réutilisé par le chatbot pour SUGGÉRER, pas IMPOSER)
+- Extraction taille depuis nom (anti-fusion 45/60cm)
+- Résultats : 7497 → 6081 clusters identifiés, 1416 variants tracés
+
+Ces blocs alimentent le refactor mais NE SONT PAS appliqués en DB en l'état (pas de soft-delete des variants — ils deviennent Niveau 2).
+
+**Pivot acté — décisions.**
+- PAS d'apply dédup ce soir (pas de soft-delete des 1416 variants identifiés par POC)
+- Refactor gammes/variants = prochain chantier majeur
+- ANTHROPIC_API_KEY requise pour Phase 2 chatbot couleur (cf. §15.7 dette config)
+
+**Pendings tracés.**
+- P4. Refactor schema : ajout `Product.parentSku` FK + `Product.isCanonical` boolean. Migration Prisma.
+- P5. Service `ProductCanonicalizer` : applique POC à l'ingestion (post-scrape) → crée Niveau 1 (canoniques) à partir des variants.
+- P6. Matcher #183 v2 : filtre `WHERE isCanonical = true`.
+- P7. Chatbot couleur (Phase 2) : LLM lit `parentSku` du SKU sélectionné, propose les variants couleur dispos, SUGGÈRE tendances 2026 (dict POC).
+- P8. Rendu 3D dynamique : texture appliquée au modèle METOD/façade indépendamment du SKU exact.
+
+**Méthodologie réutilisable.** Avant tout chantier "stockage exhaustif catalogue", interroger : "est-ce qu'on stocke un INVARIANT (forme, dimensions) ou un CHOIX UTILISATEUR (couleur, finition) ?" Le second ne doit pas inflate le catalogue ; il doit être un paramètre runtime + référence SKU.
+
 ---
+
+*Dernière mise à jour : 20/06/2026 — **Sessions 18-20/06 : chantier catalogue (4 PRs)**. (a) **18/06 — PR #182 cooking-dims-quality-v2** : audit qualité manuel 20 SKU stratifiés → 70% match, 3 mismatches critiques (Beko 10cm, LG 3cm, Cata 4cm). Méthodo §15.8.2 : sondes SQL calibration avant règles → intervention chirurgicale (2 UPDATE + 13 soft-delete) plutôt que filtre par règle. Cooking actif 277→264. 5 leçons capitalisées. (b) **19/06 — PR #183 matcher déterministe** : DesignCatalogMatcher TS standalone (`packages/backend/src/services/matcher/`), POST-persistance, 100% déterministe, cascade 4 niveaux (exact_match ±10mm / matched_degraded / matched_over_budget / no_match), score composite pondéré, seuils par-type (electro 0.7, meuble 0.5). Tests 10/10. Live test : exact_match Brandt BOH3432X-1. resolveAllKitchenItems REPORTÉ (KitchenItem.type vocabulaire inconnu, 0 ligne en base). (c) **19/06 — PR #184 parseSpecTable v2** : scraper Castorama PDP enrichi, audit Étape 0 a corrigé 5 hypothèses fausses (location, regex vs cheerio, ProductType vs SlotType, lengthMm absent, rawMeasureText obligatoire). 6 mappings ProductType (cabinet/worktop/facade/sink/tap/appliance) + sanity bounds par type. Brand réelle dans `specifications.brand` (SKU stable). Tests common 14/14 + scraper 16/16. Diff 7 fichiers +520/-7. Fixture stable réutilisable. (d) **20/06 — Run Castorama rebaseline incomplet** : 7497 SKU ingérés en ~3h, déséquilibre volumétrique acté (façade 4140, meuble-haut 992 vs estimations §15.8 sous-estimées ×70). 6 cats échouées CloudFront 503 (meuble-bas, evier, robinet, four, hotte, plaque). Sûreté EPREL préservée. Audit DOM prouve extractPdpUrls correct (hypothèse cross-sell FAUSSE). (e) **20/06 — POC dédup + pivot stratégique §15.8.4** : algorithme clustering signature gamme + extraction couleur dict 6-tiers + extraction taille depuis nom (anti-fusion 45/60cm via taille-in-signature, leçon du POC). Résultats : 7497 → 6081 clusters identifiés, 1416 variants tracés (18.9% dédup honnête). **Insight Laurent** : abandonner le stockage de variantes couleur en SKU → chatbot IA post-design. Architecture 3 niveaux gammes/variants/rendu validée, alignée industrie (IKEA Home Planner, Chief Architect). POC conservé comme bloc réutilisable mais PAS appliqué en DB (pas de soft-delete des 1416 variants — ils deviennent Niveau 2 dans le refactor). (f) **20/06 — PR #185 doc-only** : §15.8.3 Castorama re-ingestion v2 + §15.8.4 pivot gammes/variants documentés dans CLAUDE.md (+63 lignes). Pendings P4-P8 tracés. **Acquis méthodologiques** : (1) audit DOM avant blâmer scraper (hypothèse cross-sell FAUSSE prouvée par sonde), (2) volumes réels ≠ estimations §15.8 (remesurer avant run exhaustif), (3) industrie cuisine fonctionne par placeholders + customisation post-design (forme avant couleur), (4) ne pas pré-construire une architecture prématurée pour une feature future non designée — différer la migration prisma au moment du vrai besoin. main HEAD = `e370065` post-#184. PR #185 OPEN sur `feat/claude-md-15.8.3-15.8.4`. **Prochaine session : refactor schema gammes/variants (P4) + ProductCanonicalizer (P5) + Matcher v2 (P6) + re-run 6 cats Castorama manquantes + audit qualité Castorama post-complet (méthodo §15.8.2).***
+
+<!-- Historique footer 10/06 : conservé ci-dessous -->
 
 *Dernière mise à jour : 10/06/2026 — **Session STACK-UP : ROOT CAUSE `<Provider store={store}>` jamais câblé (3 PRs : #109 Provider + #110 kitchen-fields flow-4/5/6 + #106 span-click flow-1)**. 1ʳᵉ session stack montée en local (backend :4000 + preview prod :3005). Le login UI atteint /dashboard MAIS DashboardPage (et Catalog/SandboxDesigner) **crashent** `Cannot destructure 'store' … null` — le store Redux n'était **jamais fourni** à l'arbre (App.tsx sans `<Provider>`). **Prouvé 3 axes** (code/runtime/git pickaxe), masqué par `vi.mock('store/hooks')`. Mon diagnostic 09/06 (« régression consent / nav login→dashboard ») était **FAUX** = c'était ce crash. Fix #109 (3 lignes) → **flow-2 2/2 PASS**, catalog/designer rendent. Triage traîne : kitchen-fields `widthCm→width/length/height` (#110, flow-4/5/6 `POST /kitchens` 400→crash), span-click checkbox sr-only (#106). Restant = couches per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe). **Leçons** : stack-up trouve des bugs invisibles aux unit tests mockés + logs CI ; **comparaison de runs ≠ causation** (ma « régression consent » du 08/06 était corrélation) ; fixer la racine puis trier honnêtement (pas de brute-force WebGL/externe). main HEAD = `f99f4d1`. Branche courante : `docs/stackup-redux-provider`.
 
