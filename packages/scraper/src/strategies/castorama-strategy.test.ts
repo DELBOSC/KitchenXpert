@@ -13,6 +13,7 @@ import {
 
 const here = dirname(fileURLToPath(import.meta.url));
 const pdpHtml = readFileSync(join(here, '__fixtures__/castorama-pdp.html'), 'utf8');
+const pdpEnrichedHtml = readFileSync(join(here, '__fixtures__/castorama-pdp-enriched.html'), 'utf8');
 const sitemapXml = readFileSync(join(here, '__fixtures__/castorama-sitemap.xml'), 'utf8');
 const categoryHtml = readFileSync(join(here, '__fixtures__/castorama-category.html'), 'utf8');
 
@@ -88,6 +89,24 @@ describe('CastoramaStrategy', () => {
     expect(p.dimensionConfidence).toBe(1);
     expect(p.sourceLevel).toBe(3);
     expect(p.specifications?.gtin13).toBe('5059340242217');
+  });
+
+  it('§15.8.3 : la table specifications enrichit (3 cotes table > 1 cote nom), conf 1.0', async () => {
+    const s = new CastoramaStrategy(mockHtml(pdpEnrichedHtml));
+    const r = await s.fetchProductByUrl('https://www.castorama.fr/caisson-bas-goodhome/5059340999999_CAFR.prd');
+    expect(r.success).toBe(true);
+    const p = r.product!;
+    // Le nom ne porte que "L. 60 cm" (1 cote, conf 0.3). La table donne 3 cotes.
+    expect([p.widthMm, p.heightMm, p.depthMm]).toEqual([600, 850, 560]);
+    expect(p.dimensionConfidence).toBe(1.0);
+    // brand top-level reste 'Castorama' (namespace SKU stable) ; vraie marque en specs.
+    expect(p.brand).toBe('Castorama');
+    expect(p.specifications?.brand).toBe('GoodHome');
+    expect(p.specifications?.material).toBe('Panneau de particules melamine');
+    expect(p.specifications?.color).toBe('Blanc');
+    expect(p.specifications?.finish).toBe('Mat');
+    // rawMeasureText = paires table serialisees (pas le nom).
+    expect(String(p.specifications?.rawMeasureText)).toContain('Hauteur (cm):85cm');
   });
 
   it('skip-not-crash si pas de Product JSON-LD', async () => {
