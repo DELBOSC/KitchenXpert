@@ -473,6 +473,8 @@ model Product {
   providerId   String?
   categoryId   String?
   sku          String   @unique
+  parentSku    String?
+  isCanonical  Boolean  @default(false)
   name         String
   description  String?
   brand        String?
@@ -506,6 +508,8 @@ model Product {
   catalog      Catalog?         @relation(fields: [catalogId], references: [id])
   provider     CatalogProvider? @relation(fields: [providerId], references: [id])
   category     ProductCategory? @relation(fields: [categoryId], references: [id])
+  parent       Product?         @relation("ProductVariants", fields: [parentSku], references: [sku], onDelete: SetNull, onUpdate: Cascade)
+  variants     Product[]        @relation("ProductVariants")
   kitchenItems KitchenItem[]
   orderItems   OrderItem[]
 
@@ -518,6 +522,8 @@ model Product {
   @@index([isActive])
   @@index([sourceLevel])
   @@index([lastVerifiedAt])
+  @@index([parentSku])
+  @@index([isCanonical])
 }
 
 model ProductCategory {
@@ -1536,4 +1542,16 @@ model InternalFeedback {
   @@index([userId, createdAt])
   @@index([rating])
   @@index([resolvedAt])
+}
+
+// Bookkeeping table for the SeedRunner (src/database/seeds/seed-runner.ts).
+// Created at runtime via raw CREATE TABLE; modeled here only to reconcile
+// schema drift so `prisma db push` does not try to drop it. Do not alter the
+// shape without matching seed-runner.ts's CREATE TABLE byte-for-byte.
+model Seed {
+  id         String   @id @db.VarChar(255)
+  name       String   @db.VarChar(255)
+  executedAt DateTime? @default(now()) @map("executed_at") @db.Timestamp(6)
+
+  @@map("_seeds")
 }
