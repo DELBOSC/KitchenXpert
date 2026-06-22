@@ -77,6 +77,9 @@ export class DesignCatalogMatcher {
     const where: Record<string, unknown> = {
       isActive: true,
       deletedAt: null,
+      // Canonicals only (§15.8.4 P6): colour variants (parentSku set) are hidden
+      // from results — their canonical gamme stands in for them.
+      isCanonical: true,
       width: { not: null },
       dimensionConfidence: { gte: confMin },
       category: { slug: cat.slug },
