@@ -18,6 +18,7 @@ on:
       - 'packages/api-client/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - '.github/workflows/backend-ci.yml'
 
 env:
   NODE_VERSION: '20'
