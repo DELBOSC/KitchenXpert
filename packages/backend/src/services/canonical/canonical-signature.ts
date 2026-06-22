@@ -218,7 +218,7 @@ export function clusterAndSelect(rows: CanonicalRow[], usePriceTiers: boolean): 
   for (let t = 0; t <= 6; t++) {colorTierStats[String(t)] = 0;}
 
   for (const [sig, vs] of clusters) {
-    for (const v of vs) {colorTierStats[String(v.tier)]++;}
+    for (const v of vs) {colorTierStats[String(v.tier)] = (colorTierStats[String(v.tier)] ?? 0) + 1;}
     const pick = (group: SignatureItem[], priceTier: PriceTier): void => {
       const best = [...group].sort((a, b) => b.score - a.score || a.price - b.price)[0]!;
       canonicals.push({
