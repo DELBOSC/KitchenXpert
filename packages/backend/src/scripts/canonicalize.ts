@@ -16,12 +16,13 @@
  *   pnpm tsx packages/backend/src/scripts/canonicalize.ts            (dry-run)
  *   pnpm tsx packages/backend/src/scripts/canonicalize.ts --apply    (write)
  */
-import { config } from 'dotenv';
-config();
-
 import { PrismaClient, type Prisma } from '@prisma/client';
+import { config } from 'dotenv';
 
 import { clusterAndSelect, type CanonicalRow } from '../services/canonical/canonical-signature';
+
+// Load .env before any PrismaClient is instantiated (new PrismaClient() reads env).
+config();
 
 const APPLY = process.argv.includes('--apply');
 const POC_CANON = 6081;
