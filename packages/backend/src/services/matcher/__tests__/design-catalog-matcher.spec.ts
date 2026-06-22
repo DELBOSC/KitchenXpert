@@ -101,4 +101,37 @@ describe('DesignCatalogMatcher.findMatchingProducts', () => {
     expect(JSON.stringify(findMany.mock.calls[0][0].where)).toContain('"applianceGroup"');
     expect(JSON.stringify(findMany.mock.calls[0][0].where)).toContain('ovens');
   });
+
+  it('P6 structurel : le where envoyé à findMany contient isCanonical=true', async () => {
+    const { db, findMany } = makeDb([]);
+    await new DesignCatalogMatcher(db).findMatchingProducts(ovenSlot());
+    expect((findMany.mock.calls[0][0].where).isCanonical).toBe(true);
+  });
+
+  it('P6 comportemental : seul le canonique remonte, le variant couleur est exclu', async () => {
+    // Pool [canonique, variant]. Le variant est MOINS CHER -> sans le filtre il
+    // gagnerait au ranking ; le findMany mocké respecte where.isCanonical (comme
+    // Prisma) et ne renvoie donc que le canonique.
+    // Negative control: VARIANT is cheaper (180 < 200) with identical dims
+    // (exact_match). Without isCanonical:true in the service where, findMany would
+    // return both, VARIANT would win on price, and these assertions would fail.
+    // This is what makes the test guard the filter rather than be a no-op.
+    const pool: Array<Partial<ProductRow> & { isCanonical: boolean; parentSku: string | null }> = [
+      { id: 'canon', sku: 'CANON', brand: 'Vicco', price: 200, width: 60, height: 60, depth: 55, availability: 'in_stock', dimensionConfidence: 1, isCanonical: true, parentSku: null },
+      { id: 'variant', sku: 'VARIANT', brand: 'Vicco', price: 180, width: 60, height: 60, depth: 55, availability: 'in_stock', dimensionConfidence: 1, isCanonical: false, parentSku: 'CANON' },
+    ];
+    const findMany = jest.fn().mockImplementation(
+      ({ where }: { where: { isCanonical?: boolean } }) =>
+        Promise.resolve(pool.filter((r) => where.isCanonical === undefined || r.isCanonical === where.isCanonical)),
+    );
+    const db = { product: { findMany } } as unknown as MatcherDb;
+
+    const r = await new DesignCatalogMatcher(db).findMatchingProducts(ovenSlot());
+
+    expect(r.product?.sku).toBe('CANON');
+    expect(r.productId).toBe('canon');
+    expect(r.alternatives.map((a) => a.sku)).not.toContain('VARIANT');
+    // Anchor the intent inside this behavioural test too: the filter must be in the where.
+    expect(findMany.mock.calls[0][0].where.isCanonical).toBe(true);
+  });
 });
