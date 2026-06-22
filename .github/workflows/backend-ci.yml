@@ -150,13 +150,13 @@ jobs:
         run: pnpm prisma:push
 
       - name: 🧪 Run unit tests
-        run: pnpm test:backend --coverage
+        run: pnpm --filter @kitchenxpert/backend test:coverage
 
       - name: 📊 Upload coverage to Codecov
         if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v4
         with:
-          files: ./coverage/lcov.info
+          files: ./packages/backend/coverage/lcov.info
           flags: backend
           name: backend-coverage
           token: ${{ env.CODECOV_TOKEN }}
