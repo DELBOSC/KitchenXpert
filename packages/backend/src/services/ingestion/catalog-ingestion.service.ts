@@ -12,8 +12,9 @@
  */
 import { resolveCategorySlug, type IngestionStrategy, type CategorySlug, type UnifiedProduct } from '@kitchenxpert/common';
 
-import type { ProductRepository } from '../../repositories/product-repository';
 import { mapUnifiedProductToUpsert } from './unified-product-mapper';
+
+import type { ProductRepository } from '../../repositories/product-repository';
 
 /**
  * Résout un slug de catégorie (§15.8 Phase 2) en categoryId. Injecté pour
@@ -110,9 +111,9 @@ export class CatalogIngestionService {
     categoryId?: string | null;
     detection?: 'explicit' | 'inferred' | null;
   }> {
-    if (!this.categoryResolver) return {};
+    if (!this.categoryResolver) {return {};}
     const { slug, detection } = resolveCategorySlug(product);
-    if (!slug) return { detection };
+    if (!slug) {return { detection };}
     const categoryId = await this.categoryResolver.idForSlug(slug);
     if (categoryId == null) {
       this.logger?.warn(`[ingestion] category slug "${slug}" introuvable -> categoryId NULL`);
