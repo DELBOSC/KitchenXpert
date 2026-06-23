@@ -8,16 +8,17 @@
  */
 import { Router, type Router as RouterType } from 'express';
 import { z } from 'zod';
+
 import { IngestionOrchestrator, SUPPORTED_BRANDS } from '@kitchenxpert/common';
 
-import { authenticate, authorize } from '../middleware/auth-middleware';
-import { validateBody } from '../middleware/validation-middleware';
 import { prisma } from '../../database/client';
 import { ProductRepository } from '../../repositories/product-repository';
 import { CatalogIngestionService } from '../../services/ingestion/catalog-ingestion.service';
 import { PrismaCategoryResolver } from '../../services/ingestion/category-resolver';
 import { HttpJsonFetcher } from '../../services/ingestion/http-json-fetcher';
 import logger from '../../utils/logger';
+import { authenticate, authorize } from '../middleware/auth-middleware';
+import { validateBody } from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 

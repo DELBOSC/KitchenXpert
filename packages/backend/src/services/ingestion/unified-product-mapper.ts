@@ -15,9 +15,9 @@
  *     (honest — lets catalog-search exclude un-priced rows instead of pretending
  *     they cost 0€).
  */
+import type { UpsertProductDto } from '../../repositories/product-repository';
 import type { UnifiedProduct } from '@kitchenxpert/common';
 
-import type { UpsertProductDto } from '../../repositories/product-repository';
 
 /** Convert integer millimetres to centimetres (2-decimal Number), or undefined. */
 function mmToCm(mm: number | null): number | undefined {

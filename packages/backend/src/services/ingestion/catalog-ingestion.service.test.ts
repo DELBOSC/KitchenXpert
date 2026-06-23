@@ -1,7 +1,8 @@
-import type { IngestionStrategy, ParseResult, UnifiedProduct } from '@kitchenxpert/common';
+import { CatalogIngestionService } from './catalog-ingestion.service';
 
 import type { ProductRepository } from '../../repositories/product-repository';
-import { CatalogIngestionService } from './catalog-ingestion.service';
+import type { IngestionStrategy, ParseResult, UnifiedProduct } from '@kitchenxpert/common';
+
 
 function makeProduct(over: Partial<UnifiedProduct> = {}): UnifiedProduct {
   return {

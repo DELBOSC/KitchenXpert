@@ -2,8 +2,8 @@ import { Router, type IRouter, type Request, type Response } from 'express';
 import { z } from 'zod';
 
 import { prisma } from '../../database/client';
-import { authController } from '../controllers/auth-controller';
 import logger from '../../utils/logger';
+import { authController } from '../controllers/auth-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { loginRateLimiter, authRateLimiter, passwordResetRateLimiter } from '../middleware/rate-limit-middleware';
 import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';

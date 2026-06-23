@@ -4,10 +4,10 @@
  * chargé une seule fois (les catégories changent rarement). Slug absent -> null
  * (le service loggue + pose categoryId NULL, skip-not-crash).
  */
-import type { PrismaClient } from '@prisma/client';
-import type { CategorySlug } from '@kitchenxpert/common';
-
 import type { CategoryIdResolver } from './catalog-ingestion.service';
+import type { CategorySlug } from '@kitchenxpert/common';
+import type { PrismaClient } from '@prisma/client';
+
 
 export class PrismaCategoryResolver implements CategoryIdResolver {
   private cache: Map<string, string> | null = null;

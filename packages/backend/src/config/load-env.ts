@@ -1,4 +1,5 @@
 import path from 'path';
+
 import dotenv from 'dotenv';
 
 // MUST be imported first in src/index.ts (`import './config/load-env';`).

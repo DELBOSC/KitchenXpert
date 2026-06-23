@@ -1,6 +1,7 @@
+import { mapUnifiedProductToUpsert } from './unified-product-mapper';
+
 import type { UnifiedProduct } from '@kitchenxpert/common';
 
-import { mapUnifiedProductToUpsert } from './unified-product-mapper';
 
 function makeUP(over: Partial<UnifiedProduct> = {}): UnifiedProduct {
   return {

@@ -50,9 +50,11 @@ jobs:
       - name: 📥 Install dependencies
         run: pnpm install --frozen-lockfile
 
-  # Job 2: Lint
+  # Job 2: Lint (ESLint + Prettier). tsc lives in the standalone "Type Check
+  # (backend)" job below — keeping it here would double-run it and fail on
+  # TS6305 (this job does not build @kitchenxpert/common).
   lint:
-    name: 🔍 Lint & Type Check
+    name: 🔍 Lint
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -79,9 +81,6 @@ jobs:
 
       - name: 🎨 Check Prettier formatting
         run: pnpm format:check
-
-      - name: 📝 TypeScript type check
-        run: pnpm type-check:backend
 
   # Job 2b: Type Check (standalone) — effective tsc gate, independent of ESLint.
   # The lint job above aborts on pre-existing ESLint errors, so its tsc step is
