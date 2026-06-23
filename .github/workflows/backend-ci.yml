@@ -113,6 +113,9 @@ jobs:
       - name: 📥 Restore dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: 🏗️ Build workspace deps (common)
+        run: pnpm turbo run build --filter @kitchenxpert/common
+
       - name: 🗄️ Generate Prisma client
         working-directory: packages/backend
         run: pnpm prisma:generate
