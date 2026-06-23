@@ -18,6 +18,7 @@ on:
       - 'packages/api-client/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - '.github/workflows/backend-ci.yml'
 
 env:
   NODE_VERSION: '20'
@@ -78,6 +79,46 @@ jobs:
 
       - name: 🎨 Check Prettier formatting
         run: pnpm format:check
+
+      - name: 📝 TypeScript type check
+        run: pnpm type-check:backend
+
+  # Job 2b: Type Check (standalone) — effective tsc gate, independent of ESLint.
+  # The lint job above aborts on pre-existing ESLint errors, so its tsc step is
+  # skipped; this job runs tsc on its own so a real type error turns it red.
+  type-check:
+    name: 📝 Type Check (backend)
+    needs: setup
+    runs-on: ubuntu-latest
+    env:
+      # Prisma generate needs these DEFINED but never connects (no DB step here).
+      DATABASE_URL: postgresql://typecheck:noconnect@localhost:5432/typecheck_only
+      DIRECT_URL: postgresql://typecheck:noconnect@localhost:5432/typecheck_only
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: 📥 Restore dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build workspace deps (common)
+        run: pnpm turbo run build --filter @kitchenxpert/common
+
+      - name: 🗄️ Generate Prisma client
+        working-directory: packages/backend
+        run: pnpm prisma:generate
 
       - name: 📝 TypeScript type check
         run: pnpm type-check:backend
