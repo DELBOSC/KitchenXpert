@@ -6,11 +6,16 @@ import { CatalogRepository } from '../../repositories/catalog-repository';
 import { MaterialRepository } from '../../repositories/material-repository';
 import { ProductRepository } from '../../repositories/product-repository';
 import { CacheService } from '../../services/cache.service';
+import { VariantResolverService } from '../../services/variant-resolver/variant-resolver.service';
 import { asyncHandler } from '../middleware/error-middleware';
+
+import type { ResolverDb } from '../../services/variant-resolver/variant-resolver.types';
 const catalogRepository = new CatalogRepository(prisma);
 const productRepository = new ProductRepository(prisma);
 const applianceRepository = new ApplianceRepository(prisma);
 const materialRepository = new MaterialRepository(prisma);
+// P7 color resolver — prisma.product satisfies the minimal ResolverDb contract.
+const variantResolver = new VariantResolverService(prisma as unknown as ResolverDb);
 
 /**
  * Catalog Controller
@@ -156,6 +161,27 @@ export class CatalogController {
     const { limit = 5 } = req.query;
     const products = await productRepository.getRelated(id, Number(limit));
     res.status(200).json({ success: true, data: products });
+  });
+
+  /**
+   * GET /products/:sku/colors
+   * Offerable color choices of a gamme, resolved from ANY of its SKUs
+   * (canonical or variant). 404 if the SKU does not exist; 200 with an empty
+   * array if it exists but offers no recognizable color.
+   */
+  getProductColors = asyncHandler(async (req: Request, res: Response) => {
+    const sku = req.params.sku as string;
+    if (!sku) {
+      res.status(400).json({ success: false, error: 'sku is required' });
+      return;
+    }
+    const product = await productRepository.findBySku(sku);
+    if (!product) {
+      res.status(404).json({ success: false, error: 'Product not found' });
+      return;
+    }
+    const colors = await variantResolver.resolveColors(sku);
+    res.status(200).json({ success: true, data: colors });
   });
 
   /**

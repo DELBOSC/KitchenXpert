@@ -184,6 +184,26 @@ router.get('/products/:id', catalogController.getProductById);
  */
 router.get('/products/:id/related', catalogController.getRelatedProducts);
 
+/**
+ * @swagger
+ * /api/v1/catalog/products/{sku}/colors:
+ *   get:
+ *     summary: Get the offerable color choices of a gamme (from any of its SKUs)
+ *     tags: [Catalog]
+ *     parameters:
+ *       - in: path
+ *         name: sku
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Color options (possibly an empty array)
+ *       404:
+ *         description: Product not found
+ */
+router.get('/products/:sku/colors', catalogController.getProductColors);
+
 // ==================== CATEGORIES ====================
 
 /**

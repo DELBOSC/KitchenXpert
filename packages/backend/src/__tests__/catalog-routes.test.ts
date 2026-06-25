@@ -41,6 +41,7 @@ const mockCatalogRepository = {
 
 const mockProductRepository = {
   findById: jest.fn(),
+  findBySku: jest.fn(),
   findAll: jest.fn(),
   search: jest.fn(),
   getRelated: jest.fn(),
@@ -94,6 +95,10 @@ const mockPrisma = {
   catalogProvider: {
     findMany: jest.fn(),
     count: jest.fn(),
+  },
+  // Used by the module-level VariantResolverService in catalog-controller.
+  product: {
+    findMany: jest.fn(),
   },
 };
 
@@ -527,6 +532,104 @@ describe('CatalogController', () => {
 
       expect(statusMock).toHaveBeenCalledWith(404);
       expect(jsonMock).toHaveBeenCalledWith({ success: false, error: 'Product not found' });
+    });
+  });
+
+  describe('getProductColors', () => {
+    const CANON = 'CASTORAMA-CANON';
+    const VARIANT = 'CASTORAMA-VAR-ANTH';
+
+    // A ResolverProductRow-shaped row (what prisma.product.findMany returns).
+    function prow(sku: string, color: string, isCanonical = false) {
+      return {
+        sku,
+        isCanonical,
+        parentSku: isCanonical ? null : CANON,
+        name: `Façade ${color}`,
+        price: 44.9,
+        specifications: { color },
+        isActive: true,
+        deletedAt: null,
+        images: [],
+      };
+    }
+
+    const GAMME_3 = [
+      prow(CANON, 'Blanc', true),
+      prow(VARIANT, 'Anthracite'),
+      prow('CASTORAMA-VAR-NOIR', 'Noir'),
+    ];
+
+    it('(a) returns 404 if the SKU does not exist', async () => {
+      mockProductRepository.findBySku.mockResolvedValue(null);
+
+      const req = createMockReq({ params: { sku: 'CASTORAMA-UNKNOWN' } });
+      const { res, statusMock, jsonMock } = createMockRes();
+
+      await controller.getProductColors(req as Request, res as Response);
+
+      expect(mockProductRepository.findBySku).toHaveBeenCalledWith('CASTORAMA-UNKNOWN');
+      expect(statusMock).toHaveBeenCalledWith(404);
+      expect(jsonMock).toHaveBeenCalledWith({ success: false, error: 'Product not found' });
+    });
+
+    it('(b) returns 200 with [] when the SKU exists but offers no recognizable color', async () => {
+      mockProductRepository.findBySku.mockResolvedValue({ sku: 'CASTORAMA-CANON0' });
+      // A canonical whose only color is data noise -> resolver yields [].
+      mockPrisma.product.findMany.mockResolvedValue([prow('CASTORAMA-CANON0', 'Transparent', true)]);
+
+      const req = createMockReq({ params: { sku: 'CASTORAMA-CANON0' } });
+      const { res, statusMock, jsonMock } = createMockRes();
+
+      await controller.getProductColors(req as Request, res as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(200);
+      expect(jsonMock).toHaveBeenCalledWith({ success: true, data: [] });
+    });
+
+    it('(c) returns 200 with the 3 color options for a canonical SKU', async () => {
+      mockProductRepository.findBySku.mockResolvedValue({ sku: CANON });
+      mockPrisma.product.findMany.mockResolvedValue(GAMME_3);
+
+      const req = createMockReq({ params: { sku: CANON } });
+      const { res, statusMock, jsonMock } = createMockRes();
+
+      await controller.getProductColors(req as Request, res as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(200);
+      const payload = jsonMock.mock.calls[0][0];
+      expect(payload.success).toBe(true);
+      expect(payload.data).toHaveLength(3);
+      expect(payload.data.map((o: { key: string }) => o.key).sort()).toEqual([
+        'anthracite',
+        'blanc',
+        'noir',
+      ]);
+    });
+
+    it('(d) relays the same colors when the SKU is a variant of the gamme', async () => {
+      mockProductRepository.findBySku.mockResolvedValue({ sku: VARIANT });
+      mockPrisma.product.findMany.mockResolvedValue(GAMME_3);
+
+      const req = createMockReq({ params: { sku: VARIANT } });
+      const { res, statusMock, jsonMock } = createMockRes();
+
+      await controller.getProductColors(req as Request, res as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(200);
+      const payload = jsonMock.mock.calls[0][0];
+      expect(payload.data).toHaveLength(3); // climbed variant -> canonical -> full offer
+    });
+
+    it('(e) returns 400 when the sku param is empty', async () => {
+      const req = createMockReq({ params: { sku: '' } });
+      const { res, statusMock, jsonMock } = createMockRes();
+
+      await controller.getProductColors(req as Request, res as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(400);
+      expect(jsonMock).toHaveBeenCalledWith({ success: false, error: 'sku is required' });
+      expect(mockProductRepository.findBySku).not.toHaveBeenCalled();
     });
   });
 
