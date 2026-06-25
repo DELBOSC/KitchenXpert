@@ -51,6 +51,60 @@ function makeDb(rows: ResolverProductRow[]) {
   return { db: { product: { findMany } } as unknown as ResolverDb, findMany };
 }
 
+/**
+ * Realistic mock for the OR-first service. Every query is the gamme OR-query
+ * `{ where: { OR:[{parentSku:X},{sku:X}], isActive, deletedAt } }`: it returns
+ * the rows attached to X (parentSku===X) plus X itself (sku===X), honoring the
+ * active filter. A canonical X yields the whole gamme in one call; a variant X
+ * yields only itself (forcing the service's 2nd query on the canonical).
+ * `findMany` is a jest.fn() so call counts can be asserted.
+ */
+function makeSmartDb(allRows: ResolverProductRow[]) {
+  const findMany = jest.fn(async (args: { where: Record<string, unknown> }) => {
+    const where = args.where;
+    const or = (where.OR ?? []) as Array<{ parentSku?: string; sku?: string }>;
+    const x = or.find((o) => o.sku)?.sku ?? or.find((o) => o.parentSku)?.parentSku;
+    if (x === undefined) {return [];}
+    return allRows.filter(
+      (r) =>
+        (r.parentSku === x || r.sku === x) &&
+        (where.isActive === undefined || r.isActive === where.isActive) &&
+        (where.deletedAt === undefined || r.deletedAt === where.deletedAt),
+    );
+  });
+  return { db: { product: { findMany } } as unknown as ResolverDb, findMany };
+}
+
+/** An orphan row: present but neither canonical nor attached to a gamme. */
+function orphanRow(sku: string): ResolverProductRow {
+  return {
+    sku,
+    isCanonical: false,
+    parentSku: null,
+    name: `Orphan ${sku}`,
+    price: 30,
+    specifications: { color: 'Blanc' },
+    isActive: true,
+    deletedAt: null,
+    images: [],
+  };
+}
+
+/** A canonical row that has been soft-deleted (isActive false + deletedAt set). */
+function softDeletedCanonical(sku: string, color: string, price: number): ResolverProductRow {
+  return {
+    sku,
+    isCanonical: true,
+    parentSku: null,
+    name: `Vicco Façade ${color}`,
+    price,
+    specifications: { color },
+    isActive: false,
+    deletedAt: new Date('2026-01-01T00:00:00Z'),
+    images: [],
+  };
+}
+
 describe('VariantResolverService.resolveColors', () => {
   it('(a) Vicco gamme -> 3 color options with correct representative/price/count', async () => {
     const { db } = makeDb(VICCO);
@@ -120,6 +174,7 @@ describe('VariantResolverService.resolveColors', () => {
   it('queries the parentSku graph (OR parentSku/sku) with active filter', async () => {
     const { db, findMany } = makeDb(VICCO);
     await new VariantResolverService(db).resolveColors(PARENT);
+    // OR-first: the very first query is the gamme OR-query (canonical case).
     const where = findMany.mock.calls[0][0].where;
     expect(where).toMatchObject({ isActive: true, deletedAt: null });
     expect(JSON.stringify(where.OR)).toContain('parentSku');
@@ -144,6 +199,82 @@ describe('VariantResolverService.resolveColors', () => {
     // (without it, label ASC would order [blanc, bois, chene, inox]).
     // bois before chene at equal score+count -> locks label ASC.
     expect(opts.map((o) => o.key)).toEqual(['blanc', 'inox', 'bois', 'chene']);
+  });
+});
+
+describe('VariantResolverService.resolveColors — from ANY gamme SKU (OR-first)', () => {
+  const VARIANT_ANTHRACITE = 'CASTORAMA-4066731035533'; // a variant, parentSku=PARENT
+
+  it('(h.a) CANONICAL sku -> 3 options in ONE query (OR-first optimization)', async () => {
+    const { db, findMany } = makeSmartDb(VICCO);
+    const opts = await new VariantResolverService(db).resolveColors(PARENT);
+    expect(opts.map((o) => o.key)).toEqual(['blanc', 'anthracite', 'noir']);
+    expect(findMany).toHaveBeenCalledTimes(1); // canonical needs no 2nd query
+  });
+
+  it('(h.b) VARIANT sku -> SAME 3 options, in TWO queries', async () => {
+    const { db, findMany } = makeSmartDb(VICCO);
+    const opts = await new VariantResolverService(db).resolveColors(VARIANT_ANTHRACITE);
+    expect(opts.map((o) => o.key)).toEqual(['blanc', 'anthracite', 'noir']);
+    expect(findMany).toHaveBeenCalledTimes(2); // 1 OR on the variant + 1 OR on the canonical
+  });
+
+  it('(h.b2) a VARIANT yields the exact same offer object as its canonical', async () => {
+    const fromVariant = await new VariantResolverService(makeSmartDb(VICCO).db).resolveColors(
+      VARIANT_ANTHRACITE,
+    );
+    const fromCanonical = await new VariantResolverService(makeSmartDb(VICCO).db).resolveColors(
+      PARENT,
+    );
+    expect(fromVariant).toEqual(fromCanonical);
+  });
+
+  it('(h.c) an unknown sku -> [] in ONE query', async () => {
+    const { db, findMany } = makeSmartDb(VICCO);
+    const opts = await new VariantResolverService(db).resolveColors('CASTORAMA-DOES-NOT-EXIST');
+    expect(opts).toEqual([]);
+    expect(findMany).toHaveBeenCalledTimes(1);
+  });
+
+  it('(h.d) an orphan sku (not canonical, no parentSku) -> [] in ONE query', async () => {
+    const orphan = orphanRow('CASTORAMA-ORPHAN-1');
+    const { db, findMany } = makeSmartDb([orphan]);
+    const opts = await new VariantResolverService(db).resolveColors(orphan.sku);
+    expect(opts).toEqual([]);
+    expect(findMany).toHaveBeenCalledTimes(1);
+  });
+
+  it('(h.e) resolveByColor from a VARIANT resolves like from the canonical', async () => {
+    const r = await new VariantResolverService(makeSmartDb(VICCO).db).resolveByColor(
+      VARIANT_ANTHRACITE,
+      'noir',
+    );
+    expect(r).toEqual({ sku: 'CASTORAMA-4066731354139', price: 45.9 });
+  });
+
+  it('(h.f) soft-deleted canonical: gamme still resolvable via its live variants', async () => {
+    // The canonical (Blanc) is soft-deleted -> excluded by fetchGamme's
+    // isActive/deletedAt filter. The gamme must still resolve from the live
+    // variants, without crashing.
+    const { db, findMany } = makeSmartDb([
+      softDeletedCanonical(PARENT, 'Blanc Haute brillance', 44.9), // excluded
+      row('CASTORAMA-VB1', 'Blanc Haute brillance', 44.9), // live Blanc variant
+      row('CASTORAMA-VB2', 'Blanc Haute brillance', 43.9), // cheaper live Blanc variant
+      row('CASTORAMA-VN1', 'Noir Haute brillance', 45.9), // live Noir variant
+    ]);
+    const opts = await new VariantResolverService(db).resolveColors('CASTORAMA-VN1');
+
+    // No throw; the offer is built from the live variants only.
+    expect(opts.map((o) => o.key)).toEqual(['blanc', 'noir']);
+
+    // Blanc was the (now soft-deleted) canonical's color: it is NOT counted as
+    // canonical anymore, and the representative is the cheapest LIVE variant.
+    const blanc = opts.find((o) => o.key === 'blanc')!;
+    expect(blanc.isCanonicalColor).toBe(false);
+    expect(blanc.representativeSku).toBe('CASTORAMA-VB2'); // cheapest live (43.9)
+    expect(blanc.priceFrom).toBe(43.9);
+    expect(blanc.skuCount).toBe(2); // only the 2 live variants, not the dead canonical
+    expect(findMany).toHaveBeenCalledTimes(2); // variant entry -> 2 queries
   });
 });
 
