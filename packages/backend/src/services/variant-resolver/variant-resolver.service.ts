@@ -1,10 +1,10 @@
 /**
  * VariantResolverService (CLAUDE.md §15.8.4 P7 — chatbot couleur, Phase 1).
  *
- * Given a canonical SKU (a gamme), reads the parentSku graph (canonical + its
- * variants), groups the active SKUs by normalized color (via the frozen
- * `normalizeColor`), and returns the offerable color choices — each with a
- * single representative purchasable SKU.
+ * Given ANY SKU of a gamme (canonical or a color variant), climbs to the
+ * canonical, reads the parentSku graph (canonical + its variants), groups the
+ * active SKUs by normalized color (via the frozen `normalizeColor`), and
+ * returns the offerable color choices — each with a single representative SKU.
  *
  * 100% READ-ONLY: only `db.product.findMany`. No write, no LLM, no API key.
  * Pure DI (mockable `ResolverDb`) — testable with hard-coded fixtures, no DB.
@@ -42,20 +42,53 @@ function canonRank(row: ResolverProductRow): number {
 export class VariantResolverService {
   constructor(private readonly db: ResolverDb) {}
 
-  /**
-   * Resolve the offerable color choices of a gamme. Returns [] for an unknown
-   * canonical / empty gamme / a gamme whose colors are all unrecognized.
-   * Sorted: trend score desc, then group size desc, then label asc (stable).
-   */
-  async resolveColors(canonicalSku: string): Promise<ColorOption[]> {
-    const rows = await this.db.product.findMany({
+  /** Active gamme rows for a canonical sku (canonical + its variants). */
+  private async fetchGamme(canonicalSku: string): Promise<ResolverProductRow[]> {
+    return this.db.product.findMany({
       where: {
         OR: [{ parentSku: canonicalSku }, { sku: canonicalSku }],
         isActive: true,
         deletedAt: null,
       },
     });
+  }
 
+  /**
+   * Resolve the offerable color choices of a gamme, from ANY of its SKUs
+   * (canonical or a color variant — both yield the same offer).
+   *
+   * OR-first: one `findMany` covers the common canonical case (the canonical's
+   * OR query already returns the whole gamme); a second query runs ONLY for an
+   * isolated variant (to climb to its canonical). Returns [] for an
+   * unknown/orphan sku, an empty gamme, or a gamme whose colors are all
+   * unrecognized. Sorted: trend score desc, then group size desc, then label asc.
+   */
+  async resolveColors(anySku: string): Promise<ColorOption[]> {
+    // Query 1: whatever the parentSku graph yields for `anySku`.
+    const req1 = await this.fetchGamme(anySku);
+    const self = req1.find((r) => r.sku === anySku);
+
+    // Unknown / inactive / deleted -> not a resolvable gamme.
+    if (!self) {return [];}
+
+    // `anySku` IS the canonical -> req1 already holds the whole gamme (1 query).
+    if (self.isCanonical) {return this.groupColors(req1);}
+
+    // `anySku` is a variant -> climb to its canonical, fetch the gamme (2 queries).
+    if (self.parentSku != null) {
+      const req2 = await this.fetchGamme(self.parentSku);
+      return this.groupColors(req2);
+    }
+
+    // Orphan (present but neither canonical nor attached to a gamme).
+    return [];
+  }
+
+  /**
+   * Group gamme rows by normalized color into sorted offerable options.
+   * Unchanged color logic — shared by both the canonical and variant branches.
+   */
+  private groupColors(rows: ResolverProductRow[]): ColorOption[] {
     // Group rows by normalized color key; drop unrecognized colors.
     const groups = new Map<string, { label: string; kind: 'color' | 'material'; score: number; rows: ResolverProductRow[] }>();
     for (const row of rows) {
@@ -99,11 +132,11 @@ export class VariantResolverService {
   }
 
   /**
-   * Resolve a specific color of a gamme to its representative purchasable SKU.
-   * Returns null if the gamme does not offer that color.
+   * Resolve a specific color of a gamme (from ANY of its SKUs) to its
+   * representative purchasable SKU. Returns null if the gamme does not offer it.
    */
-  async resolveByColor(canonicalSku: string, colorKey: string): Promise<{ sku: string; price: number } | null> {
-    const options = await this.resolveColors(canonicalSku);
+  async resolveByColor(anySku: string, colorKey: string): Promise<{ sku: string; price: number } | null> {
+    const options = await this.resolveColors(anySku);
     const match = options.find((o) => o.key === colorKey);
     return match ? { sku: match.representativeSku, price: match.priceFrom } : null;
   }
