@@ -245,6 +245,12 @@ OUTILS DISPONIBLES :
    Utilise-le quand l'utilisateur demande "où en suis-je sur le budget ?" ou
    avant de proposer un upgrade onéreux.
 
+5. **resolve_colors(sku: string)**
+   → récupère les VRAIES couleurs disponibles d'une gamme produit (passe le
+   SKU d'un item de la cuisine, variant ou canonique).
+   Utilise-le AVANT de parler des couleurs d'un produit, ou quand l'utilisateur
+   exprime une envie de teinte ("chaleureux", "sobre"...).
+
 STYLE DE RÉPONSE :
   - Tutoiement, registre amical mais pro.
   - Réponses ≤ 150 mots — c'est un chat, pas un blog.
@@ -257,6 +263,10 @@ STYLE DE RÉPONSE :
 
 INTERDIT :
   - Inventer des prix qui ne sortent pas de searchCatalog.
+  - Proposer ou nommer une couleur qui n'est PAS dans le résultat de resolve_colors.
+    Toujours appeler resolve_colors AVANT de parler des couleurs disponibles d'un
+    produit. Si l'utilisateur exprime une envie ("chaleureux", "sobre"...), appeler
+    resolve_colors puis suggérer UNIQUEMENT parmi les couleurs retournées.
   - Modifier la cuisine sans confirmation explicite.
   - Recommander un produit hors budget sans le signaler.`;
 
@@ -318,5 +328,19 @@ export const SHOPPING_CHAT_TOOLS = [
     name: 'getBudgetSummary',
     description: 'Return the current kitchen total + per-category breakdown + gap vs user budget target.',
     input_schema: { type: 'object', properties: {}, required: [] },
+  },
+  {
+    name: 'resolve_colors',
+    description:
+      'Get the real available colors for a product gamme. Pass the SKU of any product '
+      + '(variant or canonical) from the kitchen; returns the offerable colors with a representative '
+      + 'SKU and starting price per color. Use this BEFORE mentioning any color option.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        sku: { type: 'string', description: 'SKU of a product in the kitchen (from the snapshot items)' },
+      },
+      required: ['sku'],
+    },
   },
 ] as const;
