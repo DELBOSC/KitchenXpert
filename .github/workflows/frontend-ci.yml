@@ -22,6 +22,7 @@ on:
       - 'packages/common/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - '.github/workflows/frontend-ci.yml'
 
 env:
   NODE_VERSION: '20'
@@ -51,16 +52,6 @@ jobs:
       - name: 📥 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: 💾 Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
   # Job 2: Linting
   lint:
     name: 🔍 Lint & Format Check
@@ -83,16 +74,6 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: 📥 Restore dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile
 
       - name: 🔍 Run ESLint
@@ -128,16 +109,6 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: 📥 Restore dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile
 
       - name: 🧪 Run unit tests
@@ -174,16 +145,6 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: 📥 Restore dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile
 
       - name: 🏗️ Build frontend
@@ -231,12 +192,7 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: 📥 Restore dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+        run: pnpm install --frozen-lockfile
 
       - name: 📥 Download build artifacts
         uses: actions/download-artifact@v4
@@ -280,12 +236,7 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: 📥 Restore dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+        run: pnpm install --frozen-lockfile
 
       - name: 📥 Download build artifacts
         uses: actions/download-artifact@v4
