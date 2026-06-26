@@ -6,16 +6,12 @@ import { CatalogRepository } from '../../repositories/catalog-repository';
 import { MaterialRepository } from '../../repositories/material-repository';
 import { ProductRepository } from '../../repositories/product-repository';
 import { CacheService } from '../../services/cache.service';
-import { VariantResolverService } from '../../services/variant-resolver/variant-resolver.service';
+import { variantResolver } from '../../services/variant-resolver';
 import { asyncHandler } from '../middleware/error-middleware';
-
-import type { ResolverDb } from '../../services/variant-resolver/variant-resolver.types';
 const catalogRepository = new CatalogRepository(prisma);
 const productRepository = new ProductRepository(prisma);
 const applianceRepository = new ApplianceRepository(prisma);
 const materialRepository = new MaterialRepository(prisma);
-// P7 color resolver — prisma.product satisfies the minimal ResolverDb contract.
-const variantResolver = new VariantResolverService(prisma as unknown as ResolverDb);
 
 /**
  * Catalog Controller
