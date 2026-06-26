@@ -1,21 +1,11 @@
-import { z } from 'zod';
-
-import { AnthropicService } from './anthropic.service';
-import { SYSTEM_PROMPTS } from './prompt-templates';
 import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
 
-/** Sanitize user input to prevent prompt injection */
-function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
-  return input
-    .replace(/[<>{}[\]]/g, '')
-    .replace(/\n/g, ' ')
-    .slice(0, 500);
-}
-
 /**
- * Bill of Materials item
+ * Bill of Materials item.
+ * `source` distinguishes a real catalog line (`catalogRef` = a real SKU / appliance
+ * reference, price from the DB) from an `estimated` line (config-derived, priced
+ * from the indicative barème below — to be replaced by real products in BOM-b).
  */
 export interface BOMItem {
   name: string;
@@ -24,67 +14,102 @@ export interface BOMItem {
   unitPrice: number;
   totalPrice: number;
   catalogRef: string | null;
+  source: 'catalog' | 'estimated';
 }
 
 /**
- * Full Bill of Materials structure
+ * Full Bill of Materials structure. `subtotalCatalog` / `subtotalEstimated`
+ * split the subtotal by line source so the UI can show what is real vs estimated.
  */
 export interface BillOfMaterials {
   kitchenId: string;
   items: BOMItem[];
   subtotal: number;
+  subtotalCatalog: number;
+  subtotalEstimated: number;
   tax: number;
   total: number;
   generatedAt: string;
 }
 
-const BOMItemSchema = z.object({
-  name: z.string(),
-  category: z.string(),
-  quantity: z.number().min(0),
-  unitPrice: z.number().min(0),
-  totalPrice: z.number().min(0),
-  catalogRef: z.string().optional().nullable().transform(v => v ?? null),
-});
-
-const RawBOMSchema = z.object({
-  items: z.array(BOMItemSchema),
-  subtotal: z.number().min(0),
-  tax: z.number().min(0),
-  total: z.number().min(0),
-});
+const TVA_RATE = 0.2;
 
 /**
- * Raw shape expected from Claude's JSON output
+ * Indicative flat estimates (EUR) for config-derived lines that have no placed
+ * product yet. **Placeholder** — BOM-b will resolve these to real SKUs via the
+ * catalogue matcher. Kept explicit (no scattered magic numbers) and auditable.
  */
-interface RawBOM {
-  items: Array<{
-    name: string;
-    category: string;
-    quantity: number;
-    unitPrice: number;
-    totalPrice: number;
-    catalogRef: string | null;
-  }>;
-  subtotal: number;
-  tax: number;
-  total: number;
+const BAREME_ESTIMATION = {
+  countertop: { quartz: 2500, granit: 3000, marbre: 4000, ceramique: 3500, dekton: 3500, inox: 2800, bois: 1500, stratifie: 800, _default: 1200 },
+  flooring: { carrelage: 1500, parquet: 2000, stratifie: 1000, vinyle: 900, beton: 1800, _default: 1200 },
+  backsplash: { verre: 800, inox: 900, carrelage: 600, faience: 500, credence: 600, _default: 600 },
+  hardware: { _default: 300 },
+  installation: 1500,
+} as const;
+
+/** Strip accents + lowercase for keyword matching. */
+function norm(value: string): string {
+  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+}
+
+/** Round to 2 decimals (avoid dirty floats). */
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+/** Coerce a Prisma Decimal/unknown to a non-negative finite number, else 0. */
+function toPrice(value: unknown): number {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? round2(n) : 0;
+}
+
+/** Pick a barème price by keyword match on the (deaccented) value, else `_default`. */
+function lookupBareme(table: Record<string, number>, value: string): number {
+  const v = norm(value);
+  for (const key of Object.keys(table)) {
+    if (key !== '_default' && v.includes(key)) {return table[key]!;}
+  }
+  return table._default!;
+}
+
+/** Map a kitchen item `type` to a French BOM category label. */
+function categoryFromType(type: string | null | undefined): string {
+  const t = norm(type ?? '');
+  if (/cabinet|caisson|meuble|colonne|facade|tiroir/.test(t)) {return 'Meubles';}
+  if (/worktop|counter|plan/.test(t)) {return 'Plan de travail';}
+  if (/sink|evier|tap|robinet/.test(t)) {return 'Plomberie';}
+  if (/fridge|oven|hob|cooktop|dishwasher|hood|electro|appliance/.test(t)) {return 'Electromenager';}
+  if (/light|eclairage/.test(t)) {return 'Eclairage';}
+  return 'Mobilier';
+}
+
+/** Build an `estimated` BOM line (config-derived, no real SKU yet). */
+function estimatedLine(name: string, category: string, price: number): BOMItem {
+  const p = round2(price);
+  return { name, category, quantity: 1, unitPrice: p, totalPrice: p, catalogRef: null, source: 'estimated' };
+}
+
+/** Kitchen config row shape the BOM reads (subset of Prisma KitchenConfiguration). */
+interface ConfigRow {
+  countertopMaterial?: string | null;
+  flooringType?: string | null;
+  backsplashType?: string | null;
+  backsplashMaterial?: string | null;
+  hardwareStyle?: string | null;
 }
 
 /**
  * BOMGeneratorService
  *
- * Generates a structured Bill of Materials (BOM) for a kitchen using Claude AI.
- * Loads kitchen items and configuration from the database, then asks Claude
- * to produce a comprehensive, priced BOM in JSON format.
+ * Generates a structured Bill of Materials (BOM) for a kitchen — **deterministic,
+ * no LLM**. Placed items that carry a real catalog product/appliance become
+ * `catalog` lines (real SKU + real DB price); the remaining config posts become
+ * `estimated` lines priced from an explicit barème. Totals are computed in code.
  */
 export class BOMGeneratorService {
-  private anthropic: AnthropicService;
   private static instance: BOMGeneratorService;
 
-  private constructor() {
-    this.anthropic = AnthropicService.getInstance();
-  }
+  private constructor() {}
 
   static getInstance(): BOMGeneratorService {
     if (!BOMGeneratorService.instance) {
@@ -103,10 +128,7 @@ export class BOMGeneratorService {
     // Load kitchen items with associated products and appliances
     const kitchenItems = await prisma.kitchenItem.findMany({
       where: { kitchenId },
-      include: {
-        product: true,
-        appliance: true,
-      },
+      include: { product: true, appliance: true },
     });
 
     // Load kitchen configuration
@@ -114,53 +136,37 @@ export class BOMGeneratorService {
       where: { kitchenId },
     });
 
-    // Load the kitchen itself for context
-    const kitchen = await prisma.kitchen.findUnique({
-      where: { id: kitchenId },
-    });
-
+    // Load the kitchen itself (existence check)
+    const kitchen = await prisma.kitchen.findUnique({ where: { id: kitchenId } });
     if (!kitchen) {
       throw new Error('Kitchen not found');
     }
 
-    // Build the prompt
-    const prompt = this.buildPrompt(kitchen, kitchenItems, kitchenConfig);
-
-    logger.info('[BOMGenerator] Generating BOM for kitchen', {
-      kitchenId,
-      itemCount: kitchenItems.length,
-      hasConfig: !!kitchenConfig,
-    });
-
     try {
-      const result = await this.anthropic.generateJSON<RawBOM>({
-        system: SYSTEM_PROMPTS.BOM_GENERATOR,
-        messages: [{ role: 'user', content: prompt }],
-        maxTokens: 4096,
-        parse: (text: string) => {
-          const parsed = JSON.parse(text);
-          const bom: RawBOM = parsed.items ? parsed : { items: [], subtotal: 0, tax: 0, total: 0 };
+      const items: BOMItem[] = [
+        ...this.catalogLines(kitchenItems),
+        ...this.estimatedLines(kitchenConfig),
+      ];
 
-          // Validate with Zod
-          const validated = RawBOMSchema.parse(bom);
-          return validated;
-        },
+      const subtotalCatalog = round2(
+        items.filter((i) => i.source === 'catalog').reduce((s, i) => s + i.totalPrice, 0),
+      );
+      const subtotalEstimated = round2(
+        items.filter((i) => i.source === 'estimated').reduce((s, i) => s + i.totalPrice, 0),
+      );
+      const subtotal = round2(subtotalCatalog + subtotalEstimated);
+      const tax = round2(subtotal * TVA_RATE);
+      const total = round2(subtotal + tax);
+
+      logger.info('[BOMGenerator] BOM generated', {
+        kitchenId,
+        itemCount: items.length,
+        subtotalCatalog,
+        subtotalEstimated,
+        total,
       });
 
-      logger.info('[BOMGenerator] BOM generated successfully', {
-        kitchenId,
-        itemCount: result.data.items.length,
-        total: result.data.total,
-      });
-
-      return {
-        kitchenId,
-        items: result.data.items,
-        subtotal: result.data.subtotal,
-        tax: result.data.tax,
-        total: result.data.total,
-        generatedAt: new Date().toISOString(),
-      };
+      return { kitchenId, items, subtotal, subtotalCatalog, subtotalEstimated, tax, total, generatedAt: new Date().toISOString() };
     } catch (error) {
       logger.error('[BOMGenerator] BOM generation failed', {
         error: error instanceof Error ? error.message : String(error),
@@ -170,6 +176,8 @@ export class BOMGeneratorService {
         kitchenId,
         items: [],
         subtotal: 0,
+        subtotalCatalog: 0,
+        subtotalEstimated: 0,
         tax: 0,
         total: 0,
         generatedAt: new Date().toISOString(),
@@ -177,100 +185,76 @@ export class BOMGeneratorService {
     }
   }
 
-  /**
-   * Build the prompt for Claude with kitchen data context.
-   */
-  private buildPrompt(
-    kitchen: any,
-    kitchenItems: any[],
-    kitchenConfig: any | null,
-  ): string {
-    const sections: string[] = [];
-
-    sections.push('Genere un devis detaille (Bill of Materials) pour cette cuisine.');
-    sections.push('');
-
-    // Kitchen info
-    sections.push('=== INFORMATIONS CUISINE ===');
-    sections.push(`- Nom: ${sanitizeInput(kitchen.name)}`);
-    sections.push(`- Style: ${sanitizeInput(kitchen.style)}`);
-    sections.push(`- Disposition: ${sanitizeInput(kitchen.layout)}`);
-    sections.push(`- Dimensions: ${kitchen.width}cm x ${kitchen.length}cm x ${kitchen.height}cm`);
-
-    // Configuration
-    if (kitchenConfig) {
-      sections.push('');
-      sections.push('=== CONFIGURATION ===');
-      if (kitchenConfig.cabinetStyle) {sections.push(`- Style caissons: ${sanitizeInput(kitchenConfig.cabinetStyle)}`);}
-      if (kitchenConfig.cabinetFinish) {sections.push(`- Finition caissons: ${sanitizeInput(kitchenConfig.cabinetFinish)}`);}
-      if (kitchenConfig.countertopMaterial) {sections.push(`- Plan de travail: ${sanitizeInput(kitchenConfig.countertopMaterial)}`);}
-      if (kitchenConfig.countertopColor) {sections.push(`- Couleur plan: ${sanitizeInput(kitchenConfig.countertopColor)}`);}
-      if (kitchenConfig.backsplashType) {sections.push(`- Credence: ${sanitizeInput(kitchenConfig.backsplashType)}`);}
-      if (kitchenConfig.backsplashMaterial) {sections.push(`- Materiau credence: ${sanitizeInput(kitchenConfig.backsplashMaterial)}`);}
-      if (kitchenConfig.flooringType) {sections.push(`- Sol: ${sanitizeInput(kitchenConfig.flooringType)}`);}
-      if (kitchenConfig.hardwareStyle) {sections.push(`- Quincaillerie: ${sanitizeInput(kitchenConfig.hardwareStyle)}`);}
-    }
-
-    // Items
-    if (kitchenItems.length > 0) {
-      sections.push('');
-      sections.push('=== ELEMENTS DANS LA CUISINE ===');
-      for (const item of kitchenItems) {
-        let itemDesc = `- ${sanitizeInput(item.name)} (${sanitizeInput(item.type)})`;
-        if (item.brand) {itemDesc += ` - Marque: ${sanitizeInput(item.brand)}`;}
-        if (item.model) {itemDesc += ` - Modele: ${sanitizeInput(item.model)}`;}
-        if (item.price) {itemDesc += ` - Prix unitaire: ${item.price}EUR`;}
-        if (item.product) {
-          itemDesc += ` [Produit catalogue: ${sanitizeInput(item.product.name)}]`;
-        }
-        if (item.appliance) {
-          itemDesc += ` [Electromenager: ${sanitizeInput(item.appliance.name)}]`;
-        }
-        sections.push(itemDesc);
+  /** One `catalog` line per placed item (real SKU/price when available). */
+  private catalogLines(
+    kitchenItems: Array<{
+      type: string;
+      name: string;
+      price?: unknown;
+      product?: { name: string; sku: string; price: unknown } | null;
+      appliance?: { name: string; brand: string; model: string; price: unknown } | null;
+    }>,
+  ): BOMItem[] {
+    return kitchenItems.map((item) => {
+      if (item.product) {
+        const price = toPrice(item.product.price);
+        return {
+          name: item.product.name,
+          category: categoryFromType(item.type),
+          quantity: 1,
+          unitPrice: price,
+          totalPrice: price,
+          catalogRef: item.product.sku, // real SKU
+          source: 'catalog',
+        };
       }
-    }
-
-    // Metadata (may contain cost estimates from AI generation)
-    if (kitchen.metadata) {
-      const meta = typeof kitchen.metadata === 'string'
-        ? JSON.parse(kitchen.metadata)
-        : kitchen.metadata;
-      if (meta.estimatedCost) {
-        sections.push('');
-        sections.push('=== ESTIMATION PRECEDENTE ===');
-        sections.push(`- Cout estime: ${meta.estimatedCost.min}EUR - ${meta.estimatedCost.max}EUR`);
+      if (item.appliance) {
+        const price = toPrice(item.appliance.price);
+        return {
+          name: item.appliance.name,
+          category: 'Electromenager',
+          quantity: 1,
+          unitPrice: price,
+          totalPrice: price,
+          catalogRef: `${item.appliance.brand} ${item.appliance.model}`, // Appliance has no SKU
+          source: 'catalog',
+        };
       }
-      if (meta.costBreakdown) {
-        sections.push(`- Ventilation: ${JSON.stringify(meta.costBreakdown)}`);
-      }
-    }
+      // Item without a linked product/appliance: use its own price if any.
+      const price = toPrice(item.price);
+      return {
+        name: item.name,
+        category: categoryFromType(item.type),
+        quantity: 1,
+        unitPrice: price,
+        totalPrice: price,
+        catalogRef: null,
+        source: price > 0 ? 'catalog' : 'estimated',
+      };
+    });
+  }
 
-    // Output format
-    sections.push('');
-    sections.push('=== FORMAT DE SORTIE ===');
-    sections.push(`Genere un JSON avec cette structure exacte:
-{
-  "items": [
-    {
-      "name": "Nom de l'element",
-      "category": "caissons|plan_de_travail|credence|sol|electromenager|quincaillerie|eclairage|plomberie|installation|divers",
-      "quantity": 1,
-      "unitPrice": 100.00,
-      "totalPrice": 100.00,
-      "catalogRef": "REF-001 ou null"
-    }
-  ],
-  "subtotal": 0.00,
-  "tax": 0.00,
-  "total": 0.00
-}`);
-    sections.push('');
-    sections.push('La taxe (TVA) est de 20% sur le sous-total.');
-    sections.push('Inclure les couts d\'installation et de main d\'oeuvre.');
-    sections.push('Si des elements n\'ont pas de prix specifique, estime un prix realiste.');
-    sections.push('Reponds UNIQUEMENT avec le JSON, sans texte avant ou apres.');
+  /** `estimated` lines derived from the kitchen configuration (barème-priced). */
+  private estimatedLines(config: ConfigRow | null): BOMItem[] {
+    if (!config) {return [];}
+    const lines: BOMItem[] = [];
 
-    return sections.join('\n');
+    if (config.countertopMaterial) {
+      lines.push(estimatedLine('Plan de travail', 'Plan de travail', lookupBareme(BAREME_ESTIMATION.countertop, config.countertopMaterial)));
+    }
+    if (config.flooringType) {
+      lines.push(estimatedLine('Sol', 'Sol', lookupBareme(BAREME_ESTIMATION.flooring, config.flooringType)));
+    }
+    if (config.backsplashType ?? config.backsplashMaterial) {
+      lines.push(estimatedLine('Credence', 'Credence', lookupBareme(BAREME_ESTIMATION.backsplash, config.backsplashMaterial ?? config.backsplashType ?? '')));
+    }
+    if (config.hardwareStyle) {
+      lines.push(estimatedLine('Quincaillerie', 'Quincaillerie', BAREME_ESTIMATION.hardware._default));
+    }
+    // Labour/installation: a single estimated line whenever a config exists.
+    lines.push(estimatedLine('Pose et installation', 'Installation', BAREME_ESTIMATION.installation));
+
+    return lines;
   }
 }
 
