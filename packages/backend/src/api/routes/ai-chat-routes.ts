@@ -14,6 +14,7 @@ import { SHOPPING_CHAT_SYSTEM_PROMPT, SHOPPING_CHAT_TOOLS } from '../../services
 import { ChatRequestSchema } from '../../services/ai/schemas';
 import { StyleTransferService } from '../../services/ai/style-transfer.service';
 import { ToolUse3DService } from '../../services/ai/tool-use-3d.service';
+import { variantResolver } from '../../services/variant-resolver';
 import logger from '../../utils/logger';
 import { aiChatController } from '../controllers/ai-chat-controller';
 import { authenticate } from '../middleware/auth-middleware';
@@ -545,7 +546,7 @@ function deriveAiTier(req: Request): AiTier {
  * (returns realistic JSON) — wire each one to its real service when
  * the catalog + designer mutation APIs are ready.
  */
-async function executeShoppingTool(
+export async function executeShoppingTool(
   name: string,
   input: Record<string, unknown>,
   ctx: { userId: string; kitchenContext?: z.infer<typeof ChatRequestSchema>['kitchenContext'] },
@@ -586,6 +587,20 @@ async function executeShoppingTool(
         gapEur: budget ? Math.round(budget - total) : null,
         items: k.items.length,
       };
+    }
+
+    case 'resolve_colors': {
+      const sku = typeof input.sku === 'string' ? input.sku.trim() : '';
+      if (!sku) {return { error: 'sku is required' };}
+      try {
+        const colors = await variantResolver.resolveColors(sku);
+        return { sku, colors }; // colors: ColorOption[] (may be empty)
+      } catch (err) {
+        // Graceful degradation: a DB hiccup must not 500 the whole chat turn —
+        // Claude gets a readable error instead and can respond accordingly.
+        logger.error('shopping-chat: resolve_colors failed', { err, sku });
+        return { error: 'color lookup failed' };
+      }
     }
 
     default:
