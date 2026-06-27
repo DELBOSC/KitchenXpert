@@ -161,16 +161,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -217,14 +219,10 @@ function createApplianceTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -324,9 +322,7 @@ describe('Provider Routes Factory', () => {
       it('should return provider info', async () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
 
-        const response = await request(app)
-          .get('/leroy-merlin/info')
-          .expect(200);
+        const response = await request(app).get('/leroy-merlin/info').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data.code).toBe('leroy-merlin');
@@ -336,9 +332,7 @@ describe('Provider Routes Factory', () => {
       it('should return 404 when provider not configured', async () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(null);
 
-        const response = await request(app)
-          .get('/leroy-merlin/info')
-          .expect(404);
+        const response = await request(app).get('/leroy-merlin/info').expect(404);
 
         expect(response.body.success).toBe(false);
         expect(JSON.stringify(response.body)).toContain('Leroy Merlin');
@@ -352,9 +346,7 @@ describe('Provider Routes Factory', () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
         mockProductFindAll.mockResolvedValue(mockProductList);
 
-        const response = await request(app)
-          .get('/leroy-merlin/products')
-          .expect(200);
+        const response = await request(app).get('/leroy-merlin/products').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data).toHaveLength(1);
@@ -367,7 +359,9 @@ describe('Provider Routes Factory', () => {
         mockProductFindAll.mockResolvedValue(mockProductList);
 
         const response = await request(app)
-          .get('/leroy-merlin/products?page=2&limit=10&material=wood&color=white&minPrice=50&maxPrice=200')
+          .get(
+            '/leroy-merlin/products?page=2&limit=10&material=wood&color=white&minPrice=50&maxPrice=200'
+          )
           .expect(200);
 
         expect(response.body.success).toBe(true);
@@ -382,7 +376,7 @@ describe('Provider Routes Factory', () => {
           expect.objectContaining({
             page: 2,
             limit: 10,
-          }),
+          })
         );
       });
 
@@ -390,9 +384,7 @@ describe('Provider Routes Factory', () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
         mockProductFindAll.mockResolvedValue(mockProductList);
 
-        const response = await request(app)
-          .get('/leroy-merlin/products?limit=500')
-          .expect(200);
+        const response = await request(app).get('/leroy-merlin/products?limit=500').expect(200);
 
         expect(response.body.meta.limit).toBe(100);
       });
@@ -400,9 +392,7 @@ describe('Provider Routes Factory', () => {
       it('should return 404 when provider not found', async () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(null);
 
-        const response = await request(app)
-          .get('/leroy-merlin/products')
-          .expect(404);
+        const response = await request(app).get('/leroy-merlin/products').expect(404);
 
         expect(response.body.success).toBe(false);
       });
@@ -424,9 +414,7 @@ describe('Provider Routes Factory', () => {
       });
 
       it('should return 400 when query is missing', async () => {
-        const response = await request(app)
-          .get('/leroy-merlin/products/search')
-          .expect(400);
+        const response = await request(app).get('/leroy-merlin/products/search').expect(400);
 
         expect(response.body.success).toBe(false);
         expect(response.body.error.code).toBe('MISSING_QUERY');
@@ -449,9 +437,7 @@ describe('Provider Routes Factory', () => {
       it('should return a product by ID', async () => {
         mockProductFindById.mockResolvedValue(mockProduct);
 
-        const response = await request(app)
-          .get('/leroy-merlin/products/product-1')
-          .expect(200);
+        const response = await request(app).get('/leroy-merlin/products/product-1').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data.id).toBe('product-1');
@@ -460,9 +446,7 @@ describe('Provider Routes Factory', () => {
       it('should return 404 when product not found', async () => {
         mockProductFindById.mockResolvedValue(null);
 
-        const response = await request(app)
-          .get('/leroy-merlin/products/nonexistent')
-          .expect(404);
+        const response = await request(app).get('/leroy-merlin/products/nonexistent').expect(404);
 
         expect(response.body.success).toBe(false);
         expect(JSON.stringify(response.body)).toContain('Product not found');
@@ -476,9 +460,7 @@ describe('Provider Routes Factory', () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
         mockPrisma.productCategory.findMany.mockResolvedValue(mockCategories);
 
-        const response = await request(app)
-          .get('/leroy-merlin/categories')
-          .expect(200);
+        const response = await request(app).get('/leroy-merlin/categories').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data).toHaveLength(2);
@@ -487,9 +469,7 @@ describe('Provider Routes Factory', () => {
       it('should return 404 when provider not found', async () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(null);
 
-        const response = await request(app)
-          .get('/leroy-merlin/categories')
-          .expect(404);
+        const response = await request(app).get('/leroy-merlin/categories').expect(404);
 
         expect(response.body.success).toBe(false);
       });
@@ -501,9 +481,7 @@ describe('Provider Routes Factory', () => {
       it('should return sync status for authenticated user', async () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProviderWithCatalogs);
 
-        const response = await authedRequest(app)
-          .get('/leroy-merlin/sync/status')
-          .expect(200);
+        const response = await authedRequest(app).get('/leroy-merlin/sync/status').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data.providerCode).toBe('leroy-merlin');
@@ -512,9 +490,7 @@ describe('Provider Routes Factory', () => {
       });
 
       it('should return 401 for unauthenticated request', async () => {
-        const response = await request(app)
-          .get('/leroy-merlin/sync/status')
-          .expect(401);
+        const response = await request(app).get('/leroy-merlin/sync/status').expect(401);
 
         expect(response.body.success).toBe(false);
       });
@@ -522,9 +498,7 @@ describe('Provider Routes Factory', () => {
       it('should return 404 when provider not found', async () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(null);
 
-        const response = await authedRequest(app)
-          .get('/leroy-merlin/sync/status')
-          .expect(404);
+        const response = await authedRequest(app).get('/leroy-merlin/sync/status').expect(404);
 
         expect(response.body.success).toBe(false);
       });
@@ -535,9 +509,7 @@ describe('Provider Routes Factory', () => {
           catalogs: [],
         });
 
-        const response = await authedRequest(app)
-          .get('/leroy-merlin/sync/status')
-          .expect(200);
+        const response = await authedRequest(app).get('/leroy-merlin/sync/status').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data.lastSyncAt).toBeNull();
@@ -550,17 +522,13 @@ describe('Provider Routes Factory', () => {
         currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
 
-        const response = await authedRequest(app)
-          .post('/leroy-merlin/sync/trigger')
-          .expect(202);
+        const response = await authedRequest(app).post('/leroy-merlin/sync/trigger').expect(202);
         expect(response.body.success).toBe(true);
         expect(response.body.data.providerCode).toBe('leroy-merlin');
       });
 
       it('should return 401 for unauthenticated request', async () => {
-        const response = await request(app)
-          .post('/leroy-merlin/sync/trigger')
-          .expect(401);
+        const response = await request(app).post('/leroy-merlin/sync/trigger').expect(401);
 
         expect(response.body.success).toBe(false);
       });
@@ -568,9 +536,7 @@ describe('Provider Routes Factory', () => {
       it('should return 403 for non-admin user', async () => {
         currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-        const response = await authedRequest(app)
-          .post('/leroy-merlin/sync/trigger')
-          .expect(403);
+        const response = await authedRequest(app).post('/leroy-merlin/sync/trigger').expect(403);
 
         expect(response.body.success).toBe(false);
       });
@@ -579,9 +545,7 @@ describe('Provider Routes Factory', () => {
         currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(null);
 
-        const response = await authedRequest(app)
-          .post('/leroy-merlin/sync/trigger')
-          .expect(404);
+        const response = await authedRequest(app).post('/leroy-merlin/sync/trigger').expect(404);
 
         expect(response.body.success).toBe(false);
       });
@@ -608,9 +572,7 @@ describe('Provider Routes Factory', () => {
       it('should return provider info for appliance provider', async () => {
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockBoschProvider);
 
-        const response = await request(app)
-          .get('/bosch/info')
-          .expect(200);
+        const response = await request(app).get('/bosch/info').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data.code).toBe('bosch');
@@ -624,9 +586,7 @@ describe('Provider Routes Factory', () => {
       it('should list appliances with pagination', async () => {
         mockApplianceFindAll.mockResolvedValue(mockApplianceList);
 
-        const response = await request(app)
-          .get('/bosch/appliances')
-          .expect(200);
+        const response = await request(app).get('/bosch/appliances').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data).toHaveLength(1);
@@ -637,7 +597,9 @@ describe('Provider Routes Factory', () => {
         mockApplianceFindAll.mockResolvedValue(mockApplianceList);
 
         const response = await request(app)
-          .get('/bosch/appliances?page=1&limit=10&type=dishwasher&energyRating=A%2B%2B%2B&minPrice=300&maxPrice=800')
+          .get(
+            '/bosch/appliances?page=1&limit=10&type=dishwasher&energyRating=A%2B%2B%2B&minPrice=300&maxPrice=800'
+          )
           .expect(200);
 
         expect(response.body.success).toBe(true);
@@ -650,16 +612,14 @@ describe('Provider Routes Factory', () => {
           expect.objectContaining({
             page: 1,
             limit: 10,
-          }),
+          })
         );
       });
 
       it('should cap limit at 100', async () => {
         mockApplianceFindAll.mockResolvedValue(mockApplianceList);
 
-        const response = await request(app)
-          .get('/bosch/appliances?limit=500')
-          .expect(200);
+        const response = await request(app).get('/bosch/appliances?limit=500').expect(200);
 
         expect(response.body.meta.limit).toBe(100);
       });
@@ -680,9 +640,7 @@ describe('Provider Routes Factory', () => {
       });
 
       it('should return 400 when query is missing', async () => {
-        const response = await request(app)
-          .get('/bosch/appliances/search')
-          .expect(400);
+        const response = await request(app).get('/bosch/appliances/search').expect(400);
 
         expect(response.body.success).toBe(false);
         expect(response.body.error.code).toBe('MISSING_QUERY');
@@ -695,9 +653,7 @@ describe('Provider Routes Factory', () => {
       it('should return appliance types', async () => {
         mockApplianceGetTypes.mockResolvedValue(['oven', 'dishwasher', 'cooktop', 'refrigerator']);
 
-        const response = await request(app)
-          .get('/bosch/appliances/types')
-          .expect(200);
+        const response = await request(app).get('/bosch/appliances/types').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data).toContain('oven');
@@ -711,9 +667,7 @@ describe('Provider Routes Factory', () => {
       it('should return an appliance by ID', async () => {
         mockApplianceFindById.mockResolvedValue(mockAppliance);
 
-        const response = await request(app)
-          .get('/bosch/appliances/appliance-1')
-          .expect(200);
+        const response = await request(app).get('/bosch/appliances/appliance-1').expect(200);
 
         expect(response.body.success).toBe(true);
         expect(response.body.data.id).toBe('appliance-1');
@@ -722,9 +676,7 @@ describe('Provider Routes Factory', () => {
       it('should return 404 when appliance not found', async () => {
         mockApplianceFindById.mockResolvedValue(null);
 
-        const response = await request(app)
-          .get('/bosch/appliances/nonexistent')
-          .expect(404);
+        const response = await request(app).get('/bosch/appliances/nonexistent').expect(404);
 
         expect(response.body.success).toBe(false);
         expect(JSON.stringify(response.body)).toContain('Appliance not found');
@@ -738,9 +690,7 @@ describe('Provider Routes Factory', () => {
         currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
         mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockBoschProvider);
 
-        const response = await authedRequest(app)
-          .post('/bosch/sync/trigger')
-          .expect(202);
+        const response = await authedRequest(app).post('/bosch/sync/trigger').expect(202);
 
         // The handler now runs the sync inline and reports stats; no
         // message envelope is included any more.
@@ -751,9 +701,7 @@ describe('Provider Routes Factory', () => {
       it('should return 403 for non-admin on appliance provider', async () => {
         currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-        const response = await authedRequest(app)
-          .post('/bosch/sync/trigger')
-          .expect(403);
+        const response = await authedRequest(app).post('/bosch/sync/trigger').expect(403);
 
         expect(response.body.success).toBe(false);
       });

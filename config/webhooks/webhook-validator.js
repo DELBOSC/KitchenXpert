@@ -72,7 +72,7 @@ export const validateWebhook = (payload, headers, secrets) => {
 
   // Support multiple secrets for rotation
   const secretArray = Array.isArray(secrets) ? secrets : [secrets];
-  const isValid = secretArray.some(secret => {
+  const isValid = secretArray.some((secret) => {
     try {
       return verifySignature(payload, signature, secret, timestamp);
     } catch {
@@ -99,4 +99,10 @@ export const extractWebhookMetadata = (headers) => {
   };
 };
 
-export default { generateSignature, verifySignature, validateTimestamp, validateWebhook, extractWebhookMetadata };
+export default {
+  generateSignature,
+  verifySignature,
+  validateTimestamp,
+  validateWebhook,
+  extractWebhookMetadata,
+};

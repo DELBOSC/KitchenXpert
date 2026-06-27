@@ -499,10 +499,11 @@ describe('AuditLogs', () => {
       mockFetch.mockReset();
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          logs: [],
-          pagination: { currentPage: 1, totalPages: 1, totalItems: 0, itemsPerPage: 50 },
-        }),
+        json: () =>
+          Promise.resolve({
+            logs: [],
+            pagination: { currentPage: 1, totalPages: 1, totalItems: 0, itemsPerPage: 50 },
+          }),
       });
 
       renderAuditLogs();

@@ -127,13 +127,27 @@ export const KitchensMigration: Migration = {
     `);
 
     // Create indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_kitchen_layouts_project_id ON kitchen_layouts(project_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_kitchen_placements_layout_id ON kitchen_placements(layout_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_kitchen_placements_catalog_item ON kitchen_placements(catalog_item_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_kitchen_countertops_layout_id ON kitchen_countertops(layout_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_ai_configurations_project_id ON ai_configurations(project_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_ai_configurations_user_id ON ai_configurations(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_ai_config_placements_config_id ON ai_configuration_placements(configuration_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_kitchen_layouts_project_id ON kitchen_layouts(project_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_kitchen_placements_layout_id ON kitchen_placements(layout_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_kitchen_placements_catalog_item ON kitchen_placements(catalog_item_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_kitchen_countertops_layout_id ON kitchen_countertops(layout_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_ai_configurations_project_id ON ai_configurations(project_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_ai_configurations_user_id ON ai_configurations(user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_ai_config_placements_config_id ON ai_configuration_placements(configuration_id)`
+    );
 
     // Apply updated_at triggers
     await tx.execute(`
@@ -154,7 +168,9 @@ export const KitchensMigration: Migration = {
   },
 
   async down(tx: Transaction): Promise<void> {
-    await tx.execute(`DROP TRIGGER IF EXISTS update_kitchen_placements_updated_at ON kitchen_placements`);
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_kitchen_placements_updated_at ON kitchen_placements`
+    );
     await tx.execute(`DROP TRIGGER IF EXISTS update_kitchen_layouts_updated_at ON kitchen_layouts`);
     await tx.execute(`DROP TABLE IF EXISTS ai_configuration_placements CASCADE`);
     await tx.execute(`DROP TABLE IF EXISTS ai_configurations CASCADE`);

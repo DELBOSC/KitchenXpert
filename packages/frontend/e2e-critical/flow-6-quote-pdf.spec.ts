@@ -12,9 +12,7 @@
 import { test, expect, loginUI, API_BASE, captureCookies } from './_fixtures';
 
 test.describe('@critical Flow 6 — Quote + PDF export', () => {
-  test('generates a quote and exports a valid PDF', async ({
-    page, request, freshUser,
-  }) => {
+  test('generates a quote and exports a valid PDF', async ({ page, request, freshUser }) => {
     await loginUI(page, freshUser);
     const cookies = await captureCookies(page);
 
@@ -27,10 +25,13 @@ test.describe('@critical Flow 6 — Quote + PDF export', () => {
     const kitchen = await request.post(`${API_BASE}/kitchens`, {
       headers: { Cookie: cookies },
       data: {
-        projectId: pData.id, name: 'Q-Kitchen',
+        projectId: pData.id,
+        name: 'Q-Kitchen',
         // POST /kitchens validates width/length/height (createKitchenSchema),
         // not the *Cm names.
-        width: 400, length: 350, height: 270,
+        width: 400,
+        length: 350,
+        height: 270,
       },
     });
     const { data: kData } = await kitchen.json();
@@ -40,9 +41,15 @@ test.describe('@critical Flow 6 — Quote + PDF export', () => {
       await request.post(`${API_BASE}/kitchens/${kData.id}/items`, {
         headers: { Cookie: cookies },
         data: {
-          sku, label: sku, providerCode: 'IKEA',
-          unitPrice: 199.99, quantity: 1,
-          x: 0, y: 0, z: 0, rotation: 0,
+          sku,
+          label: sku,
+          providerCode: 'IKEA',
+          unitPrice: 199.99,
+          quantity: 1,
+          x: 0,
+          y: 0,
+          z: 0,
+          rotation: 0,
         },
       });
     }
@@ -52,13 +59,13 @@ test.describe('@critical Flow 6 — Quote + PDF export', () => {
 
     // Total visible and matches sum (2 × 199.99 = 399.98 ; allow display
     // variation: "399,98 €", "399.98 €", "399,98€", etc.)
-    await expect(page.getByText(/399[\.,]98/).first())
-      .toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/399[\.,]98/).first()).toBeVisible({ timeout: 15_000 });
 
     // ---- Trigger PDF export and capture the download ----
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 30_000 }),
-      page.getByRole('button', { name: /exporter|export.*pdf|télécharger.*pdf/i })
+      page
+        .getByRole('button', { name: /exporter|export.*pdf|télécharger.*pdf/i })
         .first()
         .click(),
     ]);

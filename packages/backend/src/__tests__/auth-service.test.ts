@@ -39,17 +39,28 @@ jest.mock('../utils/logger', () => {
 // Test cases reach into __prismaMock to tweak per-test behaviour.
 jest.mock('../database/client', () => {
   const txCreatedUser = {
-    id: 'user-123', email: 'test@example.com', firstName: 'Test', lastName: 'User',
-    password: 'hashed-password', role: 'user', status: 'pending', emailVerified: false,
-    language: 'en', timezone: 'UTC', createdAt: new Date(), updatedAt: new Date(),
+    id: 'user-123',
+    email: 'test@example.com',
+    firstName: 'Test',
+    lastName: 'User',
+    password: 'hashed-password',
+    role: 'user',
+    status: 'pending',
+    emailVerified: false,
+    language: 'en',
+    timezone: 'UTC',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
   const txUserCreate = jest.fn().mockResolvedValue(txCreatedUser);
   const txTokenCreate = jest.fn().mockResolvedValue({});
   const findUnique = jest.fn().mockResolvedValue(null);
-  const $transaction = jest.fn(async (fn: any) => fn({
-    user: { create: txUserCreate },
-    emailVerificationToken: { create: txTokenCreate },
-  }));
+  const $transaction = jest.fn(async (fn: any) =>
+    fn({
+      user: { create: txUserCreate },
+      emailVerificationToken: { create: txTokenCreate },
+    })
+  );
   return {
     prisma: {
       user: { findUnique, create: jest.fn() },
@@ -145,7 +156,9 @@ describe('AuthService', () => {
 
       const result = await authService.register(registrationData);
 
-      expect(__prismaMock.findUnique).toHaveBeenCalledWith({ where: { email: registrationData.email } });
+      expect(__prismaMock.findUnique).toHaveBeenCalledWith({
+        where: { email: registrationData.email },
+      });
       expect(bcrypt.hash).toHaveBeenCalledWith(registrationData.password, 12);
       expect(__prismaMock.$transaction).toHaveBeenCalled();
       expect(result.user.email).toBe(registrationData.email);
@@ -154,15 +167,18 @@ describe('AuthService', () => {
     });
 
     it('should throw ConflictError if email already exists', async () => {
-      __prismaMock.findUnique.mockResolvedValueOnce({ id: 'existing-user', email: registrationData.email });
+      __prismaMock.findUnique.mockResolvedValueOnce({
+        id: 'existing-user',
+        email: registrationData.email,
+      });
 
       await expect(authService.register(registrationData)).rejects.toThrow(ConflictError);
     });
 
     it('should throw BadRequestError for weak password (too short)', async () => {
-      await expect(
-        authService.register({ ...registrationData, password: 'Ab1' })
-      ).rejects.toThrow(BadRequestError);
+      await expect(authService.register({ ...registrationData, password: 'Ab1' })).rejects.toThrow(
+        BadRequestError
+      );
     });
 
     it('should throw BadRequestError for password without uppercase', async () => {
@@ -182,7 +198,9 @@ describe('AuthService', () => {
       // same prisma.$transaction, so if the token insert fails the user
       // creation rolls back too. We assert the transaction was invoked.
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password');
-      mockEmailTokenService.generateVerificationToken.mockRejectedValue(new Error('legacy fallback path'));
+      mockEmailTokenService.generateVerificationToken.mockRejectedValue(
+        new Error('legacy fallback path')
+      );
 
       const result = await authService.register(registrationData);
 
@@ -299,7 +317,9 @@ describe('AuthService', () => {
         error: 'Token expired',
       });
 
-      await expect(authService.resetPassword('invalid-token', 'NewStrong1')).rejects.toThrow(BadRequestError);
+      await expect(authService.resetPassword('invalid-token', 'NewStrong1')).rejects.toThrow(
+        BadRequestError
+      );
     });
   });
 
@@ -331,9 +351,9 @@ describe('AuthService', () => {
     it('should throw UnauthorizedError if user not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        authService.changePassword('bad-id', 'OldPass1', 'NewStrong1')
-      ).rejects.toThrow(UnauthorizedError);
+      await expect(authService.changePassword('bad-id', 'OldPass1', 'NewStrong1')).rejects.toThrow(
+        UnauthorizedError
+      );
     });
   });
 
@@ -351,9 +371,9 @@ describe('AuthService', () => {
     it('should throw if email token service is not configured for password reset', async () => {
       const serviceWithoutEmail = new AuthService(mockRepository);
 
-      await expect(
-        serviceWithoutEmail.requestPasswordReset('test@test.com')
-      ).rejects.toThrow('CONFIGURATION ERROR');
+      await expect(serviceWithoutEmail.requestPasswordReset('test@test.com')).rejects.toThrow(
+        'CONFIGURATION ERROR'
+      );
     });
   });
 });

@@ -18,7 +18,12 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  })),
 }));
 
 jest.mock('../database/client', () => ({
@@ -81,14 +86,20 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'admin@test.com', role: mockUserRole };
     next();
   },
   authorize: (roles: string[]) => (req: any, res: any, next: any) => {
     if (!roles.includes(req.user?.role)) {
-      return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'Insufficient permissions' } });
+      return res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
+      });
     }
     next();
   },
@@ -120,9 +131,7 @@ describe('Permission Routes', () => {
 
   describe('GET /permissions', () => {
     it('should return all permissions for admin', async () => {
-      const response = await request(app)
-        .get('/permissions')
-        .expect(200);
+      const response = await request(app).get('/permissions').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -131,18 +140,14 @@ describe('Permission Routes', () => {
 
     it('should return 401 when not authenticated', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .get('/permissions')
-        .expect(401);
+      const response = await request(app).get('/permissions').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 403 for non-admin users', async () => {
       mockUserRole = 'user';
-      const response = await request(app)
-        .get('/permissions')
-        .expect(403);
+      const response = await request(app).get('/permissions').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -173,9 +178,7 @@ describe('Permission Routes', () => {
 
   describe('DELETE /permissions/:id', () => {
     it('should delete permission for admin', async () => {
-      const response = await request(app)
-        .delete('/permissions/p1')
-        .expect(200);
+      const response = await request(app).delete('/permissions/p1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockPermissionController.delete).toHaveBeenCalled();
@@ -183,9 +186,7 @@ describe('Permission Routes', () => {
 
     it('should return 403 for non-admin users', async () => {
       mockUserRole = 'user';
-      const response = await request(app)
-        .delete('/permissions/p1')
-        .expect(403);
+      const response = await request(app).delete('/permissions/p1').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -193,9 +194,7 @@ describe('Permission Routes', () => {
 
   describe('GET /permissions/resources', () => {
     it('should return available resources for admin', async () => {
-      const response = await request(app)
-        .get('/permissions/resources')
-        .expect(200);
+      const response = await request(app).get('/permissions/resources').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockPermissionController.getResources).toHaveBeenCalled();

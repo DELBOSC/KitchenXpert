@@ -108,11 +108,14 @@ export interface AggregatedWebhookMetrics {
   totalDeliveries: number;
   successRate: number;
   averageLatency: number;
-  byEvent: Record<WebhookEvent, {
-    total: number;
-    success: number;
-    failed: number;
-  }>;
+  byEvent: Record<
+    WebhookEvent,
+    {
+      total: number;
+      success: number;
+      failed: number;
+    }
+  >;
 }
 
 /**

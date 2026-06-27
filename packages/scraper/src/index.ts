@@ -48,12 +48,7 @@ export {
   getAvailableScrapers,
 } from './scrapers/index.js';
 
-export {
-  logger,
-  rateLimiter,
-  retryHandler,
-  proxyManager,
-} from './utils/index.js';
+export { logger, rateLimiter, retryHandler, proxyManager } from './utils/index.js';
 
 export {
   ScrapeManager,

@@ -19,9 +19,17 @@ export type ListUserKitchensInput = z.infer<typeof ListUserKitchensSchema>;
 export class ListUserKitchensUseCase implements UseCase<ListUserKitchensInput, unknown> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async execute({ userId, page, limit, style, layout, isGenerated }: ListUserKitchensInput): Promise<Result<unknown>> {
+  async execute({
+    userId,
+    page,
+    limit,
+    style,
+    layout,
+    isGenerated,
+  }: ListUserKitchensInput): Promise<Result<unknown>> {
     const where = {
-      userId, deletedAt: null,
+      userId,
+      deletedAt: null,
       ...(style && { style: style as never }),
       ...(layout && { layout: layout as never }),
       ...(isGenerated !== undefined && { isGenerated }),
@@ -29,7 +37,9 @@ export class ListUserKitchensUseCase implements UseCase<ListUserKitchensInput, u
 
     const [data, total] = await Promise.all([
       this.prisma.kitchen.findMany({
-        where, skip: (page - 1) * limit, take: limit,
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
         orderBy: { createdAt: 'desc' },
         include: { configuration: true, _count: { select: { items: true } } },
       }),

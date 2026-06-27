@@ -24,7 +24,10 @@ import type { PrismaClient } from '@prisma/client';
  */
 
 export const RegisterSchema = z.object({
-  email: z.string().email().transform((e) => e.toLowerCase()),
+  email: z
+    .string()
+    .email()
+    .transform((e) => e.toLowerCase()),
   password: z.string().min(8).max(200),
   firstName: z.string().min(1).max(80),
   lastName: z.string().min(1).max(80),
@@ -48,9 +51,11 @@ export class RegisterUseCase implements UseCase<RegisterInput, RegisterOutput> {
 
   async execute(input: RegisterInput): Promise<Result<RegisterOutput>> {
     if (!PASSWORD_COMPLEXITY.test(input.password)) {
-      return err(DomainErrors.validation('Password must contain uppercase, lowercase and a digit', [
-        { path: 'password', message: 'complexity' },
-      ]));
+      return err(
+        DomainErrors.validation('Password must contain uppercase, lowercase and a digit', [
+          { path: 'password', message: 'complexity' },
+        ])
+      );
     }
 
     const existing = await this.prisma.user.findUnique({ where: { email: input.email } });

@@ -129,7 +129,9 @@ describe('ProjectsList', () => {
       renderProjectsList();
 
       await waitFor(() => {
-        expect(screen.getByText(/complete kitchen redesign with modern appliances/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/complete kitchen redesign with modern appliances/i)
+        ).toBeInTheDocument();
       });
     });
 
@@ -245,15 +247,16 @@ describe('ProjectsList', () => {
     it('should display empty state when no projects', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          projects: [],
-          pagination: {
-            currentPage: 1,
-            totalPages: 0,
-            totalItems: 0,
-            itemsPerPage: 10,
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            projects: [],
+            pagination: {
+              currentPage: 1,
+              totalPages: 0,
+              totalItems: 0,
+              itemsPerPage: 10,
+            },
+          }),
       });
 
       renderProjectsList();
@@ -266,15 +269,16 @@ describe('ProjectsList', () => {
     it('should show create first project prompt in empty state', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          projects: [],
-          pagination: {
-            currentPage: 1,
-            totalPages: 0,
-            totalItems: 0,
-            itemsPerPage: 10,
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            projects: [],
+            pagination: {
+              currentPage: 1,
+              totalPages: 0,
+              totalItems: 0,
+              itemsPerPage: 10,
+            },
+          }),
       });
 
       renderProjectsList();
@@ -287,21 +291,24 @@ describe('ProjectsList', () => {
     it('should have create project button in empty state', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          projects: [],
-          pagination: {
-            currentPage: 1,
-            totalPages: 0,
-            totalItems: 0,
-            itemsPerPage: 10,
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            projects: [],
+            pagination: {
+              currentPage: 1,
+              totalPages: 0,
+              totalItems: 0,
+              itemsPerPage: 10,
+            },
+          }),
       });
 
       renderProjectsList();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /créer votre premier projet/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', { name: /créer votre premier projet/i })
+        ).toBeInTheDocument();
       });
     });
   });
@@ -355,15 +362,16 @@ describe('ProjectsList', () => {
     it('should not show pagination when single page', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          projects: mockProjects.slice(0, 2),
-          pagination: {
-            currentPage: 1,
-            totalPages: 1,
-            totalItems: 2,
-            itemsPerPage: 10,
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            projects: mockProjects.slice(0, 2),
+            pagination: {
+              currentPage: 1,
+              totalPages: 1,
+              totalItems: 2,
+              itemsPerPage: 10,
+            },
+          }),
       });
 
       renderProjectsList();

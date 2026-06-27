@@ -15,11 +15,40 @@ export interface IkeaConfig {
 }
 
 export type IkeaCountry =
-  | 'fr' | 'de' | 'gb' | 'us' | 'ca' | 'se' | 'nl' | 'be' | 'es' | 'it'
-  | 'at' | 'ch' | 'pl' | 'ru' | 'au' | 'jp' | 'kr' | 'cn' | 'hk' | 'tw';
+  | 'fr'
+  | 'de'
+  | 'gb'
+  | 'us'
+  | 'ca'
+  | 'se'
+  | 'nl'
+  | 'be'
+  | 'es'
+  | 'it'
+  | 'at'
+  | 'ch'
+  | 'pl'
+  | 'ru'
+  | 'au'
+  | 'jp'
+  | 'kr'
+  | 'cn'
+  | 'hk'
+  | 'tw';
 
 export type IkeaLanguage =
-  | 'fr' | 'de' | 'en' | 'sv' | 'nl' | 'es' | 'it' | 'pl' | 'ru' | 'ja' | 'ko' | 'zh';
+  | 'fr'
+  | 'de'
+  | 'en'
+  | 'sv'
+  | 'nl'
+  | 'es'
+  | 'it'
+  | 'pl'
+  | 'ru'
+  | 'ja'
+  | 'ko'
+  | 'zh';
 
 // ============================================
 // Authentication Types
@@ -196,12 +225,7 @@ export type DeliveryType =
   | 'PUOP' // Pick-up at store
   | 'CLICK_COLLECT_STORE';
 
-export type ServiceType =
-  | 'CURBSIDE'
-  | 'STANDARD'
-  | 'EXPRESS'
-  | 'ROOM_OF_CHOICE'
-  | 'THRESHOLD';
+export type ServiceType = 'CURBSIDE' | 'STANDARD' | 'EXPRESS' | 'ROOM_OF_CHOICE' | 'THRESHOLD';
 
 export interface DeliveryService {
   type: DeliveryType;
@@ -344,8 +368,7 @@ export const IKEA_ENDPOINTS = {
   auth: 'https://api.ingka.ikea.com/guest/token',
   search: (country: string, language: string) =>
     `https://sik.search.blue.cdtapps.com/${country}/${language}/search-result-page`,
-  stock: (country: string) =>
-    `https://api.ingka.ikea.com/cia/availabilities/ru/${country}`,
+  stock: (country: string) => `https://api.ingka.ikea.com/cia/availabilities/ru/${country}`,
   ingkaItems: (language: string) =>
     `https://api.ingka.ikea.com/salesitem/communications/ru/${language}`,
   cart: 'https://cart.oneweb.ingka.com/graphql',

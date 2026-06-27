@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { HeroVideo } from './HeroVideo';
 import { tagConversion } from '../../hooks/useABVariant';
 
-
 /**
  * 3 hero variants, A/B/C-tested via `useABVariant('hero', ['A','B','C'])`.
  *

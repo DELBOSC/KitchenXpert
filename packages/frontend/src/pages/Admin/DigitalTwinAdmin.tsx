@@ -59,8 +59,12 @@ const DigitalTwinAdmin: React.FC = () => {
           }),
         ]);
 
-        if (!statsRes.ok) {throw new Error(t('admin.digitalTwin.errors.fetchStats', 'Failed to load stats'));}
-        if (!twinsRes.ok) {throw new Error(t('admin.digitalTwin.errors.fetchList', 'Failed to load twins'));}
+        if (!statsRes.ok) {
+          throw new Error(t('admin.digitalTwin.errors.fetchStats', 'Failed to load stats'));
+        }
+        if (!twinsRes.ok) {
+          throw new Error(t('admin.digitalTwin.errors.fetchList', 'Failed to load twins'));
+        }
 
         const statsData = (await statsRes.json()) as DigitalTwinStats | { data: DigitalTwinStats };
         const twinsData = (await twinsRes.json()) as DigitalTwin[] | { data: DigitalTwin[] };
@@ -68,8 +72,12 @@ const DigitalTwinAdmin: React.FC = () => {
         setStats('data' in statsData ? statsData.data : statsData);
         setTwins('data' in twinsData ? twinsData.data : twinsData);
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
-        setError(getErrorMessage(err, t('admin.digitalTwin.errors.load', 'Failed to load digital twins')));
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
+        setError(
+          getErrorMessage(err, t('admin.digitalTwin.errors.load', 'Failed to load digital twins'))
+        );
       } finally {
         setIsLoading(false);
       }
@@ -81,7 +89,9 @@ const DigitalTwinAdmin: React.FC = () => {
 
   // Auto-dismiss messages after 5 seconds
   useEffect(() => {
-    if (!message) {return;}
+    if (!message) {
+      return;
+    }
     const timer = setTimeout(() => setMessage(null), 5000);
     return () => clearTimeout(timer);
   }, [message]);
@@ -101,27 +111,44 @@ const DigitalTwinAdmin: React.FC = () => {
         const body = (await res.json().catch(() => null)) as { message?: string } | null;
         throw new Error(body?.message ?? t('admin.digitalTwin.errors.syncFailed', 'Sync failed'));
       }
-      setMessage({ type: 'success', text: t('admin.digitalTwin.success.syncAll', 'Global sync launched successfully') });
+      setMessage({
+        type: 'success',
+        text: t('admin.digitalTwin.success.syncAll', 'Global sync launched successfully'),
+      });
       setRetryCount((c) => c + 1);
     } catch (err) {
-      setMessage({ type: 'error', text: getErrorMessage(err, t('admin.digitalTwin.errors.syncUnknown', 'Unknown sync error')) });
+      setMessage({
+        type: 'error',
+        text: getErrorMessage(err, t('admin.digitalTwin.errors.syncUnknown', 'Unknown sync error')),
+      });
     } finally {
       setIsSyncing(false);
     }
   }, [t]);
 
-  const handleViewDetail = useCallback(async (twin: DigitalTwin) => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/digital-twin/${twin.kitchenId}`, {
-        credentials: 'include',
-      });
-      if (!res.ok) {throw new Error(t('admin.digitalTwin.errors.fetchDetail', 'Failed to load twin details'));}
-      const data = (await res.json()) as DigitalTwin | { data: DigitalTwin };
-      setSelectedTwin('kitchenId' in data ? data : data.data);
-    } catch (err) {
-      setMessage({ type: 'error', text: getErrorMessage(err, t('admin.digitalTwin.errors.detailUnknown', 'Failed to load details')) });
-    }
-  }, [t]);
+  const handleViewDetail = useCallback(
+    async (twin: DigitalTwin) => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/digital-twin/${twin.kitchenId}`, {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          throw new Error(t('admin.digitalTwin.errors.fetchDetail', 'Failed to load twin details'));
+        }
+        const data = (await res.json()) as DigitalTwin | { data: DigitalTwin };
+        setSelectedTwin('kitchenId' in data ? data : data.data);
+      } catch (err) {
+        setMessage({
+          type: 'error',
+          text: getErrorMessage(
+            err,
+            t('admin.digitalTwin.errors.detailUnknown', 'Failed to load details')
+          ),
+        });
+      }
+    },
+    [t]
+  );
 
   // ---------- Helpers ----------
 
@@ -136,7 +163,9 @@ const DigitalTwinAdmin: React.FC = () => {
   };
 
   const formatDate = (iso: string | null) => {
-    if (!iso) {return t('common.never', 'Never');}
+    if (!iso) {
+      return t('common.never', 'Never');
+    }
     return new Date(iso).toLocaleString(i18n.language, {
       day: '2-digit',
       month: 'short',
@@ -188,7 +217,6 @@ const DigitalTwinAdmin: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* ---------- Header ---------- */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -197,7 +225,8 @@ const DigitalTwinAdmin: React.FC = () => {
             </h1>
             {stats?.lastGlobalSync && (
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {t('admin.digitalTwin.lastGlobalSync', 'Last global sync')}: {formatDate(stats.lastGlobalSync)}
+                {t('admin.digitalTwin.lastGlobalSync', 'Last global sync')}:{' '}
+                {formatDate(stats.lastGlobalSync)}
               </p>
             )}
           </div>
@@ -241,7 +270,12 @@ const DigitalTwinAdmin: React.FC = () => {
               className="ml-4 hover:opacity-70"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -308,7 +342,10 @@ const DigitalTwinAdmin: React.FC = () => {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {twins.length === 0 && !isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                    <td
+                      colSpan={5}
+                      className="px-6 py-12 text-center text-gray-500 dark:text-gray-400"
+                    >
                       {t('admin.digitalTwin.table.empty', 'No digital twins found.')}
                     </td>
                   </tr>
@@ -322,7 +359,9 @@ const DigitalTwinAdmin: React.FC = () => {
                         {twin.ownerEmail}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <span className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded-full capitalize ${statusBadge(twin.status)}`}>
+                        <span
+                          className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded-full capitalize ${statusBadge(twin.status)}`}
+                        >
                           {twin.status}
                         </span>
                       </td>
@@ -390,7 +429,12 @@ const DigitalTwinAdmin: React.FC = () => {
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -401,26 +445,34 @@ const DigitalTwinAdmin: React.FC = () => {
                   <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     {t('admin.digitalTwin.modal.id', 'ID')}
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono break-all">{selectedTwin.id}</dd>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono break-all">
+                    {selectedTwin.id}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     {t('admin.digitalTwin.modal.kitchenId', 'Kitchen ID')}
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono break-all">{selectedTwin.kitchenId}</dd>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono break-all">
+                    {selectedTwin.kitchenId}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     {t('admin.digitalTwin.modal.owner', 'Owner')}
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">{selectedTwin.ownerEmail}</dd>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                    {selectedTwin.ownerEmail}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     {t('admin.digitalTwin.modal.status', 'Status')}
                   </dt>
                   <dd className="mt-1">
-                    <span className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded-full capitalize ${statusBadge(selectedTwin.status)}`}>
+                    <span
+                      className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded-full capitalize ${statusBadge(selectedTwin.status)}`}
+                    >
                       {selectedTwin.status}
                     </span>
                   </dd>
@@ -429,7 +481,9 @@ const DigitalTwinAdmin: React.FC = () => {
                   <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     {t('admin.digitalTwin.modal.lastSync', 'Last Sync')}
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">{formatDate(selectedTwin.lastSync)}</dd>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                    {formatDate(selectedTwin.lastSync)}
+                  </dd>
                 </div>
                 {selectedTwin.data && (
                   <div className="col-span-2">

@@ -76,7 +76,7 @@ class TokenBlacklist {
    * @param {number} expiresIn - Token expiration time in seconds
    */
   add(token, expiresIn) {
-    const expiryTime = Date.now() + (expiresIn * 1000);
+    const expiryTime = Date.now() + expiresIn * 1000;
     this.tokens.set(token, expiryTime);
   }
 
@@ -146,7 +146,7 @@ const generateAccessToken = (payload, options = {}) => {
     email: payload.email,
     role: payload.role,
     permissions: payload.permissions || [],
-    type: 'access'
+    type: 'access',
   };
 
   const tokenOptions = {
@@ -154,7 +154,7 @@ const generateAccessToken = (payload, options = {}) => {
     issuer: ISSUER,
     audience: AUDIENCE,
     algorithm: ALGORITHM,
-    ...options
+    ...options,
   };
 
   return jwt.sign(tokenPayload, JWT_ACCESS_SECRET, tokenOptions);
@@ -171,7 +171,7 @@ const generateRefreshToken = (payload, options = {}) => {
     userId: payload.userId,
     email: payload.email,
     type: 'refresh',
-    tokenVersion: payload.tokenVersion || 0 // For token rotation
+    tokenVersion: payload.tokenVersion || 0, // For token rotation
   };
 
   const expiresIn = payload.rememberMe
@@ -183,7 +183,7 @@ const generateRefreshToken = (payload, options = {}) => {
     issuer: ISSUER,
     audience: AUDIENCE,
     algorithm: ALGORITHM,
-    ...options
+    ...options,
   };
 
   return jwt.sign(tokenPayload, JWT_REFRESH_SECRET, tokenOptions);
@@ -198,7 +198,7 @@ const generateTokenPair = (payload) => {
   return {
     accessToken: generateAccessToken(payload),
     refreshToken: generateRefreshToken(payload),
-    expiresIn: ACCESS_TOKEN_EXPIRY
+    expiresIn: ACCESS_TOKEN_EXPIRY,
   };
 };
 
@@ -218,7 +218,7 @@ const verifyAccessToken = (token) => {
     const decoded = jwt.verify(token, JWT_ACCESS_SECRET, {
       issuer: ISSUER,
       audience: AUDIENCE,
-      algorithms: [ALGORITHM]
+      algorithms: [ALGORITHM],
     });
 
     // Verify token type
@@ -254,7 +254,7 @@ const verifyRefreshToken = (token) => {
     const decoded = jwt.verify(token, JWT_REFRESH_SECRET, {
       issuer: ISSUER,
       audience: AUDIENCE,
-      algorithms: [ALGORITHM]
+      algorithms: [ALGORITHM],
     });
 
     // Verify token type
@@ -289,7 +289,7 @@ const refreshAccessToken = (refreshToken, userData = null) => {
     email: decoded.email,
     role: decoded.role,
     permissions: decoded.permissions,
-    tokenVersion: decoded.tokenVersion
+    tokenVersion: decoded.tokenVersion,
   };
 
   // Generate new access token
@@ -297,7 +297,7 @@ const refreshAccessToken = (refreshToken, userData = null) => {
 
   return {
     accessToken,
-    expiresIn: ACCESS_TOKEN_EXPIRY
+    expiresIn: ACCESS_TOKEN_EXPIRY,
   };
 };
 
@@ -320,7 +320,7 @@ const rotateRefreshToken = (oldRefreshToken, userData = null) => {
     email: decoded.email,
     role: decoded.role,
     permissions: decoded.permissions,
-    tokenVersion: (decoded.tokenVersion || 0) + 1
+    tokenVersion: (decoded.tokenVersion || 0) + 1,
   };
 
   // Generate new token pair
@@ -434,9 +434,9 @@ module.exports = {
     rememberMeExpiry: REMEMBER_ME_EXPIRY,
     algorithm: ALGORITHM,
     issuer: ISSUER,
-    audience: AUDIENCE
+    audience: AUDIENCE,
   },
 
   // Cleanup
-  cleanup
+  cleanup,
 };

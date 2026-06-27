@@ -2,12 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import {
-  STATIC_REVIEWS,
-  PLATFORM_LABEL,
-  aggregateRating,
-  type Review,
-} from './reviews-data';
+import { STATIC_REVIEWS, PLATFORM_LABEL, aggregateRating, type Review } from './reviews-data';
 
 /**
  * ReviewsSection — wall of reviews shown on home + pricing.
@@ -32,7 +27,9 @@ export interface ReviewsSectionProps {
 }
 
 export function ReviewsSection({
-  max = 6, showAllLink = true, className = '',
+  max = 6,
+  showAllLink = true,
+  className = '',
 }: ReviewsSectionProps): React.ReactElement {
   const reviews = STATIC_REVIEWS.slice(0, max);
   const agg = aggregateRating(reviews);
@@ -69,7 +66,10 @@ export function ReviewsSection({
       aria-labelledby="reviews-heading"
       className={`mx-auto max-w-6xl px-6 py-20 ${className}`}
     >
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <header className="mb-10 text-center">
         <h2
@@ -87,7 +87,11 @@ export function ReviewsSection({
       </header>
 
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {reviews.map((r) => <li key={r.id}><ReviewCard review={r} /></li>)}
+        {reviews.map((r) => (
+          <li key={r.id}>
+            <ReviewCard review={r} />
+          </li>
+        ))}
       </ul>
 
       {showAllLink && (
@@ -112,8 +116,9 @@ function ReviewsPlaceholder({ className = '' }: { className?: string }): React.R
         Lancement 2026 — les premiers avis arrivent
       </h2>
       <p className="mx-auto mt-4 max-w-xl text-base text-white/65">
-        KitchenXpert vient d&apos;ouvrir. Si vous testez le designer, votre retour est précieux —
-        et il vous donne accès au badge <strong className="text-white">Founding Reviewer</strong> sur votre profil.
+        KitchenXpert vient d&apos;ouvrir. Si vous testez le designer, votre retour est précieux — et
+        il vous donne accès au badge <strong className="text-white">Founding Reviewer</strong> sur
+        votre profil.
       </p>
       <Link
         to="/designer/sandbox"
@@ -169,7 +174,8 @@ export function StarRow({ value }: { value: number }): React.ReactElement {
           aria-hidden
         >
           <path
-            strokeLinecap="round" strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             d="M11.49 3.5l2.36 4.79 5.28.77-3.82 3.73.9 5.26-4.72-2.48-4.72 2.48.9-5.26L3.85 9.06l5.28-.77 2.36-4.79z"
           />
         </svg>

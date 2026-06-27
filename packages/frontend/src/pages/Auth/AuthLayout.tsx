@@ -11,7 +11,13 @@ interface AuthLayoutProps {
   aside?: React.ReactNode;
 }
 
-export default function AuthLayout({ title, subtitle, children, footer, aside }: AuthLayoutProps): React.ReactElement {
+export default function AuthLayout({
+  title,
+  subtitle,
+  children,
+  footer,
+  aside,
+}: AuthLayoutProps): React.ReactElement {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0a0a0f] text-white">
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -39,12 +45,17 @@ export default function AuthLayout({ title, subtitle, children, footer, aside }:
             {footer && <div className="mt-8 text-sm text-white/60">{footer}</div>}
           </motion.div>
 
-          <p className="text-xs text-white/30">© {new Date().getFullYear()} KitchenXpert — Hébergé dans l&apos;UE</p>
+          <p className="text-xs text-white/30">
+            © {new Date().getFullYear()} KitchenXpert — Hébergé dans l&apos;UE
+          </p>
         </div>
 
         {/* Right: marketing panel */}
         <aside className="relative hidden overflow-hidden border-l border-white/10 bg-gradient-to-br from-indigo-500/10 via-fuchsia-500/5 to-transparent lg:block">
-          <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(232,121,249,0.15),transparent_60%)]" />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(232,121,249,0.15),transparent_60%)]"
+          />
           <div className="relative flex h-full flex-col justify-center px-16">
             {aside ?? <DefaultAside />}
           </div>
@@ -66,8 +77,8 @@ function DefaultAside(): React.ReactElement {
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Nouveau configurateur IA v2
       </div>
       <p className="text-3xl font-medium leading-tight tracking-tight text-white">
-        « On a remplacé trois logiciels par KitchenXpert. Le rendu 3D est bluffant
-        et le devis fournisseur intégré nous fait gagner deux jours par projet. »
+        « On a remplacé trois logiciels par KitchenXpert. Le rendu 3D est bluffant et le devis
+        fournisseur intégré nous fait gagner deux jours par projet. »
       </p>
       <div className="mt-8 flex items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500" />

@@ -3,10 +3,14 @@
  * Multer configuration for file uploads
  */
 
-import { type Request, type Response, type NextFunction , type RequestHandler } from 'express';
+import { type Request, type Response, type NextFunction, type RequestHandler } from 'express';
 import multer, { type FileFilterCallback, MulterError } from 'multer';
 
-import { ALLOWED_FILE_TYPES, ALLOWED_IMAGE_TYPES, ALLOWED_DOCUMENT_TYPES } from '../services/storage-service';
+import {
+  ALLOWED_FILE_TYPES,
+  ALLOWED_IMAGE_TYPES,
+  ALLOWED_DOCUMENT_TYPES,
+} from '../services/storage-service';
 import logger from '../utils/logger';
 
 // ==================== Configuration ====================
@@ -123,7 +127,6 @@ export const uploadDocument = multer({
 
 // ==================== Middleware Handlers ====================
 
-
 /**
  * Single file upload middleware
  * Usage: uploadSingle('file')
@@ -136,7 +139,10 @@ export const uploadSingle = (fieldName: string = 'file'): RequestHandler => {
  * Multiple files upload middleware (same field)
  * Usage: uploadMultiple('files', 5)
  */
-export const uploadMultiple = (fieldName: string = 'files', maxCount: number = MAX_FILES): RequestHandler => {
+export const uploadMultiple = (
+  fieldName: string = 'files',
+  maxCount: number = MAX_FILES
+): RequestHandler => {
   return upload.array(fieldName, maxCount);
 };
 
@@ -158,7 +164,10 @@ export const uploadSingleImage = (fieldName: string = 'image'): RequestHandler =
 /**
  * Multiple images upload middleware
  */
-export const uploadMultipleImages = (fieldName: string = 'images', maxCount: number = MAX_FILES): RequestHandler => {
+export const uploadMultipleImages = (
+  fieldName: string = 'images',
+  maxCount: number = MAX_FILES
+): RequestHandler => {
   return uploadImage.array(fieldName, maxCount);
 };
 
@@ -273,7 +282,10 @@ export function isValidFileSize(size: number, maxSize: number = MAX_FILE_SIZE): 
 /**
  * Validate MIME type
  */
-export function isValidMimeType(mimeType: string, allowedTypes: string[] = ALLOWED_FILE_TYPES): boolean {
+export function isValidMimeType(
+  mimeType: string,
+  allowedTypes: string[] = ALLOWED_FILE_TYPES
+): boolean {
   return allowedTypes.includes(mimeType);
 }
 
@@ -281,15 +293,23 @@ export function isValidMimeType(mimeType: string, allowedTypes: string[] = ALLOW
  * Get human-readable file size
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) {return '0 Bytes';}
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))  } ${  sizes[i]}`;
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
 // ==================== Export Constants ====================
 
-export { MAX_FILE_SIZE, MAX_FILES, ALLOWED_FILE_TYPES, ALLOWED_IMAGE_TYPES, ALLOWED_DOCUMENT_TYPES };
+export {
+  MAX_FILE_SIZE,
+  MAX_FILES,
+  ALLOWED_FILE_TYPES,
+  ALLOWED_IMAGE_TYPES,
+  ALLOWED_DOCUMENT_TYPES,
+};
 
 export default upload;

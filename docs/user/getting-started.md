@@ -1,6 +1,8 @@
 # Getting Started with KitchenXpert
 
-Welcome to KitchenXpert, the intelligent kitchen design platform that combines powerful 3D visualization with AI-powered recommendations to help you create your dream kitchen.
+Welcome to KitchenXpert, the intelligent kitchen design platform that combines
+powerful 3D visualization with AI-powered recommendations to help you create
+your dream kitchen.
 
 **Last Updated:** 2026-01-10
 
@@ -35,7 +37,8 @@ Getting started with KitchenXpert is quick and easy:
 4. **Fill in** your details:
    - Full name
    - Email address
-   - Password (minimum 8 characters, including one number and one special character)
+   - Password (minimum 8 characters, including one number and one special
+     character)
    - Country/Region
 5. **Accept** the Terms of Service and Privacy Policy
 6. **Click** "Create Account"
@@ -43,6 +46,7 @@ Getting started with KitchenXpert is quick and easy:
 [Screenshot: Account creation form]
 
 **Tips:**
+
 - Use a strong, unique password for your account
 - Choose an email you check regularly for important updates
 - Your country selection helps us show relevant products and pricing
@@ -59,6 +63,7 @@ After creating your account, you'll need to verify your email address:
 4. You'll be redirected to the KitchenXpert dashboard
 
 **Didn't receive the email?**
+
 - Check your spam/junk folder
 - Add noreply@kitchenxpert.com to your contacts
 - Click "Resend Verification Email" on the login page
@@ -96,6 +101,7 @@ After verification, you'll be greeted with a quick interface tour highlighting:
 [Screenshot: Annotated interface overview]
 
 **Tour Options:**
+
 - Complete the full 5-minute guided tour (recommended for beginners)
 - Skip and explore on your own
 - Restart the tour anytime from Help > Interface Tour
@@ -109,12 +115,14 @@ Your dashboard is mission control for all your kitchen design projects.
 ### My Projects Section
 
 View all your saved kitchen designs:
+
 - **Active Projects**: Designs you're currently working on
 - **Completed Projects**: Finished designs ready to share or implement
 - **Archived Projects**: Older designs moved to archive
 - **Shared with Me**: Collaborative projects from other users
 
 Each project card shows:
+
 - Thumbnail preview
 - Project name and last modified date
 - Design score (if AI-generated)
@@ -133,6 +141,7 @@ Three large buttons help you jump right in:
 ### Catalog Section
 
 Quick access to:
+
 - **138+ Products** from top brands
 - **Featured Collections** - Curated product bundles
 - **New Arrivals** - Recently added products
@@ -141,6 +150,7 @@ Quick access to:
 ### AI Assistant
 
 Quick access to intelligent features:
+
 - **Design Generator** - Create complete kitchens from your requirements
 - **Appliance Advisor** - Get personalized appliance recommendations
 - **Budget Optimizer** - Find cost-effective alternatives
@@ -172,6 +182,7 @@ Perfect for users who have a clear vision and want full creative control.
 [Screenshot: Kitchen dimensions setup dialog]
 
 **Best for:**
+
 - Experienced designers
 - Users with exact measurements
 - Those who want to explore freely
@@ -220,6 +231,7 @@ Let our AI guide you through the design process with intelligent questions.
 [Screenshot: AI questionnaire interface]
 
 **Best for:**
+
 - First-time kitchen designers
 - Users who want expert guidance
 - Those unsure where to start
@@ -239,6 +251,7 @@ Already have a floor plan? Upload it and trace over it.
 [Screenshot: Floor plan import with scale setting]
 
 **Best for:**
+
 - Renovation projects
 - Architects and contractors
 - Users with existing blueprints
@@ -254,12 +267,14 @@ The 3D designer is where your kitchen comes to life.
 Navigate your 3D space with ease:
 
 **Mouse Controls:**
+
 - **Left-click + Drag**: Rotate camera around kitchen
 - **Right-click + Drag**: Pan camera
 - **Scroll Wheel**: Zoom in/out
 - **Middle-click**: Reset to default view
 
 **Keyboard Shortcuts:**
+
 - **Arrow Keys**: Pan camera
 - **+/-**: Zoom
 - **Space**: Toggle 2D/3D view
@@ -267,6 +282,7 @@ Navigate your 3D space with ease:
 - **F**: Focus on selected object
 
 **View Presets:**
+
 - Top View (2D plan)
 - Front View
 - Isometric View
@@ -286,6 +302,7 @@ Add products from our extensive catalog:
 5. **Drop** it in your desired location
 
 **Component Categories:**
+
 - Base Cabinets
 - Wall Cabinets
 - Tall Cabinets
@@ -302,17 +319,20 @@ Add products from our extensive catalog:
 Fine-tune component placement:
 
 **Move Components:**
+
 - Click and drag to reposition
 - Use arrow keys for precise 1cm movements
 - Hold Shift for 10cm movements
 
 **Rotate Components:**
+
 - Select component
 - Use rotation handles (circular arrows)
 - Or type exact angle in properties panel
 - Snap to 45° or 90° increments (toggle in settings)
 
 **Height Adjustment:**
+
 - Select wall-mounted items
 - Drag vertical handle
 - Or enter exact height in properties panel
@@ -324,12 +344,14 @@ Fine-tune component placement:
 Ensure perfect placement with intelligent snapping:
 
 **Snap Settings:**
+
 - **Grid Snap**: Align to 5cm/10cm/25cm grid
 - **Object Snap**: Snap to nearby objects
 - **Wall Snap**: Auto-align to walls
 - **Center Snap**: Center on walls or spaces
 
 **Alignment Tools:**
+
 - **Align Left/Right**: Line up multiple components
 - **Distribute Evenly**: Space components equally
 - **Match Heights**: Make components same height
@@ -374,6 +396,7 @@ Customize the look of your kitchen:
 5. **Save** your selections
 
 **Color Options:**
+
 - Pre-defined color palettes
 - Custom RGB/Hex color picker
 - Brand-specific finishes (IKEA colors, Schmidt ranges)
@@ -385,12 +408,14 @@ Customize the look of your kitchen:
 Visualize your kitchen in different lighting conditions:
 
 **Lighting Modes:**
+
 - **Natural Daylight**: Bright, even illumination
 - **Morning Light**: Soft, warm tones
 - **Evening Light**: Cooler, ambient lighting
 - **Night Mode**: Under-cabinet and overhead lighting only
 
 **Add Light Sources:**
+
 - Ceiling lights
 - Pendant lights
 - Under-cabinet LED strips
@@ -404,32 +429,35 @@ Toggle shadows and reflections for photorealistic rendering.
 
 Speed up your workflow:
 
-| Action | Shortcut |
-|--------|----------|
-| Undo | Ctrl+Z |
-| Redo | Ctrl+Y |
-| Copy | Ctrl+C |
-| Paste | Ctrl+V |
-| Delete | Delete |
-| Select All | Ctrl+A |
-| Deselect | Esc |
-| Save | Ctrl+S |
-| Toggle Grid | G |
-| Toggle Snap | S |
-| 2D/3D View | Space |
-| Measurements | M |
-| Screenshot | F12 |
+| Action       | Shortcut |
+| ------------ | -------- |
+| Undo         | Ctrl+Z   |
+| Redo         | Ctrl+Y   |
+| Copy         | Ctrl+C   |
+| Paste        | Ctrl+V   |
+| Delete       | Delete   |
+| Select All   | Ctrl+A   |
+| Deselect     | Esc      |
+| Save         | Ctrl+S   |
+| Toggle Grid  | G        |
+| Toggle Snap  | S        |
+| 2D/3D View   | Space    |
+| Measurements | M        |
+| Screenshot   | F12      |
 
 ### Tips and Tricks
 
 **Efficiency Tips:**
+
 - **Duplicate similar items**: Select and press Ctrl+D
 - **Create component groups**: Select multiple items and group (Ctrl+G)
 - **Use layers**: Organize complex designs with layer system
 - **Save views**: Bookmark camera angles for quick access
 
 **Design Tips:**
-- **Work triangle**: Position sink, stove, and fridge in triangle (optimal efficiency)
+
+- **Work triangle**: Position sink, stove, and fridge in triangle (optimal
+  efficiency)
 - **Counter space**: Leave at least 60cm on either side of cooktop
 - **Traffic flow**: Maintain 120cm minimum for walkways
 - **Landing zones**: Plan 40cm counter space near oven and fridge
@@ -443,15 +471,18 @@ Explore 138+ products from world-class brands.
 ### Available Brands
 
 **Cabinet Systems:**
+
 - **IKEA**: Affordable, modular systems (METOD, KNOXHULT)
 - **Schmidt**: Premium French cabinetry (Arcos, Loft, Palazzo)
 
 **Appliances:**
+
 - **Bosch**: Reliable, mid-to-high range (Series 6, Series 8)
 - **Siemens**: Premium German engineering (iQ500, iQ700)
 - **Miele**: Luxury appliances with exceptional longevity
 
 **Worktops & Surfaces:**
+
 - Multiple material suppliers
 - Custom sizing available
 
@@ -462,6 +493,7 @@ Explore 138+ products from world-class brands.
 Find exactly what you need:
 
 **Filter by Category:**
+
 - Cabinets (Base, Wall, Tall, Corner)
 - Worktops
 - Sinks & Taps
@@ -470,21 +502,25 @@ Find exactly what you need:
 - Accessories
 
 **Filter by Brand:**
+
 - Select one or multiple brands
 - Compare similar products across brands
 
 **Filter by Price:**
+
 - Drag price range slider
 - Set min/max values
 - View total budget impact
 
 **Filter by Dimensions:**
+
 - Width range
 - Depth range
 - Height range
 - Perfect for fitting specific spaces
 
 **Filter by Style:**
+
 - Modern
 - Traditional
 - Scandinavian
@@ -493,6 +529,7 @@ Find exactly what you need:
 - Contemporary
 
 **Search Bar:**
+
 - Type product names ("dishwasher")
 - Type model numbers ("Bosch SMS6ZCI48E")
 - Type features ("induction cooktop")
@@ -505,6 +542,7 @@ Find exactly what you need:
 Click any product to view comprehensive information:
 
 **Overview Tab:**
+
 - High-resolution images (zoom and rotate)
 - Product name and model number
 - Brand and collection
@@ -512,6 +550,7 @@ Click any product to view comprehensive information:
 - Availability status
 
 **Specifications Tab:**
+
 - Exact dimensions (W × D × H)
 - Weight
 - Material and finish
@@ -520,18 +559,21 @@ Click any product to view comprehensive information:
 - Technical specifications
 
 **Features Tab:**
+
 - Key features bulleted list
 - Technology highlights
 - Special capabilities
 - Certifications
 
 **Reviews Tab:**
+
 - User ratings (average score)
 - Written reviews from KitchenXpert users
 - Helpful/not helpful voting
 - Photos from real installations
 
 **Compatibility Tab:**
+
 - Works well with (complementary products)
 - Required accessories
 - Installation requirements
@@ -604,6 +646,7 @@ Collaborate and get feedback:
 4. **Copy** and send via email, messenger, etc.
 
 **Link Options:**
+
 - Password protect
 - Expiration date
 - Limit number of views
@@ -621,6 +664,7 @@ Invite specific people:
 5. **Send** invitations
 
 Collaborators can:
+
 - View and edit in real-time
 - Leave comments on specific components
 - Suggest alternatives
@@ -642,6 +686,7 @@ Create a presentation-ready document:
 4. **Generate** and download
 
 Perfect for:
+
 - Sharing with contractors
 - Presenting to family
 - Printing for reference
@@ -657,12 +702,14 @@ Perfect for:
 Export for use in other software:
 
 **Supported Formats:**
+
 - **OBJ**: Universal 3D format (good for rendering)
 - **FBX**: Autodesk format (for 3ds Max, Maya)
 - **glTF**: Web-friendly format (for AR/VR)
 - **STEP**: CAD format (for technical work)
 
 **Export Process:**
+
 1. **Click** File > Export > 3D Model
 2. **Select** format
 3. **Choose** detail level (Low, Medium, High, Ultra)
@@ -676,11 +723,13 @@ Export for use in other software:
 Get a shopping list:
 
 **Formats:**
+
 - **Excel (.xlsx)**: Editable spreadsheet
 - **CSV**: Universal format
 - **PDF**: Printable list
 
 **Included Information:**
+
 - Product name and SKU
 - Quantity needed
 - Individual price
@@ -702,6 +751,7 @@ Create beautiful marketing images:
 6. **Download** high-quality images
 
 **Use Cases:**
+
 - Social media sharing
 - Portfolio building
 - Inspiration boards
@@ -716,16 +766,19 @@ Create beautiful marketing images:
 ### Recommended Learning Path
 
 **Week 1: Basics**
+
 1. Complete the tutorial: "Creating Your First Kitchen Design"
 2. Experiment with different cabinet arrangements
 3. Try all three creation methods (blank, AI, import)
 
 **Week 2: Intermediate Features**
+
 1. Explore the full product catalog
 2. Practice with materials and finishes
 3. Learn budget optimization techniques
 
 **Week 3: Advanced Tools**
+
 1. Try VR mode (if available)
 2. Collaborate with a friend or family member
 3. Create a phased implementation plan
@@ -733,22 +786,26 @@ Create beautiful marketing images:
 ### Help Resources
 
 **Documentation:**
+
 - [FAQ - Frequently Asked Questions](faq.md)
 - [Feature Guides](features/)
 - [Tutorial Library](tutorials/)
 
 **Video Tutorials:**
+
 - YouTube channel: KitchenXpert Official
 - Video library: 50+ tutorials
 - Webinars: Live sessions every Tuesday
 
 **Community:**
+
 - User forum: forum.kitchenxpert.com
 - Facebook group: KitchenXpert Community
 - Instagram: @kitchenxpert (share your designs!)
 - Discord server: Real-time chat and help
 
 **Support:**
+
 - Email: support@kitchenxpert.com
 - Live chat: Available Mon-Fri 9am-6pm EST
 - Response time: Under 24 hours
@@ -757,6 +814,7 @@ Create beautiful marketing images:
 ### Inspiration Gallery
 
 Browse thousands of completed designs:
+
 - Filter by style, size, budget
 - Save favorites
 - Clone designs as templates
@@ -765,6 +823,7 @@ Browse thousands of completed designs:
 ### Stay Updated
 
 **Newsletter:**
+
 - New product releases
 - Feature updates
 - Design tips and tricks
@@ -772,6 +831,7 @@ Browse thousands of completed designs:
 - Subscribe at kitchenxpert.com/newsletter
 
 **Release Notes:**
+
 - Monthly feature updates
 - Bug fixes and improvements
 - View at kitchenxpert.com/changelog
@@ -780,24 +840,25 @@ Browse thousands of completed designs:
 
 ## Quick Reference Card
 
-| Task | Action |
-|------|--------|
-| Create new design | Dashboard > New Blank Design |
-| Save project | Ctrl+S or auto-saves every 2 min |
-| Add component | Drag from catalog to canvas |
-| Rotate object | Select and use rotation handles |
-| Measure distance | Tools > Measure, click two points |
-| Change view | Space (2D/3D toggle) |
-| Undo/Redo | Ctrl+Z / Ctrl+Y |
-| Share design | Share button > Generate link |
-| Export PDF | File > Export > PDF |
-| Get help | Help menu or support chat |
+| Task              | Action                            |
+| ----------------- | --------------------------------- |
+| Create new design | Dashboard > New Blank Design      |
+| Save project      | Ctrl+S or auto-saves every 2 min  |
+| Add component     | Drag from catalog to canvas       |
+| Rotate object     | Select and use rotation handles   |
+| Measure distance  | Tools > Measure, click two points |
+| Change view       | Space (2D/3D toggle)              |
+| Undo/Redo         | Ctrl+Z / Ctrl+Y                   |
+| Share design      | Share button > Generate link      |
+| Export PDF        | File > Export > PDF               |
+| Get help          | Help menu or support chat         |
 
 ---
 
 ## Welcome to Your Kitchen Design Journey!
 
-You're now ready to start creating beautiful, functional kitchens with KitchenXpert. Remember:
+You're now ready to start creating beautiful, functional kitchens with
+KitchenXpert. Remember:
 
 - **There's no wrong way to start** - Choose the method that feels comfortable
 - **Experiment freely** - You can always undo or start over
@@ -810,5 +871,5 @@ Ready to begin? Head to your [Dashboard](/) and create your first design.
 
 ---
 
-*Last Updated: 2026-01-10*
-*For the latest version of this guide, visit [docs.kitchenxpert.com/user/getting-started](https://docs.kitchenxpert.com/user/getting-started)*
+_Last Updated: 2026-01-10_ _For the latest version of this guide, visit
+[docs.kitchenxpert.com/user/getting-started](https://docs.kitchenxpert.com/user/getting-started)_

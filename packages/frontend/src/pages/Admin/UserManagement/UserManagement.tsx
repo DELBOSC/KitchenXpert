@@ -49,18 +49,29 @@ const UserManagement: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>(searchParams.get('status') || '');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [showActionModal, setShowActionModal] = useState<{ type: string; user: User } | null>(null);
-  const [showBulkModal, setShowBulkModal] = useState<{ action: 'suspend' | 'activate' | 'changeRole' } | null>(null);
+  const [showBulkModal, setShowBulkModal] = useState<{
+    action: 'suspend' | 'activate' | 'changeRole';
+  } | null>(null);
   const [bulkRole, setBulkRole] = useState<string>('user');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isBulkProcessing, setIsBulkProcessing] = useState<boolean>(false);
   const mountedRef = useRef(true);
-  useEffect(() => () => { mountedRef.current = false; }, []);
+  useEffect(
+    () => () => {
+      mountedRef.current = false;
+    },
+    []
+  );
 
   // Close the single-user action modal on Escape (document-level to keep the dialog container non-interactive)
   useEffect(() => {
-    if (!showActionModal) {return;}
+    if (!showActionModal) {
+      return;
+    }
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && !isProcessing) { setShowActionModal(null); }
+      if (e.key === 'Escape' && !isProcessing) {
+        setShowActionModal(null);
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -68,9 +79,13 @@ const UserManagement: React.FC = () => {
 
   // Close the bulk action modal on Escape
   useEffect(() => {
-    if (!showBulkModal) {return;}
+    if (!showBulkModal) {
+      return;
+    }
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && !isBulkProcessing) { setShowBulkModal(null); }
+      if (e.key === 'Escape' && !isBulkProcessing) {
+        setShowBulkModal(null);
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -91,11 +106,20 @@ const UserManagement: React.FC = () => {
           limit: pagination.itemsPerPage.toString(),
         });
 
-        if (searchQuery) {params.append('search', searchQuery);}
-        if (roleFilter) {params.append('role', roleFilter);}
-        if (statusFilter) {params.append('status', statusFilter);}
+        if (searchQuery) {
+          params.append('search', searchQuery);
+        }
+        if (roleFilter) {
+          params.append('role', roleFilter);
+        }
+        if (statusFilter) {
+          params.append('status', statusFilter);
+        }
 
-        const response = await fetch(`/api/v1/admin/users?${params.toString()}`, { credentials: 'include', signal: controller.signal });
+        const response = await fetch(`/api/v1/admin/users?${params.toString()}`, {
+          credentials: 'include',
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error(t('admin.errors.fetchUsers', 'Failed to fetch users'));
@@ -105,8 +129,13 @@ const UserManagement: React.FC = () => {
         setUsers(data.users);
         setPagination(data.pagination);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
-        const errorMessage = err instanceof Error ? err.message : t('admin.errors.unexpected', 'An unexpected error occurred');
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : t('admin.errors.unexpected', 'An unexpected error occurred');
         setError(errorMessage);
       } finally {
         setIsLoading(false);
@@ -162,10 +191,14 @@ const UserManagement: React.FC = () => {
         credentials: 'include',
       });
 
-      if (!mountedRef.current) {return;}
+      if (!mountedRef.current) {
+        return;
+      }
 
       if (!response.ok) {
-        throw new Error(t('admin.errors.userAction', { action, defaultValue: `Failed to ${action} user` }));
+        throw new Error(
+          t('admin.errors.userAction', { action, defaultValue: `Failed to ${action} user` })
+        );
       }
 
       // Refresh user list
@@ -189,7 +222,8 @@ const UserManagement: React.FC = () => {
 
       setShowActionModal(null);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('admin.errors.actionFailed', 'Action failed');
+      const errorMessage =
+        err instanceof Error ? err.message : t('admin.errors.actionFailed', 'Action failed');
       setError(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -197,7 +231,9 @@ const UserManagement: React.FC = () => {
   };
 
   const handleBulkAction = async (action: 'suspend' | 'activate'): Promise<void> => {
-    if (selectedUsers.length === 0) {return;}
+    if (selectedUsers.length === 0) {
+      return;
+    }
 
     setIsBulkProcessing(true);
     let successCount = 0;
@@ -211,14 +247,14 @@ const UserManagement: React.FC = () => {
           credentials: 'include',
         });
 
-        if (!mountedRef.current) {return;}
+        if (!mountedRef.current) {
+          return;
+        }
 
         if (response.ok) {
           successCount++;
-          const newStatus = action === 'activate' ? 'active' as const : 'suspended' as const;
-          setUsers((prev) =>
-            prev.map((u) => u.id === userId ? { ...u, status: newStatus } : u)
-          );
+          const newStatus = action === 'activate' ? ('active' as const) : ('suspended' as const);
+          setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, status: newStatus } : u)));
         } else {
           failCount++;
         }
@@ -227,7 +263,9 @@ const UserManagement: React.FC = () => {
       }
     }
 
-    if (!mountedRef.current) {return;}
+    if (!mountedRef.current) {
+      return;
+    }
 
     if (successCount > 0) {
       toast.success(t('admin.bulkActionSuccess', `Successfully updated ${successCount} user(s)`));
@@ -242,7 +280,9 @@ const UserManagement: React.FC = () => {
   };
 
   const handleBulkRoleChange = async (): Promise<void> => {
-    if (selectedUsers.length === 0) {return;}
+    if (selectedUsers.length === 0) {
+      return;
+    }
 
     setIsBulkProcessing(true);
     let successCount = 0;
@@ -257,12 +297,14 @@ const UserManagement: React.FC = () => {
           body: JSON.stringify({ role: bulkRole }),
         });
 
-        if (!mountedRef.current) {return;}
+        if (!mountedRef.current) {
+          return;
+        }
 
         if (response.ok) {
           successCount++;
           setUsers((prev) =>
-            prev.map((u) => u.id === userId ? { ...u, role: bulkRole as User['role'] } : u)
+            prev.map((u) => (u.id === userId ? { ...u, role: bulkRole as User['role'] } : u))
           );
         } else {
           failCount++;
@@ -272,10 +314,14 @@ const UserManagement: React.FC = () => {
       }
     }
 
-    if (!mountedRef.current) {return;}
+    if (!mountedRef.current) {
+      return;
+    }
 
     if (successCount > 0) {
-      toast.success(t('admin.bulkRoleSuccess', `Successfully changed role for ${successCount} user(s)`));
+      toast.success(
+        t('admin.bulkRoleSuccess', `Successfully changed role for ${successCount} user(s)`)
+      );
     }
     if (failCount > 0) {
       toast.error(t('admin.bulkRolePartialFail', `Failed to change role for ${failCount} user(s)`));
@@ -328,14 +374,21 @@ const UserManagement: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('admin.userManagement', 'User Management')}</h1>
-          <p className="mt-1 text-gray-500 dark:text-gray-400">{t('admin.userManagementDesc', 'Manage user accounts, roles, and permissions')}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {t('admin.userManagement', 'User Management')}
+          </h1>
+          <p className="mt-1 text-gray-500 dark:text-gray-400">
+            {t('admin.userManagementDesc', 'Manage user accounts, roles, and permissions')}
+          </p>
         </div>
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
             <p className="text-red-600 dark:text-red-400">{error}</p>
-            <button onClick={() => setError(null)} className="mt-2 text-red-800 dark:text-red-300 underline">
+            <button
+              onClick={() => setError(null)}
+              className="mt-2 text-red-800 dark:text-red-300 underline"
+            >
               {t('common.dismiss', 'Dismiss')}
             </button>
           </div>
@@ -384,9 +437,15 @@ const UserManagement: React.FC = () => {
         </div>
 
         {/* User Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden" aria-busy={isLoading}>
+        <div
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden"
+          aria-busy={isLoading}
+        >
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" aria-label={t('admin.userTable', 'User management table')}>
+            <table
+              className="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+              aria-label={t('admin.userTable', 'User management table')}
+            >
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left">
@@ -429,7 +488,10 @@ const UserManagement: React.FC = () => {
                         type="checkbox"
                         checked={selectedUsers.includes(user.id)}
                         onChange={() => handleSelectUser(user.id)}
-                        aria-label={t('admin.selectUser', { name: `${user.firstName} ${user.lastName}`, defaultValue: 'Selectionner {{name}}' })}
+                        aria-label={t('admin.selectUser', {
+                          name: `${user.firstName} ${user.lastName}`,
+                          defaultValue: 'Selectionner {{name}}',
+                        })}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus-visible:ring-blue-500"
                       />
                     </td>
@@ -445,7 +507,8 @@ const UserManagement: React.FC = () => {
                           ) : (
                             <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
                               <span className="text-gray-500 dark:text-gray-300 font-medium">
-                                {user.firstName[0]}{user.lastName[0]}
+                                {user.firstName[0]}
+                                {user.lastName[0]}
                               </span>
                             </div>
                           )}
@@ -454,17 +517,23 @@ const UserManagement: React.FC = () => {
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {user.firstName} {user.lastName}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {user.email}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(user.role)}`}>
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(user.role)}`}
+                      >
                         {user.role}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(user.status)}`}>
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(user.status)}`}
+                      >
                         {user.status}
                       </span>
                     </td>
@@ -516,7 +585,9 @@ const UserManagement: React.FC = () => {
 
           {users.length === 0 && !isLoading && (
             <div className="text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400">{t('admin.noUsersFound', 'No users found matching your criteria')}</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                {t('admin.noUsersFound', 'No users found matching your criteria')}
+              </p>
             </div>
           )}
 
@@ -529,7 +600,7 @@ const UserManagement: React.FC = () => {
                     from: (currentPage - 1) * pagination.itemsPerPage + 1,
                     to: Math.min(currentPage * pagination.itemsPerPage, pagination.totalItems),
                     total: pagination.totalItems,
-                    defaultValue: 'Affichage de {{from}} a {{to}} sur {{total}} utilisateurs'
+                    defaultValue: 'Affichage de {{from}} a {{to}} sur {{total}} utilisateurs',
                   })}
                 </div>
                 <div className="flex gap-2">
@@ -556,7 +627,12 @@ const UserManagement: React.FC = () => {
         {/* Bulk Actions */}
         {selectedUsers.length > 0 && (
           <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-4 z-40">
-            <span>{t('admin.usersSelected', { count: selectedUsers.length, defaultValue: '{{count}} users selected' })}</span>
+            <span>
+              {t('admin.usersSelected', {
+                count: selectedUsers.length,
+                defaultValue: '{{count}} users selected',
+              })}
+            </span>
             <button
               onClick={() => setShowBulkModal({ action: 'activate' })}
               className="px-3 py-1 bg-green-600 rounded hover:bg-green-700 transition-colors"
@@ -596,17 +672,31 @@ const UserManagement: React.FC = () => {
           aria-modal="true"
           aria-labelledby="actionModalTitle"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
-            <h2 id="actionModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              {showActionModal.type === 'suspend' ? t('admin.suspendUser', 'Suspend User') : t('admin.activateUser', 'Activate User')}
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full"
+            ref={(el) => {
+              if (el) {
+                const btn = el.querySelector<HTMLElement>('button');
+                btn?.focus();
+              }
+            }}
+          >
+            <h2
+              id="actionModalTitle"
+              className="text-xl font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              {showActionModal.type === 'suspend'
+                ? t('admin.suspendUser', 'Suspend User')
+                : t('admin.activateUser', 'Activate User')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               {t('admin.actionConfirm', {
                 action: showActionModal.type,
                 name: `${showActionModal.user.firstName} ${showActionModal.user.lastName}`,
-                defaultValue: `Etes-vous sur de vouloir ${showActionModal.type === 'suspend' ? 'suspendre' : 'activer'} ${showActionModal.user.firstName} ${showActionModal.user.lastName} ?`
+                defaultValue: `Etes-vous sur de vouloir ${showActionModal.type === 'suspend' ? 'suspendre' : 'activer'} ${showActionModal.user.firstName} ${showActionModal.user.lastName} ?`,
               })}
-              {showActionModal.type === 'suspend' && ` ${t('admin.loseAccessWarning', 'L\'utilisateur perdra l\'acces a son compte.')}`}
+              {showActionModal.type === 'suspend' &&
+                ` ${t('admin.loseAccessWarning', "L'utilisateur perdra l'acces a son compte.")}`}
             </p>
             <div className="flex justify-end gap-4">
               <button
@@ -636,56 +726,68 @@ const UserManagement: React.FC = () => {
       )}
 
       {/* Bulk Action Confirmation Modal - Suspend/Activate */}
-      {showBulkModal && (showBulkModal.action === 'suspend' || showBulkModal.action === 'activate') && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="bulkModalTitle"
-        >
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
-            <h2 id="bulkModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              {showBulkModal.action === 'suspend'
-                ? t('admin.bulkSuspendTitle', 'Suspend Selected Users')
-                : t('admin.bulkActivateTitle', 'Activate Selected Users')}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              {showBulkModal.action === 'suspend'
-                ? t('admin.bulkSuspendConfirm', {
-                    count: selectedUsers.length,
-                    defaultValue: `Are you sure you want to suspend ${selectedUsers.length} user(s)? They will lose access to their accounts.`,
-                  })
-                : t('admin.bulkActivateConfirm', {
-                    count: selectedUsers.length,
-                    defaultValue: `Are you sure you want to activate ${selectedUsers.length} user(s)?`,
-                  })}
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowBulkModal(null)}
-                disabled={isBulkProcessing}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+      {showBulkModal &&
+        (showBulkModal.action === 'suspend' || showBulkModal.action === 'activate') && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bulkModalTitle"
+          >
+            <div
+              className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full"
+              ref={(el) => {
+                if (el) {
+                  const btn = el.querySelector<HTMLElement>('button');
+                  btn?.focus();
+                }
+              }}
+            >
+              <h2
+                id="bulkModalTitle"
+                className="text-xl font-semibold text-gray-900 dark:text-white mb-4"
               >
-                {t('common.cancel', 'Cancel')}
-              </button>
-              <button
-                onClick={() => handleBulkAction(showBulkModal.action as 'suspend' | 'activate')}
-                disabled={isBulkProcessing}
-                className={`px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${
-                  showBulkModal.action === 'suspend'
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-green-600 hover:bg-green-700'
-                }`}
-              >
-                {isBulkProcessing && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                )}
-                {t('common.confirm', 'Confirm')} ({selectedUsers.length})
-              </button>
+                {showBulkModal.action === 'suspend'
+                  ? t('admin.bulkSuspendTitle', 'Suspend Selected Users')
+                  : t('admin.bulkActivateTitle', 'Activate Selected Users')}
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                {showBulkModal.action === 'suspend'
+                  ? t('admin.bulkSuspendConfirm', {
+                      count: selectedUsers.length,
+                      defaultValue: `Are you sure you want to suspend ${selectedUsers.length} user(s)? They will lose access to their accounts.`,
+                    })
+                  : t('admin.bulkActivateConfirm', {
+                      count: selectedUsers.length,
+                      defaultValue: `Are you sure you want to activate ${selectedUsers.length} user(s)?`,
+                    })}
+              </p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setShowBulkModal(null)}
+                  disabled={isBulkProcessing}
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                >
+                  {t('common.cancel', 'Cancel')}
+                </button>
+                <button
+                  onClick={() => handleBulkAction(showBulkModal.action as 'suspend' | 'activate')}
+                  disabled={isBulkProcessing}
+                  className={`px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${
+                    showBulkModal.action === 'suspend'
+                      ? 'bg-red-600 hover:bg-red-700'
+                      : 'bg-green-600 hover:bg-green-700'
+                  }`}
+                >
+                  {isBulkProcessing && (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                  )}
+                  {t('common.confirm', 'Confirm')} ({selectedUsers.length})
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Bulk Role Change Modal */}
       {showBulkModal && showBulkModal.action === 'changeRole' && (
@@ -695,8 +797,19 @@ const UserManagement: React.FC = () => {
           aria-modal="true"
           aria-labelledby="bulkRoleModalTitle"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
-            <h2 id="bulkRoleModalTitle" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full"
+            ref={(el) => {
+              if (el) {
+                const btn = el.querySelector<HTMLElement>('button');
+                btn?.focus();
+              }
+            }}
+          >
+            <h2
+              id="bulkRoleModalTitle"
+              className="text-xl font-semibold text-gray-900 dark:text-white mb-4"
+            >
               {t('admin.bulkChangeRoleTitle', 'Change Role for Selected Users')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">

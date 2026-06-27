@@ -20,13 +20,13 @@
 
 ### Logiciels requis
 
-| Logiciel | Version minimale | Utilisation |
-|----------|-----------------|-------------|
-| Node.js | 18.0.0+ | Backend & Frontend |
-| pnpm | 8.0.0+ | Package manager |
-| Python | 3.9+ | AI Modules |
-| PostgreSQL | 14+ | Base de données |
-| Redis | 6+ | Cache & Sessions |
+| Logiciel   | Version minimale | Utilisation        |
+| ---------- | ---------------- | ------------------ |
+| Node.js    | 18.0.0+          | Backend & Frontend |
+| pnpm       | 8.0.0+           | Package manager    |
+| Python     | 3.9+             | AI Modules         |
+| PostgreSQL | 14+              | Base de données    |
+| Redis      | 6+               | Cache & Sessions   |
 
 ### Services cloud recommandés
 
@@ -345,7 +345,8 @@ sudo systemctl start kitchenxpert-ai
 2. Récupérer les clés API (Dashboard > Developers > API Keys)
 3. Configurer le webhook:
    - URL: `https://api.votre-domaine.com/api/payments/webhook`
-   - Events: `payment_intent.succeeded`, `payment_intent.failed`, `customer.subscription.*`
+   - Events: `payment_intent.succeeded`, `payment_intent.failed`,
+     `customer.subscription.*`
 4. Récupérer le webhook secret
 
 ### AWS S3
@@ -435,7 +436,7 @@ psql $DATABASE_URL < backup_20240115.sql
 - [ ] Monitoring configuré (Sentry, logs)
 - [ ] Backups automatiques configurés
 - [ ] Rate limiting vérifié
-- [ ] CORS vérifié (pas de *)
+- [ ] CORS vérifié (pas de \*)
 
 ### Sécurité
 

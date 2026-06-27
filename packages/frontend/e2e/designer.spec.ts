@@ -45,13 +45,13 @@ async function mockAuthenticated(page: Page): Promise<void> {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ success: true, data: TEST_USER }),
-    }),
+    })
   );
 }
 
 async function mockUnauthenticated(page: Page): Promise<void> {
   await page.route('**/api/v1/auth/me', (route) =>
-    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' }),
+    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' })
   );
 }
 
@@ -87,12 +87,12 @@ async function setupDesignerMocks(page: Page): Promise<void> {
         data: [],
         pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
       }),
-    }),
+    })
   );
 
   // Stub collaboration WebSocket connection attempts silently
   await page.route('**/api/v1/collaboration/**', (route) =>
-    route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
   );
 
   // Stub shopping list / version history / export endpoints
@@ -101,7 +101,7 @@ async function setupDesignerMocks(page: Page): Promise<void> {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ success: true, data: [] }),
-    }),
+    })
   );
 }
 
@@ -137,7 +137,9 @@ test.describe('Kitchen creation form', () => {
     await expect(nameInput).toBeVisible();
 
     // Style and layout grid buttons
-    await expect(page.locator('button:has-text("Modern"), button:has-text("modern")').first()).toBeVisible({ timeout: 5_000 });
+    await expect(
+      page.locator('button:has-text("Modern"), button:has-text("modern")').first()
+    ).toBeVisible({ timeout: 5_000 });
 
     // Submit and cancel buttons
     await expect(page.locator('button[type="submit"]')).toBeVisible();
@@ -177,15 +179,19 @@ test.describe('Kitchen creation form', () => {
           success: true,
           data: { ...SAMPLE_KITCHEN, id: 'new-kitchen-1', name: 'Test Kitchen' },
         }),
-      }),
+      })
     );
 
     await page.route('**/api/v1/catalog*', (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ success: true, data: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } }),
-      }),
+        body: JSON.stringify({
+          success: true,
+          data: [],
+          pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+        }),
+      })
     );
 
     await page.goto('/designer');
@@ -244,7 +250,9 @@ test.describe('Kitchen designer view', () => {
     // The Toolbar component should be rendered
     // It contains buttons for undo, redo, snap, measure, etc.
     // We look for its container or known toolbar buttons
-    const toolbarButtons = page.locator('button').filter({ hasText: /IA|Export|Versions|Eco|Devis|Style|Scan|Wizard/i });
+    const toolbarButtons = page
+      .locator('button')
+      .filter({ hasText: /IA|Export|Versions|Eco|Devis|Style|Scan|Wizard/i });
     const toolbarCount = await toolbarButtons.count();
     expect(toolbarCount).toBeGreaterThan(0);
   });
@@ -254,8 +262,14 @@ test.describe('Kitchen designer view', () => {
     await expect(page.locator('header')).toBeVisible({ timeout: 15_000 });
 
     // The catalog toggle button (mobile)
-    const catalogToggle = page.locator('button[aria-label*="Catalogue"], button[aria-label*="catalog"]').first();
-    const propertiesToggle = page.locator('button[aria-label*="Proprietes"], button[aria-label*="Properties"], button[aria-label*="properties"]').first();
+    const catalogToggle = page
+      .locator('button[aria-label*="Catalogue"], button[aria-label*="catalog"]')
+      .first();
+    const propertiesToggle = page
+      .locator(
+        'button[aria-label*="Proprietes"], button[aria-label*="Properties"], button[aria-label*="properties"]'
+      )
+      .first();
 
     // These toggles may only be visible on small viewports
     // At desktop widths they may be hidden behind lg:hidden
@@ -274,7 +288,9 @@ test.describe('Kitchen designer view', () => {
 
     // AI panel should appear at the bottom
     // It has a specific height class and border-t
-    await expect(page.locator('.border-t.bg-white, .border-t.dark\\:bg-gray-800').last()).toBeVisible({ timeout: 5_000 });
+    await expect(
+      page.locator('.border-t.bg-white, .border-t.dark\\:bg-gray-800').last()
+    ).toBeVisible({ timeout: 5_000 });
   });
 
   test('should show save button and handle save', async ({ page }) => {
@@ -282,7 +298,9 @@ test.describe('Kitchen designer view', () => {
     await expect(page.locator('header')).toBeVisible({ timeout: 15_000 });
 
     // Save button should exist but be disabled (no changes yet)
-    const saveButton = page.locator('header button:has-text("Save"), header button:has-text("save")').first();
+    const saveButton = page
+      .locator('header button:has-text("Save"), header button:has-text("save")')
+      .first();
 
     if (await saveButton.isVisible({ timeout: 3_000 }).catch(() => false)) {
       // Initially disabled because hasChanges is false
@@ -320,8 +338,12 @@ test.describe('Kitchen designer view', () => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ success: true, data: [], pagination: { page: 1, limit: 5, total: 0, totalPages: 0 } }),
-      }),
+        body: JSON.stringify({
+          success: true,
+          data: [],
+          pagination: { page: 1, limit: 5, total: 0, totalPages: 0 },
+        }),
+      })
     );
 
     await page.goto(`/designer/${SAMPLE_KITCHEN.id}`);
@@ -365,7 +387,10 @@ test.describe('Kitchen designer view', () => {
     await expect(page.locator('header')).toBeVisible({ timeout: 15_000 });
 
     // Properties panel is on the right side and contains style/layout <select>
-    const styleSelect = page.locator('select').filter({ hasText: /Modern|Traditional|Farmhouse/i }).first();
+    const styleSelect = page
+      .locator('select')
+      .filter({ hasText: /Modern|Traditional|Farmhouse/i })
+      .first();
 
     if (await styleSelect.isVisible({ timeout: 5_000 }).catch(() => false)) {
       await expect(styleSelect).toHaveValue('modern');
@@ -394,15 +419,19 @@ test.describe('Designer access control', () => {
         status: 404,
         contentType: 'application/json',
         body: JSON.stringify({ success: false, error: { message: 'Not found' } }),
-      }),
+      })
     );
 
     await page.route('**/api/v1/projects*', (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ success: true, data: [], pagination: { page: 1, limit: 5, total: 0, totalPages: 0 } }),
-      }),
+        body: JSON.stringify({
+          success: true,
+          data: [],
+          pagination: { page: 1, limit: 5, total: 0, totalPages: 0 },
+        }),
+      })
     );
 
     await page.goto('/designer/bad-id');

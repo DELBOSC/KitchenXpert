@@ -23,27 +23,38 @@ export class SearchProductsUseCase implements UseCase<SearchProductsInput, unkno
   constructor(private readonly prisma: PrismaClient) {}
 
   async execute(input: SearchProductsInput): Promise<Result<unknown>> {
-    const { page, limit, search, category, brand, providerId, minPrice, maxPrice, isActive } = input;
+    const { page, limit, search, category, brand, providerId, minPrice, maxPrice, isActive } =
+      input;
 
     const where: Record<string, unknown> = { isActive };
-    if (category) {where.categoryId = category;}
-    if (brand) {where.brand = { contains: brand, mode: 'insensitive' };}
-    if (providerId) {where.providerId = providerId;}
+    if (category) {
+      where.categoryId = category;
+    }
+    if (brand) {
+      where.brand = { contains: brand, mode: 'insensitive' };
+    }
+    if (providerId) {
+      where.providerId = providerId;
+    }
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.price = {
         ...(minPrice !== undefined && { gte: minPrice }),
         ...(maxPrice !== undefined && { lte: maxPrice }),
       };
     }
-    if (search) {where.OR = [
-      { name: { contains: search, mode: 'insensitive' } },
-      { sku: { contains: search, mode: 'insensitive' } },
-      { brand: { contains: search, mode: 'insensitive' } },
-    ];}
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { sku: { contains: search, mode: 'insensitive' } },
+        { brand: { contains: search, mode: 'insensitive' } },
+      ];
+    }
 
     const [data, total] = await Promise.all([
       this.prisma.product.findMany({
-        where, skip: (page - 1) * limit, take: limit,
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
         orderBy: { name: 'asc' },
         include: { category: { select: { id: true, name: true } } },
       }),

@@ -10,13 +10,7 @@ import PropTypes from 'prop-types';
 /**
  * TextQuestion Component
  */
-function TextQuestion({
-  question,
-  value,
-  onChange,
-  language,
-  disabled
-}) {
+function TextQuestion({ question, value, onChange, language, disabled }) {
   const {
     type,
     placeholder,
@@ -27,7 +21,7 @@ function TextQuestion({
     step,
     unit,
     multiline = false,
-    rows = 3
+    rows = 3,
   } = question;
 
   const [isFocused, setIsFocused] = useState(false);
@@ -41,16 +35,19 @@ function TextQuestion({
   const isNumeric = type === 'number-input';
 
   // Handle input change
-  const handleChange = useCallback((e) => {
-    let newValue = e.target.value;
+  const handleChange = useCallback(
+    (e) => {
+      let newValue = e.target.value;
 
-    if (isNumeric) {
-      // Parse as number or keep empty
-      newValue = newValue === '' ? null : parseFloat(newValue);
-    }
+      if (isNumeric) {
+        // Parse as number or keep empty
+        newValue = newValue === '' ? null : parseFloat(newValue);
+      }
 
-    onChange(newValue);
-  }, [onChange, isNumeric]);
+      onChange(newValue);
+    },
+    [onChange, isNumeric]
+  );
 
   // Handle focus events
   const handleFocus = useCallback(() => setIsFocused(true), []);
@@ -69,7 +66,7 @@ function TextQuestion({
     onBlur: handleBlur,
     disabled,
     placeholder: placeholderText,
-    'aria-describedby': question.helpText ? `${question.id}-help` : undefined
+    'aria-describedby': question.helpText ? `${question.id}-help` : undefined,
   };
 
   return (
@@ -95,9 +92,7 @@ function TextQuestion({
               maxLength={maxLength}
               className="text-input"
             />
-            {unitText && (
-              <span className="input-unit">{unitText}</span>
-            )}
+            {unitText && <span className="input-unit">{unitText}</span>}
           </>
         )}
       </div>
@@ -105,9 +100,7 @@ function TextQuestion({
       {/* Character count for text inputs */}
       {showCharCount && (
         <div className="char-count">
-          <span className={charCount > maxLength ? 'over-limit' : ''}>
-            {charCount}
-          </span>
+          <span className={charCount > maxLength ? 'over-limit' : ''}>{charCount}</span>
           <span className="char-limit">/{maxLength}</span>
         </div>
       )}
@@ -117,9 +110,7 @@ function TextQuestion({
         <div className="range-hint">
           {min !== undefined && max !== undefined ? (
             <span>
-              {language === 'fr'
-                ? `Entre ${min} et ${max}`
-                : `Between ${min} and ${max}`}
+              {language === 'fr' ? `Entre ${min} et ${max}` : `Between ${min} and ${max}`}
               {unitText && ` ${unitText}`}
             </span>
           ) : min !== undefined ? (
@@ -147,8 +138,8 @@ TextQuestion.propTypes = {
       PropTypes.string,
       PropTypes.shape({
         en: PropTypes.string,
-        fr: PropTypes.string
-      })
+        fr: PropTypes.string,
+      }),
     ]),
     minLength: PropTypes.number,
     maxLength: PropTypes.number,
@@ -159,26 +150,23 @@ TextQuestion.propTypes = {
       PropTypes.string,
       PropTypes.shape({
         en: PropTypes.string,
-        fr: PropTypes.string
-      })
+        fr: PropTypes.string,
+      }),
     ]),
     multiline: PropTypes.bool,
     rows: PropTypes.number,
-    helpText: PropTypes.object
+    helpText: PropTypes.object,
   }).isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func.isRequired,
   language: PropTypes.oneOf(['en', 'fr']),
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
 };
 
 TextQuestion.defaultProps = {
   value: null,
   language: 'en',
-  disabled: false
+  disabled: false,
 };
 
 export default TextQuestion;

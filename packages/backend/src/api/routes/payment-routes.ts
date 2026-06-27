@@ -9,7 +9,12 @@ import { z } from 'zod';
 
 import { paymentController } from '../controllers/payment-controller';
 import { authenticate, authorize } from '../middleware/auth-middleware';
-import { validateBody, validateParams, validateQuery, commonSchemas } from '../middleware/validation-middleware';
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+  commonSchemas,
+} from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 
@@ -67,11 +72,7 @@ const stripeIdParam = z.object({
  *       400:
  *         description: Invalid webhook signature or payload
  */
-router.post(
-  '/webhook',
-  raw({ type: 'application/json' }),
-  paymentController.handleWebhook
-);
+router.post('/webhook', raw({ type: 'application/json' }), paymentController.handleWebhook);
 
 // =================================
 // Public Routes (Read-only product/price info)
@@ -151,7 +152,11 @@ router.use(authenticate);
  *       401:
  *         description: Unauthorized
  */
-router.post('/intent', validateBody(createPaymentIntentSchema), paymentController.createPaymentIntent);
+router.post(
+  '/intent',
+  validateBody(createPaymentIntentSchema),
+  paymentController.createPaymentIntent
+);
 
 /**
  * @swagger
@@ -201,7 +206,11 @@ router.get('/intent/:id', validateParams(stripeIdParam), paymentController.getPa
  *       404:
  *         description: Payment intent not found
  */
-router.post('/intent/:id/cancel', validateParams(stripeIdParam), paymentController.cancelPaymentIntent);
+router.post(
+  '/intent/:id/cancel',
+  validateParams(stripeIdParam),
+  paymentController.cancelPaymentIntent
+);
 
 // ==================== PAYMENT HISTORY ====================
 
@@ -236,7 +245,11 @@ router.post('/intent/:id/cancel', validateParams(stripeIdParam), paymentControll
  *       401:
  *         description: Unauthorized
  */
-router.get('/history', validateQuery(paymentHistoryQuerySchema), paymentController.getPaymentHistory);
+router.get(
+  '/history',
+  validateQuery(paymentHistoryQuerySchema),
+  paymentController.getPaymentHistory
+);
 
 // ==================== REFUNDS ====================
 
@@ -276,7 +289,12 @@ router.get('/history', validateQuery(paymentHistoryQuerySchema), paymentControll
  *       403:
  *         description: Admin access required
  */
-router.post('/refund', authorize(['admin']), validateBody(refundSchema), paymentController.refundPayment);
+router.post(
+  '/refund',
+  authorize(['admin']),
+  validateBody(refundSchema),
+  paymentController.refundPayment
+);
 
 // ==================== CUSTOMERS ====================
 

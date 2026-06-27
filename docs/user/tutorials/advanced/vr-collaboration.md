@@ -1,8 +1,7 @@
 # VR Collaborative Design Sessions
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Advanced
-**Estimated Time:** 50-70 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Advanced **Estimated Time:**
+50-70 minutes
 
 ## Learning Objectives
 
@@ -27,9 +26,11 @@ By the end of this tutorial, you will be able to:
 
 ## What is VR Collaborative Design?
 
-Traditional design review happens on 2D screens or printouts. VR collaborative design allows:
+Traditional design review happens on 2D screens or printouts. VR collaborative
+design allows:
 
 **Benefits:**
+
 - See designs at true 1:1 scale before construction
 - Walk through spaces to evaluate flow and dimensions
 - Collaborate with remote team members in same virtual space
@@ -38,6 +39,7 @@ Traditional design review happens on 2D screens or printouts. VR collaborative d
 - Present to clients with immersive "wow factor"
 
 **Use Cases:**
+
 - Client presentations and approvals
 - Designer/contractor coordination meetings
 - Homeowner/spouse design decisions
@@ -103,7 +105,8 @@ Recommendation: Configure VR comfort settings before proceeding
 5. System optimizes design for VR rendering (30-45 seconds)
 6. **"Design ready for VR!"** confirmation appears
 
-> **TIP:** VR optimization reduces detail on objects far from viewer to maintain smooth 90 FPS. Most users won't notice the difference.
+> **TIP:** VR optimization reduces detail on objects far from viewer to maintain
+> smooth 90 FPS. Most users won't notice the difference.
 
 ### Step 2: Launch Single-User VR Preview
 
@@ -180,7 +183,8 @@ Enable features:
     - Sit at island (virtual stool appears), test seating comfort
     - Stand in entry, view overall layout
 
-> **TIP:** If scale feels off, verify your VR headset's floor height is calibrated correctly. Recalibrate in headset settings if needed.
+> **TIP:** If scale feels off, verify your VR headset's floor height is
+> calibrated correctly. Recalibrate in headset settings if needed.
 
 ### Step 3: Use VR Measurement Tools
 
@@ -223,7 +227,9 @@ Verify dimensions directly in VR.
 
 8. Save measurement screenshots for documentation
 
-> **TIP:** VR measurements help you viscerally understand if dimensions are comfortable. 42" clearance looks fine on paper but might feel tight in VR - prompt you to increase to 48".
+> **TIP:** VR measurements help you viscerally understand if dimensions are
+> comfortable. 42" clearance looks fine on paper but might feel tight in VR -
+> prompt you to increase to 48".
 
 ### Step 4: Add Annotations in VR
 
@@ -252,7 +258,8 @@ Mark areas for discussion or changes.
    - Select **"Voice Memo"** tool
    - Point at corner cabinet
    - Press trigger to start recording
-   - Speak: "This corner cabinet is awkward. Consider lazy susan or pull-out shelves instead."
+   - Speak: "This corner cabinet is awkward. Consider lazy susan or pull-out
+     shelves instead."
    - Release trigger to stop
    - Audio icon appears on cabinet
 
@@ -273,7 +280,9 @@ Mark areas for discussion or changes.
 7. All annotations save automatically
 8. Visible to anyone who views this VR session
 
-> **TIP:** Annotations are way more intuitive than describing issues via email. "The cabinet to the left of the sink" becomes a sticky note placed exactly where you mean.
+> **TIP:** Annotations are way more intuitive than describing issues via email.
+> "The cabinet to the left of the sink" becomes a sticky note placed exactly
+> where you mean.
 
 ### Step 5: Set Up Multi-User VR Session
 
@@ -330,6 +339,7 @@ Meeting room settings:
    - Calendar invite
 
 5. Email includes setup instructions:
+
    ```
    VR COLLABORATION INVITATION
 
@@ -355,7 +365,8 @@ Meeting room settings:
    - Audio: Headphones with mic recommended
    ```
 
-> **TIP:** Allow participants to test their VR setup 15 minutes early. Include a "join early to test" option in the invite.
+> **TIP:** Allow participants to test their VR setup 15 minutes early. Include a
+> "join early to test" option in the invite.
 
 ### Step 6: Host the Multi-User VR Session
 
@@ -383,7 +394,8 @@ Meeting time arrives.
 
 6. **As host, start the session:**
    - Welcome everyone
-   - "Welcome to the Johnson kitchen design review! Let's take a walk through together."
+   - "Welcome to the Johnson kitchen design review! Let's take a walk through
+     together."
 
 7. **Guide the tour:**
    - "Let's all start at the entry. Follow me."
@@ -405,13 +417,15 @@ Meeting time arrives.
    - Sounds distant when she's across the room
    - Just like real-world conversation
 
-> **TIP:** Use "Gather Everyone" button if participants wander too far. Teleports all avatars to host location for group discussions.
+> **TIP:** Use "Gather Everyone" button if participants wander too far.
+> Teleports all avatars to host location for group discussions.
 
 ### Step 7: Collaborate on Design Changes in Real-Time
 
 Sarah notices an issue during the tour.
 
-1. **Sarah:** "Can we make the island bigger? This feels a bit small for our family."
+1. **Sarah:** "Can we make the island bigger? This feels a bit small for our
+   family."
 
 2. **As host, enable Edit Mode:**
    - Press Menu → Mode → **"Edit Mode"**
@@ -440,7 +454,8 @@ Sarah notices an issue during the tour.
    - Mike: "Oh yes, much better. Can we keep this?"
    - Jennifer (designer): "Let me check clearances..."
    - Jennifer uses measurement tool
-   - "We're now at 38 inches clearance. Code minimum is 36, but I'd recommend going back to 42 inches for comfort."
+   - "We're now at 38 inches clearance. Code minimum is 36, but I'd recommend
+     going back to 42 inches for comfort."
 
 6. **Adjust back slightly:**
    - Select island again
@@ -469,7 +484,8 @@ Sarah notices an issue during the tour.
 
 [Screenshot: Appliance catalog in VR with 3D product previews]
 
-> **WARNING:** Too many participants with edit permissions can be chaotic. Recommend only host (designer) has edit rights, others can request changes.
+> **WARNING:** Too many participants with edit permissions can be chaotic.
+> Recommend only host (designer) has edit rights, others can request changes.
 
 ### Step 8: Use Advanced VR Collaboration Features
 
@@ -483,9 +499,9 @@ More powerful tools for professional sessions.
 
 [Screenshot: Split view showing two design options]
 
-   - Walk between versions to compare
-   - Sarah: "I prefer the waterfall edge on the island in version 2"
-   - Take elements from each version and merge
+- Walk between versions to compare
+- Sarah: "I prefer the waterfall edge on the island in version 2"
+- Take elements from each version and merge
 
 2. **Material swapping in VR:**
    - Point at countertop
@@ -528,7 +544,9 @@ More powerful tools for professional sessions.
    - Alex: "Code requires 18 inches minimum. We're good."
    - Checkmark annotation added
 
-> **TIP:** Screenshot liberally during VR sessions. Press trigger on right controller to capture your exact view. Great for documentation and decision records.
+> **TIP:** Screenshot liberally during VR sessions. Press trigger on right
+> controller to capture your exact view. Great for documentation and decision
+> records.
 
 ### Step 9: Record VR Walkthrough for Absent Stakeholders
 
@@ -546,7 +564,8 @@ Someone couldn't attend? Record the session.
 
 4. **Create a guided tour recording:**
    - "I'm going to record a quick walkthrough for anyone who couldn't make it."
-   - Start at entry: "Welcome to the kitchen. Here's the entry from the dining room..."
+   - Start at entry: "Welcome to the kitchen. Here's the entry from the dining
+     room..."
    - Walk to each area, narrating:
      - "The L-shaped layout maximizes counter space..."
      - "Here's the island with seating for three..."
@@ -573,7 +592,8 @@ Someone couldn't attend? Record the session.
 9. Export: `Johnson_Kitchen_Walkthrough_360.mp4`
 10. Email to absent stakeholders
 
-> **TIP:** Record multiple short videos (2-3 min each) rather than one long one. Easier for viewers to watch specific sections.
+> **TIP:** Record multiple short videos (2-3 min each) rather than one long one.
+> Easier for viewers to watch specific sections.
 
 ### Step 10: Use VR Room Scanning for Existing Spaces
 
@@ -639,7 +659,9 @@ Start scan? [Begin Scanning]
    - Check for discrepancies
    - Adjust if needed
 
-> **TIP:** Room scanning is incredibly accurate (±1/4 inch). Far better than manual measuring. Great for remodels where existing conditions might not match plans.
+> **TIP:** Room scanning is incredibly accurate (±1/4 inch). Far better than
+> manual measuring. Great for remodels where existing conditions might not match
+> plans.
 
 ### Step 11: Export VR Experience for Standalone Viewing
 
@@ -690,6 +712,7 @@ Purpose: Client can view anytime without meeting
 6. Download: `Johnson_Kitchen_VR.apk`
 
 7. **Send to client with instructions:**
+
    ```
    Hi Sarah and Mike,
 
@@ -714,7 +737,8 @@ Purpose: Client can view anytime without meeting
 9. They can show neighbors, friends, family
 10. Great for getting third-party feedback
 
-> **TIP:** Standalone VR exports are impressive client deliverables. Most competitors only provide PDFs or videos. This is next-level.
+> **TIP:** Standalone VR exports are impressive client deliverables. Most
+> competitors only provide PDFs or videos. This is next-level.
 
 ### Step 12: Review VR Session Analytics
 
@@ -797,7 +821,8 @@ SATISFACTION SURVEY (sent post-session):
    - Great for project documentation
    - Share with contractors, fabricators
 
-> **TIP:** Session analytics help justify VR investment. Demonstrate higher client satisfaction, fewer change orders, and faster decisions.
+> **TIP:** Session analytics help justify VR investment. Demonstrate higher
+> client satisfaction, fewer change orders, and faster decisions.
 
 ## What You Learned
 
@@ -810,7 +835,8 @@ Outstanding! You've mastered VR collaborative design. You can now:
 - **Set up multi-user sessions** with invitations and permissions
 - **Host collaborative reviews** with multiple stakeholders in VR
 - **Make real-time design changes** collaboratively in VR
-- **Use advanced features** like split view, material swapping, and lighting scenarios
+- **Use advanced features** like split view, material swapping, and lighting
+  scenarios
 - **Record VR walkthroughs** for absent stakeholders or presentations
 - **Scan existing rooms** using VR for accurate as-built data
 - **Export standalone VR apps** for client self-service viewing
@@ -833,31 +859,34 @@ Remember these principles:
 
 Solutions to frequent issues:
 
-**Challenge:** Participant motion sickness
-**Solution:** Use teleport mode, take frequent breaks, lower movement speed
+**Challenge:** Participant motion sickness **Solution:** Use teleport mode, take
+frequent breaks, lower movement speed
 
-**Challenge:** Poor audio quality
-**Solution:** Use headphones with mic, test audio before session, reduce background noise
+**Challenge:** Poor audio quality **Solution:** Use headphones with mic, test
+audio before session, reduce background noise
 
-**Challenge:** Participants get lost/separated
-**Solution:** Use "Gather Everyone" button, designate meeting points
+**Challenge:** Participants get lost/separated **Solution:** Use "Gather
+Everyone" button, designate meeting points
 
-**Challenge:** Edit mode chaos (everyone making changes)
-**Solution:** Only give host edit permission, others request changes
+**Challenge:** Edit mode chaos (everyone making changes) **Solution:** Only give
+host edit permission, others request changes
 
-**Challenge:** Internet lag/disconnections
-**Solution:** Require 10+ Mbps connection, use wired connection if possible, record sessions as backup
+**Challenge:** Internet lag/disconnections **Solution:** Require 10+ Mbps
+connection, use wired connection if possible, record sessions as backup
 
-**Challenge:** Learning curve for first-time VR users
-**Solution:** Send tutorial video pre-meeting, join 15 min early for practice
+**Challenge:** Learning curve for first-time VR users **Solution:** Send
+tutorial video pre-meeting, join 15 min early for practice
 
 ## Next Steps
 
 Continue your advanced education:
 
-1. **[Custom Manufacturing Integration](custom-manufacturing.md)** - Connect VR sessions to fabrication processes
-2. **[Phased Implementation](phased-implementation.md)** - Use VR to plan multi-phase projects
-3. **[Professional Workflows](../../guides/professional-workflows.md)** - Integrate VR into client workflow
+1. **[Custom Manufacturing Integration](custom-manufacturing.md)** - Connect VR
+   sessions to fabrication processes
+2. **[Phased Implementation](phased-implementation.md)** - Use VR to plan
+   multi-phase projects
+3. **[Professional Workflows](../../guides/professional-workflows.md)** -
+   Integrate VR into client workflow
 
 ## Additional Resources
 
@@ -870,6 +899,7 @@ Continue your advanced education:
 ## Feedback
 
 Help us improve VR collaboration:
+
 - Email: vr-feedback@kitchenxpert.com
 - Report VR bugs: [Bug report form]
 - Request VR features: [Feature request]
@@ -878,13 +908,14 @@ Help us improve VR collaboration:
 ---
 
 **Related Tutorials:**
+
 - [Creating Your First Kitchen Design](../beginner/first-design.md)
 - [Custom Manufacturing Integration](custom-manufacturing.md)
 - [Phased Implementation](phased-implementation.md)
 
 **Documentation:**
+
 - [VR Technical Requirements](../../reference/vr-requirements.md)
 - [VR Controls Reference](../../reference/vr-controls.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1

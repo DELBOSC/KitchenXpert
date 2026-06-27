@@ -26,9 +26,9 @@ import type {
 } from '@kitchenxpert/3d-engine';
 
 export interface UseKitchenEngineOptions {
-  width?: number;     // room width in meters
-  depth?: number;     // room depth in meters
-  height?: number;    // room height in meters
+  width?: number; // room width in meters
+  depth?: number; // room depth in meters
+  height?: number; // room height in meters
   shadowsEnabled?: boolean;
   brandId?: BrandId;
 }
@@ -109,7 +109,9 @@ export function useKitchenEngine(
   // Initialize engine
   useEffect(() => {
     const container = canvasRef.current;
-    if (!container) {return;}
+    if (!container) {
+      return;
+    }
 
     const engine = new KitchenEngine(
       container,
@@ -160,25 +162,13 @@ export function useKitchenEngine(
           const start = engine.controls.getTransformStart();
 
           if (event.mode === 'translate' && start.position) {
-            const cmd = new MoveObjectCommand(
-              event.object,
-              start.position,
-              event.position
-            );
+            const cmd = new MoveObjectCommand(event.object, start.position, event.position);
             engine.history.execute(cmd);
           } else if (event.mode === 'rotate' && start.rotation) {
-            const cmd = new RotateObjectCommand(
-              event.object,
-              start.rotation,
-              event.rotation
-            );
+            const cmd = new RotateObjectCommand(event.object, start.rotation, event.rotation);
             engine.history.execute(cmd);
           } else if (event.mode === 'scale' && start.scale) {
-            const cmd = new ScaleObjectCommand(
-              event.object,
-              start.scale,
-              event.scale
-            );
+            const cmd = new ScaleObjectCommand(event.object, start.scale, event.scale);
             engine.history.execute(cmd);
           }
         }
@@ -190,10 +180,15 @@ export function useKitchenEngine(
           // Show distances to walls
           const walls: THREE.Object3D[] = [];
           engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-            if (child.userData.type === 'wall') {walls.push(child);}
+            if (child.userData.type === 'wall') {
+              walls.push(child);
+            }
           });
           engine.dimensionLabels.showDistancesToWalls(event.object, walls);
-          engine.dimensionLabels.showDistancesToNeighbors(event.object, engine.scene.getAllObjects());
+          engine.dimensionLabels.showDistancesToNeighbors(
+            event.object,
+            engine.scene.getAllObjects()
+          );
         }
       });
 
@@ -212,7 +207,9 @@ export function useKitchenEngine(
 
     // Handle resize
     const handleResize = () => {
-      if (!container) {return;}
+      if (!container) {
+        return;
+      }
       engine.renderer.resize();
       engine.camera.updateAspect(container.clientWidth, container.clientHeight);
     };
@@ -220,8 +217,12 @@ export function useKitchenEngine(
 
     // Handle mouse events
     const handlePointerDown = (e: PointerEvent) => {
-      if (engine.controls.isDragging()) {return;}
-      if (engine.walkthroughCamera.isActive()) {return;}
+      if (engine.controls.isDragging()) {
+        return;
+      }
+      if (engine.walkthroughCamera.isActive()) {
+        return;
+      }
 
       const rect = container.getBoundingClientRect();
       const ndc = new THREE.Vector2(
@@ -241,7 +242,9 @@ export function useKitchenEngine(
 
     // Mouse move for measurement preview
     const handlePointerMove = (e: PointerEvent) => {
-      if (!engine.measurementTool.isActive()) {return;}
+      if (!engine.measurementTool.isActive()) {
+        return;
+      }
       const rect = container.getBoundingClientRect();
       const ndc = new THREE.Vector2(
         ((e.clientX - rect.left) / rect.width) * 2 - 1,
@@ -254,7 +257,9 @@ export function useKitchenEngine(
     // Keyboard shortcuts
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't handle shortcuts during walkthrough
-      if (engine.walkthroughCamera.isActive()) {return;}
+      if (engine.walkthroughCamera.isActive()) {
+        return;
+      }
 
       // Ctrl+Z = undo
       if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
@@ -271,14 +276,15 @@ export function useKitchenEngine(
         const selected = engine.selection.getSelection();
         if (selected.length > 0) {
           e.preventDefault();
-          const cmds: Command[] = selected.map((obj: THREE.Object3D) =>
-            new RemoveObjectCommand(
-              engine.scene.getThreeScene(),
-              obj,
-              engine.scene.getAllObjects(),
-              (o: THREE.Object3D) => engine.collisionSystem.addCollisionObject(o),
-              (o: THREE.Object3D) => engine.collisionSystem.removeCollisionObject(o)
-            )
+          const cmds: Command[] = selected.map(
+            (obj: THREE.Object3D) =>
+              new RemoveObjectCommand(
+                engine.scene.getThreeScene(),
+                obj,
+                engine.scene.getAllObjects(),
+                (o: THREE.Object3D) => engine.collisionSystem.addCollisionObject(o),
+                (o: THREE.Object3D) => engine.collisionSystem.removeCollisionObject(o)
+              )
           );
           engine.history.execute(new BatchCommand(cmds, 'Supprimer'));
           engine.selection.clearSelection();
@@ -286,9 +292,15 @@ export function useKitchenEngine(
         }
       }
       // W = translate, E = rotate, R = scale
-      if (e.key === 'w') {engine.controls.setMode('translate');}
-      if (e.key === 'e') {engine.controls.setMode('rotate');}
-      if (e.key === 'r') {engine.controls.setMode('scale');}
+      if (e.key === 'w') {
+        engine.controls.setMode('translate');
+      }
+      if (e.key === 'e') {
+        engine.controls.setMode('rotate');
+      }
+      if (e.key === 'r') {
+        engine.controls.setMode('scale');
+      }
       // Escape = deselect or cancel measurement
       if (e.key === 'Escape') {
         engine.selection.clearSelection();
@@ -309,7 +321,7 @@ export function useKitchenEngine(
       engineRef.current = null;
       setIsReady(false);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef]);
 
   const undo = useCallback(() => {
@@ -322,7 +334,9 @@ export function useKitchenEngine(
 
   const addObject = useCallback((id: string, object: THREE.Object3D) => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     object.userData.id = id;
     const cmd = new AddObjectCommand(
@@ -337,7 +351,9 @@ export function useKitchenEngine(
 
   const removeObject = useCallback((id: string) => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     const obj = engine.scene.getObject(id);
     if (obj) {
@@ -354,19 +370,24 @@ export function useKitchenEngine(
 
   const removeSelected = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     const selected = engine.selection.getSelection();
-    if (selected.length === 0) {return;}
+    if (selected.length === 0) {
+      return;
+    }
 
-    const cmds: Command[] = selected.map((obj: THREE.Object3D) =>
-      new RemoveObjectCommand(
-        engine.scene.getThreeScene(),
-        obj,
-        engine.scene.getAllObjects(),
-        (o: THREE.Object3D) => engine.collisionSystem.addCollisionObject(o),
-        (o: THREE.Object3D) => engine.collisionSystem.removeCollisionObject(o)
-      )
+    const cmds: Command[] = selected.map(
+      (obj: THREE.Object3D) =>
+        new RemoveObjectCommand(
+          engine.scene.getThreeScene(),
+          obj,
+          engine.scene.getAllObjects(),
+          (o: THREE.Object3D) => engine.collisionSystem.addCollisionObject(o),
+          (o: THREE.Object3D) => engine.collisionSystem.removeCollisionObject(o)
+        )
     );
     engine.history.execute(new BatchCommand(cmds, 'Supprimer'));
     engine.selection.clearSelection();
@@ -375,10 +396,14 @@ export function useKitchenEngine(
 
   const duplicateSelected = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     const selected = engine.selection.getSelection();
-    if (selected.length === 0) {return;}
+    if (selected.length === 0) {
+      return;
+    }
 
     const cmds: Command[] = [];
     for (const obj of selected) {
@@ -387,13 +412,15 @@ export function useKitchenEngine(
       const newId = `${obj.userData.id}-copy-${Date.now()}`;
       clone.userData = { ...obj.userData, id: newId };
 
-      cmds.push(new AddObjectCommand(
-        engine.scene.getThreeScene(),
-        clone,
-        engine.scene.getAllObjects(),
-        (o: THREE.Object3D) => engine.collisionSystem.addCollisionObject(o),
-        (o: THREE.Object3D) => engine.collisionSystem.removeCollisionObject(o)
-      ));
+      cmds.push(
+        new AddObjectCommand(
+          engine.scene.getThreeScene(),
+          clone,
+          engine.scene.getAllObjects(),
+          (o: THREE.Object3D) => engine.collisionSystem.addCollisionObject(o),
+          (o: THREE.Object3D) => engine.collisionSystem.removeCollisionObject(o)
+        )
+      );
     }
     engine.history.execute(new BatchCommand(cmds, 'Dupliquer'));
   }, []);
@@ -403,26 +430,33 @@ export function useKitchenEngine(
     setTransformModeState(mode);
   }, []);
 
-  const setViewPreset = useCallback((preset: 'perspective' | 'top' | 'front' | 'isometric') => {
-    const engine = engineRef.current;
-    if (!engine) {return;}
+  const setViewPreset = useCallback(
+    (preset: 'perspective' | 'top' | 'front' | 'isometric') => {
+      const engine = engineRef.current;
+      if (!engine) {
+        return;
+      }
 
-    const presetMap: Record<string, import('@kitchenxpert/3d-engine').CameraPreset> = {
-      perspective: 'perspective' as import('@kitchenxpert/3d-engine').CameraPreset,
-      top: 'top' as import('@kitchenxpert/3d-engine').CameraPreset,
-      front: 'front' as import('@kitchenxpert/3d-engine').CameraPreset,
-      isometric: 'isometric' as import('@kitchenxpert/3d-engine').CameraPreset,
-    };
+      const presetMap: Record<string, import('@kitchenxpert/3d-engine').CameraPreset> = {
+        perspective: 'perspective' as import('@kitchenxpert/3d-engine').CameraPreset,
+        top: 'top' as import('@kitchenxpert/3d-engine').CameraPreset,
+        front: 'front' as import('@kitchenxpert/3d-engine').CameraPreset,
+        isometric: 'isometric' as import('@kitchenxpert/3d-engine').CameraPreset,
+      };
 
-    engine.camera.applyPreset(
-      presetMap[preset]!,
-      { width: options.width || 4, depth: options.depth || 3 }
-    );
-  }, [options.width, options.depth]);
+      engine.camera.applyPreset(presetMap[preset]!, {
+        width: options.width || 4,
+        depth: options.depth || 3,
+      });
+    },
+    [options.width, options.depth]
+  );
 
   const takeScreenshot = useCallback((_w?: number, _h?: number) => {
     const engine = engineRef.current;
-    if (!engine) {return null;}
+    if (!engine) {
+      return null;
+    }
 
     return engine.renderer.takeScreenshot();
   }, []);
@@ -443,13 +477,19 @@ export function useKitchenEngine(
   // Plan View 2D
   const togglePlanView = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     if (isPlanView) {
       // Deactivate: restore 3D view
       const savedState = engine.planView2D.deactivate();
       if (savedState) {
-        engine.camera.setPosition(savedState.position.x, savedState.position.y, savedState.position.z);
+        engine.camera.setPosition(
+          savedState.position.x,
+          savedState.position.y,
+          savedState.position.z
+        );
         engine.camera.setTarget(savedState.target.x, savedState.target.y, savedState.target.z);
       }
       engine.renderer.setActiveCamera(engine.camera.getThreeCamera());
@@ -480,49 +520,60 @@ export function useKitchenEngine(
   }, [isPlanView, isElevation, isWalkthrough, options.width, options.depth]);
 
   // Elevation View
-  const toggleElevation = useCallback((wall: ElevationWall) => {
-    const engine = engineRef.current;
-    if (!engine) {return;}
-
-    if (isElevation) {
-      // Deactivate
-      const savedState = engine.elevationView.deactivate();
-      if (savedState) {
-        engine.camera.setPosition(savedState.position.x, savedState.position.y, savedState.position.z);
-        engine.camera.setTarget(savedState.target.x, savedState.target.y, savedState.target.z);
-      }
-      engine.renderer.setActiveCamera(engine.camera.getThreeCamera());
-      engine.controls.setEnabled(true);
-      setIsElevation(false);
-    } else {
-      // Deactivate other views
-      if (isPlanView) {
-        engine.planView2D.deactivate();
-        setIsPlanView(false);
-      }
-      if (isWalkthrough) {
-        engine.walkthroughCamera.deactivate();
-        setIsWalkthrough(false);
+  const toggleElevation = useCallback(
+    (wall: ElevationWall) => {
+      const engine = engineRef.current;
+      if (!engine) {
+        return;
       }
 
-      engine.camera.saveState();
-      const orthoCam = engine.elevationView.activate(
-        wall,
-        options.width || 4,
-        options.depth || 3,
-        options.height || 2.5,
-        engine.scene.getAllObjects()
-      );
-      engine.renderer.setActiveCamera(orthoCam);
-      engine.controls.setEnabled(false);
-      setIsElevation(true);
-    }
-  }, [isElevation, isPlanView, isWalkthrough, options.width, options.depth, options.height]);
+      if (isElevation) {
+        // Deactivate
+        const savedState = engine.elevationView.deactivate();
+        if (savedState) {
+          engine.camera.setPosition(
+            savedState.position.x,
+            savedState.position.y,
+            savedState.position.z
+          );
+          engine.camera.setTarget(savedState.target.x, savedState.target.y, savedState.target.z);
+        }
+        engine.renderer.setActiveCamera(engine.camera.getThreeCamera());
+        engine.controls.setEnabled(true);
+        setIsElevation(false);
+      } else {
+        // Deactivate other views
+        if (isPlanView) {
+          engine.planView2D.deactivate();
+          setIsPlanView(false);
+        }
+        if (isWalkthrough) {
+          engine.walkthroughCamera.deactivate();
+          setIsWalkthrough(false);
+        }
+
+        engine.camera.saveState();
+        const orthoCam = engine.elevationView.activate(
+          wall,
+          options.width || 4,
+          options.depth || 3,
+          options.height || 2.5,
+          engine.scene.getAllObjects()
+        );
+        engine.renderer.setActiveCamera(orthoCam);
+        engine.controls.setEnabled(false);
+        setIsElevation(true);
+      }
+    },
+    [isElevation, isPlanView, isWalkthrough, options.width, options.depth, options.height]
+  );
 
   // Walkthrough
   const toggleWalkthrough = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     if (isWalkthrough) {
       engine.walkthroughCamera.deactivate();
@@ -544,7 +595,9 @@ export function useKitchenEngine(
       // Set walls for collision
       const walls: THREE.Object3D[] = [];
       engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-        if (child.userData.type === 'wall') {walls.push(child);}
+        if (child.userData.type === 'wall') {
+          walls.push(child);
+        }
       });
       engine.walkthroughCamera.setWalls(walls);
 
@@ -560,7 +613,9 @@ export function useKitchenEngine(
   // Measurement tool
   const toggleMeasure = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     const newState = !isMeasuring;
     engine.measurementTool.setActive(newState);
@@ -574,146 +629,167 @@ export function useKitchenEngine(
   // Lighting presets
   const setLightingPreset = useCallback((preset: LightingPresetName) => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     LightingPresets.apply(engine.lighting, engine.renderer, preset);
     setCurrentLightingPreset(preset);
   }, []);
 
   // Drag & Drop handlers
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
+  const handleDragOver = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
 
-    const engine = engineRef.current;
-    if (!engine) {return;}
+      const engine = engineRef.current;
+      if (!engine) {
+        return;
+      }
 
-    const data = e.dataTransfer.types.includes('application/json')
-      ? null // Can't read during dragover, only on drop
-      : null;
+      const data = e.dataTransfer.types.includes('application/json')
+        ? null // Can't read during dragover, only on drop
+        : null;
 
-    // Get mouse position in NDC
-    const container = canvasRef.current;
-    if (!container) {return;}
+      // Get mouse position in NDC
+      const container = canvasRef.current;
+      if (!container) {
+        return;
+      }
 
-    const rect = container.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((e.clientX - rect.left) / rect.width) * 2 - 1,
-      -((e.clientY - rect.top) / rect.height) * 2 + 1
-    );
+      const rect = container.getBoundingClientRect();
+      const ndc = new THREE.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
 
-    // Raycast to floor plane
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(ndc, engine.camera.getThreeCamera());
-    const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    const intersection = new THREE.Vector3();
-    raycaster.ray.intersectPlane(floorPlane, intersection);
+      // Raycast to floor plane
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(ndc, engine.camera.getThreeCamera());
+      const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      const intersection = new THREE.Vector3();
+      raycaster.ray.intersectPlane(floorPlane, intersection);
 
-    // Create or update ghost
-    if (!ghostRef.current) {
-      const geometry = new THREE.BoxGeometry(0.6, 0.88, 0.6);
-      const material = new THREE.MeshStandardMaterial({
-        color: 0x4488ff,
-        transparent: true,
-        opacity: 0.4,
-      });
-      ghostRef.current = new THREE.Mesh(geometry, material);
-      ghostRef.current.name = '__drag_ghost__';
-      engine.scene.getThreeScene().add(ghostRef.current);
-    }
+      // Create or update ghost
+      if (!ghostRef.current) {
+        const geometry = new THREE.BoxGeometry(0.6, 0.88, 0.6);
+        const material = new THREE.MeshStandardMaterial({
+          color: 0x4488ff,
+          transparent: true,
+          opacity: 0.4,
+        });
+        ghostRef.current = new THREE.Mesh(geometry, material);
+        ghostRef.current.name = '__drag_ghost__';
+        engine.scene.getThreeScene().add(ghostRef.current);
+      }
 
-    if (intersection && data === null) {
-      ghostRef.current.position.copy(intersection);
-      ghostRef.current.position.y = mmToM(engineRef.current!.brandProfile.base.totalHeight) / 2;
-    }
-  }, [canvasRef]);
+      if (intersection && data === null) {
+        ghostRef.current.position.copy(intersection);
+        ghostRef.current.position.y = mmToM(engineRef.current!.brandProfile.base.totalHeight) / 2;
+      }
+    },
+    [canvasRef]
+  );
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
 
-    const engine = engineRef.current;
-    if (!engine) {return;}
+      const engine = engineRef.current;
+      if (!engine) {
+        return;
+      }
 
-    // Remove ghost
-    if (ghostRef.current) {
-      engine.scene.getThreeScene().remove(ghostRef.current);
-      ghostRef.current.geometry.dispose();
-      (ghostRef.current.material as THREE.Material).dispose();
-      ghostRef.current = null;
-    }
+      // Remove ghost
+      if (ghostRef.current) {
+        engine.scene.getThreeScene().remove(ghostRef.current);
+        ghostRef.current.geometry.dispose();
+        (ghostRef.current.material as THREE.Material).dispose();
+        ghostRef.current = null;
+      }
 
-    // Parse catalog item data
-    const jsonData = e.dataTransfer.getData('application/json');
-    if (!jsonData) {return;}
+      // Parse catalog item data
+      const jsonData = e.dataTransfer.getData('application/json');
+      if (!jsonData) {
+        return;
+      }
 
-    let itemData: {
-      id: string;
-      type: string;
-      name: string;
-      width: number;
-      height: number;
-      depth: number;
-      color: number;
-      price?: number;
-    };
+      let itemData: {
+        id: string;
+        type: string;
+        name: string;
+        width: number;
+        height: number;
+        depth: number;
+        color: number;
+        price?: number;
+      };
 
-    try {
-      itemData = JSON.parse(jsonData) as typeof itemData;
-    } catch {
-      return;
-    }
+      try {
+        itemData = JSON.parse(jsonData) as typeof itemData;
+      } catch {
+        return;
+      }
 
-    // Calculate drop position via raycast
-    const container = canvasRef.current;
-    if (!container) {return;}
+      // Calculate drop position via raycast
+      const container = canvasRef.current;
+      if (!container) {
+        return;
+      }
 
-    const rect = container.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((e.clientX - rect.left) / rect.width) * 2 - 1,
-      -((e.clientY - rect.top) / rect.height) * 2 + 1
-    );
+      const rect = container.getBoundingClientRect();
+      const ndc = new THREE.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
 
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(ndc, engine.camera.getThreeCamera());
-    const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    const intersection = new THREE.Vector3();
-    const hit = raycaster.ray.intersectPlane(floorPlane, intersection);
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(ndc, engine.camera.getThreeCamera());
+      const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      const intersection = new THREE.Vector3();
+      const hit = raycaster.ray.intersectPlane(floorPlane, intersection);
 
-    if (!hit) {return;}
+      if (!hit) {
+        return;
+      }
 
-    // Create the mesh
-    const loader = modelLoaderRef.current;
-    const dimensions = {
-      width: itemData.width / 1000,
-      height: itemData.height / 1000,
-      depth: itemData.depth / 1000,
-    };
+      // Create the mesh
+      const loader = modelLoaderRef.current;
+      const dimensions = {
+        width: itemData.width / 1000,
+        height: itemData.height / 1000,
+        depth: itemData.depth / 1000,
+      };
 
-    const mesh = loader.createProceduralFallback(itemData.type, dimensions, itemData.color);
-    const uniqueId = `${itemData.id}-${Date.now()}`;
+      const mesh = loader.createProceduralFallback(itemData.type, dimensions, itemData.color);
+      const uniqueId = `${itemData.id}-${Date.now()}`;
 
-    mesh.userData = {
-      id: uniqueId,
-      type: itemData.type,
-      catalogId: itemData.id,
-      name: itemData.name,
-      dimensions,
-      price: itemData.price,
-    };
+      mesh.userData = {
+        id: uniqueId,
+        type: itemData.type,
+        catalogId: itemData.id,
+        name: itemData.name,
+        dimensions,
+        price: itemData.price,
+      };
 
-    // Position at drop point
-    mesh.position.copy(intersection);
-    mesh.position.y = itemData.type === 'wall_cabinet'
-      ? mmToM(engineRef.current!.brandProfile.wall.bottomY)
-      : 0;
+      // Position at drop point
+      mesh.position.copy(intersection);
+      mesh.position.y =
+        itemData.type === 'wall_cabinet' ? mmToM(engineRef.current!.brandProfile.wall.bottomY) : 0;
 
-    // Add via command for undo support
-    addObject(uniqueId, mesh);
-  }, [canvasRef, addObject]);
+      // Add via command for undo support
+      addObject(uniqueId, mesh);
+    },
+    [canvasRef, addObject]
+  );
 
   const handleDragLeave = useCallback(() => {
     const engine = engineRef.current;
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     if (ghostRef.current) {
       engine.scene.getThreeScene().remove(ghostRef.current);

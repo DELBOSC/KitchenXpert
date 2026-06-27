@@ -95,7 +95,11 @@
       },
       "suggestions": [
         { "type": "product", "category": "smart-home-hub", "priority": "high" },
-        { "type": "infrastructure", "item": "dedicated-circuit-smart-devices", "priority": "medium" }
+        {
+          "type": "infrastructure",
+          "item": "dedicated-circuit-smart-devices",
+          "priority": "medium"
+        }
       ]
     },
     "basicTech": {

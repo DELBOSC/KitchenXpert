@@ -89,12 +89,7 @@ describe('SolarCalculator', () => {
     it('should return intensity between 0 and 1', () => {
       // Test various times throughout the day
       for (let hour = 0; hour < 24; hour += 3) {
-        const result = SolarCalculator.calculateSunPosition(
-          paris,
-          6,
-          21,
-          { hour, minute: 0 }
-        );
+        const result = SolarCalculator.calculateSunPosition(paris, 6, 21, { hour, minute: 0 });
         expect(result.intensity).toBeGreaterThanOrEqual(0);
         expect(result.intensity).toBeLessThanOrEqual(1);
       }
@@ -180,31 +175,21 @@ describe('SolarCalculator', () => {
 
   describe('day of year calculation (implicit via calculateSunPosition)', () => {
     it('should produce consistent results for January 1 (day 1)', () => {
-      const jan1 = SolarCalculator.calculateSunPosition(
-        paris,
-        1,
-        1,
-        { hour: 12, minute: 0 }
-      );
+      const jan1 = SolarCalculator.calculateSunPosition(paris, 1, 1, { hour: 12, minute: 0 });
       // January 1 should have a low sun altitude in Paris
       expect(jan1.altitude).toBeLessThan(25);
     });
 
     it('should produce consistent results for July 1 (~day 182)', () => {
-      const jul1 = SolarCalculator.calculateSunPosition(
-        paris,
-        7,
-        1,
-        { hour: 12, minute: 0 }
-      );
+      const jul1 = SolarCalculator.calculateSunPosition(paris, 7, 1, { hour: 12, minute: 0 });
       // July 1 should have a high sun altitude in Paris
       expect(jul1.altitude).toBeGreaterThan(50);
     });
 
     it('should show progression from winter to summer', () => {
       const months = [1, 3, 6, 7, 9, 12];
-      const altitudes = months.map((m) =>
-        SolarCalculator.calculateSunPosition(paris, m, 15, { hour: 12, minute: 0 }).altitude
+      const altitudes = months.map(
+        (m) => SolarCalculator.calculateSunPosition(paris, m, 15, { hour: 12, minute: 0 }).altitude
       );
 
       // June/July should be the highest

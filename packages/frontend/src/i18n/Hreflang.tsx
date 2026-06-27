@@ -52,15 +52,17 @@ export function Hreflang({ slugMap }: HreflangProps = {}): null {
     for (const lang of SUPPORTED_LANGUAGES) {
       // Resolve the localised path
       const localPath = slugMap?.[lang] ?? neutral;
-      const prefixed = `/${lang}${localPath.startsWith('/') ? localPath : `/${  localPath}`}`;
+      const prefixed = `/${lang}${localPath.startsWith('/') ? localPath : `/${localPath}`}`;
       add(lang, prefixed);
     }
     // x-default — what Google serves when no language matches
     const xDefaultPath = slugMap?.fr ?? neutral;
-    add('x-default', `/fr${xDefaultPath.startsWith('/') ? xDefaultPath : `/${  xDefaultPath}`}`);
+    add('x-default', `/fr${xDefaultPath.startsWith('/') ? xDefaultPath : `/${xDefaultPath}`}`);
 
     return () => {
-      for (const link of links) {link.remove();}
+      for (const link of links) {
+        link.remove();
+      }
     };
   }, [pathname, slugMap]);
 
@@ -79,7 +81,7 @@ export interface AlternateEntry {
 
 export function buildAlternates(
   pathname: string,
-  slugMap?: Partial<Record<SupportedLanguage, string>>,
+  slugMap?: Partial<Record<SupportedLanguage, string>>
 ): AlternateEntry[] {
   const neutral = pathname.replace(/^\/(fr|en)(\/|$)/, '/');
   const alternates: AlternateEntry[] = [];
@@ -87,13 +89,13 @@ export function buildAlternates(
     const localPath = slugMap?.[lang] ?? neutral;
     alternates.push({
       hreflang: lang,
-      href: `${SITE_URL}/${lang}${localPath.startsWith('/') ? localPath : `/${  localPath}`}`,
+      href: `${SITE_URL}/${lang}${localPath.startsWith('/') ? localPath : `/${localPath}`}`,
     });
   }
   const xDefaultPath = slugMap?.fr ?? neutral;
   alternates.push({
     hreflang: 'x-default',
-    href: `${SITE_URL}/fr${xDefaultPath.startsWith('/') ? xDefaultPath : `/${  xDefaultPath}`}`,
+    href: `${SITE_URL}/fr${xDefaultPath.startsWith('/') ? xDefaultPath : `/${xDefaultPath}`}`,
   });
   return alternates;
 }

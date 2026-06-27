@@ -10,7 +10,9 @@ const router: RouterType = Router();
 const createProjectSchema = z.object({
   name: z.string().min(1, 'Name is required').max(200),
   description: z.string().max(2000).optional(),
-  status: z.enum(['draft', 'in_progress', 'review', 'approved', 'completed', 'archived']).optional(),
+  status: z
+    .enum(['draft', 'in_progress', 'review', 'approved', 'completed', 'archived'])
+    .optional(),
   metadata: z.record(z.unknown()).optional(),
 });
 
@@ -51,7 +53,15 @@ const importSandboxSchema = z.object({
     fromTemplate: z.string().max(64).nullable(),
     kitchen: z.object({
       name: z.string().min(1).max(200),
-      layout: z.enum(['L_SHAPED', 'U_SHAPED', 'GALLEY', 'ISLAND', 'PENINSULA', 'ONE_WALL', 'OPEN_PLAN']),
+      layout: z.enum([
+        'L_SHAPED',
+        'U_SHAPED',
+        'GALLEY',
+        'ISLAND',
+        'PENINSULA',
+        'ONE_WALL',
+        'OPEN_PLAN',
+      ]),
       widthCm: z.number().positive().max(2_000),
       depthCm: z.number().positive().max(2_000),
       heightCm: z.number().positive().max(500),
@@ -172,11 +182,7 @@ router.post('/', validateBody(createProjectSchema), projectController.create);
  *       413:
  *         description: Payload too large (more than 200 items)
  */
-router.post(
-  '/import-sandbox',
-  validateBody(importSandboxSchema),
-  projectController.importSandbox,
-);
+router.post('/import-sandbox', validateBody(importSandboxSchema), projectController.importSandbox);
 
 /**
  * @swagger
@@ -214,7 +220,12 @@ router.post(
  *       404:
  *         description: Project not found
  */
-router.put('/:id', validateParams(commonSchemas.idParam), validateBody(updateProjectSchema), projectController.update);
+router.put(
+  '/:id',
+  validateParams(commonSchemas.idParam),
+  validateBody(updateProjectSchema),
+  projectController.update
+);
 
 /**
  * @swagger
@@ -275,7 +286,12 @@ router.delete('/:id', validateParams(commonSchemas.idParam), projectController.d
  *       404:
  *         description: Project not found
  */
-router.put('/:id/status', validateParams(commonSchemas.idParam), validateBody(updateStatusSchema), projectController.updateStatus);
+router.put(
+  '/:id/status',
+  validateParams(commonSchemas.idParam),
+  validateBody(updateStatusSchema),
+  projectController.updateStatus
+);
 
 // Collaborators
 
@@ -301,7 +317,11 @@ router.put('/:id/status', validateParams(commonSchemas.idParam), validateBody(up
  *       404:
  *         description: Project not found
  */
-router.get('/:id/collaborators', validateParams(commonSchemas.idParam), projectController.getCollaborators);
+router.get(
+  '/:id/collaborators',
+  validateParams(commonSchemas.idParam),
+  projectController.getCollaborators
+);
 
 /**
  * @swagger
@@ -339,7 +359,12 @@ router.get('/:id/collaborators', validateParams(commonSchemas.idParam), projectC
  *       404:
  *         description: Project not found
  */
-router.post('/:id/collaborators', validateParams(commonSchemas.idParam), validateBody(addCollaboratorSchema), projectController.addCollaborator);
+router.post(
+  '/:id/collaborators',
+  validateParams(commonSchemas.idParam),
+  validateBody(addCollaboratorSchema),
+  projectController.addCollaborator
+);
 
 /**
  * @swagger
@@ -368,10 +393,16 @@ router.post('/:id/collaborators', validateParams(commonSchemas.idParam), validat
  *       404:
  *         description: Project or collaborator not found
  */
-router.delete('/:id/collaborators/:email', validateParams(z.object({
-  id: z.string().uuid(),
-  email: z.string().email('Invalid email format'),
-})), projectController.removeCollaborator);
+router.delete(
+  '/:id/collaborators/:email',
+  validateParams(
+    z.object({
+      id: z.string().uuid(),
+      email: z.string().email('Invalid email format'),
+    })
+  ),
+  projectController.removeCollaborator
+);
 
 // Project kitchens
 

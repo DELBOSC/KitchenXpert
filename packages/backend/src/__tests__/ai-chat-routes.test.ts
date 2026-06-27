@@ -190,19 +190,22 @@ describe('AIChatController', () => {
         expect.objectContaining({
           message: 'Help me design my kitchen',
           userId: 'test-user-1',
-        }),
+        })
       );
     });
 
     it('should return 401 if user is not authenticated', async () => {
-      const req = createMockReq({ user: undefined as any, body: { message: 'Hi', sceneContext: {} } });
+      const req = createMockReq({
+        user: undefined as any,
+        body: { message: 'Hi', sceneContext: {} },
+      });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.sendMessage(req as Request, res as Response);
 
       expect(statusMock).toHaveBeenCalledWith(401);
       expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false, error: 'Not authenticated' }),
+        expect.objectContaining({ success: false, error: 'Not authenticated' })
       );
     });
 
@@ -213,9 +216,7 @@ describe('AIChatController', () => {
       await controller.sendMessage(req as Request, res as Response);
 
       expect(statusMock).toHaveBeenCalledWith(400);
-      expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false }),
-      );
+      expect(jsonMock).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
 
     it('should return 400 if sceneContext is missing', async () => {
@@ -226,7 +227,7 @@ describe('AIChatController', () => {
 
       expect(statusMock).toHaveBeenCalledWith(400);
       expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false, error: 'message and sceneContext are required' }),
+        expect.objectContaining({ success: false, error: 'message and sceneContext are required' })
       );
     });
   });
@@ -256,7 +257,7 @@ describe('AIChatController', () => {
       expect(mockPrisma.aIChatSession.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ userId: 'test-user-1' }),
-        }),
+        })
       );
     });
 
@@ -267,9 +268,7 @@ describe('AIChatController', () => {
       await controller.createSession(req as Request, res as Response);
 
       expect(statusMock).toHaveBeenCalledWith(401);
-      expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false }),
-      );
+      expect(jsonMock).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
 
     it('should use default title when none provided', async () => {
@@ -283,7 +282,7 @@ describe('AIChatController', () => {
       expect(mockPrisma.aIChatSession.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ title: 'New conversation' }),
-        }),
+        })
       );
     });
   });
@@ -292,10 +291,22 @@ describe('AIChatController', () => {
   // GET /ai-chat/sessions
   // ==========================================================================
   describe('listSessions', () => {
-    it('should list only the authenticated user\'s sessions', async () => {
+    it("should list only the authenticated user's sessions", async () => {
       const userSessions = [
-        { id: 's1', title: 'Session 1', userId: 'test-user-1', createdAt: new Date(), updatedAt: new Date() },
-        { id: 's2', title: 'Session 2', userId: 'test-user-1', createdAt: new Date(), updatedAt: new Date() },
+        {
+          id: 's1',
+          title: 'Session 1',
+          userId: 'test-user-1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 's2',
+          title: 'Session 2',
+          userId: 'test-user-1',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
       mockPrisma.aIChatSession.findMany.mockResolvedValue(userSessions);
 
@@ -310,7 +321,7 @@ describe('AIChatController', () => {
       expect(mockPrisma.aIChatSession.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { userId: 'test-user-1' },
-        }),
+        })
       );
     });
 
@@ -321,12 +332,10 @@ describe('AIChatController', () => {
       await controller.listSessions(req as Request, res as Response);
 
       expect(statusMock).toHaveBeenCalledWith(401);
-      expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false }),
-      );
+      expect(jsonMock).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
 
-    it('should not return other users\' sessions', async () => {
+    it("should not return other users' sessions", async () => {
       mockPrisma.aIChatSession.findMany.mockResolvedValue([]);
 
       const req = createMockReq();
@@ -338,7 +347,7 @@ describe('AIChatController', () => {
       expect(mockPrisma.aIChatSession.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { userId: 'test-user-1' },
-        }),
+        })
       );
     });
   });
@@ -387,7 +396,9 @@ describe('AIChatController', () => {
     it('should return 404 if session does not exist', async () => {
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(null);
 
-      const session = await mockPrisma.aIChatSession.findUnique({ where: { id: '00000000-0000-0000-0000-000000000000' } });
+      const session = await mockPrisma.aIChatSession.findUnique({
+        where: { id: '00000000-0000-0000-0000-000000000000' },
+      });
       expect(session).toBeNull();
     });
   });
@@ -409,7 +420,7 @@ describe('AIChatController', () => {
       expect(mockPrisma.aIChatSession.delete).toHaveBeenCalledWith({ where: { id: 's1' } });
     });
 
-    it('should return 403 if deleting another user\'s session (IDOR prevention)', async () => {
+    it("should return 403 if deleting another user's session (IDOR prevention)", async () => {
       const session = { id: 's1', userId: 'other-user-99', title: 'Other session' };
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(session);
 
@@ -434,7 +445,9 @@ describe('AIChatController', () => {
     it('should return 404 if session not found', async () => {
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(null);
 
-      const session = await mockPrisma.aIChatSession.findUnique({ where: { id: '00000000-0000-0000-0000-000000000000' } });
+      const session = await mockPrisma.aIChatSession.findUnique({
+        where: { id: '00000000-0000-0000-0000-000000000000' },
+      });
       expect(session).toBeNull();
     });
   });
@@ -461,7 +474,7 @@ describe('AIChatController', () => {
       expect(jsonMock).toHaveBeenCalledWith({ success: true, data: updated });
     });
 
-    it('should return 403 if updating another user\'s session', async () => {
+    it("should return 403 if updating another user's session", async () => {
       const existing = { id: 's1', userId: 'other-user-99', title: 'Other title' };
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(existing);
 
@@ -475,7 +488,7 @@ describe('AIChatController', () => {
 
       expect(statusMock).toHaveBeenCalledWith(403);
       expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false, error: 'Forbidden' }),
+        expect.objectContaining({ success: false, error: 'Forbidden' })
       );
       expect(mockPrisma.aIChatSession.update).not.toHaveBeenCalled();
     });
@@ -502,14 +515,17 @@ describe('AIChatController', () => {
     it('should return 404 if session not found', async () => {
       mockPrisma.aIChatSession.findUnique.mockResolvedValue(null);
 
-      const req = createMockReq({ params: { id: '00000000-0000-0000-0000-000000000000' }, body: { title: 'X' } });
+      const req = createMockReq({
+        params: { id: '00000000-0000-0000-0000-000000000000' },
+        body: { title: 'X' },
+      });
       const { res, statusMock, jsonMock } = createMockRes();
 
       await controller.updateSession(req as Request, res as Response);
 
       expect(statusMock).toHaveBeenCalledWith(404);
       expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false, error: 'Session not found' }),
+        expect.objectContaining({ success: false, error: 'Session not found' })
       );
     });
 
@@ -520,9 +536,7 @@ describe('AIChatController', () => {
       await controller.updateSession(req as Request, res as Response);
 
       expect(statusMock).toHaveBeenCalledWith(401);
-      expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false }),
-      );
+      expect(jsonMock).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
   });
 
@@ -553,11 +567,11 @@ describe('AIChatController', () => {
         expect.objectContaining({
           success: true,
           data: expect.objectContaining({ id: 's1', messages: session.messages }),
-        }),
+        })
       );
     });
 
-    it('should return 403 if accessing another user\'s history (IDOR)', async () => {
+    it("should return 403 if accessing another user's history (IDOR)", async () => {
       const session = {
         id: 's1',
         userId: 'other-user-99',
@@ -576,7 +590,7 @@ describe('AIChatController', () => {
 
       expect(statusMock).toHaveBeenCalledWith(403);
       expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false, error: 'Forbidden' }),
+        expect.objectContaining({ success: false, error: 'Forbidden' })
       );
     });
 
@@ -611,7 +625,7 @@ describe('AIChatController', () => {
 
       expect(statusMock).toHaveBeenCalledWith(404);
       expect(jsonMock).toHaveBeenCalledWith(
-        expect.objectContaining({ success: false, error: 'Session not found' }),
+        expect.objectContaining({ success: false, error: 'Session not found' })
       );
     });
 
@@ -653,7 +667,7 @@ describe('AIChatController', () => {
       expect(mockChatService.executeTool).toHaveBeenCalledWith(
         'analyze_work_triangle',
         { detail: 'brief' },
-        'test-user-1',
+        'test-user-1'
       );
       expect(result).toEqual({ result: 'tool executed' });
     });
@@ -668,7 +682,7 @@ describe('AIChatController', () => {
       expect(mockChatService.executeTool).toHaveBeenCalledWith(
         'estimate_budget',
         {},
-        'test-user-1',
+        'test-user-1'
       );
     });
   });
@@ -687,19 +701,28 @@ describe('AIChatController', () => {
       const mockStyleData = {
         style: 'modern',
         confidence: 0.92,
-        colorPalette: { primary: '#FFFFFF', secondary: '#333333', accent: '#FF5722', neutral: '#F5F5F5' },
+        colorPalette: {
+          primary: '#FFFFFF',
+          secondary: '#333333',
+          accent: '#FF5722',
+          neutral: '#F5F5F5',
+        },
       };
       mockStyleTransferService.analyzeKitchenPhoto.mockResolvedValue(mockStyleData);
 
       const imageBase64 = 'base64encodedimage==';
       const mediaType = 'image/jpeg';
 
-      const result = await mockStyleTransferService.analyzeKitchenPhoto(imageBase64, mediaType, 'test-user-1');
+      const result = await mockStyleTransferService.analyzeKitchenPhoto(
+        imageBase64,
+        mediaType,
+        'test-user-1'
+      );
 
       expect(mockStyleTransferService.analyzeKitchenPhoto).toHaveBeenCalledWith(
         imageBase64,
         mediaType,
-        'test-user-1',
+        'test-user-1'
       );
       expect(result).toEqual(mockStyleData);
       expect(result.style).toBe('modern');

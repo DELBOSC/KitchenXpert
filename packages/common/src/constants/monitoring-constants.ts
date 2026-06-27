@@ -9,7 +9,7 @@ export const HEALTH_STATUSES = {
   UNKNOWN: 'unknown',
 } as const;
 
-export type HealthStatus = typeof HEALTH_STATUSES[keyof typeof HEALTH_STATUSES];
+export type HealthStatus = (typeof HEALTH_STATUSES)[keyof typeof HEALTH_STATUSES];
 
 export const METRIC_TYPES = {
   COUNTER: 'counter',
@@ -18,7 +18,7 @@ export const METRIC_TYPES = {
   SUMMARY: 'summary',
 } as const;
 
-export type MetricType = typeof METRIC_TYPES[keyof typeof METRIC_TYPES];
+export type MetricType = (typeof METRIC_TYPES)[keyof typeof METRIC_TYPES];
 
 export const ALERT_SEVERITIES = {
   INFO: 'info',
@@ -27,7 +27,7 @@ export const ALERT_SEVERITIES = {
   CRITICAL: 'critical',
 } as const;
 
-export type AlertSeverity = typeof ALERT_SEVERITIES[keyof typeof ALERT_SEVERITIES];
+export type AlertSeverity = (typeof ALERT_SEVERITIES)[keyof typeof ALERT_SEVERITIES];
 
 export const ALERT_STATUSES = {
   FIRING: 'firing',
@@ -36,7 +36,7 @@ export const ALERT_STATUSES = {
   SILENCED: 'silenced',
 } as const;
 
-export type AlertStatus = typeof ALERT_STATUSES[keyof typeof ALERT_STATUSES];
+export type AlertStatus = (typeof ALERT_STATUSES)[keyof typeof ALERT_STATUSES];
 
 export const DEFAULT_METRICS = {
   HTTP_REQUEST_DURATION: 'http_request_duration_seconds',

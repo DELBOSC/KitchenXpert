@@ -171,12 +171,14 @@ const StyledToast = styled.div<{
   gap: 12px;
   padding: 12px 16px;
   border-radius: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   font-family: var(--font-family-sans, system-ui, sans-serif);
   min-width: 300px;
   max-width: 400px;
-  animation: ${({ $position, $isClosing }) => getSlideAnimation($position, $isClosing)} 0.3s ease-out
-    forwards;
+  animation: ${({ $position, $isClosing }) => getSlideAnimation($position, $isClosing)} 0.3s
+    ease-out forwards;
   pointer-events: auto;
 
   ${({ $variant }) => variantStyles[$variant]}
@@ -520,10 +522,7 @@ export const useToast = () => {
     throw new Error('useToast must be used within a ToastProvider');
   }
 
-  const toast = useCallback(
-    (props: Omit<ToastItem, 'id'>) => context.addToast(props),
-    [context]
-  );
+  const toast = useCallback((props: Omit<ToastItem, 'id'>) => context.addToast(props), [context]);
 
   const toastInfo = useCallback(
     (message: ReactNode, options?: Partial<Omit<ToastItem, 'id' | 'message' | 'variant'>>) =>

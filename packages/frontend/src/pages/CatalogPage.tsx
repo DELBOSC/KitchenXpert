@@ -1,14 +1,34 @@
 import { motion } from 'framer-motion';
 import {
-  Search, Sparkles, Package, ArchiveRestore, ChefHat, Square, CircleDot, Lightbulb, Wrench,
-  ChevronLeft, ChevronRight, XCircle,
+  Search,
+  Sparkles,
+  Package,
+  ArchiveRestore,
+  ChefHat,
+  Square,
+  CircleDot,
+  Lightbulb,
+  Wrench,
+  ChevronLeft,
+  ChevronRight,
+  XCircle,
 } from 'lucide-react';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Badge, Button, Card, Container, EmptyState, ErrorState, Input, PageHeader, Select, Skeleton,
-  fadeUp, stagger,
+  Badge,
+  Button,
+  Card,
+  Container,
+  EmptyState,
+  ErrorState,
+  Input,
+  PageHeader,
+  Select,
+  Skeleton,
+  fadeUp,
+  stagger,
 } from '../components/ui';
 import {
   fetchProducts,
@@ -20,7 +40,8 @@ import {
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 const selectCatalogError = (state: { catalog: CatalogState }): string | null => state.catalog.error;
-const selectCatalogPagination = (state: { catalog: CatalogState }): CatalogState['pagination'] => state.catalog.pagination;
+const selectCatalogPagination = (state: { catalog: CatalogState }): CatalogState['pagination'] =>
+  state.catalog.pagination;
 
 /** Shape of a product returned by the AI catalog search (raw DB row subset consumed by the UI). */
 interface AISearchProduct {
@@ -82,14 +103,20 @@ export default function CatalogPage(): React.ReactElement {
   const loadProducts = useCallback(
     (page: number, search?: string, category?: string | null) => {
       const filters: Record<string, string> = {};
-      if (search) {filters.search = search;}
-      if (category) {filters.category = category;}
+      if (search) {
+        filters.search = search;
+      }
+      if (category) {
+        filters.category = category;
+      }
       void dispatch(fetchProducts({ page, limit: 20, filters }));
     },
-    [dispatch],
+    [dispatch]
   );
 
-  useEffect(() => { loadProducts(1); }, [loadProducts]);
+  useEffect(() => {
+    loadProducts(1);
+  }, [loadProducts]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -97,14 +124,23 @@ export default function CatalogPage(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 
-  useEffect(() => () => {
-    if (debounceRef.current) {clearTimeout(debounceRef.current);}
-    if (aiControllerRef.current) {aiControllerRef.current.abort();}
-  }, []);
+  useEffect(
+    () => () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      if (aiControllerRef.current) {
+        aiControllerRef.current.abort();
+      }
+    },
+    []
+  );
 
   const handleSearchChange = (value: string): void => {
     setSearchQuery(value);
-    if (debounceRef.current) {clearTimeout(debounceRef.current);}
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
     debounceRef.current = setTimeout(() => {
       setCurrentPage(1);
       loadProducts(1, value, selectedCategory);
@@ -112,12 +148,18 @@ export default function CatalogPage(): React.ReactElement {
   };
 
   const handleAISearch = async (): Promise<void> => {
-    if (!aiQuery.trim()) {return;}
-    if (aiControllerRef.current) {aiControllerRef.current.abort();}
+    if (!aiQuery.trim()) {
+      return;
+    }
+    if (aiControllerRef.current) {
+      aiControllerRef.current.abort();
+    }
     const controller = new AbortController();
     aiControllerRef.current = controller;
 
-    setAiLoading(true); setAiError(null); setAiResults(null);
+    setAiLoading(true);
+    setAiError(null);
+    setAiResults(null);
     try {
       const res = await fetch('/api/v1/ai-search/catalog', {
         method: 'POST',
@@ -126,11 +168,15 @@ export default function CatalogPage(): React.ReactElement {
         body: JSON.stringify({ query: aiQuery }),
         signal: controller.signal,
       });
-      if (!res.ok) {throw new Error('Recherche IA échouée');}
+      if (!res.ok) {
+        throw new Error('Recherche IA échouée');
+      }
       const json = (await res.json()) as AISearchResponse;
       setAiResults(json.data);
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {return;}
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      }
       setAiError(err instanceof Error ? err.message : 'Une erreur est survenue');
     } finally {
       setAiLoading(false);
@@ -140,15 +186,21 @@ export default function CatalogPage(): React.ReactElement {
   const sorted = useMemo(() => {
     const copy = [...products];
     copy.sort((a, b) => {
-      if (sortBy === 'price_asc') {return (a.price || 0) - (b.price || 0);}
-      if (sortBy === 'price_desc') {return (b.price || 0) - (a.price || 0);}
+      if (sortBy === 'price_asc') {
+        return (a.price || 0) - (b.price || 0);
+      }
+      if (sortBy === 'price_desc') {
+        return (b.price || 0) - (a.price || 0);
+      }
       return 0;
     });
     return copy;
   }, [products, sortBy]);
 
   const clearFilters = (): void => {
-    setSearchQuery(''); setSelectedCategory(null); setCurrentPage(1);
+    setSearchQuery('');
+    setSelectedCategory(null);
+    setCurrentPage(1);
     loadProducts(1);
   };
 
@@ -174,11 +226,18 @@ export default function CatalogPage(): React.ReactElement {
         {/* AI search panel */}
         <Card variant="glass" className="mb-10 overflow-hidden">
           <div className="relative p-5">
-            <div aria-hidden className="absolute -top-20 -right-10 h-40 w-40 rounded-full bg-gradient-to-br from-indigo-500/30 to-fuchsia-500/20 blur-3xl" />
+            <div
+              aria-hidden
+              className="absolute -top-20 -right-10 h-40 w-40 rounded-full bg-gradient-to-br from-indigo-500/30 to-fuchsia-500/20 blur-3xl"
+            />
             <div className="relative">
               <div className="mb-3 flex items-center gap-2">
-                <Badge variant="info" dot><Sparkles className="h-3 w-3" /> Recherche IA</Badge>
-                <span className="text-xs text-white/50">Décrivez ce que vous cherchez en langage naturel</span>
+                <Badge variant="info" dot>
+                  <Sparkles className="h-3 w-3" /> Recherche IA
+                </Badge>
+                <span className="text-xs text-white/50">
+                  Décrivez ce que vous cherchez en langage naturel
+                </span>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Input
@@ -188,7 +247,12 @@ export default function CatalogPage(): React.ReactElement {
                   onKeyDown={(e) => e.key === 'Enter' && handleAISearch()}
                   className="flex-1"
                 />
-                <Button onClick={handleAISearch} loading={aiLoading} disabled={!aiQuery.trim()} leftIcon={<Sparkles className="h-4 w-4" />}>
+                <Button
+                  onClick={handleAISearch}
+                  loading={aiLoading}
+                  disabled={!aiQuery.trim()}
+                  leftIcon={<Sparkles className="h-4 w-4" />}
+                >
                   Rechercher
                 </Button>
               </div>
@@ -216,7 +280,9 @@ export default function CatalogPage(): React.ReactElement {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-white/50">Aucun produit trouvé. Reformulez votre recherche.</p>
+                    <p className="text-sm text-white/50">
+                      Aucun produit trouvé. Reformulez votre recherche.
+                    </p>
                   )}
                 </div>
               )}
@@ -241,7 +307,9 @@ export default function CatalogPage(): React.ReactElement {
                       : 'border-white/10 bg-white/[0.03] text-white/70 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
                   }`}
                 >
-                  <span className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${active ? 'bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-white' : 'bg-white/5 text-white/80'}`}>
+                  <span
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${active ? 'bg-gradient-to-br from-indigo-400 to-fuchsia-500 text-white' : 'bg-white/5 text-white/80'}`}
+                  >
                     {cat.icon}
                   </span>
                   <span className="text-xs font-medium">{t(cat.nameKey)}</span>
@@ -256,17 +324,31 @@ export default function CatalogPage(): React.ReactElement {
           <div className="mb-4 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-semibold text-white">
-                {selectedCategory ? t(CATEGORIES.find((c) => c.id === selectedCategory)?.nameKey ?? 'catalog.allProducts') : 'Tous les produits'}
+                {selectedCategory
+                  ? t(
+                      CATEGORIES.find((c) => c.id === selectedCategory)?.nameKey ??
+                        'catalog.allProducts'
+                    )
+                  : 'Tous les produits'}
               </h2>
               {!isLoading && <Badge variant="outline">{pagination.total} résultats</Badge>}
             </div>
             <div className="flex items-center gap-2">
               {(searchQuery || selectedCategory) && (
-                <Button variant="ghost" size="sm" onClick={clearFilters} leftIcon={<XCircle className="h-3.5 w-3.5" />}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  leftIcon={<XCircle className="h-3.5 w-3.5" />}
+                >
                   Effacer
                 </Button>
               )}
-              <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="!h-9 w-auto">
+              <Select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="!h-9 w-auto"
+              >
                 <option value="relevance">Pertinence</option>
                 <option value="price_asc">Prix croissant</option>
                 <option value="price_desc">Prix décroissant</option>
@@ -305,7 +387,10 @@ export default function CatalogPage(): React.ReactElement {
               className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
             >
               {sorted.map((product) => (
-                <motion.div key={product.id} variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}>
+                <motion.div
+                  key={product.id}
+                  variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}
+                >
                   <ProductCard product={product} />
                 </motion.div>
               ))}
@@ -315,11 +400,21 @@ export default function CatalogPage(): React.ReactElement {
           {!isLoading && !error && sorted.length === 0 && (
             <EmptyState
               icon={<Package className="h-5 w-5" />}
-              title={searchQuery || selectedCategory ? 'Aucun résultat' : 'Catalogue en cours de chargement'}
-              description={searchQuery || selectedCategory ? 'Ajustez vos filtres ou essayez d\'autres mots-clés.' : undefined}
+              title={
+                searchQuery || selectedCategory
+                  ? 'Aucun résultat'
+                  : 'Catalogue en cours de chargement'
+              }
+              description={
+                searchQuery || selectedCategory
+                  ? "Ajustez vos filtres ou essayez d'autres mots-clés."
+                  : undefined
+              }
               action={
                 (searchQuery || selectedCategory) && (
-                  <Button variant="outline" onClick={clearFilters}>Effacer les filtres</Button>
+                  <Button variant="outline" onClick={clearFilters}>
+                    Effacer les filtres
+                  </Button>
                 )
               }
             />
@@ -331,7 +426,11 @@ export default function CatalogPage(): React.ReactElement {
                 variant="outline"
                 size="sm"
                 disabled={currentPage <= 1}
-                onClick={() => { setCurrentPage(currentPage - 1); loadProducts(currentPage - 1, searchQuery, selectedCategory); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => {
+                  setCurrentPage(currentPage - 1);
+                  loadProducts(currentPage - 1, searchQuery, selectedCategory);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 leftIcon={<ChevronLeft className="h-3.5 w-3.5" />}
               >
                 Précédent
@@ -343,7 +442,11 @@ export default function CatalogPage(): React.ReactElement {
                 variant="outline"
                 size="sm"
                 disabled={currentPage >= pagination.totalPages}
-                onClick={() => { setCurrentPage(currentPage + 1); loadProducts(currentPage + 1, searchQuery, selectedCategory); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => {
+                  setCurrentPage(currentPage + 1);
+                  loadProducts(currentPage + 1, searchQuery, selectedCategory);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 rightIcon={<ChevronRight className="h-3.5 w-3.5" />}
               >
                 Suivant
@@ -384,7 +487,8 @@ function ProductCard({ product }: { product: CatalogItem }): React.ReactElement 
         <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-white">{product.name}</h3>
         {product.category && (
           <p className="mb-2 text-xs text-white/50">
-            {product.category}{product.subcategory ? ` · ${product.subcategory}` : ''}
+            {product.category}
+            {product.subcategory ? ` · ${product.subcategory}` : ''}
           </p>
         )}
         {product.dimensions && (
@@ -394,9 +498,14 @@ function ProductCard({ product }: { product: CatalogItem }): React.ReactElement 
         )}
         <div className="flex items-center justify-between">
           <span className="text-base font-semibold text-white">
-            {product.price
-              ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: product.currency || 'EUR' }).format(product.price)
-              : <span className="text-sm text-white/50">Prix sur demande</span>}
+            {product.price ? (
+              new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: product.currency || 'EUR',
+              }).format(product.price)
+            ) : (
+              <span className="text-sm text-white/50">Prix sur demande</span>
+            )}
           </span>
           {product.subcategory && <Badge variant="outline">{product.subcategory}</Badge>}
         </div>
@@ -413,7 +522,10 @@ function AIResultCard({ product }: { product: AISearchProduct }): React.ReactEle
       {product.material && <p className="text-xs text-white/40">{product.material}</p>}
       <p className="mt-2 text-sm font-semibold text-white">
         {product.price
-          ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: product.currency || 'EUR' }).format(Number(product.price))
+          ? new Intl.NumberFormat('fr-FR', {
+              style: 'currency',
+              currency: product.currency || 'EUR',
+            }).format(Number(product.price))
           : 'Prix sur demande'}
       </p>
     </div>

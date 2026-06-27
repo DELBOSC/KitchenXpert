@@ -15,7 +15,11 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
  * - Marches along the reflected ray in screen space to find intersections
  * - Blends the reflected color with the original surface color
  */
-const SSRShader: THREE.ShaderMaterial['defines'] & { uniforms: Record<string, THREE.IUniform>; vertexShader: string; fragmentShader: string } = {
+const SSRShader: THREE.ShaderMaterial['defines'] & {
+  uniforms: Record<string, THREE.IUniform>;
+  vertexShader: string;
+  fragmentShader: string;
+} = {
   uniforms: {
     tDiffuse: { value: null },
     tDepth: { value: null },
@@ -177,10 +181,7 @@ export class KitchenRenderer {
     window.addEventListener('resize', this.handleResize);
 
     // Handle WebGL context loss
-    this.renderer.domElement.addEventListener(
-      'webglcontextlost',
-      this.handleContextLost,
-    );
+    this.renderer.domElement.addEventListener('webglcontextlost', this.handleContextLost);
   }
 
   /**
@@ -194,8 +195,7 @@ export class KitchenRenderer {
     // Shadows
     if (config.shadowsEnabled) {
       this.renderer.shadowMap.enabled = true;
-      this.renderer.shadowMap.type =
-        config.shadowMapType || THREE.PCFSoftShadowMap;
+      this.renderer.shadowMap.type = config.shadowMapType || THREE.PCFSoftShadowMap;
     }
 
     // Tone mapping pour un rendu plus réaliste
@@ -397,11 +397,7 @@ export class KitchenRenderer {
   /**
    * Démarre la boucle de rendu
    */
-  startRenderLoop(
-    scene: THREE.Scene,
-    camera: THREE.Camera,
-    onBeforeRender?: () => void
-  ): void {
+  startRenderLoop(scene: THREE.Scene, camera: THREE.Camera, onBeforeRender?: () => void): void {
     if (this.isRendering) {
       return;
     }
@@ -435,7 +431,12 @@ export class KitchenRenderer {
       }
 
       // Update SSR depth texture when SSR is enabled
-      if (this.ssrPass?.enabled && this.depthRenderTarget && this.depthMaterial && this.currentScene) {
+      if (
+        this.ssrPass?.enabled &&
+        this.depthRenderTarget &&
+        this.depthMaterial &&
+        this.currentScene
+      ) {
         const originalOverrideMaterial = this.currentScene.overrideMaterial;
         this.currentScene.overrideMaterial = this.depthMaterial;
         this.renderer.setRenderTarget(this.depthRenderTarget);
@@ -446,8 +447,12 @@ export class KitchenRenderer {
 
         // Update camera uniforms
         if ((currentCamera as THREE.PerspectiveCamera).near !== undefined) {
-          this.ssrPass.uniforms['cameraNear']!.value = (currentCamera as THREE.PerspectiveCamera).near;
-          this.ssrPass.uniforms['cameraFar']!.value = (currentCamera as THREE.PerspectiveCamera).far;
+          this.ssrPass.uniforms['cameraNear']!.value = (
+            currentCamera as THREE.PerspectiveCamera
+          ).near;
+          this.ssrPass.uniforms['cameraFar']!.value = (
+            currentCamera as THREE.PerspectiveCamera
+          ).far;
         }
       }
 
@@ -539,10 +544,7 @@ export class KitchenRenderer {
   dispose(): void {
     this.stopRenderLoop();
     window.removeEventListener('resize', this.handleResize);
-    this.renderer.domElement.removeEventListener(
-      'webglcontextlost',
-      this.handleContextLost,
-    );
+    this.renderer.domElement.removeEventListener('webglcontextlost', this.handleContextLost);
 
     // Dispose post-processing resources
     if (this.composer) {

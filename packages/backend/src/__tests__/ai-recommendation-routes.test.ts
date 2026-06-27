@@ -113,16 +113,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -149,14 +151,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -348,7 +346,9 @@ describe('AI Recommendation Routes', () => {
     });
 
     it('should handle service errors gracefully', async () => {
-      mockGetComplementaryProducts.mockRejectedValue(new Error('Recommendation service unavailable'));
+      mockGetComplementaryProducts.mockRejectedValue(
+        new Error('Recommendation service unavailable')
+      );
 
       const response = await authedRequest(app)
         .post('/ai-recommendations/complementary')

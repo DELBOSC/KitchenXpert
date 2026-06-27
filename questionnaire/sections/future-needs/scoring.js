@@ -19,11 +19,11 @@
  * Score weights for future needs factors (normalized to 1.0)
  */
 const SCORE_WEIGHTS = {
-  timeInHome: 0.30,
-  familyChanges: 0.20,
-  agingInPlace: 0.20,
+  timeInHome: 0.3,
+  familyChanges: 0.2,
+  agingInPlace: 0.2,
   cookingEvolution: 0.15,
-  futureTech: 0.15
+  futureTech: 0.15,
 };
 
 /**
@@ -36,20 +36,20 @@ const TIME_IN_HOME_CONFIGURATIONS = {
     years: { min: 1, max: 3 },
     description: {
       en: 'Planning to stay 1-3 years',
-      fr: 'Prévoit de rester 1-3 ans'
+      fr: 'Prévoit de rester 1-3 ans',
     },
     characteristics: {
       investmentStrategy: 'roi-focused',
       customizationLevel: 'minimal',
       qualityTier: 'cost-effective',
-      designApproach: 'mass-appeal'
+      designApproach: 'mass-appeal',
     },
     recommendations: {
       focus: ['resale-value', 'neutral-choices', 'popular-features', 'cost-effective-updates'],
       avoid: ['personal-customization', 'trendy-choices', 'expensive-upgrades', 'niche-features'],
-      priorities: ['roi', 'quick-payback', 'buyer-appeal']
+      priorities: ['roi', 'quick-payback', 'buyer-appeal'],
     },
-    tags: ['short-term', 'roi-focused', 'resale-priority', 'neutral-design']
+    tags: ['short-term', 'roi-focused', 'resale-priority', 'neutral-design'],
   },
   '3-5-years': {
     score: 50,
@@ -57,20 +57,20 @@ const TIME_IN_HOME_CONFIGURATIONS = {
     years: { min: 3, max: 5 },
     description: {
       en: 'Planning to stay 3-5 years',
-      fr: 'Prévoit de rester 3-5 ans'
+      fr: 'Prévoit de rester 3-5 ans',
     },
     characteristics: {
       investmentStrategy: 'balanced',
       customizationLevel: 'limited',
       qualityTier: 'good-value',
-      designApproach: 'broad-appeal'
+      designApproach: 'broad-appeal',
     },
     recommendations: {
       focus: ['quality-basics', 'versatile-design', 'durable-materials'],
       consider: ['some-personal-touches', 'practical-upgrades'],
-      priorities: ['balance', 'enjoyment-and-value']
+      priorities: ['balance', 'enjoyment-and-value'],
     },
-    tags: ['medium-short', 'balanced-approach', 'versatile-design']
+    tags: ['medium-short', 'balanced-approach', 'versatile-design'],
   },
   '5-10-years': {
     score: 70,
@@ -78,20 +78,20 @@ const TIME_IN_HOME_CONFIGURATIONS = {
     years: { min: 5, max: 10 },
     description: {
       en: 'Planning to stay 5-10 years',
-      fr: 'Prévoit de rester 5-10 ans'
+      fr: 'Prévoit de rester 5-10 ans',
     },
     characteristics: {
       investmentStrategy: 'quality-focused',
       customizationLevel: 'moderate',
       qualityTier: 'premium',
-      designApproach: 'personal-with-appeal'
+      designApproach: 'personal-with-appeal',
     },
     recommendations: {
       focus: ['quality-investment', 'personal-style', 'durable-choices', 'timeless-design'],
       consider: ['meaningful-upgrades', 'lifestyle-fit'],
-      priorities: ['longevity', 'personal-enjoyment', 'quality']
+      priorities: ['longevity', 'personal-enjoyment', 'quality'],
     },
-    tags: ['longer-term', 'quality-investment', 'personal-style-ok']
+    tags: ['longer-term', 'quality-investment', 'personal-style-ok'],
   },
   '10-plus': {
     score: 100,
@@ -99,48 +99,53 @@ const TIME_IN_HOME_CONFIGURATIONS = {
     years: { min: 10, max: 50 },
     description: {
       en: 'Forever home (10+ years)',
-      fr: 'Maison pour toujours (10+ ans)'
+      fr: 'Maison pour toujours (10+ ans)',
     },
     characteristics: {
       investmentStrategy: 'lifetime-value',
       customizationLevel: 'extensive',
       qualityTier: 'premium-luxury',
-      designApproach: 'fully-personalized'
+      designApproach: 'fully-personalized',
     },
     recommendations: {
-      focus: ['timeless-design', 'premium-quality', 'personal-dream-kitchen', 'future-adaptability'],
+      focus: [
+        'timeless-design',
+        'premium-quality',
+        'personal-dream-kitchen',
+        'future-adaptability',
+      ],
       consider: ['aging-in-place', 'life-stage-changes', 'custom-features'],
-      priorities: ['longevity', 'personal-satisfaction', 'adaptability']
+      priorities: ['longevity', 'personal-satisfaction', 'adaptability'],
     },
-    tags: ['forever-home', 'long-term', 'premium-quality', 'full-customization', 'timeless-design']
-  }
+    tags: ['forever-home', 'long-term', 'premium-quality', 'full-customization', 'timeless-design'],
+  },
 };
 
 /**
  * Family changes configurations
  */
 const FAMILY_CHANGES_CONFIGURATIONS = {
-  'none': {
+  none: {
     score: 30,
     stability: 'stable',
     description: {
       en: 'No anticipated family changes',
-      fr: 'Aucun changement familial prévu'
+      fr: 'Aucun changement familial prévu',
     },
     designImpact: 'minimal',
     adaptabilityNeeds: 'low',
     recommendations: {
       focus: ['current-needs', 'static-design-ok'],
-      avoid: ['over-planning-flexibility']
+      avoid: ['over-planning-flexibility'],
     },
-    tags: ['stable-household', 'current-focus']
+    tags: ['stable-household', 'current-focus'],
   },
-  'children': {
+  children: {
     score: 75,
     stability: 'growing',
     description: {
       en: 'Planning to have children or more children',
-      fr: 'Prévoit d\'avoir des enfants ou plus d\'enfants'
+      fr: "Prévoit d'avoir des enfants ou plus d'enfants",
     },
     designImpact: 'significant',
     adaptabilityNeeds: 'high',
@@ -148,73 +153,78 @@ const FAMILY_CHANGES_CONFIGURATIONS = {
       safety: ['rounded-corners', 'safety-locks', 'cool-touch-surfaces', 'soft-close-drawers'],
       durability: ['stain-resistant', 'scratch-resistant', 'easy-clean'],
       storage: ['low-access-storage', 'snack-zone', 'sippy-cup-storage'],
-      layout: ['supervision-sightlines', 'play-area-adjacency']
+      layout: ['supervision-sightlines', 'play-area-adjacency'],
     },
     recommendations: {
       focus: ['child-safety', 'durability', 'easy-cleanup', 'flexible-storage'],
-      features: ['kid-height-accessible', 'homework-zone', 'family-friendly']
+      features: ['kid-height-accessible', 'homework-zone', 'family-friendly'],
     },
-    tags: ['family-growth', 'child-safety', 'durability-critical', 'family-focused']
+    tags: ['family-growth', 'child-safety', 'durability-critical', 'family-focused'],
   },
   'kids-leaving': {
     score: 60,
     stability: 'contracting',
     description: {
       en: 'Children leaving home (empty nest)',
-      fr: 'Enfants quittant la maison (nid vide)'
+      fr: 'Enfants quittant la maison (nid vide)',
     },
     designImpact: 'moderate',
     adaptabilityNeeds: 'moderate',
     requirements: {
       transition: ['repurpose-space', 'downsize-storage', 'upgrade-finishes'],
-      focus: ['adult-entertaining', 'couple-cooking', 'quality-over-quantity']
+      focus: ['adult-entertaining', 'couple-cooking', 'quality-over-quantity'],
     },
     recommendations: {
       focus: ['sophistication', 'entertaining', 'quality-upgrades', 'personal-style'],
-      consider: ['smaller-scale-ok', 'wine-storage', 'coffee-bar', 'baker-features']
+      consider: ['smaller-scale-ok', 'wine-storage', 'coffee-bar', 'baker-features'],
     },
-    tags: ['empty-nest', 'lifestyle-shift', 'sophistication', 'downsizing-potential']
+    tags: ['empty-nest', 'lifestyle-shift', 'sophistication', 'downsizing-potential'],
   },
   'aging-parents': {
     score: 85,
     stability: 'expanding-multi-gen',
     description: {
       en: 'Aging parents may move in',
-      fr: 'Parents âgés pourraient emménager'
+      fr: 'Parents âgés pourraient emménager',
     },
     designImpact: 'significant',
     adaptabilityNeeds: 'very-high',
     requirements: {
-      accessibility: ['universal-design', 'wider-aisles', 'pull-out-storage', 'varied-counter-heights'],
+      accessibility: [
+        'universal-design',
+        'wider-aisles',
+        'pull-out-storage',
+        'varied-counter-heights',
+      ],
       safety: ['non-slip-flooring', 'lever-handles', 'good-lighting', 'clear-pathways'],
-      functionality: ['easy-reach-storage', 'seated-work-area', 'minimal-bending']
+      functionality: ['easy-reach-storage', 'seated-work-area', 'minimal-bending'],
     },
     recommendations: {
       focus: ['universal-design', 'accessibility', 'multi-generational-needs', 'safety'],
-      features: ['aging-in-place-ready', 'flexible-design']
+      features: ['aging-in-place-ready', 'flexible-design'],
     },
-    tags: ['multi-generational', 'accessibility-focus', 'universal-design', 'aging-in-place']
+    tags: ['multi-generational', 'accessibility-focus', 'universal-design', 'aging-in-place'],
   },
   'work-from-home': {
     score: 65,
     stability: 'lifestyle-change',
     description: {
       en: 'Permanent work-from-home arrangement',
-      fr: 'Arrangement permanent de travail à domicile'
+      fr: 'Arrangement permanent de travail à domicile',
     },
     designImpact: 'moderate',
     adaptabilityNeeds: 'moderate',
     requirements: {
       workspace: ['desk-area', 'charging-stations', 'organized-storage'],
       functionality: ['coffee-station', 'snack-storage', 'lunch-prep-area'],
-      technology: ['good-wifi', 'adequate-outlets', 'task-lighting']
+      technology: ['good-wifi', 'adequate-outlets', 'task-lighting'],
     },
     recommendations: {
       focus: ['work-life-integration', 'coffee-station', 'technology-ready', 'organized-storage'],
-      features: ['breakfast-bar-desk', 'charging-drawer', 'organized-pantry']
+      features: ['breakfast-bar-desk', 'charging-drawer', 'organized-pantry'],
     },
-    tags: ['work-from-home', 'home-office-integration', 'technology-needs']
-  }
+    tags: ['work-from-home', 'home-office-integration', 'technology-needs'],
+  },
 };
 
 /**
@@ -227,16 +237,20 @@ const AGING_IN_PLACE_CONFIGURATIONS = {
     level: 'full-implementation',
     description: {
       en: 'Yes, plan for aging in place now',
-      fr: 'Oui, planifier le vieillissement sur place maintenant'
+      fr: 'Oui, planifier le vieillissement sur place maintenant',
     },
     designRequirements: {
       essential: [
         { feature: 'wider-aisles', spec: '48-60 inches minimum', impact: 'wheelchair-turning' },
-        { feature: 'varied-counter-heights', spec: '28-42 inches range', impact: 'seated-standing-work' },
+        {
+          feature: 'varied-counter-heights',
+          spec: '28-42 inches range',
+          impact: 'seated-standing-work',
+        },
         { feature: 'pull-out-storage', spec: 'full-extension-drawers', impact: 'no-bending' },
         { feature: 'lever-handles', spec: 'all-cabinets-doors', impact: 'easy-grip' },
         { feature: 'knee-clearance', spec: 'sink-cooktop', impact: 'seated-use' },
-        { feature: 'task-lighting', spec: 'under-cabinet-pendant', impact: 'vision-support' }
+        { feature: 'task-lighting', spec: 'under-cabinet-pendant', impact: 'vision-support' },
       ],
       recommended: [
         { feature: 'roll-out-shelves', impact: 'accessibility' },
@@ -244,20 +258,20 @@ const AGING_IN_PLACE_CONFIGURATIONS = {
         { feature: 'wall-ovens', spec: 'counter-height', impact: 'no-bending' },
         { feature: 'side-by-side-fridge', impact: 'full-access' },
         { feature: 'induction-cooktop', impact: 'safety' },
-        { feature: 'touchless-faucet', impact: 'ease-of-use' }
+        { feature: 'touchless-faucet', impact: 'ease-of-use' },
       ],
       future: [
         { feature: 'reinforced-walls', spec: 'grab-bar-blocking', impact: 'future-support' },
-        { feature: 'accessible-layout', spec: 'open-floor-plan', impact: 'walker-wheelchair' }
-      ]
+        { feature: 'accessible-layout', spec: 'open-floor-plan', impact: 'walker-wheelchair' },
+      ],
     },
     recommendations: {
       layout: ['open-floor-plan', 'wide-aisles', 'single-level-access'],
       storage: ['pull-out-shelves', 'drawer-systems', 'lazy-susans', 'easy-reach'],
       appliances: ['wall-ovens', 'raised-dishwasher', 'side-by-side-fridge'],
-      safety: ['non-slip-flooring', 'good-lighting', 'lever-handles', 'rounded-corners']
+      safety: ['non-slip-flooring', 'good-lighting', 'lever-handles', 'rounded-corners'],
     },
-    tags: ['aging-in-place', 'universal-design', 'accessibility-priority', 'full-implementation']
+    tags: ['aging-in-place', 'universal-design', 'accessibility-priority', 'full-implementation'],
   },
   'prepare-later': {
     score: 70,
@@ -265,26 +279,34 @@ const AGING_IN_PLACE_CONFIGURATIONS = {
     level: 'infrastructure-prep',
     description: {
       en: 'Not now, but prepare for future adaptation',
-      fr: 'Pas maintenant, mais préparer pour future adaptation'
+      fr: 'Pas maintenant, mais préparer pour future adaptation',
     },
     designRequirements: {
       essential: [
-        { feature: 'reinforced-walls', spec: 'blocking-for-grab-bars', impact: 'future-installation' },
-        { feature: 'accessible-layout', spec: 'work-triangle-open', impact: 'future-mobility-aids' },
-        { feature: 'adequate-space', spec: '42-48-inch-aisles', impact: 'expandable-to-60' }
+        {
+          feature: 'reinforced-walls',
+          spec: 'blocking-for-grab-bars',
+          impact: 'future-installation',
+        },
+        {
+          feature: 'accessible-layout',
+          spec: 'work-triangle-open',
+          impact: 'future-mobility-aids',
+        },
+        { feature: 'adequate-space', spec: '42-48-inch-aisles', impact: 'expandable-to-60' },
       ],
       recommended: [
         { feature: 'drawer-base-cabinets', impact: 'easier-than-doors' },
         { feature: 'good-lighting-infrastructure', impact: 'future-needs' },
-        { feature: 'lever-handles', impact: 'easier-for-all-ages' }
-      ]
+        { feature: 'lever-handles', impact: 'easier-for-all-ages' },
+      ],
     },
     recommendations: {
       layout: ['thoughtful-spacing', 'future-adaptable'],
       infrastructure: ['reinforced-walls', 'extra-electrical', 'accessible-routing'],
-      choices: ['adaptable-design', 'avoid-obstacles']
+      choices: ['adaptable-design', 'avoid-obstacles'],
     },
-    tags: ['future-adaptable', 'infrastructure-ready', 'thoughtful-planning']
+    tags: ['future-adaptable', 'infrastructure-ready', 'thoughtful-planning'],
   },
   'not-needed': {
     score: 30,
@@ -292,18 +314,18 @@ const AGING_IN_PLACE_CONFIGURATIONS = {
     level: 'standard-design',
     description: {
       en: 'Not planning for aging in place',
-      fr: 'Ne planifie pas le vieillissement sur place'
+      fr: 'Ne planifie pas le vieillissement sur place',
     },
     designRequirements: {
       essential: [],
-      recommended: []
+      recommended: [],
     },
     recommendations: {
       focus: ['current-needs', 'standard-design'],
-      note: ['universal-design-benefits-all-ages']
+      note: ['universal-design-benefits-all-ages'],
     },
-    tags: ['standard-design', 'current-focus']
-  }
+    tags: ['standard-design', 'current-focus'],
+  },
 };
 
 /**
@@ -316,21 +338,21 @@ const COOKING_EVOLUTION_CONFIGURATIONS = {
     trend: 'upward',
     description: {
       en: 'Expect to cook more in the future',
-      fr: 'S\'attend à cuisiner plus à l\'avenir'
+      fr: "S'attend à cuisiner plus à l'avenir",
     },
     designImpact: 'plan-for-growth',
     requirements: {
       storage: ['expandable', 'generous', 'specialty-zones'],
       workspace: ['larger-prep-areas', 'multiple-zones'],
       appliances: ['upgrade-path', 'professional-consideration', 'specialty-tools'],
-      infrastructure: ['extra-outlets', 'gas-line-consideration', 'ventilation-upgrade']
+      infrastructure: ['extra-outlets', 'gas-line-consideration', 'ventilation-upgrade'],
     },
     recommendations: {
       focus: ['generous-sizing', 'upgrade-capability', 'specialty-storage', 'flexible-zones'],
       appliances: ['consider-professional-grade', 'plan-for-additions'],
-      infrastructure: ['adequate-electrical', 'strong-ventilation']
+      infrastructure: ['adequate-electrical', 'strong-ventilation'],
     },
-    tags: ['cooking-growth', 'plan-generous', 'upgrade-path', 'serious-cooking-future']
+    tags: ['cooking-growth', 'plan-generous', 'upgrade-path', 'serious-cooking-future'],
   },
   'less-cooking': {
     score: 40,
@@ -338,63 +360,63 @@ const COOKING_EVOLUTION_CONFIGURATIONS = {
     trend: 'downward',
     description: {
       en: 'Expect to cook less in the future',
-      fr: 'S\'attend à cuisiner moins à l\'avenir'
+      fr: "S'attend à cuisiner moins à l'avenir",
     },
     designImpact: 'efficiency-focus',
     requirements: {
       storage: ['adequate-but-not-excessive', 'organized'],
       workspace: ['efficient-compact-ok'],
       appliances: ['quality-basics', 'smaller-options-ok'],
-      focus: ['convenience', 'easy-cleanup', 'low-maintenance']
+      focus: ['convenience', 'easy-cleanup', 'low-maintenance'],
     },
     recommendations: {
       focus: ['efficiency', 'easy-maintenance', 'quality-over-quantity'],
       avoid: ['oversizing', 'excessive-specialty-items'],
-      consider: ['smaller-appliances', 'simplified-layout']
+      consider: ['smaller-appliances', 'simplified-layout'],
     },
-    tags: ['cooking-reduction', 'efficiency-focus', 'simplified-needs']
+    tags: ['cooking-reduction', 'efficiency-focus', 'simplified-needs'],
   },
-  'same': {
+  same: {
     score: 50,
     direction: 'stable',
     trend: 'consistent',
     description: {
       en: 'Cooking habits will stay the same',
-      fr: 'Habitudes culinaires resteront les mêmes'
+      fr: 'Habitudes culinaires resteront les mêmes',
     },
     designImpact: 'current-needs-focused',
     requirements: {
       storage: ['match-current-needs'],
       workspace: ['current-workflow-optimized'],
-      appliances: ['current-preferences']
+      appliances: ['current-preferences'],
     },
     recommendations: {
       focus: ['optimize-current-use', 'quality-for-known-needs'],
-      avoid: ['over-planning-for-change']
+      avoid: ['over-planning-for-change'],
     },
-    tags: ['stable-cooking', 'current-optimization']
+    tags: ['stable-cooking', 'current-optimization'],
   },
-  'unsure': {
+  unsure: {
     score: 60,
     direction: 'variable',
     trend: 'uncertain',
     description: {
       en: 'Unsure about future cooking habits',
-      fr: 'Incertain des futures habitudes culinaires'
+      fr: 'Incertain des futures habitudes culinaires',
     },
     designImpact: 'flexibility-required',
     requirements: {
       storage: ['flexible', 'adaptable'],
       workspace: ['versatile-zones'],
       appliances: ['quality-basics-with-expansion-capability'],
-      design: ['flexible', 'adaptable-layout']
+      design: ['flexible', 'adaptable-layout'],
     },
     recommendations: {
       focus: ['flexibility', 'adaptable-storage', 'versatile-design', 'quality-infrastructure'],
-      features: ['adjustable-shelving', 'multi-purpose-zones', 'expansion-ready']
+      features: ['adjustable-shelving', 'multi-purpose-zones', 'expansion-ready'],
     },
-    tags: ['flexible-design', 'adaptability-priority', 'versatile-planning']
-  }
+    tags: ['flexible-design', 'adaptability-priority', 'versatile-planning'],
+  },
 };
 
 /**
@@ -407,32 +429,37 @@ const FUTURE_TECHNOLOGY_CONFIGURATIONS = {
     level: 'future-proofed',
     description: {
       en: 'Future technology integration is important',
-      fr: 'L\'intégration future de la technologie est importante'
+      fr: "L'intégration future de la technologie est importante",
     },
     requirements: {
       electrical: [
         { item: 'extra-outlets', spec: '20-amp-circuits', quantity: 'abundant' },
         { item: 'usb-outlets', spec: 'built-in', locations: ['island', 'backsplash', 'pantry'] },
-        { item: 'dedicated-circuits', spec: 'smart-appliances', quantity: 'multiple' }
+        { item: 'dedicated-circuits', spec: 'smart-appliances', quantity: 'multiple' },
       ],
       infrastructure: [
         { item: 'conduit-runs', spec: 'future-wiring', locations: ['walls', 'island'] },
         { item: 'network-drops', spec: 'ethernet-capable', locations: ['appliance-zones'] },
-        { item: 'smart-home-hub', spec: 'central-location', note: 'integration-ready' }
+        { item: 'smart-home-hub', spec: 'central-location', note: 'integration-ready' },
       ],
       planning: [
         { item: 'panel-capacity', spec: 'future-expansion' },
         { item: 'voice-control-ready', spec: 'smart-assistants' },
-        { item: 'app-controlled-appliances', spec: 'wifi-capable' }
-      ]
+        { item: 'app-controlled-appliances', spec: 'wifi-capable' },
+      ],
     },
     recommendations: {
-      electrical: ['extra-circuits', 'usb-outlets-everywhere', 'smart-switches', 'dedicated-appliance-circuits'],
+      electrical: [
+        'extra-circuits',
+        'usb-outlets-everywhere',
+        'smart-switches',
+        'dedicated-appliance-circuits',
+      ],
       infrastructure: ['conduit-for-future', 'network-ready', 'adequate-panel-capacity'],
       appliances: ['smart-capable', 'wifi-enabled', 'app-controlled'],
-      features: ['voice-control-prep', 'charging-stations', 'tech-integration-zones']
+      features: ['voice-control-prep', 'charging-stations', 'tech-integration-zones'],
     },
-    tags: ['tech-forward', 'future-proofed', 'smart-home-ready', 'extensive-infrastructure']
+    tags: ['tech-forward', 'future-proofed', 'smart-home-ready', 'extensive-infrastructure'],
   },
   'some-prep': {
     score: 70,
@@ -440,23 +467,23 @@ const FUTURE_TECHNOLOGY_CONFIGURATIONS = {
     level: 'basic-infrastructure',
     description: {
       en: 'Some technology preparation desired',
-      fr: 'Une certaine préparation technologique souhaitée'
+      fr: 'Une certaine préparation technologique souhaitée',
     },
     requirements: {
       electrical: [
         { item: 'adequate-outlets', spec: 'code-plus-50%', quantity: 'generous' },
-        { item: 'usb-outlets', spec: '2-4-locations', locations: ['key-areas'] }
+        { item: 'usb-outlets', spec: '2-4-locations', locations: ['key-areas'] },
       ],
       infrastructure: [
-        { item: 'basic-conduit', spec: 'island-backsplash', note: 'future-flexibility' }
-      ]
+        { item: 'basic-conduit', spec: 'island-backsplash', note: 'future-flexibility' },
+      ],
     },
     recommendations: {
       electrical: ['extra-outlets-key-areas', 'some-usb-outlets', 'adequate-circuits'],
       infrastructure: ['some-conduit-runs', 'future-expansion-possible'],
-      appliances: ['consider-smart-options']
+      appliances: ['consider-smart-options'],
     },
-    tags: ['tech-ready', 'basic-prep', 'flexible-infrastructure']
+    tags: ['tech-ready', 'basic-prep', 'flexible-infrastructure'],
   },
   'not-concerned': {
     score: 30,
@@ -464,19 +491,17 @@ const FUTURE_TECHNOLOGY_CONFIGURATIONS = {
     level: 'code-minimum',
     description: {
       en: 'Not concerned about future technology',
-      fr: 'Pas préoccupé par la future technologie'
+      fr: 'Pas préoccupé par la future technologie',
     },
     requirements: {
-      electrical: [
-        { item: 'code-compliant-outlets', spec: 'minimum-required' }
-      ]
+      electrical: [{ item: 'code-compliant-outlets', spec: 'minimum-required' }],
     },
     recommendations: {
       focus: ['code-compliance', 'basic-functionality'],
-      note: ['some-extra-outlets-still-helpful']
+      note: ['some-extra-outlets-still-helpful'],
     },
-    tags: ['standard-electrical', 'basic-tech']
-  }
+    tags: ['standard-electrical', 'basic-tech'],
+  },
 };
 
 /**
@@ -486,7 +511,7 @@ const PLANNING_HORIZON_PERSONAS = {
   'short-term-flipper': {
     description: {
       en: 'Short-term resident focused on ROI',
-      fr: 'Résident à court terme axé sur le ROI'
+      fr: 'Résident à court terme axé sur le ROI',
     },
     characteristics: ['roi-focused', 'neutral-choices', 'broad-appeal', 'cost-effective'],
     priorities: ['resale-value', 'quick-payback', 'popular-features', 'neutral-design'],
@@ -494,45 +519,45 @@ const PLANNING_HORIZON_PERSONAS = {
       colors: ['white', 'gray', 'greige', 'neutral-palette'],
       materials: ['quartz', 'granite', 'popular-choices'],
       features: ['standard-desirable', 'mass-appeal'],
-      avoid: ['personal-customization', 'trendy', 'niche-features']
-    }
+      avoid: ['personal-customization', 'trendy', 'niche-features'],
+    },
   },
   'medium-term-balancer': {
     description: {
       en: 'Balancing personal enjoyment with future value',
-      fr: 'Équilibrer plaisir personnel et valeur future'
+      fr: 'Équilibrer plaisir personnel et valeur future',
     },
     characteristics: ['balanced-approach', 'versatile', 'quality-focused'],
     priorities: ['enjoyment-and-value', 'quality-materials', 'timeless-style'],
     recommendations: {
       focus: ['quality-basics', 'some-personal-touches', 'timeless-design'],
-      balance: ['personal-vs-resale', 'quality-vs-cost']
-    }
+      balance: ['personal-vs-resale', 'quality-vs-cost'],
+    },
   },
   'long-term-personalizer': {
     description: {
       en: 'Long-term resident prioritizing personal dream kitchen',
-      fr: 'Résident à long terme priorisant cuisine de rêve personnelle'
+      fr: 'Résident à long terme priorisant cuisine de rêve personnelle',
     },
     characteristics: ['personal-satisfaction', 'quality-investment', 'custom-features'],
     priorities: ['personal-style', 'premium-quality', 'longevity', 'adaptability'],
     recommendations: {
       focus: ['dream-kitchen', 'premium-materials', 'custom-features', 'timeless-quality'],
-      consider: ['aging-in-place', 'life-changes', 'adaptability']
-    }
+      consider: ['aging-in-place', 'life-changes', 'adaptability'],
+    },
   },
   'adaptability-focused': {
     description: {
       en: 'Focused on flexibility for life changes',
-      fr: 'Axé sur la flexibilité pour les changements de vie'
+      fr: 'Axé sur la flexibilité pour les changements de vie',
     },
     characteristics: ['flexible-design', 'adaptable', 'future-ready', 'versatile'],
     priorities: ['adaptability', 'flexibility', 'universal-design', 'multi-functional'],
     recommendations: {
       focus: ['flexible-storage', 'adaptable-layout', 'universal-design', 'multi-purpose-zones'],
-      features: ['adjustable-elements', 'future-ready-infrastructure']
-    }
-  }
+      features: ['adjustable-elements', 'future-ready-infrastructure'],
+    },
+  },
 };
 
 // ============================================================================
@@ -554,7 +579,7 @@ function calculateSectionScore(answers) {
     tags: new Set(),
     designConsiderations: [],
     adaptabilityRequirements: {},
-    technologyNeeds: {}
+    technologyNeeds: {},
   };
 
   // Calculate individual component scores
@@ -563,7 +588,7 @@ function calculateSectionScore(answers) {
     familyChanges: scoreFamilyChanges(answers['family-changes']),
     agingInPlace: scoreAgingInPlace(answers['aging-in-place']),
     cookingEvolution: scoreCookingEvolution(answers['cooking-evolution']),
-    futureTech: scoreFutureTech(answers['future-tech'])
+    futureTech: scoreFutureTech(answers['future-tech']),
   };
 
   // Calculate weighted overall score
@@ -574,7 +599,7 @@ function calculateSectionScore(answers) {
       totalWeight += weight;
 
       if (componentScores[key]?.tags) {
-        componentScores[key].tags.forEach(tag => scores.tags.add(tag));
+        componentScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
 
       if (componentScores[key]?.considerations) {
@@ -589,19 +614,23 @@ function calculateSectionScore(answers) {
 
   // Determine planning horizon and persona
   scores.planningHorizon = determinePlanningHorizon(answers);
-  scores.planningPersona = identifyPlanningPersona(answers, componentScores, scores.planningHorizon);
+  scores.planningPersona = identifyPlanningPersona(
+    answers,
+    componentScores,
+    scores.planningHorizon
+  );
 
   // Calculate category scores
   scores.categories = {
     timeline: {
       score: componentScores.timeInHome?.score || 50,
       horizon: scores.planningHorizon,
-      years: componentScores.timeInHome?.years || { min: 5, max: 10 }
+      years: componentScores.timeInHome?.years || { min: 5, max: 10 },
     },
     adaptability: calculateAdaptabilityScore(answers, componentScores),
     accessibility: calculateAccessibilityScore(answers, componentScores),
     flexibility: calculateFlexibilityScore(answers, componentScores),
-    technologyReadiness: calculateTechnologyReadiness(answers, componentScores)
+    technologyReadiness: calculateTechnologyReadiness(answers, componentScores),
   };
 
   // Calculate adaptability requirements
@@ -642,7 +671,7 @@ function scoreTimeInHome(value) {
     characteristics: config.characteristics,
     recommendations: config.recommendations,
     tags: config.tags,
-    considerations: []
+    considerations: [],
   };
 }
 
@@ -661,7 +690,7 @@ function scoreFamilyChanges(values) {
       changes: [],
       stability: config.stability,
       tags: config.tags,
-      considerations: []
+      considerations: [],
     };
   }
 
@@ -671,7 +700,7 @@ function scoreFamilyChanges(values) {
   let totalScore = 0;
   let count = 0;
 
-  values.forEach(v => {
+  values.forEach((v) => {
     const config = FAMILY_CHANGES_CONFIGURATIONS[v];
     if (config) {
       totalScore += config.score;
@@ -680,7 +709,7 @@ function scoreFamilyChanges(values) {
       if (config.requirements) {
         allRequirements.push(config.requirements);
         // Extract considerations from requirements
-        Object.keys(config.requirements).forEach(key => {
+        Object.keys(config.requirements).forEach((key) => {
           if (Array.isArray(config.requirements[key])) {
             considerations.push(...config.requirements[key]);
           }
@@ -697,7 +726,7 @@ function scoreFamilyChanges(values) {
     changeCount: count,
     requirements: allRequirements,
     tags,
-    considerations
+    considerations,
   };
 }
 
@@ -714,7 +743,7 @@ function scoreAgingInPlace(value) {
 
   const considerations = [];
   if (config.designRequirements?.essential) {
-    config.designRequirements.essential.forEach(req => {
+    config.designRequirements.essential.forEach((req) => {
       considerations.push(req.feature);
     });
   }
@@ -727,7 +756,7 @@ function scoreAgingInPlace(value) {
     designRequirements: config.designRequirements,
     recommendations: config.recommendations,
     tags: config.tags,
-    considerations
+    considerations,
   };
 }
 
@@ -744,7 +773,7 @@ function scoreCookingEvolution(value) {
 
   const considerations = [];
   if (config.requirements) {
-    Object.keys(config.requirements).forEach(key => {
+    Object.keys(config.requirements).forEach((key) => {
       if (Array.isArray(config.requirements[key])) {
         considerations.push(...config.requirements[key]);
       }
@@ -760,7 +789,7 @@ function scoreCookingEvolution(value) {
     requirements: config.requirements,
     recommendations: config.recommendations,
     tags: config.tags,
-    considerations
+    considerations,
   };
 }
 
@@ -777,9 +806,9 @@ function scoreFutureTech(value) {
 
   const considerations = [];
   if (config.requirements) {
-    Object.keys(config.requirements).forEach(category => {
+    Object.keys(config.requirements).forEach((category) => {
       if (Array.isArray(config.requirements[category])) {
-        config.requirements[category].forEach(req => {
+        config.requirements[category].forEach((req) => {
           considerations.push(req.item || req);
         });
       }
@@ -794,7 +823,7 @@ function scoreFutureTech(value) {
     requirements: config.requirements,
     recommendations: config.recommendations,
     tags: config.tags,
-    considerations
+    considerations,
   };
 }
 
@@ -883,9 +912,16 @@ function calculateAdaptabilityScore(answers, componentScores) {
 
   return {
     score,
-    level: score >= 80 ? 'highly-adaptable' : score >= 60 ? 'moderately-adaptable' : score >= 40 ? 'some-adaptability' : 'standard',
+    level:
+      score >= 80
+        ? 'highly-adaptable'
+        : score >= 60
+          ? 'moderately-adaptable'
+          : score >= 40
+            ? 'some-adaptability'
+            : 'standard',
     factors,
-    priority: score >= 70 ? 'high' : score >= 50 ? 'moderate' : 'low'
+    priority: score >= 70 ? 'high' : score >= 50 ? 'moderate' : 'low',
   };
 }
 
@@ -903,11 +939,15 @@ function calculateAccessibilityScore(answers, componentScores) {
   if (aging === 'yes-plan-now') {
     score = 100;
     features.push('full-universal-design', 'wheelchair-accessible', 'varied-heights');
-    requirements.push(...(AGING_IN_PLACE_CONFIGURATIONS['yes-plan-now'].designRequirements.essential || []));
+    requirements.push(
+      ...(AGING_IN_PLACE_CONFIGURATIONS['yes-plan-now'].designRequirements.essential || [])
+    );
   } else if (aging === 'prepare-later') {
     score = 70;
     features.push('infrastructure-ready', 'adaptable-layout');
-    requirements.push(...(AGING_IN_PLACE_CONFIGURATIONS['prepare-later'].designRequirements.essential || []));
+    requirements.push(
+      ...(AGING_IN_PLACE_CONFIGURATIONS['prepare-later'].designRequirements.essential || [])
+    );
   }
 
   // Multi-generational bonus
@@ -923,7 +963,7 @@ function calculateAccessibilityScore(answers, componentScores) {
     level: score >= 85 ? 'full-accessibility' : score >= 60 ? 'prepared' : 'standard',
     features,
     requirements,
-    priority: score >= 85 ? 'essential' : score >= 60 ? 'recommended' : 'optional'
+    priority: score >= 85 ? 'essential' : score >= 60 ? 'recommended' : 'optional',
   };
 }
 
@@ -964,7 +1004,7 @@ function calculateFlexibilityScore(answers, componentScores) {
     score: Math.min(100, score),
     needsFlexibility: score >= 70,
     level: score >= 75 ? 'high-flexibility' : score >= 50 ? 'moderate-flexibility' : 'standard',
-    factors
+    factors,
   };
 }
 
@@ -980,7 +1020,7 @@ function calculateTechnologyReadiness(answers, componentScores) {
 
   const infrastructure = [];
   if (techConfig.requirements) {
-    Object.keys(techConfig.requirements).forEach(category => {
+    Object.keys(techConfig.requirements).forEach((category) => {
       if (Array.isArray(techConfig.requirements[category])) {
         infrastructure.push(...techConfig.requirements[category]);
       }
@@ -992,7 +1032,7 @@ function calculateTechnologyReadiness(answers, componentScores) {
     level: techConfig.level,
     priority: techConfig.priority,
     infrastructure,
-    recommendations: techConfig.recommendations
+    recommendations: techConfig.recommendations,
   };
 }
 
@@ -1003,7 +1043,7 @@ function calculateAdaptabilityRequirements(answers, componentScores) {
   const requirements = {
     essential: [],
     recommended: [],
-    future: []
+    future: [],
   };
 
   // Aging in place requirements
@@ -1016,10 +1056,10 @@ function calculateAdaptabilityRequirements(answers, componentScores) {
 
   // Family change requirements
   if (componentScores.familyChanges?.requirements) {
-    componentScores.familyChanges.requirements.forEach(reqSet => {
-      Object.keys(reqSet).forEach(category => {
+    componentScores.familyChanges.requirements.forEach((reqSet) => {
+      Object.keys(reqSet).forEach((category) => {
         if (Array.isArray(reqSet[category])) {
-          reqSet[category].forEach(item => {
+          reqSet[category].forEach((item) => {
             requirements.recommended.push({ feature: item, category });
           });
         }
@@ -1029,10 +1069,10 @@ function calculateAdaptabilityRequirements(answers, componentScores) {
 
   // Cooking evolution requirements
   if (componentScores.cookingEvolution?.requirements) {
-    Object.keys(componentScores.cookingEvolution.requirements).forEach(category => {
+    Object.keys(componentScores.cookingEvolution.requirements).forEach((category) => {
       const items = componentScores.cookingEvolution.requirements[category];
       if (Array.isArray(items)) {
-        items.forEach(item => {
+        items.forEach((item) => {
           requirements.recommended.push({ feature: item, category });
         });
       }
@@ -1050,7 +1090,7 @@ function calculateTechnologyNeeds(answers, componentScores) {
     electrical: [],
     infrastructure: [],
     appliances: [],
-    priority: componentScores.futureTech?.priority || 'moderate'
+    priority: componentScores.futureTech?.priority || 'moderate',
   };
 
   if (componentScores.futureTech?.requirements) {
@@ -1081,14 +1121,14 @@ function generateRecommendations(answers, componentScores, scores) {
     priority: 'essential',
     title: {
       en: 'Planning Approach',
-      fr: 'Approche de planification'
+      fr: 'Approche de planification',
     },
     description: {
       en: persona?.description.en || 'Your planning approach has been identified.',
-      fr: persona?.description.fr || 'Votre approche de planification a été identifiée.'
+      fr: persona?.description.fr || 'Votre approche de planification a été identifiée.',
     },
     persona: scores.planningPersona,
-    priorities: persona?.priorities || []
+    priorities: persona?.priorities || [],
   });
 
   // Timeline-specific recommendations
@@ -1101,13 +1141,13 @@ function generateRecommendations(answers, componentScores, scores) {
         priority: 'essential',
         title: {
           en: 'ROI-Focused Choices',
-          fr: 'Choix axés sur le ROI'
+          fr: 'Choix axés sur le ROI',
         },
         description: {
           en: 'Focus on neutral colors, popular features, and cost-effective updates that appeal to future buyers.',
-          fr: 'Concentrez-vous sur des couleurs neutres, des fonctionnalités populaires et des mises à jour rentables qui plairont aux futurs acheteurs.'
+          fr: 'Concentrez-vous sur des couleurs neutres, des fonctionnalités populaires et des mises à jour rentables qui plairont aux futurs acheteurs.',
         },
-        recommendations: timeConfig.recommendations
+        recommendations: timeConfig.recommendations,
       });
     } else if (scores.planningHorizon === 'long-term') {
       recommendations.push({
@@ -1116,13 +1156,13 @@ function generateRecommendations(answers, componentScores, scores) {
         priority: 'essential',
         title: {
           en: 'Timeless Design & Quality',
-          fr: 'Design intemporel et qualité'
+          fr: 'Design intemporel et qualité',
         },
         description: {
           en: 'For your forever home, invest in premium quality materials and timeless design that will last decades.',
-          fr: 'Pour votre maison pour toujours, investissez dans des matériaux de qualité supérieure et un design intemporel qui durera des décennies.'
+          fr: 'Pour votre maison pour toujours, investissez dans des matériaux de qualité supérieure et un design intemporel qui durera des décennies.',
         },
-        recommendations: timeConfig.recommendations
+        recommendations: timeConfig.recommendations,
       });
     }
   }
@@ -1135,13 +1175,13 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Universal Design Implementation',
-        fr: 'Mise en œuvre du design universel'
+        fr: 'Mise en œuvre du design universel',
       },
       description: {
         en: 'Implement full universal design with 48-60" aisles, varied counter heights (28-42"), pull-out storage, and lever handles throughout.',
-        fr: 'Mettez en œuvre un design universel complet avec des allées de 122-152 cm, des hauteurs de comptoir variées (71-107 cm), du rangement coulissant et des poignées à levier partout.'
+        fr: 'Mettez en œuvre un design universel complet avec des allées de 122-152 cm, des hauteurs de comptoir variées (71-107 cm), du rangement coulissant et des poignées à levier partout.',
       },
-      requirements: componentScores.agingInPlace?.designRequirements
+      requirements: componentScores.agingInPlace?.designRequirements,
     });
   } else if (answers['aging-in-place'] === 'prepare-later') {
     recommendations.push({
@@ -1150,12 +1190,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Future Adaptability Preparation',
-        fr: 'Préparation de l\'adaptabilité future'
+        fr: "Préparation de l'adaptabilité future",
       },
       description: {
         en: 'Install reinforced wall blocking for future grab bars, maintain 42-48" aisles (expandable to 60"), and choose adaptable design elements.',
-        fr: 'Installez un renforcement mural pour de futures barres d\'appui, maintenez des allées de 107-122 cm (extensibles à 152 cm) et choisissez des éléments de design adaptables.'
-      }
+        fr: "Installez un renforcement mural pour de futures barres d'appui, maintenez des allées de 107-122 cm (extensibles à 152 cm) et choisissez des éléments de design adaptables.",
+      },
     });
   }
 
@@ -1168,12 +1208,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Child Safety & Durability',
-        fr: 'Sécurité et durabilité pour enfants'
+        fr: 'Sécurité et durabilité pour enfants',
       },
       description: {
         en: 'Design for growing family with rounded corners, safety locks, soft-close drawers, durable stain-resistant surfaces, and supervision sightlines.',
-        fr: 'Concevez pour une famille grandissante avec des coins arrondis, des serrures de sécurité, des tiroirs à fermeture douce, des surfaces durables anti-taches et des lignes de vue pour la supervision.'
-      }
+        fr: 'Concevez pour une famille grandissante avec des coins arrondis, des serrures de sécurité, des tiroirs à fermeture douce, des surfaces durables anti-taches et des lignes de vue pour la supervision.',
+      },
     });
   }
 
@@ -1184,12 +1224,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Multi-Generational Design',
-        fr: 'Design multigénérationnel'
+        fr: 'Design multigénérationnel',
       },
       description: {
         en: 'Implement universal design for multi-generational living with accessible storage, varied work heights, and safety features for all ages.',
-        fr: 'Mettez en œuvre un design universel pour la vie multigénérationnelle avec un rangement accessible, des hauteurs de travail variées et des caractéristiques de sécurité pour tous les âges.'
-      }
+        fr: 'Mettez en œuvre un design universel pour la vie multigénérationnelle avec un rangement accessible, des hauteurs de travail variées et des caractéristiques de sécurité pour tous les âges.',
+      },
     });
   }
 
@@ -1201,13 +1241,13 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Technology Infrastructure',
-        fr: 'Infrastructure technologique'
+        fr: 'Infrastructure technologique',
       },
       description: {
         en: 'Install extensive electrical infrastructure: extra 20-amp circuits, USB outlets throughout, conduit runs for future wiring, and smart home integration prep.',
-        fr: 'Installez une infrastructure électrique étendue: circuits supplémentaires de 20 ampères, prises USB partout, conduits pour câblage futur et préparation pour intégration domotique.'
+        fr: 'Installez une infrastructure électrique étendue: circuits supplémentaires de 20 ampères, prises USB partout, conduits pour câblage futur et préparation pour intégration domotique.',
       },
-      technologyNeeds: scores.technologyNeeds
+      technologyNeeds: scores.technologyNeeds,
     });
   }
 
@@ -1219,12 +1259,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Plan for Cooking Growth',
-        fr: 'Planifier la croissance culinaire'
+        fr: 'Planifier la croissance culinaire',
       },
       description: {
         en: 'Design generously with upgrade paths: larger prep areas, professional-grade appliance capability, specialty storage zones, and robust ventilation.',
-        fr: 'Concevez généreusement avec des voies de mise à niveau: zones de préparation plus grandes, capacité d\'appareils de qualité professionnelle, zones de rangement spécialisées et ventilation robuste.'
-      }
+        fr: "Concevez généreusement avec des voies de mise à niveau: zones de préparation plus grandes, capacité d'appareils de qualité professionnelle, zones de rangement spécialisées et ventilation robuste.",
+      },
     });
   } else if (answers['cooking-evolution'] === 'unsure') {
     recommendations.push({
@@ -1233,12 +1273,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Flexible Cooking Design',
-        fr: 'Design culinaire flexible'
+        fr: 'Design culinaire flexible',
       },
       description: {
         en: 'Create adaptable spaces with adjustable shelving, versatile zones, quality infrastructure, and expansion capability for uncertain future needs.',
-        fr: 'Créez des espaces adaptables avec des étagères ajustables, des zones polyvalentes, une infrastructure de qualité et une capacité d\'expansion pour des besoins futurs incertains.'
-      }
+        fr: "Créez des espaces adaptables avec des étagères ajustables, des zones polyvalentes, une infrastructure de qualité et une capacité d'expansion pour des besoins futurs incertains.",
+      },
     });
   }
 
@@ -1250,13 +1290,13 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Highly Adaptable Design',
-        fr: 'Design hautement adaptable'
+        fr: 'Design hautement adaptable',
       },
       description: {
         en: 'Your situation requires highly adaptable design: flexible storage systems, multi-purpose zones, adjustable elements, and future-ready infrastructure.',
-        fr: 'Votre situation nécessite un design hautement adaptable: systèmes de rangement flexibles, zones polyvalentes, éléments ajustables et infrastructure prête pour l\'avenir.'
+        fr: "Votre situation nécessite un design hautement adaptable: systèmes de rangement flexibles, zones polyvalentes, éléments ajustables et infrastructure prête pour l'avenir.",
       },
-      adaptabilityRequirements: scores.adaptabilityRequirements
+      adaptabilityRequirements: scores.adaptabilityRequirements,
     });
   }
 
@@ -1291,5 +1331,5 @@ module.exports = {
   AGING_IN_PLACE_CONFIGURATIONS,
   COOKING_EVOLUTION_CONFIGURATIONS,
   FUTURE_TECHNOLOGY_CONFIGURATIONS,
-  PLANNING_HORIZON_PERSONAS
+  PLANNING_HORIZON_PERSONAS,
 };

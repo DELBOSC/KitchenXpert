@@ -2,7 +2,9 @@
 
 ## Overview
 
-Generate AI-powered kitchen designs based on questionnaire answers, returning personalized design with alternatives. Supports async processing for complex designs.
+Generate AI-powered kitchen designs based on questionnaire answers, returning
+personalized design with alternatives. Supports async processing for complex
+designs.
 
 **Endpoint:** `POST /api/v1/ai/design-generation`
 
@@ -23,19 +25,19 @@ Content-Type: application/json
 
 ### Request Body Schema
 
-| Field | Type | Required | Description | Constraints |
-|-------|------|----------|-------------|-------------|
-| `questionnaire` | object | Yes | User questionnaire answers | - |
-| `questionnaire.kitchenDimensions` | object | Yes | Room dimensions in cm | - |
-| `questionnaire.kitchenDimensions.length` | number | Yes | Length in cm | 100-1000 |
-| `questionnaire.kitchenDimensions.width` | number | Yes | Width in cm | 100-1000 |
-| `questionnaire.kitchenDimensions.height` | number | Yes | Height in cm | 200-350 |
-| `questionnaire.style` | string | Yes | Design style preference | modern, traditional, minimalist, rustic, industrial, scandinavian |
-| `questionnaire.budget` | number | Yes | Total budget in USD | Min 1000 |
-| `questionnaire.cookingHabits` | array | Yes | Cooking habits/preferences | - |
-| `questionnaire.householdSize` | number | Yes | Number of household members | 1-20 |
-| `questionnaire.priorities` | array | Yes | Design priorities | efficiency, aesthetics, storage, sustainability, technology |
-| `async` | boolean | No | Process asynchronously | Default: false |
+| Field                                    | Type    | Required | Description                 | Constraints                                                       |
+| ---------------------------------------- | ------- | -------- | --------------------------- | ----------------------------------------------------------------- |
+| `questionnaire`                          | object  | Yes      | User questionnaire answers  | -                                                                 |
+| `questionnaire.kitchenDimensions`        | object  | Yes      | Room dimensions in cm       | -                                                                 |
+| `questionnaire.kitchenDimensions.length` | number  | Yes      | Length in cm                | 100-1000                                                          |
+| `questionnaire.kitchenDimensions.width`  | number  | Yes      | Width in cm                 | 100-1000                                                          |
+| `questionnaire.kitchenDimensions.height` | number  | Yes      | Height in cm                | 200-350                                                           |
+| `questionnaire.style`                    | string  | Yes      | Design style preference     | modern, traditional, minimalist, rustic, industrial, scandinavian |
+| `questionnaire.budget`                   | number  | Yes      | Total budget in USD         | Min 1000                                                          |
+| `questionnaire.cookingHabits`            | array   | Yes      | Cooking habits/preferences  | -                                                                 |
+| `questionnaire.householdSize`            | number  | Yes      | Number of household members | 1-20                                                              |
+| `questionnaire.priorities`               | array   | Yes      | Design priorities           | efficiency, aesthetics, storage, sustainability, technology       |
+| `async`                                  | boolean | No       | Process asynchronously      | Default: false                                                    |
 
 ### Request Body Example
 
@@ -85,7 +87,7 @@ Content-Type: application/json
           "productId": "prod_5h7g6f4d3s2a1z",
           "productName": "SmartCool Pro Refrigerator",
           "price": 1299.99,
-          "position": {"x": 0, "y": 0, "z": 0},
+          "position": { "x": 0, "y": 0, "z": 0 },
           "reason": "Energy-efficient model matches sustainability priority"
         },
         {
@@ -93,7 +95,7 @@ Content-Type: application/json
           "productId": "prod_8j9k0l1m2n3o4p",
           "productName": "MultiChef Pro Oven",
           "price": 2199.99,
-          "position": {"x": 150, "y": 0, "z": 0},
+          "position": { "x": 150, "y": 0, "z": 0 },
           "reason": "Excellent for baking based on cooking habits"
         }
       ],
@@ -289,13 +291,13 @@ const generateDesign = async (questionnaire, async = false) => {
     'https://api.kitchenxpert.com/api/v1/ai/design-generation',
     {
       questionnaire,
-      async
+      async,
     },
     {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        'Content-Type': 'application/json',
+      },
     }
   );
 
@@ -304,21 +306,20 @@ const generateDesign = async (questionnaire, async = false) => {
 
 // Usage
 const questionnaire = {
-  kitchenDimensions: {length: 450, width: 350, height: 250},
+  kitchenDimensions: { length: 450, width: 350, height: 250 },
   style: 'modern',
   budget: 20000,
   cookingHabits: ['frequent_cooking', 'baking', 'entertaining'],
   householdSize: 4,
-  priorities: ['efficiency', 'storage', 'aesthetics']
+  priorities: ['efficiency', 'storage', 'aesthetics'],
 };
 
-generateDesign(questionnaire)
-  .then(data => {
-    console.log('Generated design:', data.design.name);
-    console.log('Design score:', data.design.score);
-    console.log('Total cost:', data.design.totalCost);
-    console.log('Alternatives:', data.alternatives.length);
-  });
+generateDesign(questionnaire).then((data) => {
+  console.log('Generated design:', data.design.name);
+  console.log('Design score:', data.design.score);
+  console.log('Total cost:', data.design.totalCost);
+  console.log('Alternatives:', data.alternatives.length);
+});
 ```
 
 ### Python (Requests)
@@ -364,19 +365,24 @@ print(f"Alternatives: {len(result['alternatives'])}")
 
 ## Related Endpoints
 
-- [Save Generated Design](./save-design.md) - Save AI-generated design to user account
+- [Save Generated Design](./save-design.md) - Save AI-generated design to user
+  account
 - [Get Task Status](./task-status.md) - Check async task status
-- [Appliance Recommendation](./appliance-recommendation.md) - Get appliance suggestions
+- [Appliance Recommendation](./appliance-recommendation.md) - Get appliance
+  suggestions
 
 ---
 
 ## Notes
 
-- **Processing Time:** Synchronous generation takes 3-8 seconds. Use async for complex designs.
-- **Alternative Designs:** Always provides 2-3 alternative designs with different budget/feature trade-offs.
+- **Processing Time:** Synchronous generation takes 3-8 seconds. Use async for
+  complex designs.
+- **Alternative Designs:** Always provides 2-3 alternative designs with
+  different budget/feature trade-offs.
 - **3D Preview:** Automatically generated 3D model included in response.
 - **Customization:** Generated designs can be modified after creation.
-- **Save Design:** Use separate endpoint to save generated design to user account.
+- **Save Design:** Use separate endpoint to save generated design to user
+  account.
 
 ---
 

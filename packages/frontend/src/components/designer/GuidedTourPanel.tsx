@@ -63,26 +63,37 @@ const SPEED_OPTIONS = [
 const ANNOTATION_ICONS: Record<string, React.ReactNode> = {
   info: (
     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
     </svg>
   ),
   warning: (
     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round"
-        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+      />
     </svg>
   ),
   tip: (
     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round"
-        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+      />
     </svg>
   ),
 };
 
 const ANNOTATION_COLORS: Record<string, string> = {
   info: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border-blue-200 dark:border-blue-800',
-  warning: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border-amber-200 dark:border-amber-800',
+  warning:
+    'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border-amber-200 dark:border-amber-800',
   tip: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300 border-green-200 dark:border-green-800',
 };
 
@@ -115,7 +126,9 @@ export default function GuidedTourPanel({
 
   // ─── Event listeners ───
   useEffect(() => {
-    if (!walkthrough) {return;}
+    if (!walkthrough) {
+      return;
+    }
 
     const handleStateChange = ({ state: newState }: { state: WalkthroughState }) => {
       setState(newState);
@@ -171,7 +184,9 @@ export default function GuidedTourPanel({
 
   // ─── Animation loop for update calls ───
   useEffect(() => {
-    if (!walkthrough) {return;}
+    if (!walkthrough) {
+      return;
+    }
 
     const animate = (time: number) => {
       const delta = lastTimeRef.current ? (time - lastTimeRef.current) / 1000 : 1 / 60;
@@ -197,7 +212,9 @@ export default function GuidedTourPanel({
 
   // ─── Generate and start tour ───
   const handleStartTour = useCallback(() => {
-    if (!walkthrough) {return;}
+    if (!walkthrough) {
+      return;
+    }
 
     // Convert kitchen items to the format expected by GuidedWalkthrough
     const items = kitchenItems.map((item) => ({
@@ -237,7 +254,9 @@ export default function GuidedTourPanel({
 
   // ─── Controls ───
   const handlePlayPause = useCallback(() => {
-    if (!walkthrough) {return;}
+    if (!walkthrough) {
+      return;
+    }
 
     if (state === 'playing' || state === 'at_annotation') {
       walkthrough.pause();
@@ -249,7 +268,9 @@ export default function GuidedTourPanel({
   }, [walkthrough, state, handleStartTour]);
 
   const handleStop = useCallback(() => {
-    if (!walkthrough) {return;}
+    if (!walkthrough) {
+      return;
+    }
     walkthrough.stop();
     setAnnotation(null);
     setProgress(0);
@@ -284,9 +305,18 @@ export default function GuidedTourPanel({
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white"
         >
-          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round"
-              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          <svg
+            className="w-5 h-5 text-blue-600 dark:text-blue-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
           </svg>
           {t('tour.title', 'Visite guidee')}
           <svg
@@ -305,7 +335,13 @@ export default function GuidedTourPanel({
             className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
             aria-label={t('common.close', 'Close')}
           >
-            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg
+              className="w-4 h-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -370,8 +406,8 @@ export default function GuidedTourPanel({
                         i < currentWaypoint
                           ? 'bg-blue-500 dark:bg-blue-400'
                           : i === currentWaypoint
-                          ? 'bg-blue-600 dark:bg-blue-300 ring-2 ring-blue-200 dark:ring-blue-700'
-                          : 'bg-gray-300 dark:bg-gray-600'
+                            ? 'bg-blue-600 dark:bg-blue-300 ring-2 ring-blue-200 dark:ring-blue-700'
+                            : 'bg-gray-300 dark:bg-gray-600'
                       }`}
                     />
                   ))}
@@ -382,10 +418,10 @@ export default function GuidedTourPanel({
 
           {/* Annotation display */}
           {annotation && (
-            <div className={`flex items-start gap-2.5 p-3 rounded-lg border ${ANNOTATION_COLORS[annotation.type] || ANNOTATION_COLORS.info}`}>
-              <span className="flex-shrink-0 mt-0.5">
-                {ANNOTATION_ICONS[annotation.type]}
-              </span>
+            <div
+              className={`flex items-start gap-2.5 p-3 rounded-lg border ${ANNOTATION_COLORS[annotation.type] || ANNOTATION_COLORS.info}`}
+            >
+              <span className="flex-shrink-0 mt-0.5">{ANNOTATION_ICONS[annotation.type]}</span>
               <p className="text-sm leading-snug">{annotation.text}</p>
             </div>
           )}
@@ -399,7 +435,13 @@ export default function GuidedTourPanel({
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label={t('tour.previous', 'Previous')}
             >
-              <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-5 h-5 text-gray-700 dark:text-gray-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -411,7 +453,11 @@ export default function GuidedTourPanel({
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label={t('tour.stop', 'Stop')}
             >
-              <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                className="w-5 h-5 text-gray-700 dark:text-gray-300"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <rect x="6" y="6" width="12" height="12" rx="2" />
               </svg>
             </button>
@@ -446,7 +492,13 @@ export default function GuidedTourPanel({
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label={t('tour.next', 'Next')}
             >
-              <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-5 h-5 text-gray-700 dark:text-gray-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -485,13 +537,20 @@ export default function GuidedTourPanel({
                     : 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/50'
                 }`}
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
-                {vrActive
-                  ? t('tour.disableVR', 'Desactiver VR')
-                  : t('tour.enableVR', 'Activer VR')}
+                {vrActive ? t('tour.disableVR', 'Desactiver VR') : t('tour.enableVR', 'Activer VR')}
               </button>
             </div>
           )}
@@ -499,27 +558,31 @@ export default function GuidedTourPanel({
           {/* Status indicator */}
           {isActive && (
             <div className="text-center">
-              <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${
-                state === 'playing'
-                  ? 'text-green-600 dark:text-green-400'
-                  : state === 'paused'
-                  ? 'text-amber-600 dark:text-amber-400'
-                  : state === 'at_annotation'
-                  ? 'text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 dark:text-gray-400'
-              }`}>
-                <span className={`w-2 h-2 rounded-full ${
+              <span
+                className={`inline-flex items-center gap-1.5 text-xs font-medium ${
                   state === 'playing'
-                    ? 'bg-green-500 animate-pulse'
+                    ? 'text-green-600 dark:text-green-400'
                     : state === 'paused'
-                    ? 'bg-amber-500'
-                    : state === 'at_annotation'
-                    ? 'bg-blue-500 animate-pulse'
-                    : 'bg-gray-400'
-                }`} />
+                      ? 'text-amber-600 dark:text-amber-400'
+                      : state === 'at_annotation'
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-gray-500 dark:text-gray-400'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    state === 'playing'
+                      ? 'bg-green-500 animate-pulse'
+                      : state === 'paused'
+                        ? 'bg-amber-500'
+                        : state === 'at_annotation'
+                          ? 'bg-blue-500 animate-pulse'
+                          : 'bg-gray-400'
+                  }`}
+                />
                 {state === 'playing' && t('tour.playing', 'En cours')}
                 {state === 'paused' && t('tour.paused', 'En pause')}
-                {state === 'at_annotation' && t('tour.annotation', 'Point d\'interet')}
+                {state === 'at_annotation' && t('tour.annotation', "Point d'interet")}
               </span>
             </div>
           )}

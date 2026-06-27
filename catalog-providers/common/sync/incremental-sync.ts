@@ -9,7 +9,7 @@ export interface SyncState {
   lastSyncAt: Date;
   lastSuccessfulSyncAt?: Date;
   totalProducts: number;
-  fingerprint?: string;  // Hash du contenu pour détecter changements
+  fingerprint?: string; // Hash du contenu pour détecter changements
 }
 
 /**
@@ -18,7 +18,7 @@ export interface SyncState {
 export interface IncrementalSyncResult {
   added: CatalogItem[];
   updated: CatalogItem[];
-  removed: string[];  // IDs des produits supprimés
+  removed: string[]; // IDs des produits supprimés
   unchanged: number;
   errors: Array<{ productId: string; error: string }>;
 }
@@ -75,13 +75,13 @@ export class IncrementalSyncManager {
 
       if (!existing) {
         // Nouveau produit
-        result.added.push(current as any);  // TODO: Convert to CatalogItem
+        result.added.push(current as any); // TODO: Convert to CatalogItem
       } else {
         // Vérifier si modifié
         const hasChanged = this.detectChange(current, existing, strategy);
 
         if (hasChanged) {
-          result.updated.push(current as any);  // TODO: Convert to CatalogItem
+          result.updated.push(current as any); // TODO: Convert to CatalogItem
         } else {
           result.unchanged++;
         }
@@ -172,10 +172,7 @@ export class IncrementalSyncManager {
   /**
    * Met à jour l'état après sync
    */
-  private async updateState(
-    providerId: string,
-    products: ProviderProduct[]
-  ): Promise<void> {
+  private async updateState(providerId: string, products: ProviderProduct[]): Promise<void> {
     const fingerprint = this.computeHash(products);
 
     const state: SyncState = {
@@ -202,18 +199,14 @@ export class IncrementalSyncManager {
   /**
    * Vérifie si une sync est nécessaire
    */
-  needsSync(
-    providerId: string,
-    maxAgeMinutes: number = 60
-  ): boolean {
+  needsSync(providerId: string, maxAgeMinutes: number = 60): boolean {
     const state = this.getState(providerId);
 
     if (!state || !state.lastSuccessfulSyncAt) {
       return true;
     }
 
-    const ageMinutes =
-      (Date.now() - state.lastSuccessfulSyncAt.getTime()) / 1000 / 60;
+    const ageMinutes = (Date.now() - state.lastSuccessfulSyncAt.getTime()) / 1000 / 60;
 
     return ageMinutes >= maxAgeMinutes;
   }

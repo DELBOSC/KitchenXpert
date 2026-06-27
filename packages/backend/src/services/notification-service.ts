@@ -128,7 +128,11 @@ export interface NotificationRepository {
   getStats(userId: string): Promise<NotificationStats>;
   getPreferences(userId: string): Promise<NotificationPreferences | null>;
   savePreferences(preferences: NotificationPreferences): Promise<NotificationPreferences>;
-  getTemplate(type: NotificationType, channel: NotificationChannel, language: string): Promise<NotificationTemplate | null>;
+  getTemplate(
+    type: NotificationType,
+    channel: NotificationChannel,
+    language: string
+  ): Promise<NotificationTemplate | null>;
   savePushSubscription(subscription: PushSubscription): Promise<void>;
   getPushSubscriptions(userId: string): Promise<PushSubscription[]>;
   deletePushSubscription(endpoint: string): Promise<boolean>;
@@ -171,7 +175,7 @@ export class NotificationService {
   constructor(
     private repository: NotificationRepository,
     pushProvider?: PushProvider,
-    userLookup?: UserEmailLookup,
+    userLookup?: UserEmailLookup
   ) {
     this.pushProvider = pushProvider || null;
     this.userLookup = userLookup || null;
@@ -210,7 +214,7 @@ export class NotificationService {
     }
 
     let channels = data.channels || typePrefs?.channels || ['in_app'];
-    channels = channels.filter(ch => preferences.channels[ch]);
+    channels = channels.filter((ch) => preferences.channels[ch]);
 
     return this.sendToChannels(userId, type, channels, data);
   }
@@ -288,7 +292,9 @@ export class NotificationService {
         await this.sendEmail(notification);
         break;
       case 'sms':
-        logger.info(`[Notification] SMS delivery not yet implemented for user ${notification.userId}`);
+        logger.info(
+          `[Notification] SMS delivery not yet implemented for user ${notification.userId}`
+        );
         break;
     }
   }
@@ -352,7 +358,7 @@ export class NotificationService {
     const subscriptions = await this.repository.getPushSubscriptions(notification.userId);
 
     const results = await Promise.allSettled(
-      subscriptions.map(subscription =>
+      subscriptions.map((subscription) =>
         this.pushProvider!.send(subscription, {
           title: notification.title,
           body: notification.body,
@@ -370,9 +376,11 @@ export class NotificationService {
       )
     );
 
-    const failures = results.filter(r => r.status === 'rejected');
+    const failures = results.filter((r) => r.status === 'rejected');
     if (failures.length > 0) {
-      logger.warn(`[Notification] ${failures.length}/${subscriptions.length} push deliveries failed for user ${notification.userId}`);
+      logger.warn(
+        `[Notification] ${failures.length}/${subscriptions.length} push deliveries failed for user ${notification.userId}`
+      );
     }
   }
 
@@ -419,7 +427,9 @@ export class NotificationService {
 
   async getPreferences(userId: string): Promise<NotificationPreferences> {
     const prefs = await this.repository.getPreferences(userId);
-    if (prefs) {return prefs;}
+    if (prefs) {
+      return prefs;
+    }
 
     return {
       userId,
@@ -507,7 +517,7 @@ export class NotificationService {
     const batchSize = 100;
     for (let i = 0; i < userIds.length; i += batchSize) {
       const batch = userIds.slice(i, i + batchSize);
-      await Promise.all(batch.map(userId => this.send(userId, type, data)));
+      await Promise.all(batch.map((userId) => this.send(userId, type, data)));
     }
   }
 
@@ -523,8 +533,12 @@ export class NotificationService {
     const [startHour, startMinute] = quietHours.start.split(':').map(Number);
     const [endHour, endMinute] = quietHours.end.split(':').map(Number);
 
-    if (startHour === undefined || startMinute === undefined ||
-        endHour === undefined || endMinute === undefined) {
+    if (
+      startHour === undefined ||
+      startMinute === undefined ||
+      endHour === undefined ||
+      endMinute === undefined
+    ) {
       return false;
     }
 
@@ -540,7 +554,10 @@ export class NotificationService {
 }
 
 export class NotificationServiceError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'NotificationServiceError';
   }

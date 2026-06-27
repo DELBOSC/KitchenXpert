@@ -212,7 +212,7 @@ export const LEGAL: LegalConfig = {
   // already have an agreement with another mediator (Médiation Conso,
   // FEVAD, etc.).
   mediator: {
-    name: 'CMAP — Centre de Médiation et d\'Arbitrage de Paris',
+    name: "CMAP — Centre de Médiation et d'Arbitrage de Paris",
     address: {
       street: '39 avenue Franklin D. Roosevelt',
       postalCode: '75008',
@@ -244,18 +244,19 @@ export const LEGAL: LegalConfig = {
       purpose: 'Envoi des emails transactionnels (vérification, reset, notifications)',
       country: 'US',
       outsideEU: true,
-      transferSafeguard: 'Clauses Contractuelles Types adoptées par la Commission européenne (décision 2021/914)',
+      transferSafeguard:
+        'Clauses Contractuelles Types adoptées par la Commission européenne (décision 2021/914)',
     },
     {
       name: 'Anthropic, PBC',
-      purpose: 'API Claude pour l\'assistant conversationnel (sur consentement)',
+      purpose: "API Claude pour l'assistant conversationnel (sur consentement)",
       country: 'US',
       outsideEU: true,
       transferSafeguard: 'Clauses Contractuelles Types (CCT) — décision 2021/914',
     },
     {
       name: 'Google Ireland Ltd.',
-      purpose: 'API Gemini pour la génération d\'images de cuisine (sur consentement)',
+      purpose: "API Gemini pour la génération d'images de cuisine (sur consentement)",
       country: 'IE',
       outsideEU: false,
     },
@@ -287,13 +288,15 @@ export const LEGAL: LegalConfig = {
       id: 'premium',
       name: 'Premium',
       monthlyEuros: 14.9,
-      description: 'Cuisines illimitées, 5 catalogues fournisseurs, devis et exports PDF/BIM, IA conversationnelle.',
+      description:
+        'Cuisines illimitées, 5 catalogues fournisseurs, devis et exports PDF/BIM, IA conversationnelle.',
     },
     {
       id: 'studio',
       name: 'Studio',
       monthlyEuros: 49,
-      description: 'Tout Premium + collaboration multi-utilisateurs, marque blanche, accès Marketplace installateurs prioritaire.',
+      description:
+        'Tout Premium + collaboration multi-utilisateurs, marque blanche, accès Marketplace installateurs prioritaire.',
     },
   ],
 };
@@ -339,9 +342,9 @@ export function assertProductionReady(): void {
   if (!isLegalConfigComplete()) {
     throw new Error(
       'Refusing to start: packages/frontend/src/config/legal.ts still ' +
-      'contains EXAMPLE_REPLACE_ME_ or TODO_LAURENT_ placeholders. ' +
-      'Replace every example value with the real legal information ' +
-      'from your Kbis / infogreffe.fr BEFORE deploying to production.',
+        'contains EXAMPLE_REPLACE_ME_ or TODO_LAURENT_ placeholders. ' +
+        'Replace every example value with the real legal information ' +
+        'from your Kbis / infogreffe.fr BEFORE deploying to production.'
     );
   }
 }

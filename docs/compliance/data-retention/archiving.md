@@ -16,16 +16,18 @@
 
 ## Introduction
 
-This document defines the procedures for archiving data at KitchenXpert. Archiving moves infrequently accessed data to cost-effective storage while maintaining accessibility.
+This document defines the procedures for archiving data at KitchenXpert.
+Archiving moves infrequently accessed data to cost-effective storage while
+maintaining accessibility.
 
 ### Archiving vs. Backup
 
-| Aspect | Archive | Backup |
-|--------|---------|--------|
-| Purpose | Long-term retention | Disaster recovery |
-| Access | Occasional | Emergency |
-| Duration | Years | Days to months |
-| Cost focus | Storage optimization | Recovery speed |
+| Aspect     | Archive              | Backup            |
+| ---------- | -------------------- | ----------------- |
+| Purpose    | Long-term retention  | Disaster recovery |
+| Access     | Occasional           | Emergency         |
+| Duration   | Years                | Days to months    |
+| Cost focus | Storage optimization | Recovery speed    |
 
 ---
 
@@ -33,21 +35,21 @@ This document defines the procedures for archiving data at KitchenXpert. Archivi
 
 ### Tiered Approach
 
-| Tier | Age | Access Frequency | Storage |
-|------|-----|------------------|---------|
-| Active | 0-1 year | Frequent | Primary DB |
-| Warm Archive | 1-3 years | Monthly | S3 Standard-IA |
-| Cold Archive | 3-7 years | Yearly | S3 Glacier |
-| Deep Archive | 7+ years | Rarely | Glacier Deep Archive |
+| Tier         | Age       | Access Frequency | Storage              |
+| ------------ | --------- | ---------------- | -------------------- |
+| Active       | 0-1 year  | Frequent         | Primary DB           |
+| Warm Archive | 1-3 years | Monthly          | S3 Standard-IA       |
+| Cold Archive | 3-7 years | Yearly           | S3 Glacier           |
+| Deep Archive | 7+ years  | Rarely           | Glacier Deep Archive |
 
 ### Archive Triggers
 
-| Trigger | Criteria | Action |
-|---------|----------|--------|
-| Age-based | Data older than threshold | Automatic archive |
-| Status-based | Account closed or order completed | Automatic archive |
-| Volume-based | Storage threshold exceeded | Prioritized archive |
-| Manual | Business decision | Requested archive |
+| Trigger      | Criteria                          | Action              |
+| ------------ | --------------------------------- | ------------------- |
+| Age-based    | Data older than threshold         | Automatic archive   |
+| Status-based | Account closed or order completed | Automatic archive   |
+| Volume-based | Storage threshold exceeded        | Prioritized archive |
+| Manual       | Business decision                 | Requested archive   |
 
 ---
 
@@ -55,28 +57,28 @@ This document defines the procedures for archiving data at KitchenXpert. Archivi
 
 ### Customer Archives
 
-| Data Type | Archive After | Storage Tier | Retention |
-|-----------|---------------|--------------|-----------|
-| Closed accounts | 90 days after closure | Warm then Cold | 3 years |
-| Inactive accounts | 2 years no activity | Warm | Account + 3 years |
-| Old designs | 1 year no access | Warm then Cold | 5 years |
-| Order history | 1 year after order | Warm then Cold | 7 years |
+| Data Type         | Archive After         | Storage Tier   | Retention         |
+| ----------------- | --------------------- | -------------- | ----------------- |
+| Closed accounts   | 90 days after closure | Warm then Cold | 3 years           |
+| Inactive accounts | 2 years no activity   | Warm           | Account + 3 years |
+| Old designs       | 1 year no access      | Warm then Cold | 5 years           |
+| Order history     | 1 year after order    | Warm then Cold | 7 years           |
 
 ### Transaction Archives
 
-| Data Type | Archive After | Storage Tier | Retention |
-|-----------|---------------|--------------|-----------|
-| Completed orders | 90 days | Warm | 7 years |
-| Payment records | 90 days | Warm then Cold | 7 years |
-| Invoices | 1 year | Warm then Cold | 7 years |
+| Data Type        | Archive After | Storage Tier   | Retention |
+| ---------------- | ------------- | -------------- | --------- |
+| Completed orders | 90 days       | Warm           | 7 years   |
+| Payment records  | 90 days       | Warm then Cold | 7 years   |
+| Invoices         | 1 year        | Warm then Cold | 7 years   |
 
 ### System Archives
 
-| Data Type | Archive After | Storage Tier | Retention |
-|-----------|---------------|--------------|-----------|
-| Audit logs | 90 days | Warm then Cold | 7 years |
-| Security logs | 90 days | Warm then Cold | 3 years |
-| Access logs | 30 days | Warm | 2 years |
+| Data Type     | Archive After | Storage Tier   | Retention |
+| ------------- | ------------- | -------------- | --------- |
+| Audit logs    | 90 days       | Warm then Cold | 7 years   |
+| Security logs | 90 days       | Warm then Cold | 3 years   |
+| Access logs   | 30 days       | Warm           | 2 years   |
 
 ---
 
@@ -108,20 +110,20 @@ This document defines the procedures for archiving data at KitchenXpert. Archivi
 
 ### Encryption
 
-| Layer | Method | Key Management |
-|-------|--------|----------------|
-| In-transit | TLS 1.3 | Managed certificates |
-| At-rest | AES-256-GCM | AWS KMS |
-| Archive-level | AES-256 | Dedicated archive keys |
+| Layer         | Method      | Key Management         |
+| ------------- | ----------- | ---------------------- |
+| In-transit    | TLS 1.3     | Managed certificates   |
+| At-rest       | AES-256-GCM | AWS KMS                |
+| Archive-level | AES-256     | Dedicated archive keys |
 
 ### Access Control
 
-| Role | Permissions |
-|------|-------------|
-| Archive Service | Read/Write archives |
-| Retrieval Service | Read archives |
-| Compliance Team | Read catalog, request retrieval |
-| IT Operations | Manage storage, monitor |
+| Role              | Permissions                     |
+| ----------------- | ------------------------------- |
+| Archive Service   | Read/Write archives             |
+| Retrieval Service | Read archives                   |
+| Compliance Team   | Read catalog, request retrieval |
+| IT Operations     | Manage storage, monitor         |
 
 ### Integrity Protection
 
@@ -136,11 +138,11 @@ This document defines the procedures for archiving data at KitchenXpert. Archivi
 
 ### Retrieval Tiers
 
-| Tier | Time to Retrieve | Use Case |
-|------|------------------|----------|
-| Expedited | 1-5 minutes | Emergency |
-| Standard | 3-5 hours | Normal requests |
-| Bulk | 5-12 hours | Large datasets |
+| Tier      | Time to Retrieve | Use Case        |
+| --------- | ---------------- | --------------- |
+| Expedited | 1-5 minutes      | Emergency       |
+| Standard  | 3-5 hours        | Normal requests |
+| Bulk      | 5-12 hours       | Large datasets  |
 
 ### Retrieval Process
 
@@ -167,12 +169,12 @@ This document defines the procedures for archiving data at KitchenXpert. Archivi
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value         |
+| -------------- | ------------- |
 | Document Owner | IT Operations |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10    |
+| Version        | 2.0           |
 
 ---
 
-*For questions, contact it-operations@kitchenxpert.com.*
+_For questions, contact it-operations@kitchenxpert.com._

@@ -16,7 +16,10 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
@@ -53,7 +56,13 @@ const mockPrisma = {
 jest.mock('../database/client', () => ({ prisma: mockPrisma }));
 
 jest.mock('../config/app-config', () => ({
-  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+  config: {
+    corsOrigins: ['http://localhost:3000'],
+    env: 'test',
+    port: 3000,
+    version: '1.0.0',
+    rateLimit: { maxRequests: 100 },
+  },
 }));
 
 jest.mock('../auth/token-blacklist', () => ({
@@ -69,7 +78,9 @@ jest.mock('../auth/token-blacklist', () => ({
 jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
-      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+      userId: 'test-user-id',
+      email: 'test@test.com',
+      role: 'user',
     }),
     generateTokens: jest.fn(),
   },
@@ -170,7 +181,7 @@ describe('Schmidt Routes', () => {
           material: 'oak',
           color: 'white',
         }),
-        expect.objectContaining({ page: 2, limit: 10 }),
+        expect.objectContaining({ page: 2, limit: 10 })
       );
     });
   });
@@ -180,18 +191,14 @@ describe('Schmidt Routes', () => {
       mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
       mockProductFindAll.mockResolvedValue(mockProductList);
 
-      const response = await request(app)
-        .get('/schmidt/products/search?q=arcos')
-        .expect(200);
+      const response = await request(app).get('/schmidt/products/search?q=arcos').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.meta.provider).toBe('schmidt');
     });
 
     it('should return 400 when search query "q" is missing', async () => {
-      const response = await request(app)
-        .get('/schmidt/products/search')
-        .expect(400);
+      const response = await request(app).get('/schmidt/products/search').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.code).toBe('MISSING_QUERY');

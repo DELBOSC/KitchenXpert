@@ -44,7 +44,10 @@ export function useSandboxLimits(): SandboxLimits {
   const consumeAi = useSandboxStore((s) => s.consumeAiUse);
   const aiUsesRemaining = useSandboxStore((s) => s.limits.aiUsesRemaining);
 
-  const [signupPrompt, setSignupPrompt] = useState<{ open: boolean; trigger: FrictionTrigger | null }>({
+  const [signupPrompt, setSignupPrompt] = useState<{
+    open: boolean;
+    trigger: FrictionTrigger | null;
+  }>({
     open: false,
     trigger: null,
   });
@@ -59,7 +62,9 @@ export function useSandboxLimits(): SandboxLimits {
   }, []);
 
   const tryConsumeAi = useCallback((): boolean => {
-    if (consumeAi()) {return true;}
+    if (consumeAi()) {
+      return true;
+    }
     openPrompt('ai_use');
     return false;
   }, [consumeAi, openPrompt]);
@@ -83,9 +88,12 @@ export function useSandboxLimits(): SandboxLimits {
     return false;
   }, [openPrompt]);
 
-  const forceTrigger = useCallback((trigger: FrictionTrigger) => {
-    openPrompt(trigger);
-  }, [openPrompt]);
+  const forceTrigger = useCallback(
+    (trigger: FrictionTrigger) => {
+      openPrompt(trigger);
+    },
+    [openPrompt]
+  );
 
   return {
     aiUsesRemaining,

@@ -83,7 +83,7 @@ export const processWebhookDelivery = async (job) => {
     const response = await axios.post(url, payload, {
       headers,
       timeout: WEBHOOK_CONFIG.retry.timeout,
-      validateStatus: status => status >= 200 && status < 300,
+      validateStatus: (status) => status >= 200 && status < 300,
     });
 
     // Log success

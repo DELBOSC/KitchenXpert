@@ -35,9 +35,9 @@ type XRFrameWithDepth = Omit<XRFrame, 'getDepthInformation'> & {
 
 export interface RoomScanResult {
   dimensions: {
-    width: number;   // mm
-    length: number;  // mm
-    height: number;  // mm
+    width: number; // mm
+    length: number; // mm
+    height: number; // mm
   };
   walls: Array<{
     id: string;
@@ -86,10 +86,7 @@ interface DepthSample {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-const LiDARScanner: React.FC<LiDARScannerProps> = ({
-  onScanComplete,
-  onCancel,
-}) => {
+const LiDARScanner: React.FC<LiDARScannerProps> = ({ onScanComplete, onCancel }) => {
   const { t } = useTranslation();
 
   const [scannerState, setScannerState] = useState<ScannerState>('checking');
@@ -169,7 +166,9 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
   useEffect(() => {
     return () => {
       if (xrSessionRef.current) {
-        xrSessionRef.current.end().catch(() => { /* ignore */ });
+        xrSessionRef.current.end().catch(() => {
+          /* ignore */
+        });
       }
       uploadControllerRef.current?.abort();
     };
@@ -177,13 +176,10 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
 
   // ─── Helpers ─────────────────────────────────────────────────────────────
 
-  const defaultWalls = (
-    width: number,
-    length: number
-  ): RoomScanResult['walls'] => [
-    { id: 'wall_back',  side: 'back',  length: width,  hasWindow: false, hasDoor: false },
-    { id: 'wall_front', side: 'front', length: width,  hasWindow: false, hasDoor: true  },
-    { id: 'wall_left',  side: 'left',  length, hasWindow: true,  hasDoor: false },
+  const defaultWalls = (width: number, length: number): RoomScanResult['walls'] => [
+    { id: 'wall_back', side: 'back', length: width, hasWindow: false, hasDoor: false },
+    { id: 'wall_front', side: 'front', length: width, hasWindow: false, hasDoor: true },
+    { id: 'wall_left', side: 'left', length, hasWindow: true, hasDoor: false },
     { id: 'wall_right', side: 'right', length, hasWindow: false, hasDoor: false },
   ];
 
@@ -199,13 +195,15 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
         dimensions: { width: 3500, length: 3000, height: 2500 },
         walls: defaultWalls(3500, 3000),
         openings: [],
-        confidence: 0.30,
+        confidence: 0.3,
         method: 'lidar',
       };
     }
 
     const median = (arr: number[]): number => {
-      if (arr.length === 0) {return 3.0;}
+      if (arr.length === 0) {
+        return 3.0;
+      }
       const s = [...arr].sort((a, b) => a - b);
       return s[Math.floor(s.length / 2)]!;
     };
@@ -224,28 +222,25 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
 
     const sides = samples
       .filter(
-        (s) =>
-          Math.abs(s.pitch) < 0.4 &&
-          Math.abs(Math.abs(s.yaw) - Math.PI / 2) < Math.PI / 4
+        (s) => Math.abs(s.pitch) < 0.4 && Math.abs(Math.abs(s.yaw) - Math.PI / 2) < Math.PI / 4
       )
       .map((s) => s.depth);
 
     const ceiling = samples.filter((s) => s.pitch > 0.5).map((s) => s.depth);
 
-    const fbDist   = median(frontBack.length > 5 ? frontBack : samples.map((s) => s.depth));
-    const sideDist = median(sides.length   > 5 ? sides     : samples.map((s) => s.depth));
-    const ceilDist = median(ceiling.length > 3 ? ceiling   : [2.5]);
+    const fbDist = median(frontBack.length > 5 ? frontBack : samples.map((s) => s.depth));
+    const sideDist = median(sides.length > 5 ? sides : samples.map((s) => s.depth));
+    const ceilDist = median(ceiling.length > 3 ? ceiling : [2.5]);
 
     // Convert metres → mm and clamp to realistic kitchen ranges
-    const clamp = (v: number, min: number, max: number): number =>
-      Math.max(min, Math.min(max, v));
+    const clamp = (v: number, min: number, max: number): number => Math.max(min, Math.min(max, v));
 
-    const width  = clamp(Math.round(fbDist   * 1000), 1500, 10000);
+    const width = clamp(Math.round(fbDist * 1000), 1500, 10000);
     const length = clamp(Math.round(sideDist * 1000), 1500, 10000);
-    const height = clamp(Math.round(ceilDist * 1000), 2000,  4000);
+    const height = clamp(Math.round(ceilDist * 1000), 2000, 4000);
 
     // Confidence grows with the number of captured frames (target 600 = ~10 s @ 60 fps)
-    const confidence = Math.min(0.45 + (frameCount / 600) * 0.45, 0.90);
+    const confidence = Math.min(0.45 + (frameCount / 600) * 0.45, 0.9);
 
     return {
       dimensions: { width, length, height },
@@ -254,13 +249,15 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       confidence: Math.round(confidence * 100) / 100,
       method: 'lidar',
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ─── Start LiDAR Scan ───────────────────────────────────────────────────
 
   const handleStartScan = useCallback(async (): Promise<void> => {
-    if (!navigator.xr) {return;}
+    if (!navigator.xr) {
+      return;
+    }
 
     setError(null);
     setScanProgress(0);
@@ -290,26 +287,27 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       // ── Depth heatmap renderer ──────────────────────────────────────────
       const renderDepthHeatmap = (depthInfo: XRDepthInformation): void => {
         const canvas = heatmapCanvasRef.current;
-        if (!canvas) {return;}
+        if (!canvas) {
+          return;
+        }
         const ctx = canvas.getContext('2d');
-        if (!ctx) {return;}
+        if (!ctx) {
+          return;
+        }
 
-        canvas.width  = depthInfo.width;
+        canvas.width = depthInfo.width;
         canvas.height = depthInfo.height;
         const imageData = ctx.createImageData(depthInfo.width, depthInfo.height);
 
         for (let y = 0; y < depthInfo.height; y++) {
           for (let x = 0; x < depthInfo.width; x++) {
-            const d = depthInfo.getDepthInMeters(
-              x / depthInfo.width,
-              y / depthInfo.height
-            );
+            const d = depthInfo.getDepthInMeters(x / depthInfo.width, y / depthInfo.height);
             const t = Math.min(d / 6, 1);
             const r = Math.round((1 - t) * 220);
             const g = Math.round(Math.sin(t * Math.PI) * 190);
             const b = Math.round(t * 220);
             const i = (y * depthInfo.width + x) * 4;
-            imageData.data[i]     = r;
+            imageData.data[i] = r;
             imageData.data[i + 1] = g;
             imageData.data[i + 2] = b;
             imageData.data[i + 3] = 150;
@@ -321,7 +319,9 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       // ── XR animation frame callback ─────────────────────────────────────
       const onXRFrame = (_time: number, frame: XRFrame): void => {
         const activeSession = xrSessionRef.current;
-        if (!activeSession || !referenceSpaceRef.current) {return;}
+        if (!activeSession || !referenceSpaceRef.current) {
+          return;
+        }
 
         const viewerPose = frame.getViewerPose(referenceSpaceRef.current);
         if (viewerPose) {
@@ -343,10 +343,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
               // Sample a 3×3 grid of depth values per frame
               for (let row = 0; row < 3; row++) {
                 for (let col = 0; col < 3; col++) {
-                  const d = depthInfo.getDepthInMeters(
-                    (col + 0.5) / 3,
-                    (row + 0.5) / 3
-                  );
+                  const d = depthInfo.getDepthInMeters((col + 0.5) / 3, (row + 0.5) / 3);
                   // Accept readings between 15 cm and 12 m
                   if (d > 0.15 && d < 12) {
                     depthSamplesRef.current.push({ pitch, yaw, depth: d });
@@ -376,7 +373,9 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       // Auto-stop after 20 seconds maximum
       setTimeout(() => {
         if (xrSessionRef.current) {
-          xrSessionRef.current.end().catch(() => { /* ignore */ });
+          xrSessionRef.current.end().catch(() => {
+            /* ignore */
+          });
         }
       }, 20000);
 
@@ -389,7 +388,6 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
         setScanProgress(100);
         setScannerState('review');
       });
-
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to start LiDAR scan'));
       setScannerState('lidar_ready');
@@ -399,19 +397,24 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
   // ─── Manual Input Submit ─────────────────────────────────────────────────
 
   const handleManualSubmit = useCallback((): void => {
-    const width  = parseInt(manualDimensions.width,  10);
+    const width = parseInt(manualDimensions.width, 10);
     const length = parseInt(manualDimensions.length, 10);
     const height = parseInt(manualDimensions.height, 10);
 
     if (isNaN(width) || isNaN(length) || isNaN(height)) {
-      setError(t('lidarScanner.invalidDimensions', 'Please enter valid dimensions in millimeters.'));
+      setError(
+        t('lidarScanner.invalidDimensions', 'Please enter valid dimensions in millimeters.')
+      );
       return;
     }
 
     if (
-      width  < 1000 || width  > 15000 ||
-      length < 1000 || length > 15000 ||
-      height < 2000 || height > 4000
+      width < 1000 ||
+      width > 15000 ||
+      length < 1000 ||
+      length > 15000 ||
+      height < 2000 ||
+      height > 4000
     ) {
       setError(
         t(
@@ -425,10 +428,10 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
     const result: RoomScanResult = {
       dimensions: { width, length, height },
       walls: [
-        { id: 'wall_back',  side: 'back',  length: width,  hasWindow: false, hasDoor: false },
-        { id: 'wall_left',  side: 'left',  length,         hasWindow: false, hasDoor: false },
-        { id: 'wall_right', side: 'right', length,         hasWindow: false, hasDoor: false },
-        { id: 'wall_front', side: 'front', length: width,  hasWindow: false, hasDoor: true  },
+        { id: 'wall_back', side: 'back', length: width, hasWindow: false, hasDoor: false },
+        { id: 'wall_left', side: 'left', length, hasWindow: false, hasDoor: false },
+        { id: 'wall_right', side: 'right', length, hasWindow: false, hasDoor: false },
+        { id: 'wall_front', side: 'front', length: width, hasWindow: false, hasDoor: true },
       ],
       openings: [],
       confidence: 0.5,
@@ -479,7 +482,9 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       setScanResult(result);
       setScannerState('review');
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {return;} // silently cancelled
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      } // silently cancelled
       setError(getErrorMessage(err, "Erreur lors de l'analyse des photos"));
     } finally {
       uploadControllerRef.current = null;
@@ -491,9 +496,13 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
 
   const handleDimensionEdit = useCallback(
     (field: 'width' | 'length' | 'height', value: string): void => {
-      if (!scanResult) {return;}
+      if (!scanResult) {
+        return;
+      }
       const numValue = parseInt(value, 10);
-      if (isNaN(numValue)) {return;}
+      if (isNaN(numValue)) {
+        return;
+      }
 
       setScanResult({
         ...scanResult,
@@ -536,8 +545,18 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       <div className="fixed inset-0 z-50 bg-gray-900 bg-opacity-95 flex items-center justify-center p-4">
         <div className="bg-gray-800 dark:bg-gray-900 rounded-xl p-8 max-w-md w-full text-center border border-gray-700">
           <div className="w-20 h-20 mx-auto mb-6 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center">
-            <svg className="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-10 h-10 text-green-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
 
@@ -648,8 +667,7 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
                 />
               </div>
               <p className="text-white text-center text-sm mt-2">
-                {Math.round(scanProgress)}%{' '}
-                {t('lidarScanner.roomCovered', 'of room scanned')}
+                {Math.round(scanProgress)}% {t('lidarScanner.roomCovered', 'of room scanned')}
               </p>
             </div>
           </div>
@@ -674,7 +692,9 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
             <button
               onClick={() => {
                 if (xrSessionRef.current) {
-                  xrSessionRef.current.end().catch(() => { /* ignore */ });
+                  xrSessionRef.current.end().catch(() => {
+                    /* ignore */
+                  });
                 }
                 setScannerState('lidar_ready');
               }}
@@ -694,16 +714,15 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
     const editedDimensions = scanResult.dimensions;
     const confidence = scanResult.confidence;
     const confColor =
-      confidence >= 0.80
+      confidence >= 0.8
         ? 'text-green-600'
-        : confidence >= 0.60
-        ? 'text-yellow-600'
-        : 'text-orange-600';
+        : confidence >= 0.6
+          ? 'text-yellow-600'
+          : 'text-orange-600';
 
     return (
       <div className="fixed inset-0 z-50 bg-gray-900 bg-opacity-95 flex items-center justify-center p-4 overflow-y-auto">
         <div className="bg-gray-800 dark:bg-gray-900 rounded-xl p-6 max-w-lg w-full border border-gray-700">
-
           {/* Title + method badge */}
           <h2 className="text-white text-xl font-bold mb-1">
             {t('lidarScanner.reviewResults', 'Review Scan Results')}
@@ -714,19 +733,22 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
                 scanResult.method === 'lidar'
                   ? 'bg-green-100 text-green-800'
                   : scanResult.method === 'photo'
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-gray-100 text-gray-700'
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-gray-100 text-gray-700'
               }`}
             >
               {scanResult.method === 'lidar'
                 ? 'LiDAR'
                 : scanResult.method === 'photo'
-                ? t('lidarScanner.methodPhoto', 'Analyse photo')
-                : t('lidarScanner.methodManual', 'Saisie manuelle')}
+                  ? t('lidarScanner.methodPhoto', 'Analyse photo')
+                  : t('lidarScanner.methodManual', 'Saisie manuelle')}
             </span>
           </div>
           <p className="text-gray-400 text-sm mb-4">
-            {t('lidarScanner.reviewInstructions', 'Verify and adjust the detected dimensions if needed.')}{' '}
+            {t(
+              'lidarScanner.reviewInstructions',
+              'Verify and adjust the detected dimensions if needed.'
+            )}{' '}
             <span className={`font-medium ${confColor}`}>
               ({t('lidarScanner.confidence', 'Confidence')}: {Math.round(confidence * 100)}%)
             </span>
@@ -888,8 +910,18 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
       <div className="fixed inset-0 z-50 bg-gray-900 bg-opacity-95 flex items-center justify-center p-4">
         <div className="bg-gray-800 dark:bg-gray-900 rounded-xl p-8 max-w-md w-full text-center border border-gray-700">
           <div className="w-20 h-20 mx-auto mb-6 bg-yellow-600 bg-opacity-20 rounded-full flex items-center justify-center">
-            <svg className="w-10 h-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              className="w-10 h-10 text-yellow-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
           </div>
 
@@ -909,7 +941,12 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
               className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                />
               </svg>
               {t('lidarScanner.manualInput', 'Enter Dimensions Manually')}
             </button>
@@ -918,8 +955,18 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
               className="w-full py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
               {t('lidarScanner.uploadPhotos', 'Upload Room Photos')}
             </button>
@@ -1057,8 +1104,18 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
             onClick={() => fileInputRef.current?.click()}
             className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center mb-4 cursor-pointer hover:border-blue-500 transition-colors"
           >
-            <svg className="w-10 h-10 text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              className="w-10 h-10 text-gray-500 mx-auto mb-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             <p className="text-gray-400 text-sm">
               {t('lidarScanner.clickToUpload', 'Click to upload photos')}
@@ -1089,13 +1146,16 @@ const LiDARScanner: React.FC<LiDARScannerProps> = ({
                 >
                   <span className="text-white truncate">{photo.name}</span>
                   <button
-                    onClick={() =>
-                      setUploadedPhotos((prev) => prev.filter((_, i) => i !== idx))
-                    }
+                    onClick={() => setUploadedPhotos((prev) => prev.filter((_, i) => i !== idx))}
                     className="text-red-400 hover:text-red-300 ml-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>

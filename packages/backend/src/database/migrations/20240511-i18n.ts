@@ -114,15 +114,23 @@ export const I18nMigration: Migration = {
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_languages_code ON languages(code)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_languages_active ON languages(is_active)`);
 
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_translation_keys_namespace ON translation_keys(namespace_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_translation_keys_key ON translation_keys(key)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_translation_keys_namespace ON translation_keys(namespace_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_translation_keys_key ON translation_keys(key)`
+    );
 
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_translations_key ON translations(key_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_translations_language ON translations(language_code)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_translations_language ON translations(language_code)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_translations_status ON translations(status)`);
 
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_glossary_term ON translation_glossary(term)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_glossary_language ON translation_glossary(language_code)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_glossary_language ON translation_glossary(language_code)`
+    );
 
     // Triggers for updated_at
     await tx.execute(`

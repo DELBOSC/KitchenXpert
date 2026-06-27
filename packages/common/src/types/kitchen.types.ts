@@ -1,7 +1,13 @@
 import { BaseEntity, ID } from './base.types';
 
 export type KitchenShape = 'L' | 'U' | 'I' | 'G' | 'island' | 'peninsula';
-export type KitchenStyle = 'modern' | 'classic' | 'industrial' | 'scandinavian' | 'rustic' | 'minimalist';
+export type KitchenStyle =
+  | 'modern'
+  | 'classic'
+  | 'industrial'
+  | 'scandinavian'
+  | 'rustic'
+  | 'minimalist';
 export type RoomType = 'open' | 'closed' | 'semi-open';
 
 export interface KitchenDimensions {

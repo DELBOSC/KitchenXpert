@@ -57,8 +57,12 @@ const CarbonAdmin: React.FC = () => {
           }),
         ]);
 
-        if (!statsRes.ok) {throw new Error(t('admin.carbon.errors.fetchStats', 'Failed to load carbon stats'));}
-        if (!reportsRes.ok) {throw new Error(t('admin.carbon.errors.fetchReports', 'Failed to load carbon reports'));}
+        if (!statsRes.ok) {
+          throw new Error(t('admin.carbon.errors.fetchStats', 'Failed to load carbon stats'));
+        }
+        if (!reportsRes.ok) {
+          throw new Error(t('admin.carbon.errors.fetchReports', 'Failed to load carbon reports'));
+        }
 
         const statsData = (await statsRes.json()) as CarbonStats | { data: CarbonStats };
         const reportsData = (await reportsRes.json()) as CarbonReport[] | { data: CarbonReport[] };
@@ -66,7 +70,9 @@ const CarbonAdmin: React.FC = () => {
         setCarbonStats('data' in statsData ? statsData.data : statsData);
         setReports('data' in reportsData ? reportsData.data : reportsData);
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         setError(getErrorMessage(err, t('admin.carbon.errors.load', 'Failed to load carbon data')));
       } finally {
         setIsLoading(false);
@@ -79,7 +85,9 @@ const CarbonAdmin: React.FC = () => {
 
   // Auto-dismiss messages after 5 seconds
   useEffect(() => {
-    if (!message) {return;}
+    if (!message) {
+      return;
+    }
     const timer = setTimeout(() => setMessage(null), 5000);
     return () => clearTimeout(timer);
   }, [message]);
@@ -97,12 +105,23 @@ const CarbonAdmin: React.FC = () => {
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(body?.message ?? t('admin.carbon.errors.recalcFailed', 'Recalculation failed'));
+        throw new Error(
+          body?.message ?? t('admin.carbon.errors.recalcFailed', 'Recalculation failed')
+        );
       }
-      setMessage({ type: 'success', text: t('admin.carbon.success.recalcAll', 'Recalculation launched successfully') });
+      setMessage({
+        type: 'success',
+        text: t('admin.carbon.success.recalcAll', 'Recalculation launched successfully'),
+      });
       setRetryCount((c) => c + 1);
     } catch (err) {
-      setMessage({ type: 'error', text: getErrorMessage(err, t('admin.carbon.errors.recalcUnknown', 'Unknown error during recalculation')) });
+      setMessage({
+        type: 'error',
+        text: getErrorMessage(
+          err,
+          t('admin.carbon.errors.recalcUnknown', 'Unknown error during recalculation')
+        ),
+      });
     } finally {
       setIsRecalculating(false);
     }
@@ -111,13 +130,28 @@ const CarbonAdmin: React.FC = () => {
   // ---------- Helpers ----------
 
   const getCarbonLevel = (co2: number) => {
-    if (co2 < 200) {return { label: t('admin.carbon.level.low', 'Low'), color: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' };}
-    if (co2 < 500) {return { label: t('admin.carbon.level.medium', 'Medium'), color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' };}
-    return { label: t('admin.carbon.level.high', 'High'), color: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' };
+    if (co2 < 200) {
+      return {
+        label: t('admin.carbon.level.low', 'Low'),
+        color: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+      };
+    }
+    if (co2 < 500) {
+      return {
+        label: t('admin.carbon.level.medium', 'Medium'),
+        color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+      };
+    }
+    return {
+      label: t('admin.carbon.level.high', 'High'),
+      color: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300',
+    };
   };
 
   const formatDate = (iso: string | null) => {
-    if (!iso) {return t('common.never', 'Never');}
+    if (!iso) {
+      return t('common.never', 'Never');
+    }
     return new Date(iso).toLocaleString(i18n.language, {
       day: '2-digit',
       month: 'short',
@@ -166,7 +200,6 @@ const CarbonAdmin: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* ---------- Header ---------- */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -174,7 +207,10 @@ const CarbonAdmin: React.FC = () => {
               {t('admin.carbon.title', 'Carbon Reports')}
             </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {t('admin.carbon.description', 'Monitor and recalculate carbon footprint data for all kitchen designs.')}
+              {t(
+                'admin.carbon.description',
+                'Monitor and recalculate carbon footprint data for all kitchen designs.'
+              )}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -217,7 +253,12 @@ const CarbonAdmin: React.FC = () => {
               className="ml-4 hover:opacity-70"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -288,7 +329,10 @@ const CarbonAdmin: React.FC = () => {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {reports.length === 0 && !isLoading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                    <td
+                      colSpan={7}
+                      className="px-6 py-12 text-center text-gray-500 dark:text-gray-400"
+                    >
                       {t('admin.carbon.table.empty', 'No carbon reports found.')}
                     </td>
                   </tr>
@@ -304,7 +348,9 @@ const CarbonAdmin: React.FC = () => {
                           {report.ownerEmail}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full ${level.color}`}>
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-medium rounded-full ${level.color}`}
+                          >
                             {formatCo2(report.totalCo2)}
                             <span className="font-normal opacity-80">({level.label})</span>
                           </span>
@@ -372,7 +418,10 @@ const CarbonAdmin: React.FC = () => {
               />
             </svg>
             <p className="mt-4 text-gray-500 dark:text-gray-400">
-              {t('admin.carbon.emptyState', 'No carbon reports available. Reports are generated automatically when kitchens are completed.')}
+              {t(
+                'admin.carbon.emptyState',
+                'No carbon reports available. Reports are generated automatically when kitchens are completed.'
+              )}
             </p>
           </div>
         )}

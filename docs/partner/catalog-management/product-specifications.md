@@ -24,24 +24,29 @@ Comprehensive specifications required for each product category.
 ### Required Fields
 
 **Dimensions**
+
 - Width: 30-120cm (standard sizes: 30, 40, 50, 60, 80, 90, 100, 120cm)
 - Height: Base 72cm, Wall 70-90cm, Tall 200-220cm
 - Depth: Base 58cm, Wall 35cm
 
 **Material Options**
+
 - MDF - Medium-density fiberboard
 - Particle Board - Chipboard
 - Plywood - Multi-layer wood
 - Solid Wood - Oak, pine, walnut
 
 **Finish Types**
+
 - Matt Lacquer, High Gloss Lacquer
 - Wood Veneer, Melamine, Thermofoil
 
 **Door Types**
+
 - Slab, Shaker, Glass-front, Open Shelf
 
 ### Recommended Fields
+
 - Hinge type, Handle style, Number of shelves
 - Adjustable shelves, Drawer type, Load capacity
 
@@ -52,6 +57,7 @@ Comprehensive specifications required for each product category.
 ### Required Fields
 
 **Material**
+
 - Quartz (engineered stone)
 - Granite, Marble (natural stone)
 - Laminate, Solid Surface, Wood
@@ -62,6 +68,7 @@ Comprehensive specifications required for each product category.
 **Edge Profile**: Square, Rounded, Beveled, Bullnose, Ogee, Waterfall
 
 ### Recommended Fields
+
 - Pattern/color name
 - Surface finish: Polished, Honed, Leathered
 - Heat/stain/scratch resistant properties
@@ -74,17 +81,21 @@ Comprehensive specifications required for each product category.
 ### Required Fields
 
 **Material**
+
 - Stainless Steel 304/316
 - Ceramic, Granite Composite
 - Quartz Composite, Fireclay, Cast Iron
 
 **Bowl Configuration**
+
 - Single Bowl, Double Bowl, 1.5 Bowl, Triple Bowl
 
 **Mounting Type**
+
 - Undermount, Top Mount, Flush Mount, Belfast/Butler
 
 ### Recommended Fields
+
 - Bowl depth, Drainer (left/right)
 - Tap holes, Overflow, Sound dampening
 
@@ -95,6 +106,7 @@ Comprehensive specifications required for each product category.
 ### Required Fields
 
 **Appliance Type**
+
 - Dishwasher, Oven, Hob, Refrigerator
 - Freezer, Microwave, Extractor Hood
 - Wine Cooler, Coffee Machine
@@ -104,6 +116,7 @@ Comprehensive specifications required for each product category.
 **Installation Type**: Built-in, Freestanding, Integrated, Semi-integrated
 
 ### Recommended Fields
+
 - Capacity (liters/place settings/kg)
 - Noise level (dB), Power (W)
 - Smart features (WiFi, App control)
@@ -114,16 +127,19 @@ Comprehensive specifications required for each product category.
 ## Hardware Specifications
 
 ### Handles & Knobs
+
 - Type, Material, Finish
 - Length, Fixing centers
 - Projection, Weight
 
 ### Hinges
+
 - Type (Concealed, Soft-close)
 - Opening angle, Overlay type
 - Weight capacity
 
 ### Drawer Slides
+
 - Type (Side-mount, Under-mount)
 - Extension type, Length
 - Load capacity, Soft-close
@@ -133,11 +149,13 @@ Comprehensive specifications required for each product category.
 ## Lighting Specifications
 
 ### Required Fields
+
 - Light type (LED Strip, Under-Cabinet, Pendant)
 - Color temperature (2700K-6500K)
 - Lumens output
 
 ### Recommended Fields
+
 - Dimmable, Color changing
 - Smart control, IP rating
 - Lifespan, CRI rating
@@ -147,6 +165,7 @@ Comprehensive specifications required for each product category.
 ## Measurement Standards
 
 **Metric (Preferred)**
+
 - Length: cm, mm
 - Weight: kg, g
 - Volume: L, mL
@@ -154,6 +173,7 @@ Comprehensive specifications required for each product category.
 - Power: W, kW
 
 **Imperial** (accepted with conversion)
+
 - Automatically converted to metric
 
 ---
@@ -171,6 +191,7 @@ Comprehensive specifications required for each product category.
 ## Color Naming Conventions
 
 Use descriptive names:
+
 - **White**: Pure White, Off-White, Cream, Ivory
 - **Gray**: Light Gray, Charcoal, Graphite
 - **Black**: Jet Black, Matt Black
@@ -191,4 +212,4 @@ Use descriptive names:
 
 ---
 
-*Last Updated: 2026-01-10*
+_Last Updated: 2026-01-10_

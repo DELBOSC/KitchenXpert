@@ -15,7 +15,16 @@ export class AuditController {
    * Get all audit logs with filters
    */
   getAll = asyncHandler(async (req: Request, res: Response) => {
-    const { page = 1, userId, action, resource, resourceId, startDate, endDate, ipAddress } = req.query;
+    const {
+      page = 1,
+      userId,
+      action,
+      resource,
+      resourceId,
+      startDate,
+      endDate,
+      ipAddress,
+    } = req.query;
     const limit = Math.min(Number(req.query.limit) || 50, 100);
 
     const result = await auditLogRepository.findAll(
@@ -34,7 +43,12 @@ export class AuditController {
     res.status(200).json({
       success: true,
       data: result.data,
-      meta: { page: result.page, limit: Number(limit), total: result.total, totalPages: result.totalPages },
+      meta: {
+        page: result.page,
+        limit: Number(limit),
+        total: result.total,
+        totalPages: result.totalPages,
+      },
     });
   });
 
@@ -71,7 +85,11 @@ export class AuditController {
     const resource = req.params.resource as string;
     const resourceId = req.params.resourceId as string;
     const { limit = 100 } = req.query;
-    const logs = await auditLogRepository.findByResource(resource, resourceId, Math.min(Number(limit), 100));
+    const logs = await auditLogRepository.findByResource(
+      resource,
+      resourceId,
+      Math.min(Number(limit), 100)
+    );
     res.status(200).json({ success: true, data: logs });
   });
 
@@ -83,7 +101,11 @@ export class AuditController {
     const resource = req.params.resource as string;
     const resourceId = req.params.resourceId as string;
     const { limit = 1000 } = req.query;
-    const history = await auditLogRepository.getResourceHistory(resource, resourceId, Math.min(Number(limit), 1000));
+    const history = await auditLogRepository.getResourceHistory(
+      resource,
+      resourceId,
+      Math.min(Number(limit), 1000)
+    );
     res.status(200).json({ success: true, data: history });
   });
 
@@ -120,7 +142,9 @@ export class AuditController {
 
     // Require date range to prevent unbounded exports (DoS risk)
     if (!startDate || !endDate) {
-      res.status(400).json({ success: false, error: 'startDate and endDate are required for export' });
+      res
+        .status(400)
+        .json({ success: false, error: 'startDate and endDate are required for export' });
       return;
     }
 
@@ -153,7 +177,9 @@ export class AuditController {
     date.setDate(date.getDate() - Number(olderThanDays));
 
     const result = await auditLogRepository.deleteOlderThan(date);
-    res.status(200).json({ success: true, data: result, message: `Deleted ${result.count} old audit logs` });
+    res
+      .status(200)
+      .json({ success: true, data: result, message: `Deleted ${result.count} old audit logs` });
   });
 }
 

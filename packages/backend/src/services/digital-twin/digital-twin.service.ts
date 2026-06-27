@@ -85,8 +85,8 @@ export interface WarrantyItem {
 
 export interface EnergyEstimate {
   annualElectricity: number; // kWh
-  annualGas?: number;        // m3
-  annualWater: number;       // liters
+  annualGas?: number; // m3
+  annualWater: number; // liters
   annualCostElectricity: number; // EUR
   annualCostGas?: number;
   annualCostWater: number;
@@ -118,13 +118,15 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Clean grease filter',
       frequencyMonths: 1,
       frequency: 'monthly',
-      instructions: 'Remove the grease filter and wash with warm soapy water. Let it dry completely before reinserting. For metal filters, you can also run them through the dishwasher.',
+      instructions:
+        'Remove the grease filter and wash with warm soapy water. Let it dry completely before reinserting. For metal filters, you can also run them through the dishwasher.',
     },
     {
       task: 'Replace charcoal filter',
       frequencyMonths: 6,
       frequency: 'semi-annual',
-      instructions: 'If your hood uses recirculation mode, replace the activated charcoal filter every 6 months or when odor filtering decreases noticeably.',
+      instructions:
+        'If your hood uses recirculation mode, replace the activated charcoal filter every 6 months or when odor filtering decreases noticeably.',
     },
   ],
   dishwasher: [
@@ -132,7 +134,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Clean filter and spray arms',
       frequencyMonths: 1,
       frequency: 'monthly',
-      instructions: 'Remove and clean the bottom filter. Check spray arms for clogs in the water holes. Run an empty hot cycle with dishwasher cleaner or white vinegar.',
+      instructions:
+        'Remove and clean the bottom filter. Check spray arms for clogs in the water holes. Run an empty hot cycle with dishwasher cleaner or white vinegar.',
     },
   ],
   refrigerator: [
@@ -140,7 +143,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Clean condenser coils',
       frequencyMonths: 6,
       frequency: 'semi-annual',
-      instructions: 'Unplug the refrigerator. Locate the condenser coils (usually at the back or bottom). Vacuum dust and debris with a brush attachment. This improves efficiency and extends lifespan.',
+      instructions:
+        'Unplug the refrigerator. Locate the condenser coils (usually at the back or bottom). Vacuum dust and debris with a brush attachment. This improves efficiency and extends lifespan.',
     },
   ],
   oven: [
@@ -148,7 +152,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Deep clean oven interior',
       frequencyMonths: 3,
       frequency: 'quarterly',
-      instructions: 'If the oven has self-cleaning mode, run it. Otherwise, apply oven cleaner to the interior (avoid heating elements), let it sit for the recommended time, and wipe clean.',
+      instructions:
+        'If the oven has self-cleaning mode, run it. Otherwise, apply oven cleaner to the interior (avoid heating elements), let it sit for the recommended time, and wipe clean.',
     },
   ],
   water_filter: [
@@ -156,7 +161,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Replace water filter cartridge',
       frequencyMonths: 6,
       frequency: 'semi-annual',
-      instructions: 'Turn off the water supply. Remove the old filter cartridge and install the replacement. Run water for 5 minutes to flush the new filter before use.',
+      instructions:
+        'Turn off the water supply. Remove the old filter cartridge and install the replacement. Run water for 5 minutes to flush the new filter before use.',
     },
   ],
   cabinet: [
@@ -164,7 +170,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Lubricate soft-close hinges',
       frequencyMonths: 12,
       frequency: 'annual',
-      instructions: 'Apply a small amount of silicone-based lubricant to all hinge mechanisms. Open and close doors several times to distribute. Wipe excess lubricant.',
+      instructions:
+        'Apply a small amount of silicone-based lubricant to all hinge mechanisms. Open and close doors several times to distribute. Wipe excess lubricant.',
     },
   ],
   countertop_stone: [
@@ -172,7 +179,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Reapply stone sealant',
       frequencyMonths: 12,
       frequency: 'annual',
-      instructions: 'Clean the countertop thoroughly and let it dry. Apply stone sealer evenly across the surface using a soft cloth. Let it penetrate for 15-20 minutes, then wipe off excess. Allow 24 hours before heavy use.',
+      instructions:
+        'Clean the countertop thoroughly and let it dry. Apply stone sealer evenly across the surface using a soft cloth. Let it penetrate for 15-20 minutes, then wipe off excess. Allow 24 hours before heavy use.',
     },
   ],
   tile_grout: [
@@ -180,7 +188,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Reseal grout lines',
       frequencyMonths: 24,
       frequency: 'every 2 years',
-      instructions: 'Clean grout lines thoroughly with a grout cleaner. Let dry completely (24 hours). Apply grout sealer with a small brush along all grout lines. Wipe off excess from tile surfaces within 5-10 minutes.',
+      instructions:
+        'Clean grout lines thoroughly with a grout cleaner. Let dry completely (24 hours). Apply grout sealer with a small brush along all grout lines. Wipe off excess from tile surfaces within 5-10 minutes.',
     },
   ],
   sink: [
@@ -188,7 +197,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Inspect and clean drain',
       frequencyMonths: 3,
       frequency: 'quarterly',
-      instructions: 'Remove the drain strainer and clean it. Use a drain snake or enzyme-based cleaner to maintain clear drains. Check under-sink connections for leaks.',
+      instructions:
+        'Remove the drain strainer and clean it. Use a drain snake or enzyme-based cleaner to maintain clear drains. Check under-sink connections for leaks.',
     },
   ],
   faucet: [
@@ -196,7 +206,8 @@ const MAINTENANCE_SCHEDULES: Record<string, MaintenanceTemplate[]> = {
       task: 'Descale aerator',
       frequencyMonths: 6,
       frequency: 'semi-annual',
-      instructions: 'Unscrew the faucet aerator. Soak in white vinegar for 30 minutes to remove mineral buildup. Scrub with a small brush and rinse. Reattach.',
+      instructions:
+        'Unscrew the faucet aerator. Soak in white vinegar for 30 minutes to remove mineral buildup. Scrub with a small brush and rinse. Reattach.',
     },
   ],
 };
@@ -225,9 +236,9 @@ const ENERGY_ESTIMATES: Record<string, { electricity: number; water: number; gas
 
 /** Average utility costs in EUR */
 const UTILITY_COSTS = {
-  electricityPerKwh: 0.25,    // EUR/kWh (EU average)
-  gasPerM3: 0.10,             // EUR/m3
-  waterPerLiter: 0.004,       // EUR/liter
+  electricityPerKwh: 0.25, // EUR/kWh (EU average)
+  gasPerM3: 0.1, // EUR/m3
+  waterPerLiter: 0.004, // EUR/liter
 };
 
 // ─── Warranty Defaults ──────────────────────────────────────────────────────
@@ -290,10 +301,15 @@ export class DigitalTwinService {
     const now = new Date();
 
     // Build digital twin items from kitchen items
-    const items: DigitalTwinItem[] = ((kitchen as Record<string, unknown>).items as Array<Record<string, unknown>> || []).map((item) => {
+    const items: DigitalTwinItem[] = (
+      ((kitchen as Record<string, unknown>).items as Array<Record<string, unknown>>) || []
+    ).map((item) => {
       const itemType = String(item.type || item.category || 'default').toLowerCase();
       const brand = String(item.brand || 'unknown').toLowerCase();
-      const warrantyYears = DEFAULT_WARRANTY_YEARS[itemType] || DEFAULT_WARRANTY_YEARS[brand] || DEFAULT_WARRANTY_YEARS.default!;
+      const warrantyYears =
+        DEFAULT_WARRANTY_YEARS[itemType] ||
+        DEFAULT_WARRANTY_YEARS[brand] ||
+        DEFAULT_WARRANTY_YEARS.default!;
 
       const warrantyExpires = new Date(now);
       warrantyExpires.setFullYear(warrantyExpires.getFullYear() + warrantyYears);
@@ -316,7 +332,11 @@ export class DigitalTwinService {
       electricalCircuits: [
         { id: 'circuit_oven', amperage: 32, outlets: ['oven'] },
         { id: 'circuit_dishwasher', amperage: 20, outlets: ['dishwasher'] },
-        { id: 'circuit_general', amperage: 16, outlets: ['fridge', 'range_hood', 'microwave', 'general'] },
+        {
+          id: 'circuit_general',
+          amperage: 16,
+          outlets: ['fridge', 'range_hood', 'microwave', 'general'],
+        },
       ],
       plumbingConnections: [
         { type: 'cold_water', location: { x: 1.2, z: 0.3 } },
@@ -342,10 +362,12 @@ export class DigitalTwinService {
           id: digitalTwin.id,
           kitchenId: digitalTwin.kitchenId,
           userId: '',
-          maintenanceData: JSON.parse(JSON.stringify({
-            items: digitalTwin.items,
-            technicalPlan: digitalTwin.technicalPlan,
-          })),
+          maintenanceData: JSON.parse(
+            JSON.stringify({
+              items: digitalTwin.items,
+              technicalPlan: digitalTwin.technicalPlan,
+            })
+          ),
         },
       });
     } catch (err) {
@@ -408,8 +430,12 @@ export class DigitalTwinService {
 
     // Sort: overdue first, then by next due date
     maintenanceItems.sort((a, b) => {
-      if (a.isOverdue && !b.isOverdue) {return -1;}
-      if (!a.isOverdue && b.isOverdue) {return 1;}
+      if (a.isOverdue && !b.isOverdue) {
+        return -1;
+      }
+      if (!a.isOverdue && b.isOverdue) {
+        return 1;
+      }
       return a.nextDue.getTime() - b.nextDue.getTime();
     });
 
@@ -425,40 +451,44 @@ export class DigitalTwinService {
   getWarrantyStatus(twin: DigitalTwin): WarrantyItem[] {
     const now = new Date();
 
-    return twin.items.map((item) => {
-      const daysRemaining = Math.ceil(
-        (item.warrantyExpires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-      );
-      const isExpired = daysRemaining <= 0;
+    return twin.items
+      .map((item) => {
+        const daysRemaining = Math.ceil(
+          (item.warrantyExpires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        const isExpired = daysRemaining <= 0;
 
-      const brandKey = item.brand.toLowerCase().replace(/[\s-]/g, '_');
-      const contactInfo = BRAND_CONTACT_INFO[brandKey] || BRAND_CONTACT_INFO.default!;
+        const brandKey = item.brand.toLowerCase().replace(/[\s-]/g, '_');
+        const contactInfo = BRAND_CONTACT_INFO[brandKey] || BRAND_CONTACT_INFO.default!;
 
-      // Determine coverage type
-      let coverage: string;
-      const warrantyYears = Math.ceil(
-        (item.warrantyExpires.getTime() - item.installedAt.getTime()) / (1000 * 60 * 60 * 24 * 365)
-      );
+        // Determine coverage type
+        let coverage: string;
+        const warrantyYears = Math.ceil(
+          (item.warrantyExpires.getTime() - item.installedAt.getTime()) /
+            (1000 * 60 * 60 * 24 * 365)
+        );
 
-      if (warrantyYears >= 10) {
-        coverage = 'Extended manufacturer warranty - covers defects in materials and workmanship';
-      } else if (warrantyYears >= 5) {
-        coverage = 'Standard manufacturer warranty - covers manufacturing defects and component failure';
-      } else {
-        coverage = 'Basic manufacturer warranty - covers manufacturing defects only';
-      }
+        if (warrantyYears >= 10) {
+          coverage = 'Extended manufacturer warranty - covers defects in materials and workmanship';
+        } else if (warrantyYears >= 5) {
+          coverage =
+            'Standard manufacturer warranty - covers manufacturing defects and component failure';
+        } else {
+          coverage = 'Basic manufacturer warranty - covers manufacturing defects only';
+        }
 
-      return {
-        itemId: item.id,
-        itemName: `${item.brand} ${item.model}`,
-        brand: item.brand,
-        warrantyExpires: item.warrantyExpires,
-        isExpired,
-        daysRemaining: Math.max(0, daysRemaining),
-        coverage,
-        contactInfo,
-      };
-    }).sort((a, b) => a.daysRemaining - b.daysRemaining); // Soonest expiring first
+        return {
+          itemId: item.id,
+          itemName: `${item.brand} ${item.model}`,
+          brand: item.brand,
+          warrantyExpires: item.warrantyExpires,
+          isExpired,
+          daysRemaining: Math.max(0, daysRemaining),
+          coverage,
+          contactInfo,
+        };
+      })
+      .sort((a, b) => a.daysRemaining - b.daysRemaining); // Soonest expiring first
   }
 
   /**
@@ -475,7 +505,9 @@ export class DigitalTwinService {
     action: string,
     notes: string = ''
   ): Promise<void> {
-    logger.info(`[DigitalTwin] Logging maintenance for item ${itemId} in twin ${twinId}: ${action}`);
+    logger.info(
+      `[DigitalTwin] Logging maintenance for item ${itemId} in twin ${twinId}: ${action}`
+    );
 
     // In production, update the database record
     try {
@@ -547,12 +579,14 @@ export class DigitalTwinService {
       const normalizedType = item.type.toLowerCase().replace(/[\s-]/g, '_');
 
       // Check if it's a gas appliance
-      const isGas = item.specifications?.fuelType === 'gas' ||
-        item.type.toLowerCase().includes('gas');
+      const isGas =
+        item.specifications?.fuelType === 'gas' || item.type.toLowerCase().includes('gas');
       const estimateKey = isGas ? `${normalizedType}_gas` : normalizedType;
 
       const estimate = ENERGY_ESTIMATES[estimateKey] || ENERGY_ESTIMATES[normalizedType];
-      if (!estimate) {continue;}
+      if (!estimate) {
+        continue;
+      }
 
       totalElectricity += estimate.electricity;
       totalWater += estimate.water;
@@ -573,10 +607,10 @@ export class DigitalTwinService {
       });
     }
 
-    const annualCostElectricity = Math.round(totalElectricity * UTILITY_COSTS.electricityPerKwh * 100) / 100;
-    const annualCostGas = totalGas > 0
-      ? Math.round(totalGas * UTILITY_COSTS.gasPerM3 * 100) / 100
-      : undefined;
+    const annualCostElectricity =
+      Math.round(totalElectricity * UTILITY_COSTS.electricityPerKwh * 100) / 100;
+    const annualCostGas =
+      totalGas > 0 ? Math.round(totalGas * UTILITY_COSTS.gasPerM3 * 100) / 100 : undefined;
     const annualCostWater = Math.round(totalWater * UTILITY_COSTS.waterPerLiter * 100) / 100;
 
     const totalAnnualCost = annualCostElectricity + (annualCostGas || 0) + annualCostWater;

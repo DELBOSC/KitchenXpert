@@ -54,7 +54,8 @@ const SELECTORS = {
   worktopMaterial: '.material-type, .material-name, .matiere',
 
   // Cookie banner (Cuisinella uses similar to Schmidt)
-  cookieAccept: '#onetrust-accept-btn-handler, .cookie-accept, [data-accept-cookies], #didomi-notice-agree-button',
+  cookieAccept:
+    '#onetrust-accept-btn-handler, .cookie-accept, [data-accept-cookies], #didomi-notice-agree-button',
 
   // Pagination
   pagination: '.pagination, .pager',
@@ -68,90 +69,90 @@ const CABINET_TYPE_KEYWORDS: Record<string, CabinetType> = {
   'sous-évier': 'base_sink',
   'sous évier': 'base_sink',
   'sous-plaque': 'base_hob',
-  'tiroir': 'base_drawer',
-  'tiroirs': 'base_drawer',
+  tiroir: 'base_drawer',
+  tiroirs: 'base_drawer',
   'angle bas': 'base_corner',
   'meuble angle': 'base_corner',
-  'coulissant': 'base_pull_out',
-  'poubelle': 'base_trash',
-  'bouteilles': 'base_bottle',
+  coulissant: 'base_pull_out',
+  poubelle: 'base_trash',
+  bouteilles: 'base_bottle',
   'meuble haut': 'wall_standard',
   'caisson haut': 'wall_standard',
   'haut vitré': 'wall_glass',
-  'relevable': 'wall_lift_up',
-  'lift': 'wall_lift_up',
+  relevable: 'wall_lift_up',
+  lift: 'wall_lift_up',
   'angle haut': 'wall_corner',
-  'hotte': 'wall_extractor',
-  'ouvert': 'wall_open',
-  'colonne': 'tall_pantry',
-  'armoire': 'tall_pantry',
-  'four': 'tall_oven',
-  'réfrigérateur': 'tall_fridge',
-  'frigo': 'tall_fridge',
-  'balai': 'tall_broom',
-  'plinthe': 'plinth',
-  'corniche': 'cornice',
-  'joue': 'filler',
-  'panneau': 'end_panel',
-  'îlot': 'island_base',
-  'ilot': 'island_base',
+  hotte: 'wall_extractor',
+  ouvert: 'wall_open',
+  colonne: 'tall_pantry',
+  armoire: 'tall_pantry',
+  four: 'tall_oven',
+  réfrigérateur: 'tall_fridge',
+  frigo: 'tall_fridge',
+  balai: 'tall_broom',
+  plinthe: 'plinth',
+  corniche: 'cornice',
+  joue: 'filler',
+  panneau: 'end_panel',
+  îlot: 'island_base',
+  ilot: 'island_base',
 };
 
 const FACADE_STYLE_KEYWORDS: Record<string, FacadeStyle> = {
-  'moderne': 'flat',
-  'contemporain': 'flat',
-  'plat': 'flat',
-  'lisse': 'flat',
-  'shaker': 'shaker',
-  'encadré': 'shaker',
-  'cadre': 'shaker',
-  'classique': 'classic',
-  'traditionnel': 'classic',
-  'moulure': 'classic',
+  moderne: 'flat',
+  contemporain: 'flat',
+  plat: 'flat',
+  lisse: 'flat',
+  shaker: 'shaker',
+  encadré: 'shaker',
+  cadre: 'shaker',
+  classique: 'classic',
+  traditionnel: 'classic',
+  moulure: 'classic',
   'sans poignée': 'handleless',
   'prise de main': 'handleless',
-  'gorge': 'handleless',
-  'rustique': 'rustic',
-  'campagne': 'rustic',
-  'cannelé': 'beaded',
-  'rainuré': 'beaded',
+  gorge: 'handleless',
+  rustique: 'rustic',
+  campagne: 'rustic',
+  cannelé: 'beaded',
+  rainuré: 'beaded',
 };
 
 const FACADE_MATERIAL_KEYWORDS: Record<string, FacadeMaterial> = {
-  'mélaminé': 'melamine',
-  'stratifié': 'laminate',
+  mélaminé: 'melamine',
+  stratifié: 'laminate',
   'laqué mat': 'lacquer_matte',
   'laqué satiné': 'lacquer_satin',
   'laqué brillant': 'lacquer_gloss',
-  'laque': 'lacquer_matte',
-  'acrylique': 'acrylic',
-  'pet': 'pet',
-  'placage': 'veneer',
+  laque: 'lacquer_matte',
+  acrylique: 'acrylic',
+  pet: 'pet',
+  placage: 'veneer',
   'bois massif': 'solid_wood',
-  'chêne': 'veneer',
-  'noyer': 'veneer',
-  'verre': 'glass',
-  'fenix': 'fenix',
-  'céramique': 'ceramic',
+  chêne: 'veneer',
+  noyer: 'veneer',
+  verre: 'glass',
+  fenix: 'fenix',
+  céramique: 'ceramic',
 };
 
 const WORKTOP_MATERIAL_KEYWORDS: Record<string, WorktopMaterial> = {
-  'stratifié': 'laminate',
-  'mélaminé': 'laminate',
+  stratifié: 'laminate',
+  mélaminé: 'laminate',
   'bois massif': 'wood_solid',
-  'chêne': 'wood_solid',
-  'hêtre': 'wood_solid',
-  'quartz': 'quartz',
-  'silestone': 'quartz',
-  'granit': 'granite',
-  'marbre': 'marble',
-  'céramique': 'ceramic',
-  'dekton': 'compact',
-  'compact': 'compact',
-  'inox': 'stainless',
-  'béton': 'concrete',
-  'corian': 'corian',
-  'verre': 'glass',
+  chêne: 'wood_solid',
+  hêtre: 'wood_solid',
+  quartz: 'quartz',
+  silestone: 'quartz',
+  granit: 'granite',
+  marbre: 'marble',
+  céramique: 'ceramic',
+  dekton: 'compact',
+  compact: 'compact',
+  inox: 'stainless',
+  béton: 'concrete',
+  corian: 'corian',
+  verre: 'glass',
 };
 
 export class CuisinellaScraper extends BaseScraper {
@@ -189,7 +190,9 @@ export class CuisinellaScraper extends BaseScraper {
           });
 
           // Also look for direct kitchen model links
-          $('a[href*="/cuisine"], a[href*="/modele"], a[href*="/collection"], a[href*="/gamme"]').each((_: number, el: cheerio.Element) => {
+          $(
+            'a[href*="/cuisine"], a[href*="/modele"], a[href*="/collection"], a[href*="/gamme"]'
+          ).each((_: number, el: cheerio.Element) => {
             const href = $(el).attr('href');
             if (href && !href.includes('#') && !href.includes('javascript')) {
               const fullUrl = this.resolveUrl(href);
@@ -214,9 +217,15 @@ export class CuisinellaScraper extends BaseScraper {
           const href = $(el).attr('href');
           const text = $(el).text().toLowerCase();
 
-          if (href &&
-              (text.includes('cuisine') || text.includes('modèle') || text.includes('collection') || text.includes('gamme')) &&
-              !href.includes('#') && !href.includes('javascript')) {
+          if (
+            href &&
+            (text.includes('cuisine') ||
+              text.includes('modèle') ||
+              text.includes('collection') ||
+              text.includes('gamme')) &&
+            !href.includes('#') &&
+            !href.includes('javascript')
+          ) {
             const fullUrl = this.resolveUrl(href);
             if (!urls.includes(fullUrl) && fullUrl.includes(this.config.website)) {
               urls.push(fullUrl);
@@ -314,7 +323,9 @@ export class CuisinellaScraper extends BaseScraper {
         name,
         slug,
         description: this.extractText($(SELECTORS.collectionDescription)) || undefined,
-        style: this.detectStyle(name + ' ' + (this.extractText($(SELECTORS.collectionDescription)) || '')),
+        style: this.detectStyle(
+          name + ' ' + (this.extractText($(SELECTORS.collectionDescription)) || '')
+        ),
         images,
         url,
         isActive: true,
@@ -371,7 +382,8 @@ export class CuisinellaScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'CUI');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'CUI');
     const description = this.extractText($(SELECTORS.productDetailDescription));
     const priceStr = this.extractText($(SELECTORS.productDetailPrice));
     const dimensionsStr = this.extractText($(SELECTORS.productDetailDimensions));
@@ -423,7 +435,8 @@ export class CuisinellaScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'CUI-F');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'CUI-F');
     const description = this.extractText($(SELECTORS.productDetailDescription));
 
     const style = this.detectFacadeStyle(name + ' ' + description);
@@ -474,7 +487,8 @@ export class CuisinellaScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'CUI-W');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'CUI-W');
     const description = this.extractText($(SELECTORS.productDetailDescription));
     const priceStr = this.extractText($(SELECTORS.productDetailPrice));
 
@@ -510,17 +524,31 @@ export class CuisinellaScraper extends BaseScraper {
   // Helper Methods
   // ═══════════════════════════════════════════════════════════════════════════
 
-  private detectProductType(name: string, html: string): 'cabinet' | 'facade' | 'worktop' | 'unknown' {
+  private detectProductType(
+    name: string,
+    html: string
+  ): 'cabinet' | 'facade' | 'worktop' | 'unknown' {
     const text = (name + ' ' + html).toLowerCase();
 
-    if (text.includes('façade') || text.includes('facade') || text.includes('porte') || text.includes('finition')) {
+    if (
+      text.includes('façade') ||
+      text.includes('facade') ||
+      text.includes('porte') ||
+      text.includes('finition')
+    ) {
       return 'facade';
     }
     if (text.includes('plan de travail') || text.includes('worktop') || text.includes('comptoir')) {
       return 'worktop';
     }
-    if (text.includes('meuble') || text.includes('caisson') || text.includes('colonne') ||
-        text.includes('tiroir') || text.includes('évier') || text.includes('four')) {
+    if (
+      text.includes('meuble') ||
+      text.includes('caisson') ||
+      text.includes('colonne') ||
+      text.includes('tiroir') ||
+      text.includes('évier') ||
+      text.includes('four')
+    ) {
       return 'cabinet';
     }
 
@@ -607,25 +635,27 @@ export class CuisinellaScraper extends BaseScraper {
   } {
     const specs: Record<string, number> = {};
 
-    $(SELECTORS.productDetailSpecs).find('tr, .spec-row, .spec-item').each((_: number, row: cheerio.Element) => {
-      const $row = $(row);
-      const label = $row.find('th, .spec-label, .label').text().toLowerCase();
-      const value = $row.find('td, .spec-value, .value').text();
+    $(SELECTORS.productDetailSpecs)
+      .find('tr, .spec-row, .spec-item')
+      .each((_: number, row: cheerio.Element) => {
+        const $row = $(row);
+        const label = $row.find('th, .spec-label, .label').text().toLowerCase();
+        const value = $row.find('td, .spec-value, .value').text();
 
-      if (label.includes('largeur') || label.includes('width')) {
-        specs['width'] = this.parseNumber(value);
-      } else if (label.includes('hauteur') || label.includes('height')) {
-        specs['height'] = this.parseNumber(value);
-      } else if (label.includes('profondeur') || label.includes('depth')) {
-        specs['depth'] = this.parseNumber(value);
-      } else if (label.includes('porte') || label.includes('door')) {
-        specs['doors'] = this.parseNumber(value);
-      } else if (label.includes('tiroir') || label.includes('drawer')) {
-        specs['drawers'] = this.parseNumber(value);
-      } else if (label.includes('étagère') || label.includes('shelf')) {
-        specs['shelves'] = this.parseNumber(value);
-      }
-    });
+        if (label.includes('largeur') || label.includes('width')) {
+          specs['width'] = this.parseNumber(value);
+        } else if (label.includes('hauteur') || label.includes('height')) {
+          specs['height'] = this.parseNumber(value);
+        } else if (label.includes('profondeur') || label.includes('depth')) {
+          specs['depth'] = this.parseNumber(value);
+        } else if (label.includes('porte') || label.includes('door')) {
+          specs['doors'] = this.parseNumber(value);
+        } else if (label.includes('tiroir') || label.includes('drawer')) {
+          specs['drawers'] = this.parseNumber(value);
+        } else if (label.includes('étagère') || label.includes('shelf')) {
+          specs['shelves'] = this.parseNumber(value);
+        }
+      });
 
     return specs;
   }

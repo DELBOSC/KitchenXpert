@@ -13,12 +13,12 @@ import type { JsonFetcher, HtmlFetcher } from '@kitchenxpert/common';
 export class HttpJsonFetcher implements JsonFetcher, HtmlFetcher {
   constructor(
     private readonly userAgent = 'KitchenXpert/1.0 (+catalog ingestion)',
-    private readonly timeoutMs = 15_000,
+    private readonly timeoutMs = 15_000
   ) {}
 
   async fetchJson<T = unknown>(
     url: string,
-    options?: { headers?: Record<string, string> },
+    options?: { headers?: Record<string, string> }
   ): Promise<T> {
     const res = await this.request(url, 'application/json', options);
     return (await res.json()) as T;
@@ -33,7 +33,7 @@ export class HttpJsonFetcher implements JsonFetcher, HtmlFetcher {
   private async request(
     url: string,
     accept: string,
-    options?: { headers?: Record<string, string> },
+    options?: { headers?: Record<string, string> }
   ): Promise<Response> {
     const res = await fetch(url, {
       headers: { Accept: accept, 'User-Agent': this.userAgent, ...options?.headers },

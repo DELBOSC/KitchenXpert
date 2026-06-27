@@ -43,7 +43,7 @@ export const WEBHOOK_EVENTS = {
   SYSTEM_MAINTENANCE: 'system.maintenance',
 } as const;
 
-export type WebhookEvent = typeof WEBHOOK_EVENTS[keyof typeof WEBHOOK_EVENTS];
+export type WebhookEvent = (typeof WEBHOOK_EVENTS)[keyof typeof WEBHOOK_EVENTS];
 
 export const WEBHOOK_STATUSES = {
   ACTIVE: 'active',
@@ -52,7 +52,7 @@ export const WEBHOOK_STATUSES = {
   FAILED: 'failed',
 } as const;
 
-export type WebhookStatus = typeof WEBHOOK_STATUSES[keyof typeof WEBHOOK_STATUSES];
+export type WebhookStatus = (typeof WEBHOOK_STATUSES)[keyof typeof WEBHOOK_STATUSES];
 
 export const WEBHOOK_DELIVERY_STATUSES = {
   PENDING: 'pending',
@@ -61,7 +61,8 @@ export const WEBHOOK_DELIVERY_STATUSES = {
   RETRYING: 'retrying',
 } as const;
 
-export type WebhookDeliveryStatus = typeof WEBHOOK_DELIVERY_STATUSES[keyof typeof WEBHOOK_DELIVERY_STATUSES];
+export type WebhookDeliveryStatus =
+  (typeof WEBHOOK_DELIVERY_STATUSES)[keyof typeof WEBHOOK_DELIVERY_STATUSES];
 
 export const WEBHOOK_RETRY_CONFIG = {
   MAX_RETRIES: 5,

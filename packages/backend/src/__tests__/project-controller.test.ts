@@ -219,7 +219,10 @@ describe('ProjectController', () => {
 
       await controller.update(mockReq as Request, mockRes as Response);
 
-      expect(mockRepository.update).toHaveBeenCalledWith('p1', expect.objectContaining({ name: 'Updated Project' }));
+      expect(mockRepository.update).toHaveBeenCalledWith(
+        'p1',
+        expect.objectContaining({ name: 'Updated Project' })
+      );
       expect(statusMock).toHaveBeenCalledWith(200);
       expect(jsonMock).toHaveBeenCalledWith({
         success: true,
@@ -298,11 +301,18 @@ describe('ProjectController', () => {
 
       // Setup ownership verification
       mockRepository.findById.mockResolvedValue({ id: 'p1', name: 'Project 1', userId: 'user-1' });
-      mockRepository.addCollaborator.mockResolvedValue({ projectId: 'p1', email: 'collaborator@example.com' });
+      mockRepository.addCollaborator.mockResolvedValue({
+        projectId: 'p1',
+        email: 'collaborator@example.com',
+      });
 
       await controller.addCollaborator(mockReq as Request, mockRes as Response);
 
-      expect(mockRepository.addCollaborator).toHaveBeenCalledWith('p1', 'collaborator@example.com', 'editor');
+      expect(mockRepository.addCollaborator).toHaveBeenCalledWith(
+        'p1',
+        'collaborator@example.com',
+        'editor'
+      );
       expect(statusMock).toHaveBeenCalledWith(201);
     });
   });
@@ -317,7 +327,10 @@ describe('ProjectController', () => {
 
       await controller.removeCollaborator(mockReq as Request, mockRes as Response);
 
-      expect(mockRepository.removeCollaborator).toHaveBeenCalledWith('p1', 'collaborator@example.com');
+      expect(mockRepository.removeCollaborator).toHaveBeenCalledWith(
+        'p1',
+        'collaborator@example.com'
+      );
       expect(statusMock).toHaveBeenCalledWith(200);
     });
   });

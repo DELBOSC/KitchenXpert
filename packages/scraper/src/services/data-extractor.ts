@@ -324,7 +324,7 @@ export class DataExtractor {
         // Images
         if (item.image) {
           const images = Array.isArray(item.image) ? item.image : [item.image];
-          data.images!.push(...images.map((img: any) => typeof img === 'string' ? img : img.url));
+          data.images!.push(...images.map((img: any) => (typeof img === 'string' ? img : img.url)));
         }
 
         // Offers (pricing)
@@ -340,7 +340,10 @@ export class DataExtractor {
         if (item.aggregateRating) {
           data.rating = {
             value: parseFloat(item.aggregateRating.ratingValue),
-            count: parseInt(item.aggregateRating.reviewCount || item.aggregateRating.ratingCount, 10),
+            count: parseInt(
+              item.aggregateRating.reviewCount || item.aggregateRating.ratingCount,
+              10
+            ),
             best: parseFloat(item.aggregateRating.bestRating) || 5,
           };
         }
@@ -618,7 +621,9 @@ export class DataExtractor {
     }
 
     // Extract reference/SKU from patterns
-    const refMatch = text.match(/(?:réf(?:érence)?|ref|sku|article|art\.?)\s*[:=.]?\s*([A-Z0-9-]{4,20})/i);
+    const refMatch = text.match(
+      /(?:réf(?:érence)?|ref|sku|article|art\.?)\s*[:=.]?\s*([A-Z0-9-]{4,20})/i
+    );
     if (refMatch) {
       data.sku = refMatch[1];
     }
@@ -761,7 +766,11 @@ export class DataExtractor {
     if (lower.includes('instock') || lower.includes('in_stock') || lower.includes('en stock')) {
       return 'InStock';
     }
-    if (lower.includes('outofstock') || lower.includes('out_of_stock') || lower.includes('rupture')) {
+    if (
+      lower.includes('outofstock') ||
+      lower.includes('out_of_stock') ||
+      lower.includes('rupture')
+    ) {
       return 'OutOfStock';
     }
     if (lower.includes('preorder') || lower.includes('précommande')) {

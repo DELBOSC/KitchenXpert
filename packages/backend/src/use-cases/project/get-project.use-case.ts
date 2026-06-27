@@ -22,12 +22,22 @@ export class GetProjectUseCase implements UseCase<GetProjectInput, unknown> {
       include: {
         kitchens: {
           where: { deletedAt: null },
-          select: { id: true, name: true, style: true, layout: true, thumbnail: true, score: true, createdAt: true },
+          select: {
+            id: true,
+            name: true,
+            style: true,
+            layout: true,
+            thumbnail: true,
+            score: true,
+            createdAt: true,
+          },
           orderBy: { createdAt: 'desc' },
         },
       },
     });
-    if (!project) {return err(DomainErrors.notFound('Project'));}
+    if (!project) {
+      return err(DomainErrors.notFound('Project'));
+    }
     if (project.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this project'));
     }

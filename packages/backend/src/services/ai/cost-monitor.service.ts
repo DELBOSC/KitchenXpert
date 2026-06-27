@@ -39,10 +39,10 @@ export interface TierLimits {
 }
 
 export const TIER_LIMITS: Record<AiTier, TierLimits> = {
-  sandbox:  { monthlyUsdCap: 0.20, dailyRequestCap: 3 },
-  free:     { monthlyUsdCap: 1.00, dailyRequestCap: 20 },
-  premium:  { monthlyUsdCap: 20.00, dailyRequestCap: 200 },
-  studio:   { monthlyUsdCap: null, dailyRequestCap: null },
+  sandbox: { monthlyUsdCap: 0.2, dailyRequestCap: 3 },
+  free: { monthlyUsdCap: 1.0, dailyRequestCap: 20 },
+  premium: { monthlyUsdCap: 20.0, dailyRequestCap: 200 },
+  studio: { monthlyUsdCap: null, dailyRequestCap: null },
 };
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -58,13 +58,13 @@ interface ModelPricing {
 
 const PRICING: Record<string, ModelPricing> = {
   // Anthropic — Claude (https://www.anthropic.com/pricing)
-  'claude-opus-4-7':           { inputPerM: 15, outputPerM: 75 },
-  'claude-sonnet-4-6':         { inputPerM:  3, outputPerM: 15 },
-  'claude-haiku-4-5':          { inputPerM:  1, outputPerM:  5 },
+  'claude-opus-4-7': { inputPerM: 15, outputPerM: 75 },
+  'claude-sonnet-4-6': { inputPerM: 3, outputPerM: 15 },
+  'claude-haiku-4-5': { inputPerM: 1, outputPerM: 5 },
   // Google Gemini (https://ai.google.dev/pricing)
-  'gemini-2.5-flash':          { inputPerM:  0.075, outputPerM: 0.30 },
-  'gemini-2.5-flash-image':    { inputPerM:  0.075, outputPerM: 0.30, perImage: 0.025 },
-  'gemini-2.5-pro':            { inputPerM:  1.25, outputPerM: 5 },
+  'gemini-2.5-flash': { inputPerM: 0.075, outputPerM: 0.3 },
+  'gemini-2.5-flash-image': { inputPerM: 0.075, outputPerM: 0.3, perImage: 0.025 },
+  'gemini-2.5-pro': { inputPerM: 1.25, outputPerM: 5 },
 };
 
 /**
@@ -84,7 +84,7 @@ export function computeCostUsd(args: {
     return 0;
   }
   const tokenCost =
-    (args.inputTokens  / 1_000_000) * price.inputPerM +
+    (args.inputTokens / 1_000_000) * price.inputPerM +
     (args.outputTokens / 1_000_000) * price.outputPerM;
   const imageCost = price.perImage ? (args.imagesGenerated ?? 0) * price.perImage : 0;
   return tokenCost + imageCost;
@@ -99,15 +99,21 @@ export class QuotaExceededError extends Error {
     public readonly tier: AiTier,
     public readonly limit: number,
     public readonly currentUsd: number,
-    public readonly resetAt: Date,
+    public readonly resetAt: Date
   ) {
-    super(`AI quota exceeded for tier "${tier}" — used $${currentUsd.toFixed(2)} of $${limit.toFixed(2)} this month. Resets ${resetAt.toISOString()}.`);
+    super(
+      `AI quota exceeded for tier "${tier}" — used $${currentUsd.toFixed(2)} of $${limit.toFixed(2)} this month. Resets ${resetAt.toISOString()}.`
+    );
     this.name = 'QuotaExceededError';
   }
 }
 
 export class DailyQuotaExceededError extends Error {
-  constructor(public readonly tier: AiTier, public readonly limit: number, public readonly current: number) {
+  constructor(
+    public readonly tier: AiTier,
+    public readonly limit: number,
+    public readonly current: number
+  ) {
     super(`AI daily quota exceeded for tier "${tier}" — ${current} of ${limit} requests today.`);
     this.name = 'DailyQuotaExceededError';
   }
@@ -129,7 +135,7 @@ function nextMonthReset(): Date {
 async function readUsageSummary(userId: string): Promise<UsageSummary> {
   const now = new Date();
   const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-  const dayStart   = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const dayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
   // Fetch only what we need — keep this aggregation cheap.
   const [monthly, dailyCount] = await Promise.all([
@@ -143,13 +149,17 @@ async function readUsageSummary(userId: string): Promise<UsageSummary> {
   ]);
 
   const monthlyUsd = monthly.reduce((acc, row) => {
-    const imagesGenerated = ((row.metadata as { imagesGenerated?: number } | null)?.imagesGenerated) ?? 0;
-    return acc + computeCostUsd({
-      model: row.model,
-      inputTokens: Number(row.inputTokens) || 0,
-      outputTokens: Number(row.outputTokens) || 0,
-      imagesGenerated,
-    });
+    const imagesGenerated =
+      (row.metadata as { imagesGenerated?: number } | null)?.imagesGenerated ?? 0;
+    return (
+      acc +
+      computeCostUsd({
+        model: row.model,
+        inputTokens: Number(row.inputTokens) || 0,
+        outputTokens: Number(row.outputTokens) || 0,
+        imagesGenerated,
+      })
+    );
   }, 0);
 
   return { monthlyUsd, dailyRequests: dailyCount, resetAtMonth: nextMonthReset() };
@@ -181,7 +191,10 @@ export async function assertQuota(args: CheckArgs): Promise<UsageSummary> {
     const projected = summary.monthlyUsd + (args.projectedUsd ?? 0);
     if (projected > limits.monthlyUsdCap) {
       throw new QuotaExceededError(
-        args.tier, limits.monthlyUsdCap, summary.monthlyUsd, summary.resetAtMonth,
+        args.tier,
+        limits.monthlyUsdCap,
+        summary.monthlyUsd,
+        summary.resetAtMonth
       );
     }
   }

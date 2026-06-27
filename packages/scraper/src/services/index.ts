@@ -156,11 +156,19 @@ export {
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { DataNormalizer, createDataNormalizer } from './data-normalizer.js';
-import { ImageDownloader, createImageDownloader, ImageDownloadOptions } from './image-downloader.js';
+import {
+  ImageDownloader,
+  createImageDownloader,
+  ImageDownloadOptions,
+} from './image-downloader.js';
 import { ScrapeManager, createScrapeManager, ScrapeManagerConfig } from './scrape-manager.js';
 import { ProductClassifier, createProductClassifier } from './product-classifier.js';
 import { DataExtractor, createDataExtractor, ExtractionConfig } from './data-extractor.js';
-import { DeduplicationService, createDeduplicationService, DeduplicationConfig } from './deduplication.js';
+import {
+  DeduplicationService,
+  createDeduplicationService,
+  DeduplicationConfig,
+} from './deduplication.js';
 import { SmartCache, createSmartCache, CacheConfig } from './smart-cache.js';
 import { PriceTracker, createPriceTracker, PriceTrackerConfig } from './price-tracker.js';
 import { connectPrisma, disconnectPrisma, isPrismaConnected } from '../database/client.js';
@@ -307,10 +315,7 @@ export async function checkDatabaseHealth(): Promise<{
   const { checkPrismaHealth } = await import('../database/client.js');
   const { checkRedisHealth } = await import('../database/redis.js');
 
-  const [prismaHealth, redisHealth] = await Promise.all([
-    checkPrismaHealth(),
-    checkRedisHealth(),
-  ]);
+  const [prismaHealth, redisHealth] = await Promise.all([checkPrismaHealth(), checkRedisHealth()]);
 
   return {
     prisma: prismaHealth,

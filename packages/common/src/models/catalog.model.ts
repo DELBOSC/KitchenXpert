@@ -298,7 +298,8 @@ export class CatalogItemModel implements CatalogItem {
     if (params.maxPrice !== undefined && this.price > params.maxPrice) return false;
     if (params.query) {
       const query = params.query.toLowerCase();
-      const searchable = `${this.name} ${this.brand} ${this.model} ${this.description || ''}`.toLowerCase();
+      const searchable =
+        `${this.name} ${this.brand} ${this.model} ${this.description || ''}`.toLowerCase();
       if (!searchable.includes(query)) return false;
     }
     return true;

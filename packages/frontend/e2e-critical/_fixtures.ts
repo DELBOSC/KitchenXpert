@@ -12,8 +12,7 @@
  */
 import { test as base, expect, type APIRequestContext, type Page } from '@playwright/test';
 
-export const API_BASE =
-  process.env.E2E_API_URL || 'http://localhost:4000/api/v1';
+export const API_BASE = process.env.E2E_API_URL || 'http://localhost:4000/api/v1';
 
 export const STRIPE_TEST_CARDS = {
   // 3D-Secure 2 challenge — what we use to validate the SCA path
@@ -50,10 +49,7 @@ export function newTestUser(): TestUser {
  * mounted only when `NODE_ENV !== 'production'`. It is what makes the
  * critical suite runnable end-to-end without a real SMTP inbox.
  */
-export async function registerAndVerify(
-  request: APIRequestContext,
-  user: TestUser,
-): Promise<void> {
+export async function registerAndVerify(request: APIRequestContext, user: TestUser): Promise<void> {
   const reg = await request.post(`${API_BASE}/auth/register`, {
     data: {
       email: user.email,
@@ -71,17 +67,12 @@ export async function registerAndVerify(
   });
   if (!verify.ok()) {
     // Backdoor not present → the flow that needed it must be marked fixme
-    throw new Error(
-      `dev/verify-email backdoor missing — add it under NODE_ENV!=production`,
-    );
+    throw new Error(`dev/verify-email backdoor missing — add it under NODE_ENV!=production`);
   }
 }
 
 /** Delete the user via the RGPD endpoint so the suite leaves no residue. */
-export async function deleteUser(
-  request: APIRequestContext,
-  authCookies: string,
-): Promise<void> {
+export async function deleteUser(request: APIRequestContext, authCookies: string): Promise<void> {
   await request.delete(`${API_BASE}/me/gdpr/account`, {
     headers: { Cookie: authCookies },
     data: { confirm: true, reason: 'e2e-cleanup' },
@@ -139,7 +130,7 @@ export const test = base.extend<Fixtures>({
             analytics: false,
             marketing: false,
             decidedAt: new Date().toISOString(),
-          }),
+          })
         );
       } catch {
         /* ignore (storage unavailable) */

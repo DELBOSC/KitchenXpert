@@ -17,14 +17,14 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const PUBLIC_PAGES: Array<{ name: string; url: string }> = [
-  { name: 'home',           url: '/' },
-  { name: 'login',          url: '/login' },
-  { name: 'register',       url: '/register' },
-  { name: 'pricing',        url: '/pricing' },
-  { name: 'catalog',        url: '/catalog' },
-  { name: 'catalog-ikea',   url: '/catalog/IKEA' },
-  { name: 'legal-privacy',  url: '/legal/privacy' },
-  { name: 'legal-cgv',      url: '/legal/cgv' },
+  { name: 'home', url: '/' },
+  { name: 'login', url: '/login' },
+  { name: 'register', url: '/register' },
+  { name: 'pricing', url: '/pricing' },
+  { name: 'catalog', url: '/catalog' },
+  { name: 'catalog-ikea', url: '/catalog/IKEA' },
+  { name: 'legal-privacy', url: '/legal/privacy' },
+  { name: 'legal-cgv', url: '/legal/cgv' },
 ];
 
 for (const { name, url } of PUBLIC_PAGES) {
@@ -52,14 +52,15 @@ for (const { name, url } of PUBLIC_PAGES) {
       body: Buffer.from(JSON.stringify(results, null, 2)),
     });
 
-    const blockers = results.violations.filter((v: { impact?: string }) =>
-      v.impact === 'critical' || v.impact === 'serious',
+    const blockers = results.violations.filter(
+      (v: { impact?: string }) => v.impact === 'critical' || v.impact === 'serious'
     );
 
     if (blockers.length > 0) {
       const summary = blockers
-        .map((v: { id: string; impact?: string; description: string; nodes: unknown[] }) =>
-          `  - [${v.impact}] ${v.id}: ${v.description} (${v.nodes.length} node${v.nodes.length === 1 ? '' : 's'})`,
+        .map(
+          (v: { id: string; impact?: string; description: string; nodes: unknown[] }) =>
+            `  - [${v.impact}] ${v.id}: ${v.description} (${v.nodes.length} node${v.nodes.length === 1 ? '' : 's'})`
         )
         .join('\n');
       throw new Error(`axe found ${blockers.length} blocking violations on ${name}:\n${summary}`);
@@ -67,11 +68,11 @@ for (const { name, url } of PUBLIC_PAGES) {
 
     // Soft-warn on minor/moderate — surfaced in the trace, not a fail
     const warnings = results.violations.filter(
-      (v: { impact?: string }) => v.impact === 'minor' || v.impact === 'moderate',
+      (v: { impact?: string }) => v.impact === 'minor' || v.impact === 'moderate'
     );
     if (warnings.length > 0) {
       console.warn(
-        `[a11y/${name}] ${warnings.length} non-blocking issue(s): ${warnings.map((w: { id: string }) => w.id).join(', ')}`,
+        `[a11y/${name}] ${warnings.length} non-blocking issue(s): ${warnings.map((w: { id: string }) => w.id).join(', ')}`
       );
     }
 

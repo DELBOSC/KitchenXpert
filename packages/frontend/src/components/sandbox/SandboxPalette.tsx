@@ -19,30 +19,118 @@ interface PaletteItem {
   sku: string;
   label: string;
   category: 'caisson' | 'electromenager' | 'colonne';
-  width: number;   // cm
+  width: number; // cm
   depth: number;
   height: number;
   unitPrice: number;
 }
 
 const PALETTE: PaletteItem[] = [
-  { sku: 'METOD-60-WHITE',  label: 'Caisson bas 60',          category: 'caisson',        width: 60,  depth: 60, height: 80,  unitPrice: 169 },
-  { sku: 'METOD-80-WHITE',  label: 'Caisson bas 80',          category: 'caisson',        width: 80,  depth: 60, height: 80,  unitPrice: 199 },
-  { sku: 'METOD-100-WHITE', label: 'Caisson bas 100',         category: 'caisson',        width: 100, depth: 60, height: 80,  unitPrice: 239 },
-  { sku: 'METOD-EVIER-60',  label: 'Caisson évier 60',        category: 'caisson',        width: 60,  depth: 60, height: 80,  unitPrice: 219 },
-  { sku: 'METOD-EVIER-80',  label: 'Caisson évier 80',        category: 'caisson',        width: 80,  depth: 60, height: 80,  unitPrice: 249 },
-  { sku: 'METOD-PLAQUE-60', label: 'Plaque cuisson 60',       category: 'electromenager', width: 60,  depth: 60, height: 80,  unitPrice: 209 },
-  { sku: 'METOD-PLAQUE-80', label: 'Plaque cuisson 80',       category: 'electromenager', width: 80,  depth: 60, height: 80,  unitPrice: 229 },
-  { sku: 'METOD-FOUR',      label: 'Caisson four 60',         category: 'electromenager', width: 60,  depth: 60, height: 80,  unitPrice: 359 },
-  { sku: 'METOD-LAVE-VAIS', label: 'Lave-vaisselle 60',       category: 'electromenager', width: 60,  depth: 60, height: 80,  unitPrice: 449 },
-  { sku: 'METOD-FRIGO',     label: 'Colonne frigo 60',        category: 'colonne',        width: 60,  depth: 60, height: 220, unitPrice: 489 },
-  { sku: 'METOD-COIN',      label: 'Caisson d\'angle',        category: 'caisson',        width: 80,  depth: 80, height: 80,  unitPrice: 289 },
+  {
+    sku: 'METOD-60-WHITE',
+    label: 'Caisson bas 60',
+    category: 'caisson',
+    width: 60,
+    depth: 60,
+    height: 80,
+    unitPrice: 169,
+  },
+  {
+    sku: 'METOD-80-WHITE',
+    label: 'Caisson bas 80',
+    category: 'caisson',
+    width: 80,
+    depth: 60,
+    height: 80,
+    unitPrice: 199,
+  },
+  {
+    sku: 'METOD-100-WHITE',
+    label: 'Caisson bas 100',
+    category: 'caisson',
+    width: 100,
+    depth: 60,
+    height: 80,
+    unitPrice: 239,
+  },
+  {
+    sku: 'METOD-EVIER-60',
+    label: 'Caisson évier 60',
+    category: 'caisson',
+    width: 60,
+    depth: 60,
+    height: 80,
+    unitPrice: 219,
+  },
+  {
+    sku: 'METOD-EVIER-80',
+    label: 'Caisson évier 80',
+    category: 'caisson',
+    width: 80,
+    depth: 60,
+    height: 80,
+    unitPrice: 249,
+  },
+  {
+    sku: 'METOD-PLAQUE-60',
+    label: 'Plaque cuisson 60',
+    category: 'electromenager',
+    width: 60,
+    depth: 60,
+    height: 80,
+    unitPrice: 209,
+  },
+  {
+    sku: 'METOD-PLAQUE-80',
+    label: 'Plaque cuisson 80',
+    category: 'electromenager',
+    width: 80,
+    depth: 60,
+    height: 80,
+    unitPrice: 229,
+  },
+  {
+    sku: 'METOD-FOUR',
+    label: 'Caisson four 60',
+    category: 'electromenager',
+    width: 60,
+    depth: 60,
+    height: 80,
+    unitPrice: 359,
+  },
+  {
+    sku: 'METOD-LAVE-VAIS',
+    label: 'Lave-vaisselle 60',
+    category: 'electromenager',
+    width: 60,
+    depth: 60,
+    height: 80,
+    unitPrice: 449,
+  },
+  {
+    sku: 'METOD-FRIGO',
+    label: 'Colonne frigo 60',
+    category: 'colonne',
+    width: 60,
+    depth: 60,
+    height: 220,
+    unitPrice: 489,
+  },
+  {
+    sku: 'METOD-COIN',
+    label: "Caisson d'angle",
+    category: 'caisson',
+    width: 80,
+    depth: 80,
+    height: 80,
+    unitPrice: 289,
+  },
 ];
 
 const CATEGORY_LABEL: Record<PaletteItem['category'], string> = {
-  caisson:        'Caissons',
+  caisson: 'Caissons',
   electromenager: 'Électroménager',
-  colonne:        'Colonnes',
+  colonne: 'Colonnes',
 };
 
 export function SandboxPalette(): React.ReactElement {
@@ -53,7 +141,7 @@ export function SandboxPalette(): React.ReactElement {
   const onAdd = (p: PaletteItem): void => {
     // Naive placement: stack along the back wall (y=0, z=0) at increasing X.
     // The user can then click + drag (future polish) to reposition.
-    const xCursor = ((itemCount * 40) % Math.max(1, project?.kitchen.widthCm ?? 400));
+    const xCursor = (itemCount * 40) % Math.max(1, project?.kitchen.widthCm ?? 400);
     addItem({
       sku: p.sku,
       label: p.label,
@@ -81,9 +169,7 @@ export function SandboxPalette(): React.ReactElement {
       <div className="border-b border-white/10 px-5 py-4">
         <div className="text-xs uppercase tracking-widest text-white/40">Catalogue</div>
         <div className="mt-1 text-sm font-medium text-white">IKEA METOD</div>
-        <div className="mt-1 text-[11px] text-white/40">
-          Cliquez pour ajouter à votre cuisine
-        </div>
+        <div className="mt-1 text-[11px] text-white/40">Cliquez pour ajouter à votre cuisine</div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3">
@@ -120,9 +206,14 @@ export function SandboxPalette(): React.ReactElement {
       {/* Footer summary */}
       <div className="border-t border-white/10 px-5 py-3">
         <div className="flex items-baseline justify-between text-xs">
-          <span className="text-white/50">{itemCount} meuble{itemCount > 1 ? 's' : ''}</span>
+          <span className="text-white/50">
+            {itemCount} meuble{itemCount > 1 ? 's' : ''}
+          </span>
           <span className="font-semibold text-white tabular-nums">
-            {(project?.kitchen.items.reduce((acc, it) => acc + it.unitPrice * it.quantity, 0) ?? 0).toLocaleString('fr-FR')} €
+            {(
+              project?.kitchen.items.reduce((acc, it) => acc + it.unitPrice * it.quantity, 0) ?? 0
+            ).toLocaleString('fr-FR')}{' '}
+            €
           </span>
         </div>
       </div>

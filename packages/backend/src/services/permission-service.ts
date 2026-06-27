@@ -15,9 +15,17 @@ export interface Permission {
 }
 
 export type PermissionAction =
-  | 'create' | 'read' | 'update' | 'delete'
-  | 'list' | 'export' | 'import' | 'share'
-  | 'manage' | 'ai_configure' | '*';
+  | 'create'
+  | 'read'
+  | 'update'
+  | 'delete'
+  | 'list'
+  | 'export'
+  | 'import'
+  | 'share'
+  | 'manage'
+  | 'ai_configure'
+  | '*';
 
 export interface PermissionCondition {
   field: string;
@@ -26,9 +34,19 @@ export interface PermissionCondition {
 }
 
 export type ConditionOperator =
-  | 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte'
-  | 'in' | 'nin' | 'contains' | 'startsWith'
-  | 'endsWith' | 'regex' | 'exists';
+  | 'eq'
+  | 'ne'
+  | 'gt'
+  | 'gte'
+  | 'lt'
+  | 'lte'
+  | 'in'
+  | 'nin'
+  | 'contains'
+  | 'startsWith'
+  | 'endsWith'
+  | 'regex'
+  | 'exists';
 
 export interface Role {
   id: string;
@@ -88,7 +106,11 @@ export interface PermissionRepository {
   assignRoleToUser(userId: string, roleId: string): Promise<boolean>;
   removeRoleFromUser(userId: string, roleId: string): Promise<boolean>;
   grantResourcePermission(permission: ResourcePermission & { userId: string }): Promise<boolean>;
-  revokeResourcePermission(userId: string, resourceType: string, resourceId: string): Promise<boolean>;
+  revokeResourcePermission(
+    userId: string,
+    resourceType: string,
+    resourceId: string
+  ): Promise<boolean>;
 }
 
 export class PermissionService {
@@ -115,17 +137,34 @@ export class PermissionService {
       return { allowed: false, reason: 'User has no permissions configured' };
     }
 
-    const deniedCheck = await this.checkDeniedPermissions(userPermissions.deniedPermissions, resource, action);
+    const deniedCheck = await this.checkDeniedPermissions(
+      userPermissions.deniedPermissions,
+      resource,
+      action
+    );
     if (deniedCheck) {
-      return { allowed: false, reason: 'Permission explicitly denied', matchedPermission: deniedCheck };
+      return {
+        allowed: false,
+        reason: 'Permission explicitly denied',
+        matchedPermission: deniedCheck,
+      };
     }
 
-    const directCheck = await this.checkPermissionList(userPermissions.directPermissions, resource, action, context);
-    if (directCheck.allowed) {return directCheck;}
+    const directCheck = await this.checkPermissionList(
+      userPermissions.directPermissions,
+      resource,
+      action,
+      context
+    );
+    if (directCheck.allowed) {
+      return directCheck;
+    }
 
     const allPermissions = await this.getEffectiveRolePermissions(userPermissions.roles);
     const roleCheck = await this.checkPermissionList(allPermissions, resource, action, context);
-    if (roleCheck.allowed) {return roleCheck;}
+    if (roleCheck.allowed) {
+      return roleCheck;
+    }
 
     if (context?.resourceId) {
       const resourceCheck = this.checkResourcePermissions(
@@ -134,7 +173,9 @@ export class PermissionService {
         String(context.resourceId),
         action
       );
-      if (resourceCheck.allowed) {return resourceCheck;}
+      if (resourceCheck.allowed) {
+        return resourceCheck;
+      }
     }
 
     return { allowed: false, reason: 'No matching permission found' };
@@ -146,7 +187,9 @@ export class PermissionService {
   ): Promise<boolean> {
     for (const check of checks) {
       const result = await this.checkPermission(userId, check.resource, check.action);
-      if (result.allowed) {return true;}
+      if (result.allowed) {
+        return true;
+      }
     }
     return false;
   }
@@ -157,26 +200,32 @@ export class PermissionService {
   ): Promise<boolean> {
     for (const check of checks) {
       const result = await this.checkPermission(userId, check.resource, check.action);
-      if (!result.allowed) {return false;}
+      if (!result.allowed) {
+        return false;
+      }
     }
     return true;
   }
 
   async getUserEffectivePermissions(userId: string): Promise<Permission[]> {
     const userPermissions = await this.repository.getUserPermissions(userId);
-    if (!userPermissions) {return [];}
+    if (!userPermissions) {
+      return [];
+    }
 
     const permissionIds = new Set<string>();
-    userPermissions.directPermissions.forEach(id => permissionIds.add(id));
+    userPermissions.directPermissions.forEach((id) => permissionIds.add(id));
 
     const rolePermissions = await this.getEffectiveRolePermissions(userPermissions.roles);
-    rolePermissions.forEach(id => permissionIds.add(id));
-    userPermissions.deniedPermissions.forEach(id => permissionIds.delete(id));
+    rolePermissions.forEach((id) => permissionIds.add(id));
+    userPermissions.deniedPermissions.forEach((id) => permissionIds.delete(id));
 
     const permissions: Permission[] = [];
     for (const id of permissionIds) {
       const permission = await this.getPermission(id);
-      if (permission) {permissions.push(permission);}
+      if (permission) {
+        permissions.push(permission);
+      }
     }
 
     return permissions;
@@ -219,14 +268,19 @@ export class PermissionService {
   async createPermission(data: Omit<Permission, 'id' | 'createdAt'>): Promise<Permission> {
     const existing = await this.repository.findPermissionByName(data.name);
     if (existing) {
-      throw new PermissionServiceError('PERMISSION_EXISTS', 'A permission with this name already exists');
+      throw new PermissionServiceError(
+        'PERMISSION_EXISTS',
+        'A permission with this name already exists'
+      );
     }
     return this.repository.createPermission(data);
   }
 
   async updatePermission(id: string, data: Partial<Permission>): Promise<Permission | null> {
     const permission = await this.repository.updatePermission(id, data);
-    if (permission) {this.permissionCache.set(id, permission);}
+    if (permission) {
+      this.permissionCache.set(id, permission);
+    }
     return permission;
   }
 
@@ -257,13 +311,17 @@ export class PermissionService {
 
   async assignRoleToUser(userId: string, roleSlug: string): Promise<boolean> {
     const role = await this.repository.findRoleBySlug(roleSlug);
-    if (!role) {throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');}
+    if (!role) {
+      throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');
+    }
     return this.repository.assignRoleToUser(userId, role.id);
   }
 
   async removeRoleFromUser(userId: string, roleSlug: string): Promise<boolean> {
     const role = await this.repository.findRoleBySlug(roleSlug);
-    if (!role) {throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');}
+    if (!role) {
+      throw new PermissionServiceError('ROLE_NOT_FOUND', 'Role not found');
+    }
     return this.repository.removeRoleFromUser(userId, role.id);
   }
 
@@ -287,12 +345,16 @@ export class PermissionService {
 
   async getUserRoles(userId: string): Promise<Role[]> {
     const userPermissions = await this.repository.getUserPermissions(userId);
-    if (!userPermissions) {return [];}
+    if (!userPermissions) {
+      return [];
+    }
 
     const roles: Role[] = [];
     for (const roleId of userPermissions.roles) {
       const role = await this.getRole(roleId);
-      if (role) {roles.push(role);}
+      if (role) {
+        roles.push(role);
+      }
     }
     return roles.sort((a, b) => b.priority - a.priority);
   }
@@ -310,7 +372,9 @@ export class PermissionService {
   ): Promise<string | null> {
     for (const id of deniedIds) {
       const permission = await this.getPermission(id);
-      if (permission && this.matchesPermission(permission, resource, action)) {return id;}
+      if (permission && this.matchesPermission(permission, resource, action)) {
+        return id;
+      }
     }
     return null;
   }
@@ -323,7 +387,9 @@ export class PermissionService {
   ): Promise<PermissionCheck> {
     for (const id of permissionIds) {
       const permission = await this.getPermission(id);
-      if (!permission) {continue;}
+      if (!permission) {
+        continue;
+      }
 
       if (this.matchesPermission(permission, resource, action)) {
         if (permission.conditions && permission.conditions.length > 0) {
@@ -338,7 +404,11 @@ export class PermissionService {
     return { allowed: false };
   }
 
-  private matchesPermission(permission: Permission, resource: string, action: PermissionAction): boolean {
+  private matchesPermission(
+    permission: Permission,
+    resource: string,
+    action: PermissionAction
+  ): boolean {
     const resourceMatch =
       permission.resource === '*' ||
       permission.resource === resource ||
@@ -347,31 +417,52 @@ export class PermissionService {
     return resourceMatch && actionMatch;
   }
 
-  private evaluateConditions(conditions: PermissionCondition[], context?: Record<string, unknown>): boolean {
-    if (!context) {return false;}
+  private evaluateConditions(
+    conditions: PermissionCondition[],
+    context?: Record<string, unknown>
+  ): boolean {
+    if (!context) {
+      return false;
+    }
     for (const condition of conditions) {
       const value = context[condition.field];
-      if (!this.evaluateCondition(condition, value)) {return false;}
+      if (!this.evaluateCondition(condition, value)) {
+        return false;
+      }
     }
     return true;
   }
 
   private evaluateCondition(condition: PermissionCondition, value: unknown): boolean {
     switch (condition.operator) {
-      case 'eq': return value === condition.value;
-      case 'ne': return value !== condition.value;
-      case 'gt': return typeof value === 'number' && value > (condition.value as number);
-      case 'gte': return typeof value === 'number' && value >= (condition.value as number);
-      case 'lt': return typeof value === 'number' && value < (condition.value as number);
-      case 'lte': return typeof value === 'number' && value <= (condition.value as number);
-      case 'in': return Array.isArray(condition.value) && condition.value.includes(value);
-      case 'nin': return Array.isArray(condition.value) && !condition.value.includes(value);
-      case 'contains': return typeof value === 'string' && value.includes(condition.value as string);
-      case 'startsWith': return typeof value === 'string' && value.startsWith(condition.value as string);
-      case 'endsWith': return typeof value === 'string' && value.endsWith(condition.value as string);
-      case 'regex': return typeof value === 'string' && new RegExp(condition.value as string).test(value);
-      case 'exists': return condition.value ? value !== undefined : value === undefined;
-      default: return false;
+      case 'eq':
+        return value === condition.value;
+      case 'ne':
+        return value !== condition.value;
+      case 'gt':
+        return typeof value === 'number' && value > (condition.value as number);
+      case 'gte':
+        return typeof value === 'number' && value >= (condition.value as number);
+      case 'lt':
+        return typeof value === 'number' && value < (condition.value as number);
+      case 'lte':
+        return typeof value === 'number' && value <= (condition.value as number);
+      case 'in':
+        return Array.isArray(condition.value) && condition.value.includes(value);
+      case 'nin':
+        return Array.isArray(condition.value) && !condition.value.includes(value);
+      case 'contains':
+        return typeof value === 'string' && value.includes(condition.value as string);
+      case 'startsWith':
+        return typeof value === 'string' && value.startsWith(condition.value as string);
+      case 'endsWith':
+        return typeof value === 'string' && value.endsWith(condition.value as string);
+      case 'regex':
+        return typeof value === 'string' && new RegExp(condition.value as string).test(value);
+      case 'exists':
+        return condition.value ? value !== undefined : value === undefined;
+      default:
+        return false;
     }
   }
 
@@ -380,13 +471,17 @@ export class PermissionService {
     const processedRoles = new Set<string>();
 
     const processRole = async (roleId: string) => {
-      if (processedRoles.has(roleId)) {return;}
+      if (processedRoles.has(roleId)) {
+        return;
+      }
       processedRoles.add(roleId);
 
       const role = await this.getRole(roleId);
-      if (!role) {return;}
+      if (!role) {
+        return;
+      }
 
-      role.permissions.forEach(p => allPermissions.add(p));
+      role.permissions.forEach((p) => allPermissions.add(p));
 
       if (role.inheritsFrom) {
         for (const inheritedRoleId of role.inheritsFrom) {
@@ -409,11 +504,18 @@ export class PermissionService {
     action: PermissionAction
   ): PermissionCheck {
     for (const rp of resourcePermissions) {
-      if (rp.resourceType !== resourceType || rp.resourceId !== resourceId) {continue;}
-      if (rp.expiresAt && new Date() > rp.expiresAt) {continue;}
+      if (rp.resourceType !== resourceType || rp.resourceId !== resourceId) {
+        continue;
+      }
+      if (rp.expiresAt && new Date() > rp.expiresAt) {
+        continue;
+      }
 
       const actionPermission = `${resourceType}:${action}`;
-      if (rp.permissions.includes(actionPermission) || rp.permissions.includes(`${resourceType}:*`)) {
+      if (
+        rp.permissions.includes(actionPermission) ||
+        rp.permissions.includes(`${resourceType}:*`)
+      ) {
         return { allowed: true, reason: 'Resource-specific permission' };
       }
     }
@@ -422,7 +524,10 @@ export class PermissionService {
 }
 
 export class PermissionServiceError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'PermissionServiceError';
   }

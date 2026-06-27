@@ -197,7 +197,7 @@ describe('ProductEnrichmentService', () => {
         'claude-sonnet-4-5-20250929',
         3000,
         1500,
-        expect.any(Number),
+        expect.any(Number)
       );
     });
 
@@ -215,7 +215,7 @@ describe('ProductEnrichmentService', () => {
         name: `Product ${i}`,
       }));
 
-      const mockResults = manyProducts.slice(0, 10).map(p => ({
+      const mockResults = manyProducts.slice(0, 10).map((p) => ({
         productId: p.id,
         specifications: {},
         warranty: {},
@@ -243,7 +243,7 @@ describe('ProductEnrichmentService', () => {
       const result = await service.enrichBatch([mockProduct, mockProduct2]);
 
       expect(result).toHaveLength(2);
-      result.forEach(r => {
+      result.forEach((r) => {
         expect(r.confidence).toBe(0);
         expect(r.certifications).toEqual([]);
         expect(r.energyDetails).toBeNull();
@@ -337,7 +337,7 @@ describe('ProductEnrichmentService', () => {
             confidence: 0.88,
             enrichedAt: expect.any(Date),
           }),
-        }),
+        })
       );
     });
 
@@ -353,14 +353,16 @@ describe('ProductEnrichmentService', () => {
     it('should mark records as failed when enrichment returns zero confidence', async () => {
       mockPrisma.productEnrichment.findMany.mockResolvedValue([mockPendingRecords[0]]);
       mockGenerateJSON.mockResolvedValue({
-        data: [{
-          productId: 'prod-1',
-          specifications: {},
-          warranty: {},
-          certifications: [],
-          energyDetails: null,
-          confidence: 0,
-        }],
+        data: [
+          {
+            productId: 'prod-1',
+            specifications: {},
+            warranty: {},
+            certifications: [],
+            energyDetails: null,
+            confidence: 0,
+          },
+        ],
         inputTokens: 2000,
         outputTokens: 500,
       });
@@ -376,7 +378,7 @@ describe('ProductEnrichmentService', () => {
             status: 'failed',
             errorMessage: 'Claude returned zero confidence',
           }),
-        }),
+        })
       );
     });
 
@@ -440,7 +442,7 @@ describe('ProductEnrichmentService', () => {
           productId: 'prod-1',
           brandId: 'ikea',
           name: 'Test',
-        }),
+        })
       ).resolves.not.toThrow();
     });
   });
@@ -450,10 +452,10 @@ describe('ProductEnrichmentService', () => {
   describe('getStats', () => {
     it('should return enrichment statistics from the database', async () => {
       mockPrisma.productEnrichment.count
-        .mockResolvedValueOnce(10)   // pending
-        .mockResolvedValueOnce(80)   // enriched
-        .mockResolvedValueOnce(5)    // failed
-        .mockResolvedValueOnce(3);   // skipped
+        .mockResolvedValueOnce(10) // pending
+        .mockResolvedValueOnce(80) // enriched
+        .mockResolvedValueOnce(5) // failed
+        .mockResolvedValueOnce(3); // skipped
 
       mockPrisma.productEnrichment.aggregate.mockResolvedValue({
         _avg: { confidence: 0.85 },
@@ -493,9 +495,7 @@ describe('ProductEnrichmentService', () => {
         _avg: { confidence: null },
       });
 
-      mockPrisma.productEnrichment.groupBy
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([]);
+      mockPrisma.productEnrichment.groupBy.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
       const stats = await service.getStats();
 

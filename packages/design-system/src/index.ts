@@ -27,34 +27,15 @@ export {
   info,
 } from './foundations/colors';
 
-export {
-  fontFamilies,
-  fontSizes,
-  fontWeights,
-  lineHeights,
-} from './foundations/typography';
+export { fontFamilies, fontSizes, fontWeights, lineHeights } from './foundations/typography';
 
-export {
-  spacing,
-  radii,
-  gaps,
-} from './foundations/spacing';
+export { spacing, radii, gaps } from './foundations/spacing';
 
-export {
-  breakpoints,
-  mediaQueries,
-} from './foundations/breakpoints';
+export { breakpoints, mediaQueries } from './foundations/breakpoints';
 
-export {
-  shadows,
-  zIndices,
-} from './foundations/elevation';
+export { shadows, zIndices } from './foundations/elevation';
 
-export {
-  durations,
-  easings,
-  animations,
-} from './foundations/motion';
+export { durations, easings, animations } from './foundations/motion';
 
 export {
   lightTheme,

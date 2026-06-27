@@ -305,7 +305,12 @@ router.get('/metrics/:name/timeseries', authorize(['admin']), monitoringControll
  *       401:
  *         description: Unauthorized
  */
-router.post('/metrics', apiRateLimiter, validateBody(recordMetricSchema), monitoringController.recordMetric);
+router.post(
+  '/metrics',
+  apiRateLimiter,
+  validateBody(recordMetricSchema),
+  monitoringController.recordMetric
+);
 
 /**
  * @swagger
@@ -341,7 +346,12 @@ router.post('/metrics', apiRateLimiter, validateBody(recordMetricSchema), monito
  *       401:
  *         description: Unauthorized
  */
-router.post('/metrics/bulk', apiRateLimiter, validateBody(recordMetricsBulkSchema), monitoringController.recordMetricsBulk);
+router.post(
+  '/metrics/bulk',
+  apiRateLimiter,
+  validateBody(recordMetricsBulkSchema),
+  monitoringController.recordMetricsBulk
+);
 
 /**
  * @swagger
@@ -359,7 +369,11 @@ router.post('/metrics/bulk', apiRateLimiter, validateBody(recordMetricsBulkSchem
  *       403:
  *         description: Forbidden - admin only
  */
-router.post('/metrics/aggregate', authorize(['admin']), monitoringController.getMultipleAggregations);
+router.post(
+  '/metrics/aggregate',
+  authorize(['admin']),
+  monitoringController.getMultipleAggregations
+);
 
 /**
  * @swagger
@@ -466,7 +480,12 @@ const cleanupSchema = z.object({
  *       403:
  *         description: Forbidden - admin only
  */
-router.delete('/metrics/cleanup', authorize(['admin']), validateBody(cleanupSchema), monitoringController.cleanupMetrics);
+router.delete(
+  '/metrics/cleanup',
+  authorize(['admin']),
+  validateBody(cleanupSchema),
+  monitoringController.cleanupMetrics
+);
 
 // Quick track endpoints (authenticated, rate limited)
 
@@ -494,7 +513,12 @@ router.delete('/metrics/cleanup', authorize(['admin']), validateBody(cleanupSche
  *       401:
  *         description: Unauthorized
  */
-router.post('/track/pageview', apiRateLimiter, validateBody(trackPageViewSchema), monitoringController.trackPageView);
+router.post(
+  '/track/pageview',
+  apiRateLimiter,
+  validateBody(trackPageViewSchema),
+  monitoringController.trackPageView
+);
 
 /**
  * @swagger
@@ -522,7 +546,12 @@ router.post('/track/pageview', apiRateLimiter, validateBody(trackPageViewSchema)
  *       401:
  *         description: Unauthorized
  */
-router.post('/track/error', apiRateLimiter, validateBody(trackErrorSchema), monitoringController.trackError);
+router.post(
+  '/track/error',
+  apiRateLimiter,
+  validateBody(trackErrorSchema),
+  monitoringController.trackError
+);
 
 /**
  * @swagger
@@ -550,6 +579,11 @@ router.post('/track/error', apiRateLimiter, validateBody(trackErrorSchema), moni
  *       401:
  *         description: Unauthorized
  */
-router.post('/track/action', apiRateLimiter, validateBody(trackActionSchema), monitoringController.trackUserAction);
+router.post(
+  '/track/action',
+  apiRateLimiter,
+  validateBody(trackActionSchema),
+  monitoringController.trackUserAction
+);
 
 export default router;

@@ -14,56 +14,53 @@ const CONVERSIONS = {
   feet: {
     toMeters: 0.3048,
     fromMeters: 3.28084,
-    label: { en: 'ft', fr: 'pi' }
+    label: { en: 'ft', fr: 'pi' },
   },
   meters: {
     toMeters: 1,
     fromMeters: 1,
-    label: { en: 'm', fr: 'm' }
+    label: { en: 'm', fr: 'm' },
   },
   inches: {
     toMeters: 0.0254,
     fromMeters: 39.3701,
-    label: { en: 'in', fr: 'po' }
+    label: { en: 'in', fr: 'po' },
   },
   centimeters: {
     toMeters: 0.01,
     fromMeters: 100,
-    label: { en: 'cm', fr: 'cm' }
-  }
+    label: { en: 'cm', fr: 'cm' },
+  },
 };
 
 /**
  * DimensionInput Component
  */
-function DimensionInput({
-  question,
-  value,
-  onChange,
-  language,
-  disabled
-}) {
+function DimensionInput({ question, value, onChange, language, disabled }) {
   const {
     dimensions = ['width', 'length'],
     defaultUnit = 'feet',
     allowUnitChange = true,
     min = 0,
-    max = 100
+    max = 100,
   } = question;
 
   // Parse value into individual dimensions
-  const parseValue = useCallback((val) => {
-    if (!val || typeof val !== 'object') {
+  const parseValue = useCallback(
+    (val) => {
+      if (!val || typeof val !== 'object') {
+        return {
+          values: dimensions.reduce((acc, dim) => ({ ...acc, [dim]: '' }), {}),
+          unit: defaultUnit,
+        };
+      }
       return {
-        values: dimensions.reduce((acc, dim) => ({ ...acc, [dim]: '' }), {}),
-        unit: defaultUnit
+        values: val.values || dimensions.reduce((acc, dim) => ({ ...acc, [dim]: '' }), {}),
+        unit: val.unit || defaultUnit,
       };
-    }
-    return {
-      values: val.values || dimensions.reduce((acc, dim) => ({ ...acc, [dim]: '' }), {}),
-      unit: val.unit || defaultUnit
-    };
-  }, [dimensions, defaultUnit]);
+    },
+    [dimensions, defaultUnit]
+  );
 
   const [localState, setLocalState] = useState(() => parseValue(value));
 
@@ -74,61 +71,70 @@ function DimensionInput({
   }, [value, parseValue]);
 
   // Get dimension labels
-  const getDimensionLabel = useCallback((dim) => {
-    const labels = {
-      width: { en: 'Width', fr: 'Largeur' },
-      length: { en: 'Length', fr: 'Longueur' },
-      height: { en: 'Height', fr: 'Hauteur' },
-      depth: { en: 'Depth', fr: 'Profondeur' }
-    };
-    return labels[dim]?.[language] || labels[dim]?.en || dim;
-  }, [language]);
+  const getDimensionLabel = useCallback(
+    (dim) => {
+      const labels = {
+        width: { en: 'Width', fr: 'Largeur' },
+        length: { en: 'Length', fr: 'Longueur' },
+        height: { en: 'Height', fr: 'Hauteur' },
+        depth: { en: 'Depth', fr: 'Profondeur' },
+      };
+      return labels[dim]?.[language] || labels[dim]?.en || dim;
+    },
+    [language]
+  );
 
   // Handle dimension value change
-  const handleDimensionChange = useCallback((dimension, inputValue) => {
-    const numValue = inputValue === '' ? '' : parseFloat(inputValue);
+  const handleDimensionChange = useCallback(
+    (dimension, inputValue) => {
+      const numValue = inputValue === '' ? '' : parseFloat(inputValue);
 
-    const newState = {
-      ...localState,
-      values: {
-        ...localState.values,
-        [dimension]: numValue
-      }
-    };
+      const newState = {
+        ...localState,
+        values: {
+          ...localState.values,
+          [dimension]: numValue,
+        },
+      };
 
-    setLocalState(newState);
-    onChange(newState);
-  }, [localState, onChange]);
+      setLocalState(newState);
+      onChange(newState);
+    },
+    [localState, onChange]
+  );
 
   // Handle unit change
-  const handleUnitChange = useCallback((newUnit) => {
-    if (newUnit === localState.unit) return;
+  const handleUnitChange = useCallback(
+    (newUnit) => {
+      if (newUnit === localState.unit) return;
 
-    // Convert existing values to new unit
-    const oldConversion = CONVERSIONS[localState.unit];
-    const newConversion = CONVERSIONS[newUnit];
+      // Convert existing values to new unit
+      const oldConversion = CONVERSIONS[localState.unit];
+      const newConversion = CONVERSIONS[newUnit];
 
-    const convertedValues = {};
-    dimensions.forEach(dim => {
-      const currentValue = localState.values[dim];
-      if (currentValue !== '' && currentValue !== null && currentValue !== undefined) {
-        // Convert to meters, then to new unit
-        const inMeters = currentValue * oldConversion.toMeters;
-        const inNewUnit = inMeters * newConversion.fromMeters;
-        convertedValues[dim] = Math.round(inNewUnit * 100) / 100;
-      } else {
-        convertedValues[dim] = '';
-      }
-    });
+      const convertedValues = {};
+      dimensions.forEach((dim) => {
+        const currentValue = localState.values[dim];
+        if (currentValue !== '' && currentValue !== null && currentValue !== undefined) {
+          // Convert to meters, then to new unit
+          const inMeters = currentValue * oldConversion.toMeters;
+          const inNewUnit = inMeters * newConversion.fromMeters;
+          convertedValues[dim] = Math.round(inNewUnit * 100) / 100;
+        } else {
+          convertedValues[dim] = '';
+        }
+      });
 
-    const newState = {
-      values: convertedValues,
-      unit: newUnit
-    };
+      const newState = {
+        values: convertedValues,
+        unit: newUnit,
+      };
 
-    setLocalState(newState);
-    onChange(newState);
-  }, [localState, dimensions, onChange]);
+      setLocalState(newState);
+      onChange(newState);
+    },
+    [localState, dimensions, onChange]
+  );
 
   const unitLabel = CONVERSIONS[localState.unit]?.label[language] || localState.unit;
 
@@ -137,9 +143,7 @@ function DimensionInput({
       <div className="dimension-fields">
         {dimensions.map((dimension) => (
           <div key={dimension} className="dimension-field">
-            <label htmlFor={`${question.id}-${dimension}`}>
-              {getDimensionLabel(dimension)}
-            </label>
+            <label htmlFor={`${question.id}-${dimension}`}>{getDimensionLabel(dimension)}</label>
             <div className="input-with-unit">
               <input
                 type="number"
@@ -161,9 +165,7 @@ function DimensionInput({
 
       {allowUnitChange && (
         <div className="unit-selector">
-          <span className="unit-selector-label">
-            {language === 'fr' ? 'Unité:' : 'Unit:'}
-          </span>
+          <span className="unit-selector-label">{language === 'fr' ? 'Unité:' : 'Unit:'}</span>
           <div className="unit-buttons" role="radiogroup">
             {Object.keys(CONVERSIONS).map((unit) => (
               <button
@@ -183,17 +185,17 @@ function DimensionInput({
       )}
 
       {/* Area calculation if width and length provided */}
-      {dimensions.includes('width') && dimensions.includes('length') &&
-        localState.values.width && localState.values.length && (
-        <div className="area-calculation">
-          <span className="area-label">
-            {language === 'fr' ? 'Surface:' : 'Area:'}
-          </span>
-          <span className="area-value">
-            {(localState.values.width * localState.values.length).toFixed(1)} {unitLabel}²
-          </span>
-        </div>
-      )}
+      {dimensions.includes('width') &&
+        dimensions.includes('length') &&
+        localState.values.width &&
+        localState.values.length && (
+          <div className="area-calculation">
+            <span className="area-label">{language === 'fr' ? 'Surface:' : 'Area:'}</span>
+            <span className="area-value">
+              {(localState.values.width * localState.values.length).toFixed(1)} {unitLabel}²
+            </span>
+          </div>
+        )}
     </div>
   );
 }
@@ -205,21 +207,21 @@ DimensionInput.propTypes = {
     defaultUnit: PropTypes.oneOf(['feet', 'meters', 'inches', 'centimeters']),
     allowUnitChange: PropTypes.bool,
     min: PropTypes.number,
-    max: PropTypes.number
+    max: PropTypes.number,
   }).isRequired,
   value: PropTypes.shape({
     values: PropTypes.object,
-    unit: PropTypes.string
+    unit: PropTypes.string,
   }),
   onChange: PropTypes.func.isRequired,
   language: PropTypes.oneOf(['en', 'fr']),
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
 };
 
 DimensionInput.defaultProps = {
   value: null,
   language: 'en',
-  disabled: false
+  disabled: false,
 };
 
 export default DimensionInput;

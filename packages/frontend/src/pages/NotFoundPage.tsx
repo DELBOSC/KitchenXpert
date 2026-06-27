@@ -12,9 +12,7 @@ export default function NotFoundPage(): React.ReactElement {
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           {t('notFound.title')}
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
-          {t('notFound.message')}
-        </p>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">{t('notFound.message')}</p>
         <Link
           to="/"
           className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"

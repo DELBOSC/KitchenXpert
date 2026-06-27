@@ -30,13 +30,17 @@ export class MirrorTool {
   /**
    * Mirror multiple objects along an axis relative to their collective center
    */
-  mirrorObjects(objects: THREE.Object3D[], axis: MirrorAxis, pivot?: THREE.Vector3): Map<string, THREE.Vector3> {
+  mirrorObjects(
+    objects: THREE.Object3D[],
+    axis: MirrorAxis,
+    pivot?: THREE.Vector3
+  ): Map<string, THREE.Vector3> {
     const previousPositions = new Map<string, THREE.Vector3>();
 
     // Calculate center if no pivot provided
     const center = pivot || this.calculateCenter(objects);
 
-    objects.forEach(obj => {
+    objects.forEach((obj) => {
       const id = (obj.userData.id as string) || obj.uuid;
       previousPositions.set(id, obj.position.clone());
       this.mirrorObject(obj, axis, center);
@@ -48,10 +52,14 @@ export class MirrorTool {
   /**
    * Mirror entire layout - mirrors all kitchen items in place
    */
-  mirrorLayout(items: THREE.Object3D[], axis: MirrorAxis, roomCenter: THREE.Vector3): Map<string, { position: THREE.Vector3; rotationY: number }> {
+  mirrorLayout(
+    items: THREE.Object3D[],
+    axis: MirrorAxis,
+    roomCenter: THREE.Vector3
+  ): Map<string, { position: THREE.Vector3; rotationY: number }> {
     const previousStates = new Map<string, { position: THREE.Vector3; rotationY: number }>();
 
-    items.forEach(item => {
+    items.forEach((item) => {
       const id = (item.userData.id as string) || item.uuid;
       previousStates.set(id, {
         position: item.position.clone(),
@@ -80,7 +88,7 @@ export class MirrorTool {
   private calculateCenter(objects: THREE.Object3D[]): THREE.Vector3 {
     if (objects.length === 0) return new THREE.Vector3();
     const center = new THREE.Vector3();
-    objects.forEach(obj => center.add(obj.position));
+    objects.forEach((obj) => center.add(obj.position));
     center.divideScalar(objects.length);
     return center;
   }

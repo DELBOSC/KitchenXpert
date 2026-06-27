@@ -20,9 +20,13 @@
 
 ## Introduction
 
-The KitchenXpert API is a comprehensive RESTful API that enables developers to integrate kitchen design, product catalog, AI-powered recommendations, and order management capabilities into their applications. Built on modern web standards, the API provides consistent, predictable interfaces for all operations.
+The KitchenXpert API is a comprehensive RESTful API that enables developers to
+integrate kitchen design, product catalog, AI-powered recommendations, and order
+management capabilities into their applications. Built on modern web standards,
+the API provides consistent, predictable interfaces for all operations.
 
 **Key Features:**
+
 - AI-powered kitchen design generation
 - Extensive product catalog (100,000+ products)
 - 3D kitchen visualization and collaboration
@@ -34,27 +38,32 @@ The KitchenXpert API is a comprehensive RESTful API that enables developers to i
 ## Base URLs
 
 ### Production
+
 ```
 https://api.kitchenxpert.com/v1
 ```
 
 ### Development/Staging
+
 ```
 http://localhost:4000/api/v1
 ```
 
 ### Sandbox (Testing)
+
 ```
 https://sandbox-api.kitchenxpert.com/v1
 ```
 
-All API requests must use HTTPS in production. HTTP requests will be automatically redirected to HTTPS.
+All API requests must use HTTPS in production. HTTP requests will be
+automatically redirected to HTTPS.
 
 ## RESTful Architecture
 
 The KitchenXpert API follows REST principles:
 
-- **Resources** are represented as nouns (e.g., `/designs`, `/products`, `/users`)
+- **Resources** are represented as nouns (e.g., `/designs`, `/products`,
+  `/users`)
 - **HTTP methods** indicate actions:
   - `GET` - Retrieve resources
   - `POST` - Create new resources
@@ -84,12 +93,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Token Lifetimes:**
+
 - Access Token: 15 minutes
 - Refresh Token: 7 days
 
 ### OAuth2
 
 Supported OAuth2 providers:
+
 - Google
 - GitHub
 - Microsoft
@@ -136,9 +147,9 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: 'https://api.kitchenxpert.com/v1',
   headers: {
-    'Authorization': `Bearer ${accessToken}`,
-    'Content-Type': 'application/json'
-  }
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  },
 });
 
 const response = await api.get('/catalog/products');
@@ -161,16 +172,17 @@ response = requests.get(
 
 ## Rate Limiting
 
-Rate limits are enforced per user and per API key to ensure fair usage and system stability.
+Rate limits are enforced per user and per API key to ensure fair usage and
+system stability.
 
 ### Rate Limit Tiers
 
-| Tier | Requests/Hour | Requests/Minute | Burst Limit |
-|------|---------------|-----------------|-------------|
-| **Free** | 100 | 10 | 20 |
-| **Basic** | 1,000 | 50 | 100 |
-| **Pro** | 10,000 | 500 | 1,000 |
-| **Enterprise** | Unlimited | Custom | Custom |
+| Tier           | Requests/Hour | Requests/Minute | Burst Limit |
+| -------------- | ------------- | --------------- | ----------- |
+| **Free**       | 100           | 10              | 20          |
+| **Basic**      | 1,000         | 50              | 100         |
+| **Pro**        | 10,000        | 500             | 1,000       |
+| **Enterprise** | Unlimited     | Custom          | Custom      |
 
 ### Rate Limit Headers
 
@@ -324,20 +336,20 @@ All errors follow a consistent structure:
 
 ### HTTP Status Codes
 
-| Code | Meaning | Usage |
-|------|---------|-------|
-| **200** | OK | Successful GET, PUT, PATCH |
-| **201** | Created | Successful POST |
-| **204** | No Content | Successful DELETE |
-| **400** | Bad Request | Invalid request format/parameters |
-| **401** | Unauthorized | Missing or invalid authentication |
-| **403** | Forbidden | Insufficient permissions |
-| **404** | Not Found | Resource doesn't exist |
-| **409** | Conflict | Resource already exists |
-| **422** | Unprocessable Entity | Validation error |
-| **429** | Too Many Requests | Rate limit exceeded |
-| **500** | Internal Server Error | Server-side error |
-| **503** | Service Unavailable | Temporary outage |
+| Code    | Meaning               | Usage                             |
+| ------- | --------------------- | --------------------------------- |
+| **200** | OK                    | Successful GET, PUT, PATCH        |
+| **201** | Created               | Successful POST                   |
+| **204** | No Content            | Successful DELETE                 |
+| **400** | Bad Request           | Invalid request format/parameters |
+| **401** | Unauthorized          | Missing or invalid authentication |
+| **403** | Forbidden             | Insufficient permissions          |
+| **404** | Not Found             | Resource doesn't exist            |
+| **409** | Conflict              | Resource already exists           |
+| **422** | Unprocessable Entity  | Validation error                  |
+| **429** | Too Many Requests     | Rate limit exceeded               |
+| **500** | Internal Server Error | Server-side error                 |
+| **503** | Service Unavailable   | Temporary outage                  |
 
 ### Error Codes
 
@@ -363,6 +375,7 @@ GET /api/v1/products?page=2&limit=20
 ```
 
 **Parameters:**
+
 - `page` (default: 1) - Page number
 - `limit` (default: 20, max: 100) - Items per page
 
@@ -434,6 +447,7 @@ GET /api/v1/products?filter[category][in]=cabinet,worktop&filter[price][gte]=100
 ```
 
 **Supported Operators:**
+
 - `eq` - Equal to
 - `ne` - Not equal to
 - `gt` - Greater than
@@ -499,6 +513,7 @@ Accept-Encoding: gzip, br
 ```
 
 **Supported Algorithms:**
+
 - `gzip` - Standard compression
 - `br` - Brotli (higher compression ratio)
 
@@ -509,6 +524,7 @@ Responses >1KB are automatically compressed.
 Subscribe to events and receive real-time notifications:
 
 **Supported Events:**
+
 - `design.created`
 - `design.updated`
 - `design.deleted`
@@ -523,6 +539,7 @@ See [Webhooks Documentation](./webhooks/overview.md) for details.
 ### Official SDKs
 
 **JavaScript/TypeScript**
+
 ```bash
 npm install @kitchenxpert/sdk
 ```
@@ -532,13 +549,14 @@ import KitchenXpert from '@kitchenxpert/sdk';
 
 const client = new KitchenXpert({
   apiKey: 'your-api-key',
-  environment: 'production'
+  environment: 'production',
 });
 
 const products = await client.catalog.listProducts();
 ```
 
 **Python**
+
 ```bash
 pip install kitchenxpert
 ```
@@ -551,16 +569,19 @@ products = client.catalog.list_products()
 ```
 
 **PHP**
+
 ```bash
 composer require kitchenxpert/sdk
 ```
 
 **Ruby**
+
 ```bash
 gem install kitchenxpert
 ```
 
 **Go**
+
 ```bash
 go get github.com/kitchenxpert/sdk-go
 ```
@@ -632,6 +653,7 @@ curl -X POST https://api.kitchenxpert.com/v1/kitchen/designs \
 **API Version:** v1
 
 **Related Documentation:**
+
 - [Authentication Guide](./endpoints/auth/login.md)
 - [Error Handling](../architecture/backend.md#error-handling)
 - [Security Best Practices](../architecture/security.md)

@@ -172,7 +172,9 @@ describe('ProjectEdit', () => {
       renderProjectEdit();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /back to projects|retour aux projets/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', { name: /back to projects|retour aux projets/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -186,10 +188,14 @@ describe('ProjectEdit', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /back to projects|retour aux projets/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', { name: /back to projects|retour aux projets/i })
+        ).toBeInTheDocument();
       });
 
-      await user.click(screen.getByRole('button', { name: /back to projects|retour aux projets/i }));
+      await user.click(
+        screen.getByRole('button', { name: /back to projects|retour aux projets/i })
+      );
 
       expect(mockNavigate).toHaveBeenCalledWith('/projects');
     });
@@ -224,12 +230,10 @@ describe('ProjectEdit', () => {
     });
 
     it('should retry fetch when try again is clicked', async () => {
-      mockFetch
-        .mockResolvedValueOnce({ ok: false, status: 500 })
-        .mockResolvedValueOnce({
-          ok: true,
-          json: () => Promise.resolve(mockProjectData),
-        });
+      mockFetch.mockResolvedValueOnce({ ok: false, status: 500 }).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(mockProjectData),
+      });
 
       renderProjectEdit();
       const user = userEvent.setup();
@@ -258,7 +262,9 @@ describe('ProjectEdit', () => {
       renderProjectEdit();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /edit project|modifier le projet/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /edit project|modifier le projet/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -548,7 +554,10 @@ describe('ProjectEdit', () => {
 
     it('should disable submit button while saving', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000)
+          )
       );
 
       renderProjectEdit();
@@ -704,7 +713,10 @@ describe('ProjectEdit', () => {
 
     it('should have aria-busy on submit button when saving', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000)
+          )
       );
 
       renderProjectEdit();
@@ -718,7 +730,10 @@ describe('ProjectEdit', () => {
       await user.click(screen.getByRole('button', { name: /save changes/i }));
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /saving/i })).toHaveAttribute('aria-busy', 'true');
+        expect(screen.getByRole('button', { name: /saving/i })).toHaveAttribute(
+          'aria-busy',
+          'true'
+        );
       });
     });
 

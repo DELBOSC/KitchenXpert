@@ -101,7 +101,12 @@ export function errorToStatus(error: DomainError): number {
  * (`cause`) to avoid leaking internals.
  */
 export function errorToBody(error: DomainError): {
-  error: { code: DomainErrorCode; message: string; detail?: string; issues?: DomainError['issues'] };
+  error: {
+    code: DomainErrorCode;
+    message: string;
+    detail?: string;
+    issues?: DomainError['issues'];
+  };
 } {
   return {
     error: {

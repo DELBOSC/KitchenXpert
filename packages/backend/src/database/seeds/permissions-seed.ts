@@ -20,7 +20,8 @@ export const PermissionsSeed: Seed = {
     const now = new Date().toISOString();
 
     // Insert all permissions
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Permission" (id, name, resource, action, description, "createdAt", "updatedAt")
       VALUES
         ('pm000000-0000-0000-0000-000000000001', 'project.create', 'project', 'create', 'Créer de nouveaux projets', $1, $1),
@@ -45,28 +46,37 @@ export const PermissionsSeed: Seed = {
         ('pm000000-0000-0000-0000-000000000020', 'audit.read', 'audit', 'read', 'Voir les logs d''audit', $1, $1),
         ('pm000000-0000-0000-0000-000000000021', 'audit.export', 'audit', 'export', 'Exporter les audits', $1, $1)
       ON CONFLICT (name) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Super admin gets ALL permissions
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "RolePermission" (id, "roleId", "permissionId", "createdAt")
       SELECT gen_random_uuid(), r.id, p.id, $1
       FROM "Role" r CROSS JOIN "Permission" p
       WHERE r.name = 'super_admin'
       ON CONFLICT ("roleId", "permissionId") DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Admin gets all except role.delete
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "RolePermission" (id, "roleId", "permissionId", "createdAt")
       SELECT gen_random_uuid(), r.id, p.id, $1
       FROM "Role" r CROSS JOIN "Permission" p
       WHERE r.name = 'admin' AND p.name != 'role.delete'
       ON CONFLICT ("roleId", "permissionId") DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Professional: project, kitchen, catalog.read, user.read/update
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "RolePermission" (id, "roleId", "permissionId", "createdAt")
       SELECT gen_random_uuid(), r.id, p.id, $1
       FROM "Role" r CROSS JOIN "Permission" p
@@ -76,10 +86,13 @@ export const PermissionsSeed: Seed = {
         'catalog.read','user.read','user.update'
       )
       ON CONFLICT ("roleId", "permissionId") DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Regular user: same as professional for now
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "RolePermission" (id, "roleId", "permissionId", "createdAt")
       SELECT gen_random_uuid(), r.id, p.id, $1
       FROM "Role" r CROSS JOIN "Permission" p
@@ -89,19 +102,25 @@ export const PermissionsSeed: Seed = {
         'catalog.read','user.read','user.update'
       )
       ON CONFLICT ("roleId", "permissionId") DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Guest: catalog.read only
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "RolePermission" (id, "roleId", "permissionId", "createdAt")
       SELECT gen_random_uuid(), r.id, p.id, $1
       FROM "Role" r CROSS JOIN "Permission" p
       WHERE r.name = 'guest' AND p.name = 'catalog.read'
       ON CONFLICT ("roleId", "permissionId") DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Assign roles to sample users via UserRole
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "UserRole" (id, "userId", "roleId", "createdAt")
       SELECT gen_random_uuid(), u.id, r.id, $1
       FROM "User" u CROSS JOIN "Role" r
@@ -114,7 +133,9 @@ export const PermissionsSeed: Seed = {
         OR (u.email = 'thomas.moreau@email.de' AND r.name = 'user')
         OR (u.email = 'demo@kitchenxpert.com' AND r.name = 'guest')
       ON CONFLICT ("userId", "roleId") DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     logger.info('[Seed] Created permissions, role-permission and user-role assignments');
   },

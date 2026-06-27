@@ -41,9 +41,7 @@ describe('NotFoundPage', () => {
       renderNotFoundPage();
 
       // fr.json: notFound.message = "La page que vous recherchez n'existe pas ou a été déplacée."
-      expect(
-        screen.getByText(/la page que vous recherchez n'existe pas/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/la page que vous recherchez n'existe pas/i)).toBeInTheDocument();
     });
 
     it('should display the search emoji icon', () => {

@@ -71,8 +71,9 @@ const statusOptions = [
 
 export function Products() {
   const dispatch = useAppDispatch();
-  const { products, total, page, pageSize, totalPages, isLoading, error, filters } =
-    useAppSelector((state) => state.products);
+  const { products, total, page, pageSize, totalPages, isLoading, error, filters } = useAppSelector(
+    (state) => state.products
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -174,7 +175,10 @@ export function Products() {
   };
 
   const removeMaterial = (material: string) => {
-    setValue('materials', materials.filter((m) => m !== material));
+    setValue(
+      'materials',
+      materials.filter((m) => m !== material)
+    );
   };
 
   const addColor = () => {
@@ -185,7 +189,10 @@ export function Products() {
   };
 
   const removeColor = (color: string) => {
-    setValue('colors', colors.filter((c) => c !== color));
+    setValue(
+      'colors',
+      colors.filter((c) => c !== color)
+    );
   };
 
   const onSubmit = async (data: ProductFormData) => {
@@ -239,11 +246,7 @@ export function Products() {
       </div>
 
       {/* Error Message */}
-      {error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">
-          {error}
-        </div>
-      )}
+      {error && <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">{error}</div>}
 
       {/* Filters */}
       <div className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm sm:flex-row sm:items-center">
@@ -414,8 +417,8 @@ export function Products() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
             <div className="text-sm text-gray-500">
-              Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of{' '}
-              {total} results
+              Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total}{' '}
+              results
             </div>
             <div className="flex items-center space-x-2">
               <button
@@ -488,9 +491,7 @@ export function Products() {
                   )}
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    SKU *
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">SKU *</label>
                   <input
                     {...register('sku')}
                     type="text"
@@ -498,9 +499,7 @@ export function Products() {
                       errors.sku ? 'border-red-300' : 'border-gray-300'
                     }`}
                   />
-                  {errors.sku && (
-                    <p className="mt-1 text-xs text-red-600">{errors.sku.message}</p>
-                  )}
+                  {errors.sku && <p className="mt-1 text-xs text-red-600">{errors.sku.message}</p>}
                 </div>
               </div>
 
@@ -523,9 +522,7 @@ export function Products() {
               {/* Category */}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    Category *
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">Category *</label>
                   <select
                     {...register('category')}
                     className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
@@ -563,9 +560,7 @@ export function Products() {
               {/* Price & Stock */}
               <div className="grid gap-4 sm:grid-cols-3">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    Price *
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">Price *</label>
                   <input
                     {...register('price', { valueAsNumber: true })}
                     type="number"
@@ -579,9 +574,7 @@ export function Products() {
                   )}
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    Currency
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">Currency</label>
                   <select
                     {...register('currency')}
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -592,9 +585,7 @@ export function Products() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    Stock *
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">Stock *</label>
                   <input
                     {...register('stock', { valueAsNumber: true })}
                     type="number"
@@ -610,9 +601,7 @@ export function Products() {
 
               {/* Dimensions */}
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Dimensions *
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">Dimensions *</label>
                 <div className="grid gap-4 sm:grid-cols-4">
                   <div>
                     <input
@@ -653,9 +642,7 @@ export function Products() {
 
               {/* Materials */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Materials *
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Materials *</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -697,9 +684,7 @@ export function Products() {
 
               {/* Colors */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Colors *
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Colors *</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -741,15 +726,11 @@ export function Products() {
 
               {/* Image Upload Placeholder */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Images
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Images</label>
                 <div className="flex h-32 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 hover:border-primary-500">
                   <div className="text-center">
                     <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                    <p className="mt-2 text-sm text-gray-500">
-                      Click to upload or drag and drop
-                    </p>
+                    <p className="mt-2 text-sm text-gray-500">Click to upload or drag and drop</p>
                   </div>
                 </div>
               </div>

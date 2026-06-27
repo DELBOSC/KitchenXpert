@@ -17,7 +17,9 @@
 
 ## Introduction
 
-This document defines the structure of audit logs in KitchenXpert. Audit logs provide a tamper-evident record of all significant system events for security, compliance, and operational purposes.
+This document defines the structure of audit logs in KitchenXpert. Audit logs
+provide a tamper-evident record of all significant system events for security,
+compliance, and operational purposes.
 
 ### Purpose of Audit Logs
 
@@ -34,19 +36,19 @@ This document defines the structure of audit logs in KitchenXpert. Audit logs pr
 
 Every audit log entry contains the following fields:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| id | UUID | Unique identifier for the log entry |
-| timestamp | ISO 8601 | When the event occurred (UTC) |
-| event_type | String | Specific event type identifier |
-| category | String | Event category for grouping |
-| severity | String | Event severity level |
-| actor | Object | Who performed the action |
-| resource | Object | What was acted upon |
-| action | String | What was done |
-| outcome | String | Result of the action |
-| details | Object | Additional context |
-| metadata | Object | Request and environment info |
+| Field      | Type     | Description                         |
+| ---------- | -------- | ----------------------------------- |
+| id         | UUID     | Unique identifier for the log entry |
+| timestamp  | ISO 8601 | When the event occurred (UTC)       |
+| event_type | String   | Specific event type identifier      |
+| category   | String   | Event category for grouping         |
+| severity   | String   | Event severity level                |
+| actor      | Object   | Who performed the action            |
+| resource   | Object   | What was acted upon                 |
+| action     | String   | What was done                       |
+| outcome    | String   | Result of the action                |
+| details    | Object   | Additional context                  |
+| metadata   | Object   | Request and environment info        |
 
 ---
 
@@ -54,59 +56,59 @@ Every audit log entry contains the following fields:
 
 ### Severity Levels
 
-| Level | Description | Examples |
-|-------|-------------|----------|
-| debug | Diagnostic information | Method entry/exit |
-| info | Normal operations | Successful login |
-| warning | Potential issues | Rate limit approached |
-| error | Operation failures | API error |
-| critical | System-level issues | Service unavailable |
+| Level    | Description            | Examples              |
+| -------- | ---------------------- | --------------------- |
+| debug    | Diagnostic information | Method entry/exit     |
+| info     | Normal operations      | Successful login      |
+| warning  | Potential issues       | Rate limit approached |
+| error    | Operation failures     | API error             |
+| critical | System-level issues    | Service unavailable   |
 
 ### Actor Types
 
-| Type | Description |
-|------|-------------|
-| user | Human user |
-| system | Automated system process |
-| api_key | API key authentication |
-| service | Internal service |
-| anonymous | Unauthenticated actor |
+| Type      | Description              |
+| --------- | ------------------------ |
+| user      | Human user               |
+| system    | Automated system process |
+| api_key   | API key authentication   |
+| service   | Internal service         |
+| anonymous | Unauthenticated actor    |
 
 ### Resource Types
 
-| Type | Description |
-|------|-------------|
-| user | User account |
-| design | Kitchen design |
-| order | Customer order |
-| product | Product item |
-| session | User session |
-| file | Uploaded file |
+| Type    | Description    |
+| ------- | -------------- |
+| user    | User account   |
+| design  | Kitchen design |
+| order   | Customer order |
+| product | Product item   |
+| session | User session   |
+| file    | Uploaded file  |
 | setting | System setting |
-| api_key | API key |
+| api_key | API key        |
 
 ### Action Values
 
-| Action | Description |
-|--------|-------------|
-| create | Resource created |
-| read | Resource accessed |
+| Action | Description       |
+| ------ | ----------------- |
+| create | Resource created  |
+| read   | Resource accessed |
 | update | Resource modified |
-| delete | Resource removed |
-| login | Authentication |
-| logout | Session end |
-| export | Data export |
-| import | Data import |
+| delete | Resource removed  |
+| login  | Authentication    |
+| logout | Session end       |
+| export | Data export       |
+| import | Data import       |
 
 ### Outcome Values
 
-| Outcome | Description |
-|---------|-------------|
-| success | Operation completed |
-| failure | Operation failed |
+| Outcome | Description           |
+| ------- | --------------------- |
+| success | Operation completed   |
+| failure | Operation failed      |
 | pending | Operation in progress |
-| denied | Access denied |
-| error | System error |
+| denied  | Access denied         |
+| error   | System error          |
 
 ---
 
@@ -115,6 +117,7 @@ Every audit log entry contains the following fields:
 ### Authentication
 
 Events related to user authentication:
+
 - user.login
 - user.logout
 - user.password_change
@@ -125,6 +128,7 @@ Events related to user authentication:
 ### Authorization
 
 Events related to access control:
+
 - access.granted
 - access.denied
 - role.assigned
@@ -134,6 +138,7 @@ Events related to access control:
 ### Data Access
 
 Events related to data operations:
+
 - data.read
 - data.create
 - data.update
@@ -144,6 +149,7 @@ Events related to data operations:
 ### Administration
 
 Events related to system administration:
+
 - admin.setting_change
 - admin.user_create
 - admin.user_disable
@@ -153,6 +159,7 @@ Events related to system administration:
 ### Security
 
 Events related to security:
+
 - security.threat_detected
 - security.rate_limit
 - security.blocked_ip
@@ -162,6 +169,7 @@ Events related to security:
 ### Compliance
 
 Events related to compliance:
+
 - compliance.consent_given
 - compliance.consent_withdrawn
 - compliance.data_request
@@ -175,6 +183,7 @@ Events related to compliance:
 ### Primary Storage
 
 Audit logs are stored in:
+
 - **Hot Storage**: Elasticsearch (30 days)
 - **Warm Storage**: S3 with Glacier transition (1 year)
 - **Cold Storage**: Glacier Deep Archive (7 years)
@@ -188,11 +197,11 @@ Audit logs are stored in:
 
 ### Partition Strategy
 
-| Level | Partition Key | Purpose |
-|-------|---------------|---------|
-| 1 | environment | Separate environments |
-| 2 | date | Time-based queries |
-| 3 | category | Event type filtering |
+| Level | Partition Key | Purpose               |
+| ----- | ------------- | --------------------- |
+| 1     | environment   | Separate environments |
+| 2     | date          | Time-based queries    |
+| 3     | category      | Event type filtering  |
 
 ---
 
@@ -200,22 +209,22 @@ Audit logs are stored in:
 
 ### Elasticsearch Indices
 
-| Index Pattern | Retention | Purpose |
-|---------------|-----------|---------|
-| audit-{date} | 30 days | Real-time queries |
-| audit-monthly-{month} | 1 year | Historical analysis |
-| audit-security-{date} | 90 days | Security events |
+| Index Pattern         | Retention | Purpose             |
+| --------------------- | --------- | ------------------- |
+| audit-{date}          | 30 days   | Real-time queries   |
+| audit-monthly-{month} | 1 year    | Historical analysis |
+| audit-security-{date} | 90 days   | Security events     |
 
 ### Indexed Fields
 
-| Field | Index Type | Purpose |
-|-------|------------|---------|
-| timestamp | date | Time range queries |
-| event_type | keyword | Exact match |
-| actor.id | keyword | User activity |
-| resource.id | keyword | Resource history |
-| outcome | keyword | Success/failure filtering |
-| severity | keyword | Severity filtering |
+| Field       | Index Type | Purpose                   |
+| ----------- | ---------- | ------------------------- |
+| timestamp   | date       | Time range queries        |
+| event_type  | keyword    | Exact match               |
+| actor.id    | keyword    | User activity             |
+| resource.id | keyword    | Resource history          |
+| outcome     | keyword    | Success/failure filtering |
+| severity    | keyword    | Severity filtering        |
 
 ---
 
@@ -229,16 +238,17 @@ Audit logs are stored in:
 
 **Data Access**: category = "data_access" AND resource.type = "design"
 
-**Security Events**: category = "security" AND severity IN ("warning", "error", "critical")
+**Security Events**: category = "security" AND severity IN ("warning", "error",
+"critical")
 
 ### Performance Guidelines
 
-| Query Type | Max Time Range | Recommended Filters |
-|------------|----------------|---------------------|
-| Real-time | 24 hours | event_type, actor.id |
-| Investigation | 7 days | category, resource.id |
-| Compliance | 30 days | actor.id, date range |
-| Historical | 1 year | category, monthly rollup |
+| Query Type    | Max Time Range | Recommended Filters      |
+| ------------- | -------------- | ------------------------ |
+| Real-time     | 24 hours       | event_type, actor.id     |
+| Investigation | 7 days         | category, resource.id    |
+| Compliance    | 30 days        | actor.id, date range     |
+| Historical    | 1 year         | category, monthly rollup |
 
 ---
 
@@ -253,12 +263,12 @@ Audit logs are stored in:
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value         |
+| -------------- | ------------- |
 | Document Owner | Security Team |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10    |
+| Version        | 2.0           |
 
 ---
 
-*For questions, contact security@kitchenxpert.com.*
+_For questions, contact security@kitchenxpert.com._

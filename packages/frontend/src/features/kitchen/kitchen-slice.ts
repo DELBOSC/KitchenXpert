@@ -59,17 +59,27 @@ export const fetchKitchens = createAsyncThunk<
 >('kitchen/fetchKitchens', async ({ page = 1, limit = 20, filters = {} }, { rejectWithValue }) => {
   try {
     const queryParams: Record<string, string> = { page: String(page), limit: String(limit) };
-    if (filters.status) {queryParams.status = filters.status;}
-    if (filters.projectId) {queryParams.projectId = filters.projectId;}
-    if (filters.search) {queryParams.search = filters.search;}
+    if (filters.status) {
+      queryParams.status = filters.status;
+    }
+    if (filters.projectId) {
+      queryParams.projectId = filters.projectId;
+    }
+    if (filters.search) {
+      queryParams.search = filters.search;
+    }
     const params = new URLSearchParams(queryParams);
-    const response = await fetch(`${API_URL}/kitchens?${params.toString()}`, { credentials: 'include' });
+    const response = await fetch(`${API_URL}/kitchens?${params.toString()}`, {
+      credentials: 'include',
+    });
     const data = (await response.json()) as {
       data: Kitchen[];
       meta: { total: number; page: number; totalPages: number };
       error?: string;
     };
-    if (!response.ok) {throw new Error(data.error);}
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
     return { data: data.data, ...data.meta };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -83,7 +93,9 @@ export const fetchKitchenById = createAsyncThunk<Kitchen, string>(
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}`, { credentials: 'include' });
       const data = (await response.json()) as { data: Kitchen; error?: string };
-      if (!response.ok) {throw new Error(data.error);}
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -98,11 +110,14 @@ export const createKitchen = createAsyncThunk<Kitchen, Partial<Kitchen>>(
     try {
       const response = await fetch(`${API_URL}/kitchens`, {
         method: 'POST',
-        credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(kitchenData),
       });
       const data = (await response.json()) as { data: Kitchen; error?: string };
-      if (!response.ok) {throw new Error(data.error);}
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -117,11 +132,14 @@ export const updateKitchen = createAsyncThunk<Kitchen, { id: string; updates: Pa
     try {
       const response = await fetch(`${API_URL}/kitchens/${id}`, {
         method: 'PUT',
-        credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
       const data = (await response.json()) as { data: Kitchen; error?: string };
-      if (!response.ok) {throw new Error(data.error);}
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -134,9 +152,14 @@ export const deleteKitchen = createAsyncThunk<string, string>(
   'kitchen/deleteKitchen',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/kitchens/${id}`, { method: 'DELETE', credentials: 'include' });
+      const response = await fetch(`${API_URL}/kitchens/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
       const data = (await response.json()) as { error?: string };
-      if (!response.ok) {throw new Error(data.error);}
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
       return id;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -149,9 +172,14 @@ export const duplicateKitchen = createAsyncThunk<Kitchen, string>(
   'kitchen/duplicateKitchen',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/kitchens/${id}/duplicate`, { method: 'POST', credentials: 'include' });
+      const response = await fetch(`${API_URL}/kitchens/${id}/duplicate`, {
+        method: 'POST',
+        credentials: 'include',
+      });
       const data = (await response.json()) as { data: Kitchen; error?: string };
-      if (!response.ok) {throw new Error(data.error);}
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
       return data.data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -164,19 +192,31 @@ const kitchenSlice = createSlice({
   name: 'kitchen',
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<KitchenFilters>) => { state.filters = action.payload; },
-    clearFilters: (state) => { state.filters = {}; },
-    clearCurrentKitchen: (state) => { state.currentKitchen = null; },
-    clearError: (state) => { state.error = null; },
+    setFilters: (state, action: PayloadAction<KitchenFilters>) => {
+      state.filters = action.payload;
+    },
+    clearFilters: (state) => {
+      state.filters = {};
+    },
+    clearCurrentKitchen: (state) => {
+      state.currentKitchen = null;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
     updateLocalKitchen: (state, action: PayloadAction<Partial<Kitchen>>) => {
-      if (state.currentKitchen) {state.currentKitchen = { ...state.currentKitchen, ...action.payload };}
+      if (state.currentKitchen) {
+        state.currentKitchen = { ...state.currentKitchen, ...action.payload };
+      }
     },
     addItem: (state, action: PayloadAction<KitchenItem>) => {
-      if (state.currentKitchen) {state.currentKitchen.items = [...(state.currentKitchen.items || []), action.payload];}
+      if (state.currentKitchen) {
+        state.currentKitchen.items = [...(state.currentKitchen.items || []), action.payload];
+      }
     },
     updateItem: (state, action: PayloadAction<{ id: string; updates: Partial<KitchenItem> }>) => {
       if (state.currentKitchen?.items) {
-        const idx = state.currentKitchen.items.findIndex(i => i.id === action.payload.id);
+        const idx = state.currentKitchen.items.findIndex((i) => i.id === action.payload.id);
         const existingItem = state.currentKitchen.items[idx];
         if (idx !== -1 && existingItem) {
           state.currentKitchen.items[idx] = {
@@ -188,38 +228,85 @@ const kitchenSlice = createSlice({
       }
     },
     removeItem: (state, action: PayloadAction<string>) => {
-      if (state.currentKitchen?.items) {state.currentKitchen.items = state.currentKitchen.items.filter(i => i.id !== action.payload);}
+      if (state.currentKitchen?.items) {
+        state.currentKitchen.items = state.currentKitchen.items.filter(
+          (i) => i.id !== action.payload
+        );
+      }
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchKitchens.pending, (state) => { state.isLoading = true; state.error = null; })
+      .addCase(fetchKitchens.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(fetchKitchens.fulfilled, (state, action) => {
         state.isLoading = false;
         state.kitchens = action.payload.data;
-        state.pagination = { page: action.payload.page, limit: state.pagination.limit, total: action.payload.total, totalPages: action.payload.totalPages };
+        state.pagination = {
+          page: action.payload.page,
+          limit: state.pagination.limit,
+          total: action.payload.total,
+          totalPages: action.payload.totalPages,
+        };
       })
-      .addCase(fetchKitchens.rejected, (state, action) => { state.isLoading = false; state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred'; })
-      .addCase(fetchKitchenById.pending, (state) => { state.isLoading = true; state.error = null; })
-      .addCase(fetchKitchenById.fulfilled, (state, action) => { state.isLoading = false; state.currentKitchen = action.payload; })
-      .addCase(fetchKitchenById.rejected, (state, action) => { state.isLoading = false; state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred'; })
-      .addCase(createKitchen.fulfilled, (state, action) => { state.kitchens.unshift(action.payload); state.currentKitchen = action.payload; })
+      .addCase(fetchKitchens.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+      })
+      .addCase(fetchKitchenById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchKitchenById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentKitchen = action.payload;
+      })
+      .addCase(fetchKitchenById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+      })
+      .addCase(createKitchen.fulfilled, (state, action) => {
+        state.kitchens.unshift(action.payload);
+        state.currentKitchen = action.payload;
+      })
       .addCase(updateKitchen.fulfilled, (state, action) => {
-        const idx = state.kitchens.findIndex(k => k.id === action.payload.id);
-        if (idx !== -1) {state.kitchens[idx] = action.payload;}
-        if (state.currentKitchen?.id === action.payload.id) {state.currentKitchen = action.payload;}
+        const idx = state.kitchens.findIndex((k) => k.id === action.payload.id);
+        if (idx !== -1) {
+          state.kitchens[idx] = action.payload;
+        }
+        if (state.currentKitchen?.id === action.payload.id) {
+          state.currentKitchen = action.payload;
+        }
       })
       .addCase(deleteKitchen.fulfilled, (state, action) => {
-        state.kitchens = state.kitchens.filter(k => k.id !== action.payload);
-        if (state.currentKitchen?.id === action.payload) {state.currentKitchen = null;}
+        state.kitchens = state.kitchens.filter((k) => k.id !== action.payload);
+        if (state.currentKitchen?.id === action.payload) {
+          state.currentKitchen = null;
+        }
       })
-      .addCase(duplicateKitchen.fulfilled, (state, action) => { state.kitchens.unshift(action.payload); });
+      .addCase(duplicateKitchen.fulfilled, (state, action) => {
+        state.kitchens.unshift(action.payload);
+      });
   },
 });
 
-export const { setFilters, clearFilters, clearCurrentKitchen, clearError, updateLocalKitchen, addItem, updateItem, removeItem } = kitchenSlice.actions;
+export const {
+  setFilters,
+  clearFilters,
+  clearCurrentKitchen,
+  clearError,
+  updateLocalKitchen,
+  addItem,
+  updateItem,
+  removeItem,
+} = kitchenSlice.actions;
 export const selectKitchens = (state: { kitchen: KitchenState }) => state.kitchen.kitchens;
-export const selectCurrentKitchen = (state: { kitchen: KitchenState }) => state.kitchen.currentKitchen;
+export const selectCurrentKitchen = (state: { kitchen: KitchenState }) =>
+  state.kitchen.currentKitchen;
 export const selectKitchenLoading = (state: { kitchen: KitchenState }) => state.kitchen.isLoading;
 export const selectKitchenError = (state: { kitchen: KitchenState }) => state.kitchen.error;
 export default kitchenSlice.reducer;

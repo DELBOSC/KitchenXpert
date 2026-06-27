@@ -11,7 +11,8 @@ export interface StringValidationResult {
  * Vérifie si une chaîne est un email valide
  */
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
   return emailRegex.test(email);
 }
 
@@ -70,14 +71,17 @@ export function isValidSlug(slug: string): boolean {
 /**
  * Vérifie si un mot de passe respecte les critères de sécurité
  */
-export function validatePassword(password: string, options?: {
-  minLength?: number;
-  maxLength?: number;
-  requireUppercase?: boolean;
-  requireLowercase?: boolean;
-  requireNumbers?: boolean;
-  requireSpecialChars?: boolean;
-}): StringValidationResult {
+export function validatePassword(
+  password: string,
+  options?: {
+    minLength?: number;
+    maxLength?: number;
+    requireUppercase?: boolean;
+    requireLowercase?: boolean;
+    requireNumbers?: boolean;
+    requireSpecialChars?: boolean;
+  }
+): StringValidationResult {
   const {
     minLength = 8,
     maxLength = 128,
@@ -241,5 +245,5 @@ export function containsDangerousCharacters(str: string): boolean {
     /<embed/i,
   ];
 
-  return dangerousPatterns.some(pattern => pattern.test(str));
+  return dangerousPatterns.some((pattern) => pattern.test(str));
 }

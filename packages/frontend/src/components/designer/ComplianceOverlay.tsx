@@ -86,14 +86,21 @@ export default function ComplianceOverlay({
   const violations = useMemo(
     () =>
       results.filter(
-        (r): r is ComplianceViolation & { status: 'failed' | 'warning'; position: { x: number; y: number; z: number } } =>
-          (r.status === 'failed' || r.status === 'warning') && r.position != null,
+        (
+          r
+        ): r is ComplianceViolation & {
+          status: 'failed' | 'warning';
+          position: { x: number; y: number; z: number };
+        } => (r.status === 'failed' || r.status === 'warning') && r.position != null
       ),
-    [results],
+    [results]
   );
 
   const failedCount = useMemo(() => results.filter((r) => r.status === 'failed').length, [results]);
-  const warningCount = useMemo(() => results.filter((r) => r.status === 'warning').length, [results]);
+  const warningCount = useMemo(
+    () => results.filter((r) => r.status === 'warning').length,
+    [results]
+  );
 
   const handleMarkerClick = useCallback((id: string) => {
     setExpandedTooltip((prev) => (prev === id ? null : id));
@@ -171,18 +178,40 @@ export default function ComplianceOverlay({
                     className={`relative w-6 h-6 rounded-full ${colors.bg} border-2 ${colors.border} shadow-lg flex items-center justify-center cursor-pointer hover:scale-125 transition-transform`}
                     onMouseEnter={() => setHoveredId(violation.ruleId)}
                     onMouseLeave={() => {
-                      if (!isExpanded) {setHoveredId(null);}
+                      if (!isExpanded) {
+                        setHoveredId(null);
+                      }
                     }}
                     onClick={() => handleMarkerClick(violation.ruleId)}
                     title={violation.ruleName}
                   >
                     {violation.status === 'failed' ? (
-                      <svg className={`w-3.5 h-3.5 ${colors.icon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className={`w-3.5 h-3.5 ${colors.icon}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     ) : (
-                      <svg className={`w-3.5 h-3.5 ${colors.icon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 9v2m0 4h.01" />
+                      <svg
+                        className={`w-3.5 h-3.5 ${colors.icon}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M12 9v2m0 4h.01"
+                        />
                       </svg>
                     )}
                   </button>
@@ -204,9 +233,7 @@ export default function ComplianceOverlay({
                     }}
                   >
                     {/* Arrow */}
-                    <div
-                      className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-gray-800 border-l border-t border-gray-200 dark:border-gray-700 rotate-45"
-                    />
+                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-gray-800 border-l border-t border-gray-200 dark:border-gray-700 rotate-45" />
 
                     <div className="relative">
                       {/* Header */}
@@ -223,8 +250,7 @@ export default function ComplianceOverlay({
                         >
                           {violation.status === 'failed'
                             ? t('compliance.overlay.failed', 'FAILED')
-                            : t('compliance.overlay.warning', 'WARNING')
-                          }
+                            : t('compliance.overlay.warning', 'WARNING')}
                         </span>
                       </div>
 
@@ -242,8 +268,18 @@ export default function ComplianceOverlay({
                       {violation.fixSuggestion && (
                         <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                           <div className="flex items-start gap-1.5">
-                            <svg className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                              className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
                             </svg>
                             <p className="text-[11px] text-blue-700 dark:text-blue-300 leading-relaxed">
                               {violation.fixSuggestion}
@@ -269,7 +305,12 @@ export default function ComplianceOverlay({
       {visible && results.length > 0 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
           <div className="flex items-center gap-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full shadow-lg px-4 py-2">
-            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -279,7 +320,8 @@ export default function ComplianceOverlay({
             </svg>
             <div className="flex items-center gap-2 text-xs font-medium">
               <span className="text-green-600 dark:text-green-400">
-                {results.filter((r) => r.status === 'passed').length} {t('compliance.overlay.passed', 'passed')}
+                {results.filter((r) => r.status === 'passed').length}{' '}
+                {t('compliance.overlay.passed', 'passed')}
               </span>
               <span className="text-gray-300 dark:text-gray-600">|</span>
               <span className="text-red-600 dark:text-red-400">
@@ -298,7 +340,12 @@ export default function ComplianceOverlay({
       {visible && results.length === 0 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30">
           <div className="flex items-center gap-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-full shadow-lg px-4 py-2">
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

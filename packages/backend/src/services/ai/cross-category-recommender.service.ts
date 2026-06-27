@@ -60,19 +60,19 @@ const STYLE_PAIRINGS: Record<string, Record<string, string[]>> = {
     handle: ['cup-pull-brass', 'knob-black', 'bar-pull-brushed-nickel'],
     flooring: ['hardwood-oak', 'terracotta-tile', 'engineered-walnut'],
   },
-  'industrial': {
+  industrial: {
     countertop: ['concrete', 'butcher-block-walnut', 'stainless-steel', 'soapstone'],
     backsplash: ['exposed-brick', 'stainless-steel', 'cement-tile'],
     handle: ['bar-pull-matte-black', 'pipe-pull-iron'],
     flooring: ['polished-concrete', 'reclaimed-wood', 'dark-porcelain'],
   },
-  'scandinavian': {
+  scandinavian: {
     countertop: ['birch-butcher-block', 'white-laminate', 'light-quartz'],
     backsplash: ['white-square-tile', 'light-wood-panel', 'painted-white'],
     handle: ['leather-pull', 'wooden-knob', 'minimal-bar-white'],
     flooring: ['light-ash', 'white-oak', 'light-vinyl-plank'],
   },
-  'farmhouse': {
+  farmhouse: {
     countertop: ['butcher-block-maple', 'soapstone', 'honed-marble'],
     backsplash: ['white-subway', 'shiplap', 'vintage-tile'],
     handle: ['cup-pull-antique-brass', 'bin-pull-oil-rubbed-bronze', 'ceramic-knob'],
@@ -86,13 +86,13 @@ const PRODUCT_NAMES: Record<string, string> = {
   'white-quartz': 'White Quartz Countertop',
   'grey-quartz': 'Grey Quartz Countertop',
   'marble-carrara': 'Carrara Marble Countertop',
-  'concrete': 'Polished Concrete Countertop',
+  concrete: 'Polished Concrete Countertop',
   'butcher-block-oak': 'Oak Butcher Block',
   'granite-black': 'Black Granite Countertop',
   'quartz-calacatta': 'Calacatta Quartz Countertop',
   'butcher-block-walnut': 'Walnut Butcher Block',
   'stainless-steel': 'Stainless Steel Countertop',
-  'soapstone': 'Soapstone Countertop',
+  soapstone: 'Soapstone Countertop',
   'birch-butcher-block': 'Birch Butcher Block',
   'white-laminate': 'White Laminate Countertop',
   'light-quartz': 'Light Quartz Countertop',
@@ -104,13 +104,13 @@ const PRODUCT_NAMES: Record<string, string> = {
   'glass-mosaic': 'Glass Mosaic Tile',
   'white-subway-3x6': 'Classic 3x6 White Subway Tile',
   'herringbone-marble': 'Herringbone Marble Tile',
-  'beadboard': 'Beadboard Backsplash',
+  beadboard: 'Beadboard Backsplash',
   'exposed-brick': 'Exposed Brick',
   'cement-tile': 'Cement Tile',
   'white-square-tile': 'White Square Tile',
   'light-wood-panel': 'Light Wood Panel',
   'painted-white': 'Painted White Wall',
-  'shiplap': 'Shiplap Backsplash',
+  shiplap: 'Shiplap Backsplash',
   'vintage-tile': 'Vintage Patterned Tile',
   // Handles
   'bar-pull-stainless': 'Stainless Steel Bar Pull',
@@ -140,97 +140,192 @@ const PRODUCT_NAMES: Record<string, string> = {
   'white-oak': 'White Oak Floor',
   'light-vinyl-plank': 'Light Vinyl Plank Floor',
   'wide-plank-oak': 'Wide Plank Oak Floor',
-  'terracotta': 'Terracotta Floor Tile',
+  terracotta: 'Terracotta Floor Tile',
   'patterned-cement-tile': 'Patterned Cement Tile Floor',
 };
 
 // Material extracted from product name
 const PRODUCT_MATERIALS: Record<string, string> = {
-  'white-quartz': 'quartz', 'grey-quartz': 'quartz', 'quartz-calacatta': 'quartz', 'light-quartz': 'quartz',
-  'marble-carrara': 'marble', 'herringbone-marble': 'marble', 'honed-marble': 'marble',
-  'concrete': 'concrete', 'polished-concrete': 'concrete',
-  'butcher-block-oak': 'wood', 'butcher-block-walnut': 'wood', 'birch-butcher-block': 'wood', 'butcher-block-maple': 'wood',
-  'granite-black': 'granite', 'soapstone': 'soapstone',
+  'white-quartz': 'quartz',
+  'grey-quartz': 'quartz',
+  'quartz-calacatta': 'quartz',
+  'light-quartz': 'quartz',
+  'marble-carrara': 'marble',
+  'herringbone-marble': 'marble',
+  'honed-marble': 'marble',
+  concrete: 'concrete',
+  'polished-concrete': 'concrete',
+  'butcher-block-oak': 'wood',
+  'butcher-block-walnut': 'wood',
+  'birch-butcher-block': 'wood',
+  'butcher-block-maple': 'wood',
+  'granite-black': 'granite',
+  soapstone: 'soapstone',
   'stainless-steel': 'stainless-steel',
   'white-laminate': 'laminate',
-  'white-subway': 'ceramic', 'white-subway-3x6': 'ceramic', 'white-square-tile': 'ceramic',
-  'large-format-porcelain': 'porcelain', 'grey-porcelain': 'porcelain', 'dark-porcelain': 'porcelain',
+  'white-subway': 'ceramic',
+  'white-subway-3x6': 'ceramic',
+  'white-square-tile': 'ceramic',
+  'large-format-porcelain': 'porcelain',
+  'grey-porcelain': 'porcelain',
+  'dark-porcelain': 'porcelain',
   'glass-mosaic': 'glass',
-  'beadboard': 'wood', 'shiplap': 'wood',
-  'exposed-brick': 'brick', 'cement-tile': 'cement',
-  'light-wood-panel': 'wood', 'painted-white': 'paint',
+  beadboard: 'wood',
+  shiplap: 'wood',
+  'exposed-brick': 'brick',
+  'cement-tile': 'cement',
+  'light-wood-panel': 'wood',
+  'painted-white': 'paint',
   'vintage-tile': 'ceramic',
-  'bar-pull-stainless': 'stainless-steel', 'integrated-channel': 'aluminum', 'hidden-push-open': 'plastic',
-  'cup-pull-brass': 'brass', 'knob-black': 'metal', 'bar-pull-brushed-nickel': 'nickel',
-  'bar-pull-matte-black': 'metal', 'pipe-pull-iron': 'iron',
-  'leather-pull': 'leather', 'wooden-knob': 'wood', 'minimal-bar-white': 'metal',
-  'cup-pull-antique-brass': 'brass', 'bin-pull-oil-rubbed-bronze': 'bronze', 'ceramic-knob': 'ceramic',
-  'light-oak-engineered': 'wood', 'hardwood-oak': 'wood', 'terracotta-tile': 'terracotta',
-  'engineered-walnut': 'wood', 'reclaimed-wood': 'wood',
-  'light-ash': 'wood', 'white-oak': 'wood', 'light-vinyl-plank': 'vinyl',
-  'wide-plank-oak': 'wood', 'terracotta': 'terracotta', 'patterned-cement-tile': 'cement',
+  'bar-pull-stainless': 'stainless-steel',
+  'integrated-channel': 'aluminum',
+  'hidden-push-open': 'plastic',
+  'cup-pull-brass': 'brass',
+  'knob-black': 'metal',
+  'bar-pull-brushed-nickel': 'nickel',
+  'bar-pull-matte-black': 'metal',
+  'pipe-pull-iron': 'iron',
+  'leather-pull': 'leather',
+  'wooden-knob': 'wood',
+  'minimal-bar-white': 'metal',
+  'cup-pull-antique-brass': 'brass',
+  'bin-pull-oil-rubbed-bronze': 'bronze',
+  'ceramic-knob': 'ceramic',
+  'light-oak-engineered': 'wood',
+  'hardwood-oak': 'wood',
+  'terracotta-tile': 'terracotta',
+  'engineered-walnut': 'wood',
+  'reclaimed-wood': 'wood',
+  'light-ash': 'wood',
+  'white-oak': 'wood',
+  'light-vinyl-plank': 'vinyl',
+  'wide-plank-oak': 'wood',
+  terracotta: 'terracotta',
+  'patterned-cement-tile': 'cement',
 };
 
 // Color extracted from product name
 const PRODUCT_COLORS: Record<string, string> = {
-  'white-quartz': '#F5F5F5', 'grey-quartz': '#9E9E9E', 'marble-carrara': '#F0EDE8',
-  'concrete': '#B0B0B0', 'butcher-block-oak': '#C4A06A', 'granite-black': '#2C2C2C',
-  'quartz-calacatta': '#FAF7F2', 'butcher-block-walnut': '#5C3A21',
-  'stainless-steel': '#C0C0C0', 'soapstone': '#505050',
-  'birch-butcher-block': '#D4B896', 'white-laminate': '#FFFFFF', 'light-quartz': '#E8E4DE',
-  'butcher-block-maple': '#E0C8A0', 'honed-marble': '#E8E2D8',
-  'white-subway': '#FFFFFF', 'large-format-porcelain': '#F0F0F0', 'glass-mosaic': '#B0D4E8',
-  'white-subway-3x6': '#FFFFFF', 'herringbone-marble': '#F0EDE8', 'beadboard': '#F5F5F5',
-  'exposed-brick': '#A0522D', 'cement-tile': '#8C8C8C',
-  'white-square-tile': '#FFFFFF', 'light-wood-panel': '#D2B48C', 'painted-white': '#FFFFFF',
-  'shiplap': '#F5F0EB', 'vintage-tile': '#C4A882',
-  'bar-pull-stainless': '#C0C0C0', 'integrated-channel': '#D0D0D0', 'hidden-push-open': '#E0E0E0',
-  'cup-pull-brass': '#B5A642', 'knob-black': '#1A1A1A', 'bar-pull-brushed-nickel': '#A8A8A8',
-  'bar-pull-matte-black': '#2C2C2C', 'pipe-pull-iron': '#3C3C3C',
-  'leather-pull': '#8B4513', 'wooden-knob': '#C4A06A', 'minimal-bar-white': '#F0F0F0',
-  'cup-pull-antique-brass': '#9C8B3C', 'bin-pull-oil-rubbed-bronze': '#6B4226', 'ceramic-knob': '#FAF8F5',
-  'grey-porcelain': '#808080', 'light-oak-engineered': '#D4B896', 'polished-concrete': '#A0A0A0',
-  'hardwood-oak': '#C4A06A', 'terracotta-tile': '#CC6633', 'engineered-walnut': '#5C3A21',
-  'reclaimed-wood': '#8B7355', 'dark-porcelain': '#404040',
-  'light-ash': '#D8CFC0', 'white-oak': '#E0D4C0', 'light-vinyl-plank': '#D0C8B8',
-  'wide-plank-oak': '#C4A06A', 'terracotta': '#CC6633', 'patterned-cement-tile': '#7A7A7A',
+  'white-quartz': '#F5F5F5',
+  'grey-quartz': '#9E9E9E',
+  'marble-carrara': '#F0EDE8',
+  concrete: '#B0B0B0',
+  'butcher-block-oak': '#C4A06A',
+  'granite-black': '#2C2C2C',
+  'quartz-calacatta': '#FAF7F2',
+  'butcher-block-walnut': '#5C3A21',
+  'stainless-steel': '#C0C0C0',
+  soapstone: '#505050',
+  'birch-butcher-block': '#D4B896',
+  'white-laminate': '#FFFFFF',
+  'light-quartz': '#E8E4DE',
+  'butcher-block-maple': '#E0C8A0',
+  'honed-marble': '#E8E2D8',
+  'white-subway': '#FFFFFF',
+  'large-format-porcelain': '#F0F0F0',
+  'glass-mosaic': '#B0D4E8',
+  'white-subway-3x6': '#FFFFFF',
+  'herringbone-marble': '#F0EDE8',
+  beadboard: '#F5F5F5',
+  'exposed-brick': '#A0522D',
+  'cement-tile': '#8C8C8C',
+  'white-square-tile': '#FFFFFF',
+  'light-wood-panel': '#D2B48C',
+  'painted-white': '#FFFFFF',
+  shiplap: '#F5F0EB',
+  'vintage-tile': '#C4A882',
+  'bar-pull-stainless': '#C0C0C0',
+  'integrated-channel': '#D0D0D0',
+  'hidden-push-open': '#E0E0E0',
+  'cup-pull-brass': '#B5A642',
+  'knob-black': '#1A1A1A',
+  'bar-pull-brushed-nickel': '#A8A8A8',
+  'bar-pull-matte-black': '#2C2C2C',
+  'pipe-pull-iron': '#3C3C3C',
+  'leather-pull': '#8B4513',
+  'wooden-knob': '#C4A06A',
+  'minimal-bar-white': '#F0F0F0',
+  'cup-pull-antique-brass': '#9C8B3C',
+  'bin-pull-oil-rubbed-bronze': '#6B4226',
+  'ceramic-knob': '#FAF8F5',
+  'grey-porcelain': '#808080',
+  'light-oak-engineered': '#D4B896',
+  'polished-concrete': '#A0A0A0',
+  'hardwood-oak': '#C4A06A',
+  'terracotta-tile': '#CC6633',
+  'engineered-walnut': '#5C3A21',
+  'reclaimed-wood': '#8B7355',
+  'dark-porcelain': '#404040',
+  'light-ash': '#D8CFC0',
+  'white-oak': '#E0D4C0',
+  'light-vinyl-plank': '#D0C8B8',
+  'wide-plank-oak': '#C4A06A',
+  terracotta: '#CC6633',
+  'patterned-cement-tile': '#7A7A7A',
 };
 
 // Price ranges per category product (EUR)
 const PRICE_RANGES: Record<string, { min: number; max: number }> = {
   // Countertops (per linear meter)
-  'white-quartz': { min: 200, max: 450 }, 'grey-quartz': { min: 200, max: 450 },
-  'marble-carrara': { min: 350, max: 800 }, 'concrete': { min: 150, max: 350 },
-  'butcher-block-oak': { min: 80, max: 200 }, 'granite-black': { min: 180, max: 400 },
-  'quartz-calacatta': { min: 250, max: 550 }, 'butcher-block-walnut': { min: 120, max: 280 },
-  'stainless-steel': { min: 200, max: 500 }, 'soapstone': { min: 250, max: 500 },
-  'birch-butcher-block': { min: 60, max: 160 }, 'white-laminate': { min: 30, max: 80 },
-  'light-quartz': { min: 180, max: 400 }, 'butcher-block-maple': { min: 90, max: 220 },
+  'white-quartz': { min: 200, max: 450 },
+  'grey-quartz': { min: 200, max: 450 },
+  'marble-carrara': { min: 350, max: 800 },
+  concrete: { min: 150, max: 350 },
+  'butcher-block-oak': { min: 80, max: 200 },
+  'granite-black': { min: 180, max: 400 },
+  'quartz-calacatta': { min: 250, max: 550 },
+  'butcher-block-walnut': { min: 120, max: 280 },
+  'stainless-steel': { min: 200, max: 500 },
+  soapstone: { min: 250, max: 500 },
+  'birch-butcher-block': { min: 60, max: 160 },
+  'white-laminate': { min: 30, max: 80 },
+  'light-quartz': { min: 180, max: 400 },
+  'butcher-block-maple': { min: 90, max: 220 },
   'honed-marble': { min: 300, max: 700 },
   // Backsplash (per m2)
-  'white-subway': { min: 15, max: 40 }, 'large-format-porcelain': { min: 30, max: 80 },
-  'glass-mosaic': { min: 40, max: 120 }, 'white-subway-3x6': { min: 15, max: 45 },
-  'herringbone-marble': { min: 60, max: 150 }, 'beadboard': { min: 20, max: 50 },
-  'exposed-brick': { min: 40, max: 100 }, 'cement-tile': { min: 35, max: 90 },
-  'white-square-tile': { min: 10, max: 30 }, 'light-wood-panel': { min: 25, max: 60 },
-  'painted-white': { min: 5, max: 15 }, 'shiplap': { min: 20, max: 55 },
+  'white-subway': { min: 15, max: 40 },
+  'large-format-porcelain': { min: 30, max: 80 },
+  'glass-mosaic': { min: 40, max: 120 },
+  'white-subway-3x6': { min: 15, max: 45 },
+  'herringbone-marble': { min: 60, max: 150 },
+  beadboard: { min: 20, max: 50 },
+  'exposed-brick': { min: 40, max: 100 },
+  'cement-tile': { min: 35, max: 90 },
+  'white-square-tile': { min: 10, max: 30 },
+  'light-wood-panel': { min: 25, max: 60 },
+  'painted-white': { min: 5, max: 15 },
+  shiplap: { min: 20, max: 55 },
   'vintage-tile': { min: 30, max: 80 },
   // Handles (per piece)
-  'bar-pull-stainless': { min: 5, max: 20 }, 'integrated-channel': { min: 10, max: 35 },
-  'hidden-push-open': { min: 8, max: 25 }, 'cup-pull-brass': { min: 10, max: 30 },
-  'knob-black': { min: 3, max: 12 }, 'bar-pull-brushed-nickel': { min: 6, max: 22 },
-  'bar-pull-matte-black': { min: 5, max: 18 }, 'pipe-pull-iron': { min: 12, max: 35 },
-  'leather-pull': { min: 8, max: 25 }, 'wooden-knob': { min: 4, max: 15 },
-  'minimal-bar-white': { min: 5, max: 18 }, 'cup-pull-antique-brass': { min: 10, max: 30 },
-  'bin-pull-oil-rubbed-bronze': { min: 12, max: 35 }, 'ceramic-knob': { min: 5, max: 15 },
+  'bar-pull-stainless': { min: 5, max: 20 },
+  'integrated-channel': { min: 10, max: 35 },
+  'hidden-push-open': { min: 8, max: 25 },
+  'cup-pull-brass': { min: 10, max: 30 },
+  'knob-black': { min: 3, max: 12 },
+  'bar-pull-brushed-nickel': { min: 6, max: 22 },
+  'bar-pull-matte-black': { min: 5, max: 18 },
+  'pipe-pull-iron': { min: 12, max: 35 },
+  'leather-pull': { min: 8, max: 25 },
+  'wooden-knob': { min: 4, max: 15 },
+  'minimal-bar-white': { min: 5, max: 18 },
+  'cup-pull-antique-brass': { min: 10, max: 30 },
+  'bin-pull-oil-rubbed-bronze': { min: 12, max: 35 },
+  'ceramic-knob': { min: 5, max: 15 },
   // Flooring (per m2)
-  'grey-porcelain': { min: 25, max: 60 }, 'light-oak-engineered': { min: 35, max: 80 },
-  'polished-concrete': { min: 50, max: 120 }, 'hardwood-oak': { min: 40, max: 100 },
-  'terracotta-tile': { min: 30, max: 70 }, 'engineered-walnut': { min: 45, max: 110 },
-  'reclaimed-wood': { min: 60, max: 150 }, 'dark-porcelain': { min: 25, max: 65 },
-  'light-ash': { min: 30, max: 70 }, 'white-oak': { min: 40, max: 95 },
-  'light-vinyl-plank': { min: 15, max: 40 }, 'wide-plank-oak': { min: 50, max: 120 },
-  'terracotta': { min: 30, max: 70 }, 'patterned-cement-tile': { min: 40, max: 100 },
+  'grey-porcelain': { min: 25, max: 60 },
+  'light-oak-engineered': { min: 35, max: 80 },
+  'polished-concrete': { min: 50, max: 120 },
+  'hardwood-oak': { min: 40, max: 100 },
+  'terracotta-tile': { min: 30, max: 70 },
+  'engineered-walnut': { min: 45, max: 110 },
+  'reclaimed-wood': { min: 60, max: 150 },
+  'dark-porcelain': { min: 25, max: 65 },
+  'light-ash': { min: 30, max: 70 },
+  'white-oak': { min: 40, max: 95 },
+  'light-vinyl-plank': { min: 15, max: 40 },
+  'wide-plank-oak': { min: 50, max: 120 },
+  terracotta: { min: 30, max: 70 },
+  'patterned-cement-tile': { min: 40, max: 100 },
 };
 
 // Match reasons per style-category pairing
@@ -247,19 +342,19 @@ const MATCH_REASONS: Record<string, Record<string, string>> = {
     handle: 'Traditional hardware that enhances the classic shaker door detail',
     flooring: 'Warm natural tones balance the crisp white shaker cabinetry',
   },
-  'industrial': {
+  industrial: {
     countertop: 'Raw, honest materials that reinforce the industrial design language',
     backsplash: 'Textured surfaces add authentic industrial character',
     handle: 'Robust hardware in dark finishes suits the utilitarian industrial style',
     flooring: 'Hard-wearing surfaces with an urban, factory-inspired aesthetic',
   },
-  'scandinavian': {
+  scandinavian: {
     countertop: 'Light, natural surfaces embody the Scandinavian design philosophy',
     backsplash: 'Simple, bright surfaces maximize the airy Scandinavian feel',
     handle: 'Organic materials and minimal profiles suit the Nordic design ethos',
     flooring: 'Light-toned wood creates the warm, bright Scandinavian atmosphere',
   },
-  'farmhouse': {
+  farmhouse: {
     countertop: 'Natural materials that evoke rustic farmhouse charm and durability',
     backsplash: 'Handcrafted textures add authentic farmhouse character',
     handle: 'Vintage-inspired hardware with patina completes the farmhouse look',
@@ -271,9 +366,9 @@ const MATCH_REASONS: Record<string, Record<string, string>> = {
 const STYLE_BRANDS: Record<string, string[]> = {
   'modern-white-slab': ['Schmidt', 'Mobalpa', 'SieMatic'],
   'shaker-white': ['IKEA', 'Leroy Merlin', 'Castorama'],
-  'industrial': ['Mobalpa', 'Lapeyre'],
-  'scandinavian': ['IKEA', 'Kvik'],
-  'farmhouse': ['Leroy Merlin', 'Castorama', 'Lapeyre'],
+  industrial: ['Mobalpa', 'Lapeyre'],
+  scandinavian: ['IKEA', 'Kvik'],
+  farmhouse: ['Leroy Merlin', 'Castorama', 'Lapeyre'],
 };
 
 // Popular pairings database
@@ -350,36 +445,43 @@ const POPULAR_PAIRINGS: PopularPairing[] = [
 
 /** Normalize user-supplied style string to a recognized style key */
 function normalizeStyle(style: string): string | null {
-  const lower = style.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+  const lower = style
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-');
 
   const styleMap: Record<string, string> = {
-    'modern': 'modern-white-slab',
+    modern: 'modern-white-slab',
     'modern-white': 'modern-white-slab',
     'modern-white-slab': 'modern-white-slab',
     'modern-slab': 'modern-white-slab',
-    'contemporary': 'modern-white-slab',
-    'shaker': 'shaker-white',
+    contemporary: 'modern-white-slab',
+    shaker: 'shaker-white',
     'shaker-white': 'shaker-white',
     'white-shaker': 'shaker-white',
-    'traditional': 'shaker-white',
-    'classic': 'shaker-white',
-    'industrial': 'industrial',
-    'loft': 'industrial',
-    'urban': 'industrial',
-    'scandinavian': 'scandinavian',
-    'nordic': 'scandinavian',
-    'scandi': 'scandinavian',
-    'farmhouse': 'farmhouse',
-    'country': 'farmhouse',
-    'rustic': 'farmhouse',
-    'campagne': 'farmhouse',
+    traditional: 'shaker-white',
+    classic: 'shaker-white',
+    industrial: 'industrial',
+    loft: 'industrial',
+    urban: 'industrial',
+    scandinavian: 'scandinavian',
+    nordic: 'scandinavian',
+    scandi: 'scandinavian',
+    farmhouse: 'farmhouse',
+    country: 'farmhouse',
+    rustic: 'farmhouse',
+    campagne: 'farmhouse',
   };
 
   return styleMap[lower] ?? null;
 }
 
 /** Calculate match score based on position in the pairing list and style alignment */
-function calculateMatchScore(productIndex: number, totalProducts: number, styleMatch: boolean): number {
+function calculateMatchScore(
+  productIndex: number,
+  totalProducts: number,
+  styleMatch: boolean
+): number {
   // Base score: higher for products earlier in the list (more recommended)
   const positionScore = 1 - (productIndex / Math.max(totalProducts, 1)) * 0.3;
   // Bonus for exact style match
@@ -401,7 +503,7 @@ export class CrossCategoryRecommenderService {
   async getComplementaryProducts(
     selectedProduct: SelectedProduct,
     categories: string[],
-    maxPerCategory: number = 3,
+    maxPerCategory: number = 3
   ): Promise<CategoryRecommendations[]> {
     const cacheKey = `cross-rec:${selectedProduct.style}:${categories.join(',')}:${maxPerCategory}`;
 
@@ -423,7 +525,7 @@ export class CrossCategoryRecommenderService {
         normalizedStyle,
         category,
         selectedProduct,
-        maxPerCategory,
+        maxPerCategory
       );
       results.push({ category, recommendations });
     }
@@ -457,9 +559,9 @@ export class CrossCategoryRecommenderService {
     }
 
     // Filter and sort pairings for the given style
-    const stylePairings = POPULAR_PAIRINGS.filter(
-      (p) => p.cabinetStyle === normalizedStyle,
-    ).sort((a, b) => b.popularity - a.popularity);
+    const stylePairings = POPULAR_PAIRINGS.filter((p) => p.cabinetStyle === normalizedStyle).sort(
+      (a, b) => b.popularity - a.popularity
+    );
 
     // If we have style-specific pairings, return them; otherwise return top overall
     if (stylePairings.length > 0) {
@@ -476,7 +578,7 @@ export class CrossCategoryRecommenderService {
     normalizedStyle: string | null,
     category: string,
     selectedProduct: SelectedProduct,
-    maxItems: number,
+    maxItems: number
   ): CategoryRecommendations['recommendations'] {
     // Try to find style pairings
     let productKeys: string[] = [];
@@ -521,7 +623,7 @@ export class CrossCategoryRecommenderService {
     normalizedStyle: string | null,
     category: string,
     _productKey: string,
-    selectedProduct: SelectedProduct,
+    selectedProduct: SelectedProduct
   ): string {
     // Use the pre-defined match reason if available
     if (normalizedStyle && MATCH_REASONS[normalizedStyle]?.[category]) {

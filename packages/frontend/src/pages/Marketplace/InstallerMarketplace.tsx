@@ -83,20 +83,14 @@ export default function InstallerMarketplace(): React.ReactElement {
           params.set('minRating', String(minRating));
         }
 
-        const response = await fetch(
-          `/api/v1/installers/search?${params.toString()}`,
-          {
-            credentials: 'include',
-            signal: controller.signal,
-          },
-        );
+        const response = await fetch(`/api/v1/installers/search?${params.toString()}`, {
+          credentials: 'include',
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error(
-            t(
-              'marketplace.searchError',
-              'Erreur lors de la recherche des installateurs',
-            ),
+            t('marketplace.searchError', 'Erreur lors de la recherche des installateurs')
           );
         }
 
@@ -107,7 +101,9 @@ export default function InstallerMarketplace(): React.ReactElement {
         setInstallers(result.data ?? []);
         setTotal(result.meta?.total ?? 0);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const message =
           err instanceof Error
             ? err.message
@@ -117,7 +113,7 @@ export default function InstallerMarketplace(): React.ReactElement {
         setIsLoading(false);
       }
     },
-    [searchLocation, selectedSpecialties, minRating, radiusKm, t],
+    [searchLocation, selectedSpecialties, minRating, radiusKm, t]
   );
 
   // ─── Effects ───────────────────────────────────────────────────────────────
@@ -137,9 +133,7 @@ export default function InstallerMarketplace(): React.ReactElement {
 
   const handleSpecialtyToggle = (specialty: string): void => {
     setSelectedSpecialties((prev) =>
-      prev.includes(specialty)
-        ? prev.filter((s) => s !== specialty)
-        : [...prev, specialty],
+      prev.includes(specialty) ? prev.filter((s) => s !== specialty) : [...prev, specialty]
     );
   };
 
@@ -157,7 +151,11 @@ export default function InstallerMarketplace(): React.ReactElement {
     return (
       <span className="inline-flex items-center gap-0.5" aria-label={`${rating} sur 5`}>
         {Array.from({ length: fullStars }).map((_, i) => (
-          <svg key={`full-${i}`} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+          <svg
+            key={`full-${i}`}
+            className="w-4 h-4 text-yellow-400 fill-current"
+            viewBox="0 0 20 20"
+          >
             <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
           </svg>
         ))}
@@ -176,7 +174,11 @@ export default function InstallerMarketplace(): React.ReactElement {
           </svg>
         )}
         {Array.from({ length: emptyStars }).map((_, i) => (
-          <svg key={`empty-${i}`} className="w-4 h-4 text-gray-300 dark:text-gray-600 fill-current" viewBox="0 0 20 20">
+          <svg
+            key={`empty-${i}`}
+            className="w-4 h-4 text-gray-300 dark:text-gray-600 fill-current"
+            viewBox="0 0 20 20"
+          >
             <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
           </svg>
         ))}
@@ -197,7 +199,7 @@ export default function InstallerMarketplace(): React.ReactElement {
           <p className="text-gray-600 dark:text-gray-400">
             {t(
               'marketplace.subtitle',
-              'Trouvez un installateur certifie pres de chez vous pour votre projet cuisine',
+              'Trouvez un installateur certifie pres de chez vous pour votre projet cuisine'
             )}
           </p>
         </header>
@@ -210,14 +212,8 @@ export default function InstallerMarketplace(): React.ReactElement {
               value={searchLocation}
               onChange={(e) => setSearchLocation(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder={t(
-                'marketplace.searchPlaceholder',
-                'Code postal ou ville...',
-              )}
-              aria-label={t(
-                'marketplace.searchLabel',
-                'Rechercher par code postal ou ville',
-              )}
+              placeholder={t('marketplace.searchPlaceholder', 'Code postal ou ville...')}
+              aria-label={t('marketplace.searchLabel', 'Rechercher par code postal ou ville')}
               className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <button
@@ -225,9 +221,7 @@ export default function InstallerMarketplace(): React.ReactElement {
               disabled={isLoading}
               className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {isLoading
-                ? t('common.searching', 'Recherche...')
-                : t('common.search', 'Rechercher')}
+              {isLoading ? t('common.searching', 'Recherche...') : t('common.search', 'Rechercher')}
             </button>
           </div>
 
@@ -263,7 +257,9 @@ export default function InstallerMarketplace(): React.ReactElement {
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >
                 {t('marketplace.minRating', 'Note minimale')}:{' '}
-                <span className="font-bold">{minRating > 0 ? `${minRating}/5` : t('marketplace.allRatings', 'Toutes')}</span>
+                <span className="font-bold">
+                  {minRating > 0 ? `${minRating}/5` : t('marketplace.allRatings', 'Toutes')}
+                </span>
               </label>
               <input
                 id="minRating"
@@ -287,8 +283,7 @@ export default function InstallerMarketplace(): React.ReactElement {
                 htmlFor="radiusKm"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
               >
-                {t('marketplace.radius', 'Rayon')}:{' '}
-                <span className="font-bold">{radiusKm} km</span>
+                {t('marketplace.radius', 'Rayon')}: <span className="font-bold">{radiusKm} km</span>
               </label>
               <input
                 id="radiusKm"
@@ -479,15 +474,12 @@ export default function InstallerMarketplace(): React.ReactElement {
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              {t(
-                'marketplace.noResults',
-                'Aucun installateur dans cette zone',
-              )}
+              {t('marketplace.noResults', 'Aucun installateur dans cette zone')}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
               {t(
                 'marketplace.noResultsHint',
-                'Essayez d\'elargir votre rayon de recherche ou de modifier vos filtres',
+                "Essayez d'elargir votre rayon de recherche ou de modifier vos filtres"
               )}
             </p>
           </div>

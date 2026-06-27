@@ -62,7 +62,9 @@ function computeDiff(current: DesignItem[], compared: DesignItem[]): DiffEntry[]
   // Items in both -- check for moves and modifications
   for (const item of current) {
     const old = comparedMap.get(item.id);
-    if (!old) {continue;}
+    if (!old) {
+      continue;
+    }
 
     const dx = Math.abs(item.position.x - old.position.x);
     const dy = Math.abs(item.position.y - old.position.y);
@@ -139,23 +141,51 @@ function DiffCard({
       {/* Diff type icon */}
       <div className={`flex-shrink-0 mt-0.5 ${colors.text}`}>
         {diff.type === 'added' && (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
         )}
         {diff.type === 'removed' && (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
           </svg>
         )}
         {diff.type === 'moved' && (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
           </svg>
         )}
         {diff.type === 'modified' && (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            />
           </svg>
         )}
       </div>
@@ -172,23 +202,39 @@ function DiffCard({
 
         <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 space-y-0.5">
           <div>
-            {t('diff.position', 'Position')}: ({Math.round(diff.item.position.x)}, {Math.round(diff.item.position.y)}, {Math.round(diff.item.position.z)})
+            {t('diff.position', 'Position')}: ({Math.round(diff.item.position.x)},{' '}
+            {Math.round(diff.item.position.y)}, {Math.round(diff.item.position.z)})
           </div>
           <div>
-            {t('diff.size', 'Size')}: {diff.item.dimensions.width} x {diff.item.dimensions.height} x {diff.item.dimensions.depth}
+            {t('diff.size', 'Size')}: {diff.item.dimensions.width} x {diff.item.dimensions.height} x{' '}
+            {diff.item.dimensions.depth}
           </div>
           {diff.item.material && (
-            <div>{t('diff.material', 'Material')}: {diff.item.material}</div>
+            <div>
+              {t('diff.material', 'Material')}: {diff.item.material}
+            </div>
           )}
 
           {/* Movement arrow info */}
           {diff.type === 'moved' && diff.oldItem && (
             <div className="flex items-center gap-1 mt-1 text-yellow-600 dark:text-yellow-400">
-              <span>({Math.round(diff.oldItem.position.x)}, {Math.round(diff.oldItem.position.y)}, {Math.round(diff.oldItem.position.z)})</span>
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <span>
+                ({Math.round(diff.oldItem.position.x)}, {Math.round(diff.oldItem.position.y)},{' '}
+                {Math.round(diff.oldItem.position.z)})
+              </span>
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-              <span>({Math.round(diff.item.position.x)}, {Math.round(diff.item.position.y)}, {Math.round(diff.item.position.z)})</span>
+              <span>
+                ({Math.round(diff.item.position.x)}, {Math.round(diff.item.position.y)},{' '}
+                {Math.round(diff.item.position.z)})
+              </span>
             </div>
           )}
 
@@ -196,13 +242,19 @@ function DiffCard({
           {diff.type === 'modified' && diff.oldItem && (
             <div className="mt-1 text-blue-600 dark:text-blue-400">
               {diff.oldItem.material !== diff.item.material && (
-                <div>{t('diff.materialChange', 'Material')}: {diff.oldItem.material || '-'} &rarr; {diff.item.material || '-'}</div>
+                <div>
+                  {t('diff.materialChange', 'Material')}: {diff.oldItem.material || '-'} &rarr;{' '}
+                  {diff.item.material || '-'}
+                </div>
               )}
               {(diff.oldItem.dimensions.width !== diff.item.dimensions.width ||
                 diff.oldItem.dimensions.height !== diff.item.dimensions.height ||
                 diff.oldItem.dimensions.depth !== diff.item.dimensions.depth) && (
                 <div>
-                  {t('diff.dimensionChange', 'Dimensions')}: {diff.oldItem.dimensions.width}x{diff.oldItem.dimensions.height}x{diff.oldItem.dimensions.depth} &rarr; {diff.item.dimensions.width}x{diff.item.dimensions.height}x{diff.item.dimensions.depth}
+                  {t('diff.dimensionChange', 'Dimensions')}: {diff.oldItem.dimensions.width}x
+                  {diff.oldItem.dimensions.height}x{diff.oldItem.dimensions.depth} &rarr;{' '}
+                  {diff.item.dimensions.width}x{diff.item.dimensions.height}x
+                  {diff.item.dimensions.depth}
                 </div>
               )}
             </div>
@@ -228,19 +280,34 @@ function DiffVisualizationSVG({
     .flatMap((d) => [d.item, d.oldItem].filter(Boolean) as DesignItem[]);
 
   if (allItems.length === 0) {
-    return <div className="w-full h-48 flex items-center justify-center text-sm text-gray-400">No visible diffs</div>;
+    return (
+      <div className="w-full h-48 flex items-center justify-center text-sm text-gray-400">
+        No visible diffs
+      </div>
+    );
   }
 
-  let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+  let minX = Infinity,
+    maxX = -Infinity,
+    minZ = Infinity,
+    maxZ = -Infinity;
   for (const item of allItems) {
     const left = item.position.x - item.dimensions.width / 2;
     const right = item.position.x + item.dimensions.width / 2;
     const top = item.position.z - item.dimensions.depth / 2;
     const bottom = item.position.z + item.dimensions.depth / 2;
-    if (left < minX) {minX = left;}
-    if (right > maxX) {maxX = right;}
-    if (top < minZ) {minZ = top;}
-    if (bottom > maxZ) {maxZ = bottom;}
+    if (left < minX) {
+      minX = left;
+    }
+    if (right > maxX) {
+      maxX = right;
+    }
+    if (top < minZ) {
+      minZ = top;
+    }
+    if (bottom > maxZ) {
+      maxZ = bottom;
+    }
   }
 
   // Add padding
@@ -261,7 +328,10 @@ function DiffVisualizationSVG({
   };
 
   return (
-    <svg viewBox={`${minX} ${minZ} ${width} ${height}`} className="w-full h-48 sm:h-64 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900/50">
+    <svg
+      viewBox={`${minX} ${minZ} ${width} ${height}`}
+      className="w-full h-48 sm:h-64 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900/50"
+    >
       {diffs
         .filter((d) => visibleTypes.has(d.type))
         .map((diff, idx) => {
@@ -348,13 +418,13 @@ export default function DesignDiffOverlay({
   const { t } = useTranslation();
 
   const [visibleTypes, setVisibleTypes] = useState<Set<DiffType>>(
-    new Set(['added', 'removed', 'moved', 'modified']),
+    new Set(['added', 'removed', 'moved', 'modified'])
   );
 
   // Compute the diff
   const diffs = useMemo(
     () => computeDiff(currentItems, comparedItems),
-    [currentItems, comparedItems],
+    [currentItems, comparedItems]
   );
 
   // Count by type
@@ -369,7 +439,7 @@ export default function DesignDiffOverlay({
   // Filtered diffs
   const filteredDiffs = useMemo(
     () => diffs.filter((d) => visibleTypes.has(d.type)),
-    [diffs, visibleTypes],
+    [diffs, visibleTypes]
   );
 
   const toggleType = useCallback((type: DiffType) => {
@@ -384,7 +454,9 @@ export default function DesignDiffOverlay({
     });
   }, []);
 
-  if (!visible) {return null;}
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -404,7 +476,13 @@ export default function DesignDiffOverlay({
             className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg transition-colors"
             aria-label={t('common.close', 'Close')}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -462,7 +540,9 @@ export default function DesignDiffOverlay({
                     }`}
                     style={{
                       backgroundColor: isActive
-                        ? { green: '#22c55e', red: '#ef4444', yellow: '#eab308', blue: '#3b82f6' }[colors.label]
+                        ? { green: '#22c55e', red: '#ef4444', yellow: '#eab308', blue: '#3b82f6' }[
+                            colors.label
+                          ]
                         : undefined,
                     }}
                   />
@@ -482,13 +562,26 @@ export default function DesignDiffOverlay({
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {filteredDiffs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <svg className="w-10 h-10 text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-10 h-10 text-gray-300 dark:text-gray-600 mb-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <p className="text-sm text-gray-400 dark:text-gray-500">
                 {diffs.length === 0
                   ? t('diff.noDifferences', 'No differences found between the two versions.')
-                  : t('diff.allFiltered', 'All differences are filtered out. Toggle a category above.')}
+                  : t(
+                      'diff.allFiltered',
+                      'All differences are filtered out. Toggle a category above.'
+                    )}
               </p>
             </div>
           ) : (

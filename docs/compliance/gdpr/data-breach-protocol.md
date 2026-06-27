@@ -22,18 +22,19 @@
 
 ## Introduction
 
-This protocol establishes KitchenXpert's procedures for responding to personal data breaches per GDPR Articles 33 and 34.
+This protocol establishes KitchenXpert's procedures for responding to personal
+data breaches per GDPR Articles 33 and 34.
 
 ### Key Personnel
 
-| Role | Name | Contact |
-|------|------|---------|
-| Data Protection Officer | Sarah Mitchell | dpo@kitchenxpert.com |
-| Security Lead | David Chen | security@kitchenxpert.com |
-| Legal Counsel | Jennifer Park | legal@kitchenxpert.com |
-| Communications Lead | Michael Torres | comms@kitchenxpert.com |
-| CTO | Robert Williams | cto@kitchenxpert.com |
-| CEO | Amanda Foster | ceo@kitchenxpert.com |
+| Role                    | Name            | Contact                   |
+| ----------------------- | --------------- | ------------------------- |
+| Data Protection Officer | Sarah Mitchell  | dpo@kitchenxpert.com      |
+| Security Lead           | David Chen      | security@kitchenxpert.com |
+| Legal Counsel           | Jennifer Park   | legal@kitchenxpert.com    |
+| Communications Lead     | Michael Torres  | comms@kitchenxpert.com    |
+| CTO                     | Robert Williams | cto@kitchenxpert.com      |
+| CEO                     | Amanda Foster   | ceo@kitchenxpert.com      |
 
 ---
 
@@ -41,15 +42,16 @@ This protocol establishes KitchenXpert's procedures for responding to personal d
 
 ### GDPR Definition (Article 4(12))
 
-A breach of security leading to accidental or unlawful destruction, loss, alteration, unauthorized disclosure of, or access to personal data.
+A breach of security leading to accidental or unlawful destruction, loss,
+alteration, unauthorized disclosure of, or access to personal data.
 
 ### Types
 
-| Type | Description | Examples |
-|------|-------------|----------|
-| **Confidentiality** | Unauthorized disclosure/access | Hacking, phishing |
-| **Integrity** | Unauthorized alteration | Malware corruption |
-| **Availability** | Loss of access | Ransomware, deletion |
+| Type                | Description                    | Examples             |
+| ------------------- | ------------------------------ | -------------------- |
+| **Confidentiality** | Unauthorized disclosure/access | Hacking, phishing    |
+| **Integrity**       | Unauthorized alteration        | Malware corruption   |
+| **Availability**    | Loss of access                 | Ransomware, deletion |
 
 ---
 
@@ -57,8 +59,10 @@ A breach of security leading to accidental or unlawful destruction, loss, altera
 
 ### Detection Methods
 
-1. **Automated Monitoring**: SIEM, IDS/IPS, database monitoring, access logs, file integrity, DLP
-2. **Employee Reports**: security-emergency@kitchenxpert.com, #security-incidents Slack
+1. **Automated Monitoring**: SIEM, IDS/IPS, database monitoring, access logs,
+   file integrity, DLP
+2. **Employee Reports**: security-emergency@kitchenxpert.com,
+   #security-incidents Slack
 3. **Third-Party Notifications**: AWS, Stripe, Auth0, SendGrid per DPAs
 4. **External Reports**: Bug bounty, customer reports, security researchers
 
@@ -68,30 +72,31 @@ A breach of security leading to accidental or unlawful destruction, loss, altera
 
 ### Initial Assessment (Within 4 Hours)
 
-What data? How much? Who affected? How? When occurred/detected? Ongoing? Full scope known?
+What data? How much? Who affected? How? When occurred/detected? Ongoing? Full
+scope known?
 
 ### Severity Matrix
 
-| Level | Criteria | Response |
-|-------|----------|----------|
+| Level        | Criteria                                   | Response                                  |
+| ------------ | ------------------------------------------ | ----------------------------------------- |
 | **Critical** | Large-scale sensitive data, immediate harm | Full IRT, CEO notified, legal immediately |
-| **High** | Significant breach, potential harm | IRT activation, DPO leads |
-| **Medium** | Limited breach, low risk | Security team leads, DPO informed |
-| **Low** | Minimal breach, negligible risk | Normal handling, logged |
+| **High**     | Significant breach, potential harm         | IRT activation, DPO leads                 |
+| **Medium**   | Limited breach, low risk                   | Security team leads, DPO informed         |
+| **Low**      | Minimal breach, negligible risk            | Normal handling, logged                   |
 
 ---
 
 ## Internal Notification Chain
 
-| Time | Action | Responsible |
-|------|--------|-------------|
-| 0-30 min | Security Lead notified | Detector |
-| 30 min-2 hrs | Initial assessment | Security Lead |
-| 2-4 hrs | DPO notified, IRT assembled | Security Lead |
-| 4-8 hrs | Full assessment, severity | IRT |
-| 8-24 hrs | Executive briefing | DPO/Legal |
-| 24-72 hrs | Authority notification | DPO |
-| 72 hrs+ | User notification if required | Communications |
+| Time         | Action                        | Responsible    |
+| ------------ | ----------------------------- | -------------- |
+| 0-30 min     | Security Lead notified        | Detector       |
+| 30 min-2 hrs | Initial assessment            | Security Lead  |
+| 2-4 hrs      | DPO notified, IRT assembled   | Security Lead  |
+| 4-8 hrs      | Full assessment, severity     | IRT            |
+| 8-24 hrs     | Executive briefing            | DPO/Legal      |
+| 24-72 hrs    | Authority notification        | DPO            |
+| 72 hrs+      | User notification if required | Communications |
 
 ---
 
@@ -111,11 +116,11 @@ Nature of breach, DPO contact, likely consequences, measures taken/proposed
 
 ### Contacts
 
-| Authority | Jurisdiction | Contact |
-|-----------|--------------|---------|
+| Authority | Jurisdiction | Contact                  |
+| --------- | ------------ | ------------------------ |
 | Irish DPC | Primary (EU) | breach@dataprotection.ie |
-| ICO | UK | casework@ico.org.uk |
-| CNIL | France | Online portal |
+| ICO       | UK           | casework@ico.org.uk      |
+| CNIL      | France       | Online portal            |
 
 ---
 
@@ -133,11 +138,13 @@ Breach likely to result in **high risk** to rights and freedoms.
 
 ### Content Required
 
-Plain language description, data affected, consequences, measures taken, recommendations, contact info
+Plain language description, data affected, consequences, measures taken,
+recommendations, contact info
 
 ### Channels
 
-Email (primary, 72 hrs), in-app (immediately), SMS (urgent, 24 hrs), website banner, press release, mail (7 days)
+Email (primary, 72 hrs), in-app (immediately), SMS (urgent, 24 hrs), website
+banner, press release, mail (7 days)
 
 ---
 
@@ -145,9 +152,7 @@ Email (primary, 72 hrs), in-app (immediately), SMS (urgent, 24 hrs), website ban
 
 ### Authority Notification
 
-To: Irish Data Protection Commission
-From: KitchenXpert Inc.
-Date: [Date]
+To: Irish Data Protection Commission From: KitchenXpert Inc. Date: [Date]
 Reference: [Incident ID]
 
 1. DESCRIPTION: Nature, dates, description
@@ -164,14 +169,11 @@ Subject: Important Security Notice from KitchenXpert
 
 Dear [User],
 
-WHAT HAPPENED: [Description]
-WHAT INFORMATION: [Data types affected]
-WHAT WE ARE DOING: [Actions taken]
-WHAT YOU CAN DO: [Recommendations]
-CONTACT: security-incident@kitchenxpert.com
+WHAT HAPPENED: [Description] WHAT INFORMATION: [Data types affected] WHAT WE ARE
+DOING: [Actions taken] WHAT YOU CAN DO: [Recommendations] CONTACT:
+security-incident@kitchenxpert.com
 
-Sincerely,
-[CEO Name]
+Sincerely, [CEO Name]
 
 ---
 
@@ -188,11 +190,13 @@ Sincerely,
 
 ### Short-Term (24-72 Hours)
 
-Patch vulnerabilities, reset credentials, review access logs, deploy detection rules, notify partners
+Patch vulnerabilities, reset credentials, review access logs, deploy detection
+rules, notify partners
 
 ### Long-Term (1-4 Weeks)
 
-Root cause analysis, security improvements, policy updates, training, third-party audit
+Root cause analysis, security improvements, policy updates, training,
+third-party audit
 
 ---
 
@@ -200,17 +204,18 @@ Root cause analysis, security improvements, policy updates, training, third-part
 
 ### Timeline
 
-| Activity | Timeline |
-|----------|----------|
-| Initial report | Within 7 days |
+| Activity            | Timeline       |
+| ------------------- | -------------- |
+| Initial report      | Within 7 days  |
 | Root cause analysis | Within 14 days |
-| Lessons learned | Within 21 days |
-| Final report | Within 30 days |
-| Policy updates | Within 45 days |
+| Lessons learned     | Within 21 days |
+| Final report        | Within 30 days |
+| Policy updates      | Within 45 days |
 
 ### Report Contents
 
-Executive summary, timeline, root cause analysis, impact assessment, response evaluation, recommendations
+Executive summary, timeline, root cause analysis, impact assessment, response
+evaluation, recommendations
 
 ---
 
@@ -218,11 +223,14 @@ Executive summary, timeline, root cause analysis, impact assessment, response ev
 
 ### Required Fields (Article 33(5))
 
-Incident ID, dates (detected/occurred), description, data categories, data subjects, severity, root cause, authority notified, individuals notified, remediation, status
+Incident ID, dates (detected/occurred), description, data categories, data
+subjects, severity, root cause, authority notified, individuals notified,
+remediation, status
 
 ### Maintenance
 
-Maintained by DPO, encrypted storage, 5-year retention, available for inspection, quarterly pattern review
+Maintained by DPO, encrypted storage, 5-year retention, available for
+inspection, quarterly pattern review
 
 ---
 
@@ -230,17 +238,18 @@ Maintained by DPO, encrypted storage, 5-year retention, available for inspection
 
 ### Required Training
 
-| Audience | Training | Frequency |
-|----------|----------|-----------|
-| All employees | Breach awareness | Annual + onboarding |
-| IT/Security | Technical response | Semi-annual |
-| IRT members | Incident simulation | Quarterly |
-| Customer support | First response | Semi-annual |
-| Executives | Decision-making | Annual |
+| Audience         | Training            | Frequency           |
+| ---------------- | ------------------- | ------------------- |
+| All employees    | Breach awareness    | Annual + onboarding |
+| IT/Security      | Technical response  | Semi-annual         |
+| IRT members      | Incident simulation | Quarterly           |
+| Customer support | First response      | Semi-annual         |
+| Executives       | Decision-making     | Annual              |
 
 ### Exercises
 
-Tabletop (quarterly), red team (annual), penetration testing (continuous), detection drills
+Tabletop (quarterly), red team (annual), penetration testing (continuous),
+detection drills
 
 ---
 
@@ -257,15 +266,16 @@ Tabletop (quarterly), red team (annual), penetration testing (continuous), detec
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
-| Document Owner | Data Protection Officer |
-| Review Frequency | Semi-annually |
-| Last Reviewed | 2026-01-10 |
-| Next Review | 2026-07-10 |
-| Version | 3.1 |
-| Classification | Confidential |
+| Property         | Value                   |
+| ---------------- | ----------------------- |
+| Document Owner   | Data Protection Officer |
+| Review Frequency | Semi-annually           |
+| Last Reviewed    | 2026-01-10              |
+| Next Review      | 2026-07-10              |
+| Version          | 3.1                     |
+| Classification   | Confidential            |
 
 ---
 
-*For emergencies, contact security-emergency@kitchenxpert.com or security hotline immediately.*
+_For emergencies, contact security-emergency@kitchenxpert.com or security
+hotline immediately._

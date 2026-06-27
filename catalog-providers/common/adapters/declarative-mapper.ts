@@ -94,9 +94,7 @@ export const CommonTransforms = {
   /**
    * Parse des dimensions (WxDxH ou object)
    */
-  toDimensions: (
-    value: any
-  ): { width: number; depth: number; height: number } | undefined => {
+  toDimensions: (value: any): { width: number; depth: number; height: number } | undefined => {
     if (!value) return undefined;
 
     // Format objet
@@ -125,7 +123,10 @@ export const CommonTransforms = {
   toArray: (value: any, delimiter: string = ','): string[] => {
     if (Array.isArray(value)) return value;
     if (typeof value === 'string') {
-      return value.split(delimiter).map((s) => s.trim()).filter(Boolean);
+      return value
+        .split(delimiter)
+        .map((s) => s.trim())
+        .filter(Boolean);
     }
     return [];
   },
@@ -133,9 +134,7 @@ export const CommonTransforms = {
   /**
    * Parse des images (URL ou array)
    */
-  toImages: (
-    value: any
-  ): Array<{ url: string; isPrimary: boolean; order: number }> => {
+  toImages: (value: any): Array<{ url: string; isPrimary: boolean; order: number }> => {
     if (!value) return [];
 
     // Array d'URLs
@@ -273,9 +272,7 @@ export class DeclarativeMapper {
     }
 
     // FieldMapping complexe
-    const sourceFields = Array.isArray(mapping.source)
-      ? mapping.source
-      : [mapping.source];
+    const sourceFields = Array.isArray(mapping.source) ? mapping.source : [mapping.source];
 
     let value: any;
 
@@ -287,10 +284,7 @@ export class DeclarativeMapper {
     }
 
     // Valeur par défaut si vide
-    if (
-      (value === undefined || value === null || value === '') &&
-      mapping.default !== undefined
-    ) {
+    if ((value === undefined || value === null || value === '') && mapping.default !== undefined) {
       value = mapping.default;
     }
 

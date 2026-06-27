@@ -170,7 +170,9 @@ export function Analytics() {
                 ) : (
                   <TrendingDown className="h-4 w-4 text-red-500" />
                 )}
-                <span className={`ml-1 text-sm font-medium ${revenueChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <span
+                  className={`ml-1 text-sm font-medium ${revenueChange >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                >
                   {Math.abs(revenueChange)}%
                 </span>
                 <span className="ml-1 text-sm text-gray-500">vs last period</span>
@@ -193,7 +195,9 @@ export function Analytics() {
                 ) : (
                   <TrendingDown className="h-4 w-4 text-red-500" />
                 )}
-                <span className={`ml-1 text-sm font-medium ${ordersChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <span
+                  className={`ml-1 text-sm font-medium ${ordersChange >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                >
                   {Math.abs(ordersChange)}%
                 </span>
                 <span className="ml-1 text-sm text-gray-500">vs last period</span>
@@ -218,7 +222,9 @@ export function Analytics() {
                 ) : (
                   <TrendingDown className="h-4 w-4 text-red-500" />
                 )}
-                <span className={`ml-1 text-sm font-medium ${aovChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <span
+                  className={`ml-1 text-sm font-medium ${aovChange >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                >
                   {Math.abs(aovChange)}%
                 </span>
                 <span className="ml-1 text-sm text-gray-500">vs last period</span>
@@ -331,7 +337,9 @@ export function Analytics() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: number) => [`EUR ${value.toLocaleString()}`, 'Revenue']} />
+                  <Tooltip
+                    formatter={(value: number) => [`EUR ${value.toLocaleString()}`, 'Revenue']}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -346,9 +354,7 @@ export function Analytics() {
                     <span className="text-sm text-gray-700">{cat.category}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-sm font-medium text-gray-900">
-                      {cat.percentage}%
-                    </span>
+                    <span className="text-sm font-medium text-gray-900">{cat.percentage}%</span>
                   </div>
                 </div>
               ))}
@@ -406,10 +412,10 @@ export function Analytics() {
                         index === 0
                           ? 'bg-yellow-100 text-yellow-800'
                           : index === 1
-                          ? 'bg-gray-200 text-gray-700'
-                          : index === 2
-                          ? 'bg-orange-100 text-orange-800'
-                          : 'bg-gray-100 text-gray-600'
+                            ? 'bg-gray-200 text-gray-700'
+                            : index === 2
+                              ? 'bg-orange-100 text-orange-800'
+                              : 'bg-gray-100 text-gray-600'
                       }`}
                     >
                       {index + 1}

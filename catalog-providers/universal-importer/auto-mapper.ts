@@ -29,14 +29,14 @@ export class AutoMapper {
   // Dictionnaire de correspondances pour chaque champ cible
   private readonly fieldPatterns: Record<string, string[]> = {
     // Identifiants
-    'id': ['id', 'sku', 'ref', 'reference', 'product_id', 'article', 'code'],
-    'externalId': ['external_id', 'external_ref', 'supplier_id', 'vendor_id'],
+    id: ['id', 'sku', 'ref', 'reference', 'product_id', 'article', 'code'],
+    externalId: ['external_id', 'external_ref', 'supplier_id', 'vendor_id'],
 
     // Informations de base
-    'name': ['name', 'nom', 'title', 'titre', 'product_name', 'designation', 'libelle'],
-    'description': ['description', 'desc', 'details', 'texte', 'content'],
-    'category': ['category', 'categorie', 'type', 'famille', 'family', 'collection'],
-    'subcategory': ['subcategory', 'sous_categorie', 'subtype', 'sous_famille'],
+    name: ['name', 'nom', 'title', 'titre', 'product_name', 'designation', 'libelle'],
+    description: ['description', 'desc', 'details', 'texte', 'content'],
+    category: ['category', 'categorie', 'type', 'famille', 'family', 'collection'],
+    subcategory: ['subcategory', 'sous_categorie', 'subtype', 'sous_famille'],
 
     // Prix
     'price.price': ['price', 'prix', 'cost', 'tarif', 'montant', 'amount', 'unit_price'],
@@ -49,9 +49,9 @@ export class AutoMapper {
     'dimensions.depth': ['depth', 'profondeur', 'd', 'p', 'prof'],
 
     // Matériaux et finitions
-    'material': ['material', 'materiau', 'matiere', 'composition'],
-    'finish': ['finish', 'finition', 'coating', 'surface'],
-    'color': ['color', 'colour', 'couleur', 'teinte'],
+    material: ['material', 'materiau', 'matiere', 'composition'],
+    finish: ['finish', 'finition', 'coating', 'surface'],
+    color: ['color', 'colour', 'couleur', 'teinte'],
 
     // Stock et disponibilité
     'availability.status': ['status', 'disponibilite', 'availability', 'stock_status'],
@@ -63,11 +63,11 @@ export class AutoMapper {
     'images.gallery': ['gallery', 'images', 'photos', 'additional_images'],
 
     // Poids
-    'weight': ['weight', 'poids', 'mass', 'masse'],
+    weight: ['weight', 'poids', 'mass', 'masse'],
 
     // Marque et fabricant
-    'brand': ['brand', 'marque', 'manufacturer', 'fabricant', 'maker'],
-    'model': ['model', 'modele', 'reference_model'],
+    brand: ['brand', 'marque', 'manufacturer', 'fabricant', 'maker'],
+    model: ['model', 'modele', 'reference_model'],
   };
 
   // Mots de remplissage à ignorer dans les noms de colonnes
@@ -86,7 +86,8 @@ export class AutoMapper {
     const fields: Record<string, any> = {};
 
     for (const match of result.mappings) {
-      if (match.confidence >= 0.6) { // Seuil de confiance
+      if (match.confidence >= 0.6) {
+        // Seuil de confiance
         let mapping: any = { source: match.sourceColumn };
 
         // Ajouter la transformation si nécessaire
@@ -199,7 +200,7 @@ export class AutoMapper {
     // 3. Distance de Levenshtein normalisée
     const distance = this.levenshteinDistance(str1, str2);
     const maxLength = Math.max(str1.length, str2.length);
-    const similarity = 1 - (distance / maxLength);
+    const similarity = 1 - distance / maxLength;
 
     // 4. Bonus si les premiers caractères correspondent
     if (str1[0] === str2[0]) {
@@ -230,8 +231,8 @@ export class AutoMapper {
         } else {
           matrix[i][j] = Math.min(
             matrix[i - 1][j - 1] + 1, // substitution
-            matrix[i][j - 1] + 1,     // insertion
-            matrix[i - 1][j] + 1      // deletion
+            matrix[i][j - 1] + 1, // insertion
+            matrix[i - 1][j] + 1 // deletion
           );
         }
       }
@@ -312,16 +313,20 @@ export class AutoMapper {
     // Détecter dimensions combinées
     const combinedDims = this.detectCombinedDimensions(sampleRow);
     if (combinedDims) {
-      suggestions.push(`💡 Dimensions combinées détectées dans "${combinedDims}" - utiliser transform: "toDimensions"`);
+      suggestions.push(
+        `💡 Dimensions combinées détectées dans "${combinedDims}" - utiliser transform: "toDimensions"`
+      );
     }
 
     // Vérifier les colonnes non utilisées qui pourraient être utiles
     const unmappedColumns = Object.keys(sampleRow).filter(
-      col => !Object.values(mappingConfig.fields).some((m: any) => m.source === col)
+      (col) => !Object.values(mappingConfig.fields).some((m: any) => m.source === col)
     );
 
     if (unmappedColumns.length > 0) {
-      suggestions.push(`ℹ️  ${unmappedColumns.length} colonne(s) non mappée(s): ${unmappedColumns.slice(0, 3).join(', ')}`);
+      suggestions.push(
+        `ℹ️  ${unmappedColumns.length} colonne(s) non mappée(s): ${unmappedColumns.slice(0, 3).join(', ')}`
+      );
     }
 
     return suggestions;
@@ -344,7 +349,9 @@ export class AutoMapper {
       console.log(`\n${targetField}:`);
       console.log('  Suggestions:');
       suggestions.forEach((col, i) => {
-        console.log(`    ${i + 1}. ${col.column} (confiance: ${(col.confidence * 100).toFixed(0)}%)`);
+        console.log(
+          `    ${i + 1}. ${col.column} (confiance: ${(col.confidence * 100).toFixed(0)}%)`
+        );
       });
 
       // TODO: En mode CLI réel, demander à l'utilisateur de choisir

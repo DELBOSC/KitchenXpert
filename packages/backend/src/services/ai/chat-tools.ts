@@ -43,7 +43,10 @@ export const KITCHEN_CHAT_TOOLS = [
           enum: ['left_wall', 'right_wall', 'back_wall', 'island'],
           description: 'Where to place the cabinet',
         },
-        style: { type: 'string' as const, description: 'Cabinet style (modern, shaker, slab, etc.)' },
+        style: {
+          type: 'string' as const,
+          description: 'Cabinet style (modern, shaker, slab, etc.)',
+        },
       },
       required: ['type', 'width'],
     },
@@ -54,7 +57,10 @@ export const KITCHEN_CHAT_TOOLS = [
     input_schema: {
       type: 'object' as const,
       properties: {
-        objectName: { type: 'string' as const, description: 'Name or type of the object to remove' },
+        objectName: {
+          type: 'string' as const,
+          description: 'Name or type of the object to remove',
+        },
       },
       required: ['objectName'],
     },
@@ -128,15 +134,7 @@ export const KITCHEN_CHAT_TOOLS = [
       properties: {
         type: {
           type: 'string' as const,
-          enum: [
-            'cooktop',
-            'oven',
-            'fridge',
-            'dishwasher',
-            'hood',
-            'microwave',
-            'washing_machine',
-          ],
+          enum: ['cooktop', 'oven', 'fridge', 'dishwasher', 'hood', 'microwave', 'washing_machine'],
           description: 'Appliance type',
         },
         brand: { type: 'string' as const, description: 'Preferred brand (optional)' },

@@ -80,7 +80,9 @@ function computeDiff(oldItems: DesignItem[], currentItems: DesignItem[]): DiffRe
   // Modified items: in both but with differences
   for (const [id, oldItem] of oldMap) {
     const currentItem = currentMap.get(id);
-    if (!currentItem) {continue;}
+    if (!currentItem) {
+      continue;
+    }
 
     const changes: string[] = [];
 
@@ -89,7 +91,9 @@ function computeDiff(oldItems: DesignItem[], currentItems: DesignItem[]): DiffRe
       const op = oldItem.position;
       const cp = currentItem.position;
       if (op.x !== cp.x || op.y !== cp.y || op.z !== cp.z) {
-        changes.push(`position: (${op.x.toFixed(2)}, ${op.y.toFixed(2)}, ${op.z.toFixed(2)}) -> (${cp.x.toFixed(2)}, ${cp.y.toFixed(2)}, ${cp.z.toFixed(2)})`);
+        changes.push(
+          `position: (${op.x.toFixed(2)}, ${op.y.toFixed(2)}, ${op.z.toFixed(2)}) -> (${cp.x.toFixed(2)}, ${cp.y.toFixed(2)}, ${cp.z.toFixed(2)})`
+        );
       }
     }
 
@@ -103,12 +107,19 @@ function computeDiff(oldItems: DesignItem[], currentItems: DesignItem[]): DiffRe
       const os = oldItem.size;
       const cs = currentItem.size;
       if (os.width !== cs.width || os.height !== cs.height || os.depth !== cs.depth) {
-        changes.push(`size: ${os.width}x${os.height}x${os.depth} -> ${cs.width}x${cs.height}x${cs.depth}`);
+        changes.push(
+          `size: ${os.width}x${os.height}x${os.depth} -> ${cs.width}x${cs.height}x${cs.depth}`
+        );
       }
     }
 
     if (changes.length > 0) {
-      entries.push({ type: 'modified', itemType: currentItem.type, itemName: currentItem.name, changes });
+      entries.push({
+        type: 'modified',
+        itemType: currentItem.type,
+        itemName: currentItem.name,
+        changes,
+      });
     }
   }
 
@@ -162,7 +173,9 @@ export default function VersionHistoryPanel({
 
   // ---- Fetch versions ----
   useEffect(() => {
-    if (!isOpen) {return;}
+    if (!isOpen) {
+      return;
+    }
 
     const controller = new AbortController();
 
@@ -173,16 +186,21 @@ export default function VersionHistoryPanel({
       try {
         const res = await api.get<DesignVersionSummary[]>(
           API_ENDPOINTS.DESIGN_VERSIONS.BASE(kitchenId),
-          { signal: controller.signal },
+          { signal: controller.signal }
         );
 
         if (res.success && res.data) {
           setVersions(Array.isArray(res.data) ? res.data : []);
         } else {
-          setError(res.error?.message || t('designer.versions.loadError', 'Impossible de charger les versions'));
+          setError(
+            res.error?.message ||
+              t('designer.versions.loadError', 'Impossible de charger les versions')
+          );
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         setError(t('designer.versions.loadError', 'Impossible de charger les versions'));
       } finally {
         setLoading(false);
@@ -195,7 +213,9 @@ export default function VersionHistoryPanel({
 
   // ---- Close on Escape ----
   useEffect(() => {
-    if (!isOpen) {return;}
+    if (!isOpen) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -213,14 +233,20 @@ export default function VersionHistoryPanel({
 
   // ---- Focus trap for restore modal ----
   useEffect(() => {
-    if (!restoreTarget) {return;}
+    if (!restoreTarget) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
         const modal = document.querySelector('[data-restore-modal]');
-        if (!modal) {return;}
+        if (!modal) {
+          return;
+        }
         const focusable = modal.querySelectorAll<HTMLElement>('button:not([disabled])');
-        if (focusable.length === 0) {return;}
+        if (focusable.length === 0) {
+          return;
+        }
         const first = focusable[0]!;
         const last = focusable[focusable.length - 1]!;
         if (e.shiftKey && document.activeElement === first) {
@@ -266,11 +292,13 @@ export default function VersionHistoryPanel({
 
   // ---- Restore version ----
   const handleConfirmRestore = useCallback(async () => {
-    if (!restoreTarget) {return;}
+    if (!restoreTarget) {
+      return;
+    }
     setRestoring(true);
     try {
       const res = await api.post(
-        API_ENDPOINTS.DESIGN_VERSIONS.RESTORE(kitchenId, restoreTarget.version),
+        API_ENDPOINTS.DESIGN_VERSIONS.RESTORE(kitchenId, restoreTarget.version)
       );
       if (res.success) {
         setRestoreTarget(null);
@@ -282,39 +310,44 @@ export default function VersionHistoryPanel({
   }, [kitchenId, restoreTarget, onRestore]);
 
   // ---- Compare with current ----
-  const handleCompare = useCallback(async (version: DesignVersionSummary) => {
-    setCompareTarget(version);
-    setComparing(true);
-    setDiffResult(null);
-    setDiffExpanded(true);
+  const handleCompare = useCallback(
+    async (version: DesignVersionSummary) => {
+      setCompareTarget(version);
+      setComparing(true);
+      setDiffResult(null);
+      setDiffExpanded(true);
 
-    const controller = new AbortController();
+      const controller = new AbortController();
 
-    try {
-      // Fetch the old version data and current version data in parallel
-      const [oldRes, currentRes] = await Promise.all([
-        api.get<DesignVersionDetail>(
-          API_ENDPOINTS.DESIGN_VERSIONS.VERSION(kitchenId, version.version),
-          { signal: controller.signal },
-        ),
-        api.get<DesignVersionDetail>(
-          API_ENDPOINTS.DESIGN_VERSIONS.VERSION(kitchenId, versions[0]?.version ?? 0),
-          { signal: controller.signal },
-        ),
-      ]);
+      try {
+        // Fetch the old version data and current version data in parallel
+        const [oldRes, currentRes] = await Promise.all([
+          api.get<DesignVersionDetail>(
+            API_ENDPOINTS.DESIGN_VERSIONS.VERSION(kitchenId, version.version),
+            { signal: controller.signal }
+          ),
+          api.get<DesignVersionDetail>(
+            API_ENDPOINTS.DESIGN_VERSIONS.VERSION(kitchenId, versions[0]?.version ?? 0),
+            { signal: controller.signal }
+          ),
+        ]);
 
-      if (oldRes.success && oldRes.data && currentRes.success && currentRes.data) {
-        const oldItems = Array.isArray(oldRes.data.items) ? oldRes.data.items : [];
-        const currentItems = Array.isArray(currentRes.data.items) ? currentRes.data.items : [];
-        setDiffResult(computeDiff(oldItems, currentItems));
+        if (oldRes.success && oldRes.data && currentRes.success && currentRes.data) {
+          const oldItems = Array.isArray(oldRes.data.items) ? oldRes.data.items : [];
+          const currentItems = Array.isArray(currentRes.data.items) ? currentRes.data.items : [];
+          setDiffResult(computeDiff(oldItems, currentItems));
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
+        // Silently fail — user can dismiss
+      } finally {
+        setComparing(false);
       }
-    } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AbortError') {return;}
-      // Silently fail — user can dismiss
-    } finally {
-      setComparing(false);
-    }
-  }, [kitchenId, versions]);
+    },
+    [kitchenId, versions]
+  );
 
   // ---- Close compare panel ----
   const handleCloseCompare = useCallback(() => {
@@ -335,16 +368,14 @@ export default function VersionHistoryPanel({
     });
   };
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/30 z-30"
-        onClick={onClose}
-        role="presentation"
-      />
+      <div className="fixed inset-0 bg-black/30 z-30" onClick={onClose} role="presentation" />
 
       {/* Panel */}
       <div
@@ -356,14 +387,21 @@ export default function VersionHistoryPanel({
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('designer.versions.title', 'Historique des versions')}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {t('designer.versions.title', 'Historique des versions')}
+          </h2>
           <button
             onClick={onClose}
             className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
             aria-label={t('common.close', 'Fermer')}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -380,7 +418,9 @@ export default function VersionHistoryPanel({
                 placeholder={t('designer.versions.labelPlaceholder', 'Nom de version (optionnel)')}
                 className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {void handleSaveVersion();}
+                  if (e.key === 'Enter') {
+                    void handleSaveVersion();
+                  }
                 }}
               />
               <div className="flex gap-2">
@@ -389,7 +429,9 @@ export default function VersionHistoryPanel({
                   disabled={saving}
                   className="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {saving ? t('designer.versions.saving', 'Sauvegarde...') : t('designer.versions.save', 'Sauvegarder')}
+                  {saving
+                    ? t('designer.versions.saving', 'Sauvegarde...')
+                    : t('designer.versions.save', 'Sauvegarder')}
                 </button>
                 <button
                   onClick={() => {
@@ -408,7 +450,12 @@ export default function VersionHistoryPanel({
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               {t('designer.versions.saveCurrent', 'Sauvegarder la version actuelle')}
             </button>
@@ -419,7 +466,11 @@ export default function VersionHistoryPanel({
         <div className="flex-1 overflow-y-auto">
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" role="status" aria-label={t('designer.versions.loading', 'Chargement...')} />
+              <div
+                className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+                role="status"
+                aria-label={t('designer.versions.loading', 'Chargement...')}
+              />
             </div>
           )}
 
@@ -438,7 +489,10 @@ export default function VersionHistoryPanel({
           {!loading && !error && versions.length === 0 && (
             <div className="p-4 text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {t('designer.versions.empty', 'Aucune version enregistree. Sauvegardez l\'etat actuel pour creer votre premiere version.')}
+                {t(
+                  'designer.versions.empty',
+                  "Aucune version enregistree. Sauvegardez l'etat actuel pour creer votre premiere version."
+                )}
               </p>
             </div>
           )}
@@ -545,7 +599,10 @@ export default function VersionHistoryPanel({
             >
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-purple-800 dark:text-purple-200">
-                  {t('versions.diffTitle', { version: compareTarget.version, defaultValue: 'Diff vs v{{version}}' })}
+                  {t('versions.diffTitle', {
+                    version: compareTarget.version,
+                    defaultValue: 'Diff vs v{{version}}',
+                  })}
                 </span>
                 {diffResult && (
                   <span className="text-xs text-purple-600 dark:text-purple-400">
@@ -568,7 +625,12 @@ export default function VersionHistoryPanel({
                   aria-label={t('common.close', 'Fermer')}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
                 <svg
@@ -577,7 +639,12 @@ export default function VersionHistoryPanel({
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </button>
@@ -586,7 +653,11 @@ export default function VersionHistoryPanel({
               <div className="max-h-64 overflow-y-auto px-4 py-3">
                 {comparing && (
                   <div className="flex items-center justify-center py-6">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600" role="status" aria-label={t('versions.comparing', 'Comparing...')} />
+                    <div
+                      className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"
+                      role="status"
+                      aria-label={t('versions.comparing', 'Comparing...')}
+                    />
                   </div>
                 )}
 
@@ -648,7 +719,10 @@ export default function VersionHistoryPanel({
                           {entry.changes && entry.changes.length > 0 && (
                             <div className="mt-1 space-y-0.5">
                               {entry.changes.map((change, j) => (
-                                <p key={j} className="text-[11px] text-gray-600 dark:text-gray-400 font-mono">
+                                <p
+                                  key={j}
+                                  className="text-[11px] text-gray-600 dark:text-gray-400 font-mono"
+                                >
                                   {change}
                                 </p>
                               ))}
@@ -676,19 +750,29 @@ export default function VersionHistoryPanel({
           />
 
           {/* Modal content */}
-          <div data-restore-modal className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6">
+          <div
+            data-restore-modal
+            className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6"
+          >
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              {t('designer.versions.restoreConfirmTitle', { version: restoreTarget.version, defaultValue: 'Restaurer la version {{version}} ?' })}
+              {t('designer.versions.restoreConfirmTitle', {
+                version: restoreTarget.version,
+                defaultValue: 'Restaurer la version {{version}} ?',
+              })}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
               {t('designer.versions.restoreConfirmMessage', {
                 version: restoreTarget.version,
                 label: restoreTarget.label || '',
-                defaultValue: 'Cela remplacera tous les elements et la configuration actuels par les donnees de la version {{version}}{{label}}.',
+                defaultValue:
+                  'Cela remplacera tous les elements et la configuration actuels par les donnees de la version {{version}}{{label}}.',
               })}
             </p>
             <p className="text-sm text-amber-600 dark:text-amber-400 mb-6">
-              {t('designer.versions.restoreWarning', 'Cette action est irreversible. Pensez a sauvegarder l\'etat actuel.')}
+              {t(
+                'designer.versions.restoreWarning',
+                "Cette action est irreversible. Pensez a sauvegarder l'etat actuel."
+              )}
             </p>
 
             <div className="flex gap-3">
@@ -703,7 +787,9 @@ export default function VersionHistoryPanel({
                 disabled={restoring}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {restoring ? t('designer.versions.restoring', 'Restauration...') : t('designer.versions.restoreAction', 'Restaurer')}
+                {restoring
+                  ? t('designer.versions.restoring', 'Restauration...')
+                  : t('designer.versions.restoreAction', 'Restaurer')}
               </button>
             </div>
           </div>

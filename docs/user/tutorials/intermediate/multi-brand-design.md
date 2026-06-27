@@ -1,8 +1,7 @@
 # Creating Multi-Brand Kitchen Designs
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Intermediate
-**Estimated Time:** 40-55 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Intermediate **Estimated
+Time:** 40-55 minutes
 
 ## Learning Objectives
 
@@ -19,7 +18,8 @@ By the end of this tutorial, you will be able to:
 
 ## Prerequisites
 
-- Completed [Exploring Product Catalogs](../beginner/exploring-catalogs.md) tutorial
+- Completed [Exploring Product Catalogs](../beginner/exploring-catalogs.md)
+  tutorial
 - Understanding of kitchen product categories
 - Existing kitchen design to work with
 - Familiarity with product specifications
@@ -27,14 +27,18 @@ By the end of this tutorial, you will be able to:
 ## Why Mix Brands?
 
 **Single-Brand Approach:**
+
 - Pros: Guaranteed compatibility, unified warranty, simpler ordering
-- Cons: Limited selection, not best value in every category, locked into one aesthetic
+- Cons: Limited selection, not best value in every category, locked into one
+  aesthetic
 
 **Multi-Brand Approach:**
+
 - Pros: Best value per category, wider selection, optimization opportunities
 - Cons: Requires coordination, potential compatibility issues, multiple vendors
 
-Most professional designers use multi-brand approaches to maximize value and achieve specific client goals.
+Most professional designers use multi-brand approaches to maximize value and
+achieve specific client goals.
 
 ## Step-by-Step Instructions
 
@@ -94,7 +98,8 @@ OPTIMIZATION OPPORTUNITY: $2,400 savings or quality upgrades
 by mixing brands strategically
 ```
 
-> **TIP:** Single-brand designs are great starting points, but multi-brand optimization typically improves value by 15-25%.
+> **TIP:** Single-brand designs are great starting points, but multi-brand
+> optimization typically improves value by 15-25%.
 
 ### Step 2: Identify Category-Specific Best Values
 
@@ -149,7 +154,8 @@ New total: $16,650 (-$175 savings + better quality)
 3. This analysis reveals strategic mixing opportunities
 4. Key insight: **Specialize by category, not brand loyalty**
 
-> **TIP:** Appliances are the easiest category to mix brands. No compatibility issues since they're standalone products.
+> **TIP:** Appliances are the easiest category to mix brands. No compatibility
+> issues since they're standalone products.
 
 ### Step 3: Plan Your Multi-Brand Strategy
 
@@ -159,6 +165,7 @@ New total: $16,650 (-$175 savings + better quality)
 [Screenshot: Multi-brand strategy selector]
 
 **Strategy A: Maximum Savings**
+
 - Objective: Lowest total cost
 - Approach: Best price in every category
 - Trade-off: More vendors to coordinate
@@ -166,6 +173,7 @@ New total: $16,650 (-$175 savings + better quality)
 - Best for: Budget-constrained projects
 
 **Strategy B: Balanced Value**
+
 - Objective: Best price-to-quality ratio
 - Approach: Mix budget and premium strategically
 - Trade-off: Moderate complexity
@@ -173,6 +181,7 @@ New total: $16,650 (-$175 savings + better quality)
 - Best for: Most homeowners (recommended)
 
 **Strategy C: Quality Focus**
+
 - Objective: Best product in each category within budget
 - Approach: Premium where it matters, standard elsewhere
 - Trade-off: Higher total cost
@@ -244,7 +253,8 @@ COORDINATION COMPLEXITY: Moderate (manageable)
 5. Review the recommendation
 6. Click **"Apply Brand Mix to Design"**
 
-> **TIP:** Strategy B is most popular. You save money AND get better quality by choosing specialists in each category.
+> **TIP:** Strategy B is most popular. You save money AND get better quality by
+> choosing specialists in each category.
 
 ### Step 4: Verify Dimensional Compatibility
 
@@ -305,7 +315,8 @@ RECOMMENDED ACTION: Order 3" pulls instead of 5", or request cabinets without pr
 
 [Screenshot: Compatibility check passed]
 
-> **WARNING:** Always check appliance dimensions carefully. A 36" fridge might actually be 35.75" or 36.25" wide. Verify exact specs.
+> **WARNING:** Always check appliance dimensions carefully. A 36" fridge might
+> actually be 35.75" or 36.25" wide. Verify exact specs.
 
 ### Step 5: Match Finishes Across Brands
 
@@ -321,6 +332,7 @@ Different brands offer different finish names for similar colors.
 [Screenshot: Finish matching interface]
 
 3. **Match cabinet white across brands:**
+
    ```
    CABINET WHITE MATCHING
 
@@ -339,6 +351,7 @@ Different brands offer different finish names for similar colors.
    ```
 
 4. **Match hardware finish:**
+
    ```
    HARDWARE FINISH MATCHING
 
@@ -359,6 +372,7 @@ Different brands offer different finish names for similar colors.
 
 5. Decide to keep **Matte Black** (intentional modern update)
 6. **Match stainless steel appliances:**
+
    ```
    STAINLESS STEEL MATCHING
 
@@ -391,7 +405,8 @@ Different brands offer different finish names for similar colors.
    - Sink/faucet: Kraus stainless steel ✓
    - Cohesive, modern aesthetic achieved
 
-> **TIP:** Order physical samples of finishes before committing. Screen colors vary. Most manufacturers send free samples.
+> **TIP:** Order physical samples of finishes before committing. Screen colors
+> vary. Most manufacturers send free samples.
 
 ### Step 6: Create Multi-Vendor Procurement Plan
 
@@ -494,7 +509,8 @@ TOTAL COST: $16,488 (includes all vendor costs)
    - Calendar events for personal tracking
    - CSV for spreadsheet management
 
-> **TIP:** Order cabinets first. Everything else depends on them being installed correctly. Never template countertops before cabinets are in.
+> **TIP:** Order cabinets first. Everything else depends on them being installed
+> correctly. Never template countertops before cabinets are in.
 
 ### Step 7: Manage Brand-Specific Warranties
 
@@ -559,7 +575,8 @@ ACTION ITEMS:
    - Warranty certificates
    - Installation photos (proof of professional install)
 
-> **WARNING:** Many warranties require registration within 30-90 days. Set reminders immediately after purchase or installation.
+> **WARNING:** Many warranties require registration within 30-90 days. Set
+> reminders immediately after purchase or installation.
 
 ### Step 8: Handle Brand-Specific Installation Requirements
 
@@ -656,7 +673,8 @@ TOTAL LABOR: ~$2,380-2,900 (beyond cabinet install)
 3. Share installation requirements with contractor
 4. Ensure contractor has brand-specific installation guides
 
-> **TIP:** Send installation guides to your contractor BEFORE they start. Brand-specific requirements can affect labor quotes.
+> **TIP:** Send installation guides to your contractor BEFORE they start.
+> Brand-specific requirements can affect labor quotes.
 
 ### Step 9: Use the Brand Compatibility Checker
 
@@ -716,10 +734,12 @@ NOTES:
 
 [Screenshot: Compatibility report card]
 
-3. Try another combination: "Kraftmaid Cabinets + Cambria Countertops + Thermador Appliances"
+3. Try another combination: "Kraftmaid Cabinets + Cambria Countertops +
+   Thermador Appliances"
 4. Result: **98% compatible** - Premium combination, all compatible
 
-> **TIP:** Use this tool before committing to any brand mix. Catching incompatibilities early saves money and headaches.
+> **TIP:** Use this tool before committing to any brand mix. Catching
+> incompatibilities early saves money and headaches.
 
 ### Step 10: Create Multi-Brand Specification Sheets
 
@@ -856,7 +876,8 @@ TOTAL PROJECT VALUE: $16,850
 4. Export as PDF: `Kitchen_Specifications_Multi-Brand.pdf`
 5. Provides contractors with all necessary details
 
-> **TIP:** Detailed specs prevent errors and change orders. Contractors can bid accurately and order correctly.
+> **TIP:** Detailed specs prevent errors and change orders. Contractors can bid
+> accurately and order correctly.
 
 ### Step 11: Track Multi-Brand Project
 
@@ -917,7 +938,8 @@ ESTIMATED COMPLETION: Feb 20, 2026
 3. Receive alerts for upcoming deadlines
 4. Track any issues with specific vendors
 
-> **TIP:** Take photos at each installation stage. Helps document for warranty claims if needed, and great for before/after comparisons.
+> **TIP:** Take photos at each installation stage. Helps document for warranty
+> claims if needed, and great for before/after comparisons.
 
 ## What You Learned
 
@@ -925,7 +947,8 @@ Congratulations! You're now skilled at multi-brand kitchen design. You can now:
 
 - **Analyze single-brand designs** for optimization opportunities
 - **Identify category-specific best values** across multiple manufacturers
-- **Create multi-brand strategies** (savings-focused, balanced, or quality-focused)
+- **Create multi-brand strategies** (savings-focused, balanced, or
+  quality-focused)
 - **Verify dimensional compatibility** to avoid installation issues
 - **Match finishes across brands** for cohesive aesthetics
 - **Manage multi-vendor procurement** with organized timelines
@@ -964,9 +987,12 @@ Avoid these pitfalls:
 
 Continue your intermediate education:
 
-1. **[Custom Surfaces](custom-surfaces.md)** - Work with custom materials in multi-brand designs
-2. **[Budget Optimization](budget-optimization.md)** - Review how brand mixing affects budget
-3. **[VR Collaboration](../advanced/vr-collaboration.md)** - Share multi-brand designs in VR
+1. **[Custom Surfaces](custom-surfaces.md)** - Work with custom materials in
+   multi-brand designs
+2. **[Budget Optimization](budget-optimization.md)** - Review how brand mixing
+   affects budget
+3. **[VR Collaboration](../advanced/vr-collaboration.md)** - Share multi-brand
+   designs in VR
 
 ## Additional Resources
 
@@ -978,6 +1004,7 @@ Continue your intermediate education:
 ## Feedback
 
 Help us improve multi-brand tools:
+
 - Email: multi-brand@kitchenxpert.com
 - Report compatibility issues: [Issue form]
 - Suggest brand partnerships: [Request form]
@@ -985,13 +1012,14 @@ Help us improve multi-brand tools:
 ---
 
 **Related Tutorials:**
+
 - [Exploring Product Catalogs](../beginner/exploring-catalogs.md)
 - [Budget Optimization](budget-optimization.md)
 - [Custom Surfaces](custom-surfaces.md)
 
 **Documentation:**
+
 - [Supported Brands](../../reference/supported-brands.md)
 - [Compatibility Guidelines](../../reference/compatibility.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1

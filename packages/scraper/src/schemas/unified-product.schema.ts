@@ -13,9 +13,4 @@ export {
   ParseResultSchema,
   validateUnifiedProduct,
 } from '@kitchenxpert/common';
-export type {
-  ProductType,
-  SourceLevel,
-  UnifiedProduct,
-  ParseResult,
-} from '@kitchenxpert/common';
+export type { ProductType, SourceLevel, UnifiedProduct, ParseResult } from '@kitchenxpert/common';

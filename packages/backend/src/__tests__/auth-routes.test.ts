@@ -273,9 +273,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 409 when email already exists', async () => {
-      mockAuthService.register.mockRejectedValue(
-        new ConflictError('Email already registered')
-      );
+      mockAuthService.register.mockRejectedValue(new ConflictError('Email already registered'));
 
       const response = await request(app)
         .post('/auth/register')
@@ -423,10 +421,7 @@ describe('Auth Routes', () => {
     it('should login successfully with valid credentials', async () => {
       mockAuthService.login.mockResolvedValue(mockLoginResult);
 
-      const response = await request(app)
-        .post('/auth/login')
-        .send(validCredentials)
-        .expect(200);
+      const response = await request(app).post('/auth/login').send(validCredentials).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.user.email).toBe('test@example.com');
@@ -436,10 +431,7 @@ describe('Auth Routes', () => {
     it('should set httpOnly cookies on successful login', async () => {
       mockAuthService.login.mockResolvedValue(mockLoginResult);
 
-      const response = await request(app)
-        .post('/auth/login')
-        .send(validCredentials)
-        .expect(200);
+      const response = await request(app).post('/auth/login').send(validCredentials).expect(200);
 
       const cookies = response.headers['set-cookie'];
       expect(cookies).toBeDefined();
@@ -451,9 +443,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 401 for wrong password', async () => {
-      mockAuthService.login.mockRejectedValue(
-        new UnauthorizedError('Invalid credentials')
-      );
+      mockAuthService.login.mockRejectedValue(new UnauthorizedError('Invalid credentials'));
 
       const response = await request(app)
         .post('/auth/login')
@@ -465,9 +455,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 401 for non-existent user', async () => {
-      mockAuthService.login.mockRejectedValue(
-        new UnauthorizedError('Invalid credentials')
-      );
+      mockAuthService.login.mockRejectedValue(new UnauthorizedError('Invalid credentials'));
 
       const response = await request(app)
         .post('/auth/login')
@@ -480,14 +468,9 @@ describe('Auth Routes', () => {
     });
 
     it('should return 401 for suspended account', async () => {
-      mockAuthService.login.mockRejectedValue(
-        new UnauthorizedError('Account is not active')
-      );
+      mockAuthService.login.mockRejectedValue(new UnauthorizedError('Account is not active'));
 
-      const response = await request(app)
-        .post('/auth/login')
-        .send(validCredentials)
-        .expect(401);
+      const response = await request(app).post('/auth/login').send(validCredentials).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -522,10 +505,7 @@ describe('Auth Routes', () => {
     it('should not expose raw tokens in the JSON body', async () => {
       mockAuthService.login.mockResolvedValue(mockLoginResult);
 
-      const response = await request(app)
-        .post('/auth/login')
-        .send(validCredentials)
-        .expect(200);
+      const response = await request(app).post('/auth/login').send(validCredentials).expect(200);
 
       expect(response.body.data.tokens.accessToken).toBeUndefined();
       expect(response.body.data.tokens.refreshToken).toBeUndefined();
@@ -651,9 +631,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .post('/auth/logout')
-        .expect(401);
+      const response = await request(app).post('/auth/logout').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -719,10 +697,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 400 for missing email', async () => {
-      const response = await request(app)
-        .post('/auth/forgot-password')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/auth/forgot-password').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -848,9 +823,7 @@ describe('Auth Routes', () => {
         error: 'Invalid or expired verification token',
       });
 
-      const response = await request(app)
-        .post('/auth/verify-email/invalid-token')
-        .expect(400);
+      const response = await request(app).post('/auth/verify-email/invalid-token').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Invalid or expired verification token');
@@ -862,9 +835,7 @@ describe('Auth Routes', () => {
         error: 'Token has expired',
       });
 
-      const response = await request(app)
-        .post('/auth/verify-email/expired-token')
-        .expect(400);
+      const response = await request(app).post('/auth/verify-email/expired-token').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -881,9 +852,7 @@ describe('Auth Routes', () => {
         firstName: 'Test',
       });
 
-      const response = await request(app)
-        .get('/auth/verify-email/valid-token/info')
-        .expect(200);
+      const response = await request(app).get('/auth/verify-email/valid-token/info').expect(200);
 
       expect(response.body.success).toBe(true);
       // Email should be masked
@@ -897,9 +866,7 @@ describe('Auth Routes', () => {
       const mockService = getEmailTokenService();
       mockService.getUserByVerificationToken.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/auth/verify-email/bad-token/info')
-        .expect(400);
+      const response = await request(app).get('/auth/verify-email/bad-token/info').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -924,8 +891,9 @@ describe('Auth Routes', () => {
         lastLoginAt: new Date('2024-06-01'),
       };
 
-      const mockRepo = (PrismaUserRepository as jest.Mock).mock.results[0]?.value
-        || { findById: jest.fn() };
+      const mockRepo = (PrismaUserRepository as jest.Mock).mock.results[0]?.value || {
+        findById: jest.fn(),
+      };
       // Reset the mock to return a new repository
       (PrismaUserRepository as jest.Mock).mockImplementation(() => ({
         findById: jest.fn().mockResolvedValue(mockUser),
@@ -943,9 +911,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .get('/auth/me')
-        .expect(401);
+      const response = await request(app).get('/auth/me').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -1088,9 +1054,7 @@ describe('Auth Routes', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .post('/auth/resend-verification')
-        .expect(401);
+      const response = await request(app).post('/auth/resend-verification').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -1102,7 +1066,12 @@ describe('Auth Routes', () => {
     it('should normalize email to lowercase on login', async () => {
       mockAuthService.login.mockResolvedValue({
         user: { id: '1', email: 'test@test.com', firstName: 'T', lastName: 'U', role: 'user' },
-        tokens: { accessToken: 'a', refreshToken: 'r', expiresIn: 900, tokenType: 'Bearer' as const },
+        tokens: {
+          accessToken: 'a',
+          refreshToken: 'r',
+          expiresIn: 900,
+          tokenType: 'Bearer' as const,
+        },
       });
 
       await request(app)
@@ -1119,7 +1088,12 @@ describe('Auth Routes', () => {
     it('should normalize email to lowercase on registration', async () => {
       mockAuthService.register.mockResolvedValue({
         user: { id: '1', email: 'new@test.com', firstName: 'N', lastName: 'U', role: 'user' },
-        tokens: { accessToken: 'a', refreshToken: 'r', expiresIn: 900, tokenType: 'Bearer' as const },
+        tokens: {
+          accessToken: 'a',
+          refreshToken: 'r',
+          expiresIn: 900,
+          tokenType: 'Bearer' as const,
+        },
       });
 
       await request(app)
@@ -1139,9 +1113,7 @@ describe('Auth Routes', () => {
 
     it('should use consistent error messages to prevent user enumeration on login', async () => {
       // Both wrong password and non-existent user should return same message
-      mockAuthService.login.mockRejectedValue(
-        new UnauthorizedError('Invalid credentials')
-      );
+      mockAuthService.login.mockRejectedValue(new UnauthorizedError('Invalid credentials'));
 
       const response1 = await request(app)
         .post('/auth/login')

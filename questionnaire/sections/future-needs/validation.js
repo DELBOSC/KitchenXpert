@@ -7,7 +7,7 @@ const VALID_OPTIONS = {
   'family-changes': ['children', 'kids-leaving', 'aging-parents', 'work-from-home', 'none'],
   'aging-in-place': ['yes-plan-now', 'prepare-later', 'not-needed'],
   'cooking-evolution': ['more-cooking', 'less-cooking', 'same', 'unsure'],
-  'future-tech': ['yes-important', 'some-prep', 'not-concerned']
+  'future-tech': ['yes-important', 'some-prep', 'not-concerned'],
 };
 
 const REQUIRED_QUESTIONS = ['time-in-home', 'aging-in-place'];
@@ -30,18 +30,17 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'unknown-question',
-      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` }
+      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` },
     });
     return { valid: false, errors, warnings };
   }
 
   if (REQUIRED_QUESTIONS.includes(questionId)) {
-    if (value === undefined || value === null ||
-        (Array.isArray(value) && value.length === 0)) {
+    if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
       errors.push({
         questionId,
         type: 'required',
-        message: { en: 'This question is required', fr: 'Cette question est obligatoire' }
+        message: { en: 'This question is required', fr: 'Cette question est obligatoire' },
       });
       return { valid: false, errors, warnings };
     }
@@ -77,7 +76,7 @@ function validateSingleChoice(questionId, value) {
     errors.push({
       questionId,
       type: 'invalid-type',
-      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' }
+      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' },
     });
     return { errors, warnings };
   }
@@ -86,7 +85,7 @@ function validateSingleChoice(questionId, value) {
     errors.push({
       questionId,
       type: 'invalid-option',
-      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` }
+      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` },
     });
   }
 
@@ -101,17 +100,20 @@ function validateMultiChoice(questionId, value) {
     errors.push({
       questionId,
       type: 'invalid-type',
-      message: { en: 'Must be an array of selections', fr: 'Doit être un tableau de sélections' }
+      message: { en: 'Must be an array of selections', fr: 'Doit être un tableau de sélections' },
     });
     return { errors, warnings };
   }
 
-  const invalidOptions = value.filter(v => !VALID_OPTIONS[questionId].includes(v));
+  const invalidOptions = value.filter((v) => !VALID_OPTIONS[questionId].includes(v));
   if (invalidOptions.length > 0) {
     errors.push({
       questionId,
       type: 'invalid-options',
-      message: { en: `Invalid options: ${invalidOptions.join(', ')}`, fr: `Options invalides: ${invalidOptions.join(', ')}` }
+      message: {
+        en: `Invalid options: ${invalidOptions.join(', ')}`,
+        fr: `Options invalides: ${invalidOptions.join(', ')}`,
+      },
     });
   }
 
@@ -119,7 +121,10 @@ function validateMultiChoice(questionId, value) {
     warnings.push({
       questionId,
       type: 'conflicting-selection',
-      message: { en: 'You selected "No changes" along with other changes', fr: 'Vous avez sélectionné "Aucun changement" avec d\'autres changements' }
+      message: {
+        en: 'You selected "No changes" along with other changes',
+        fr: 'Vous avez sélectionné "Aucun changement" avec d\'autres changements',
+      },
     });
   }
 
@@ -136,8 +141,8 @@ function validateWithContext(questionId, value, context) {
         type: 'timeline-mismatch',
         message: {
           en: 'Planning aging-in-place features for a short-term stay may not provide full ROI.',
-          fr: 'Planifier des fonctions de vieillissement sur place pour un séjour court peut ne pas offrir un retour sur investissement complet.'
-        }
+          fr: 'Planifier des fonctions de vieillissement sur place pour un séjour court peut ne pas offrir un retour sur investissement complet.',
+        },
       });
     }
   }
@@ -149,8 +154,8 @@ function validateWithContext(questionId, value, context) {
         type: 'timeline-note',
         message: {
           en: 'Extensive tech future-proofing may not be fully utilized in a short-term stay.',
-          fr: 'Une préparation technologique extensive peut ne pas être pleinement utilisée lors d\'un séjour court.'
-        }
+          fr: "Une préparation technologique extensive peut ne pas être pleinement utilisée lors d'un séjour court.",
+        },
       });
     }
   }
@@ -163,8 +168,8 @@ function validateWithContext(questionId, value, context) {
         type: 'lifestyle-note',
         message: {
           en: 'Note: With kids leaving, cooking patterns often change.',
-          fr: 'Note : Avec le départ des enfants, les habitudes de cuisine changent souvent.'
-        }
+          fr: 'Note : Avec le départ des enfants, les habitudes de cuisine changent souvent.',
+        },
       });
     }
   }
@@ -192,9 +197,9 @@ function validateSection(answers) {
 
   return {
     valid: allErrors.length === 0,
-    complete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined && answers[q] !== null),
+    complete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined && answers[q] !== null),
     errors: allErrors,
-    warnings: allWarnings
+    warnings: allWarnings,
   };
 }
 
@@ -203,12 +208,14 @@ function getValidationSummary(answers) {
 
   return {
     ...result,
-    answeredCount: Object.keys(answers).filter(k => VALID_OPTIONS[k]).length,
+    answeredCount: Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length,
     totalQuestions: Object.keys(VALID_OPTIONS).length,
-    requiredComplete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined),
+    requiredComplete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined),
     percentComplete: Math.round(
-      (Object.keys(answers).filter(k => VALID_OPTIONS[k]).length / Object.keys(VALID_OPTIONS).length) * 100
-    )
+      (Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length /
+        Object.keys(VALID_OPTIONS).length) *
+        100
+    ),
   };
 }
 
@@ -222,5 +229,5 @@ module.exports = {
   FutureValidationError,
   VALID_OPTIONS,
   REQUIRED_QUESTIONS,
-  MULTI_CHOICE_QUESTIONS
+  MULTI_CHOICE_QUESTIONS,
 };

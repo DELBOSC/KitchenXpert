@@ -61,7 +61,7 @@ export class MigrationRunner {
    * Register multiple migrations
    */
   registerAll(migrations: Migration[]): void {
-    migrations.forEach(m => this.register(m));
+    migrations.forEach((m) => this.register(m));
   }
 
   /**
@@ -71,9 +71,9 @@ export class MigrationRunner {
     await this.ensureMigrationTable();
 
     const executed = await this.getExecutedMigrations();
-    const executedIds = new Set(executed.map(m => m.id));
+    const executedIds = new Set(executed.map((m) => m.id));
 
-    const pending = this.migrations.filter(m => !executedIds.has(m.id));
+    const pending = this.migrations.filter((m) => !executedIds.has(m.id));
 
     if (pending.length === 0) {
       logger.info('[Migration] No pending migrations');
@@ -130,13 +130,13 @@ export class MigrationRunner {
     let toRollback: MigrationRecord[];
 
     if (options?.batch !== undefined) {
-      toRollback = executed.filter(m => m.batchNumber === options.batch);
+      toRollback = executed.filter((m) => m.batchNumber === options.batch);
     } else if (options?.step !== undefined) {
       toRollback = executed.slice(-options.step);
     } else {
       // Default: rollback last batch
-      const lastBatch = Math.max(...executed.map(m => m.batchNumber));
-      toRollback = executed.filter(m => m.batchNumber === lastBatch);
+      const lastBatch = Math.max(...executed.map((m) => m.batchNumber));
+      toRollback = executed.filter((m) => m.batchNumber === lastBatch);
     }
 
     if (toRollback.length === 0) {
@@ -152,7 +152,7 @@ export class MigrationRunner {
     logger.info(`[Migration] Rolling back ${toRollback.length} migration(s)...`);
 
     for (const record of toRollback) {
-      const migration = this.migrations.find(m => m.id === record.id);
+      const migration = this.migrations.find((m) => m.id === record.id);
 
       if (!migration) {
         logger.warn(`[Migration] Migration ${record.id} not found, skipping rollback`);
@@ -216,17 +216,17 @@ export class MigrationRunner {
     await this.ensureMigrationTable();
 
     const executed = await this.getExecutedMigrations();
-    const executedIds = new Set(executed.map(m => m.id));
+    const executedIds = new Set(executed.map((m) => m.id));
 
-    const pending = this.migrations.filter(m => !executedIds.has(m.id));
+    const pending = this.migrations.filter((m) => !executedIds.has(m.id));
 
     return {
       total: this.migrations.length,
       executed: executed.length,
       pending: pending.length,
       lastExecuted: executed[executed.length - 1],
-      pendingMigrations: pending.map(m => ({ id: m.id, name: m.name })),
-      executedMigrations: executed.map(m => ({
+      pendingMigrations: pending.map((m) => ({ id: m.id, name: m.name })),
+      executedMigrations: executed.map((m) => ({
         id: m.id,
         name: m.name,
         executedAt: m.executedAt,
@@ -258,7 +258,7 @@ export class MigrationRunner {
       batch_number: number;
     }>(`SELECT * FROM ${this.options.tableName} ORDER BY executed_at ASC`);
 
-    return result.rows.map(row => ({
+    return result.rows.map((row) => ({
       id: row.id,
       name: row.name,
       executedAt: row.executed_at,
@@ -286,10 +286,7 @@ export class MigrationRunner {
   }
 
   private async removeMigrationRecord(tx: Transaction, migrationId: string): Promise<void> {
-    await tx.execute(
-      `DELETE FROM ${this.options.tableName} WHERE id = $1`,
-      [migrationId]
-    );
+    await tx.execute(`DELETE FROM ${this.options.tableName} WHERE id = $1`, [migrationId]);
   }
 }
 

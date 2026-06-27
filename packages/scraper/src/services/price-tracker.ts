@@ -181,7 +181,11 @@ export class PriceTracker {
     const lastRecord = history.records[history.records.length - 1];
     const isSignificant = this.isSignificantChange(lastRecord?.price, record.price);
 
-    if (isSignificant || !lastRecord || this.isDifferentDay(lastRecord.timestamp, record.timestamp)) {
+    if (
+      isSignificant ||
+      !lastRecord ||
+      this.isDifferentDay(lastRecord.timestamp, record.timestamp)
+    ) {
       // Add to history
       history.records.push(record);
 
@@ -202,7 +206,9 @@ export class PriceTracker {
         productId: record.productId,
         brandId: record.brandId,
         price: record.price,
-        change: lastRecord ? ((record.price - lastRecord.price) / lastRecord.price * 100).toFixed(2) + '%' : 'N/A',
+        change: lastRecord
+          ? (((record.price - lastRecord.price) / lastRecord.price) * 100).toFixed(2) + '%'
+          : 'N/A',
       });
     }
 
@@ -354,9 +360,7 @@ export class PriceTracker {
     const comparisons = Array.from(brandPricesMap.values());
     const prices = comparisons.map((c) => c.price);
 
-    const bestPrice = comparisons.reduce((min, curr) =>
-      curr.price < min.price ? curr : min
-    );
+    const bestPrice = comparisons.reduce((min, curr) => (curr.price < min.price ? curr : min));
 
     const averagePrice = prices.reduce((sum, p) => sum + p, 0) / prices.length;
     const maxPrice = Math.max(...prices);
@@ -419,11 +423,7 @@ export class PriceTracker {
   /**
    * Create a price alert
    */
-  createAlert(
-    productId: string,
-    type: AlertType,
-    threshold?: number
-  ): PriceAlert {
+  createAlert(productId: string, type: AlertType, threshold?: number): PriceAlert {
     const alert: PriceAlert = {
       id: `${productId}-${type}-${Date.now()}`,
       productId,
@@ -556,9 +556,7 @@ export class PriceTracker {
       }
     }
 
-    return drops
-      .sort((a, b) => b.dropPercent - a.dropPercent)
-      .slice(0, limit);
+    return drops.sort((a, b) => b.dropPercent - a.dropPercent).slice(0, limit);
   }
 
   /**

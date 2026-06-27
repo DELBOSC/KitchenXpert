@@ -4,11 +4,34 @@
 
 import type { PriceType } from './cabinet.js';
 
-export type HandleType = 'bar' | 'knob' | 'profile' | 'integrated' | 'recessed' | 'cup' | 'edge_pull';
+export type HandleType =
+  | 'bar'
+  | 'knob'
+  | 'profile'
+  | 'integrated'
+  | 'recessed'
+  | 'cup'
+  | 'edge_pull';
 
-export type HandleMaterial = 'stainless' | 'aluminum' | 'brass' | 'zinc' | 'wood' | 'leather' | 'plastic' | 'ceramic';
+export type HandleMaterial =
+  | 'stainless'
+  | 'aluminum'
+  | 'brass'
+  | 'zinc'
+  | 'wood'
+  | 'leather'
+  | 'plastic'
+  | 'ceramic';
 
-export type HandleFinish = 'brushed' | 'polished' | 'matte' | 'painted' | 'antique' | 'chrome' | 'black' | 'gold';
+export type HandleFinish =
+  | 'brushed'
+  | 'polished'
+  | 'matte'
+  | 'painted'
+  | 'antique'
+  | 'chrome'
+  | 'black'
+  | 'gold';
 
 export type HandleStyle = 'modern' | 'classic' | 'industrial' | 'scandinavian' | 'transitional';
 

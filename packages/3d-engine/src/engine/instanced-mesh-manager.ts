@@ -48,7 +48,7 @@ export class InstancedMeshManager {
         ids: [],
         baseGeometry: geometry,
         baseMaterial: material,
-        count: 0
+        count: 0,
       };
       this.groups.set(groupKey, group);
     }
@@ -132,7 +132,7 @@ export class InstancedMeshManager {
 
   getStats(): { groups: number; totalInstances: number } {
     let totalInstances = 0;
-    this.groups.forEach(g => totalInstances += g.count);
+    this.groups.forEach((g) => (totalInstances += g.count));
     return { groups: this.groups.size, totalInstances };
   }
 

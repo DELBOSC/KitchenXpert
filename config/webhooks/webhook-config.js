@@ -106,13 +106,7 @@ export const RETRY_POLICY = {
   /**
    * Network errors that trigger retry
    */
-  retryableErrors: [
-    'ECONNREFUSED',
-    'ECONNRESET',
-    'ETIMEDOUT',
-    'ENOTFOUND',
-    'EHOSTUNREACH',
-  ],
+  retryableErrors: ['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'EHOSTUNREACH'],
 };
 
 // ============================================================

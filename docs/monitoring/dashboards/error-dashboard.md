@@ -1,10 +1,9 @@
 # Error Dashboard Documentation
 
-> Comprehensive guide to the KitchenXpert Error Dashboard for debugging and error analysis.
+> Comprehensive guide to the KitchenXpert Error Dashboard for debugging and
+> error analysis.
 
-**Last Updated:** 2026-01-10
-**Owner:** SRE Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** SRE Team **Version:** 1.0
 
 ---
 
@@ -25,22 +24,21 @@
 
 **Dashboard URL:** https://grafana.kitchenxpert.internal/d/errors
 
-**Direct Links:**
-| View | URL |
-|------|-----|
-| All Errors | https://grafana.kitchenxpert.internal/d/errors |
-| Backend Only | https://grafana.kitchenxpert.internal/d/errors?var-service=backend |
-| AI Service | https://grafana.kitchenxpert.internal/d/errors?var-service=ai-service |
-| Last 1 Hour | https://grafana.kitchenxpert.internal/d/errors?from=now-1h&to=now |
+**Direct Links:** | View | URL | |------|-----| | All Errors |
+https://grafana.kitchenxpert.internal/d/errors | | Backend Only |
+https://grafana.kitchenxpert.internal/d/errors?var-service=backend | | AI
+Service | https://grafana.kitchenxpert.internal/d/errors?var-service=ai-service
+| | Last 1 Hour |
+https://grafana.kitchenxpert.internal/d/errors?from=now-1h&to=now |
 
 ### Access Requirements
 
-| Role | Access Level |
-|------|--------------|
-| Admin | Full edit access |
-| SRE Team | Full edit access |
+| Role      | Access Level       |
+| --------- | ------------------ |
+| Admin     | Full edit access   |
+| SRE Team  | Full edit access   |
 | Developer | View + annotations |
-| On-Call | View + annotations |
+| On-Call   | View + annotations |
 
 ---
 
@@ -55,12 +53,14 @@
 **Description:** Total error count over time, broken down by type
 
 **Query:**
+
 ```promql
 # 5xx errors over time
 sum(increase(http_requests_total{status=~"5.."}[5m])) by (status)
 ```
 
 **Visualization:**
+
 - Stacked area chart
 - Color coded: 500 (red), 502 (orange), 503 (yellow), 504 (purple)
 - Y-axis: Error count
@@ -75,18 +75,15 @@ sum(increase(http_requests_total{status=~"5.."}[5m])) by (status)
 **Description:** Current error rate as percentage
 
 **Query:**
+
 ```promql
 # Current error rate percentage
 sum(rate(http_requests_total{status=~"5.."}[5m])) /
 sum(rate(http_requests_total[5m])) * 100
 ```
 
-**Thresholds:**
-| Rate | Color | Status |
-|------|-------|--------|
-| < 0.5% | Green | Normal |
-| 0.5-2% | Yellow | Warning |
-| > 2% | Red | Critical |
+**Thresholds:** | Rate | Color | Status | |------|-------|--------| | < 0.5% |
+Green | Normal | | 0.5-2% | Yellow | Warning | | > 2% | Red | Critical |
 
 [Dashboard: Current Error Rate Gauge - Shows real-time error percentage]
 
@@ -101,17 +98,20 @@ sum(rate(http_requests_total[5m])) * 100
 **Description:** Distribution of errors by HTTP status code
 
 **Query:**
+
 ```promql
 # Error distribution
 sum(increase(http_requests_total{status=~"5.."}[1h])) by (status)
 ```
 
 **Visualization:**
+
 - Pie chart with legend
 - Shows percentage and count
 - Interactive - click to filter
 
 **Colors:**
+
 - 500 Internal Server Error: #E24D42
 - 502 Bad Gateway: #EAB839
 - 503 Service Unavailable: #F2495C
@@ -126,12 +126,14 @@ sum(increase(http_requests_total{status=~"5.."}[1h])) by (status)
 **Description:** Error count per service
 
 **Query:**
+
 ```promql
 # Errors by service
 sum(increase(http_requests_total{status=~"5.."}[1h])) by (service)
 ```
 
 **Visualization:**
+
 - Horizontal bar chart
 - Sorted by error count (highest first)
 - Color intensity based on severity
@@ -151,6 +153,7 @@ sum(increase(http_requests_total{status=~"5.."}[1h])) by (service)
 **Data Source:** Elasticsearch (logs)
 
 **Query:**
+
 ```json
 {
   "query": {
@@ -172,14 +175,10 @@ sum(increase(http_requests_total{status=~"5.."}[1h])) by (service)
 }
 ```
 
-**Columns:**
-| Column | Description |
-|--------|-------------|
-| Error Message | Truncated error message |
-| Count | Number of occurrences |
-| First Seen | Timestamp of first occurrence |
-| Last Seen | Timestamp of most recent |
-| Services | Affected services |
+**Columns:** | Column | Description | |--------|-------------| | Error Message |
+Truncated error message | | Count | Number of occurrences | | First Seen |
+Timestamp of first occurrence | | Last Seen | Timestamp of most recent | |
+Services | Affected services |
 
 [Dashboard: Top Error Messages Table - Most frequent errors]
 
@@ -190,19 +189,16 @@ sum(increase(http_requests_total{status=~"5.."}[1h])) by (service)
 **Description:** Error rate for each API endpoint
 
 **Query:**
+
 ```promql
 # Error rate by endpoint
 sum(rate(http_requests_total{status=~"5.."}[5m])) by (path) /
 sum(rate(http_requests_total[5m])) by (path) * 100
 ```
 
-**Columns:**
-| Column | Description |
-|--------|-------------|
-| Endpoint | API path |
-| Error Rate | Percentage |
-| Error Count (1h) | Total errors |
-| Trend | Sparkline showing trend |
+**Columns:** | Column | Description | |--------|-------------| | Endpoint | API
+path | | Error Rate | Percentage | | Error Count (1h) | Total errors | | Trend |
+Sparkline showing trend |
 
 **Sorting:** By error rate descending
 
@@ -219,6 +215,7 @@ sum(rate(http_requests_total[5m])) by (path) * 100
 **Description:** Current error rate compared to same time yesterday
 
 **Queries:**
+
 ```promql
 # Current error rate
 sum(rate(http_requests_total{status=~"5.."}[5m]))
@@ -228,6 +225,7 @@ sum(rate(http_requests_total{status=~"5.."}[5m] offset 24h))
 ```
 
 **Visualization:**
+
 - Two lines: "Current" (solid) and "Yesterday" (dashed)
 - Difference highlighted
 - Anomaly detection overlay
@@ -241,6 +239,7 @@ sum(rate(http_requests_total{status=~"5.."}[5m] offset 24h))
 **Description:** Percentage change in error rate
 
 **Query:**
+
 ```promql
 # Error rate change
 (sum(rate(http_requests_total{status=~"5.."}[1h])) -
@@ -249,6 +248,7 @@ sum(rate(http_requests_total{status=~"5.."}[1h] offset 1h)) * 100
 ```
 
 **Visualization:**
+
 - Large number showing percentage change
 - Green for decrease, red for increase
 - Arrow indicating direction
@@ -266,6 +266,7 @@ sum(rate(http_requests_total{status=~"5.."}[1h] offset 1h)) * 100
 **Description:** Stream of recent error log entries
 
 **Query (KQL):**
+
 ```
 level: error
 ```
@@ -273,6 +274,7 @@ level: error
 **Time Range:** Last 15 minutes (auto-refreshing)
 
 **Display Fields:**
+
 - @timestamp
 - service
 - message
@@ -281,6 +283,7 @@ level: error
 - traceId (clickable link)
 
 **Features:**
+
 - Live tail mode
 - Click to expand full log entry
 - Link to full Kibana search
@@ -294,6 +297,7 @@ level: error
 **Description:** View full stack traces for selected errors
 
 **Interaction:**
+
 1. Click on error in logs panel
 2. Stack trace appears in viewer
 3. Syntax highlighting for code
@@ -312,12 +316,14 @@ level: error
 **Description:** Correlation between error spikes and other events
 
 **Data Points:**
+
 - Deployment events
 - Configuration changes
 - Traffic spikes
 - External service failures
 
 **Visualization:**
+
 - X-axis: Time
 - Y-axis: Event type
 - Color: Correlation strength
@@ -331,6 +337,7 @@ level: error
 **Description:** User impact metrics
 
 **Queries:**
+
 ```promql
 # Unique users affected
 count(distinct user_id) where error = true
@@ -343,6 +350,7 @@ sum(rate(http_requests_total{status=~"5.."}[1h]))
 ```
 
 **Panels:**
+
 - Users Affected: Count
 - Error Session Rate: Percentage
 - Failed Requests: Count
@@ -380,14 +388,11 @@ sum(rate(http_requests_total{status=~"5.."}[1h]))
 ### Debugging Checklist
 
 ```markdown
-[ ] Identified error type (500, 502, 503, 504)
-[ ] Identified affected service(s)
-[ ] Identified affected endpoint(s)
-[ ] Found common error message pattern
-[ ] Reviewed stack trace
-[ ] Checked for correlated events (deploys, config changes)
-[ ] Identified user impact scope
-[ ] Obtained trace ID for distributed tracing
+[ ] Identified error type (500, 502, 503, 504) [ ] Identified affected
+service(s) [ ] Identified affected endpoint(s) [ ] Found common error message
+pattern [ ] Reviewed stack trace [ ] Checked for correlated events (deploys,
+config changes) [ ] Identified user impact scope [ ] Obtained trace ID for
+distributed tracing
 ```
 
 ---
@@ -397,11 +402,13 @@ sum(rate(http_requests_total{status=~"5.."}[1h]))
 ### From Error Dashboard to Kibana
 
 **Method 1: Click-through Link**
+
 - Click on any log entry
 - Opens Kibana with pre-filtered query
 - Time range preserved
 
 **Method 2: "Open in Kibana" Button**
+
 - Click button in panel header
 - Opens full Kibana Discover view
 - Current filters applied
@@ -409,16 +416,19 @@ sum(rate(http_requests_total{status=~"5.."}[1h]))
 ### Query Templates
 
 **All errors for service:**
+
 ```
 https://kibana.kitchenxpert.internal/app/discover#/?_g=(time:(from:now-1h,to:now))&_a=(query:(language:kuery,query:'level:error AND service:backend'))
 ```
 
 **Specific error message:**
+
 ```
 https://kibana.kitchenxpert.internal/app/discover#/?_a=(query:(language:kuery,query:'error.message:"Connection timeout"'))
 ```
 
 **By trace ID:**
+
 ```
 https://kibana.kitchenxpert.internal/app/discover#/?_a=(query:(language:kuery,query:'traceId:"abc123"'))
 ```
@@ -426,11 +436,13 @@ https://kibana.kitchenxpert.internal/app/discover#/?_a=(query:(language:kuery,qu
 ### Linking to Jaeger Traces
 
 **From Dashboard:**
+
 1. Find error log entry with traceId
 2. Click traceId link
 3. Opens Jaeger trace view
 
 **Direct Link Format:**
+
 ```
 https://jaeger.kitchenxpert.internal/trace/{traceId}
 ```
@@ -518,12 +530,12 @@ https://jaeger.kitchenxpert.internal/trace/{traceId}
 
 ### Available Filters
 
-| Variable | Options | Default |
-|----------|---------|---------|
-| `$timeRange` | 15m, 1h, 6h, 24h, 7d | 1h |
-| `$service` | All, backend, frontend, ai-service | All |
-| `$status` | 500, 502, 503, 504 | All |
-| `$endpoint` | Dynamic from data | All |
+| Variable     | Options                            | Default |
+| ------------ | ---------------------------------- | ------- |
+| `$timeRange` | 15m, 1h, 6h, 24h, 7d               | 1h      |
+| `$service`   | All, backend, frontend, ai-service | All     |
+| `$status`    | 500, 502, 503, 504                 | All     |
+| `$endpoint`  | Dynamic from data                  | All     |
 
 ### URL Parameters
 
@@ -548,4 +560,5 @@ https://jaeger.kitchenxpert.internal/trace/{traceId}
 
 ---
 
-*For questions about the error dashboard, contact the SRE team at sre@kitchenxpert.com*
+_For questions about the error dashboard, contact the SRE team at
+sre@kitchenxpert.com_

@@ -62,10 +62,7 @@ import uploadRoutes from './upload-routes';
 import userRoutes from './user-routes';
 import webhookRoutes from './webhook-routes';
 import workflowSimulationRoutes from './workflow-simulation-routes';
-import {
-  catalogRateLimiter,
-  aiUnauthRateLimiter,
-} from '../middleware/rate-limit-middleware';
+import { catalogRateLimiter, aiUnauthRateLimiter } from '../middleware/rate-limit-middleware';
 
 const router: RouterType = Router();
 
@@ -99,13 +96,13 @@ router.use('/projects', projectRoutes);
 // Catalog browse surfaces — capped at 60 req/min/IP to deter scrapers
 // and protect our partner-API quotas. Authenticated users still benefit
 // from the higher per-user limit applied inside the route handlers.
-router.use('/catalog',     catalogRateLimiter, catalogRoutes);
-router.use('/products',    catalogRateLimiter, productRoutes);
-router.use('/ikea',        catalogRateLimiter, ikeaRoutes);
-router.use('/leroy-merlin',catalogRateLimiter, leroyMerlinRoutes);
-router.use('/castorama',   catalogRateLimiter, castoramaRoutes);
-router.use('/schmidt',     catalogRateLimiter, schmidtRoutes);
-router.use('/bosch',       catalogRateLimiter, boschRoutes);
+router.use('/catalog', catalogRateLimiter, catalogRoutes);
+router.use('/products', catalogRateLimiter, productRoutes);
+router.use('/ikea', catalogRateLimiter, ikeaRoutes);
+router.use('/leroy-merlin', catalogRateLimiter, leroyMerlinRoutes);
+router.use('/castorama', catalogRateLimiter, castoramaRoutes);
+router.use('/schmidt', catalogRateLimiter, schmidtRoutes);
+router.use('/bosch', catalogRateLimiter, boschRoutes);
 
 router.use('/partners', partnerRoutes);
 router.use('/webhooks', webhookRoutes);
@@ -120,7 +117,7 @@ router.use('/room-scan', roomScanRoutes);
 // AI chat/search are expensive (Anthropic + Gemini). Apply the
 // unauthenticated limiter first; authenticated requests skip it via the
 // in-handler aiRateLimiter (20/hour/user).
-router.use('/ai-chat',   aiUnauthRateLimiter, aiChatRoutes);
+router.use('/ai-chat', aiUnauthRateLimiter, aiChatRoutes);
 router.use('/ai-search', aiUnauthRateLimiter, aiSearchRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/subscriptions', subscriptionRoutes);

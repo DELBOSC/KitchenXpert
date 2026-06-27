@@ -27,7 +27,10 @@ const router: Router = Router();
 const generatorRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 5, // 5 generation requests per minute
-  message: { success: false, error: { code: 'RATE_LIMIT', message: 'Too many generation requests, please try again later' } },
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMIT', message: 'Too many generation requests, please try again later' },
+  },
 });
 
 // Types for request validation
@@ -56,7 +59,13 @@ interface WallSegment {
 }
 
 interface UtilityConnection {
-  type: 'water_inlet' | 'water_outlet' | 'gas' | 'electrical_220v' | 'electrical_380v' | 'ventilation';
+  type:
+    | 'water_inlet'
+    | 'water_outlet'
+    | 'gas'
+    | 'electrical_220v'
+    | 'electrical_380v'
+    | 'ventilation';
   wall: string;
   position: number;
   heightFromFloor: number;
@@ -75,7 +84,15 @@ interface UserPreferences {
     max: number;
     currency?: string;
   };
-  style: 'modern' | 'classic' | 'scandinavian' | 'industrial' | 'rustic' | 'minimalist' | 'traditional' | 'contemporary';
+  style:
+    | 'modern'
+    | 'classic'
+    | 'scandinavian'
+    | 'industrial'
+    | 'rustic'
+    | 'minimalist'
+    | 'traditional'
+    | 'contemporary';
   colors?: {
     cabinets?: string[];
     worktop?: string[];
@@ -202,111 +219,116 @@ interface GenerationRequestBody {
  *       429:
  *         description: Rate limit exceeded
  */
-router.post('/generate', generatorRateLimiter, authenticate, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const body = req.body as GenerationRequestBody;
-
-    // Validate required fields
-    if (!body.room?.dimensions) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: 'Room configuration with dimensions is required',
-        },
-      });
-      return;
-    }
-
-    if (!body.preferences?.budget) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: 'User preferences with budget are required',
-        },
-      });
-      return;
-    }
-
-    // Validate dimensions
-    const { width, length } = body.room.dimensions;
-    if (!width || !length || width < 100 || length < 100) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_DIMENSIONS',
-          message: 'Room dimensions must be at least 100cm x 100cm',
-        },
-      });
-      return;
-    }
-
-    // Validate budget
-    const { min, max } = body.preferences.budget;
-    if (min < 0 || max < min) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_BUDGET',
-          message: 'Invalid budget range',
-        },
-      });
-      return;
-    }
-
-    const numConfigurations = Math.min(body.numConfigurations || 3, 5);
-    const startTime = Date.now();
-
-    // Try Python AI service first, fallback to local algorithm
+router.post(
+  '/generate',
+  generatorRateLimiter,
+  authenticate,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const isAiAvailable = await aiServiceClient.isAvailable();
-      if (isAiAvailable) {
-        const aiRequest = transformGenerateRequest(body);
-        const aiResult = await aiServiceClient.optimizeLayout(aiRequest);
-        const response = transformLayoutResult(aiResult, startTime, body);
-        aiLogger.info('Generation completed via Python AI service', {
-          configurations: response.configurations.length,
-          timeMs: response.stats.generationTimeMs,
+      const body = req.body as GenerationRequestBody;
+
+      // Validate required fields
+      if (!body.room?.dimensions) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_REQUEST',
+            message: 'Room configuration with dimensions is required',
+          },
         });
-        res.json(response);
         return;
       }
-    } catch (aiError: unknown) {
-      const err = aiError instanceof Error ? aiError : new Error(String(aiError));
-      aiLogger.warn('Python AI service unavailable, falling back to local algorithm', {
-        error: err.message,
+
+      if (!body.preferences?.budget) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_REQUEST',
+            message: 'User preferences with budget are required',
+          },
+        });
+        return;
+      }
+
+      // Validate dimensions
+      const { width, length } = body.room.dimensions;
+      if (!width || !length || width < 100 || length < 100) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_DIMENSIONS',
+            message: 'Room dimensions must be at least 100cm x 100cm',
+          },
+        });
+        return;
+      }
+
+      // Validate budget
+      const { min, max } = body.preferences.budget;
+      if (min < 0 || max < min) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_BUDGET',
+            message: 'Invalid budget range',
+          },
+        });
+        return;
+      }
+
+      const numConfigurations = Math.min(body.numConfigurations || 3, 5);
+      const startTime = Date.now();
+
+      // Try Python AI service first, fallback to local algorithm
+      try {
+        const isAiAvailable = await aiServiceClient.isAvailable();
+        if (isAiAvailable) {
+          const aiRequest = transformGenerateRequest(body);
+          const aiResult = await aiServiceClient.optimizeLayout(aiRequest);
+          const response = transformLayoutResult(aiResult, startTime, body);
+          aiLogger.info('Generation completed via Python AI service', {
+            configurations: response.configurations.length,
+            timeMs: response.stats.generationTimeMs,
+          });
+          res.json(response);
+          return;
+        }
+      } catch (aiError: unknown) {
+        const err = aiError instanceof Error ? aiError : new Error(String(aiError));
+        aiLogger.warn('Python AI service unavailable, falling back to local algorithm', {
+          error: err.message,
+        });
+        aiServiceClient.resetHealth();
+      }
+
+      // Fallback: local TypeScript generation algorithm
+      const configurations = generateAdvancedConfigurations(body, numConfigurations);
+      const generationTimeMs = Date.now() - startTime;
+
+      configurations.forEach((c) => {
+        c.metadata.generationTimeMs = generationTimeMs;
       });
-      aiServiceClient.resetHealth();
+
+      configurations.sort((a, b) => b.score.overall - a.score.overall);
+
+      res.json({
+        success: true,
+        configurations,
+        recommended: configurations[0],
+        stats: {
+          totalGenerated: configurations.length,
+          validConfigurations: configurations.filter((c) => c.validation.valid).length,
+          generationTimeMs,
+          providersQueried: body.providers || ['ikea-fr'],
+          productsConsidered: configurations.reduce((sum, c) => sum + (c.items?.length || 0), 0),
+          algorithm: 'local-fallback',
+        },
+      });
+    } catch (error) {
+      next(error);
     }
-
-    // Fallback: local TypeScript generation algorithm
-    const configurations = generateAdvancedConfigurations(body, numConfigurations);
-    const generationTimeMs = Date.now() - startTime;
-
-    configurations.forEach(c => {
-      c.metadata.generationTimeMs = generationTimeMs;
-    });
-
-    configurations.sort((a, b) => b.score.overall - a.score.overall);
-
-    res.json({
-      success: true,
-      configurations,
-      recommended: configurations[0],
-      stats: {
-        totalGenerated: configurations.length,
-        validConfigurations: configurations.filter(c => c.validation.valid).length,
-        generationTimeMs,
-        providersQueried: body.providers || ['ikea-fr'],
-        productsConsidered: configurations.reduce((sum, c) => sum + (c.items?.length || 0), 0),
-        algorithm: 'local-fallback',
-      },
-    });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 /**
  * @swagger
@@ -338,49 +360,56 @@ router.post('/generate', generatorRateLimiter, authenticate, async (req: Request
  *       429:
  *         description: Rate limit exceeded
  */
-router.post('/validate', generatorRateLimiter, authenticate, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { configuration } = req.body;
-
-    if (!configuration) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: 'Configuration is required',
-        },
-      });
-      return;
-    }
-
-    // Try Python AI service first, fallback to local validation
+router.post(
+  '/validate',
+  generatorRateLimiter,
+  authenticate,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const isAiAvailable = await aiServiceClient.isAvailable();
-      if (isAiAvailable) {
-        const aiRequest = transformValidateRequest({ configuration });
-        const aiResult = await aiServiceClient.analyzeSpace(aiRequest);
-        const validation = transformValidateResult(aiResult);
-        aiLogger.info('Validation completed via Python AI service');
-        res.json({ success: true, validation });
+      const { configuration } = req.body;
+
+      if (!configuration) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_REQUEST',
+            message: 'Configuration is required',
+          },
+        });
         return;
       }
-    } catch (aiError: unknown) {
-      const err = aiError instanceof Error ? aiError : new Error(String(aiError));
-      aiLogger.warn('Python AI validation unavailable, falling back to local', { error: err.message });
-      aiServiceClient.resetHealth();
+
+      // Try Python AI service first, fallback to local validation
+      try {
+        const isAiAvailable = await aiServiceClient.isAvailable();
+        if (isAiAvailable) {
+          const aiRequest = transformValidateRequest({ configuration });
+          const aiResult = await aiServiceClient.analyzeSpace(aiRequest);
+          const validation = transformValidateResult(aiResult);
+          aiLogger.info('Validation completed via Python AI service');
+          res.json({ success: true, validation });
+          return;
+        }
+      } catch (aiError: unknown) {
+        const err = aiError instanceof Error ? aiError : new Error(String(aiError));
+        aiLogger.warn('Python AI validation unavailable, falling back to local', {
+          error: err.message,
+        });
+        aiServiceClient.resetHealth();
+      }
+
+      // Fallback: local validation
+      const validation = validateKitchenConfiguration(configuration);
+
+      res.json({
+        success: true,
+        validation,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    // Fallback: local validation
-    const validation = validateKitchenConfiguration(configuration);
-
-    res.json({
-      success: true,
-      validation,
-    });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 /**
  * @swagger
@@ -416,66 +445,86 @@ router.post('/validate', generatorRateLimiter, authenticate, async (req: Request
  *       429:
  *         description: Rate limit exceeded
  */
-router.post('/optimize', generatorRateLimiter, authenticate, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { configuration, optimizeFor } = req.body;
-
-    if (!configuration) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: 'Configuration is required',
-        },
-      });
-      return;
-    }
-
-    const validOptimizations = ['budget', 'storage', 'ergonomics', 'aesthetics', 'workspace', 'cooking'];
-    const optimization = optimizeFor || 'budget';
-
-    if (!validOptimizations.includes(optimization)) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_OPTIMIZATION',
-          message: `Invalid optimization. Valid options: ${validOptimizations.join(', ')}`,
-        },
-      });
-      return;
-    }
-
-    // Try Python AI service first, fallback to local optimization
+router.post(
+  '/optimize',
+  generatorRateLimiter,
+  authenticate,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const isAiAvailable = await aiServiceClient.isAvailable();
-      if (isAiAvailable) {
-        const { endpoint, payload } = transformOptimizeRequest({ configuration }, optimization);
-        const aiResult = endpoint === 'budget'
-          ? await aiServiceClient.optimizeBudget(payload)
-          : await aiServiceClient.optimizeLayout(payload);
-        const result = transformOptimizeResult(aiResult, optimization);
-        aiLogger.info('Optimization completed via Python AI service', { optimizeFor: optimization });
-        res.json({ success: true, ...result });
+      const { configuration, optimizeFor } = req.body;
+
+      if (!configuration) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_REQUEST',
+            message: 'Configuration is required',
+          },
+        });
         return;
       }
-    } catch (aiError: unknown) {
-      const err = aiError instanceof Error ? aiError : new Error(String(aiError));
-      aiLogger.warn('Python AI optimization unavailable, falling back to local', { error: err.message });
-      aiServiceClient.resetHealth();
+
+      const validOptimizations = [
+        'budget',
+        'storage',
+        'ergonomics',
+        'aesthetics',
+        'workspace',
+        'cooking',
+      ];
+      const optimization = optimizeFor || 'budget';
+
+      if (!validOptimizations.includes(optimization)) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_OPTIMIZATION',
+            message: `Invalid optimization. Valid options: ${validOptimizations.join(', ')}`,
+          },
+        });
+        return;
+      }
+
+      // Try Python AI service first, fallback to local optimization
+      try {
+        const isAiAvailable = await aiServiceClient.isAvailable();
+        if (isAiAvailable) {
+          const { endpoint, payload } = transformOptimizeRequest({ configuration }, optimization);
+          const aiResult =
+            endpoint === 'budget'
+              ? await aiServiceClient.optimizeBudget(payload)
+              : await aiServiceClient.optimizeLayout(payload);
+          const result = transformOptimizeResult(aiResult, optimization);
+          aiLogger.info('Optimization completed via Python AI service', {
+            optimizeFor: optimization,
+          });
+          res.json({ success: true, ...result });
+          return;
+        }
+      } catch (aiError: unknown) {
+        const err = aiError instanceof Error ? aiError : new Error(String(aiError));
+        aiLogger.warn('Python AI optimization unavailable, falling back to local', {
+          error: err.message,
+        });
+        aiServiceClient.resetHealth();
+      }
+
+      // Fallback: local optimization
+      const { optimizedConfiguration, improvements } = optimizeConfiguration(
+        configuration,
+        optimization
+      );
+
+      res.json({
+        success: true,
+        optimizedConfiguration,
+        improvements,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    // Fallback: local optimization
-    const { optimizedConfiguration, improvements } = optimizeConfiguration(configuration, optimization);
-
-    res.json({
-      success: true,
-      optimizedConfiguration,
-      improvements,
-    });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // ============================================================================
 // REFERENCE DATA ENDPOINTS
@@ -639,65 +688,68 @@ router.get('/styles', async (_req: Request, res: Response, next: NextFunction): 
  *       200:
  *         description: List of available furniture and appliance providers
  */
-router.get('/providers', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    res.json({
-      success: true,
-      data: [
-        {
-          id: 'ikea-fr',
-          name: 'IKEA France',
-          type: 'furniture',
-          country: 'FR',
-          systems: ['METOD', 'KNOXHULT', 'ENHET'],
-          available: true,
-        },
-        {
-          id: 'leroy-merlin-fr',
-          name: 'Leroy Merlin',
-          type: 'furniture',
-          country: 'FR',
-          systems: ['Delinia'],
-          available: true,
-        },
-        {
-          id: 'castorama-fr',
-          name: 'Castorama',
-          type: 'furniture',
-          country: 'FR',
-          systems: ['GoodHome'],
-          available: true,
-        },
-        {
-          id: 'schmidt-fr',
-          name: 'Schmidt',
-          type: 'furniture',
-          country: 'FR',
-          systems: ['Arcos', 'Loft'],
-          available: true,
-        },
-        {
-          id: 'mobalpa-fr',
-          name: 'Mobalpa',
-          type: 'furniture',
-          country: 'FR',
-          systems: [],
-          available: false,
-        },
-        {
-          id: 'bosch',
-          name: 'Bosch',
-          type: 'appliance',
-          country: 'EU',
-          systems: ['Serie 2', 'Serie 4', 'Serie 6', 'Serie 8'],
-          available: true,
-        },
-      ],
-    });
-  } catch (error) {
-    next(error);
+router.get(
+  '/providers',
+  async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res.json({
+        success: true,
+        data: [
+          {
+            id: 'ikea-fr',
+            name: 'IKEA France',
+            type: 'furniture',
+            country: 'FR',
+            systems: ['METOD', 'KNOXHULT', 'ENHET'],
+            available: true,
+          },
+          {
+            id: 'leroy-merlin-fr',
+            name: 'Leroy Merlin',
+            type: 'furniture',
+            country: 'FR',
+            systems: ['Delinia'],
+            available: true,
+          },
+          {
+            id: 'castorama-fr',
+            name: 'Castorama',
+            type: 'furniture',
+            country: 'FR',
+            systems: ['GoodHome'],
+            available: true,
+          },
+          {
+            id: 'schmidt-fr',
+            name: 'Schmidt',
+            type: 'furniture',
+            country: 'FR',
+            systems: ['Arcos', 'Loft'],
+            available: true,
+          },
+          {
+            id: 'mobalpa-fr',
+            name: 'Mobalpa',
+            type: 'furniture',
+            country: 'FR',
+            systems: [],
+            available: false,
+          },
+          {
+            id: 'bosch',
+            name: 'Bosch',
+            type: 'appliance',
+            country: 'EU',
+            systems: ['Serie 2', 'Serie 4', 'Serie 6', 'Serie 8'],
+            available: true,
+          },
+        ],
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -709,53 +761,56 @@ router.get('/providers', async (_req: Request, res: Response, next: NextFunction
  *       200:
  *         description: Default constraints (passage width, work triangle, cabinet dimensions)
  */
-router.get('/constraints', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    res.json({
-      success: true,
-      data: {
-        minPassageWidth: {
-          value: 90,
-          unit: 'cm',
-          description: 'Minimum circulation space between elements',
+router.get(
+  '/constraints',
+  async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      res.json({
+        success: true,
+        data: {
+          minPassageWidth: {
+            value: 90,
+            unit: 'cm',
+            description: 'Minimum circulation space between elements',
+          },
+          maxWorkTrianglePerimeter: {
+            value: 600,
+            unit: 'cm',
+            description: 'Maximum perimeter of work triangle (sink, cooktop, fridge)',
+          },
+          minCooktopSinkDistance: {
+            value: 60,
+            unit: 'cm',
+            description: 'Minimum distance between cooktop and sink',
+          },
+          maxCooktopSinkDistance: {
+            value: 180,
+            unit: 'cm',
+            description: 'Maximum distance between cooktop and sink',
+          },
+          requireVentilation: {
+            value: true,
+            description: 'Require range hood above cooktop',
+          },
+          standardCabinetWidths: {
+            value: [20, 30, 40, 60, 80],
+            unit: 'cm',
+            description: 'METOD standard cabinet widths',
+          },
+          standardCabinetHeights: {
+            base: 80,
+            wall: [40, 60, 80, 100],
+            tall: [200, 220, 240],
+            unit: 'cm',
+            description: 'METOD standard cabinet heights',
+          },
         },
-        maxWorkTrianglePerimeter: {
-          value: 600,
-          unit: 'cm',
-          description: 'Maximum perimeter of work triangle (sink, cooktop, fridge)',
-        },
-        minCooktopSinkDistance: {
-          value: 60,
-          unit: 'cm',
-          description: 'Minimum distance between cooktop and sink',
-        },
-        maxCooktopSinkDistance: {
-          value: 180,
-          unit: 'cm',
-          description: 'Maximum distance between cooktop and sink',
-        },
-        requireVentilation: {
-          value: true,
-          description: 'Require range hood above cooktop',
-        },
-        standardCabinetWidths: {
-          value: [20, 30, 40, 60, 80],
-          unit: 'cm',
-          description: 'METOD standard cabinet widths',
-        },
-        standardCabinetHeights: {
-          base: 80,
-          wall: [40, 60, 80, 100],
-          tall: [200, 220, 240],
-          unit: 'cm',
-          description: 'METOD standard cabinet heights',
-        },
-      },
-    });
-  } catch (error) {
-    next(error);
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -791,88 +846,91 @@ router.get('/constraints', async (_req: Request, res: Response, next: NextFuncti
  *       400:
  *         description: Room dimensions are required
  */
-router.post('/recommend-shape', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { dimensions, wallsAvailable = 4 } = req.body;
+router.post(
+  '/recommend-shape',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { dimensions, wallsAvailable = 4 } = req.body;
 
-    if (!dimensions?.width || !dimensions.length) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_REQUEST',
-          message: 'Room dimensions (width, length) are required',
+      if (!dimensions?.width || !dimensions.length) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_REQUEST',
+            message: 'Room dimensions (width, length) are required',
+          },
+        });
+        return;
+      }
+
+      const { width, length } = dimensions;
+      const area = width * length;
+      const ratio = Math.max(width, length) / Math.min(width, length);
+
+      let recommendedShape: string;
+      let alternatives: string[] = [];
+      let reason: string;
+
+      // Small kitchen (< 8m²)
+      if (area < 80000) {
+        if (ratio > 2) {
+          recommendedShape = 'I';
+          alternatives = ['parallel'];
+          reason = 'Narrow space - linear layout maximizes efficiency';
+        } else {
+          recommendedShape = 'L';
+          alternatives = ['I'];
+          reason = 'Small square space - L-shape creates good work triangle';
+        }
+      }
+      // Medium kitchen (8-12m²)
+      else if (area < 120000) {
+        if (wallsAvailable >= 3) {
+          recommendedShape = 'U';
+          alternatives = ['L', 'peninsula'];
+          reason = 'Medium space with 3+ walls - U-shape offers maximum storage';
+        } else {
+          recommendedShape = 'L';
+          alternatives = ['parallel'];
+          reason = 'Medium space - L-shape is versatile and efficient';
+        }
+      }
+      // Large kitchen (> 12m²)
+      else {
+        if (area > 150000 && wallsAvailable >= 3) {
+          recommendedShape = 'island';
+          alternatives = ['G', 'U'];
+          reason = 'Large open space - island creates social cooking environment';
+        } else if (wallsAvailable >= 3) {
+          recommendedShape = 'U';
+          alternatives = ['peninsula', 'G'];
+          reason = 'Large space with walls - U or G maximizes workspace';
+        } else {
+          recommendedShape = 'L';
+          alternatives = ['island'];
+          reason = 'Large open space - L with island or peninsula recommended';
+        }
+      }
+
+      res.json({
+        success: true,
+        recommendation: {
+          shape: recommendedShape,
+          alternatives,
+          reason,
+          analysis: {
+            area,
+            areaCategory: area < 80000 ? 'small' : area < 120000 ? 'medium' : 'large',
+            ratio: ratio.toFixed(2),
+            wallsAvailable,
+          },
         },
       });
-      return;
+    } catch (error) {
+      next(error);
     }
-
-    const { width, length } = dimensions;
-    const area = width * length;
-    const ratio = Math.max(width, length) / Math.min(width, length);
-
-    let recommendedShape: string;
-    let alternatives: string[] = [];
-    let reason: string;
-
-    // Small kitchen (< 8m²)
-    if (area < 80000) {
-      if (ratio > 2) {
-        recommendedShape = 'I';
-        alternatives = ['parallel'];
-        reason = 'Narrow space - linear layout maximizes efficiency';
-      } else {
-        recommendedShape = 'L';
-        alternatives = ['I'];
-        reason = 'Small square space - L-shape creates good work triangle';
-      }
-    }
-    // Medium kitchen (8-12m²)
-    else if (area < 120000) {
-      if (wallsAvailable >= 3) {
-        recommendedShape = 'U';
-        alternatives = ['L', 'peninsula'];
-        reason = 'Medium space with 3+ walls - U-shape offers maximum storage';
-      } else {
-        recommendedShape = 'L';
-        alternatives = ['parallel'];
-        reason = 'Medium space - L-shape is versatile and efficient';
-      }
-    }
-    // Large kitchen (> 12m²)
-    else {
-      if (area > 150000 && wallsAvailable >= 3) {
-        recommendedShape = 'island';
-        alternatives = ['G', 'U'];
-        reason = 'Large open space - island creates social cooking environment';
-      } else if (wallsAvailable >= 3) {
-        recommendedShape = 'U';
-        alternatives = ['peninsula', 'G'];
-        reason = 'Large space with walls - U or G maximizes workspace';
-      } else {
-        recommendedShape = 'L';
-        alternatives = ['island'];
-        reason = 'Large open space - L with island or peninsula recommended';
-      }
-    }
-
-    res.json({
-      success: true,
-      recommendation: {
-        shape: recommendedShape,
-        alternatives,
-        reason,
-        analysis: {
-          area,
-          areaCategory: area < 80000 ? 'small' : area < 120000 ? 'medium' : 'large',
-          ratio: ratio.toFixed(2),
-          wallsAvailable,
-        },
-      },
-    });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // ============================================================================
 // ADVANCED GENERATION LOGIC
@@ -881,7 +939,10 @@ router.post('/recommend-shape', async (req: Request, res: Response, next: NextFu
 /**
  * Generate advanced kitchen configurations with scoring and work triangle optimization
  */
-function generateAdvancedConfigurations(body: GenerationRequestBody, numConfigurations: number): any[] {
+function generateAdvancedConfigurations(
+  body: GenerationRequestBody,
+  numConfigurations: number
+): any[] {
   const { width, length } = body.room.dimensions;
   const { min, max } = body.preferences.budget;
   const currency = body.preferences.budget.currency || 'EUR';
@@ -900,7 +961,7 @@ function generateAdvancedConfigurations(body: GenerationRequestBody, numConfigur
 
     // Calculate budget variant: economic, standard, premium
     const budgetMultiplier = i === 0 ? 0.5 : i === 1 ? 0.2 : 0.8;
-    const targetBudget = min + (budgetRange * budgetMultiplier);
+    const targetBudget = min + budgetRange * budgetMultiplier;
 
     // Generate work triangle based on shape
     const workTriangle = generateWorkTriangle(width, length, shape);
@@ -1030,9 +1091,11 @@ function generateWorkTriangle(width: number, length: number, shape: string): any
     perimeter: Math.round(perimeter),
     isOptimal,
     score: triangleScore,
-    issues: isOptimal ? [] : perimeter < 350
-      ? ['Work triangle too compact - consider spreading elements']
-      : ['Work triangle too large - consider reducing distances'],
+    issues: isOptimal
+      ? []
+      : perimeter < 350
+        ? ['Work triangle too compact - consider spreading elements']
+        : ['Work triangle too large - consider reducing distances'],
   };
 }
 
@@ -1063,9 +1126,8 @@ function generateCabinetLayout(
   for (const wallLength of wallLengths.base) {
     while (currentPosition + 30 <= wallLength) {
       const availableWidth = wallLength - currentPosition;
-      const cabinetWidth = cabinetWidths
-        .filter(w => w <= availableWidth)
-        .sort((a, b) => b - a)[0] || 30;
+      const cabinetWidth =
+        cabinetWidths.filter((w) => w <= availableWidth).sort((a, b) => b - a)[0] || 30;
 
       items.push({
         id: `base-${items.length + 1}`,
@@ -1088,9 +1150,8 @@ function generateCabinetLayout(
   for (const wallLength of wallLengths.wall) {
     while (currentPosition + 30 <= wallLength) {
       const availableWidth = wallLength - currentPosition;
-      const cabinetWidth = cabinetWidths
-        .filter(w => w <= availableWidth)
-        .sort((a, b) => b - a)[0] || 30;
+      const cabinetWidth =
+        cabinetWidths.filter((w) => w <= availableWidth).sort((a, b) => b - a)[0] || 30;
 
       items.push({
         id: `wall-${items.length + 1}`,
@@ -1164,16 +1225,26 @@ function generateCabinetLayout(
 /**
  * Calculate wall lengths based on kitchen shape
  */
-function calculateWallLengths(width: number, length: number, shape: string): { base: number[], wall: number[] } {
+function calculateWallLengths(
+  width: number,
+  length: number,
+  shape: string
+): { base: number[]; wall: number[] } {
   switch (shape) {
     case 'I':
       return { base: [width * 0.8], wall: [width * 0.6] };
     case 'L':
       return { base: [width * 0.7, length * 0.5], wall: [width * 0.5, length * 0.3] };
     case 'U':
-      return { base: [width * 0.8, length * 0.4, length * 0.4], wall: [width * 0.6, length * 0.3, length * 0.3] };
+      return {
+        base: [width * 0.8, length * 0.4, length * 0.4],
+        wall: [width * 0.6, length * 0.3, length * 0.3],
+      };
     case 'G':
-      return { base: [width * 0.8, length * 0.5, length * 0.5, width * 0.3], wall: [width * 0.6, length * 0.4] };
+      return {
+        base: [width * 0.8, length * 0.5, length * 0.5, width * 0.3],
+        wall: [width * 0.6, length * 0.4],
+      };
     case 'parallel':
       return { base: [width * 0.7, width * 0.7], wall: [width * 0.5, width * 0.5] };
     case 'island':
@@ -1198,9 +1269,12 @@ function calculatePricing(layout: any, targetBudget: number, currency: string): 
   const worktops = items.filter((i: any) => i.type === 'worktop');
 
   // Calculate costs (simplified)
-  const cabinetsCost = (baseCabinets.length * 150 + wallCabinets.length * 100);
+  const cabinetsCost = baseCabinets.length * 150 + wallCabinets.length * 100;
   const appliancesCost = appliances.length * 400;
-  const worktopsCost = worktops.reduce((sum: number, w: any) => sum + (w.dimensions.width / 100) * 80, 0);
+  const worktopsCost = worktops.reduce(
+    (sum: number, w: any) => sum + (w.dimensions.width / 100) * 80,
+    0
+  );
   const fittingsCost = (baseCabinets.length + wallCabinets.length) * 25;
 
   const rawTotal = cabinetsCost + appliancesCost + worktopsCost + fittingsCost;
@@ -1254,10 +1328,10 @@ function calculateConfigurationScores(
   // Overall score (weighted average)
   const overall = Math.round(
     ergonomics * 0.25 +
-    storage * 0.2 +
-    aesthetics * 0.15 +
-    budgetEfficiency * 0.25 +
-    spaceUtilization * 0.15
+      storage * 0.2 +
+      aesthetics * 0.15 +
+      budgetEfficiency * 0.25 +
+      spaceUtilization * 0.15
   );
 
   return {
@@ -1328,7 +1402,9 @@ function generateRecommendations(score: any, validation: any, workTriangle: any)
   }
 
   if (!workTriangle.isOptimal) {
-    recommendations.push('Adjust appliance positions to achieve optimal work triangle (350-600cm perimeter)');
+    recommendations.push(
+      'Adjust appliance positions to achieve optimal work triangle (350-600cm perimeter)'
+    );
   }
 
   if (validation.warnings.length > 0) {
@@ -1361,30 +1437,42 @@ function validateKitchenConfiguration(configuration: any): any {
   const passedChecks: string[] = [];
 
   // Check required elements
-  const hasSink = configuration.items?.some((i: any) =>
-    i.category === 'sink' || i.name?.toLowerCase().includes('sink')
+  const hasSink = configuration.items?.some(
+    (i: any) => i.category === 'sink' || i.name?.toLowerCase().includes('sink')
   );
-  const hasCooktop = configuration.items?.some((i: any) =>
-    i.category === 'cooktop' || i.name?.toLowerCase().includes('cooktop')
+  const hasCooktop = configuration.items?.some(
+    (i: any) => i.category === 'cooktop' || i.name?.toLowerCase().includes('cooktop')
   );
-  const hasFridge = configuration.items?.some((i: any) =>
-    i.category === 'refrigerator' || i.name?.toLowerCase().includes('fridge')
+  const hasFridge = configuration.items?.some(
+    (i: any) => i.category === 'refrigerator' || i.name?.toLowerCase().includes('fridge')
   );
 
   if (!hasSink) {
-    errors.push({ code: 'MISSING_SINK', message: 'Configuration requires a sink', severity: 'error' });
+    errors.push({
+      code: 'MISSING_SINK',
+      message: 'Configuration requires a sink',
+      severity: 'error',
+    });
   } else {
     passedChecks.push('has_sink');
   }
 
   if (!hasCooktop) {
-    errors.push({ code: 'MISSING_COOKTOP', message: 'Configuration requires a cooktop', severity: 'error' });
+    errors.push({
+      code: 'MISSING_COOKTOP',
+      message: 'Configuration requires a cooktop',
+      severity: 'error',
+    });
   } else {
     passedChecks.push('has_cooktop');
   }
 
   if (!hasFridge) {
-    warnings.push({ code: 'MISSING_FRIDGE', message: 'Consider adding a refrigerator', severity: 'warning' });
+    warnings.push({
+      code: 'MISSING_FRIDGE',
+      message: 'Consider adding a refrigerator',
+      severity: 'warning',
+    });
   } else {
     passedChecks.push('has_refrigerator');
   }
@@ -1461,7 +1549,10 @@ function optimizeConfiguration(configuration: any, optimization: string): any {
     case 'ergonomics':
       scoreDelta = 10;
       if (optimizedConfig.score) {
-        optimizedConfig.score.ergonomics = Math.min(100, (optimizedConfig.score.ergonomics || 70) + 12);
+        optimizedConfig.score.ergonomics = Math.min(
+          100,
+          (optimizedConfig.score.ergonomics || 70) + 12
+        );
       }
       details.push('Optimized work triangle distances');
       details.push('Adjusted cabinet heights for better accessibility');
@@ -1474,7 +1565,10 @@ function optimizeConfiguration(configuration: any, optimization: string): any {
         optimizedConfig.pricing.total += priceDelta;
       }
       if (optimizedConfig.score) {
-        optimizedConfig.score.aesthetics = Math.min(100, (optimizedConfig.score.aesthetics || 70) + 15);
+        optimizedConfig.score.aesthetics = Math.min(
+          100,
+          (optimizedConfig.score.aesthetics || 70) + 15
+        );
       }
       details.push('Upgraded to premium cabinet finishes');
       details.push('Added integrated LED lighting');
@@ -1487,7 +1581,10 @@ function optimizeConfiguration(configuration: any, optimization: string): any {
 
   // Update overall score
   if (optimizedConfig.score) {
-    optimizedConfig.score.overall = Math.min(100, (optimizedConfig.score.overall || 70) + scoreDelta);
+    optimizedConfig.score.overall = Math.min(
+      100,
+      (optimizedConfig.score.overall || 70) + scoreDelta
+    );
   }
 
   return {

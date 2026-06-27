@@ -18,7 +18,10 @@ jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
@@ -43,7 +46,13 @@ jest.mock('../services/price-tracker/price-tracker.service', () => ({
 jest.mock('../database/client', () => ({ prisma: { $disconnect: jest.fn() } }));
 
 jest.mock('../config/app-config', () => ({
-  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+  config: {
+    corsOrigins: ['http://localhost:3000'],
+    env: 'test',
+    port: 3000,
+    version: '1.0.0',
+    rateLimit: { maxRequests: 100 },
+  },
 }));
 
 jest.mock('../auth/token-blacklist', () => ({
@@ -59,7 +68,9 @@ jest.mock('../auth/token-blacklist', () => ({
 jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
-      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+      userId: 'test-user-id',
+      email: 'test@test.com',
+      role: 'user',
     }),
     generateTokens: jest.fn(),
   },
@@ -154,9 +165,7 @@ describe('Price Tracker Routes', () => {
     });
 
     it('should return 401 when user is not authenticated', async () => {
-      const response = await request(app)
-        .get('/price-tracker/history/product-abc')
-        .expect(401);
+      const response = await request(app).get('/price-tracker/history/product-abc').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -164,9 +173,7 @@ describe('Price Tracker Routes', () => {
     it('should pass optional days query param to the service', async () => {
       mockGetHistory.mockResolvedValue(mockPriceHistory);
 
-      await authedRequest(app)
-        .get('/price-tracker/history/product-abc?days=30')
-        .expect(200);
+      await authedRequest(app).get('/price-tracker/history/product-abc?days=30').expect(200);
 
       expect(mockGetHistory).toHaveBeenCalledWith('product-abc', 30);
     });

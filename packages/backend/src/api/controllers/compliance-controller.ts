@@ -6,7 +6,10 @@
 import { type Request, type Response } from 'express';
 
 import { prisma } from '../../database/client';
-import { complianceService, ComplianceServiceError } from '../../services/compliance/compliance.service';
+import {
+  complianceService,
+  ComplianceServiceError,
+} from '../../services/compliance/compliance.service';
 import { asyncHandler } from '../middleware/error-middleware';
 
 /**
@@ -16,7 +19,7 @@ import { asyncHandler } from '../middleware/error-middleware';
 async function verifyKitchenOwnership(
   req: Request,
   res: Response,
-  kitchenId: string,
+  kitchenId: string
 ): Promise<any | null> {
   const userId = req.user?.userId;
 
@@ -62,7 +65,9 @@ export class ComplianceController {
 
     // Verify ownership
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) {return;}
+    if (!kitchen) {
+      return;
+    }
 
     try {
       const result = await complianceService.checkKitchenCompliance(kitchenId, userId);
@@ -70,15 +75,15 @@ export class ComplianceController {
       res.status(200).json({
         success: true,
         data: result,
-        message: result.status === 'passed'
-          ? 'All compliance checks passed'
-          : `${result.failedRules} rule(s) failed, ${result.warningRules} warning(s)`,
+        message:
+          result.status === 'passed'
+            ? 'All compliance checks passed'
+            : `${result.failedRules} rule(s) failed, ${result.warningRules} warning(s)`,
       });
     } catch (err) {
       if (err instanceof ComplianceServiceError) {
-        const statusCode = err.code === 'KITCHEN_NOT_FOUND' ? 404
-          : err.code === 'NO_RULES' ? 422
-          : 500;
+        const statusCode =
+          err.code === 'KITCHEN_NOT_FOUND' ? 404 : err.code === 'NO_RULES' ? 422 : 500;
         res.status(statusCode).json({ success: false, error: err.message });
         return;
       }
@@ -136,7 +141,9 @@ export class ComplianceController {
 
     // Verify ownership
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) {return;}
+    if (!kitchen) {
+      return;
+    }
 
     const history = await complianceService.getCheckHistory(kitchenId);
 

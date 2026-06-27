@@ -7,12 +7,7 @@ import logger from '../utils/logger';
 /**
  * Unified error handler supporting both ApiError (modern) and plain Error objects.
  */
-export function errorHandler(
-  err: Error,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-): void {
+export function errorHandler(err: Error, _req: Request, res: Response, _next: NextFunction): void {
   // Handle ApiError (from @kitchenxpert/common)
   if (err instanceof ApiError) {
     if (err.statusCode >= 500) {

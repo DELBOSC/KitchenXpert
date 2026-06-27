@@ -81,8 +81,7 @@ const sizeStyles = {
 
 const TabsContainer = styled.div<{ $orientation: TabsOrientation }>`
   display: flex;
-  flex-direction: ${({ $orientation }) =>
-    $orientation === 'vertical' ? 'row' : 'column'};
+  flex-direction: ${({ $orientation }) => ($orientation === 'vertical' ? 'row' : 'column')};
   font-family: var(--font-family-sans, system-ui, sans-serif);
 `;
 
@@ -92,8 +91,7 @@ const TabList = styled.div<{
   $fullWidth: boolean;
 }>`
   display: flex;
-  flex-direction: ${({ $orientation }) =>
-    $orientation === 'vertical' ? 'column' : 'row'};
+  flex-direction: ${({ $orientation }) => ($orientation === 'vertical' ? 'column' : 'row')};
   gap: ${({ $variant }) => ($variant === 'pills' ? '8px' : '0')};
   flex-shrink: 0;
 
@@ -174,12 +172,8 @@ const TabButton = styled.button<{
     css`
       margin-bottom: ${$orientation === 'horizontal' ? '-1px' : '0'};
       margin-right: ${$orientation === 'vertical' ? '-1px' : '0'};
-      border-bottom: ${$orientation === 'horizontal'
-        ? '2px solid transparent'
-        : 'none'};
-      border-right: ${$orientation === 'vertical'
-        ? '2px solid transparent'
-        : 'none'};
+      border-bottom: ${$orientation === 'horizontal' ? '2px solid transparent' : 'none'};
+      border-right: ${$orientation === 'vertical' ? '2px solid transparent' : 'none'};
       border-radius: 0;
 
       ${$isActive &&
@@ -224,12 +218,8 @@ const TabButton = styled.button<{
     css`
       margin-bottom: ${$orientation === 'horizontal' ? '-2px' : '0'};
       margin-right: ${$orientation === 'vertical' ? '-2px' : '0'};
-      border-bottom: ${$orientation === 'horizontal'
-        ? '2px solid transparent'
-        : 'none'};
-      border-right: ${$orientation === 'vertical'
-        ? '2px solid transparent'
-        : 'none'};
+      border-bottom: ${$orientation === 'horizontal' ? '2px solid transparent' : 'none'};
+      border-right: ${$orientation === 'vertical' ? '2px solid transparent' : 'none'};
       border-radius: 0;
 
       ${$isActive &&
@@ -293,9 +283,7 @@ const TabBadge = styled.span`
 const TabPanelContainer = styled.div<{ $orientation: TabsOrientation }>`
   flex: 1;
   padding: ${({ $orientation }) =>
-    $orientation === 'vertical'
-      ? 'var(--spacing-md, 16px)'
-      : 'var(--spacing-md, 16px) 0'};
+    $orientation === 'vertical' ? 'var(--spacing-md, 16px)' : 'var(--spacing-md, 16px) 0'};
 `;
 
 const StyledTabPanel = styled.div<{ $isActive: boolean }>`
@@ -356,7 +344,9 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
     const instanceId = useId();
     const tabListRef = useRef<HTMLDivElement>(null);
     const [visitedTabs, setVisitedTabs] = useState<Set<string>>(
-      new Set(defaultActiveTab ? [defaultActiveTab] : tabs.length > 0 && tabs[0] ? [tabs[0].id] : [])
+      new Set(
+        defaultActiveTab ? [defaultActiveTab] : tabs.length > 0 && tabs[0] ? [tabs[0].id] : []
+      )
     );
 
     // Determine if controlled or uncontrolled
@@ -385,9 +375,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
     const handleKeyDown = useCallback(
       (e: KeyboardEvent<HTMLDivElement>) => {
         const enabledTabs = tabs.filter((t) => !t.disabled);
-        const currentIndex = enabledTabs.findIndex(
-          (t) => t.id === currentActiveTab
-        );
+        const currentIndex = enabledTabs.findIndex((t) => t.id === currentActiveTab);
 
         if (currentIndex === -1) return;
 
@@ -398,8 +386,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           case 'ArrowRight': {
             if (!isHorizontal) return;
             e.preventDefault();
-            nextIndex =
-              currentIndex < enabledTabs.length - 1 ? currentIndex + 1 : 0;
+            nextIndex = currentIndex < enabledTabs.length - 1 ? currentIndex + 1 : 0;
             const rightTab = enabledTabs[nextIndex];
             if (rightTab) {
               handleTabChange(rightTab.id);
@@ -410,8 +397,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           case 'ArrowLeft': {
             if (!isHorizontal) return;
             e.preventDefault();
-            nextIndex =
-              currentIndex > 0 ? currentIndex - 1 : enabledTabs.length - 1;
+            nextIndex = currentIndex > 0 ? currentIndex - 1 : enabledTabs.length - 1;
             const leftTab = enabledTabs[nextIndex];
             if (leftTab) {
               handleTabChange(leftTab.id);
@@ -422,8 +408,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           case 'ArrowDown': {
             if (isHorizontal) return;
             e.preventDefault();
-            nextIndex =
-              currentIndex < enabledTabs.length - 1 ? currentIndex + 1 : 0;
+            nextIndex = currentIndex < enabledTabs.length - 1 ? currentIndex + 1 : 0;
             const downTab = enabledTabs[nextIndex];
             if (downTab) {
               handleTabChange(downTab.id);
@@ -434,8 +419,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           case 'ArrowUp': {
             if (isHorizontal) return;
             e.preventDefault();
-            nextIndex =
-              currentIndex > 0 ? currentIndex - 1 : enabledTabs.length - 1;
+            nextIndex = currentIndex > 0 ? currentIndex - 1 : enabledTabs.length - 1;
             const upTab = enabledTabs[nextIndex];
             if (upTab) {
               handleTabChange(upTab.id);
@@ -481,12 +465,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
     };
 
     return (
-      <TabsContainer
-        ref={ref}
-        $orientation={orientation}
-        className={className}
-        {...props}
-      >
+      <TabsContainer ref={ref} $orientation={orientation} className={className} {...props}>
         <TabList
           ref={tabListRef}
           $variant={variant}

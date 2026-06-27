@@ -25,14 +25,22 @@ export class DeleteProjectUseCase implements UseCase<DeleteProjectInput, { ok: t
       where: { id: projectId },
       select: { userId: true },
     });
-    if (!project) {return err(DomainErrors.notFound('Project'));}
+    if (!project) {
+      return err(DomainErrors.notFound('Project'));
+    }
     if (project.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this project'));
     }
 
     await this.prisma.$transaction([
-      this.prisma.kitchen.updateMany({ where: { projectId, deletedAt: null }, data: { deletedAt: new Date() } }),
-      this.prisma.project.update({ where: { id: projectId }, data: { status: 'archived' as never } }),
+      this.prisma.kitchen.updateMany({
+        where: { projectId, deletedAt: null },
+        data: { deletedAt: new Date() },
+      }),
+      this.prisma.project.update({
+        where: { id: projectId },
+        data: { status: 'archived' as never },
+      }),
     ]);
 
     return ok({ ok: true });

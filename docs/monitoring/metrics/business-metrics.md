@@ -2,9 +2,7 @@
 
 > Comprehensive guide to business KPIs and metrics tracking for KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** Product Analytics Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Product Analytics Team **Version:** 1.0
 
 ---
 
@@ -27,18 +25,19 @@
 
 #### Definitions
 
-| Metric | Definition | Calculation |
-|--------|------------|-------------|
-| DAU | Daily Active Users | Unique users with activity in 24h |
-| WAU | Weekly Active Users | Unique users with activity in 7d |
-| MAU | Monthly Active Users | Unique users with activity in 30d |
-| Stickiness | User retention indicator | DAU / MAU ratio |
+| Metric     | Definition               | Calculation                       |
+| ---------- | ------------------------ | --------------------------------- |
+| DAU        | Daily Active Users       | Unique users with activity in 24h |
+| WAU        | Weekly Active Users      | Unique users with activity in 7d  |
+| MAU        | Monthly Active Users     | Unique users with activity in 30d |
+| Stickiness | User retention indicator | DAU / MAU ratio                   |
 
 #### DAU (Daily Active Users)
 
 **Definition:** Unique users who perform at least one meaningful action per day
 
 **Meaningful Actions:**
+
 - Login to platform
 - Create or edit a design
 - Save a design
@@ -46,6 +45,7 @@
 - Request a quote
 
 **PromQL Query**
+
 ```promql
 # Daily active users (from custom metric)
 kitchenxpert_daily_active_users
@@ -84,13 +84,10 @@ kitchenxpert_monthly_active_users
 kitchenxpert_daily_active_users / kitchenxpert_monthly_active_users
 ```
 
-**Interpretation:**
-| Ratio | Meaning |
-|-------|---------|
-| > 0.5 | Excellent engagement (users come daily) |
-| 0.2 - 0.5 | Good engagement (several times per week) |
-| 0.1 - 0.2 | Average engagement (weekly users) |
-| < 0.1 | Low engagement (monthly users only) |
+**Interpretation:** | Ratio | Meaning | |-------|---------| | > 0.5 | Excellent
+engagement (users come daily) | | 0.2 - 0.5 | Good engagement (several times per
+week) | | 0.1 - 0.2 | Average engagement (weekly users) | | < 0.1 | Low
+engagement (monthly users only) |
 
 **Target:** > 0.2 (20% stickiness)
 
@@ -108,6 +105,7 @@ avg(kitchenxpert_session_duration_seconds) / 60
 ```
 
 **Percentile Distribution**
+
 ```promql
 # Session duration p50
 histogram_quantile(0.50, sum(rate(kitchenxpert_session_duration_bucket[24h])) by (le)) / 60
@@ -116,12 +114,8 @@ histogram_quantile(0.50, sum(rate(kitchenxpert_session_duration_bucket[24h])) by
 histogram_quantile(0.90, sum(rate(kitchenxpert_session_duration_bucket[24h])) by (le)) / 60
 ```
 
-**Targets:**
-| Metric | Target |
-|--------|--------|
-| Average Session | > 8 minutes |
-| p50 Session | > 5 minutes |
-| p90 Session | > 15 minutes |
+**Targets:** | Metric | Target | |--------|--------| | Average Session | > 8
+minutes | | p50 Session | > 5 minutes | | p90 Session | > 15 minutes |
 
 #### Sessions Per User
 
@@ -138,12 +132,12 @@ sum(increase(kitchenxpert_sessions_total[7d])) / kitchenxpert_weekly_active_user
 
 #### Design Metrics
 
-| Metric | Description |
-|--------|-------------|
-| Designs created (total) | All new designs |
-| Designs per user | Average designs per active user |
-| Design completion rate | Started designs that get saved |
-| Design iterations | Average edits per design |
+| Metric                  | Description                     |
+| ----------------------- | ------------------------------- |
+| Designs created (total) | All new designs                 |
+| Designs per user        | Average designs per active user |
+| Design completion rate  | Started designs that get saved  |
+| Design iterations       | Average edits per design        |
 
 ```promql
 # Total designs created today
@@ -153,12 +147,8 @@ increase(kitchenxpert_designs_created_total[24h])
 increase(kitchenxpert_designs_created_total[24h]) / kitchenxpert_daily_active_users
 ```
 
-**Targets:**
-| Metric | Target |
-|--------|--------|
-| Designs per DAU | > 0.5 |
-| Design completion rate | > 60% |
-| Average iterations | 3-5 per design |
+**Targets:** | Metric | Target | |--------|--------| | Designs per DAU | > 0.5 |
+| Design completion rate | > 60% | | Average iterations | 3-5 per design |
 
 ---
 
@@ -196,19 +186,16 @@ sum(increase(kitchenxpert_landing_page_views_total[24h])) * 100
 ```
 
 **Breakdown by Source**
+
 ```promql
 # Sign-up rate by acquisition source
 sum(increase(kitchenxpert_signups_total[24h])) by (source) /
 sum(increase(kitchenxpert_landing_page_views_total[24h])) by (source) * 100
 ```
 
-**Targets:**
-| Source | Target Conversion |
-|--------|-------------------|
-| Organic Search | 3-5% |
-| Paid Ads | 5-8% |
-| Referral | 8-12% |
-| Partner Website | 10-15% |
+**Targets:** | Source | Target Conversion | |--------|-------------------| |
+Organic Search | 3-5% | | Paid Ads | 5-8% | | Referral | 8-12% | | Partner
+Website | 10-15% |
 
 ### Design Completion Rate
 
@@ -257,12 +244,12 @@ label_replace(
 
 #### Subscription Tiers
 
-| Tier | Price | Features |
-|------|-------|----------|
-| Free | $0 | Basic design tools, 2 designs/month |
-| Pro | $29/month | Unlimited designs, AI features |
-| Business | $99/month | Team features, API access |
-| Enterprise | Custom | White-label, dedicated support |
+| Tier       | Price     | Features                            |
+| ---------- | --------- | ----------------------------------- |
+| Free       | $0        | Basic design tools, 2 designs/month |
+| Pro        | $29/month | Unlimited designs, AI features      |
+| Business   | $99/month | Team features, API access           |
+| Enterprise | Custom    | White-label, dedicated support      |
 
 #### Revenue Metrics
 
@@ -277,12 +264,8 @@ sum(kitchenxpert_subscription_revenue_dollars) by (tier)
 kitchenxpert_mrr_dollars / kitchenxpert_paying_users
 ```
 
-**Targets:**
-| Metric | Target |
-|--------|--------|
-| MRR Growth | > 10% month-over-month |
-| ARPU | > $35 |
-| Free to Paid Conversion | > 5% |
+**Targets:** | Metric | Target | |--------|--------| | MRR Growth | > 10%
+month-over-month | | ARPU | > $35 | | Free to Paid Conversion | > 5% |
 
 ### Partner Commission
 
@@ -298,19 +281,19 @@ sum(kitchenxpert_partner_commission_dollars) by (partner)
 
 #### Commission Structure
 
-| Action | Commission |
-|--------|------------|
-| Lead (quote request) | $5-10 |
+| Action                    | Commission          |
+| ------------------------- | ------------------- |
+| Lead (quote request)      | $5-10               |
 | Sale (completed purchase) | 2-5% of order value |
-| Installation booking | $20-50 |
+| Installation booking      | $20-50              |
 
 ### Revenue Dashboard Metrics
 
-| Metric | Query | Target |
-|--------|-------|--------|
-| Today's Revenue | `increase(kitchenxpert_revenue_total[24h])` | Track trend |
-| This Month Revenue | `increase(kitchenxpert_revenue_total[30d])` | Beat last month |
-| Churn Rate | `kitchenxpert_churned_users / kitchenxpert_total_subscribers` | < 5% |
+| Metric             | Query                                                         | Target          |
+| ------------------ | ------------------------------------------------------------- | --------------- |
+| Today's Revenue    | `increase(kitchenxpert_revenue_total[24h])`                   | Track trend     |
+| This Month Revenue | `increase(kitchenxpert_revenue_total[30d])`                   | Beat last month |
+| Churn Rate         | `kitchenxpert_churned_users / kitchenxpert_total_subscribers` | < 5%            |
 
 ---
 
@@ -339,6 +322,7 @@ sum(increase(kitchenxpert_product_views_total[24h])) by (category)
 ```
 
 **Categories:**
+
 - Cabinets
 - Countertops
 - Appliances
@@ -372,12 +356,12 @@ topk(20, sum(increase(kitchenxpert_products_added_total[7d])) by (product_id, pr
 
 ### Catalog Health Metrics
 
-| Metric | Query | Target |
-|--------|-------|--------|
-| Total Products | `kitchenxpert_catalog_product_count` | > 10,000 |
-| Active Products (viewed this week) | `count(increase(kitchenxpert_product_views_total[7d]) > 0)` | > 80% |
-| Out of Stock Products | `kitchenxpert_products_out_of_stock` | < 5% |
-| New Products (this month) | `increase(kitchenxpert_catalog_product_count[30d])` | > 100 |
+| Metric                             | Query                                                       | Target   |
+| ---------------------------------- | ----------------------------------------------------------- | -------- |
+| Total Products                     | `kitchenxpert_catalog_product_count`                        | > 10,000 |
+| Active Products (viewed this week) | `count(increase(kitchenxpert_product_views_total[7d]) > 0)` | > 80%    |
+| Out of Stock Products              | `kitchenxpert_products_out_of_stock`                        | < 5%     |
+| New Products (this month)          | `increase(kitchenxpert_catalog_product_count[30d])`         | > 100    |
 
 ---
 
@@ -396,6 +380,7 @@ sum(increase(kitchenxpert_ai_generations_total[24h])) by (type)
 ```
 
 **Generation Types:**
+
 - Layout suggestions
 - Style recommendations
 - Product recommendations
@@ -423,19 +408,17 @@ sum(increase(kitchenxpert_ai_recommendations_shown_total[24h])) * 100
 ```
 
 **Breakdown by Type**
+
 ```promql
 # Acceptance rate by recommendation type
 sum(increase(kitchenxpert_ai_recommendations_accepted_total[24h])) by (type) /
 sum(increase(kitchenxpert_ai_recommendations_shown_total[24h])) by (type) * 100
 ```
 
-**Targets:**
-| Recommendation Type | Target Acceptance |
-|---------------------|-------------------|
-| Layout suggestions | > 30% |
-| Product recommendations | > 25% |
-| Color palettes | > 35% |
-| Style recommendations | > 20% |
+**Targets:** | Recommendation Type | Target Acceptance |
+|---------------------|-------------------| | Layout suggestions | > 30% | |
+Product recommendations | > 25% | | Color palettes | > 35% | | Style
+recommendations | > 20% |
 
 ### AI Performance Metrics
 
@@ -448,12 +431,8 @@ sum(rate(kitchenxpert_ai_errors_total[5m])) /
 sum(rate(kitchenxpert_ai_generations_total[5m])) * 100
 ```
 
-**Targets:**
-| Metric | Target |
-|--------|--------|
-| AI Generation Time (p95) | < 10 seconds |
-| AI Error Rate | < 2% |
-| AI Availability | > 99.5% |
+**Targets:** | Metric | Target | |--------|--------| | AI Generation Time (p95)
+| < 10 seconds | | AI Error Rate | < 2% | | AI Availability | > 99.5% |
 
 ---
 
@@ -503,30 +482,35 @@ sum(kitchenxpert_users_signed_up{cohort="2026-01-01"}) * 100
 ### Dashboard Panels
 
 #### Row 1: Active Users
+
 1. **DAU Counter:** Current daily active users
 2. **DAU Trend:** 30-day DAU graph
 3. **WAU/MAU:** Weekly and monthly active users
 4. **Stickiness:** DAU/MAU ratio gauge
 
 #### Row 2: Engagement
+
 5. **Session Duration:** Average session time
 6. **Designs Created:** Daily design count
 7. **Designs per User:** Average designs per active user
 8. **AI Usage Rate:** Percentage using AI features
 
 #### Row 3: Conversions
+
 9. **Conversion Funnel:** Sankey diagram
 10. **Sign-up Rate:** Visitor to signup conversion
 11. **Design Completion:** Start to save conversion
 12. **Quote Request Rate:** Design to quote conversion
 
 #### Row 4: Revenue
+
 13. **MRR:** Monthly recurring revenue
 14. **Daily Revenue:** Today's revenue
 15. **ARPU:** Average revenue per user
 16. **Subscription Distribution:** Pie chart by tier
 
 #### Row 5: Catalog & AI
+
 17. **Top Products:** Most viewed products table
 18. **Product Views:** Daily product view count
 19. **AI Generations:** Daily AI generation count
@@ -534,12 +518,12 @@ sum(kitchenxpert_users_signed_up{cohort="2026-01-01"}) * 100
 
 ### Access Permissions
 
-| Role | Access Level |
-|------|--------------|
-| Executive | Full dashboard |
-| Product Manager | Full dashboard |
-| Marketing | Marketing-related panels |
-| Developer | Read-only |
+| Role            | Access Level             |
+| --------------- | ------------------------ |
+| Executive       | Full dashboard           |
+| Product Manager | Full dashboard           |
+| Marketing       | Marketing-related panels |
+| Developer       | Read-only                |
 
 ---
 
@@ -553,4 +537,5 @@ sum(kitchenxpert_users_signed_up{cohort="2026-01-01"}) * 100
 
 ---
 
-*For questions about business metrics, contact the Product Analytics team at analytics@kitchenxpert.com*
+_For questions about business metrics, contact the Product Analytics team at
+analytics@kitchenxpert.com_

@@ -61,8 +61,8 @@ export class WebhookRepository {
       where: { id },
       include: {
         partner: true,
-        _count: { select: { eventLogs: true } }
-      }
+        _count: { select: { eventLogs: true } },
+      },
     });
   }
 
@@ -78,9 +78,9 @@ export class WebhookRepository {
       },
       include: {
         partner: { select: { id: true, name: true, code: true } },
-        _count: { select: { eventLogs: true } }
+        _count: { select: { eventLogs: true } },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -91,8 +91,8 @@ export class WebhookRepository {
     return this.prisma.webhook.findMany({
       where: {
         isActive: true,
-        events: { has: eventType as any }
-      }
+        events: { has: eventType as any },
+      },
     });
   }
 
@@ -102,7 +102,7 @@ export class WebhookRepository {
   async findByPartnerId(partnerId: string): Promise<Webhook[]> {
     return this.prisma.webhook.findMany({
       where: { partnerId },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -120,7 +120,7 @@ export class WebhookRepository {
         headers: data.headers as any,
         retryCount: data.retryCount || 3,
         timeout: data.timeout || 30000,
-      }
+      },
     });
   }
 
@@ -139,7 +139,7 @@ export class WebhookRepository {
         ...(data.isActive !== undefined && { isActive: data.isActive }),
         ...(data.retryCount !== undefined && { retryCount: data.retryCount }),
         ...(data.timeout !== undefined && { timeout: data.timeout }),
-      }
+      },
     });
   }
 
@@ -148,7 +148,7 @@ export class WebhookRepository {
    */
   async delete(id: string): Promise<Webhook> {
     return this.prisma.webhook.delete({
-      where: { id }
+      where: { id },
     });
   }
 
@@ -158,7 +158,9 @@ export class WebhookRepository {
   async toggle(id: string): Promise<Webhook> {
     return this.prisma.$transaction(async (tx) => {
       const webhook = await tx.webhook.findUnique({ where: { id } });
-      if (!webhook) {throw new Error('Webhook not found');}
+      if (!webhook) {
+        throw new Error('Webhook not found');
+      }
 
       return tx.webhook.update({
         where: { id },
@@ -175,7 +177,7 @@ export class WebhookRepository {
       where: {
         ...(filters.partnerId && { partnerId: filters.partnerId }),
         ...(filters.isActive !== undefined && { isActive: filters.isActive }),
-      }
+      },
     });
   }
 
@@ -194,23 +196,28 @@ export class WebhookRepository {
         statusCode: data.statusCode,
         error: data.error,
         attempts: 1,
-        ...(data.statusCode && data.statusCode >= 200 && data.statusCode < 300 && {
-          deliveredAt: new Date()
-        }),
+        ...(data.statusCode &&
+          data.statusCode >= 200 &&
+          data.statusCode < 300 && {
+            deliveredAt: new Date(),
+          }),
         ...(data.error && { failedAt: new Date() }),
-      }
+      },
     });
   }
 
   /**
    * Update webhook event (for retries)
    */
-  async updateEvent(id: string, data: {
-    response?: Record<string, unknown>;
-    statusCode?: number;
-    error?: string;
-    delivered?: boolean;
-  }): Promise<WebhookEvent> {
+  async updateEvent(
+    id: string,
+    data: {
+      response?: Record<string, unknown>;
+      statusCode?: number;
+      error?: string;
+      delivered?: boolean;
+    }
+  ): Promise<WebhookEvent> {
     return this.prisma.webhookEvent.update({
       where: { id },
       data: {
@@ -218,8 +225,8 @@ export class WebhookRepository {
         ...(data.statusCode && { statusCode: data.statusCode }),
         ...(data.error && { error: data.error, failedAt: new Date() }),
         ...(data.delivered && { deliveredAt: new Date() }),
-        attempts: { increment: 1 }
-      }
+        attempts: { increment: 1 },
+      },
     });
   }
 
@@ -230,7 +237,7 @@ export class WebhookRepository {
     return this.prisma.webhookEvent.findMany({
       where: { webhookId },
       orderBy: { createdAt: 'desc' },
-      take: limit
+      take: limit,
     });
   }
 
@@ -253,7 +260,10 @@ export class WebhookRepository {
   /**
    * Get event statistics for a webhook
    */
-  async getEventStats(webhookId: string, days = 30): Promise<{
+  async getEventStats(
+    webhookId: string,
+    days = 30
+  ): Promise<{
     total: number;
     delivered: number;
     failed: number;
@@ -265,17 +275,17 @@ export class WebhookRepository {
 
     const [total, delivered, failed, pending] = await Promise.all([
       this.prisma.webhookEvent.count({
-        where: { webhookId, createdAt: { gte: startDate } }
+        where: { webhookId, createdAt: { gte: startDate } },
       }),
       this.prisma.webhookEvent.count({
-        where: { webhookId, createdAt: { gte: startDate }, deliveredAt: { not: null } }
+        where: { webhookId, createdAt: { gte: startDate }, deliveredAt: { not: null } },
       }),
       this.prisma.webhookEvent.count({
-        where: { webhookId, createdAt: { gte: startDate }, failedAt: { not: null } }
+        where: { webhookId, createdAt: { gte: startDate }, failedAt: { not: null } },
       }),
       this.prisma.webhookEvent.count({
-        where: { webhookId, createdAt: { gte: startDate }, deliveredAt: null, failedAt: null }
-      })
+        where: { webhookId, createdAt: { gte: startDate }, deliveredAt: null, failedAt: null },
+      }),
     ]);
 
     return {
@@ -283,7 +293,7 @@ export class WebhookRepository {
       delivered,
       failed,
       pending,
-      avgResponseTime: null // Would need to track response time in the model
+      avgResponseTime: null, // Would need to track response time in the model
     };
   }
 
@@ -292,7 +302,7 @@ export class WebhookRepository {
    */
   async deleteOldEvents(olderThan: Date): Promise<{ count: number }> {
     return this.prisma.webhookEvent.deleteMany({
-      where: { createdAt: { lt: olderThan } }
+      where: { createdAt: { lt: olderThan } },
     });
   }
 
@@ -302,7 +312,7 @@ export class WebhookRepository {
   async getDeliveryRate(webhookId: string): Promise<number> {
     const [total, delivered] = await Promise.all([
       this.prisma.webhookEvent.count({ where: { webhookId } }),
-      this.prisma.webhookEvent.count({ where: { webhookId, deliveredAt: { not: null } } })
+      this.prisma.webhookEvent.count({ where: { webhookId, deliveredAt: { not: null } } }),
     ]);
 
     return total > 0 ? (delivered / total) * 100 : 0;

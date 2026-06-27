@@ -1,12 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 
-import {
-  ApiAdapter,
-  NetworkError,
-  ParseError,
-  RateLimitError,
-  TimeoutError,
-} from './api-adapter';
+import { ApiAdapter, NetworkError, ParseError, RateLimitError, TimeoutError } from './api-adapter';
 
 /** Minimal Response-like mock matching what ApiAdapter reads. */
 function res(status: number, body: string, headers: Record<string, string> = {}) {
@@ -32,7 +26,11 @@ describe('ApiAdapter', () => {
 
   it('sends Accept + identifying User-Agent', async () => {
     const fetchFn = vi.fn().mockResolvedValue(res(200, '{}'));
-    const api = new ApiAdapter({ fetchFn, sleepFn: noSleep, userAgent: 'KitchenXpert-research/0.2' });
+    const api = new ApiAdapter({
+      fetchFn,
+      sleepFn: noSleep,
+      userAgent: 'KitchenXpert-research/0.2',
+    });
     await api.fetchJson('https://x.test/api');
     const headers = (fetchFn.mock.calls[0][1] as RequestInit).headers as Record<string, string>;
     expect(headers['User-Agent']).toBe('KitchenXpert-research/0.2');

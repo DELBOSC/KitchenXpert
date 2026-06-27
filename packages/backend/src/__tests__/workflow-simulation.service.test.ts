@@ -93,23 +93,111 @@ const mockKitchen = {
 };
 
 const mockKitchenItems = [
-  { id: 'item-1', kitchenId, type: 'refrigerator', name: 'Frigo', positionX: 0.3, positionY: 0, positionZ: 1.5 },
-  { id: 'item-2', kitchenId, type: 'sink', name: 'Evier', positionX: 1.3, positionY: 0, positionZ: 0.3 },
-  { id: 'item-3', kitchenId, type: 'cooktop', name: 'Plaque', positionX: 2.7, positionY: 0, positionZ: 0.3 },
-  { id: 'item-4', kitchenId, type: 'oven', name: 'Four', positionX: 3.2, positionY: 0, positionZ: 0.3 },
-  { id: 'item-5', kitchenId, type: 'base_cabinet', name: 'Meuble bas', positionX: 2, positionY: 0, positionZ: 0.3 },
+  {
+    id: 'item-1',
+    kitchenId,
+    type: 'refrigerator',
+    name: 'Frigo',
+    positionX: 0.3,
+    positionY: 0,
+    positionZ: 1.5,
+  },
+  {
+    id: 'item-2',
+    kitchenId,
+    type: 'sink',
+    name: 'Evier',
+    positionX: 1.3,
+    positionY: 0,
+    positionZ: 0.3,
+  },
+  {
+    id: 'item-3',
+    kitchenId,
+    type: 'cooktop',
+    name: 'Plaque',
+    positionX: 2.7,
+    positionY: 0,
+    positionZ: 0.3,
+  },
+  {
+    id: 'item-4',
+    kitchenId,
+    type: 'oven',
+    name: 'Four',
+    positionX: 3.2,
+    positionY: 0,
+    positionZ: 0.3,
+  },
+  {
+    id: 'item-5',
+    kitchenId,
+    type: 'base_cabinet',
+    name: 'Meuble bas',
+    positionX: 2,
+    positionY: 0,
+    positionZ: 0.3,
+  },
 ];
 
 const mockAISimulationResponse = {
   steps: [
-    { stepNumber: 1, action: 'Sortir les legumes du frigo', fromZone: 'fridge', toZone: 'countertop', timeSeconds: 15 },
-    { stepNumber: 2, action: 'Laver les legumes', fromZone: 'countertop', toZone: 'sink', timeSeconds: 60 },
-    { stepNumber: 3, action: 'Couper les legumes', fromZone: 'sink', toZone: 'countertop', timeSeconds: 120 },
-    { stepNumber: 4, action: 'Faire revenir dans la poele', fromZone: 'countertop', toZone: 'hob', timeSeconds: 300 },
-    { stepNumber: 5, action: 'Enfourner le plat', fromZone: 'hob', toZone: 'oven', timeSeconds: 30 },
-    { stepNumber: 6, action: 'Ranger les ustensiles', fromZone: 'oven', toZone: 'storage', timeSeconds: 45 },
-    { stepNumber: 7, action: 'Nettoyer le plan de travail', fromZone: 'storage', toZone: 'countertop', timeSeconds: 60 },
-    { stepNumber: 8, action: 'Laver la vaisselle', fromZone: 'countertop', toZone: 'sink', timeSeconds: 120 },
+    {
+      stepNumber: 1,
+      action: 'Sortir les legumes du frigo',
+      fromZone: 'fridge',
+      toZone: 'countertop',
+      timeSeconds: 15,
+    },
+    {
+      stepNumber: 2,
+      action: 'Laver les legumes',
+      fromZone: 'countertop',
+      toZone: 'sink',
+      timeSeconds: 60,
+    },
+    {
+      stepNumber: 3,
+      action: 'Couper les legumes',
+      fromZone: 'sink',
+      toZone: 'countertop',
+      timeSeconds: 120,
+    },
+    {
+      stepNumber: 4,
+      action: 'Faire revenir dans la poele',
+      fromZone: 'countertop',
+      toZone: 'hob',
+      timeSeconds: 300,
+    },
+    {
+      stepNumber: 5,
+      action: 'Enfourner le plat',
+      fromZone: 'hob',
+      toZone: 'oven',
+      timeSeconds: 30,
+    },
+    {
+      stepNumber: 6,
+      action: 'Ranger les ustensiles',
+      fromZone: 'oven',
+      toZone: 'storage',
+      timeSeconds: 45,
+    },
+    {
+      stepNumber: 7,
+      action: 'Nettoyer le plan de travail',
+      fromZone: 'storage',
+      toZone: 'countertop',
+      timeSeconds: 60,
+    },
+    {
+      stepNumber: 8,
+      action: 'Laver la vaisselle',
+      fromZone: 'countertop',
+      toZone: 'sink',
+      timeSeconds: 120,
+    },
   ],
   bottlenecks: [
     {
@@ -156,7 +244,9 @@ const mockSimulationRecord = {
   })),
   totalDistanceM: 12.5,
   totalTimeS: 750,
-  bottlenecks: [{ description: 'Test bottleneck', position: { x: 0, y: 0, z: 0 }, suggestion: 'Fix it' }],
+  bottlenecks: [
+    { description: 'Test bottleneck', position: { x: 0, y: 0, z: 0 }, suggestion: 'Fix it' },
+  ],
   efficiencyScore: 75,
   optimizedSteps: null,
   createdAt: new Date(),
@@ -184,16 +274,16 @@ describe('WorkflowSimulationService', () => {
       const scenarios = service.getScenarios();
 
       expect(scenarios.length).toBeGreaterThanOrEqual(4);
-      expect(scenarios.map(s => s.key)).toContain('dinner_for_6');
-      expect(scenarios.map(s => s.key)).toContain('quick_breakfast');
-      expect(scenarios.map(s => s.key)).toContain('meal_prep');
-      expect(scenarios.map(s => s.key)).toContain('baking');
+      expect(scenarios.map((s) => s.key)).toContain('dinner_for_6');
+      expect(scenarios.map((s) => s.key)).toContain('quick_breakfast');
+      expect(scenarios.map((s) => s.key)).toContain('meal_prep');
+      expect(scenarios.map((s) => s.key)).toContain('baking');
     });
 
     it('should return scenarios with valid stepsRange', () => {
       const scenarios = service.getScenarios();
 
-      scenarios.forEach(scenario => {
+      scenarios.forEach((scenario) => {
         expect(scenario.stepsRange.min).toBeGreaterThan(0);
         expect(scenario.stepsRange.max).toBeGreaterThanOrEqual(scenario.stepsRange.min);
         expect(scenario.name).toBeTruthy();
@@ -232,7 +322,7 @@ describe('WorkflowSimulationService', () => {
       expect(result.zoneUsage).toBeDefined();
 
       // Verify each step has enriched position data
-      result.steps.forEach(step => {
+      result.steps.forEach((step) => {
         expect(step.position3D).toBeDefined();
         expect(step.position3D.from).toHaveProperty('x');
         expect(step.position3D.to).toHaveProperty('x');
@@ -247,15 +337,15 @@ describe('WorkflowSimulationService', () => {
         4000,
         2000,
         expect.any(Number),
-        expect.objectContaining({ feature: 'workflow_simulation', scenario: 'quick_breakfast' }),
+        expect.objectContaining({ feature: 'workflow_simulation', scenario: 'quick_breakfast' })
       );
       expect(mockPrisma.workflowSimulation.create).toHaveBeenCalledTimes(1);
     });
 
     it('should throw for an unknown scenario', async () => {
-      await expect(
-        service.simulate(kitchenId, testUserId, 'unknown_scenario'),
-      ).rejects.toThrow('Unknown scenario: unknown_scenario');
+      await expect(service.simulate(kitchenId, testUserId, 'unknown_scenario')).rejects.toThrow(
+        'Unknown scenario: unknown_scenario'
+      );
 
       expect(mockPrisma.kitchen.findUnique).not.toHaveBeenCalled();
       expect(mockGenerateJSON).not.toHaveBeenCalled();
@@ -264,9 +354,9 @@ describe('WorkflowSimulationService', () => {
     it('should throw when kitchen is not found', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.simulate(kitchenId, testUserId, 'quick_breakfast'),
-      ).rejects.toThrow('Kitchen not found');
+      await expect(service.simulate(kitchenId, testUserId, 'quick_breakfast')).rejects.toThrow(
+        'Kitchen not found'
+      );
 
       expect(mockGenerateJSON).not.toHaveBeenCalled();
     });
@@ -276,9 +366,9 @@ describe('WorkflowSimulationService', () => {
       mockPrisma.kitchenItem.findMany.mockResolvedValue(mockKitchenItems);
       mockGenerateJSON.mockRejectedValue(new Error('API timeout'));
 
-      await expect(
-        service.simulate(kitchenId, testUserId, 'dinner_for_6'),
-      ).rejects.toThrow('API timeout');
+      await expect(service.simulate(kitchenId, testUserId, 'dinner_for_6')).rejects.toThrow(
+        'API timeout'
+      );
     });
 
     it('should calculate zone usage from simulation steps', async () => {
@@ -373,7 +463,7 @@ describe('WorkflowSimulationService', () => {
       expect(result.optimizedTotalDistance).toBeLessThan(result.currentTotalDistance);
       expect(result.percentImprovement).toBeGreaterThan(0);
 
-      result.suggestions.forEach(suggestion => {
+      result.suggestions.forEach((suggestion) => {
         expect(suggestion.currentPosition).toHaveProperty('x');
         expect(suggestion.suggestedPosition).toHaveProperty('x');
         expect(suggestion.distanceSaved).toBeGreaterThanOrEqual(0);
@@ -389,7 +479,7 @@ describe('WorkflowSimulationService', () => {
       mockPrisma.workflowSimulation.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.optimize('00000000-0000-0000-0000-000000000000', testUserId),
+        service.optimize('00000000-0000-0000-0000-000000000000', testUserId)
       ).rejects.toThrow('Simulation not found');
     });
 
@@ -397,9 +487,7 @@ describe('WorkflowSimulationService', () => {
       mockPrisma.workflowSimulation.findUnique.mockResolvedValue(mockSimulationRecord);
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.optimize('sim-1', testUserId),
-      ).rejects.toThrow('Kitchen not found');
+      await expect(service.optimize('sim-1', testUserId)).rejects.toThrow('Kitchen not found');
     });
   });
 });

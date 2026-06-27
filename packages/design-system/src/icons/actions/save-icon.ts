@@ -10,7 +10,8 @@ export interface IconProps {
   strokeWidth?: number;
 }
 
-export const saveIconPath = 'M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z M17 21v-8H7v8 M7 3v5h8';
+export const saveIconPath =
+  'M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z M17 21v-8H7v8 M7 3v5h8';
 
 export function createSaveIcon(props: IconProps = {}): string {
   const { size = 24, color = 'currentColor', strokeWidth = 2 } = props;

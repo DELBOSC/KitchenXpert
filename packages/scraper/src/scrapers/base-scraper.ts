@@ -13,11 +13,7 @@ import UserAgent from 'user-agents';
 import crypto from 'crypto';
 
 import type { BrandScrapingConfig } from '../config/brands.config.js';
-import type {
-  ScrapeSummary,
-  ScrapeError,
-  ScrapeProgress,
-} from '../models/scrape-result.js';
+import type { ScrapeSummary, ScrapeError, ScrapeProgress } from '../models/scrape-result.js';
 import type { CreateCabinetInput } from '../models/cabinet.js';
 import type { CreateWorktopInput } from '../models/worktop.js';
 import type { CreateFacadeInput } from '../models/facade.js';
@@ -198,7 +194,9 @@ export abstract class BaseScraper {
     this.retryHandler = options.retryHandler || retryHandler;
     this.proxyManager = options.proxyManager || proxyManager;
     this.summary = createEmptySummary(config.id, config.name);
-    this.userAgentGenerator = new UserAgent({ deviceCategory: this.options.emulateDevice || 'desktop' });
+    this.userAgentGenerator = new UserAgent({
+      deviceCategory: this.options.emulateDevice || 'desktop',
+    });
     this.sessionFingerprint = this.generateFingerprint();
 
     // Initialize crawl state
@@ -241,7 +239,10 @@ export abstract class BaseScraper {
 
     // Request interceptor
     instance.interceptors.request.use((config) => {
-      config.headers.set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8');
+      config.headers.set(
+        'Accept',
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'
+      );
       config.headers.set('Accept-Language', `${this.options.language},en-US;q=0.9,en;q=0.8`);
       config.headers.set('Accept-Encoding', 'gzip, deflate, br');
       config.headers.set('Connection', 'keep-alive');
@@ -251,7 +252,10 @@ export abstract class BaseScraper {
       config.headers.set('Sec-Fetch-Site', 'none');
       config.headers.set('Sec-Fetch-User', '?1');
       config.headers.set('Cache-Control', 'max-age=0');
-      config.headers.set('User-Agent', this.currentUserAgent || this.userAgentGenerator.random().toString());
+      config.headers.set(
+        'User-Agent',
+        this.currentUserAgent || this.userAgentGenerator.random().toString()
+      );
       return config;
     });
 
@@ -439,7 +443,7 @@ export abstract class BaseScraper {
     // Add WebGL fingerprint randomization
     await this.page.evaluateOnNewDocument(() => {
       const getParameter = WebGLRenderingContext.prototype.getParameter;
-      WebGLRenderingContext.prototype.getParameter = function(parameter: number) {
+      WebGLRenderingContext.prototype.getParameter = function (parameter: number) {
         if (parameter === 37445) {
           return 'Intel Inc.';
         }
@@ -511,7 +515,7 @@ export abstract class BaseScraper {
   protected async humanMouseMove(): Promise<void> {
     if (!this.page || !this.options.humanBehavior) return;
 
-    const { width, height } = await this.page.viewport() || { width: 1920, height: 1080 };
+    const { width, height } = (await this.page.viewport()) || { width: 1920, height: 1080 };
 
     // Random movements
     const movements = Math.floor(Math.random() * 3) + 1;
@@ -560,11 +564,14 @@ export abstract class BaseScraper {
   // Navigation with Enhanced Features
   // ═══════════════════════════════════════════════════════════════════════════
 
-  protected async navigateTo(url: string, options?: {
-    waitFor?: string;
-    waitUntil?: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
-    skipCache?: boolean;
-  }): Promise<void> {
+  protected async navigateTo(
+    url: string,
+    options?: {
+      waitFor?: string;
+      waitUntil?: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
+      skipCache?: boolean;
+    }
+  ): Promise<void> {
     if (!this.page) {
       await this.createPage();
     }
@@ -580,35 +587,32 @@ export abstract class BaseScraper {
 
     try {
       await this.rateLimiter.throttle(url, async () => {
-        await this.retryHandler.execute(
-          async () => {
-            // Human-like behavior before navigation
-            if (this.options.humanBehavior && this.crawlState.visitedUrls.size > 0) {
-              await this.humanMouseMove();
-              await this.randomDelay(500, 1500);
-            }
+        await this.retryHandler.execute(async () => {
+          // Human-like behavior before navigation
+          if (this.options.humanBehavior && this.crawlState.visitedUrls.size > 0) {
+            await this.humanMouseMove();
+            await this.randomDelay(500, 1500);
+          }
 
-            await this.page!.goto(url, {
-              waitUntil: options?.waitUntil || 'networkidle2',
-              timeout: this.options.pageLoadTimeout,
+          await this.page!.goto(url, {
+            waitUntil: options?.waitUntil || 'networkidle2',
+            timeout: this.options.pageLoadTimeout,
+          });
+
+          if (options?.waitFor) {
+            await this.page!.waitForSelector(options.waitFor, {
+              timeout: this.options.timeout,
             });
+          }
 
-            if (options?.waitFor) {
-              await this.page!.waitForSelector(options.waitFor, {
-                timeout: this.options.timeout,
-              });
-            }
+          // Human-like behavior after navigation
+          if (this.options.humanBehavior) {
+            await this.humanScroll();
+          }
 
-            // Human-like behavior after navigation
-            if (this.options.humanBehavior) {
-              await this.humanScroll();
-            }
-
-            // Call onPageLoad hook
-            await this.onPageLoad(url);
-          },
-          url
-        );
+          // Call onPageLoad hook
+          await this.onPageLoad(url);
+        }, url);
       });
 
       // Mark URL as visited
@@ -672,13 +676,14 @@ export abstract class BaseScraper {
   protected async fetchJson<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     return this.rateLimiter.throttle(url, async () => {
       const response = await this.retryHandler.execute(
-        async () => this.axiosInstance.get<T>(url, {
-          ...config,
-          headers: {
-            ...config?.headers,
-            'Accept': 'application/json',
-          },
-        }),
+        async () =>
+          this.axiosInstance.get<T>(url, {
+            ...config,
+            headers: {
+              ...config?.headers,
+              Accept: 'application/json',
+            },
+          }),
         url
       );
       return response.data;
@@ -884,7 +889,8 @@ export abstract class BaseScraper {
       // Process collections
       for (const collectionUrl of collectionUrls) {
         if (this.shouldStop) break;
-        if (this.options.maxPages > 0 && this.summary.stats.pagesScraped >= this.options.maxPages) break;
+        if (this.options.maxPages > 0 && this.summary.stats.pagesScraped >= this.options.maxPages)
+          break;
 
         // Check robots.txt
         const isAllowed = await this.checkRobotsTxt(collectionUrl);
@@ -907,7 +913,11 @@ export abstract class BaseScraper {
           // Scrape each product
           for (const productUrl of productUrls) {
             if (this.shouldStop) break;
-            if (this.options.maxProducts > 0 && this.summary.stats.productsFound >= this.options.maxProducts) break;
+            if (
+              this.options.maxProducts > 0 &&
+              this.summary.stats.productsFound >= this.options.maxProducts
+            )
+              break;
 
             // Test mode: only scrape first product per collection
             if (this.options.testMode && this.summary.stats.productsFound > 0) {

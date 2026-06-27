@@ -28,20 +28,48 @@ jest.mock('three', () => {
       constructor(_canvas?: any) {}
       dispose = jest.fn();
     },
-    CircleGeometry: class extends actual.BufferGeometry { constructor() { super(); } },
-    LineBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
+    CircleGeometry: class extends actual.BufferGeometry {
+      constructor() {
+        super();
+      }
+    },
+    LineBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
     LineDashedMaterial: class extends actual.Material {
-      constructor(_p?: any) { super(); }
+      constructor(_p?: any) {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
     LineLoop: class extends actual.Object3D {
-      constructor() { super(); }
+      constructor() {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
-    MeshBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
-    Group: class extends actual.Object3D { constructor() { super(); } },
-    PointLight: class extends actual.Light { constructor() { super(); } },
-    RectAreaLight: class extends actual.Light { constructor() { super(); } },
+    MeshBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
+    Group: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    PointLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
+    RectAreaLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
   };
 });
 
@@ -194,10 +222,7 @@ describe('TechnicalConstraints', () => {
 
   describe('calculateDisplacementCost()', () => {
     it('should return zero cost for items with no technical needs', () => {
-      const result = tc.calculateDisplacementCost(
-        new THREE.Vector3(0, 0, 0),
-        'base_cabinet'
-      );
+      const result = tc.calculateDisplacementCost(new THREE.Vector3(0, 0, 0), 'base_cabinet');
 
       expect(result.cost).toBe(0);
       expect(result.breakdown).toContain('Aucun raccordement');
@@ -225,10 +250,7 @@ describe('TechnicalConstraints', () => {
       });
 
       // Place sink far from water points (5m away)
-      const result = tc.calculateDisplacementCost(
-        new THREE.Vector3(5, 0, 0),
-        'sink'
-      );
+      const result = tc.calculateDisplacementCost(new THREE.Vector3(5, 0, 0), 'sink');
 
       // Sink needs: water_cold (freeDistance=2m), water_hot (2m), water_drain (1.5m)
       // All are 5m away, so all have displacement cost
@@ -258,20 +280,14 @@ describe('TechnicalConstraints', () => {
         position: new THREE.Vector3(1, 0, 0),
       });
 
-      const result = tc.calculateDisplacementCost(
-        new THREE.Vector3(1, 0, 0),
-        'sink'
-      );
+      const result = tc.calculateDisplacementCost(new THREE.Vector3(1, 0, 0), 'sink');
 
       expect(result.cost).toBe(0);
     });
 
     it('should have base cost for new line when no matching point exists', () => {
       // No water points at all, but requesting sink cost
-      const result = tc.calculateDisplacementCost(
-        new THREE.Vector3(2, 0, 0),
-        'sink'
-      );
+      const result = tc.calculateDisplacementCost(new THREE.Vector3(2, 0, 0), 'sink');
 
       // Sink needs water_cold, water_hot, water_drain — all missing
       // base costs: 150 + 150 + 200 = 500
@@ -287,10 +303,7 @@ describe('TechnicalConstraints', () => {
       });
 
       // Refrigerator needs electric_16a, which has infinite free distance
-      const result = tc.calculateDisplacementCost(
-        new THREE.Vector3(10, 0, 0),
-        'refrigerator'
-      );
+      const result = tc.calculateDisplacementCost(new THREE.Vector3(10, 0, 0), 'refrigerator');
 
       // electric_16a has freeDistance: Infinity, so even 10m away is free
       expect(result.cost).toBe(0);
@@ -369,9 +382,24 @@ describe('TechnicalConstraints', () => {
 
   describe('getPointsByType()', () => {
     it('should filter points by type', () => {
-      tc.addPoint({ id: 'w1', type: 'water', subtype: 'water_cold', position: new THREE.Vector3(0, 0, 0) });
-      tc.addPoint({ id: 'w2', type: 'water', subtype: 'water_hot', position: new THREE.Vector3(1, 0, 0) });
-      tc.addPoint({ id: 'e1', type: 'electric', subtype: 'electric_16a', position: new THREE.Vector3(2, 0, 0) });
+      tc.addPoint({
+        id: 'w1',
+        type: 'water',
+        subtype: 'water_cold',
+        position: new THREE.Vector3(0, 0, 0),
+      });
+      tc.addPoint({
+        id: 'w2',
+        type: 'water',
+        subtype: 'water_hot',
+        position: new THREE.Vector3(1, 0, 0),
+      });
+      tc.addPoint({
+        id: 'e1',
+        type: 'electric',
+        subtype: 'electric_16a',
+        position: new THREE.Vector3(2, 0, 0),
+      });
 
       const waterPoints = tc.getPointsByType('water');
       expect(waterPoints).toHaveLength(2);

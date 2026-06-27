@@ -25,7 +25,7 @@ const renderModal = (props?: Partial<React.ComponentProps<typeof SignupPromptMod
     ...render(
       <BrowserRouter>
         <SignupPromptModal open trigger="pdf_export" onClose={onClose} {...props} />
-      </BrowserRouter>,
+      </BrowserRouter>
     ),
   };
 };
@@ -37,7 +37,9 @@ describe('SignupPromptModal — dual tracking on primary CTA', () => {
     plausibleSpy = vi.fn();
     window.plausible = plausibleSpy;
     vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
-      if (key === 'kx-ab-hero') {return 'C';}
+      if (key === 'kx-ab-hero') {
+        return 'C';
+      }
       return null;
     });
   });
@@ -49,7 +51,7 @@ describe('SignupPromptModal — dual tracking on primary CTA', () => {
   it('renders the modal copy for the given trigger', () => {
     renderModal();
     expect(screen.getByTestId('signup-prompt-title')).toHaveTextContent(
-      /téléchargez votre devis sans filigrane/i,
+      /téléchargez votre devis sans filigrane/i
     );
   });
 
@@ -57,7 +59,7 @@ describe('SignupPromptModal — dual tracking on primary CTA', () => {
     const { container } = render(
       <BrowserRouter>
         <SignupPromptModal open trigger={null} onClose={() => {}} />
-      </BrowserRouter>,
+      </BrowserRouter>
     );
     expect(container).toBeEmptyDOMElement();
   });

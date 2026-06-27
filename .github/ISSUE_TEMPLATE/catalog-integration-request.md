@@ -9,12 +9,15 @@ assignees: ''
 ## 🏪 Informations sur le Fournisseur
 
 ### Identité du Fournisseur
+
 - **Nom du fournisseur:**
 - **Pays:**
 - **Site web:**
-- **Type de produits:** [ ] Meubles  [ ] Électroménager  [ ] Accessoires  [ ] Autre: _____
+- **Type de produits:** [ ] Meubles [ ] Électroménager [ ] Accessoires [ ]
+  Autre: **\_**
 
 ### Contact Technique
+
 - **Nom du contact:**
 - **Email:**
 - **Téléphone:**
@@ -23,12 +26,16 @@ assignees: ''
 ## 📊 Informations sur le Catalogue
 
 ### Taille du Catalogue
+
 - **Nombre de produits:**
 - **Catégories principales:**
-- **Fréquence de mise à jour:** [ ] Temps réel  [ ] Quotidien  [ ] Hebdomadaire  [ ] Mensuel  [ ] Autre: _____
+- **Fréquence de mise à jour:** [ ] Temps réel [ ] Quotidien [ ] Hebdomadaire [
+  ] Mensuel [ ] Autre: **\_**
 
 ### Couverture Géographique
+
 <!-- Cocher les pays où les produits sont disponibles -->
+
 - [ ] France
 - [ ] Belgique
 - [ ] Suisse
@@ -36,38 +43,42 @@ assignees: ''
 - [ ] Espagne
 - [ ] Italie
 - [ ] Royaume-Uni
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ## 🔌 Type de Source de Données
 
 <!-- Cocher le type de source disponible -->
+
 - [ ] **API REST** - Endpoint: `https://...`
 - [ ] **GraphQL** - Endpoint: `https://...`
-- [ ] **Fichier CSV** - URL ou fréquence: _____
-- [ ] **Fichier Excel** - URL ou fréquence: _____
-- [ ] **Fichier JSON** - URL ou fréquence: _____
-- [ ] **Fichier XML** - URL ou fréquence: _____
-- [ ] **Web Scraping** (dernier recours) - URL: _____
-- [ ] **FTP/SFTP** - Détails: _____
-- [ ] **Autre:** _____
+- [ ] **Fichier CSV** - URL ou fréquence: **\_**
+- [ ] **Fichier Excel** - URL ou fréquence: **\_**
+- [ ] **Fichier JSON** - URL ou fréquence: **\_**
+- [ ] **Fichier XML** - URL ou fréquence: **\_**
+- [ ] **Web Scraping** (dernier recours) - URL: **\_**
+- [ ] **FTP/SFTP** - Détails: **\_**
+- [ ] **Autre:** **\_**
 
 ## 🔐 Authentification
 
 ### Type d'authentification requis
+
 - [ ] Aucune (données publiques)
 - [ ] API Key
 - [ ] Bearer Token
 - [ ] OAuth 2.0
 - [ ] Basic Auth (username/password)
 - [ ] JWT
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ### Credentials disponibles
+
 - [ ] Oui, j'ai les credentials de test
 - [ ] Non, à obtenir
 - [ ] API publique sans auth
 
 ### Limitation de taux
+
 - **Requêtes max/heure:**
 - **Requêtes max/jour:**
 - **Autres limitations:**
@@ -75,7 +86,9 @@ assignees: ''
 ## 📋 Structure des Données
 
 ### Champs disponibles
+
 <!-- Cocher les champs fournis par le catalogue -->
+
 - [ ] Nom du produit
 - [ ] Référence/SKU
 - [ ] Description courte
@@ -94,9 +107,10 @@ assignees: ''
 - [ ] Délai de livraison
 - [ ] Certifications (éco-labels, etc.)
 - [ ] Fiche technique PDF
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ### Exemple de Données
+
 <!-- Fournir un exemple de produit (JSON, CSV, ou screenshot) -->
 
 ```json
@@ -104,7 +118,7 @@ assignees: ''
   "id": "12345",
   "name": "Meuble exemple",
   "price": 299.99,
-  "currency": "EUR",
+  "currency": "EUR"
   // ... autres champs
 }
 ```
@@ -114,45 +128,53 @@ Ou joindre un fichier exemple si possible.
 ## 🗺️ Mapping Nécessaire
 
 ### Transformations Requises
+
 <!-- Décrire les transformations de données nécessaires -->
 
 **Exemple:**
+
 - Prix en centimes → conversion en euros
 - Dimensions en pouces → conversion en cm
 - Images multiples → extraction URL principale
 
 ### Champs Manquants
+
 <!-- Quels champs essentiels manquent et comment les obtenir ? -->
 
 ## 🔄 Synchronisation
 
 ### Fréquence de synchronisation souhaitée
+
 - [ ] Temps réel (webhook)
 - [ ] Toutes les heures
-- [ ] Quotidienne (heure: ____)
-- [ ] Hebdomadaire (jour: ____)
+- [ ] Quotidienne (heure: \_\_\_\_)
+- [ ] Hebdomadaire (jour: \_\_\_\_)
 - [ ] Manuelle uniquement
 
 ### Type de synchronisation
+
 - [ ] Complète (tous les produits à chaque fois)
 - [ ] Incrémentale (uniquement les changements)
 - [ ] Mixte (complète hebdomadaire + incrémentale quotidienne)
 
 ### Webhooks Disponibles
-- [ ] Oui - URL du webhook: _____
+
+- [ ] Oui - URL du webhook: **\_**
 - [ ] Non
-- [ ] Events supportés: _____
+- [ ] Events supportés: **\_**
 
 ## 💰 Aspects Commerciaux
 
 ### Modèle de Pricing
+
 - [ ] Gratuit
 - [ ] Abonnement mensuel
 - [ ] Commission sur ventes
 - [ ] Par requête API
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ### Contrat / Partenariat
+
 - [ ] Contrat existant
 - [ ] À négocier
 - [ ] Données publiques (pas de contrat)
@@ -160,17 +182,18 @@ Ou joindre un fichier exemple si possible.
 ## 🎯 Priorité et Justification
 
 ### Importance de cette intégration
+
 - [ ] 🔥 Critique - Gros fournisseur avec forte demande clients
 - [ ] ⭐ Élevée - Complète l'offre de manière significative
 - [ ] 📝 Moyenne - Nice to have
 - [ ] 💡 Basse - Opportunité future
 
 ### Justification Business
+
 <!-- Pourquoi intégrer ce catalogue ? Volume attendu ? Demandes clients ? -->
 
-**Nombre de clients intéressés:**
-**Volume de ventes estimé:**
-**Avantage concurrentiel:**
+**Nombre de clients intéressés:** **Volume de ventes estimé:** **Avantage
+concurrentiel:**
 
 ## ✅ Critères d'Acceptation
 
@@ -186,6 +209,7 @@ Ou joindre un fichier exemple si possible.
 ## 📎 Documents Joints
 
 <!-- Joindre ou lier tout document pertinent -->
+
 - [ ] Documentation API
 - [ ] Fichier exemple de données
 - [ ] Credentials de test
@@ -216,7 +240,9 @@ Ou joindre un fichier exemple si possible.
 
 ---
 
-**Note:** Utilisez le [générateur CLI de providers](../../catalog-providers/cli/generate-provider.ts) pour créer rapidement l'intégration une fois approuvée :
+**Note:** Utilisez le
+[générateur CLI de providers](../../catalog-providers/cli/generate-provider.ts)
+pour créer rapidement l'intégration une fois approuvée :
 
 ```bash
 pnpm tsx catalog-providers/cli/generate-provider.ts

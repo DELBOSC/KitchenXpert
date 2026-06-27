@@ -7,7 +7,6 @@ import { logger } from '../../services/logger';
 
 import type { ARLiveOverlay } from '@kitchenxpert/3d-engine';
 
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -25,7 +24,11 @@ type ViewMode = 'loading' | 'ar' | '3d-fallback' | 'error';
 function createPlaceholderKitchenGroup(): THREE.Group {
   const group = new THREE.Group();
   const cabinetMat = new THREE.MeshStandardMaterial({ color: 0xd4a574, roughness: 0.7 });
-  const counterMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.1 });
+  const counterMat = new THREE.MeshStandardMaterial({
+    color: 0x555555,
+    roughness: 0.3,
+    metalness: 0.1,
+  });
 
   // Base cabinets
   for (let i = -2; i <= 2; i++) {
@@ -101,7 +104,9 @@ const ARViewerPage: React.FC = () => {
   useEffect(() => {
     if (!kitchenId && !projectId) {
       setViewMode('error');
-      setErrorMessage(t('arViewer.noKitchenId', 'No kitchen ID provided. Please provide a kitchenId parameter.'));
+      setErrorMessage(
+        t('arViewer.noKitchenId', 'No kitchen ID provided. Please provide a kitchenId parameter.')
+      );
       return;
     }
 
@@ -136,7 +141,9 @@ const ARViewerPage: React.FC = () => {
           setViewMode('3d-fallback');
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const msg = err instanceof Error ? err.message : 'Failed to load kitchen';
         setErrorMessage(msg);
 
@@ -152,7 +159,9 @@ const ARViewerPage: React.FC = () => {
 
   // Initialize 3D fallback viewer
   useEffect(() => {
-    if (viewMode !== '3d-fallback' || !canvasRef.current) {return;}
+    if (viewMode !== '3d-fallback' || !canvasRef.current) {
+      return;
+    }
 
     const canvas = canvasRef.current;
     const width = canvas.clientWidth || window.innerWidth;
@@ -170,7 +179,11 @@ const ARViewerPage: React.FC = () => {
     cameraRef.current = camera;
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      preserveDrawingBuffer: true,
+    });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
@@ -187,7 +200,7 @@ const ARViewerPage: React.FC = () => {
     // Floor
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(8, 8),
-      new THREE.MeshStandardMaterial({ color: 0xd4c4a8, roughness: 0.8 }),
+      new THREE.MeshStandardMaterial({ color: 0xd4c4a8, roughness: 0.8 })
     );
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
@@ -213,7 +226,9 @@ const ARViewerPage: React.FC = () => {
       prevX = e.clientX;
     };
     const onPointerMove = (e: PointerEvent) => {
-      if (!isDragging) {return;}
+      if (!isDragging) {
+        return;
+      }
       const dx = e.clientX - prevX;
       angle += dx * 0.005;
       camera.position.x = 4 * Math.sin(angle);
@@ -391,7 +406,12 @@ const ARViewerPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md w-full text-center">
-          <svg className="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-16 h-16 text-red-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -411,7 +431,10 @@ const ARViewerPage: React.FC = () => {
               {t('common.goBack', 'Go Back')}
             </button>
             <button
-              onClick={() => { setErrorMessage(''); setRetryCount((c) => c + 1); }}
+              onClick={() => {
+                setErrorMessage('');
+                setRetryCount((c) => c + 1);
+              }}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               {t('common.tryAgain', 'Try Again')}
@@ -430,7 +453,10 @@ const ARViewerPage: React.FC = () => {
         {!arPlaced && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-auto">
             <div className="bg-black bg-opacity-60 text-white px-4 py-2 rounded-lg text-sm text-center">
-              {t('arViewer.pointToFloor', 'Point your device at the floor to detect a surface, then tap to place.')}
+              {t(
+                'arViewer.pointToFloor',
+                'Point your device at the floor to detect a surface, then tap to place.'
+              )}
             </div>
           </div>
         )}
@@ -444,7 +470,12 @@ const ARViewerPage: React.FC = () => {
               title={t('arViewer.place', 'Place')}
             >
               <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                />
               </svg>
             </button>
           )}
@@ -457,7 +488,12 @@ const ARViewerPage: React.FC = () => {
                 title={t('arViewer.rotate', 'Rotate')}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
                 </svg>
               </button>
 
@@ -483,8 +519,18 @@ const ARViewerPage: React.FC = () => {
                 title={t('arViewer.screenshot', 'Screenshot')}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
                 </svg>
               </button>
             </>
@@ -499,7 +545,12 @@ const ARViewerPage: React.FC = () => {
             title={t('arViewer.exitAR', 'Exit AR')}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -518,7 +569,12 @@ const ARViewerPage: React.FC = () => {
             className="text-gray-400 hover:text-white transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
           </button>
           <h1 className="text-white font-semibold">{t('arViewer.title', 'Kitchen AR Viewer')}</h1>
@@ -531,7 +587,12 @@ const ARViewerPage: React.FC = () => {
               className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
               </svg>
               {t('arViewer.launchAR', 'Launch AR')}
             </button>
@@ -543,8 +604,18 @@ const ARViewerPage: React.FC = () => {
             title={t('arViewer.screenshot', 'Screenshot')}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
           </button>
         </div>
@@ -566,7 +637,10 @@ const ARViewerPage: React.FC = () => {
         {!arSupported && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2">
             <div className="bg-yellow-900/60 text-yellow-200 px-4 py-2 rounded-lg text-sm text-center">
-              {t('arViewer.arNotAvailable', 'AR is not available on this device. Showing 3D preview instead.')}
+              {t(
+                'arViewer.arNotAvailable',
+                'AR is not available on this device. Showing 3D preview instead.'
+              )}
             </div>
           </div>
         )}
@@ -575,9 +649,16 @@ const ARViewerPage: React.FC = () => {
       {/* Status bar */}
       <div className="bg-gray-800 border-t border-gray-700 px-4 py-2 flex items-center justify-between text-sm">
         <div className="flex items-center gap-4 text-gray-400">
-          <span className={`flex items-center gap-1 ${arSupported ? 'text-green-400' : 'text-gray-500'}`}>
-            <span className={`w-2 h-2 rounded-full ${arSupported ? 'bg-green-400' : 'bg-gray-500'}`} />
-            AR {arSupported ? t('arViewer.ready', 'Ready') : t('arViewer.notAvailable', 'Not Available')}
+          <span
+            className={`flex items-center gap-1 ${arSupported ? 'text-green-400' : 'text-gray-500'}`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${arSupported ? 'bg-green-400' : 'bg-gray-500'}`}
+            />
+            AR{' '}
+            {arSupported
+              ? t('arViewer.ready', 'Ready')
+              : t('arViewer.notAvailable', 'Not Available')}
           </span>
         </div>
         <div className="text-gray-500">

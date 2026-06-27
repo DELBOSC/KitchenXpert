@@ -4,12 +4,19 @@
 
 const VALID_OPTIONS = {
   'tech-comfort': ['very-comfortable', 'comfortable', 'somewhat', 'not-comfortable'],
-  'smart-appliances': ['smart-fridge', 'smart-oven', 'smart-dishwasher', 'smart-coffee', 'smart-faucet', 'none'],
+  'smart-appliances': [
+    'smart-fridge',
+    'smart-oven',
+    'smart-dishwasher',
+    'smart-coffee',
+    'smart-faucet',
+    'none',
+  ],
   'voice-control': ['yes-alexa', 'yes-google', 'yes-apple', 'yes-multiple', 'no'],
   'smart-lighting': ['full-system', 'some-areas', 'dimmers-only', 'standard'],
   'charging-stations': ['dedicated-area', 'built-in-outlets', 'wireless-charging', 'not-needed'],
-  'connectivity': ['strong-wifi', 'ethernet', 'bluetooth-speakers', 'hub-location', 'basic'],
-  'security-features': ['smart-locks', 'leak-sensors', 'smoke-detector', 'cameras', 'none']
+  connectivity: ['strong-wifi', 'ethernet', 'bluetooth-speakers', 'hub-location', 'basic'],
+  'security-features': ['smart-locks', 'leak-sensors', 'smoke-detector', 'cameras', 'none'],
 };
 
 const REQUIRED_QUESTIONS = ['tech-comfort', 'smart-appliances', 'voice-control', 'smart-lighting'];
@@ -32,18 +39,17 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'unknown-question',
-      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` }
+      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` },
     });
     return { valid: false, errors, warnings };
   }
 
   if (REQUIRED_QUESTIONS.includes(questionId)) {
-    if (value === undefined || value === null ||
-        (Array.isArray(value) && value.length === 0)) {
+    if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) {
       errors.push({
         questionId,
         type: 'required',
-        message: { en: 'This question is required', fr: 'Cette question est obligatoire' }
+        message: { en: 'This question is required', fr: 'Cette question est obligatoire' },
       });
       return { valid: false, errors, warnings };
     }
@@ -79,7 +85,7 @@ function validateSingleChoice(questionId, value) {
     errors.push({
       questionId,
       type: 'invalid-type',
-      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' }
+      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' },
     });
     return { errors, warnings };
   }
@@ -88,7 +94,7 @@ function validateSingleChoice(questionId, value) {
     errors.push({
       questionId,
       type: 'invalid-option',
-      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` }
+      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` },
     });
   }
 
@@ -103,17 +109,20 @@ function validateMultiChoice(questionId, value) {
     errors.push({
       questionId,
       type: 'invalid-type',
-      message: { en: 'Must be an array of selections', fr: 'Doit être un tableau de sélections' }
+      message: { en: 'Must be an array of selections', fr: 'Doit être un tableau de sélections' },
     });
     return { errors, warnings };
   }
 
-  const invalidOptions = value.filter(v => !VALID_OPTIONS[questionId].includes(v));
+  const invalidOptions = value.filter((v) => !VALID_OPTIONS[questionId].includes(v));
   if (invalidOptions.length > 0) {
     errors.push({
       questionId,
       type: 'invalid-options',
-      message: { en: `Invalid options: ${invalidOptions.join(', ')}`, fr: `Options invalides: ${invalidOptions.join(', ')}` }
+      message: {
+        en: `Invalid options: ${invalidOptions.join(', ')}`,
+        fr: `Options invalides: ${invalidOptions.join(', ')}`,
+      },
     });
   }
 
@@ -121,7 +130,10 @@ function validateMultiChoice(questionId, value) {
     warnings.push({
       questionId,
       type: 'conflicting-selection',
-      message: { en: 'You selected "None" along with other options', fr: 'Vous avez sélectionné "Aucun" avec d\'autres options' }
+      message: {
+        en: 'You selected "None" along with other options',
+        fr: 'Vous avez sélectionné "Aucun" avec d\'autres options',
+      },
     });
   }
 
@@ -129,7 +141,10 @@ function validateMultiChoice(questionId, value) {
     warnings.push({
       questionId,
       type: 'conflicting-selection',
-      message: { en: 'You selected "Basic" along with advanced options', fr: 'Vous avez sélectionné "Basique" avec des options avancées' }
+      message: {
+        en: 'You selected "Basic" along with advanced options',
+        fr: 'Vous avez sélectionné "Basique" avec des options avancées',
+      },
     });
   }
 
@@ -137,7 +152,10 @@ function validateMultiChoice(questionId, value) {
     warnings.push({
       questionId,
       type: 'conflicting-selection',
-      message: { en: 'You selected "None" along with other security features', fr: 'Vous avez sélectionné "Aucun" avec d\'autres fonctions de sécurité' }
+      message: {
+        en: 'You selected "None" along with other security features',
+        fr: 'Vous avez sélectionné "Aucun" avec d\'autres fonctions de sécurité',
+      },
     });
   }
 
@@ -154,8 +172,8 @@ function validateWithContext(questionId, value, context) {
         type: 'preference-mismatch',
         message: {
           en: 'You indicated preference for traditional technology but selected smart appliances.',
-          fr: 'Vous avez indiqué une préférence pour la technologie traditionnelle mais sélectionné des appareils intelligents.'
-        }
+          fr: 'Vous avez indiqué une préférence pour la technologie traditionnelle mais sélectionné des appareils intelligents.',
+        },
       });
     }
   }
@@ -167,8 +185,8 @@ function validateWithContext(questionId, value, context) {
         type: 'preference-mismatch',
         message: {
           en: 'Voice control may require some comfort with technology.',
-          fr: 'Le contrôle vocal peut nécessiter une certaine aisance avec la technologie.'
-        }
+          fr: 'Le contrôle vocal peut nécessiter une certaine aisance avec la technologie.',
+        },
       });
     }
   }
@@ -199,9 +217,9 @@ function validateSection(answers) {
 
   return {
     valid: allErrors.length === 0,
-    complete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined && answers[q] !== null),
+    complete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined && answers[q] !== null),
     errors: allErrors,
-    warnings: allWarnings
+    warnings: allWarnings,
   };
 }
 
@@ -209,7 +227,7 @@ function validateSectionLogic(answers) {
   const warnings = [];
 
   const smartAppliances = answers['smart-appliances'] || [];
-  const hasMultipleSmartAppliances = smartAppliances.filter(a => a !== 'none').length >= 3;
+  const hasMultipleSmartAppliances = smartAppliances.filter((a) => a !== 'none').length >= 3;
   const wantsFullSmartLighting = answers['smart-lighting'] === 'full-system';
   const wantsVoiceControl = answers['voice-control'] && answers['voice-control'] !== 'no';
 
@@ -218,8 +236,8 @@ function validateSectionLogic(answers) {
       type: 'high-tech-requirements',
       message: {
         en: 'Your technology preferences will require significant infrastructure investment.',
-        fr: 'Vos préférences technologiques nécessiteront un investissement important en infrastructure.'
-      }
+        fr: 'Vos préférences technologiques nécessiteront un investissement important en infrastructure.',
+      },
     });
   }
 
@@ -234,8 +252,8 @@ function validateSectionLogic(answers) {
         type: 'comfort-feature-mismatch',
         message: {
           en: 'Consider starting with fewer smart features to build comfort with technology.',
-          fr: 'Envisagez de commencer avec moins de fonctions intelligentes pour vous familiariser avec la technologie.'
-        }
+          fr: 'Envisagez de commencer avec moins de fonctions intelligentes pour vous familiariser avec la technologie.',
+        },
       });
     }
   }
@@ -248,12 +266,14 @@ function getValidationSummary(answers) {
 
   return {
     ...result,
-    answeredCount: Object.keys(answers).filter(k => VALID_OPTIONS[k]).length,
+    answeredCount: Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length,
     totalQuestions: Object.keys(VALID_OPTIONS).length,
-    requiredComplete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined),
+    requiredComplete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined),
     percentComplete: Math.round(
-      (Object.keys(answers).filter(k => VALID_OPTIONS[k]).length / Object.keys(VALID_OPTIONS).length) * 100
-    )
+      (Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length /
+        Object.keys(VALID_OPTIONS).length) *
+        100
+    ),
   };
 }
 
@@ -268,5 +288,5 @@ module.exports = {
   TechValidationError,
   VALID_OPTIONS,
   REQUIRED_QUESTIONS,
-  MULTI_CHOICE_QUESTIONS
+  MULTI_CHOICE_QUESTIONS,
 };

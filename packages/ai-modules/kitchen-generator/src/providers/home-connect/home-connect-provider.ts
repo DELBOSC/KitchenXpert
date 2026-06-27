@@ -107,39 +107,33 @@ export class HomeConnectProvider implements SmartApplianceProvider {
     tokenUrl: 'https://api.home-connect.com/security/oauth/token',
     clientId: '',
     clientSecret: '',
-    scopes: [
-      'IdentifyAppliance',
-      'Monitor',
-      'Control',
-      'Settings',
-      'Images',
-    ],
+    scopes: ['IdentifyAppliance', 'Monitor', 'Control', 'Settings', 'Images'],
     redirectUri: '',
   };
 
   // Brand mapping
   private readonly brandMapping: Record<string, string> = {
-    'BOSCH': 'bosch',
-    'SIEMENS': 'siemens',
-    'NEFF': 'neff',
-    'GAGGENAU': 'gaggenau',
-    'THERMADOR': 'thermador',
+    BOSCH: 'bosch',
+    SIEMENS: 'siemens',
+    NEFF: 'neff',
+    GAGGENAU: 'gaggenau',
+    THERMADOR: 'thermador',
   };
 
   // Appliance type mapping from Home Connect to our types
   private readonly applianceTypeMapping: Record<string, ConnectedApplianceType> = {
-    'Oven': 'Oven',
-    'Dishwasher': 'Dishwasher',
-    'CoffeeMaker': 'CoffeeMaker',
-    'Refrigerator': 'Refrigerator',
-    'Freezer': 'Freezer',
-    'FridgeFreezer': 'FridgeFreezer',
-    'Hob': 'Hob',
-    'Hood': 'Hood',
-    'Microwave': 'Microwave',
-    'WarmingDrawer': 'WarmingDrawer',
-    'Dryer': 'Dryer',
-    'Washer': 'Washer',
+    Oven: 'Oven',
+    Dishwasher: 'Dishwasher',
+    CoffeeMaker: 'CoffeeMaker',
+    Refrigerator: 'Refrigerator',
+    Freezer: 'Freezer',
+    FridgeFreezer: 'FridgeFreezer',
+    Hob: 'Hob',
+    Hood: 'Hood',
+    Microwave: 'Microwave',
+    WarmingDrawer: 'WarmingDrawer',
+    Dryer: 'Dryer',
+    Washer: 'Washer',
   };
 
   constructor(config?: Partial<ApplianceOAuthConfig>) {
@@ -187,10 +181,10 @@ export class HomeConnectProvider implements SmartApplianceProvider {
         return false;
       }
 
-      const data = await response.json() as TokenResponse;
+      const data = (await response.json()) as TokenResponse;
       this.accessToken = data.access_token;
       this.refreshToken = data.refresh_token || null;
-      this.tokenExpiresAt = Date.now() + (data.expires_in * 1000);
+      this.tokenExpiresAt = Date.now() + data.expires_in * 1000;
 
       return true;
     } catch (error) {
@@ -206,7 +200,7 @@ export class HomeConnectProvider implements SmartApplianceProvider {
     if (credentials.accessToken) {
       this.accessToken = credentials.accessToken;
       this.refreshToken = credentials.refreshToken || null;
-      this.tokenExpiresAt = Date.now() + (3600 * 1000); // Assume 1 hour if not specified
+      this.tokenExpiresAt = Date.now() + 3600 * 1000; // Assume 1 hour if not specified
       return true;
     }
 
@@ -245,12 +239,12 @@ export class HomeConnectProvider implements SmartApplianceProvider {
         return false;
       }
 
-      const data = await response.json() as TokenResponse;
+      const data = (await response.json()) as TokenResponse;
       this.accessToken = data.access_token;
       if (data.refresh_token) {
         this.refreshToken = data.refresh_token;
       }
-      this.tokenExpiresAt = Date.now() + (data.expires_in * 1000);
+      this.tokenExpiresAt = Date.now() + data.expires_in * 1000;
 
       return true;
     } catch {
@@ -261,10 +255,7 @@ export class HomeConnectProvider implements SmartApplianceProvider {
   /**
    * Make an authenticated API request
    */
-  private async apiRequest<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     // Check if token needs refresh
     if (this.tokenExpiresAt && Date.now() > this.tokenExpiresAt - 60000) {
       await this.refreshAccessToken();
@@ -277,15 +268,15 @@ export class HomeConnectProvider implements SmartApplianceProvider {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers: {
-        'Authorization': `Bearer ${this.accessToken}`,
-        'Accept': 'application/vnd.bsh.sdk.v1+json',
+        Authorization: `Bearer ${this.accessToken}`,
+        Accept: 'application/vnd.bsh.sdk.v1+json',
         'Content-Type': 'application/vnd.bsh.sdk.v1+json',
         ...options.headers,
       },
     });
 
     if (!response.ok) {
-      const errorData = await response.json() as HomeConnectError;
+      const errorData = (await response.json()) as HomeConnectError;
       throw new Error(
         `Home Connect API error: ${errorData.error?.description || response.statusText}`
       );
@@ -298,13 +289,11 @@ export class HomeConnectProvider implements SmartApplianceProvider {
    * Get all connected appliances
    */
   async getAppliances(): Promise<ConnectedAppliance[]> {
-    const response = await this.apiRequest<HomeConnectAppliancesResponse>(
-      '/api/homeappliances'
-    );
+    const response = await this.apiRequest<HomeConnectAppliancesResponse>('/api/homeappliances');
 
     return response.data.homeappliances
-      .filter(appliance => this.isKitchenAppliance(appliance.type))
-      .map(appliance => this.mapToConnectedAppliance(appliance));
+      .filter((appliance) => this.isKitchenAppliance(appliance.type))
+      .map((appliance) => this.mapToConnectedAppliance(appliance));
   }
 
   /**
@@ -327,7 +316,7 @@ export class HomeConnectProvider implements SmartApplianceProvider {
         `/api/homeappliances/${applianceId}/programs/available`
       );
 
-      return response.data.programs.map(program => this.mapProgram(program));
+      return response.data.programs.map((program) => this.mapProgram(program));
     } catch {
       // Some appliances may not support programs
       return [];
@@ -350,13 +339,10 @@ export class HomeConnectProvider implements SmartApplianceProvider {
         },
       };
 
-      await this.apiRequest(
-        `/api/homeappliances/${applianceId}/programs/active`,
-        {
-          method: 'PUT',
-          body: JSON.stringify(body),
-        }
-      );
+      await this.apiRequest(`/api/homeappliances/${applianceId}/programs/active`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      });
 
       return true;
     } catch (error) {
@@ -370,10 +356,9 @@ export class HomeConnectProvider implements SmartApplianceProvider {
    */
   async stopProgram(applianceId: string): Promise<boolean> {
     try {
-      await this.apiRequest(
-        `/api/homeappliances/${applianceId}/programs/active`,
-        { method: 'DELETE' }
-      );
+      await this.apiRequest(`/api/homeappliances/${applianceId}/programs/active`, {
+        method: 'DELETE',
+      });
       return true;
     } catch {
       return false;
@@ -383,21 +368,14 @@ export class HomeConnectProvider implements SmartApplianceProvider {
   /**
    * Set an appliance setting
    */
-  async setSetting(
-    applianceId: string,
-    key: string,
-    value: unknown
-  ): Promise<boolean> {
+  async setSetting(applianceId: string, key: string, value: unknown): Promise<boolean> {
     try {
-      await this.apiRequest(
-        `/api/homeappliances/${applianceId}/settings/${key}`,
-        {
-          method: 'PUT',
-          body: JSON.stringify({
-            data: { key, value },
-          }),
-        }
-      );
+      await this.apiRequest(`/api/homeappliances/${applianceId}/settings/${key}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          data: { key, value },
+        }),
+      });
       return true;
     } catch {
       return false;
@@ -438,9 +416,16 @@ export class HomeConnectProvider implements SmartApplianceProvider {
 
   private isKitchenAppliance(type: string): boolean {
     const kitchenTypes = [
-      'Oven', 'Dishwasher', 'CoffeeMaker', 'Refrigerator',
-      'Freezer', 'FridgeFreezer', 'Hob', 'Hood',
-      'Microwave', 'WarmingDrawer'
+      'Oven',
+      'Dishwasher',
+      'CoffeeMaker',
+      'Refrigerator',
+      'Freezer',
+      'FridgeFreezer',
+      'Hob',
+      'Hood',
+      'Microwave',
+      'WarmingDrawer',
     ];
     return kitchenTypes.includes(type);
   }
@@ -480,35 +465,40 @@ export class HomeConnectProvider implements SmartApplianceProvider {
 
   private getApplianceCategory(type: string): string {
     const categoryMap: Record<string, string> = {
-      'Oven': 'cooking',
-      'Hob': 'cooking',
-      'Hood': 'ventilation',
-      'Microwave': 'cooking',
-      'WarmingDrawer': 'cooking',
-      'Dishwasher': 'cleaning',
-      'CoffeeMaker': 'small_appliances',
-      'Refrigerator': 'cold_storage',
-      'Freezer': 'cold_storage',
-      'FridgeFreezer': 'cold_storage',
+      Oven: 'cooking',
+      Hob: 'cooking',
+      Hood: 'ventilation',
+      Microwave: 'cooking',
+      WarmingDrawer: 'cooking',
+      Dishwasher: 'cleaning',
+      CoffeeMaker: 'small_appliances',
+      Refrigerator: 'cold_storage',
+      Freezer: 'cold_storage',
+      FridgeFreezer: 'cold_storage',
     };
     return categoryMap[type] || 'other';
   }
 
-  private getDefaultDimensions(type: string): { width: number; height: number; depth: number; unit: 'cm' } {
+  private getDefaultDimensions(type: string): {
+    width: number;
+    height: number;
+    depth: number;
+    unit: 'cm';
+  } {
     // Default dimensions based on appliance type
     const dimensions: Record<string, { width: number; height: number; depth: number }> = {
-      'Oven': { width: 60, height: 60, depth: 55 },
-      'Dishwasher': { width: 60, height: 82, depth: 55 },
-      'Refrigerator': { width: 60, height: 185, depth: 65 },
-      'Freezer': { width: 60, height: 185, depth: 65 },
-      'FridgeFreezer': { width: 60, height: 200, depth: 65 },
-      'Hob': { width: 60, height: 5, depth: 52 },
-      'Hood': { width: 60, height: 50, depth: 50 },
-      'Microwave': { width: 60, height: 38, depth: 32 },
-      'WarmingDrawer': { width: 60, height: 14, depth: 55 },
-      'CoffeeMaker': { width: 60, height: 45, depth: 35 },
+      Oven: { width: 60, height: 60, depth: 55 },
+      Dishwasher: { width: 60, height: 82, depth: 55 },
+      Refrigerator: { width: 60, height: 185, depth: 65 },
+      Freezer: { width: 60, height: 185, depth: 65 },
+      FridgeFreezer: { width: 60, height: 200, depth: 65 },
+      Hob: { width: 60, height: 5, depth: 52 },
+      Hood: { width: 60, height: 50, depth: 50 },
+      Microwave: { width: 60, height: 38, depth: 32 },
+      WarmingDrawer: { width: 60, height: 14, depth: 55 },
+      CoffeeMaker: { width: 60, height: 45, depth: 35 },
     };
-    return { ...dimensions[type] || { width: 60, height: 60, depth: 55 }, unit: 'cm' };
+    return { ...(dimensions[type] || { width: 60, height: 60, depth: 55 }), unit: 'cm' };
   }
 
   private mapStatusResponse(statusItems: HomeConnectStatusItem[]): ConnectedApplianceStatus {
@@ -567,7 +557,7 @@ export class HomeConnectProvider implements SmartApplianceProvider {
       id: program.key,
       name: program.name || this.formatProgramName(program.key),
       key: program.key,
-      options: program.options?.map(opt => this.mapProgramOption(opt)),
+      options: program.options?.map((opt) => this.mapProgramOption(opt)),
     };
   }
 
@@ -609,13 +599,17 @@ export class HomeConnectProvider implements SmartApplianceProvider {
     return name.replace(/([A-Z])/g, ' $1').trim();
   }
 
-  private formatProgramOptions(options: Record<string, unknown>): Array<{ key: string; value: unknown }> {
+  private formatProgramOptions(
+    options: Record<string, unknown>
+  ): Array<{ key: string; value: unknown }> {
     return Object.entries(options).map(([key, value]) => ({ key, value }));
   }
 }
 
 // Export singleton instance factory
-export function createHomeConnectProvider(config?: Partial<ApplianceOAuthConfig>): HomeConnectProvider {
+export function createHomeConnectProvider(
+  config?: Partial<ApplianceOAuthConfig>
+): HomeConnectProvider {
   return new HomeConnectProvider(config);
 }
 

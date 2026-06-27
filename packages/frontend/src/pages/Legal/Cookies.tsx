@@ -27,45 +27,142 @@ interface CookieEntry {
 
 const COOKIES: CookieEntry[] = [
   // Essential — exempted from consent (Art. 82 loi I&L).
-  { name: 'accessToken',         party: '1st', category: 'essential',  purpose: 'Token de session JWT pour l\'authentification.',                    duration: '15 minutes', publisher: 'KitchenXpert' },
-  { name: 'refreshToken',        party: '1st', category: 'essential',  purpose: 'Token de renouvellement de session.',                                duration: '7 jours',     publisher: 'KitchenXpert' },
-  { name: 'csrf-token',          party: '1st', category: 'essential',  purpose: 'Protection contre les attaques CSRF (jeton anti-rejeu).',            duration: 'Session',     publisher: 'KitchenXpert' },
-  { name: 'kx.cookie-consent.v1',party: '1st', category: 'essential',  purpose: 'Mémorise votre choix de consentement aux cookies.',                  duration: '13 mois',     publisher: 'KitchenXpert' },
-  { name: '__stripe_mid',        party: '3rd', category: 'essential',  purpose: 'Identifiant de session anonyme pour la prévention de la fraude Stripe.', duration: '1 an',    publisher: 'Stripe' },
-  { name: '__stripe_sid',        party: '3rd', category: 'essential',  purpose: 'Détection de fraude au moment du paiement.',                         duration: '30 minutes',  publisher: 'Stripe' },
+  {
+    name: 'accessToken',
+    party: '1st',
+    category: 'essential',
+    purpose: "Token de session JWT pour l'authentification.",
+    duration: '15 minutes',
+    publisher: 'KitchenXpert',
+  },
+  {
+    name: 'refreshToken',
+    party: '1st',
+    category: 'essential',
+    purpose: 'Token de renouvellement de session.',
+    duration: '7 jours',
+    publisher: 'KitchenXpert',
+  },
+  {
+    name: 'csrf-token',
+    party: '1st',
+    category: 'essential',
+    purpose: 'Protection contre les attaques CSRF (jeton anti-rejeu).',
+    duration: 'Session',
+    publisher: 'KitchenXpert',
+  },
+  {
+    name: 'kx.cookie-consent.v1',
+    party: '1st',
+    category: 'essential',
+    purpose: 'Mémorise votre choix de consentement aux cookies.',
+    duration: '13 mois',
+    publisher: 'KitchenXpert',
+  },
+  {
+    name: '__stripe_mid',
+    party: '3rd',
+    category: 'essential',
+    purpose: 'Identifiant de session anonyme pour la prévention de la fraude Stripe.',
+    duration: '1 an',
+    publisher: 'Stripe',
+  },
+  {
+    name: '__stripe_sid',
+    party: '3rd',
+    category: 'essential',
+    purpose: 'Détection de fraude au moment du paiement.',
+    duration: '30 minutes',
+    publisher: 'Stripe',
+  },
 
   // Functional — exempted because user-driven.
-  { name: 'kx.theme',            party: '1st', category: 'functional', purpose: 'Mémorise votre préférence de thème (clair/sombre/système).',         duration: '12 mois',     publisher: 'KitchenXpert' },
-  { name: 'kx.lang',             party: '1st', category: 'functional', purpose: 'Mémorise votre langue d\'affichage.',                                 duration: '12 mois',     publisher: 'KitchenXpert' },
-  { name: 'kx.last-kitchen',     party: '1st', category: 'functional', purpose: 'Restaure la dernière cuisine ouverte au prochain accès.',            duration: '90 jours',    publisher: 'KitchenXpert' },
+  {
+    name: 'kx.theme',
+    party: '1st',
+    category: 'functional',
+    purpose: 'Mémorise votre préférence de thème (clair/sombre/système).',
+    duration: '12 mois',
+    publisher: 'KitchenXpert',
+  },
+  {
+    name: 'kx.lang',
+    party: '1st',
+    category: 'functional',
+    purpose: "Mémorise votre langue d'affichage.",
+    duration: '12 mois',
+    publisher: 'KitchenXpert',
+  },
+  {
+    name: 'kx.last-kitchen',
+    party: '1st',
+    category: 'functional',
+    purpose: 'Restaure la dernière cuisine ouverte au prochain accès.',
+    duration: '90 jours',
+    publisher: 'KitchenXpert',
+  },
 
   // Analytics — require consent.
-  { name: '_pa',                 party: '3rd', category: 'analytics',  purpose: 'Plausible Analytics — mesure d\'audience anonymisée (sans IP, sans tracking).', duration: 'Session', publisher: 'Plausible Insights' },
-  { name: '_kx_session_id',      party: '1st', category: 'analytics',  purpose: 'Statistiques agrégées internes (parcours, durée, événements clés).', duration: '13 mois',     publisher: 'KitchenXpert' },
+  {
+    name: '_pa',
+    party: '3rd',
+    category: 'analytics',
+    purpose: "Plausible Analytics — mesure d'audience anonymisée (sans IP, sans tracking).",
+    duration: 'Session',
+    publisher: 'Plausible Insights',
+  },
+  {
+    name: '_kx_session_id',
+    party: '1st',
+    category: 'analytics',
+    purpose: 'Statistiques agrégées internes (parcours, durée, événements clés).',
+    duration: '13 mois',
+    publisher: 'KitchenXpert',
+  },
 
   // Marketing — require consent.
-  { name: '_fbp',                party: '3rd', category: 'marketing',  purpose: 'Pixel Meta — attribution publicitaire et reciblage.',                duration: '90 jours',    publisher: 'Meta Platforms' },
-  { name: '_gcl_au',             party: '3rd', category: 'marketing',  purpose: 'Google Ads — mesure de conversion publicitaire.',                    duration: '90 jours',    publisher: 'Google' },
+  {
+    name: '_fbp',
+    party: '3rd',
+    category: 'marketing',
+    purpose: 'Pixel Meta — attribution publicitaire et reciblage.',
+    duration: '90 jours',
+    publisher: 'Meta Platforms',
+  },
+  {
+    name: '_gcl_au',
+    party: '3rd',
+    category: 'marketing',
+    purpose: 'Google Ads — mesure de conversion publicitaire.',
+    duration: '90 jours',
+    publisher: 'Google',
+  },
 ];
 
 const CATEGORY_LABELS: Record<CookieEntry['category'], string> = {
-  essential:  'Strictement nécessaires',
+  essential: 'Strictement nécessaires',
   functional: 'Fonctionnels',
-  analytics:  'Mesure d\'audience',
-  marketing:  'Marketing',
+  analytics: "Mesure d'audience",
+  marketing: 'Marketing',
 };
 
 const CATEGORY_NOTES: Record<CookieEntry['category'], string> = {
-  essential:  'Indispensables au fonctionnement du Site (connexion, sécurité, panier). Exemptés du recueil de consentement par l\'article 82 de la loi Informatique et Libertés.',
-  functional: 'Améliorent votre confort d\'utilisation en mémorisant vos choix d\'interface. Exemptés du consentement car activés à votre demande.',
-  analytics:  'Mesure d\'audience strictement nécessaire à l\'éditeur. Plausible Analytics est configuré en mode « CNIL-exempt » (sans cookie persistant ni adresse IP).',
-  marketing:  'Permettent d\'évaluer l\'efficacité de nos campagnes publicitaires et de vous proposer des contenus personnalisés. Activés uniquement avec votre consentement explicite.',
+  essential:
+    "Indispensables au fonctionnement du Site (connexion, sécurité, panier). Exemptés du recueil de consentement par l'article 82 de la loi Informatique et Libertés.",
+  functional:
+    "Améliorent votre confort d'utilisation en mémorisant vos choix d'interface. Exemptés du consentement car activés à votre demande.",
+  analytics:
+    "Mesure d'audience strictement nécessaire à l'éditeur. Plausible Analytics est configuré en mode « CNIL-exempt » (sans cookie persistant ni adresse IP).",
+  marketing:
+    "Permettent d'évaluer l'efficacité de nos campagnes publicitaires et de vous proposer des contenus personnalisés. Activés uniquement avec votre consentement explicite.",
 };
 
 export default function Cookies(): React.ReactElement {
   const { lastRevised } = LEGAL;
   const fmtDate = new Date(lastRevised).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long', year: 'numeric',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 
   const resetConsent = (): void => {
@@ -74,63 +171,68 @@ export default function Cookies(): React.ReactElement {
   };
 
   const groupedByCategory = (Object.keys(CATEGORY_LABELS) as CookieEntry['category'][]).map(
-    (cat) => ({ cat, items: COOKIES.filter((c) => c.category === cat) }),
+    (cat) => ({ cat, items: COOKIES.filter((c) => c.category === cat) })
   );
 
   return (
     <LegalLayout title="Politique cookies">
       <p className="text-sm text-white/50">
-        Conforme à la Directive ePrivacy 2002/58/CE, à l&apos;article 82 de la
-        loi Informatique et Libertés et aux lignes directrices CNIL du
-        17 septembre 2020. Version en vigueur depuis le {fmtDate}.
+        Conforme à la Directive ePrivacy 2002/58/CE, à l&apos;article 82 de la loi Informatique et
+        Libertés et aux lignes directrices CNIL du 17 septembre 2020. Version en vigueur depuis le{' '}
+        {fmtDate}.
       </p>
 
       <h2>1. Qu&apos;est-ce qu&apos;un cookie&nbsp;?</h2>
       <p>
-        Un cookie est un petit fichier texte déposé par un site web sur
-        votre appareil (ordinateur, mobile, tablette) lors de la
-        consultation d&apos;une page. Il permet au site de reconnaître votre
-        appareil lors des visites suivantes, de retenir vos préférences,
-        d&apos;authentifier votre session ou de mesurer l&apos;audience.
+        Un cookie est un petit fichier texte déposé par un site web sur votre appareil (ordinateur,
+        mobile, tablette) lors de la consultation d&apos;une page. Il permet au site de reconnaître
+        votre appareil lors des visites suivantes, de retenir vos préférences, d&apos;authentifier
+        votre session ou de mesurer l&apos;audience.
       </p>
       <p>
-        Les <em>traceurs assimilés</em> (pixels invisibles, fingerprinting,
-        local storage, session storage, IndexedDB, cache HTTP, etc.) sont
-        soumis au même régime juridique que les cookies. La présente
-        politique couvre l&apos;ensemble de ces dispositifs.
+        Les <em>traceurs assimilés</em> (pixels invisibles, fingerprinting, local storage, session
+        storage, IndexedDB, cache HTTP, etc.) sont soumis au même régime juridique que les cookies.
+        La présente politique couvre l&apos;ensemble de ces dispositifs.
       </p>
 
       <h2>2. Notre engagement</h2>
-      <p>
-        Nous respectons les principes suivants&nbsp;:
-      </p>
+      <p>Nous respectons les principes suivants&nbsp;:</p>
       <ul>
-        <li>Aucun cookie non essentiel n&apos;est déposé tant que vous
-          n&apos;avez pas donné votre consentement explicite.</li>
-        <li>Le bouton <strong>« Tout refuser »</strong> est aussi
-          accessible et visible que <strong>« Tout accepter »</strong>{' '}
-          (exigence CNIL 2020).</li>
-        <li>Vous pouvez retirer votre consentement à tout moment, en un
-          clic, sans perte de fonctionnalité essentielle.</li>
-        <li>La durée de vie des cookies non-essentiels n&apos;excède pas
-          13&nbsp;mois&nbsp;; le consentement est redemandé au-delà.</li>
-        <li>Aucune information n&apos;est partagée avec des tiers à des
-          fins commerciales sans votre accord exprès.</li>
+        <li>
+          Aucun cookie non essentiel n&apos;est déposé tant que vous n&apos;avez pas donné votre
+          consentement explicite.
+        </li>
+        <li>
+          Le bouton <strong>« Tout refuser »</strong> est aussi accessible et visible que{' '}
+          <strong>« Tout accepter »</strong> (exigence CNIL 2020).
+        </li>
+        <li>
+          Vous pouvez retirer votre consentement à tout moment, en un clic, sans perte de
+          fonctionnalité essentielle.
+        </li>
+        <li>
+          La durée de vie des cookies non-essentiels n&apos;excède pas 13&nbsp;mois&nbsp;; le
+          consentement est redemandé au-delà.
+        </li>
+        <li>
+          Aucune information n&apos;est partagée avec des tiers à des fins commerciales sans votre
+          accord exprès.
+        </li>
       </ul>
 
       <h2>3. Liste exhaustive des cookies utilisés</h2>
       <p>
-        Vous trouverez ci-dessous la liste complète des cookies que le
-        Site est susceptible de déposer, regroupés par catégorie.
-        Cliquez sur «&nbsp;Modifier mes préférences&nbsp;» en bas de
-        cette page pour ajuster vos choix.
+        Vous trouverez ci-dessous la liste complète des cookies que le Site est susceptible de
+        déposer, regroupés par catégorie. Cliquez sur «&nbsp;Modifier mes préférences&nbsp;» en bas
+        de cette page pour ajuster vos choix.
       </p>
 
       {groupedByCategory.map(({ cat, items }) => (
-        <section key={cat} className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-          <h3 className="mb-2 text-lg font-semibold text-white">
-            {CATEGORY_LABELS[cat]}
-          </h3>
+        <section
+          key={cat}
+          className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-6"
+        >
+          <h3 className="mb-2 text-lg font-semibold text-white">{CATEGORY_LABELS[cat]}</h3>
           <p className="mb-4 text-sm text-white/60">{CATEGORY_NOTES[cat]}</p>
 
           <div className="overflow-x-auto">
@@ -162,8 +264,8 @@ export default function Cookies(): React.ReactElement {
 
       <h2>4. Gérer mes préférences</h2>
       <p>
-        Vous pouvez modifier votre choix de consentement à tout moment.
-        Le bouton ci-dessous rouvre le panneau&nbsp;:
+        Vous pouvez modifier votre choix de consentement à tout moment. Le bouton ci-dessous rouvre
+        le panneau&nbsp;:
       </p>
       <button
         onClick={resetConsent}
@@ -174,29 +276,44 @@ export default function Cookies(): React.ReactElement {
 
       <h2>5. Cookies de tiers et désactivation côté navigateur</h2>
       <p>
-        Indépendamment de notre panneau de consentement, vous pouvez
-        configurer votre navigateur pour bloquer tout ou partie des
-        cookies. Ces réglages peuvent altérer le fonctionnement de
+        Indépendamment de notre panneau de consentement, vous pouvez configurer votre navigateur
+        pour bloquer tout ou partie des cookies. Ces réglages peuvent altérer le fonctionnement de
         services essentiels (connexion, paiement)&nbsp;:
       </p>
       <ul>
         <li>
-          <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://support.google.com/chrome/answer/95647"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Google Chrome
           </a>
         </li>
         <li>
-          <a href="https://support.mozilla.org/fr/kb/protection-renforcee-contre-pistage-firefox-ordinateur" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://support.mozilla.org/fr/kb/protection-renforcee-contre-pistage-firefox-ordinateur"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Mozilla Firefox
           </a>
         </li>
         <li>
-          <a href="https://support.apple.com/fr-fr/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://support.apple.com/fr-fr/guide/safari/sfri11471/mac"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Apple Safari
           </a>
         </li>
         <li>
-          <a href="https://support.microsoft.com/fr-fr/microsoft-edge/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://support.microsoft.com/fr-fr/microsoft-edge/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Microsoft Edge
           </a>
         </li>
@@ -204,10 +321,9 @@ export default function Cookies(): React.ReactElement {
 
       <h2>6. Réclamation</h2>
       <p>
-        Si vous estimez, après nous avoir contactés, que vos droits ne
-        sont pas respectés, vous pouvez introduire une réclamation auprès
-        de la CNIL — 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex
-        07 —{' '}
+        Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous
+        pouvez introduire une réclamation auprès de la CNIL — 3 place de Fontenoy, TSA 80715, 75334
+        Paris Cedex 07 —{' '}
         <a href="https://www.cnil.fr/plaintes" target="_blank" rel="noopener noreferrer">
           www.cnil.fr/plaintes
         </a>

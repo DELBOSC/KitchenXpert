@@ -2,10 +2,10 @@
 
 ## Overview
 
-Retrieve kitchen appliance products from the catalog with extensive filtering, sorting, and pagination capabilities.
+Retrieve kitchen appliance products from the catalog with extensive filtering,
+sorting, and pagination capabilities.
 
-**Endpoint:** 
-**Authentication Required:** No (Public endpoint)
+**Endpoint:** **Authentication Required:** No (Public endpoint)
 
 **Rate Limiting:** 100 requests per minute per IP
 
@@ -15,23 +15,24 @@ Retrieve kitchen appliance products from the catalog with extensive filtering, s
 
 ### Query Parameters
 
-| Parameter | Type | Required | Description | Default |
-|-----------|------|----------|-------------|---------|
-| \ | string | No | Search term | - |
-| \ | string | No | Product category | - |
-| \ | string | No | Brand name | - |
-| \ | number | No | Minimum price (USD) | 0 |
-| \ | number | No | Maximum price (USD) | - |
-| \ | string | No | Energy efficiency | - |
-| \ | number | No | Page number | 1 |
-| \ | number | No | Results per page | 20 |
-| \ | string | No | Sort field | price:asc |
+| Parameter | Type   | Required | Description         | Default   |
+| --------- | ------ | -------- | ------------------- | --------- |
+| \         | string | No       | Search term         | -         |
+| \         | string | No       | Product category    | -         |
+| \         | string | No       | Brand name          | -         |
+| \         | number | No       | Minimum price (USD) | 0         |
+| \         | number | No       | Maximum price (USD) | -         |
+| \         | string | No       | Energy efficiency   | -         |
+| \         | number | No       | Page number         | 1         |
+| \         | number | No       | Results per page    | 20        |
+| \         | string | No       | Sort field          | price:asc |
 
 **Categories:** refrigerator, oven, dishwasher, cooktop, range, microwave, hood
 
 **Energy Classes:** A+++, A++, A+, A, B, C, D
 
-**Sort Options:** price:asc, price:desc, name:asc, name:desc, rating:desc, newest
+**Sort Options:** price:asc, price:desc, name:asc, name:desc, rating:desc,
+newest
 
 ### Request Examples
 

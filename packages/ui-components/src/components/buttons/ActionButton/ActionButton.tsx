@@ -59,10 +59,22 @@ const variantStyles = {
 };
 
 const positionStyles = {
-  'bottom-right': css`bottom: 24px; right: 24px;`,
-  'bottom-left': css`bottom: 24px; left: 24px;`,
-  'top-right': css`top: 24px; right: 24px;`,
-  'top-left': css`top: 24px; left: 24px;`,
+  'bottom-right': css`
+    bottom: 24px;
+    right: 24px;
+  `,
+  'bottom-left': css`
+    bottom: 24px;
+    left: 24px;
+  `,
+  'top-right': css`
+    top: 24px;
+    right: 24px;
+  `,
+  'top-left': css`
+    top: 24px;
+    left: 24px;
+  `,
 };
 
 const pulseAnimation = keyframes`

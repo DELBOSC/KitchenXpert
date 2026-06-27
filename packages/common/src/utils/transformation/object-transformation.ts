@@ -9,10 +9,7 @@
  * @param keys - The keys to pick
  * @returns A new object with only the specified keys
  */
-export function pick<T extends object, K extends keyof T>(
-  obj: T,
-  keys: K[]
-): Pick<T, K> {
+export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
   const result = {} as Pick<T, K>;
   for (const key of keys) {
     if (key in obj) {
@@ -28,10 +25,7 @@ export function pick<T extends object, K extends keyof T>(
  * @param keys - The keys to omit
  * @returns A new object without the specified keys
  */
-export function omit<T extends object, K extends keyof T>(
-  obj: T,
-  keys: K[]
-): Omit<T, K> {
+export function omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
   const result = { ...obj };
   for (const key of keys) {
     delete result[key];
@@ -58,10 +52,7 @@ export function isPlainObject(value: unknown): value is Record<string, unknown> 
  * @param sources - The source objects to merge
  * @returns The merged object
  */
-export function deepMerge<T extends object>(
-  target: T,
-  ...sources: Partial<T>[]
-): T {
+export function deepMerge<T extends object>(target: T, ...sources: Partial<T>[]): T {
   if (!sources.length) {
     return target;
   }
@@ -78,10 +69,7 @@ export function deepMerge<T extends object>(
       const targetValue = result[key];
 
       if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
-        result[key] = deepMerge(
-          targetValue as object,
-          sourceValue as object
-        );
+        result[key] = deepMerge(targetValue as object, sourceValue as object);
       } else if (sourceValue !== undefined) {
         result[key] = sourceValue;
       }
@@ -156,11 +144,7 @@ export function get<T = unknown>(
  * @param value - The value to set
  * @returns The modified object
  */
-export function set<T extends object>(
-  obj: T,
-  path: string | string[],
-  value: unknown
-): T {
+export function set<T extends object>(obj: T, path: string | string[], value: unknown): T {
   const keys = Array.isArray(path) ? path : path.split('.');
   const result = deepClone(obj);
   let current: Record<string, unknown> = result as Record<string, unknown>;
@@ -234,9 +218,7 @@ export function flattenObject(
  * @param obj - The flattened object
  * @returns The nested object
  */
-export function unflattenObject(
-  obj: Record<string, unknown>
-): Record<string, unknown> {
+export function unflattenObject(obj: Record<string, unknown>): Record<string, unknown> {
   const result: Record<string, unknown> = {};
 
   for (const key of Object.keys(obj)) {
@@ -338,12 +320,7 @@ export function deepEqual(obj1: unknown, obj2: unknown): boolean {
     return true;
   }
 
-  if (
-    typeof obj1 !== 'object' ||
-    typeof obj2 !== 'object' ||
-    obj1 === null ||
-    obj2 === null
-  ) {
+  if (typeof obj1 !== 'object' || typeof obj2 !== 'object' || obj1 === null || obj2 === null) {
     return false;
   }
 
@@ -367,10 +344,7 @@ export function deepEqual(obj1: unknown, obj2: unknown): boolean {
       return false;
     }
     if (
-      !deepEqual(
-        (obj1 as Record<string, unknown>)[key],
-        (obj2 as Record<string, unknown>)[key]
-      )
+      !deepEqual((obj1 as Record<string, unknown>)[key], (obj2 as Record<string, unknown>)[key])
     ) {
       return false;
     }

@@ -35,7 +35,9 @@ interface Proposal {
   name: string;
   rationale: string;
   score: number;
-  layout: SandboxItem extends never ? never : 'L_SHAPED' | 'U_SHAPED' | 'GALLEY' | 'ISLAND' | 'PENINSULA' | 'ONE_WALL' | 'OPEN_PLAN';
+  layout: SandboxItem extends never
+    ? never
+    : 'L_SHAPED' | 'U_SHAPED' | 'GALLEY' | 'ISLAND' | 'PENINSULA' | 'ONE_WALL' | 'OPEN_PLAN';
   room: { widthCm: number; depthCm: number; heightCm: number };
   totalEur: number;
   items: Array<{
@@ -65,7 +67,10 @@ export interface AutoLayoutModalProps {
   onClose: () => void;
 }
 
-export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.ReactElement | null {
+export function AutoLayoutModal({
+  open,
+  onClose,
+}: AutoLayoutModalProps): React.ReactElement | null {
   const [prompt, setPrompt] = useState('');
   const [loadingStep, setLoadingStep] = useState<number | null>(null);
   const [proposals, setProposals] = useState<Proposal[] | null>(null);
@@ -74,7 +79,9 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
 
   const loadFromTemplate = useSandboxStore((s) => s.loadFromTemplate);
 
-  if (!open) {return null;}
+  if (!open) {
+    return null;
+  }
 
   const submit = async (): Promise<void> => {
     if (prompt.trim().length < 20) {
@@ -106,7 +113,9 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
         return;
       }
       if (!res.ok || !json.success || !json.data) {
-        setError(json.error?.message || 'Le service IA est indisponible, réessaie dans un instant.');
+        setError(
+          json.error?.message || 'Le service IA est indisponible, réessaie dans un instant.'
+        );
         return;
       }
       setProposals(json.data.layouts.proposals);
@@ -179,7 +188,8 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
           Décris ta cuisine idéale
         </h2>
         <p className="mt-2 text-sm text-white/65">
-          L&apos;IA propose 3 layouts complets en moins de 15 secondes — dimensions, meubles, budget.
+          L&apos;IA propose 3 layouts complets en moins de 15 secondes — dimensions, meubles,
+          budget.
         </p>
 
         {/* ── Input ──────────────────────────────────────────────────── */}
@@ -226,7 +236,9 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
             )}
 
             {error && (
-              <p role="alert" className="mt-4 text-sm text-rose-300">{error}</p>
+              <p role="alert" className="mt-4 text-sm text-rose-300">
+                {error}
+              </p>
             )}
 
             <div className="mt-6 flex justify-end gap-2">
@@ -254,12 +266,17 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
         {proposals && (
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {proposals.map((p, i) => (
-              <article key={i} className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+              <article
+                key={i}
+                className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4"
+              >
                 <div className="aspect-[16/10] overflow-hidden rounded-lg border border-white/10 bg-gradient-to-br from-slate-800 to-slate-900">
                   {previewUrls?.[i] ? (
                     <img src={previewUrls[i]} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-4xl"><ChefHat className="w-12 h-12 text-white/40" aria-hidden="true" /></div>
+                    <div className="flex h-full items-center justify-center text-4xl">
+                      <ChefHat className="w-12 h-12 text-white/40" aria-hidden="true" />
+                    </div>
                   )}
                 </div>
                 <div className="flex items-baseline justify-between">
@@ -270,7 +287,9 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
                 </div>
                 <p className="text-xs leading-relaxed text-white/60">{p.rationale}</p>
                 <div className="mt-auto flex items-baseline justify-between border-t border-white/5 pt-3">
-                  <span className="text-xs text-white/50">{p.items.length} meubles · {p.layout}</span>
+                  <span className="text-xs text-white/50">
+                    {p.items.length} meubles · {p.layout}
+                  </span>
                   <span className="text-base font-semibold text-white tabular-nums">
                     {p.totalEur.toLocaleString('fr-FR')} €
                   </span>
@@ -291,7 +310,10 @@ export function AutoLayoutModal({ open, onClose }: AutoLayoutModalProps): React.
           <div className="mt-6 text-center">
             <button
               type="button"
-              onClick={() => { setProposals(null); setPreviewUrls(undefined); }}
+              onClick={() => {
+                setProposals(null);
+                setPreviewUrls(undefined);
+              }}
               className="text-xs text-white/55 underline-offset-4 hover:text-white/70 hover:underline"
             >
               Reformuler ma demande

@@ -11,7 +11,7 @@
  * Convert a camelCase string to snake_case
  */
 function camelToSnake(str: string): string {
-  return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
 
 /**
@@ -25,8 +25,12 @@ function snakeToCamel(str: string): string {
  * Recursively convert all keys of an object from camelCase to snake_case
  */
 export function toSnakeCase(obj: any): any {
-  if (obj === null || obj === undefined) {return obj;}
-  if (Array.isArray(obj)) {return obj.map(item => toSnakeCase(item));}
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((item) => toSnakeCase(item));
+  }
   if (typeof obj === 'object' && !(obj instanceof Date)) {
     const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -41,8 +45,12 @@ export function toSnakeCase(obj: any): any {
  * Recursively convert all keys of an object from snake_case to camelCase
  */
 export function toCamelCase(obj: any): any {
-  if (obj === null || obj === undefined) {return obj;}
-  if (Array.isArray(obj)) {return obj.map(item => toCamelCase(item));}
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((item) => toCamelCase(item));
+  }
   if (typeof obj === 'object' && !(obj instanceof Date)) {
     const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -139,7 +147,7 @@ export function transformLayoutResult(pythonResult: any, startTime: number, body
       providersQueried: body.providers || ['ikea-fr'],
       productsConsidered: configurations.reduce(
         (sum: number, c: any) => sum + (c.items?.length || 0),
-        0,
+        0
       ),
       algorithm: 'python-genetic-optimization',
       fitnessScore: camelResult.fitnessScore,
@@ -187,7 +195,9 @@ export function transformValidateResult(pythonResult: any): any {
       if (conflict.severity === 'high') {
         errors.push({
           code: conflict.conflictType,
-          message: conflict.resolutionSuggestion || `Conflict between ${conflict.item1Id} and ${conflict.item2Id}`,
+          message:
+            conflict.resolutionSuggestion ||
+            `Conflict between ${conflict.item1Id} and ${conflict.item2Id}`,
           severity: 'error',
         });
       } else {
@@ -240,7 +250,7 @@ export function transformValidateResult(pythonResult: any): any {
  */
 export function transformOptimizeRequest(
   body: any,
-  optimizeFor: string,
+  optimizeFor: string
 ): { endpoint: 'budget' | 'layout'; payload: Record<string, any> } {
   const configuration = toSnakeCase(body.configuration || {});
 

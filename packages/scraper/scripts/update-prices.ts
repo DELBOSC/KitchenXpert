@@ -125,7 +125,9 @@ Price tracking features:
   - Price alert notifications
 
 Available brands with online prices:
-  ${BRANDS_CONFIG.filter(b => b.enabled && b.hasPricesOnline).map(b => b.id).join(', ')}
+  ${BRANDS_CONFIG.filter((b) => b.enabled && b.hasPricesOnline)
+    .map((b) => b.id)
+    .join(', ')}
 
 Examples:
   npm run update:prices
@@ -192,8 +194,8 @@ async function updatePrices(options: UpdatePricesOptions): Promise<void> {
   console.log('-'.repeat(60));
 
   const brandsWithPrices = options.brand
-    ? [getBrandConfig(options.brand)].filter(b => b?.hasPricesOnline)
-    : getEnabledBrands().filter(b => b.hasPricesOnline);
+    ? [getBrandConfig(options.brand)].filter((b) => b?.hasPricesOnline)
+    : getEnabledBrands().filter((b) => b.hasPricesOnline);
 
   if (brandsWithPrices.length === 0) {
     console.log('  No brands with online pricing found.');
@@ -263,7 +265,7 @@ async function main(): Promise<void> {
     const brandConfig = getBrandConfig(options.brand);
     if (!brandConfig) {
       console.error(`Error: Brand "${options.brand}" not found in configuration`);
-      console.error('Available brands:', BRANDS_CONFIG.map(b => b.id).join(', '));
+      console.error('Available brands:', BRANDS_CONFIG.map((b) => b.id).join(', '));
       process.exit(1);
     }
     if (!brandConfig.hasPricesOnline) {

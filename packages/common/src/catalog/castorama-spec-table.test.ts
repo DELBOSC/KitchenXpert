@@ -9,8 +9,12 @@ const table = (rows: Array<[string, string]>): string =>
 describe('parseSpecTable', () => {
   it('cabinet : 3 cotes valides -> width/height/depth + conf 1.0', () => {
     const r = parseSpecTable(
-      table([['Hauteur (cm)', '90cm'], ['Largeur (cm)', '61cm'], ['Profondeur (cm)', '56cm']]),
-      'cabinet',
+      table([
+        ['Hauteur (cm)', '90cm'],
+        ['Largeur (cm)', '61cm'],
+        ['Profondeur (cm)', '56cm'],
+      ]),
+      'cabinet'
     );
     expect(r.heightMm).toBe(900);
     expect(r.widthMm).toBe(610);
@@ -31,8 +35,11 @@ describe('parseSpecTable', () => {
 
   it('worktop : Profondeur=60 (<80) -> depth ; Longueur -> width', () => {
     const r = parseSpecTable(
-      table([['Longueur (cm)', '300cm'], ['Profondeur (cm)', '60cm']]),
-      'worktop',
+      table([
+        ['Longueur (cm)', '300cm'],
+        ['Profondeur (cm)', '60cm'],
+      ]),
+      'worktop'
     );
     expect(r.widthMm).toBe(3000);
     expect(r.depthMm).toBe(600);
@@ -49,8 +56,11 @@ describe('parseSpecTable', () => {
 
   it('facade : 2 cotes -> width/height + conf 0.7', () => {
     const r = parseSpecTable(
-      table([['Hauteur (cm)', '118.1cm'], ['Largeur (cm)', '59.7cm']]),
-      'facade',
+      table([
+        ['Hauteur (cm)', '118.1cm'],
+        ['Largeur (cm)', '59.7cm'],
+      ]),
+      'facade'
     );
     expect(r.heightMm).toBe(1181);
     expect(r.widthMm).toBe(597);
@@ -60,8 +70,11 @@ describe('parseSpecTable', () => {
 
   it('sink : Longueur -> width, Largeur -> depth', () => {
     const r = parseSpecTable(
-      table([['Longueur (cm)', '80cm'], ['Largeur (cm)', '50cm']]),
-      'sink',
+      table([
+        ['Longueur (cm)', '80cm'],
+        ['Largeur (cm)', '50cm'],
+      ]),
+      'sink'
     );
     expect(r.widthMm).toBe(800);
     expect(r.depthMm).toBe(500);
@@ -78,8 +91,12 @@ describe('parseSpecTable', () => {
 
   it('appliance (plaque) : 3 cotes valides dont hauteur 6.2cm (epaisseur) -> conf 1.0', () => {
     const r = parseSpecTable(
-      table([['Hauteur (cm)', '6.2cm'], ['Largeur (cm)', '59cm'], ['Profondeur (cm)', '52cm']]),
-      'appliance',
+      table([
+        ['Hauteur (cm)', '6.2cm'],
+        ['Largeur (cm)', '59cm'],
+        ['Profondeur (cm)', '52cm'],
+      ]),
+      'appliance'
     );
     expect(r.heightMm).toBe(62); // 6.2cm accepte (plancher appliance = 5cm)
     expect(r.widthMm).toBe(590);
@@ -91,8 +108,11 @@ describe('parseSpecTable', () => {
 
   it('appliance : Profondeur aberrante 300cm -> rejetee + out_of_bounds_depth', () => {
     const r = parseSpecTable(
-      table([['Largeur (cm)', '59cm'], ['Profondeur (cm)', '300cm']]),
-      'appliance',
+      table([
+        ['Largeur (cm)', '59cm'],
+        ['Profondeur (cm)', '300cm'],
+      ]),
+      'appliance'
     );
     expect(r.widthMm).toBe(590);
     expect(r.depthMm).toBeNull(); // 300 > depth max 70
@@ -129,7 +149,7 @@ describe('parseSpecTable', () => {
         ['Finition', 'Mat'],
         ['Largeur (cm)', '61cm'],
       ]),
-      'cabinet',
+      'cabinet'
     );
     expect(r.brand).toBe('GoodHome');
     expect(r.material).toBe('Panneau melamine');
@@ -139,8 +159,11 @@ describe('parseSpecTable', () => {
 
   it('bonus : Marque=Castorama -> brand NON renseignee (garde namespace SKU)', () => {
     const r = parseSpecTable(
-      table([['Marque', 'Castorama'], ['Largeur (cm)', '61cm']]),
-      'cabinet',
+      table([
+        ['Marque', 'Castorama'],
+        ['Largeur (cm)', '61cm'],
+      ]),
+      'cabinet'
     );
     expect(r.brand).toBeUndefined();
   });

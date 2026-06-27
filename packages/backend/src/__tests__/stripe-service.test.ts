@@ -115,9 +115,9 @@ describe('StripeService', () => {
     it('should throw StripeServiceError on failure', async () => {
       mockStripe.paymentIntents.create.mockRejectedValue(new Error('Card declined'));
 
-      await expect(
-        service.createPaymentIntent({ amount: 5000, currency: 'eur' })
-      ).rejects.toThrow(StripeServiceError);
+      await expect(service.createPaymentIntent({ amount: 5000, currency: 'eur' })).rejects.toThrow(
+        StripeServiceError
+      );
     });
   });
 

@@ -33,16 +33,23 @@ export function createApp(_context?: ApiContext): express.Application {
   const app = express();
 
   // Security middleware
-  app.use(helmet({
-    contentSecurityPolicy: false, // Disable for API
-  }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: false, // Disable for API
+    })
+  );
 
   // CORS
-  app.use(cors({
-    origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3005'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-  }));
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGINS?.split(',') || [
+        'http://localhost:3000',
+        'http://localhost:3005',
+      ],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+    })
+  );
 
   // Compression
   app.use(compression());
@@ -106,7 +113,8 @@ export function createApp(_context?: ApiContext): express.Application {
 
     res.status(500).json({
       error: 'Internal Server Error',
-      message: process.env.NODE_ENV === 'development' ? err.message : 'An unexpected error occurred',
+      message:
+        process.env.NODE_ENV === 'development' ? err.message : 'An unexpected error occurred',
     });
   });
 

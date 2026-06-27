@@ -12,9 +12,13 @@ export interface ConsentState {
 function loadConsent(): ConsentState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {return null;}
+    if (!raw) {
+      return null;
+    }
     const parsed = JSON.parse(raw) as ConsentState;
-    if (!parsed.decidedAt) {return null;}
+    if (!parsed.decidedAt) {
+      return null;
+    }
     return parsed;
   } catch {
     return null;
@@ -43,10 +47,14 @@ export default function CookieConsent(): React.ReactElement | null {
   const [marketing, setMarketing] = useState(false);
 
   useEffect(() => {
-    if (!loadConsent()) {setVisible(true);}
+    if (!loadConsent()) {
+      setVisible(true);
+    }
   }, []);
 
-  if (!visible) {return null;}
+  if (!visible) {
+    return null;
+  }
 
   const acceptAll = (): void => {
     saveConsent({ analytics: true, marketing: true });
@@ -73,8 +81,8 @@ export default function CookieConsent(): React.ReactElement | null {
           Votre vie privée, votre choix
         </h2>
         <p id="cookie-consent-desc" className="mt-2 text-sm text-white/70">
-          Nous utilisons des cookies strictement nécessaires pour faire fonctionner le site.
-          Avec votre accord, nous utilisons aussi des cookies de mesure d&apos;audience et marketing.
+          Nous utilisons des cookies strictement nécessaires pour faire fonctionner le site. Avec
+          votre accord, nous utilisons aussi des cookies de mesure d&apos;audience et marketing.
           Vous pouvez accepter, refuser ou personnaliser à tout moment.{' '}
           <a href="/legal/cookies" className="underline underline-offset-2 hover:text-white">
             En savoir plus

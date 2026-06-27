@@ -199,7 +199,9 @@ export function getExtensionFromMimeType(mimeType: string): string {
  * @returns The MIME type or 'application/octet-stream' if unknown
  */
 export function getMimeTypeFromExtension(extension: string): string {
-  const ext = extension.startsWith('.') ? extension.slice(1).toLowerCase() : extension.toLowerCase();
+  const ext = extension.startsWith('.')
+    ? extension.slice(1).toLowerCase()
+    : extension.toLowerCase();
   return EXTENSION_MIME_TYPES[ext] ?? 'application/octet-stream';
 }
 
@@ -280,9 +282,7 @@ export function isApplicationMimeType(mimeType: string): boolean {
  * @param category - The category
  * @returns An array of MIME types
  */
-export function getMimeTypesForCategory(
-  category: keyof typeof MIME_CATEGORIES
-): readonly string[] {
+export function getMimeTypesForCategory(category: keyof typeof MIME_CATEGORIES): readonly string[] {
   return MIME_CATEGORIES[category];
 }
 

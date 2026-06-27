@@ -17,7 +17,8 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, fallbackOrOpts?: string | Record<string, unknown>) => {
       if (typeof fallbackOrOpts === 'string') return fallbackOrOpts;
-      if (fallbackOrOpts && typeof fallbackOrOpts === 'object' && 'defaultValue' in fallbackOrOpts) return fallbackOrOpts.defaultValue as string;
+      if (fallbackOrOpts && typeof fallbackOrOpts === 'object' && 'defaultValue' in fallbackOrOpts)
+        return fallbackOrOpts.defaultValue as string;
       return key;
     },
     i18n: { language: 'fr' },
@@ -151,7 +152,9 @@ describe('EnrichmentDashboard', () => {
       renderEnrichmentDashboard();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /enrichissement ia du catalogue/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /enrichissement ia du catalogue/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -159,7 +162,9 @@ describe('EnrichmentDashboard', () => {
       renderEnrichmentDashboard();
 
       await waitFor(() => {
-        expect(screen.getByText(/tableau de bord de l'enrichissement automatique/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/tableau de bord de l'enrichissement automatique/i)
+        ).toBeInTheDocument();
       });
     });
   });
@@ -268,7 +273,9 @@ describe('EnrichmentDashboard', () => {
       renderEnrichmentDashboard();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /generer matrice compatibilite/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', { name: /generer matrice compatibilite/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -296,7 +303,8 @@ describe('EnrichmentDashboard', () => {
 
       await waitFor(() => {
         const enrichCall = mockFetch.mock.calls.find(
-          (call: unknown[]) => typeof call[0] === 'string' && (call[0] as string).includes('enrich-all')
+          (call: unknown[]) =>
+            typeof call[0] === 'string' && (call[0] as string).includes('enrich-all')
         );
         expect(enrichCall).toBeDefined();
       });
@@ -369,7 +377,9 @@ describe('EnrichmentDashboard', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /generer matrice compatibilite/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('button', { name: /generer matrice compatibilite/i })
+        ).toBeInTheDocument();
       });
 
       mockFetch.mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) });
@@ -379,7 +389,8 @@ describe('EnrichmentDashboard', () => {
 
       await waitFor(() => {
         const compatCall = mockFetch.mock.calls.find(
-          (call: unknown[]) => typeof call[0] === 'string' && (call[0] as string).includes('compatibility/generate')
+          (call: unknown[]) =>
+            typeof call[0] === 'string' && (call[0] as string).includes('compatibility/generate')
         );
         expect(compatCall).toBeDefined();
       });
@@ -400,7 +411,8 @@ describe('EnrichmentDashboard', () => {
       await waitFor(() => {
         // Should have called fetch again for stats
         const statusCalls = mockFetch.mock.calls.filter(
-          (call: unknown[]) => typeof call[0] === 'string' && (call[0] as string).includes('/enrichment/status')
+          (call: unknown[]) =>
+            typeof call[0] === 'string' && (call[0] as string).includes('/enrichment/status')
         );
         expect(statusCalls.length).toBeGreaterThanOrEqual(2);
       });
@@ -442,7 +454,9 @@ describe('EnrichmentDashboard', () => {
       await waitFor(() => {
         // The last "Cross-match marques" is the button text
         const buttons = screen.getAllByRole('button');
-        const crossMatchBtn = buttons.find(btn => btn.textContent?.includes('Cross-match marques'));
+        const crossMatchBtn = buttons.find((btn) =>
+          btn.textContent?.includes('Cross-match marques')
+        );
         expect(crossMatchBtn).toBeDefined();
       });
     });
@@ -457,11 +471,13 @@ describe('EnrichmentDashboard', () => {
 
       // Click cross-match button without filling in brands
       const buttons = screen.getAllByRole('button');
-      const crossMatchBtn = buttons.find(btn => btn.textContent?.includes('Cross-match marques'));
+      const crossMatchBtn = buttons.find((btn) => btn.textContent?.includes('Cross-match marques'));
       await user.click(crossMatchBtn!);
 
       await waitFor(() => {
-        expect(screen.getByText(/veuillez renseigner les deux identifiants de marque/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/veuillez renseigner les deux identifiants de marque/i)
+        ).toBeInTheDocument();
       });
     });
 
@@ -480,12 +496,13 @@ describe('EnrichmentDashboard', () => {
       mockFetch.mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(mockStats) });
 
       const buttons = screen.getAllByRole('button');
-      const crossMatchBtn = buttons.find(btn => btn.textContent?.includes('Cross-match marques'));
+      const crossMatchBtn = buttons.find((btn) => btn.textContent?.includes('Cross-match marques'));
       await user.click(crossMatchBtn!);
 
       await waitFor(() => {
         const matchCall = mockFetch.mock.calls.find(
-          (call: unknown[]) => typeof call[0] === 'string' && (call[0] as string).includes('/enrichment/match/')
+          (call: unknown[]) =>
+            typeof call[0] === 'string' && (call[0] as string).includes('/enrichment/match/')
         );
         expect(matchCall).toBeDefined();
       });

@@ -17,7 +17,12 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  })),
 }));
 
 jest.mock('../database/client', () => ({
@@ -51,7 +56,9 @@ let enableValidation = false;
 
 jest.mock('../api/middleware/validation-middleware', () => ({
   validateBody: (schema: any) => (req: Request, res: Response, next: NextFunction) => {
-    if (!enableValidation) {return next();}
+    if (!enableValidation) {
+      return next();
+    }
     // Simple required-field check for stock check endpoint
     if (schema && req.body) {
       if (!req.body.productId && !req.body.items) {
@@ -70,7 +77,10 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'user@test.com', role: 'user' };
     next();
@@ -127,10 +137,7 @@ describe('Stock Routes', () => {
 
     it('should return 400 when missing required fields', async () => {
       enableValidation = true;
-      const response = await request(app)
-        .post('/stock/check')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/stock/check').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });

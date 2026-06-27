@@ -97,7 +97,7 @@ export class ApiClient {
       const response = await fetch(url, {
         method,
         headers,
-        body: data instanceof FormData ? data : (data ? JSON.stringify(data) : undefined),
+        body: data instanceof FormData ? data : data ? JSON.stringify(data) : undefined,
         signal: options?.signal ?? controller.signal,
         credentials: this.config.withCredentials ? 'include' : 'same-origin',
       });
@@ -120,11 +120,7 @@ export class ApiClient {
             return this.request<T>(method, path, data, options, retryCount + 1);
           } catch {
             this.config.onUnauthorized();
-            throw new ApiClientError(
-              'Unauthorized',
-              401,
-              'UNAUTHORIZED'
-            );
+            throw new ApiClientError('Unauthorized', 401, 'UNAUTHORIZED');
           }
         }
 
@@ -198,7 +194,10 @@ export class ApiClient {
     return url.toString();
   }
 
-  private buildHeaders(customHeaders?: Record<string, string>, data?: unknown): Record<string, string> {
+  private buildHeaders(
+    customHeaders?: Record<string, string>,
+    data?: unknown
+  ): Record<string, string> {
     const headers: Record<string, string> = {
       ...this.config.headers,
       ...customHeaders,

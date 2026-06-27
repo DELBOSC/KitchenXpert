@@ -128,7 +128,11 @@ export class IFCExporter {
   /**
    * Export and trigger a browser download of the IFC file.
    */
-  download(scene: KitchenSceneData, filename: string = 'kitchen-design', metadata?: IFCExportOptions): void {
+  download(
+    scene: KitchenSceneData,
+    filename: string = 'kitchen-design',
+    metadata?: IFCExportOptions
+  ): void {
     const ifcContent = this.export(scene, metadata);
     const blob = new Blob([ifcContent], { type: 'application/x-step' });
     const url = URL.createObjectURL(blob);
@@ -137,7 +141,9 @@ export class IFCExporter {
     link.download = `${filename}.ifc`;
     link.click();
     // Delayed revocation for download to complete
-    requestAnimationFrame(() => { setTimeout(() => URL.revokeObjectURL(url), 0); });
+    requestAnimationFrame(() => {
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
   }
 
   // ---------- HEADER section ----------
@@ -149,7 +155,9 @@ export class IFCExporter {
     lines.push('ISO-10303-21;');
     lines.push('HEADER;');
     lines.push(`FILE_DESCRIPTION(('ViewDefinition [CoordinationView]'),'2;1');`);
-    lines.push(`FILE_NAME('kitchen.ifc','${dateStr}T00:00:00',('${this.escapeString(opts.author)}'),('${this.escapeString(opts.organization)}'),'','KitchenXpert','');`);
+    lines.push(
+      `FILE_NAME('kitchen.ifc','${dateStr}T00:00:00',('${this.escapeString(opts.author)}'),('${this.escapeString(opts.organization)}'),'','KitchenXpert','');`
+    );
     lines.push(`FILE_SCHEMA(('IFC2X3'));`);
     lines.push('ENDSEC;');
   }
@@ -193,7 +201,9 @@ export class IFCExporter {
 
     const ownerHistoryId = ids.next();
     const timestamp = Math.floor(Date.now() / 1000);
-    lines.push(`#${ownerHistoryId}=IFCOWNERHISTORY(#${personOrgId},#${appId},$,.NOCHANGE.,$,$,$,${timestamp});`);
+    lines.push(
+      `#${ownerHistoryId}=IFCOWNERHISTORY(#${personOrgId},#${appId},$,.NOCHANGE.,$,$,$,${timestamp});`
+    );
 
     // #6 Units: SI units with mm for length
     const siUnitLengthId = ids.next();
@@ -209,7 +219,9 @@ export class IFCExporter {
     lines.push(`#${siUnitAngleId}=IFCSIUNIT(*,.PLANEANGLEUNIT.,$,.RADIAN.);`);
 
     const unitAssignmentId = ids.next();
-    lines.push(`#${unitAssignmentId}=IFCUNITASSIGNMENT((#${siUnitLengthId},#${siUnitAreaId},#${siUnitVolumeId},#${siUnitAngleId}));`);
+    lines.push(
+      `#${unitAssignmentId}=IFCUNITASSIGNMENT((#${siUnitLengthId},#${siUnitAreaId},#${siUnitVolumeId},#${siUnitAngleId}));`
+    );
 
     // Geometric representation context
     const originId = ids.next();
@@ -225,14 +237,20 @@ export class IFCExporter {
     lines.push(`#${worldCSId}=IFCAXIS2PLACEMENT3D(#${originId},#${dirZId},#${dirXId});`);
 
     const contextId = ids.next();
-    lines.push(`#${contextId}=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.0E-05,#${worldCSId},$);`);
+    lines.push(
+      `#${contextId}=IFCGEOMETRICREPRESENTATIONCONTEXT($,'Model',3,1.0E-05,#${worldCSId},$);`
+    );
 
     const subContextId = ids.next();
-    lines.push(`#${subContextId}=IFCGEOMETRICREPRESENTATIONSUBCONTEXT('Body','Model',*,*,*,*,#${contextId},$,.MODEL_VIEW.,$);`);
+    lines.push(
+      `#${subContextId}=IFCGEOMETRICREPRESENTATIONSUBCONTEXT('Body','Model',*,*,*,*,#${contextId},$,.MODEL_VIEW.,$);`
+    );
 
     // Project
     const projectId = ids.next();
-    lines.push(`#${projectId}=IFCPROJECT('${guid()}',#${ownerHistoryId},'${this.escapeString(opts.projectName)}',$,$,$,$,(#${contextId}),#${unitAssignmentId});`);
+    lines.push(
+      `#${projectId}=IFCPROJECT('${guid()}',#${ownerHistoryId},'${this.escapeString(opts.projectName)}',$,$,$,$,(#${contextId}),#${unitAssignmentId});`
+    );
 
     // Site placement
     const sitePlacementId = ids.next();
@@ -240,7 +258,9 @@ export class IFCExporter {
 
     // Site
     const siteId = ids.next();
-    lines.push(`#${siteId}=IFCSITE('${guid()}',#${ownerHistoryId},'Site',$,$,#${sitePlacementId},$,$,.ELEMENT.,$,$,$,$,$);`);
+    lines.push(
+      `#${siteId}=IFCSITE('${guid()}',#${ownerHistoryId},'Site',$,$,#${sitePlacementId},$,$,.ELEMENT.,$,$,$,$,$);`
+    );
 
     // Building placement
     const buildingPlacementId = ids.next();
@@ -248,7 +268,9 @@ export class IFCExporter {
 
     // Building
     const buildingId = ids.next();
-    lines.push(`#${buildingId}=IFCBUILDING('${guid()}',#${ownerHistoryId},'Building',$,$,#${buildingPlacementId},$,$,.ELEMENT.,$,$,$);`);
+    lines.push(
+      `#${buildingId}=IFCBUILDING('${guid()}',#${ownerHistoryId},'Building',$,$,#${buildingPlacementId},$,$,.ELEMENT.,$,$,$);`
+    );
 
     // Storey placement
     const storeyPlacementId = ids.next();
@@ -256,27 +278,39 @@ export class IFCExporter {
 
     // Building storey
     const storeyId = ids.next();
-    lines.push(`#${storeyId}=IFCBUILDINGSTOREY('${guid()}',#${ownerHistoryId},'Ground Floor',$,$,#${storeyPlacementId},$,$,.ELEMENT.,0.0);`);
+    lines.push(
+      `#${storeyId}=IFCBUILDINGSTOREY('${guid()}',#${ownerHistoryId},'Ground Floor',$,$,#${storeyPlacementId},$,$,.ELEMENT.,0.0);`
+    );
 
     // Space (the kitchen room)
     const spacePlacementId = ids.next();
     lines.push(`#${spacePlacementId}=IFCLOCALPLACEMENT(#${storeyPlacementId},#${worldCSId});`);
 
     const spaceId = ids.next();
-    lines.push(`#${spaceId}=IFCSPACE('${guid()}',#${ownerHistoryId},'Kitchen','Kitchen Room','Kitchen',#${spacePlacementId},$,$,.ELEMENT.,.INTERNAL.,$);`);
+    lines.push(
+      `#${spaceId}=IFCSPACE('${guid()}',#${ownerHistoryId},'Kitchen','Kitchen Room','Kitchen',#${spacePlacementId},$,$,.ELEMENT.,.INTERNAL.,$);`
+    );
 
     // Spatial hierarchy relationships
     const relSiteId = ids.next();
-    lines.push(`#${relSiteId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${projectId},(#${siteId}));`);
+    lines.push(
+      `#${relSiteId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${projectId},(#${siteId}));`
+    );
 
     const relBuildingId = ids.next();
-    lines.push(`#${relBuildingId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${siteId},(#${buildingId}));`);
+    lines.push(
+      `#${relBuildingId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${siteId},(#${buildingId}));`
+    );
 
     const relStoreyId = ids.next();
-    lines.push(`#${relStoreyId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${buildingId},(#${storeyId}));`);
+    lines.push(
+      `#${relStoreyId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${buildingId},(#${storeyId}));`
+    );
 
     const relSpaceId = ids.next();
-    lines.push(`#${relSpaceId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${storeyId},(#${spaceId}));`);
+    lines.push(
+      `#${relSpaceId}=IFCRELAGGREGATES('${guid()}',#${ownerHistoryId},$,$,#${storeyId},(#${spaceId}));`
+    );
 
     return {
       projectId,
@@ -312,7 +346,9 @@ export class IFCExporter {
 
     // Create local placement for this object
     const pointId = ids.next();
-    lines.push(`#${pointId}=IFCCARTESIANPOINT((${obj.position.x.toFixed(1)},${obj.position.y.toFixed(1)},${obj.position.z.toFixed(1)}));`);
+    lines.push(
+      `#${pointId}=IFCCARTESIANPOINT((${obj.position.x.toFixed(1)},${obj.position.y.toFixed(1)},${obj.position.z.toFixed(1)}));`
+    );
 
     const dirZId = ids.next();
     lines.push(`#${dirZId}=IFCDIRECTION((0.0,0.0,1.0));`);
@@ -324,14 +360,18 @@ export class IFCExporter {
     lines.push(`#${axisPlacementId}=IFCAXIS2PLACEMENT3D(#${pointId},#${dirZId},#${dirXId});`);
 
     const placementId = ids.next();
-    lines.push(`#${placementId}=IFCLOCALPLACEMENT(#${hierarchy.storeyPlacementId},#${axisPlacementId});`);
+    lines.push(
+      `#${placementId}=IFCLOCALPLACEMENT(#${hierarchy.storeyPlacementId},#${axisPlacementId});`
+    );
 
     // Create bounding box geometry
     const bbOriginId = ids.next();
     lines.push(`#${bbOriginId}=IFCCARTESIANPOINT((0.0,0.0,0.0));`);
 
     const bbId = ids.next();
-    lines.push(`#${bbId}=IFCBOUNDINGBOX(#${bbOriginId},${obj.dimensions.width.toFixed(1)},${obj.dimensions.depth.toFixed(1)},${obj.dimensions.height.toFixed(1)});`);
+    lines.push(
+      `#${bbId}=IFCBOUNDINGBOX(#${bbOriginId},${obj.dimensions.width.toFixed(1)},${obj.dimensions.depth.toFixed(1)},${obj.dimensions.height.toFixed(1)});`
+    );
 
     // Create extruded area solid for more detailed geometry
     const profilePointId = ids.next();
@@ -344,7 +384,9 @@ export class IFCExporter {
     lines.push(`#${profilePlacementId}=IFCAXIS2PLACEMENT2D(#${profilePointId},#${profileDirId});`);
 
     const rectProfileId = ids.next();
-    lines.push(`#${rectProfileId}=IFCRECTANGLEPROFILEDEF(.AREA.,'${this.escapeString(obj.name)}',#${profilePlacementId},${obj.dimensions.width.toFixed(1)},${obj.dimensions.depth.toFixed(1)});`);
+    lines.push(
+      `#${rectProfileId}=IFCRECTANGLEPROFILEDEF(.AREA.,'${this.escapeString(obj.name)}',#${profilePlacementId},${obj.dimensions.width.toFixed(1)},${obj.dimensions.depth.toFixed(1)});`
+    );
 
     const extrudeDirId = ids.next();
     lines.push(`#${extrudeDirId}=IFCDIRECTION((0.0,0.0,1.0));`);
@@ -359,14 +401,20 @@ export class IFCExporter {
     lines.push(`#${extrudePlaceDirXId}=IFCDIRECTION((1.0,0.0,0.0));`);
 
     const extrudePlacementId = ids.next();
-    lines.push(`#${extrudePlacementId}=IFCAXIS2PLACEMENT3D(#${extrudeOriginId},#${extrudePlaceDirZId},#${extrudePlaceDirXId});`);
+    lines.push(
+      `#${extrudePlacementId}=IFCAXIS2PLACEMENT3D(#${extrudeOriginId},#${extrudePlaceDirZId},#${extrudePlaceDirXId});`
+    );
 
     const extrudedSolidId = ids.next();
-    lines.push(`#${extrudedSolidId}=IFCEXTRUDEDAREASOLID(#${rectProfileId},#${extrudePlacementId},#${extrudeDirId},${obj.dimensions.height.toFixed(1)});`);
+    lines.push(
+      `#${extrudedSolidId}=IFCEXTRUDEDAREASOLID(#${rectProfileId},#${extrudePlacementId},#${extrudeDirId},${obj.dimensions.height.toFixed(1)});`
+    );
 
     // Shape representation
     const shapeRepId = ids.next();
-    lines.push(`#${shapeRepId}=IFCSHAPEREPRESENTATION(#${hierarchy.contextId},'Body','SweptSolid',(#${extrudedSolidId}));`);
+    lines.push(
+      `#${shapeRepId}=IFCSHAPEREPRESENTATION(#${hierarchy.contextId},'Body','SweptSolid',(#${extrudedSolidId}));`
+    );
 
     const productShapeId = ids.next();
     lines.push(`#${productShapeId}=IFCPRODUCTDEFINITIONSHAPE($,$,(#${shapeRepId}));`);
@@ -377,42 +425,60 @@ export class IFCExporter {
 
     switch (obj.ifcType) {
       case 'wall':
-        lines.push(`#${entityId}=IFCWALLSTANDARDCASE('${guid()}',#${ownerHistoryRef},'${entityName}','Wall element',$,#${placementId},#${productShapeId},$);`);
+        lines.push(
+          `#${entityId}=IFCWALLSTANDARDCASE('${guid()}',#${ownerHistoryRef},'${entityName}','Wall element',$,#${placementId},#${productShapeId},$);`
+        );
         break;
 
       case 'cabinet':
-        lines.push(`#${entityId}=IFCFURNISHINGELEMENT('${guid()}',#${ownerHistoryRef},'${entityName}','Kitchen cabinet',$,#${placementId},#${productShapeId},$);`);
+        lines.push(
+          `#${entityId}=IFCFURNISHINGELEMENT('${guid()}',#${ownerHistoryRef},'${entityName}','Kitchen cabinet',$,#${placementId},#${productShapeId},$);`
+        );
         break;
 
       case 'appliance':
-        lines.push(`#${entityId}=IFCFLOWTERMINALELEMENT('${guid()}',#${ownerHistoryRef},'${entityName}','Kitchen appliance',$,#${placementId},#${productShapeId},$);`);
+        lines.push(
+          `#${entityId}=IFCFLOWTERMINALELEMENT('${guid()}',#${ownerHistoryRef},'${entityName}','Kitchen appliance',$,#${placementId},#${productShapeId},$);`
+        );
         break;
 
       case 'sink':
       case 'faucet':
-        lines.push(`#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Plumbing fixture',$,#${placementId},#${productShapeId},$);`);
+        lines.push(
+          `#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Plumbing fixture',$,#${placementId},#${productShapeId},$);`
+        );
         break;
 
       case 'door':
-        lines.push(`#${entityId}=IFCDOOR('${guid()}',#${ownerHistoryRef},'${entityName}','Door',$,#${placementId},#${productShapeId},$,${obj.dimensions.height.toFixed(1)},${obj.dimensions.width.toFixed(1)});`);
+        lines.push(
+          `#${entityId}=IFCDOOR('${guid()}',#${ownerHistoryRef},'${entityName}','Door',$,#${placementId},#${productShapeId},$,${obj.dimensions.height.toFixed(1)},${obj.dimensions.width.toFixed(1)});`
+        );
         break;
 
       case 'window':
-        lines.push(`#${entityId}=IFCWINDOW('${guid()}',#${ownerHistoryRef},'${entityName}','Window',$,#${placementId},#${productShapeId},$,${obj.dimensions.height.toFixed(1)},${obj.dimensions.width.toFixed(1)});`);
+        lines.push(
+          `#${entityId}=IFCWINDOW('${guid()}',#${ownerHistoryRef},'${entityName}','Window',$,#${placementId},#${productShapeId},$,${obj.dimensions.height.toFixed(1)},${obj.dimensions.width.toFixed(1)});`
+        );
         break;
 
       case 'countertop':
-        lines.push(`#${entityId}=IFCFURNISHINGELEMENT('${guid()}',#${ownerHistoryRef},'${entityName}','Countertop',$,#${placementId},#${productShapeId},$);`);
+        lines.push(
+          `#${entityId}=IFCFURNISHINGELEMENT('${guid()}',#${ownerHistoryRef},'${entityName}','Countertop',$,#${placementId},#${productShapeId},$);`
+        );
         break;
 
       default:
-        lines.push(`#${entityId}=IFCBUILDINGELEMENTPROXY('${guid()}',#${ownerHistoryRef},'${entityName}','Building element',$,#${placementId},#${productShapeId},$,$);`);
+        lines.push(
+          `#${entityId}=IFCBUILDINGELEMENTPROXY('${guid()}',#${ownerHistoryRef},'${entityName}','Building element',$,#${placementId},#${productShapeId},$,$);`
+        );
         break;
     }
 
     // Containment relationship: element contained in storey
     const relContainedId = ids.next();
-    lines.push(`#${relContainedId}=IFCRELCONTAINEDINSPATIALSTRUCTURE('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${hierarchy.storeyId});`);
+    lines.push(
+      `#${relContainedId}=IFCRELCONTAINEDINSPATIALSTRUCTURE('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${hierarchy.storeyId});`
+    );
 
     // Property set if enabled
     if (opts.includeProperties && Object.keys(obj.properties).length > 0) {
@@ -437,11 +503,17 @@ export class IFCExporter {
       const propId = ids.next();
 
       if (typeof value === 'number') {
-        lines.push(`#${propId}=IFCPROPERTYSINGLEVALUE('${this.escapeString(key)}',$,IFCREAL(${value.toFixed(2)}),$);`);
+        lines.push(
+          `#${propId}=IFCPROPERTYSINGLEVALUE('${this.escapeString(key)}',$,IFCREAL(${value.toFixed(2)}),$);`
+        );
       } else if (typeof value === 'boolean') {
-        lines.push(`#${propId}=IFCPROPERTYSINGLEVALUE('${this.escapeString(key)}',$,IFCBOOLEAN(.${value ? 'TRUE' : 'FALSE'}.),$);`);
+        lines.push(
+          `#${propId}=IFCPROPERTYSINGLEVALUE('${this.escapeString(key)}',$,IFCBOOLEAN(.${value ? 'TRUE' : 'FALSE'}.),$);`
+        );
       } else {
-        lines.push(`#${propId}=IFCPROPERTYSINGLEVALUE('${this.escapeString(key)}',$,IFCTEXT('${this.escapeString(String(value))}'),$);`);
+        lines.push(
+          `#${propId}=IFCPROPERTYSINGLEVALUE('${this.escapeString(key)}',$,IFCTEXT('${this.escapeString(String(value))}'),$);`
+        );
       }
 
       propertyIds.push(propId);
@@ -449,25 +521,35 @@ export class IFCExporter {
 
     // Always add dimensions as properties
     const widthPropId = ids.next();
-    lines.push(`#${widthPropId}=IFCPROPERTYSINGLEVALUE('Width',$,IFCLENGTHMEASURE(${obj.dimensions.width.toFixed(1)}),$);`);
+    lines.push(
+      `#${widthPropId}=IFCPROPERTYSINGLEVALUE('Width',$,IFCLENGTHMEASURE(${obj.dimensions.width.toFixed(1)}),$);`
+    );
     propertyIds.push(widthPropId);
 
     const heightPropId = ids.next();
-    lines.push(`#${heightPropId}=IFCPROPERTYSINGLEVALUE('Height',$,IFCLENGTHMEASURE(${obj.dimensions.height.toFixed(1)}),$);`);
+    lines.push(
+      `#${heightPropId}=IFCPROPERTYSINGLEVALUE('Height',$,IFCLENGTHMEASURE(${obj.dimensions.height.toFixed(1)}),$);`
+    );
     propertyIds.push(heightPropId);
 
     const depthPropId = ids.next();
-    lines.push(`#${depthPropId}=IFCPROPERTYSINGLEVALUE('Depth',$,IFCLENGTHMEASURE(${obj.dimensions.depth.toFixed(1)}),$);`);
+    lines.push(
+      `#${depthPropId}=IFCPROPERTYSINGLEVALUE('Depth',$,IFCLENGTHMEASURE(${obj.dimensions.depth.toFixed(1)}),$);`
+    );
     propertyIds.push(depthPropId);
 
     // Property set
     const propSetId = ids.next();
-    const propRefs = propertyIds.map(id => `#${id}`).join(',');
-    lines.push(`#${propSetId}=IFCPROPERTYSET('${guid()}',#${ownerHistoryRef},'KitchenXpert_Properties',$,(${propRefs}));`);
+    const propRefs = propertyIds.map((id) => `#${id}`).join(',');
+    lines.push(
+      `#${propSetId}=IFCPROPERTYSET('${guid()}',#${ownerHistoryRef},'KitchenXpert_Properties',$,(${propRefs}));`
+    );
 
     // Relationship: property set to element
     const relDefId = ids.next();
-    lines.push(`#${relDefId}=IFCRELDEFINESBYPROPERTIES('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${propSetId});`);
+    lines.push(
+      `#${relDefId}=IFCRELDEFINESBYPROPERTIES('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${propSetId});`
+    );
   }
 
   // ---------- MEP entities ----------
@@ -492,8 +574,11 @@ export class IFCExporter {
     const processedPositions = new Set<string>();
 
     const processTechnicalPoint = (
-      x: number, y: number, z: number,
-      tpType: string, subtype: string
+      x: number,
+      y: number,
+      z: number,
+      tpType: string,
+      subtype: string
     ) => {
       const posKey = `${x.toFixed(0)}_${y.toFixed(0)}_${z.toFixed(0)}_${tpType}`;
       if (processedPositions.has(posKey)) return;
@@ -506,7 +591,9 @@ export class IFCExporter {
 
       // Create placement
       const pointId = ids.next();
-      lines.push(`#${pointId}=IFCCARTESIANPOINT((${xMm.toFixed(1)},${yMm.toFixed(1)},${zMm.toFixed(1)}));`);
+      lines.push(
+        `#${pointId}=IFCCARTESIANPOINT((${xMm.toFixed(1)},${yMm.toFixed(1)},${zMm.toFixed(1)}));`
+      );
 
       const dirZId = ids.next();
       lines.push(`#${dirZId}=IFCDIRECTION((0.0,0.0,1.0));`);
@@ -518,7 +605,9 @@ export class IFCExporter {
       lines.push(`#${axisPlacementId}=IFCAXIS2PLACEMENT3D(#${pointId},#${dirZId},#${dirXId});`);
 
       const placementId = ids.next();
-      lines.push(`#${placementId}=IFCLOCALPLACEMENT(#${hierarchy.storeyPlacementId},#${axisPlacementId});`);
+      lines.push(
+        `#${placementId}=IFCLOCALPLACEMENT(#${hierarchy.storeyPlacementId},#${axisPlacementId});`
+      );
 
       // Simple bounding box geometry for the connection point
       const bbOriginId = ids.next();
@@ -526,10 +615,14 @@ export class IFCExporter {
 
       const connectionSize = 100; // 100mm bounding box
       const bbId = ids.next();
-      lines.push(`#${bbId}=IFCBOUNDINGBOX(#${bbOriginId},${connectionSize}.0,${connectionSize}.0,${connectionSize}.0);`);
+      lines.push(
+        `#${bbId}=IFCBOUNDINGBOX(#${bbOriginId},${connectionSize}.0,${connectionSize}.0,${connectionSize}.0);`
+      );
 
       const shapeRepId = ids.next();
-      lines.push(`#${shapeRepId}=IFCSHAPEREPRESENTATION(#${hierarchy.contextId},'Body','BoundingBox',(#${bbId}));`);
+      lines.push(
+        `#${shapeRepId}=IFCSHAPEREPRESENTATION(#${hierarchy.contextId},'Body','BoundingBox',(#${bbId}));`
+      );
 
       const productShapeId = ids.next();
       lines.push(`#${productShapeId}=IFCPRODUCTDEFINITIONSHAPE($,$,(#${shapeRepId}));`);
@@ -540,44 +633,69 @@ export class IFCExporter {
 
       switch (tpType) {
         case 'water':
-          lines.push(`#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Water connection point',$,#${placementId},#${productShapeId},$);`);
+          lines.push(
+            `#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Water connection point',$,#${placementId},#${productShapeId},$);`
+          );
           break;
         case 'electric':
-          lines.push(`#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Electrical connection point',$,#${placementId},#${productShapeId},$);`);
+          lines.push(
+            `#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Electrical connection point',$,#${placementId},#${productShapeId},$);`
+          );
           break;
         case 'gas':
-          lines.push(`#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Gas connection point',$,#${placementId},#${productShapeId},$);`);
+          lines.push(
+            `#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Gas connection point',$,#${placementId},#${productShapeId},$);`
+          );
           break;
         case 'ventilation':
-          lines.push(`#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Ventilation point',$,#${placementId},#${productShapeId},$);`);
+          lines.push(
+            `#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Ventilation point',$,#${placementId},#${productShapeId},$);`
+          );
           break;
         default:
-          lines.push(`#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Connection point',$,#${placementId},#${productShapeId},$);`);
+          lines.push(
+            `#${entityId}=IFCFLOWTERMINAL('${guid()}',#${ownerHistoryRef},'${entityName}','Connection point',$,#${placementId},#${productShapeId},$);`
+          );
           break;
       }
 
       // Containment
       const relContainedId = ids.next();
-      lines.push(`#${relContainedId}=IFCRELCONTAINEDINSPATIALSTRUCTURE('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${hierarchy.storeyId});`);
+      lines.push(
+        `#${relContainedId}=IFCRELCONTAINEDINSPATIALSTRUCTURE('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${hierarchy.storeyId});`
+      );
 
       // Property set for the MEP point
       const typePropId = ids.next();
-      lines.push(`#${typePropId}=IFCPROPERTYSINGLEVALUE('ConnectionType',$,IFCTEXT('${tpType}'),$);`);
+      lines.push(
+        `#${typePropId}=IFCPROPERTYSINGLEVALUE('ConnectionType',$,IFCTEXT('${tpType}'),$);`
+      );
 
       const subtypePropId = ids.next();
-      lines.push(`#${subtypePropId}=IFCPROPERTYSINGLEVALUE('ConnectionSubtype',$,IFCTEXT('${subtype || tpType}'),$);`);
+      lines.push(
+        `#${subtypePropId}=IFCPROPERTYSINGLEVALUE('ConnectionSubtype',$,IFCTEXT('${subtype || tpType}'),$);`
+      );
 
       const systemPropId = ids.next();
-      const systemName = tpType === 'water' ? 'Plumbing' :
-                         tpType === 'electric' ? 'Electrical' :
-                         tpType === 'gas' ? 'Gas' : 'HVAC';
+      const systemName =
+        tpType === 'water'
+          ? 'Plumbing'
+          : tpType === 'electric'
+            ? 'Electrical'
+            : tpType === 'gas'
+              ? 'Gas'
+              : 'HVAC';
       lines.push(`#${systemPropId}=IFCPROPERTYSINGLEVALUE('System',$,IFCTEXT('${systemName}'),$);`);
 
       const propSetId = ids.next();
-      lines.push(`#${propSetId}=IFCPROPERTYSET('${guid()}',#${ownerHistoryRef},'KitchenXpert_MEP',$,(#${typePropId},#${subtypePropId},#${systemPropId}));`);
+      lines.push(
+        `#${propSetId}=IFCPROPERTYSET('${guid()}',#${ownerHistoryRef},'KitchenXpert_MEP',$,(#${typePropId},#${subtypePropId},#${systemPropId}));`
+      );
 
       const relDefId = ids.next();
-      lines.push(`#${relDefId}=IFCRELDEFINESBYPROPERTIES('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${propSetId});`);
+      lines.push(
+        `#${relDefId}=IFCRELDEFINESBYPROPERTIES('${guid()}',#${ownerHistoryRef},$,$,(#${entityId}),#${propSetId});`
+      );
     };
 
     // Traverse scene for technicalPoint userData
@@ -585,8 +703,11 @@ export class IFCExporter {
       if (obj.userData.technicalPoint) {
         const tp = obj.userData.technicalPoint as { type?: string; subtype?: string };
         processTechnicalPoint(
-          obj.position.x, obj.position.y, obj.position.z,
-          tp.type || 'electric', tp.subtype || ''
+          obj.position.x,
+          obj.position.y,
+          obj.position.z,
+          tp.type || 'electric',
+          tp.subtype || ''
         );
       }
     });
@@ -595,7 +716,9 @@ export class IFCExporter {
     for (const [, obj] of scene.objects) {
       if (obj.userData.type === 'technical_point') {
         processTechnicalPoint(
-          obj.position.x, obj.position.y, obj.position.z,
+          obj.position.x,
+          obj.position.y,
+          obj.position.z,
           (obj.userData.technicalType as string) || 'electric',
           (obj.userData.technicalSubtype as string) || ''
         );
@@ -684,16 +807,32 @@ export class IFCExporter {
 
     // Appliances
     const applianceTypes = [
-      'appliance', 'oven', 'dishwasher', 'refrigerator', 'fridge',
-      'fridge_freezer', 'microwave', 'cooktop', 'stove', 'hob',
-      'hood', 'washer', 'dryer', 'freezer', 'induction',
+      'appliance',
+      'oven',
+      'dishwasher',
+      'refrigerator',
+      'fridge',
+      'fridge_freezer',
+      'microwave',
+      'cooktop',
+      'stove',
+      'hob',
+      'hood',
+      'washer',
+      'dryer',
+      'freezer',
+      'induction',
     ];
     if (applianceTypes.includes(lower)) return 'appliance';
 
     // Cabinets and furniture
-    if (lower === 'cabinet' || lower === 'furniture' ||
-        lower.includes('cabinet') || lower.includes('shelf') ||
-        lower.includes('drawer')) {
+    if (
+      lower === 'cabinet' ||
+      lower === 'furniture' ||
+      lower.includes('cabinet') ||
+      lower.includes('shelf') ||
+      lower.includes('drawer')
+    ) {
       return 'cabinet';
     }
 
@@ -715,7 +854,7 @@ export class IFCExporter {
     } else {
       throw new Error(
         'IFCExporter: crypto.getRandomValues is not available. ' +
-        'A secure random source is required for IFC GUID generation.',
+          'A secure random source is required for IFC GUID generation.'
       );
     }
 

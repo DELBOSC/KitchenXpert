@@ -67,13 +67,7 @@ module.exports = {
     'prettier', // Must be last to override other configs
   ],
 
-  plugins: [
-    '@typescript-eslint',
-    'react',
-    'react-hooks',
-    'jsx-a11y',
-    'import',
-  ],
+  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y', 'import'],
 
   rules: {
     // ============================================================
@@ -229,14 +223,14 @@ module.exports = {
       'error',
       {
         groups: [
-          'builtin',   // Node.js built-in modules
-          'external',  // npm packages
-          'internal',  // Aliased modules
-          'parent',    // Parent imports
-          'sibling',   // Sibling imports
-          'index',     // Index imports
-          'object',    // Object imports
-          'type',      // Type imports
+          'builtin', // Node.js built-in modules
+          'external', // npm packages
+          'internal', // Aliased modules
+          'parent', // Parent imports
+          'sibling', // Sibling imports
+          'index', // Index imports
+          'object', // Object imports
+          'type', // Type imports
         ],
         pathGroups: [
           {

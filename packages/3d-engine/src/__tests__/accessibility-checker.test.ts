@@ -7,17 +7,61 @@ jest.mock('three', () => {
   const actual = jest.requireActual('../test/__mocks__/three');
   return {
     ...actual,
-    Sprite: class extends actual.Object3D { constructor() { super(); } },
-    SpriteMaterial: class { constructor(_p?: any) {} dispose = jest.fn(); },
-    CanvasTexture: class { constructor(_c?: any) {} dispose = jest.fn(); },
-    CircleGeometry: class extends actual.BufferGeometry { constructor() { super(); } },
-    LineBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
-    LineDashedMaterial: class extends actual.Material { constructor(_p?: any) { super(); } computeLineDistances = jest.fn(); },
-    LineLoop: class extends actual.Object3D { constructor() { super(); } computeLineDistances = jest.fn(); },
-    MeshBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
-    Group: class extends actual.Object3D { constructor() { super(); } },
-    PointLight: class extends actual.Light { constructor() { super(); } },
-    RectAreaLight: class extends actual.Light { constructor() { super(); } },
+    Sprite: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    SpriteMaterial: class {
+      constructor(_p?: any) {}
+      dispose = jest.fn();
+    },
+    CanvasTexture: class {
+      constructor(_c?: any) {}
+      dispose = jest.fn();
+    },
+    CircleGeometry: class extends actual.BufferGeometry {
+      constructor() {
+        super();
+      }
+    },
+    LineBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
+    LineDashedMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+      computeLineDistances = jest.fn();
+    },
+    LineLoop: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+      computeLineDistances = jest.fn();
+    },
+    MeshBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
+    Group: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    PointLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
+    RectAreaLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
   };
 });
 
@@ -140,9 +184,7 @@ describe('AccessibilityChecker', () => {
 
     it('should return overall score between 0 and 100', () => {
       const room = makeRoom(4, 3);
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6)];
 
       const score = checker.checkAccessibility(items, room);
       expect(score.overall).toBeGreaterThanOrEqual(0);
@@ -179,9 +221,7 @@ describe('AccessibilityChecker', () => {
 
     it('should return violations with proper structure', () => {
       const room = makeRoom(4, 3);
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6)];
 
       const violations = checker.getViolations(items, room);
 
@@ -198,9 +238,7 @@ describe('AccessibilityChecker', () => {
     it('should detect worktop height violations for non-conforming heights', () => {
       const room = makeRoom(4, 3);
       // Height 1.0m = 1000mm is above the 850mm PMR max
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 1.0, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 1.0, 0.6)];
 
       const violations = checker.getViolations(items, room);
       const r3 = violations.filter((v) => v.ruleId === 'R3');
@@ -209,9 +247,7 @@ describe('AccessibilityChecker', () => {
 
     it('should include knee space violation when no base has kneeSpace=true', () => {
       const room = makeRoom(4, 3);
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6)];
 
       const violations = checker.getViolations(items, room);
       const r10 = violations.filter((v) => v.ruleId === 'R10');
@@ -222,9 +258,7 @@ describe('AccessibilityChecker', () => {
   describe('getSuggestions()', () => {
     it('should return suggestions for each violation', () => {
       const room = makeRoom(4, 3);
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 1.0, 0.3, 0.6, 0.87, 0.6)];
 
       const violations = checker.getViolations(items, room);
       const suggestions = checker.getSuggestions(violations);

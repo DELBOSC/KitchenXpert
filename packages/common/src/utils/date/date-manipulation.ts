@@ -402,11 +402,7 @@ export function clampDate(date: DateInput, min: DateInput, max: DateInput): Date
  * @param step - The step in days (default: 1)
  * @returns An array of dates
  */
-export function getDateRange(
-  start: DateInput,
-  end: DateInput,
-  step: number = 1
-): Date[] {
+export function getDateRange(start: DateInput, end: DateInput, step: number = 1): Date[] {
   const dates: Date[] = [];
   let current = startOfDay(start);
   const endDate = startOfDay(end);
@@ -441,5 +437,5 @@ export function getDaysInMonth(dateOrYear: DateInput | number, month?: number): 
  */
 export function getDaysInYear(date: DateInput | number): number {
   const year = typeof date === 'number' ? date : normalizeDate(date).getFullYear();
-  return ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) ? 366 : 365;
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365;
 }

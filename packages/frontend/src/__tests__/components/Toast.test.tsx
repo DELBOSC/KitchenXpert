@@ -18,8 +18,12 @@ function TestComponent() {
       <button onClick={() => toast.error('Error message')}>Show Error</button>
       <button onClick={() => toast.warning('Warning message')}>Show Warning</button>
       <button onClick={() => toast.info('Info message')}>Show Info</button>
-      <button onClick={() => toast.addToast('success', 'Custom toast', 10000)}>Custom Duration</button>
-      <button onClick={() => toast.addToast('success', 'No auto dismiss', 0)}>No Auto Dismiss</button>
+      <button onClick={() => toast.addToast('success', 'Custom toast', 10000)}>
+        Custom Duration
+      </button>
+      <button onClick={() => toast.addToast('success', 'No auto dismiss', 0)}>
+        No Auto Dismiss
+      </button>
     </div>
   );
 }
@@ -390,9 +394,7 @@ describe('Toast', () => {
       // This tests the context function directly through a modified component
       const EmptyMessageTest = () => {
         const toast = useToast();
-        return (
-          <button onClick={() => toast.success('')}>Empty Toast</button>
-        );
+        return <button onClick={() => toast.success('')}>Empty Toast</button>;
       };
 
       render(

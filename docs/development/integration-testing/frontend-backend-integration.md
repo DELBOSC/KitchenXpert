@@ -14,7 +14,8 @@
 
 ## Overview
 
-Frontend-backend integration tests verify that the React frontend correctly interacts with the Express backend API.
+Frontend-backend integration tests verify that the React frontend correctly
+interacts with the Express backend API.
 
 ## Testing API Integration
 
@@ -60,19 +61,19 @@ import { useCreateDesign } from '../hooks/useDesign';
 describe('Design Creation API', () => {
   it('should create design', async () => {
     const { result } = renderHook(() => useCreateDesign(), {
-      wrapper: createQueryWrapper()
+      wrapper: createQueryWrapper(),
     });
 
     result.current.mutate({
       name: 'My Kitchen',
-      data: { layout: 'L-shaped' }
+      data: { layout: 'L-shaped' },
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.data).toMatchObject({
       id: expect.any(String),
-      name: 'My Kitchen'
+      name: 'My Kitchen',
     });
   });
 });
@@ -119,8 +120,8 @@ export const handlers = [
         data: {
           id,
           name: 'Test User',
-          email: 'test@example.com'
-        }
+          email: 'test@example.com',
+        },
       })
     );
   }),
@@ -134,8 +135,8 @@ export const handlers = [
         success: true,
         data: {
           id: '123',
-          ...body
-        }
+          ...body,
+        },
       })
     );
   }),
@@ -150,9 +151,9 @@ export const handlers = [
           {
             id: '1',
             name: 'Kitchen Design 1',
-            createdAt: new Date().toISOString()
-          }
-        ]
+            createdAt: new Date().toISOString(),
+          },
+        ],
       })
     );
   }),
@@ -167,8 +168,8 @@ export const handlers = [
         data: {
           id: 'new-design-id',
           ...body,
-          createdAt: new Date().toISOString()
-        }
+          createdAt: new Date().toISOString(),
+        },
       })
     );
   }),
@@ -181,11 +182,11 @@ export const handlers = [
         success: false,
         error: {
           code: 'INTERNAL_ERROR',
-          message: 'Something went wrong'
-        }
+          message: 'Something went wrong',
+        },
       })
     );
-  })
+  }),
 ];
 ```
 
@@ -202,15 +203,15 @@ test('should handle API error', async () => {
           success: false,
           error: {
             code: 'NOT_FOUND',
-            message: 'User not found'
-          }
+            message: 'User not found',
+          },
         })
       );
     })
   );
 
   const { result } = renderHook(() => useUser('123'), {
-    wrapper: createQueryWrapper()
+    wrapper: createQueryWrapper(),
   });
 
   await waitFor(() => expect(result.current.isError).toBe(true));
@@ -231,7 +232,7 @@ import { createQueryWrapper } from '../../test-utils';
 describe('useDesigns', () => {
   it('should fetch designs', async () => {
     const { result } = renderHook(() => useDesigns(), {
-      wrapper: createQueryWrapper()
+      wrapper: createQueryWrapper(),
     });
 
     expect(result.current.isLoading).toBe(true);
@@ -244,7 +245,7 @@ describe('useDesigns', () => {
 
   it('should refetch on window focus', async () => {
     const { result } = renderHook(() => useDesigns(), {
-      wrapper: createQueryWrapper()
+      wrapper: createQueryWrapper(),
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -272,12 +273,12 @@ describe('useCreateDesign', () => {
     const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries');
 
     const { result } = renderHook(() => useCreateDesign(), {
-      wrapper: createQueryWrapper(queryClient)
+      wrapper: createQueryWrapper(queryClient),
     });
 
     result.current.mutate({
       name: 'New Design',
-      data: { layout: 'U-shaped' }
+      data: { layout: 'U-shaped' },
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -295,20 +296,20 @@ describe('useCreateDesign', () => {
             success: false,
             error: {
               code: 'VALIDATION_ERROR',
-              message: 'Invalid design data'
-            }
+              message: 'Invalid design data',
+            },
           })
         );
       })
     );
 
     const { result } = renderHook(() => useCreateDesign(), {
-      wrapper: createQueryWrapper()
+      wrapper: createQueryWrapper(),
     });
 
     result.current.mutate({
       name: '',
-      data: {}
+      data: {},
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
@@ -391,7 +392,7 @@ import { AuthProvider, useAuth } from '../AuthContext';
 describe('AuthContext', () => {
   it('should login user', async () => {
     const { result } = renderHook(() => useAuth(), {
-      wrapper: AuthProvider
+      wrapper: AuthProvider,
     });
 
     expect(result.current.isAuthenticated).toBe(false);
@@ -406,7 +407,7 @@ describe('AuthContext', () => {
 
   it('should logout user', async () => {
     const { result } = renderHook(() => useAuth(), {
-      wrapper: AuthProvider
+      wrapper: AuthProvider,
     });
 
     await result.current.login('test@example.com', 'password123');
@@ -438,7 +439,7 @@ describe('API Error Handling', () => {
     );
 
     const { result } = renderHook(() => useUser('123'), {
-      wrapper: createQueryWrapper()
+      wrapper: createQueryWrapper(),
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
@@ -448,18 +449,17 @@ describe('API Error Handling', () => {
   it('should handle timeout', async () => {
     server.use(
       rest.get('/api/v1/users/:id', async (req, res, ctx) => {
-        await new Promise(resolve => setTimeout(resolve, 6000));
+        await new Promise((resolve) => setTimeout(resolve, 6000));
         return res(ctx.json({ data: {} }));
       })
     );
 
-    const { result } = renderHook(
-      () => useUser('123', { timeout: 1000 }),
-      { wrapper: createQueryWrapper() }
-    );
+    const { result } = renderHook(() => useUser('123', { timeout: 1000 }), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isError).toBe(true), {
-      timeout: 2000
+      timeout: 2000,
     });
   });
 
@@ -481,10 +481,9 @@ describe('API Error Handling', () => {
       })
     );
 
-    const { result } = renderHook(
-      () => useUser('123', { retry: 3 }),
-      { wrapper: createQueryWrapper() }
-    );
+    const { result } = renderHook(() => useUser('123', { retry: 3 }), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(callCount).toBe(3);
@@ -523,7 +522,7 @@ export function createQueryWrapper(queryClient?: QueryClient) {
 ```typescript
 it('should show loading state', async () => {
   const { result } = renderHook(() => useDesigns(), {
-    wrapper: createQueryWrapper()
+    wrapper: createQueryWrapper(),
   });
 
   expect(result.current.isLoading).toBe(true);
@@ -543,7 +542,7 @@ it('should show error state', async () => {
   );
 
   const { result } = renderHook(() => useDesigns(), {
-    wrapper: createQueryWrapper()
+    wrapper: createQueryWrapper(),
   });
 
   await waitFor(() => expect(result.current.isError).toBe(true));

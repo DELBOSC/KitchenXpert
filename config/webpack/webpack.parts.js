@@ -94,11 +94,7 @@ exports.extractCSS = ({ include, exclude } = {}) => ({
         test: /\.css$/,
         include,
         exclude,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
       },
     ],
   },

@@ -13,11 +13,7 @@ export interface IconProps {
 export const cabinetIconPath = 'M3 4h18v16H3V4zm0 8h18M7 4v16m10-16v16M3 12h4m10 0h4';
 
 export function createCabinetIcon(props: IconProps = {}): string {
-  const {
-    size = 24,
-    color = 'currentColor',
-    strokeWidth = 2
-  } = props;
+  const { size = 24, color = 'currentColor', strokeWidth = 2 } = props;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="4" width="18" height="16" rx="1"/>

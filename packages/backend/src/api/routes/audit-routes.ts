@@ -215,7 +215,11 @@ router.get('/user/:userId/activity', validateParams(userIdParam), auditControlle
  *       403:
  *         description: Forbidden - admin only
  */
-router.get('/resource/:resource/:resourceId', validateParams(resourceParams), auditController.getByResource);
+router.get(
+  '/resource/:resource/:resourceId',
+  validateParams(resourceParams),
+  auditController.getByResource
+);
 
 /**
  * @swagger
@@ -244,6 +248,10 @@ router.get('/resource/:resource/:resourceId', validateParams(resourceParams), au
  *       403:
  *         description: Forbidden - admin only
  */
-router.get('/resource/:resource/:resourceId/history', validateParams(resourceParams), auditController.getResourceHistory);
+router.get(
+  '/resource/:resource/:resourceId/history',
+  validateParams(resourceParams),
+  auditController.getResourceHistory
+);
 
 export default router;

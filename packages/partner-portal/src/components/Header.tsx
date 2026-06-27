@@ -41,10 +41,7 @@ export function Header({ onMenuClick, isSidebarCollapsed }: HeaderProps) {
       }`}
     >
       <div className="flex items-center space-x-4">
-        <button
-          onClick={onMenuClick}
-          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
-        >
+        <button onClick={onMenuClick} className="rounded-lg p-2 text-gray-500 hover:bg-gray-100">
           <Menu className="h-5 w-5" />
         </button>
 
@@ -80,9 +77,7 @@ export function Header({ onMenuClick, isSidebarCollapsed }: HeaderProps) {
               {user?.companyName?.charAt(0).toUpperCase() || 'P'}
             </div>
             <div className="hidden text-left md:block">
-              <p className="text-sm font-medium text-gray-900">
-                {user?.companyName || 'Partner'}
-              </p>
+              <p className="text-sm font-medium text-gray-900">{user?.companyName || 'Partner'}</p>
               <p className="text-xs text-gray-500">{user?.email}</p>
             </div>
             <ChevronDown className="h-4 w-4 text-gray-500" />
@@ -91,9 +86,7 @@ export function Header({ onMenuClick, isSidebarCollapsed }: HeaderProps) {
           {isProfileOpen && (
             <div className="absolute right-0 mt-2 w-64 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
               <div className="border-b border-gray-200 px-4 py-3">
-                <p className="text-sm font-medium text-gray-900">
-                  {user?.companyName}
-                </p>
+                <p className="text-sm font-medium text-gray-900">{user?.companyName}</p>
                 <p className="text-sm text-gray-500">{user?.email}</p>
                 {user?.tier && (
                   <span

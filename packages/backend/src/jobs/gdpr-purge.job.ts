@@ -57,7 +57,7 @@ const DEFAULT_BATCH = 100;
 
 export async function runGdprPurge(
   prisma: PrismaClient,
-  options: PurgeOptions = {},
+  options: PurgeOptions = {}
 ): Promise<PurgeStats> {
   const retentionMs = options.retentionMs ?? DEFAULT_RETENTION_MS;
   const batchSize = options.batchSize ?? DEFAULT_BATCH;
@@ -87,10 +87,17 @@ export async function runGdprPurge(
     return stats;
   }
 
-  logger.info(`[gdpr-purge] Processing ${candidates.length} erasure request(s)`, { dryRun, retentionMs, cutoff });
+  logger.info(`[gdpr-purge] Processing ${candidates.length} erasure request(s)`, {
+    dryRun,
+    retentionMs,
+    cutoff,
+  });
 
   for (const audit of candidates) {
-    if (!audit.userId) { stats.skipped++; continue; }
+    if (!audit.userId) {
+      stats.skipped++;
+      continue;
+    }
     try {
       const exists = await prisma.user.findUnique({
         where: { id: audit.userId },
@@ -116,7 +123,9 @@ export async function runGdprPurge(
       // guard against accidentally deleting active users if metadata gets
       // crafted by mistake).
       if (!exists.email.startsWith('deleted-') || exists.status !== 'suspended') {
-        logger.warn('[gdpr-purge] User not in anonymised state — skipping', { userId: audit.userId });
+        logger.warn('[gdpr-purge] User not in anonymised state — skipping', {
+          userId: audit.userId,
+        });
         stats.skipped++;
         continue;
       }

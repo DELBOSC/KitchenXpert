@@ -62,8 +62,8 @@ export interface PlacedItem3D {
  * Configuration de la piece
  */
 export interface RoomConfig {
-  width: number;  // metres
-  depth: number;  // metres
+  width: number; // metres
+  depth: number; // metres
   height: number; // metres
   walls: THREE.Object3D[];
 }
@@ -80,7 +80,7 @@ export interface AutoCompleteResult {
 // Standards ergonomiques (provenant du generator-service)
 const ERGONOMIC = {
   workTriangle: {
-    minPerimeter: 3.6,  // 360cm en metres
+    minPerimeter: 3.6, // 360cm en metres
     maxPerimeter: 6.6,
     idealPerimeter: 5.1,
     minLeg: 1.2,
@@ -123,7 +123,9 @@ export class AIAssistant {
     const fridge = items.find((i) => ['refrigerator', 'fridge', 'fridge_freezer'].includes(i.type));
 
     const nullResult: WorkTriangleResult = {
-      sink: null, cooktop: null, fridge: null,
+      sink: null,
+      cooktop: null,
+      fridge: null,
       perimeter: 0,
       legs: { sinkToCooktop: 0, cooktopToFridge: 0, fridgeToSink: 0 },
       isOptimal: false,
@@ -147,9 +149,9 @@ export class AIAssistant {
 
     // Perimeter score
     if (perimeter < minPerimeter) {
-      score -= (minPerimeter - perimeter) / minPerimeter * 40;
+      score -= ((minPerimeter - perimeter) / minPerimeter) * 40;
     } else if (perimeter > maxPerimeter) {
-      score -= (perimeter - maxPerimeter) / maxPerimeter * 40;
+      score -= ((perimeter - maxPerimeter) / maxPerimeter) * 40;
     } else {
       // Bonus for being close to ideal
       const deviation = Math.abs(perimeter - idealPerimeter) / idealPerimeter;
@@ -189,7 +191,7 @@ export class AIAssistant {
     // Poids : ergonomie 25%, rangement 20%, esthetique 15%, budget 25%, espace 15%
     const overall =
       ergonomics * 0.25 +
-      storage * 0.20 +
+      storage * 0.2 +
       aesthetics * 0.15 +
       budgetEfficiency * 0.25 +
       spaceUtilization * 0.15;
@@ -239,34 +241,47 @@ export class AIAssistant {
     // Missing essential elements
     const hasSink = items.some((i) => i.type === 'sink' || i.type === 'sink_base');
     const hasCooktop = items.some((i) => ['cooktop', 'stove', 'hob'].includes(i.type));
-    const hasFridge = items.some((i) => ['refrigerator', 'fridge', 'fridge_freezer'].includes(i.type));
+    const hasFridge = items.some((i) =>
+      ['refrigerator', 'fridge', 'fridge_freezer'].includes(i.type)
+    );
     const hasHood = items.some((i) => ['hood', 'range_hood', 'extractor'].includes(i.type));
 
     if (!hasSink) {
       suggestions.push({
-        id: `sug-${sugId++}`, type: 'warning', category: 'ergonomics',
-        message: 'Évier manquant', detail: 'Un évier est essentiel pour une cuisine fonctionnelle.',
+        id: `sug-${sugId++}`,
+        type: 'warning',
+        category: 'ergonomics',
+        message: 'Évier manquant',
+        detail: 'Un évier est essentiel pour une cuisine fonctionnelle.',
         priority: 1,
       });
     }
 
     if (!hasCooktop) {
       suggestions.push({
-        id: `sug-${sugId++}`, type: 'warning', category: 'ergonomics',
-        message: 'Plaque de cuisson manquante', priority: 1,
+        id: `sug-${sugId++}`,
+        type: 'warning',
+        category: 'ergonomics',
+        message: 'Plaque de cuisson manquante',
+        priority: 1,
       });
     }
 
     if (!hasFridge) {
       suggestions.push({
-        id: `sug-${sugId++}`, type: 'info', category: 'ergonomics',
-        message: 'Réfrigérateur manquant', priority: 2,
+        id: `sug-${sugId++}`,
+        type: 'info',
+        category: 'ergonomics',
+        message: 'Réfrigérateur manquant',
+        priority: 2,
       });
     }
 
     if (hasCooktop && !hasHood) {
       suggestions.push({
-        id: `sug-${sugId++}`, type: 'warning', category: 'safety',
+        id: `sug-${sugId++}`,
+        type: 'warning',
+        category: 'safety',
         message: 'Hotte aspirante manquante au-dessus de la plaque',
         detail: 'Une ventilation est recommandée pour la sécurité et le confort.',
         priority: 2,
@@ -281,7 +296,9 @@ export class AIAssistant {
 
       if (dist < ERGONOMIC.distances.cooktopToSinkMin) {
         suggestions.push({
-          id: `sug-${sugId++}`, type: 'warning', category: 'safety',
+          id: `sug-${sugId++}`,
+          type: 'warning',
+          category: 'safety',
           message: `Évier trop proche de la plaque (${Math.round(dist * 1000)} mm)`,
           detail: `Distance minimum : ${Math.round(ERGONOMIC.distances.cooktopToSinkMin * 1000)} mm`,
           priority: 1,
@@ -299,7 +316,9 @@ export class AIAssistant {
 
     if (utilization < 0.3) {
       suggestions.push({
-        id: `sug-${sugId++}`, type: 'info', category: 'space',
+        id: `sug-${sugId++}`,
+        type: 'info',
+        category: 'space',
         message: 'Espace sous-utilisé',
         detail: 'Vous pouvez ajouter plus de rangements pour optimiser votre cuisine.',
         priority: 3,
@@ -315,11 +334,14 @@ export class AIAssistant {
         if (a.type === 'floor' || b.type === 'floor') continue;
 
         const dist = a.position.distanceTo(b.position);
-        const minDist = (a.dimensions.depth + b.dimensions.depth) / 2 + ERGONOMIC.clearances.minPassage;
+        const minDist =
+          (a.dimensions.depth + b.dimensions.depth) / 2 + ERGONOMIC.clearances.minPassage;
 
         if (dist < minDist && dist > 0) {
           suggestions.push({
-            id: `sug-${sugId++}`, type: 'warning', category: 'ergonomics',
+            id: `sug-${sugId++}`,
+            type: 'warning',
+            category: 'ergonomics',
             message: `Passage insuffisant entre les éléments`,
             detail: `${Math.round(dist * 1000)} mm disponible, minimum ${Math.round(ERGONOMIC.clearances.minPassage * 1000)} mm`,
             priority: 2,
@@ -347,7 +369,9 @@ export class AIAssistant {
    */
   private scoreStorage(items: PlacedItem3D[], room: RoomConfig): number {
     const storageItems = items.filter((i) =>
-      ['base_cabinet', 'base', 'wall_cabinet', 'wall', 'tall_cabinet', 'tall', 'drawer'].includes(i.type)
+      ['base_cabinet', 'base', 'wall_cabinet', 'wall', 'tall_cabinet', 'tall', 'drawer'].includes(
+        i.type
+      )
     );
 
     const totalStorageVolume = storageItems.reduce(
@@ -366,9 +390,7 @@ export class AIAssistant {
    * Score esthetique (coherence des dimensions)
    */
   private scoreAesthetics(items: PlacedItem3D[]): number {
-    const furniture = items.filter((i) =>
-      !['wall', 'floor', 'ceiling'].includes(i.type)
-    );
+    const furniture = items.filter((i) => !['wall', 'floor', 'ceiling'].includes(i.type));
 
     if (furniture.length < 2) return 50;
 
@@ -382,8 +404,10 @@ export class AIAssistant {
 
     if (baseHeights.length > 1) {
       const avgHeight = baseHeights.reduce((s, h) => s + h, 0) / baseHeights.length;
-      const heightVariance = baseHeights.reduce((s, h) => s + Math.pow(h - avgHeight, 2), 0) / baseHeights.length;
-      if (heightVariance < 0.001) score += 15; // Hauteur uniforme
+      const heightVariance =
+        baseHeights.reduce((s, h) => s + Math.pow(h - avgHeight, 2), 0) / baseHeights.length;
+      if (heightVariance < 0.001)
+        score += 15; // Hauteur uniforme
       else if (heightVariance < 0.01) score += 5;
     }
 
@@ -411,9 +435,7 @@ export class AIAssistant {
    * Score utilisation de l'espace
    */
   private scoreSpace(items: PlacedItem3D[], room: RoomConfig): number {
-    const furniture = items.filter((i) =>
-      !['wall', 'floor', 'ceiling'].includes(i.type)
-    );
+    const furniture = items.filter((i) => !['wall', 'floor', 'ceiling'].includes(i.type));
 
     if (furniture.length === 0) return 0;
 
@@ -437,27 +459,49 @@ export class AIAssistant {
   autoComplete(
     existingItems: PlacedItem3D[],
     room: RoomConfig,
-    smartPlacement: { suggestPosition: (type: string, dimensions: { width: number; height: number; depth: number }, existingItems: PlacedItem3D[], room: RoomConfig) => { position: THREE.Vector3; rotation: number; confidence: number } }
+    smartPlacement: {
+      suggestPosition: (
+        type: string,
+        dimensions: { width: number; height: number; depth: number },
+        existingItems: PlacedItem3D[],
+        room: RoomConfig
+      ) => { position: THREE.Vector3; rotation: number; confidence: number };
+    }
   ): AutoCompleteResult {
     const addedItems: PlacedItem3D[] = [];
     const allItems = [...existingItems];
 
     // Essential items that should be present
-    const essentials: Array<{ type: string; dimensions: { width: number; height: number; depth: number } }> = [];
+    const essentials: Array<{
+      type: string;
+      dimensions: { width: number; height: number; depth: number };
+    }> = [];
 
     const hasSink = allItems.some((i) => i.type === 'sink' || i.type === 'sink_base');
     const hasCooktop = allItems.some((i) => ['cooktop', 'stove', 'hob'].includes(i.type));
-    const hasFridge = allItems.some((i) => ['refrigerator', 'fridge', 'fridge_freezer'].includes(i.type));
+    const hasFridge = allItems.some((i) =>
+      ['refrigerator', 'fridge', 'fridge_freezer'].includes(i.type)
+    );
     const hasHood = allItems.some((i) => ['hood', 'range_hood', 'extractor'].includes(i.type));
 
     if (!hasSink) {
-      essentials.push({ type: 'sink_base', dimensions: { width: 0.6, height: mmToM(this.brandProfile.base.totalHeight), depth: mmToM(this.brandProfile.base.defaultDepth) } });
+      essentials.push({
+        type: 'sink_base',
+        dimensions: {
+          width: 0.6,
+          height: mmToM(this.brandProfile.base.totalHeight),
+          depth: mmToM(this.brandProfile.base.defaultDepth),
+        },
+      });
     }
     if (!hasCooktop) {
       essentials.push({ type: 'cooktop', dimensions: { width: 0.6, height: 0.05, depth: 0.52 } });
     }
     if (!hasFridge) {
-      essentials.push({ type: 'refrigerator', dimensions: { width: 0.6, height: 1.8, depth: 0.65 } });
+      essentials.push({
+        type: 'refrigerator',
+        dimensions: { width: 0.6, height: 1.8, depth: 0.65 },
+      });
     }
     if (!hasHood && (hasCooktop || essentials.some((e) => e.type === 'cooktop'))) {
       essentials.push({ type: 'hood', dimensions: { width: 0.6, height: 0.15, depth: 0.5 } });
@@ -486,7 +530,9 @@ export class AIAssistant {
 
     // Fill remaining wall space with base cabinets
     const baseCabinets = allItems.filter((i) =>
-      ['base_cabinet', 'base', 'sink', 'sink_base', 'cooktop', 'stove', 'dishwasher'].includes(i.type)
+      ['base_cabinet', 'base', 'sink', 'sink_base', 'cooktop', 'stove', 'dishwasher'].includes(
+        i.type
+      )
     );
 
     // Calculate occupied wall space along back wall (z ~ 0.3)
@@ -496,7 +542,11 @@ export class AIAssistant {
 
     // Find gaps along back wall
     const cabinetWidth = 0.6;
-    const cabinetDims = { width: cabinetWidth, height: mmToM(this.brandProfile.base.totalHeight), depth: mmToM(this.brandProfile.base.defaultDepth) };
+    const cabinetDims = {
+      width: cabinetWidth,
+      height: mmToM(this.brandProfile.base.totalHeight),
+      depth: mmToM(this.brandProfile.base.defaultDepth),
+    };
     let maxBaseToAdd = 4;
 
     for (let x = 0.3; x < room.width - 0.3 && maxBaseToAdd > 0; x += cabinetWidth) {
@@ -526,11 +576,15 @@ export class AIAssistant {
     );
 
     if (existingWallCabinets.length < 2) {
-      const wallCabinetDims = { width: 0.6, height: mmToM(this.brandProfile.wall.defaultHeight), depth: mmToM(this.brandProfile.wall.defaultDepth) };
+      const wallCabinetDims = {
+        width: 0.6,
+        height: mmToM(this.brandProfile.wall.defaultHeight),
+        depth: mmToM(this.brandProfile.wall.defaultDepth),
+      };
       let maxWallToAdd = 3;
 
-      const baseForWall = baseCabinets.filter((i) =>
-        !['sink', 'sink_base'].includes(i.type) && i.position.z < 0.5
+      const baseForWall = baseCabinets.filter(
+        (i) => !['sink', 'sink_base'].includes(i.type) && i.position.z < 0.5
       );
 
       for (const base of baseForWall) {
@@ -544,7 +598,11 @@ export class AIAssistant {
           const newWallCab: PlacedItem3D = {
             id: generateId('auto-wall'),
             type: 'wall_cabinet',
-            position: new THREE.Vector3(base.position.x, mmToM(this.brandProfile.wall.bottomY), base.position.z - 0.12),
+            position: new THREE.Vector3(
+              base.position.x,
+              mmToM(this.brandProfile.wall.bottomY),
+              base.position.z - 0.12
+            ),
             rotation: base.rotation,
             dimensions: wallCabinetDims,
           };
@@ -559,9 +617,10 @@ export class AIAssistant {
     // Score the result
     const score = this.scoreConfiguration(allItems, room);
 
-    const message = addedItems.length === 0
-      ? 'Votre cuisine est déjà complète !'
-      : `${addedItems.length} élément(s) ajouté(s) pour optimiser votre cuisine.`;
+    const message =
+      addedItems.length === 0
+        ? 'Votre cuisine est déjà complète !'
+        : `${addedItems.length} élément(s) ajouté(s) pour optimiser votre cuisine.`;
 
     return { addedItems, score, message };
   }

@@ -82,7 +82,11 @@ jest.mock('../utils/logger', () => ({
 // ---------------------------------------------------------------------------
 import { SmartHomeService } from '../services/smart-home/smart-home.service';
 
-import type { PlacedDevice, AutomationRule, CoverageMap } from '../services/smart-home/smart-home.service';
+import type {
+  PlacedDevice,
+  AutomationRule,
+  CoverageMap,
+} from '../services/smart-home/smart-home.service';
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -251,7 +255,7 @@ describe('SmartHomeService', () => {
         3000,
         1200,
         expect.any(Number),
-        expect.objectContaining({ feature: 'smart_home_planner' }),
+        expect.objectContaining({ feature: 'smart_home_planner' })
       );
       expect(mockPrisma.smartHomePlan.create).toHaveBeenCalledTimes(1);
     });
@@ -259,9 +263,9 @@ describe('SmartHomeService', () => {
     it('should throw when kitchen is not found', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.createPlan(kitchenId, testUserId, {}),
-      ).rejects.toThrow('Kitchen not found');
+      await expect(service.createPlan(kitchenId, testUserId, {})).rejects.toThrow(
+        'Kitchen not found'
+      );
 
       expect(mockGenerateJSON).not.toHaveBeenCalled();
     });
@@ -270,9 +274,9 @@ describe('SmartHomeService', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockGenerateJSON.mockRejectedValue(new Error('Rate limit exceeded'));
 
-      await expect(
-        service.createPlan(kitchenId, testUserId, {}),
-      ).rejects.toThrow('Rate limit exceeded');
+      await expect(service.createPlan(kitchenId, testUserId, {})).rejects.toThrow(
+        'Rate limit exceeded'
+      );
     });
   });
 
@@ -344,17 +348,17 @@ describe('SmartHomeService', () => {
     it('should throw when plan is not found', async () => {
       mockPrisma.smartHomePlan.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.updatePlan(kitchenId, testUserId, {}),
-      ).rejects.toThrow('Smart home plan not found');
+      await expect(service.updatePlan(kitchenId, testUserId, {})).rejects.toThrow(
+        'Smart home plan not found'
+      );
     });
 
     it('should throw when user does not own the plan (IDOR prevention)', async () => {
       mockPrisma.smartHomePlan.findUnique.mockResolvedValue(mockPlanRecord);
 
-      await expect(
-        service.updatePlan(kitchenId, otherUserId, {}),
-      ).rejects.toThrow('Unauthorized: you do not own this plan');
+      await expect(service.updatePlan(kitchenId, otherUserId, {})).rejects.toThrow(
+        'Unauthorized: you do not own this plan'
+      );
 
       expect(mockPrisma.smartHomePlan.update).not.toHaveBeenCalled();
     });
@@ -408,11 +412,7 @@ describe('SmartHomeService', () => {
       mockPrisma.smartHomePlan.findUnique.mockResolvedValue(mockPlanRecord);
       mockPrisma.smartHomePlan.update.mockResolvedValue(mockPlanRecord);
 
-      const result = await service.calculateCoverage(
-        kitchenId,
-        { x: 2, y: 1, z: 1.5 },
-        'WiFi',
-      );
+      const result = await service.calculateCoverage(kitchenId, { x: 2, y: 1, z: 1.5 }, 'WiFi');
 
       expect(result).toBeDefined();
       expect(result.protocol).toBe('WiFi');
@@ -426,7 +426,11 @@ describe('SmartHomeService', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.calculateCoverage('00000000-0000-0000-0000-000000000000', { x: 0, y: 0, z: 0 }, 'WiFi'),
+        service.calculateCoverage(
+          '00000000-0000-0000-0000-000000000000',
+          { x: 0, y: 0, z: 0 },
+          'WiFi'
+        )
       ).rejects.toThrow('Kitchen not found');
     });
 

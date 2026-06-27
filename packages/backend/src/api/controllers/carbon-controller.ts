@@ -37,7 +37,9 @@ export class CarbonController {
     }
 
     if (!Array.isArray(items) || items.length === 0) {
-      res.status(400).json({ success: false, error: 'items array is required and must not be empty' });
+      res
+        .status(400)
+        .json({ success: false, error: 'items array is required and must not be empty' });
       return;
     }
 

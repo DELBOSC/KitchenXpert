@@ -76,9 +76,12 @@ export interface HealthCheckResponse {
   status: 'healthy' | 'degraded' | 'unhealthy';
   timestamp: string;
   version: string;
-  services?: Record<string, {
-    status: 'up' | 'down';
-    latency?: number;
-    message?: string;
-  }>;
+  services?: Record<
+    string,
+    {
+      status: 'up' | 'down';
+      latency?: number;
+      message?: string;
+    }
+  >;
 }

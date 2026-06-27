@@ -22,8 +22,12 @@ export interface TransformEvent {
  * Gere la coordination entre les deux (desactive orbit pendant la transformation)
  */
 export class ControlsManager {
-  private orbitControls: InstanceType<typeof import('three/examples/jsm/controls/OrbitControls.js').OrbitControls> | null = null;
-  private transformControls: InstanceType<typeof import('three/examples/jsm/controls/TransformControls.js').TransformControls> | null = null;
+  private orbitControls: InstanceType<
+    typeof import('three/examples/jsm/controls/OrbitControls.js').OrbitControls
+  > | null = null;
+  private transformControls: InstanceType<
+    typeof import('three/examples/jsm/controls/TransformControls.js').TransformControls
+  > | null = null;
   private camera: THREE.PerspectiveCamera;
   private domElement: HTMLElement;
   private scene: THREE.Scene;

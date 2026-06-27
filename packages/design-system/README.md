@@ -16,36 +16,36 @@ pnpm add @kitchenxpert/design-system
 import { tokens } from '@kitchenxpert/design-system';
 
 // Couleurs
-tokens.colors.primary    // '#3b82f6'
-tokens.colors.secondary  // '#64748b'
-tokens.colors.success    // '#22c55e'
-tokens.colors.warning    // '#eab308'
-tokens.colors.error      // '#ef4444'
+tokens.colors.primary; // '#3b82f6'
+tokens.colors.secondary; // '#64748b'
+tokens.colors.success; // '#22c55e'
+tokens.colors.warning; // '#eab308'
+tokens.colors.error; // '#ef4444'
 
 // Espacements
-tokens.spacing.xs  // '0.25rem'
-tokens.spacing.sm  // '0.5rem'
-tokens.spacing.md  // '1rem'
-tokens.spacing.lg  // '1.5rem'
-tokens.spacing.xl  // '2rem'
+tokens.spacing.xs; // '0.25rem'
+tokens.spacing.sm; // '0.5rem'
+tokens.spacing.md; // '1rem'
+tokens.spacing.lg; // '1.5rem'
+tokens.spacing.xl; // '2rem'
 
 // Typography
-tokens.fontSizes.xs   // '0.75rem'
-tokens.fontSizes.sm   // '0.875rem'
-tokens.fontSizes.base // '1rem'
-tokens.fontSizes.lg   // '1.125rem'
-tokens.fontSizes.xl   // '1.25rem'
+tokens.fontSizes.xs; // '0.75rem'
+tokens.fontSizes.sm; // '0.875rem'
+tokens.fontSizes.base; // '1rem'
+tokens.fontSizes.lg; // '1.125rem'
+tokens.fontSizes.xl; // '1.25rem'
 
 // Rayons de bordure
-tokens.radii.sm  // '0.25rem'
-tokens.radii.md  // '0.375rem'
-tokens.radii.lg  // '0.5rem'
-tokens.radii.xl  // '0.75rem'
+tokens.radii.sm; // '0.25rem'
+tokens.radii.md; // '0.375rem'
+tokens.radii.lg; // '0.5rem'
+tokens.radii.xl; // '0.75rem'
 
 // Ombres
-tokens.shadows.sm  // '0 1px 2px rgba(0,0,0,0.05)'
-tokens.shadows.md  // '0 4px 6px rgba(0,0,0,0.1)'
-tokens.shadows.lg  // '0 10px 15px rgba(0,0,0,0.1)'
+tokens.shadows.sm; // '0 1px 2px rgba(0,0,0,0.05)'
+tokens.shadows.md; // '0 4px 6px rgba(0,0,0,0.1)'
+tokens.shadows.lg; // '0 10px 15px rgba(0,0,0,0.1)'
 ```
 
 ### CSS Variables

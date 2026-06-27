@@ -89,13 +89,13 @@ const initialState: QuestionnaireState = {
   progress: {
     totalQuestions: 0,
     answeredQuestions: 0,
-    percentage: 0
+    percentage: 0,
   },
   analysisResults: null,
   analysisStatus: 'idle',
   analysisError: null,
   lastSaved: null,
-  sessionId: null
+  sessionId: null,
 };
 
 const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
@@ -114,7 +114,7 @@ export const saveResponses = createAsyncThunk(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ responses, sessionId })
+        body: JSON.stringify({ responses, sessionId }),
       });
 
       if (!response.ok) {
@@ -133,7 +133,9 @@ export const loadResponses = createAsyncThunk(
   'questionnaire/loadResponses',
   async (sessionId: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/questionnaire/load/${sessionId}`, { credentials: 'include' });
+      const response = await fetch(`${API_URL}/questionnaire/load/${sessionId}`, {
+        credentials: 'include',
+      });
 
       if (!response.ok) {
         throw new Error('Failed to load responses');
@@ -162,7 +164,7 @@ export const submitQuestionnaire = createAsyncThunk(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ responses })
+        body: JSON.stringify({ responses }),
       });
 
       if (!response.ok) {
@@ -188,7 +190,7 @@ export const analyzeResponses = createAsyncThunk(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ responses })
+        body: JSON.stringify({ responses }),
       });
 
       if (!response.ok) {
@@ -259,7 +261,7 @@ const questionnaireSlice = createSlice({
       const { sectionId, responses } = action.payload;
       state.responses[sectionId] = {
         ...state.responses[sectionId],
-        ...responses
+        ...responses,
       };
     },
 
@@ -273,7 +275,7 @@ const questionnaireSlice = createSlice({
       state.progress = {
         totalQuestions: 0,
         answeredQuestions: 0,
-        percentage: 0
+        percentage: 0,
       };
     },
 
@@ -298,7 +300,7 @@ const questionnaireSlice = createSlice({
       if (state.validation[action.payload]) {
         state.validation[action.payload] = {
           isValid: true,
-          errors: []
+          errors: [],
         };
       }
     },
@@ -315,9 +317,7 @@ const questionnaireSlice = createSlice({
       state.progress = {
         totalQuestions,
         answeredQuestions,
-        percentage: totalQuestions > 0
-          ? Math.round((answeredQuestions / totalQuestions) * 100)
-          : 0
+        percentage: totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0,
       };
     },
 
@@ -334,7 +334,7 @@ const questionnaireSlice = createSlice({
     // Reset
     resetQuestionnaire() {
       return initialState;
-    }
+    },
   },
 
   extraReducers: (builder) => {
@@ -353,7 +353,8 @@ const questionnaireSlice = createSlice({
       })
       .addCase(saveResponses.rejected, (state, action) => {
         state.isSaving = false;
-        state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
       });
 
     // Load responses
@@ -370,7 +371,8 @@ const questionnaireSlice = createSlice({
       })
       .addCase(loadResponses.rejected, (state, action) => {
         state.isLoadingResponses = false;
-        state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
       });
 
     // Submit questionnaire
@@ -384,7 +386,8 @@ const questionnaireSlice = createSlice({
       })
       .addCase(submitQuestionnaire.rejected, (state, action) => {
         state.isSubmitting = false;
-        state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
       });
 
     // Analyze responses
@@ -399,9 +402,10 @@ const questionnaireSlice = createSlice({
       })
       .addCase(analyzeResponses.rejected, (state, action) => {
         state.analysisStatus = 'failed';
-        state.analysisError = (action.payload as string) ?? action.error?.message ?? 'Analysis failed';
+        state.analysisError =
+          (action.payload as string) ?? action.error?.message ?? 'Analysis failed';
       });
-  }
+  },
 });
 
 /**
@@ -422,7 +426,7 @@ export const {
   updateProgress,
   setSessionId,
   clearError,
-  resetQuestionnaire
+  resetQuestionnaire,
 } = questionnaireSlice.actions;
 
 export default questionnaireSlice.reducer;

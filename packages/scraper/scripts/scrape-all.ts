@@ -11,7 +11,11 @@
 
 import 'dotenv/config';
 import { createScraper, hasScraperFor, getAvailableScrapers } from '../src/scrapers/index.js';
-import { getEnabledBrands, getBrandsByPriority, BrandScrapingConfig } from '../src/config/brands.config.js';
+import {
+  getEnabledBrands,
+  getBrandsByPriority,
+  BrandScrapingConfig,
+} from '../src/config/brands.config.js';
 import { logger } from '../src/utils/logger.js';
 import type { ScrapeSummary } from '../src/models/scrape-result.js';
 
@@ -32,7 +36,7 @@ async function scrapeAll(options: ScrapeAllOptions): Promise<Map<string, ScrapeS
     : getEnabledBrands();
 
   // Filter to only brands with scrapers
-  brands = brands.filter(b => hasScraperFor(b.id));
+  brands = brands.filter((b) => hasScraperFor(b.id));
 
   logger.info(`Starting scrape of ${brands.length} brands`, {
     priorityOrder: options.priorityOrder,

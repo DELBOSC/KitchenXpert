@@ -35,18 +35,14 @@ describe('PricingPage', () => {
     it('should render the page title', () => {
       renderPricingPage();
 
-      expect(
-        screen.getByRole('heading', { level: 1 })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
     });
 
     it('should render the subtitle text', () => {
       renderPricingPage();
 
       // Default fallback from t()
-      expect(
-        screen.getByText(/choisissez le plan|choose the plan/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/choisissez le plan|choose the plan/i)).toBeInTheDocument();
     });
 
     it('should render the comparison section heading', () => {
@@ -83,24 +79,24 @@ describe('PricingPage', () => {
 
       // Price is rendered as "<number>€" inside a single span. Use the
       // tag-name + textContent function matcher to find the price span.
-      const free = screen.getAllByText((_, el) =>
-        el?.tagName === 'SPAN' && el.textContent === '0€',
+      const free = screen.getAllByText(
+        (_, el) => el?.tagName === 'SPAN' && el.textContent === '0€'
       );
       expect(free.length).toBeGreaterThan(0);
     });
 
     it('should display the Pro plan price as 29', () => {
       renderPricingPage();
-      const pro = screen.getAllByText((_, el) =>
-        el?.tagName === 'SPAN' && el.textContent === '29€',
+      const pro = screen.getAllByText(
+        (_, el) => el?.tagName === 'SPAN' && el.textContent === '29€'
       );
       expect(pro.length).toBeGreaterThan(0);
     });
 
     it('should display the Enterprise plan price as 99', () => {
       renderPricingPage();
-      const ent = screen.getAllByText((_, el) =>
-        el?.tagName === 'SPAN' && el.textContent === '99€',
+      const ent = screen.getAllByText(
+        (_, el) => el?.tagName === 'SPAN' && el.textContent === '99€'
       );
       expect(ent.length).toBeGreaterThan(0);
     });
@@ -205,8 +201,8 @@ describe('PricingPage', () => {
 
       // Pro: 29 * 0.8 = 23.2 → rendered as "23.2€".
       await waitFor(() => {
-        const matches = screen.getAllByText((_, el) =>
-          el?.tagName === 'SPAN' && el.textContent === '23.2€',
+        const matches = screen.getAllByText(
+          (_, el) => el?.tagName === 'SPAN' && el.textContent === '23.2€'
         );
         expect(matches.length).toBeGreaterThan(0);
       });
@@ -220,8 +216,8 @@ describe('PricingPage', () => {
 
       // Enterprise: 99 * 0.8 = 79.2
       await waitFor(() => {
-        const matches = screen.getAllByText((_, el) =>
-          el?.tagName === 'SPAN' && el.textContent === '79.2€',
+        const matches = screen.getAllByText(
+          (_, el) => el?.tagName === 'SPAN' && el.textContent === '79.2€'
         );
         expect(matches.length).toBeGreaterThan(0);
       });
@@ -234,8 +230,8 @@ describe('PricingPage', () => {
       await user.click(screen.getByRole('switch'));
 
       // Free stays "0€".
-      const free = screen.getAllByText((_, el) =>
-        el?.tagName === 'SPAN' && el.textContent === '0€',
+      const free = screen.getAllByText(
+        (_, el) => el?.tagName === 'SPAN' && el.textContent === '0€'
       );
       expect(free.length).toBeGreaterThan(0);
     });

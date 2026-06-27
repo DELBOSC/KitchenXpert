@@ -35,9 +35,7 @@ async function generateProvider(): Promise<void> {
     slug: '',
     type: (await question('Type (furniture/appliance): ')) as any,
     country: await question('Code pays (ex: FR, SE, DE): '),
-    sourceType: (await question(
-      'Source de données (api/csv/excel/json/scraping): '
-    )) as any,
+    sourceType: (await question('Source de données (api/csv/excel/json/scraping): ')) as any,
   };
 
   // Générer le slug
@@ -46,9 +44,7 @@ async function generateProvider(): Promise<void> {
   // Questions spécifiques à l'API
   if (config.sourceType === 'api') {
     config.apiEndpoint = await question('URL API (ex: https://api.provider.com): ');
-    config.authType = (await question(
-      'Type d\'auth (none/api-key/oauth/basic): '
-    )) as any;
+    config.authType = (await question("Type d'auth (none/api-key/oauth/basic): ")) as any;
   }
 
   rl.close();
@@ -56,12 +52,7 @@ async function generateProvider(): Promise<void> {
   console.log('\n📦 Génération du provider...\n');
 
   // Créer la structure
-  const providerDir = path.join(
-    __dirname,
-    '..',
-    `${config.type}-providers`,
-    config.slug
-  );
+  const providerDir = path.join(__dirname, '..', `${config.type}-providers`, config.slug);
 
   if (fs.existsSync(providerDir)) {
     console.error(`❌ Le provider ${config.slug} existe déjà !`);
@@ -91,9 +82,10 @@ async function generateProvider(): Promise<void> {
 }
 
 function generateApiClient(dir: string, config: ProviderConfig): void {
-  const content = config.sourceType === 'api'
-    ? generateApiClientForAPI(config)
-    : generateApiClientForFile(config);
+  const content =
+    config.sourceType === 'api'
+      ? generateApiClientForAPI(config)
+      : generateApiClientForFile(config);
 
   fs.writeFileSync(path.join(dir, 'api-client.ts'), content);
 }
@@ -440,10 +432,7 @@ function generateCredentialsExample(dir: string, config: ProviderConfig): void {
     content.encoding = 'utf-8';
   }
 
-  fs.writeFileSync(
-    path.join(dir, 'credentials.example.json'),
-    JSON.stringify(content, null, 2)
-  );
+  fs.writeFileSync(path.join(dir, 'credentials.example.json'), JSON.stringify(content, null, 2));
 }
 
 function generateModel(dir: string, config: ProviderConfig): void {

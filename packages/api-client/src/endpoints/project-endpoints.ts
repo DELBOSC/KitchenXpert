@@ -90,16 +90,12 @@ export class ProjectEndpoints {
 
   // Quotes
   async createQuote(projectId: string): Promise<ProjectQuote> {
-    const response = await this.client.post<ProjectQuote>(
-      `/projects/${projectId}/quotes`
-    );
+    const response = await this.client.post<ProjectQuote>(`/projects/${projectId}/quotes`);
     return response.data;
   }
 
   async getQuotes(projectId: string): Promise<ProjectQuote[]> {
-    const response = await this.client.get<ProjectQuote[]>(
-      `/projects/${projectId}/quotes`
-    );
+    const response = await this.client.get<ProjectQuote[]>(`/projects/${projectId}/quotes`);
     return response.data;
   }
 
@@ -130,17 +126,14 @@ export class ProjectEndpoints {
 
   // Orders
   async createOrderFromQuote(projectId: string, quoteId: string): Promise<ProjectOrder> {
-    const response = await this.client.post<ProjectOrder>(
-      `/projects/${projectId}/orders`,
-      { quoteId }
-    );
+    const response = await this.client.post<ProjectOrder>(`/projects/${projectId}/orders`, {
+      quoteId,
+    });
     return response.data;
   }
 
   async getOrders(projectId: string): Promise<ProjectOrder[]> {
-    const response = await this.client.get<ProjectOrder[]>(
-      `/projects/${projectId}/orders`
-    );
+    const response = await this.client.get<ProjectOrder[]>(`/projects/${projectId}/orders`);
     return response.data;
   }
 
@@ -201,10 +194,9 @@ export class ProjectEndpoints {
 
   // Comments
   async addComment(projectId: string, content: string): Promise<ProjectActivity> {
-    const response = await this.client.post<ProjectActivity>(
-      `/projects/${projectId}/comments`,
-      { content }
-    );
+    const response = await this.client.post<ProjectActivity>(`/projects/${projectId}/comments`, {
+      content,
+    });
     return response.data;
   }
 }

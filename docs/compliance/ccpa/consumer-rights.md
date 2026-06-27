@@ -19,9 +19,11 @@
 
 ## Introduction
 
-This document details how California consumers can exercise their rights under CCPA.
+This document details how California consumers can exercise their rights under
+CCPA.
 
-**Contact**: privacy@kitchenxpert.com | 1-800-KX-PRIVACY | https://kitchenxpert.com/privacy/request
+**Contact**: privacy@kitchenxpert.com | 1-800-KX-PRIVACY |
+https://kitchenxpert.com/privacy/request
 
 ---
 
@@ -30,6 +32,7 @@ This document details how California consumers can exercise their rights under C
 ### Categories Request
 
 Consumers can request:
+
 - Categories of personal information collected
 - Categories of sources
 - Business purpose for collection
@@ -58,6 +61,7 @@ JSON, CSV, or PDF format delivered via secure download link.
 ### Exceptions
 
 We may retain data for:
+
 - Completing transactions
 - Security and fraud prevention
 - Legal compliance
@@ -101,6 +105,7 @@ Consumers may designate authorized agents with written permission.
 ### Our Commitment
 
 Consumers exercising CCPA rights receive:
+
 - Same service quality
 - Same prices
 - Same product availability
@@ -109,6 +114,7 @@ Consumers exercising CCPA rights receive:
 ### Financial Incentives
 
 If offered, financial incentive programs are:
+
 - Voluntary opt-in
 - Clearly disclosed
 - Reasonably related to data value
@@ -138,13 +144,13 @@ If offered, financial incentive programs are:
 
 ### Verification Levels
 
-| Request Type | Verification Required |
-|--------------|----------------------|
+| Request Type       | Verification Required   |
+| ------------------ | ----------------------- |
 | Categories request | Reasonable verification |
-| Specific pieces | High verification |
-| Deletion | High verification |
-| Correction | High verification |
-| Opt-out | Low verification |
+| Specific pieces    | High verification       |
+| Deletion           | High verification       |
+| Correction         | High verification       |
+| Opt-out            | Low verification        |
 
 ### Verification Methods
 
@@ -171,6 +177,7 @@ If offered, financial incentive programs are:
 **Address**: privacy@kitchenxpert.com
 
 **Required Information**:
+
 - Full name
 - Email address
 - Request type
@@ -184,9 +191,7 @@ If offered, financial incentive programs are:
 
 ### Mail
 
-KitchenXpert Privacy Team
-123 Design Plaza
-San Francisco, CA 94105
+KitchenXpert Privacy Team 123 Design Plaza San Francisco, CA 94105
 
 ---
 
@@ -194,16 +199,17 @@ San Francisco, CA 94105
 
 ### Standard Timeline
 
-| Action | Timeline |
-|--------|----------|
-| Receipt acknowledgment | 10 days |
-| Verification | 10-15 days |
-| Response | 45 days |
-| Extension (if needed) | +45 days |
+| Action                 | Timeline   |
+| ---------------------- | ---------- |
+| Receipt acknowledgment | 10 days    |
+| Verification           | 10-15 days |
+| Response               | 45 days    |
+| Extension (if needed)  | +45 days   |
 
 ### Extensions
 
 We may extend the response period by 45 days when:
+
 - Request is complex
 - Multiple requests received
 - Additional verification needed
@@ -227,12 +233,12 @@ Consumers may make requests twice per 12-month period free of charge.
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value                   |
+| -------------- | ----------------------- |
 | Document Owner | Data Protection Officer |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10              |
+| Version        | 2.0                     |
 
 ---
 
-*For questions, contact privacy@kitchenxpert.com.*
+_For questions, contact privacy@kitchenxpert.com._

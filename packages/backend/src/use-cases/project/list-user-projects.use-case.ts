@@ -21,7 +21,9 @@ export class ListUserProjectsUseCase implements UseCase<ListUserProjectsInput, u
     const where = { userId, ...(status && { status: status as never }) };
     const [data, total] = await Promise.all([
       this.prisma.project.findMany({
-        where, skip: (page - 1) * limit, take: limit,
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
         orderBy: { updatedAt: 'desc' },
         include: { _count: { select: { kitchens: true } } },
       }),

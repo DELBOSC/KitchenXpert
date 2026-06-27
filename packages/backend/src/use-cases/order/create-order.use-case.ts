@@ -10,14 +10,18 @@ import type { PrismaClient } from '@prisma/client';
 export const CreateOrderSchema = z.object({
   userId: z.string().uuid(),
   projectId: z.string().uuid().optional(),
-  items: z.array(z.object({
-    productId: z.string().uuid().optional(),
-    applianceId: z.string().uuid().optional(),
-    name: z.string().min(1).max(200),
-    sku: z.string().max(80).optional(),
-    quantity: z.number().int().positive(),
-    unitPrice: z.number().nonnegative(),
-  })).min(1),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().uuid().optional(),
+        applianceId: z.string().uuid().optional(),
+        name: z.string().min(1).max(200),
+        sku: z.string().max(80).optional(),
+        quantity: z.number().int().positive(),
+        unitPrice: z.number().nonnegative(),
+      })
+    )
+    .min(1),
   metadata: z.record(z.unknown()).optional(),
 });
 
@@ -33,8 +37,12 @@ export class CreateOrderUseCase implements UseCase<CreateOrderInput, unknown> {
         where: { id: input.projectId },
         select: { userId: true },
       });
-      if (!project) {return err(DomainErrors.notFound('Project'));}
-      if (project.userId !== input.userId) {return err(DomainErrors.forbidden('Project not owned'));}
+      if (!project) {
+        return err(DomainErrors.notFound('Project'));
+      }
+      if (project.userId !== input.userId) {
+        return err(DomainErrors.forbidden('Project not owned'));
+      }
     }
 
     const subtotal = input.items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
@@ -52,15 +60,17 @@ export class CreateOrderUseCase implements UseCase<CreateOrderInput, unknown> {
         total: subtotal,
         currency: 'EUR',
         metadata: (input.metadata ?? {}) as never,
-        items: { create: input.items.map((i) => ({
-          productId: i.productId ?? null,
-          applianceId: i.applianceId ?? null,
-          name: i.name,
-          sku: i.sku ?? null,
-          quantity: i.quantity,
-          unitPrice: i.unitPrice,
-          totalPrice: i.unitPrice * i.quantity,
-        })) },
+        items: {
+          create: input.items.map((i) => ({
+            productId: i.productId ?? null,
+            applianceId: i.applianceId ?? null,
+            name: i.name,
+            sku: i.sku ?? null,
+            quantity: i.quantity,
+            unitPrice: i.unitPrice,
+            totalPrice: i.unitPrice * i.quantity,
+          })),
+        },
       },
       include: { items: true },
     });

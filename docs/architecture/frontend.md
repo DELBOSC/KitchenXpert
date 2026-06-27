@@ -19,7 +19,10 @@
 
 ## Overview
 
-The KitchenXpert frontend is a modern React 18 application featuring advanced 3D visualization with Three.js, real-time collaboration, and progressive web app capabilities. It follows atomic design principles and employs cutting-edge performance optimization techniques.
+The KitchenXpert frontend is a modern React 18 application featuring advanced 3D
+visualization with Three.js, real-time collaboration, and progressive web app
+capabilities. It follows atomic design principles and employs cutting-edge
+performance optimization techniques.
 
 ```mermaid
 graph TB
@@ -136,37 +139,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './Button.module.css';
 
-const Button = React.memo(({
-  children,
-  variant = 'primary',
-  size = 'medium',
-  disabled = false,
-  loading = false,
-  onClick,
-  type = 'button',
-  ...props
-}) => {
-  const classNames = [
-    styles.button,
-    styles[variant],
-    styles[size],
-    disabled && styles.disabled,
-    loading && styles.loading
-  ].filter(Boolean).join(' ');
+const Button = React.memo(
+  ({
+    children,
+    variant = 'primary',
+    size = 'medium',
+    disabled = false,
+    loading = false,
+    onClick,
+    type = 'button',
+    ...props
+  }) => {
+    const classNames = [
+      styles.button,
+      styles[variant],
+      styles[size],
+      disabled && styles.disabled,
+      loading && styles.loading,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-  return (
-    <button
-      type={type}
-      className={classNames}
-      onClick={onClick}
-      disabled={disabled || loading}
-      aria-busy={loading}
-      {...props}
-    >
-      {loading ? <span className={styles.spinner} /> : children}
-    </button>
-  );
-});
+    return (
+      <button
+        type={type}
+        className={classNames}
+        onClick={onClick}
+        disabled={disabled || loading}
+        aria-busy={loading}
+        {...props}
+      >
+        {loading ? <span className={styles.spinner} /> : children}
+      </button>
+    );
+  }
+);
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
@@ -175,7 +182,7 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   onClick: PropTypes.func,
-  type: PropTypes.oneOf(['button', 'submit', 'reset'])
+  type: PropTypes.oneOf(['button', 'submit', 'reset']),
 };
 
 export default Button;
@@ -217,13 +224,19 @@ const FormField = ({
         value={value}
         onChange={onChange}
         aria-invalid={!!error}
-        aria-describedby={error ? `${name}-error` : helpText ? `${name}-help` : undefined}
+        aria-describedby={
+          error ? `${name}-error` : helpText ? `${name}-help` : undefined
+        }
         required={required}
         {...props}
       />
 
       {helpText && !error && (
-        <Typography variant="help" id={`${name}-help`} className={styles.helpText}>
+        <Typography
+          variant="help"
+          id={`${name}-help`}
+          className={styles.helpText}
+        >
           {helpText}
         </Typography>
       )}
@@ -250,7 +263,7 @@ FormField.propTypes = {
   onChange: PropTypes.func.isRequired,
   error: PropTypes.string,
   required: PropTypes.bool,
-  helpText: PropTypes.string
+  helpText: PropTypes.string,
 };
 
 export default FormField;
@@ -293,17 +306,20 @@ const DesignCanvas = ({ design, onUpdate, editable = true }) => {
     };
   }, [renderer, scene, camera, controls]);
 
-  const handleObjectClick = useCallback((event) => {
-    if (!editable) return;
+  const handleObjectClick = useCallback(
+    (event) => {
+      if (!editable) return;
 
-    const mouse = {
-      x: (event.clientX / window.innerWidth) * 2 - 1,
-      y: -(event.clientY / window.innerHeight) * 2 + 1
-    };
+      const mouse = {
+        x: (event.clientX / window.innerWidth) * 2 - 1,
+        y: -(event.clientY / window.innerHeight) * 2 + 1,
+      };
 
-    // Raycasting logic here
-    // ...
-  }, [editable]);
+      // Raycasting logic here
+      // ...
+    },
+    [editable]
+  );
 
   return (
     <div className={styles.canvasContainer}>
@@ -315,9 +331,7 @@ const DesignCanvas = ({ design, onUpdate, editable = true }) => {
         aria-label="3D kitchen design canvas"
       />
       {editable && (
-        <div className={styles.toolbar}>
-          {/* Toolbar controls */}
-        </div>
+        <div className={styles.toolbar}>{/* Toolbar controls */}</div>
       )}
     </div>
   );
@@ -326,7 +340,7 @@ const DesignCanvas = ({ design, onUpdate, editable = true }) => {
 DesignCanvas.propTypes = {
   design: PropTypes.object.isRequired,
   onUpdate: PropTypes.func,
-  editable: PropTypes.bool
+  editable: PropTypes.bool,
 };
 
 export default DesignCanvas;
@@ -367,7 +381,7 @@ const MainLayout = ({ children, showSidebar = false }) => {
 
 MainLayout.propTypes = {
   children: PropTypes.node.isRequired,
-  showSidebar: PropTypes.bool
+  showSidebar: PropTypes.bool,
 };
 
 export default MainLayout;
@@ -381,7 +395,13 @@ Multi-layered approach using Context API and React Query:
 
 ```jsx
 // contexts/AuthContext.js
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { authApi } from '../services/api/authApi';
 
 const AuthContext = createContext(null);
@@ -410,7 +430,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = useCallback(async (email, password) => {
-    const { accessToken, refreshToken, user } = await authApi.login(email, password);
+    const { accessToken, refreshToken, user } = await authApi.login(
+      email,
+      password
+    );
 
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
@@ -438,7 +461,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateProfile,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -465,7 +488,7 @@ export const useDesigns = () => {
     queryKey: ['designs'],
     queryFn: designApi.getAll,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000 // 10 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -474,7 +497,7 @@ export const useDesign = (id) => {
     queryKey: ['design', id],
     queryFn: () => designApi.getById(id),
     enabled: !!id,
-    staleTime: 5 * 60 * 1000
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -485,11 +508,14 @@ export const useCreateDesign = () => {
     mutationFn: designApi.create,
     onSuccess: (newDesign) => {
       // Optimistic update
-      queryClient.setQueryData(['designs'], (old) => [...(old || []), newDesign]);
+      queryClient.setQueryData(['designs'], (old) => [
+        ...(old || []),
+        newDesign,
+      ]);
 
       // Invalidate to refetch
       queryClient.invalidateQueries({ queryKey: ['designs'] });
-    }
+    },
   });
 };
 
@@ -518,7 +544,7 @@ export const useUpdateDesign = () => {
       // Always refetch after error or success
       queryClient.invalidateQueries({ queryKey: ['design', id] });
       queryClient.invalidateQueries({ queryKey: ['designs'] });
-    }
+    },
   });
 };
 ```
@@ -534,34 +560,40 @@ const DesignForm = () => {
     name: '',
     description: '',
     style: 'modern',
-    dimensions: { width: 0, height: 0, depth: 0 }
+    dimensions: { width: 0, height: 0, depth: 0 },
   });
 
   const [errors, setErrors] = useState({});
 
-  const handleChange = useCallback((field) => (event) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.value
-    }));
+  const handleChange = useCallback(
+    (field) => (event) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: event.target.value,
+      }));
 
-    // Clear error on change
-    setErrors(prev => {
-      const next = { ...prev };
-      delete next[field];
-      return next;
-    });
-  }, []);
+      // Clear error on change
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    },
+    []
+  );
 
-  const handleDimensionChange = useCallback((dimension) => (event) => {
-    setFormData(prev => ({
-      ...prev,
-      dimensions: {
-        ...prev.dimensions,
-        [dimension]: parseFloat(event.target.value) || 0
-      }
-    }));
-  }, []);
+  const handleDimensionChange = useCallback(
+    (dimension) => (event) => {
+      setFormData((prev) => ({
+        ...prev,
+        dimensions: {
+          ...prev.dimensions,
+          [dimension]: parseFloat(event.target.value) || 0,
+        },
+      }));
+    },
+    []
+  );
 
   // Rest of component...
 };
@@ -595,9 +627,9 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      staleTime: 5 * 60 * 1000
-    }
-  }
+      staleTime: 5 * 60 * 1000,
+    },
+  },
 });
 
 const App = () => {
@@ -641,10 +673,23 @@ const App = () => {
                 />
 
                 {/* Nested routes example */}
-                <Route path="/admin" element={<ProtectedRoute requireRole="admin" />}>
+                <Route
+                  path="/admin"
+                  element={<ProtectedRoute requireRole="admin" />}
+                >
                   <Route index element={<Navigate to="users" replace />} />
-                  <Route path="users" element={lazy(() => import('./components/pages/Admin/Users'))} />
-                  <Route path="analytics" element={lazy(() => import('./components/pages/Admin/Analytics'))} />
+                  <Route
+                    path="users"
+                    element={lazy(
+                      () => import('./components/pages/Admin/Users')
+                    )}
+                  />
+                  <Route
+                    path="analytics"
+                    element={lazy(
+                      () => import('./components/pages/Admin/Analytics')
+                    )}
+                  />
                 </Route>
 
                 {/* 404 */}
@@ -706,7 +751,7 @@ export const useThree = (canvasRef) => {
   const [three, setThree] = useState({
     renderer: null,
     scene: null,
-    camera: null
+    camera: null,
   });
 
   const rendererRef = useRef(null);
@@ -720,7 +765,7 @@ export const useThree = (canvasRef) => {
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
-      alpha: true
+      alpha: true,
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -795,7 +840,7 @@ export const useScene = (scene, design) => {
       if (object.geometry) object.geometry.dispose();
       if (object.material) {
         if (Array.isArray(object.material)) {
-          object.material.forEach(m => m.dispose());
+          object.material.forEach((m) => m.dispose());
         } else {
           object.material.dispose();
         }
@@ -811,11 +856,11 @@ export const useScene = (scene, design) => {
     scene.add(floor);
 
     // Load design objects
-    design.layout?.appliances?.forEach(appliance => {
+    design.layout?.appliances?.forEach((appliance) => {
       loadAppliance(appliance, scene);
     });
 
-    design.layout?.cabinets?.forEach(cabinet => {
+    design.layout?.cabinets?.forEach((cabinet) => {
       loadCabinet(cabinet, scene);
     });
   }, [scene, design]);
@@ -842,15 +887,21 @@ export const useScene = (scene, design) => {
     );
   }, []);
 
-  const addObject = useCallback((object) => {
-    if (!scene) return;
-    scene.add(object);
-  }, [scene]);
+  const addObject = useCallback(
+    (object) => {
+      if (!scene) return;
+      scene.add(object);
+    },
+    [scene]
+  );
 
-  const removeObject = useCallback((object) => {
-    if (!scene) return;
-    scene.remove(object);
-  }, [scene]);
+  const removeObject = useCallback(
+    (object) => {
+      if (!scene) return;
+      scene.remove(object);
+    },
+    [scene]
+  );
 
   return { addObject, removeObject };
 };
@@ -944,8 +995,8 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1',
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 });
 
 // Request interceptor - Add auth token
@@ -1000,7 +1051,7 @@ apiClient.interceptors.response.use(
 
       // Exponential backoff
       const delay = Math.pow(2, originalRequest._retryCount) * 1000;
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
 
       return apiClient(originalRequest);
     }
@@ -1041,7 +1092,7 @@ export const designApi = {
 
   share: async (id) => {
     return apiClient.post(`/kitchen/designs/${id}/share`);
-  }
+  },
 };
 ```
 
@@ -1061,18 +1112,18 @@ export default defineConfig({
     react(),
     compression({
       algorithm: 'gzip',
-      ext: '.gz'
+      ext: '.gz',
     }),
     compression({
       algorithm: 'brotliCompress',
-      ext: '.br'
+      ext: '.br',
     }),
     visualizer({
       filename: './dist/stats.html',
       open: false,
       gzipSize: true,
-      brotliSize: true
-    })
+      brotliSize: true,
+    }),
   ],
   build: {
     target: 'es2015',
@@ -1083,26 +1134,26 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
-      }
+        drop_debugger: true,
+      },
     },
     rollupOptions: {
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'three-vendor': ['three'],
-          'query-vendor': ['@tanstack/react-query']
+          'query-vendor': ['@tanstack/react-query'],
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
-      }
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'three']
-  }
+    include: ['react', 'react-dom', 'three'],
+  },
 });
 ```
 
@@ -1110,12 +1161,18 @@ export default defineConfig({
 
 ```jsx
 // Lazy loading with named chunks
-const AdminPanel = lazy(() =>
-  import(/* webpackChunkName: "admin" */ './components/pages/Admin/AdminPanel')
+const AdminPanel = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "admin" */ './components/pages/Admin/AdminPanel'
+    )
 );
 
-const Analytics = lazy(() =>
-  import(/* webpackChunkName: "analytics" */ './components/pages/Analytics/Analytics')
+const Analytics = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "analytics" */ './components/pages/Analytics/Analytics'
+    )
 );
 ```
 
@@ -1200,7 +1257,11 @@ const Analytics = lazy(() =>
 // src/service-worker.js
 import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import {
+  CacheFirst,
+  NetworkFirst,
+  StaleWhileRevalidate,
+} from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
@@ -1214,13 +1275,13 @@ registerRoute(
     cacheName: 'api-cache',
     plugins: [
       new CacheableResponsePlugin({
-        statuses: [0, 200]
+        statuses: [0, 200],
       }),
       new ExpirationPlugin({
         maxEntries: 50,
-        maxAgeSeconds: 5 * 60 // 5 minutes
-      })
-    ]
+        maxAgeSeconds: 5 * 60, // 5 minutes
+      }),
+    ],
   })
 );
 
@@ -1231,13 +1292,13 @@ registerRoute(
     cacheName: 'image-cache',
     plugins: [
       new CacheableResponsePlugin({
-        statuses: [0, 200]
+        statuses: [0, 200],
       }),
       new ExpirationPlugin({
         maxEntries: 100,
-        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
-      })
-    ]
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
+    ],
   })
 );
 
@@ -1249,9 +1310,9 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 20,
-        maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
-      })
-    ]
+        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+      }),
+    ],
   })
 );
 
@@ -1263,9 +1324,9 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 10,
-        maxAgeSeconds: 365 * 24 * 60 * 60 // 1 year
-      })
-    ]
+        maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+      }),
+    ],
   })
 );
 ```
@@ -1276,13 +1337,16 @@ registerRoute(
 
 ```jsx
 // Memoize expensive components
-const ExpensiveComponent = React.memo(({ data }) => {
-  // Expensive rendering logic
-  return <div>{/* ... */}</div>;
-}, (prevProps, nextProps) => {
-  // Custom comparison
-  return prevProps.data.id === nextProps.data.id;
-});
+const ExpensiveComponent = React.memo(
+  ({ data }) => {
+    // Expensive rendering logic
+    return <div>{/* ... */}</div>;
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison
+    return prevProps.data.id === nextProps.data.id;
+  }
+);
 ```
 
 ### useMemo for Expensive Calculations
@@ -1290,14 +1354,16 @@ const ExpensiveComponent = React.memo(({ data }) => {
 ```jsx
 const DesignList = ({ designs, filter }) => {
   const filteredDesigns = useMemo(() => {
-    return designs.filter(design => {
-      return design.style === filter || filter === 'all';
-    }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return designs
+      .filter((design) => {
+        return design.style === filter || filter === 'all';
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [designs, filter]);
 
   return (
     <ul>
-      {filteredDesigns.map(design => (
+      {filteredDesigns.map((design) => (
         <DesignCard key={design.id} design={design} />
       ))}
     </ul>
@@ -1435,8 +1501,12 @@ const KeyboardNavigableList = () => {
 
   return (
     <ul onKeyDown={handleKeyDown} role="listbox">
-      <li role="option" tabIndex={0}>Item 1</li>
-      <li role="option" tabIndex={-1}>Item 2</li>
+      <li role="option" tabIndex={0}>
+        Item 1
+      </li>
+      <li role="option" tabIndex={-1}>
+        Item 2
+      </li>
     </ul>
   );
 };
@@ -1472,14 +1542,18 @@ const Modal = ({ isOpen, onClose, children }) => {
 ## Best Practices
 
 1. **Component Design**: Follow atomic design principles for consistency
-2. **State Management**: Use appropriate tools (Context for global, React Query for server state)
-3. **Performance**: Memoize components and callbacks, use virtual scrolling for long lists
+2. **State Management**: Use appropriate tools (Context for global, React Query
+   for server state)
+3. **Performance**: Memoize components and callbacks, use virtual scrolling for
+   long lists
 4. **Accessibility**: Always include ARIA labels, ensure keyboard navigation
-5. **Error Boundaries**: Wrap components in error boundaries to prevent full app crashes
+5. **Error Boundaries**: Wrap components in error boundaries to prevent full app
+   crashes
 6. **Testing**: Write unit tests for utilities, integration tests for components
 7. **Code Splitting**: Lazy load routes and heavy components
 8. **Asset Optimization**: Compress images, use WebP format, lazy load images
-9. **Security**: Never store sensitive data in localStorage, sanitize user inputs
+9. **Security**: Never store sensitive data in localStorage, sanitize user
+   inputs
 10. **Documentation**: Document complex components and hooks
 
 ## Related Documentation

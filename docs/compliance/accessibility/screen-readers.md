@@ -18,11 +18,16 @@
 
 ## Introduction
 
-This document provides guidelines for ensuring KitchenXpert is fully accessible to screen reader users. Screen readers convert digital content into speech or braille, enabling users who are blind or have low vision to navigate and interact with our platform.
+This document provides guidelines for ensuring KitchenXpert is fully accessible
+to screen reader users. Screen readers convert digital content into speech or
+braille, enabling users who are blind or have low vision to navigate and
+interact with our platform.
 
 ### Our Commitment
 
-KitchenXpert is committed to providing an equivalent experience for screen reader users, including:
+KitchenXpert is committed to providing an equivalent experience for screen
+reader users, including:
+
 - All content accessible via screen reader
 - All functionality operable via screen reader commands
 - Clear, meaningful announcements for all interactions
@@ -34,20 +39,20 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 
 ### Primary Support (Tested Monthly)
 
-| Screen Reader | Platform | Browser |
-|---------------|----------|---------|
-| NVDA | Windows | Chrome, Firefox, Edge |
-| JAWS | Windows | Chrome, Edge |
-| VoiceOver | macOS | Safari, Chrome |
-| VoiceOver | iOS | Safari |
+| Screen Reader | Platform | Browser               |
+| ------------- | -------- | --------------------- |
+| NVDA          | Windows  | Chrome, Firefox, Edge |
+| JAWS          | Windows  | Chrome, Edge          |
+| VoiceOver     | macOS    | Safari, Chrome        |
+| VoiceOver     | iOS      | Safari                |
 
 ### Secondary Support (Tested Quarterly)
 
 | Screen Reader | Platform | Browser |
-|---------------|----------|---------|
-| TalkBack | Android | Chrome |
-| Narrator | Windows | Edge |
-| Orca | Linux | Firefox |
+| ------------- | -------- | ------- |
+| TalkBack      | Android  | Chrome  |
+| Narrator      | Windows  | Edge    |
+| Orca          | Linux    | Firefox |
 
 ---
 
@@ -56,6 +61,7 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Monthly Testing Checklist
 
 **Core User Flows**:
+
 - Account registration and login
 - Product browsing and search
 - Adding items to cart
@@ -64,6 +70,7 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 - Design tool basic operations
 
 **Navigation**:
+
 - Landmark navigation (header, nav, main, footer)
 - Heading navigation (h1-h6 hierarchy)
 - Link list navigation
@@ -71,6 +78,7 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 - Table navigation
 
 **Interactions**:
+
 - Button activation and feedback
 - Form submission and validation
 - Modal dialog handling
@@ -84,12 +92,14 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Buttons
 
 **Requirements**:
+
 - Announce button label
 - Announce button role
 - Announce pressed state (toggle buttons)
 - Announce disabled state
 
 **Implementation**:
+
 - Use native button element
 - Add aria-pressed for toggle buttons
 - Add aria-disabled for disabled state
@@ -98,12 +108,14 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Forms
 
 **Requirements**:
+
 - Labels announced with inputs
 - Required fields identified
 - Error messages announced
 - Help text available
 
 **Implementation**:
+
 - Associate labels with htmlFor
 - Use aria-required for required fields
 - Use aria-invalid and aria-describedby for errors
@@ -112,12 +124,14 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Modals and Dialogs
 
 **Requirements**:
+
 - Dialog opening announced
 - Focus moved to dialog
 - Content accessible
 - Close action announced
 
 **Implementation**:
+
 - Use role="dialog"
 - Add aria-modal="true"
 - Use aria-labelledby for title
@@ -127,12 +141,14 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Tables
 
 **Requirements**:
+
 - Table structure announced
 - Headers associated with cells
 - Caption provided
 - Navigation by row/column
 
 **Implementation**:
+
 - Use semantic table elements
 - Add scope to header cells
 - Provide caption element
@@ -144,15 +160,16 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 
 ### Heading Hierarchy
 
-| Level | Usage |
-|-------|-------|
-| h1 | Page title (one per page) |
-| h2 | Major sections |
-| h3 | Subsections |
-| h4 | Sub-subsections |
-| h5-h6 | Rarely needed |
+| Level | Usage                     |
+| ----- | ------------------------- |
+| h1    | Page title (one per page) |
+| h2    | Major sections            |
+| h3    | Subsections               |
+| h4    | Sub-subsections           |
+| h5-h6 | Rarely needed             |
 
 **Rules**:
+
 - Never skip heading levels
 - One h1 per page
 - Headings describe content
@@ -160,22 +177,22 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 
 ### Landmarks
 
-| Landmark | Element | Purpose |
-|----------|---------|---------|
-| banner | header | Site header |
-| navigation | nav | Navigation areas |
-| main | main | Primary content |
-| complementary | aside | Supporting content |
-| contentinfo | footer | Site footer |
-| search | form | Search functionality |
+| Landmark      | Element | Purpose              |
+| ------------- | ------- | -------------------- |
+| banner        | header  | Site header          |
+| navigation    | nav     | Navigation areas     |
+| main          | main    | Primary content      |
+| complementary | aside   | Supporting content   |
+| contentinfo   | footer  | Site footer          |
+| search        | form    | Search functionality |
 
 ### Lists
 
-| Type | Usage |
-|------|-------|
-| ul | Unordered lists |
-| ol | Ordered/numbered lists |
-| dl | Definition lists |
+| Type | Usage                  |
+| ---- | ---------------------- |
+| ul   | Unordered lists        |
+| ol   | Ordered/numbered lists |
+| dl   | Definition lists       |
 
 ---
 
@@ -183,13 +200,14 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 
 ### Live Regions
 
-| Value | Usage |
-|-------|-------|
-| polite | Non-urgent updates (wait for pause) |
+| Value     | Usage                                  |
+| --------- | -------------------------------------- |
+| polite    | Non-urgent updates (wait for pause)    |
 | assertive | Urgent updates (interrupt immediately) |
-| off | No announcement |
+| off       | No announcement                        |
 
 **Common Use Cases**:
+
 - Form validation messages
 - Loading status updates
 - Search results count
@@ -199,6 +217,7 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Loading States
 
 **Requirements**:
+
 - Announce loading start
 - Indicate progress if possible
 - Announce loading complete
@@ -207,6 +226,7 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Form Validation
 
 **Requirements**:
+
 - Errors announced immediately
 - Error summary at form top
 - Individual field errors
@@ -219,10 +239,12 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Issue: Content Not Announced
 
 **Symptoms**:
+
 - Screen reader skips content
 - Dynamic updates not read
 
 **Solutions**:
+
 - Check for aria-hidden="true"
 - Verify display:none not used inappropriately
 - Add aria-live for dynamic content
@@ -231,10 +253,12 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Issue: Unlabeled Elements
 
 **Symptoms**:
+
 - "Button" or "link" announced without context
 - Form fields announced without labels
 
 **Solutions**:
+
 - Add aria-label or aria-labelledby
 - Associate labels with inputs
 - Add alt text to images
@@ -243,11 +267,13 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Issue: Focus Problems
 
 **Symptoms**:
+
 - Focus lost after action
 - Focus trapped unexpectedly
 - Focus order illogical
 
 **Solutions**:
+
 - Manage focus programmatically
 - Add escape mechanism for modals
 - Fix DOM order to match visual order
@@ -293,6 +319,7 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 ### Resources
 
 **Testing Tools**:
+
 - NVDA (free): https://www.nvaccess.org/
 - VoiceOver (built into macOS/iOS)
 - JAWS (commercial): https://www.freedomscientific.com/
@@ -311,12 +338,12 @@ KitchenXpert is committed to providing an equivalent experience for screen reade
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value                 |
+| -------------- | --------------------- |
 | Document Owner | Accessibility Officer |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10            |
+| Version        | 2.0                   |
 
 ---
 
-*For accessibility questions, contact accessibility@kitchenxpert.com.*
+_For accessibility questions, contact accessibility@kitchenxpert.com._

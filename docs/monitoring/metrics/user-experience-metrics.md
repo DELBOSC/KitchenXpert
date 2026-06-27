@@ -1,10 +1,10 @@
 # User Experience Metrics Documentation
 
-> Comprehensive guide to frontend performance, 3D engine metrics, and user satisfaction tracking for KitchenXpert.
+> Comprehensive guide to frontend performance, 3D engine metrics, and user
+> satisfaction tracking for KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** Frontend Engineering Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Frontend Engineering Team **Version:**
+1.0
 
 ---
 
@@ -24,7 +24,8 @@
 
 ### Overview
 
-Core Web Vitals are Google's metrics for measuring real-world user experience. These metrics directly impact SEO rankings and user satisfaction.
+Core Web Vitals are Google's metrics for measuring real-world user experience.
+These metrics directly impact SEO rankings and user satisfaction.
 
 ### LCP (Largest Contentful Paint)
 
@@ -59,29 +60,29 @@ avg(kitchenxpert_lcp_seconds) by (page)
 
 #### LCP Thresholds
 
-| Rating | Value | Color |
-|--------|-------|-------|
-| Good | < 2.5s | Green |
+| Rating            | Value       | Color  |
+| ----------------- | ----------- | ------ |
+| Good              | < 2.5s      | Green  |
 | Needs Improvement | 2.5s - 4.0s | Orange |
-| Poor | > 4.0s | Red |
+| Poor              | > 4.0s      | Red    |
 
 #### LCP Optimization Targets
 
-| Page | Current | Target |
-|------|---------|--------|
-| Home | 1.8s | < 2.0s |
-| Design Editor | 3.2s | < 2.5s |
-| Product Catalog | 2.1s | < 2.0s |
-| User Dashboard | 1.5s | < 1.5s |
+| Page            | Current | Target |
+| --------------- | ------- | ------ |
+| Home            | 1.8s    | < 2.0s |
+| Design Editor   | 3.2s    | < 2.5s |
+| Product Catalog | 2.1s    | < 2.0s |
+| User Dashboard  | 1.5s    | < 1.5s |
 
 #### Common LCP Issues
 
-| Issue | Impact | Solution |
-|-------|--------|----------|
-| Large hero images | Delayed paint | Image optimization, WebP |
-| Render-blocking CSS | Delayed paint | Critical CSS extraction |
-| Slow server response | Delayed TTFB | CDN, caching |
-| Client-side rendering | Late content | SSR, pre-rendering |
+| Issue                 | Impact        | Solution                 |
+| --------------------- | ------------- | ------------------------ |
+| Large hero images     | Delayed paint | Image optimization, WebP |
+| Render-blocking CSS   | Delayed paint | Critical CSS extraction  |
+| Slow server response  | Delayed TTFB  | CDN, caching             |
+| Client-side rendering | Late content  | SSR, pre-rendering       |
 
 ---
 
@@ -119,20 +120,20 @@ histogram_quantile(0.99, sum(rate(kitchenxpert_fid_milliseconds_bucket[5m])) by 
 
 #### FID Thresholds
 
-| Rating | Value | Color |
-|--------|-------|-------|
-| Good | < 100ms | Green |
+| Rating            | Value         | Color  |
+| ----------------- | ------------- | ------ |
+| Good              | < 100ms       | Green  |
 | Needs Improvement | 100ms - 300ms | Orange |
-| Poor | > 300ms | Red |
+| Poor              | > 300ms       | Red    |
 
 #### Common FID Issues
 
-| Issue | Impact | Solution |
-|-------|--------|----------|
-| Long JavaScript tasks | Blocked main thread | Code splitting |
-| Heavy third-party scripts | Delayed interaction | Defer loading |
-| Large bundle size | Long parse time | Tree shaking |
-| Synchronous operations | Thread blocking | Web Workers |
+| Issue                     | Impact              | Solution       |
+| ------------------------- | ------------------- | -------------- |
+| Long JavaScript tasks     | Blocked main thread | Code splitting |
+| Heavy third-party scripts | Delayed interaction | Defer loading  |
+| Large bundle size         | Long parse time     | Tree shaking   |
+| Synchronous operations    | Thread blocking     | Web Workers    |
 
 ---
 
@@ -168,20 +169,20 @@ kitchenxpert_cls > 0.25
 
 #### CLS Thresholds
 
-| Rating | Value | Color |
-|--------|-------|-------|
-| Good | < 0.1 | Green |
+| Rating            | Value      | Color  |
+| ----------------- | ---------- | ------ |
+| Good              | < 0.1      | Green  |
 | Needs Improvement | 0.1 - 0.25 | Orange |
-| Poor | > 0.25 | Red |
+| Poor              | > 0.25     | Red    |
 
 #### Common CLS Issues
 
-| Issue | Impact | Solution |
-|-------|--------|----------|
-| Images without dimensions | Layout shift | Set width/height |
-| Dynamic content injection | Content pushed down | Reserve space |
-| Web fonts (FOIT/FOUT) | Text shift | font-display: swap |
-| Ads/embeds loading | Large shifts | Reserve containers |
+| Issue                     | Impact              | Solution           |
+| ------------------------- | ------------------- | ------------------ |
+| Images without dimensions | Layout shift        | Set width/height   |
+| Dynamic content injection | Content pushed down | Reserve space      |
+| Web fonts (FOIT/FOUT)     | Text shift          | font-display: swap |
+| Ads/embeds loading        | Large shifts        | Reserve containers |
 
 ---
 
@@ -261,12 +262,12 @@ histogram_quantile(0.75, sum(rate(kitchenxpert_3d_fps_bucket[5m])) by (le))  # p
 
 #### FPS Thresholds
 
-| Rating | FPS | User Experience |
-|--------|-----|-----------------|
-| Excellent | 60+ | Smooth, responsive |
-| Good | 30-60 | Acceptable |
-| Poor | 15-30 | Noticeable lag |
-| Critical | < 15 | Unusable |
+| Rating    | FPS   | User Experience    |
+| --------- | ----- | ------------------ |
+| Excellent | 60+   | Smooth, responsive |
+| Good      | 30-60 | Acceptable         |
+| Poor      | 15-30 | Noticeable lag     |
+| Critical  | < 15  | Unusable           |
 
 #### FPS by Device Type
 
@@ -284,12 +285,12 @@ avg(kitchenxpert_3d_fps) by (device_type)
 
 #### Scene Load Metrics
 
-| Metric | Description | Target |
-|--------|-------------|--------|
-| Scene Init Time | Time to initialize 3D engine | < 1s |
-| Model Load Time | Time to load 3D models | < 3s |
-| Texture Load Time | Time to load textures | < 2s |
-| Total Ready Time | Time until fully interactive | < 5s |
+| Metric            | Description                  | Target |
+| ----------------- | ---------------------------- | ------ |
+| Scene Init Time   | Time to initialize 3D engine | < 1s   |
+| Model Load Time   | Time to load 3D models       | < 3s   |
+| Texture Load Time | Time to load textures        | < 2s   |
+| Total Ready Time  | Time until fully interactive | < 5s   |
 
 #### PromQL Queries
 
@@ -330,23 +331,23 @@ sum(rate(kitchenxpert_texture_requests_total[5m])) * 100
 
 #### Optimization Targets
 
-| Metric | Target |
-|--------|--------|
-| Texture load time (p95) | < 2s |
-| Texture cache hit rate | > 80% |
-| Compressed texture ratio | > 95% |
+| Metric                   | Target |
+| ------------------------ | ------ |
+| Texture load time (p95)  | < 2s   |
+| Texture cache hit rate   | > 80%  |
+| Compressed texture ratio | > 95%  |
 
 ---
 
 ### 3D Performance Dashboard Metrics
 
-| Panel | Query | Target |
-|-------|-------|--------|
-| Average FPS | `avg(kitchenxpert_3d_fps)` | > 30 |
-| Scene Load Time | `histogram_quantile(0.95, ...)` | < 5s |
-| Memory Usage | `kitchenxpert_3d_memory_mb` | < 500MB |
-| Draw Calls | `kitchenxpert_3d_draw_calls` | < 200 |
-| Triangle Count | `kitchenxpert_3d_triangles` | < 500K |
+| Panel           | Query                           | Target  |
+| --------------- | ------------------------------- | ------- |
+| Average FPS     | `avg(kitchenxpert_3d_fps)`      | > 30    |
+| Scene Load Time | `histogram_quantile(0.95, ...)` | < 5s    |
+| Memory Usage    | `kitchenxpert_3d_memory_mb`     | < 500MB |
+| Draw Calls      | `kitchenxpert_3d_draw_calls`    | < 200   |
+| Triangle Count  | `kitchenxpert_3d_triangles`     | < 500K  |
 
 ---
 
@@ -357,6 +358,7 @@ sum(rate(kitchenxpert_texture_requests_total[5m])) * 100
 **Definition:** Total time from client request initiation to response received
 
 This includes:
+
 - DNS lookup
 - TCP connection
 - TLS handshake
@@ -367,10 +369,11 @@ This includes:
 
 ```javascript
 // Performance API timing
-const timing = performance.getEntriesByType('resource')
-  .filter(entry => entry.name.includes('/api/'));
+const timing = performance
+  .getEntriesByType('resource')
+  .filter((entry) => entry.name.includes('/api/'));
 
-timing.forEach(entry => {
+timing.forEach((entry) => {
   sendToAnalytics({
     endpoint: entry.name,
     dns: entry.domainLookupEnd - entry.domainLookupStart,
@@ -399,14 +402,14 @@ histogram_quantile(0.99, sum(rate(kitchenxpert_client_api_latency_seconds_bucket
 
 #### Latency Targets by Endpoint Type
 
-| Endpoint Type | p50 Target | p90 Target | p99 Target |
-|---------------|------------|------------|------------|
-| Auth endpoints | < 100ms | < 300ms | < 500ms |
-| List/search | < 200ms | < 500ms | < 1000ms |
-| Single resource | < 100ms | < 300ms | < 500ms |
-| Create/update | < 200ms | < 500ms | < 1000ms |
-| File upload | < 2s | < 5s | < 10s |
-| AI operations | < 5s | < 10s | < 15s |
+| Endpoint Type   | p50 Target | p90 Target | p99 Target |
+| --------------- | ---------- | ---------- | ---------- |
+| Auth endpoints  | < 100ms    | < 300ms    | < 500ms    |
+| List/search     | < 200ms    | < 500ms    | < 1000ms   |
+| Single resource | < 100ms    | < 300ms    | < 500ms    |
+| Create/update   | < 200ms    | < 500ms    | < 1000ms   |
+| File upload     | < 2s       | < 5s       | < 10s      |
+| AI operations   | < 5s       | < 10s      | < 15s      |
 
 ### Latency by Geographic Region
 
@@ -415,12 +418,12 @@ histogram_quantile(0.99, sum(rate(kitchenxpert_client_api_latency_seconds_bucket
 histogram_quantile(0.95, sum(rate(kitchenxpert_client_api_latency_seconds_bucket[5m])) by (le, region))
 ```
 
-| Region | Target p95 |
-|--------|------------|
-| US East | < 300ms |
-| US West | < 400ms |
-| Europe | < 500ms |
-| Asia Pacific | < 700ms |
+| Region       | Target p95 |
+| ------------ | ---------- |
+| US East      | < 300ms    |
+| US West      | < 400ms    |
+| Europe       | < 500ms    |
+| Asia Pacific | < 700ms    |
 
 ---
 
@@ -437,16 +440,17 @@ sum(increase(kitchenxpert_error_page_views_total[1h])) by (error_type)
 
 #### Error Types
 
-| Error Type | Description | Target |
-|------------|-------------|--------|
-| 404 | Page not found | < 1% of page views |
-| 500 | Server error | < 0.1% of page views |
-| network_error | Connection failed | < 0.5% of sessions |
-| timeout | Request timeout | < 0.2% of requests |
+| Error Type    | Description       | Target               |
+| ------------- | ----------------- | -------------------- |
+| 404           | Page not found    | < 1% of page views   |
+| 500           | Server error      | < 0.1% of page views |
+| network_error | Connection failed | < 0.5% of sessions   |
+| timeout       | Request timeout   | < 0.2% of requests   |
 
 ### Rage Clicks
 
-**Definition:** Multiple rapid clicks on the same element (indicates frustration)
+**Definition:** Multiple rapid clicks on the same element (indicates
+frustration)
 
 ```promql
 # Rage clicks per hour
@@ -489,12 +493,12 @@ document.addEventListener('click', (event) => {
 
 #### Rage Click Targets
 
-| High Priority | Action Required |
-|---------------|-----------------|
-| Submit buttons | Check form validation feedback |
-| Navigation links | Check routing/loading states |
-| Interactive elements | Check responsiveness |
-| Modal close buttons | Check modal behavior |
+| High Priority        | Action Required                |
+| -------------------- | ------------------------------ |
+| Submit buttons       | Check form validation feedback |
+| Navigation links     | Check routing/loading states   |
+| Interactive elements | Check responsiveness           |
+| Modal close buttons  | Check modal behavior           |
 
 **Target:** < 0.5% of sessions have rage clicks
 
@@ -513,12 +517,12 @@ sum(kitchenxpert_total_sessions) by (landing_page) * 100
 
 #### Bounce Rate Targets
 
-| Page Type | Target |
-|-----------|--------|
-| Home page | < 40% |
-| Product pages | < 50% |
-| Design editor | < 20% |
-| Blog/content | < 60% |
+| Page Type     | Target |
+| ------------- | ------ |
+| Home page     | < 40%  |
+| Product pages | < 50%  |
+| Design editor | < 20%  |
+| Blog/content  | < 60%  |
 
 ### User Satisfaction Score
 
@@ -570,8 +574,8 @@ initRUM({
   version: process.env.APP_VERSION,
 
   // Sampling
-  sessionSampleRate: 100,  // 100% of sessions
-  sessionReplaySampleRate: 10,  // 10% session replay
+  sessionSampleRate: 100, // 100% of sessions
+  sessionReplaySampleRate: 10, // 10% session replay
 
   // Features
   trackInteractions: true,
@@ -595,14 +599,14 @@ initRUM({
 
 #### Automatic Collection
 
-| Data Type | Description |
-|-----------|-------------|
-| Page Views | URL, referrer, load time |
-| User Actions | Clicks, form submissions |
-| Resources | JS, CSS, images, API calls |
-| Long Tasks | Tasks > 50ms |
-| Errors | JS errors, network errors |
-| Web Vitals | LCP, FID, CLS, INP |
+| Data Type    | Description                |
+| ------------ | -------------------------- |
+| Page Views   | URL, referrer, load time   |
+| User Actions | Clicks, form submissions   |
+| Resources    | JS, CSS, images, API calls |
+| Long Tasks   | Tasks > 50ms               |
+| Errors       | JS errors, network errors  |
+| Web Vitals   | LCP, FID, CLS, INP         |
 
 #### Custom Events
 
@@ -626,14 +630,14 @@ rum.addError(new Error('3D rendering failed'), {
 
 ### RUM Dashboard Panels
 
-| Panel | Description |
-|-------|-------------|
-| Session Count | Active sessions over time |
-| Page Load Performance | LCP, FCP by page |
-| User Actions | Click heatmap, interaction count |
-| Errors | Error count, error distribution |
-| Geographic Map | Performance by region |
-| Device Breakdown | Performance by device type |
+| Panel                 | Description                      |
+| --------------------- | -------------------------------- |
+| Session Count         | Active sessions over time        |
+| Page Load Performance | LCP, FCP by page                 |
+| User Actions          | Click heatmap, interaction count |
+| Errors                | Error count, error distribution  |
+| Geographic Map        | Performance by region            |
+| Device Breakdown      | Performance by device type       |
 
 ---
 
@@ -688,31 +692,37 @@ groups:
   - name: performance_budgets
     rules:
       - alert: LCPBudgetExceeded
-        expr: histogram_quantile(0.75, sum(rate(kitchenxpert_lcp_seconds_bucket[5m])) by (le)) > 2.5
+        expr:
+          histogram_quantile(0.75,
+          sum(rate(kitchenxpert_lcp_seconds_bucket[5m])) by (le)) > 2.5
         for: 10m
         labels:
           severity: warning
         annotations:
-          summary: "LCP budget exceeded"
-          description: "p75 LCP is {{ $value }}s (budget: 2.5s)"
+          summary: 'LCP budget exceeded'
+          description: 'p75 LCP is {{ $value }}s (budget: 2.5s)'
 
       - alert: FIDBudgetExceeded
-        expr: histogram_quantile(0.75, sum(rate(kitchenxpert_fid_milliseconds_bucket[5m])) by (le)) > 100
+        expr:
+          histogram_quantile(0.75,
+          sum(rate(kitchenxpert_fid_milliseconds_bucket[5m])) by (le)) > 100
         for: 10m
         labels:
           severity: warning
         annotations:
-          summary: "FID budget exceeded"
-          description: "p75 FID is {{ $value }}ms (budget: 100ms)"
+          summary: 'FID budget exceeded'
+          description: 'p75 FID is {{ $value }}ms (budget: 100ms)'
 
       - alert: CLSBudgetExceeded
-        expr: histogram_quantile(0.75, sum(rate(kitchenxpert_cls_bucket[5m])) by (le)) > 0.1
+        expr:
+          histogram_quantile(0.75, sum(rate(kitchenxpert_cls_bucket[5m])) by
+          (le)) > 0.1
         for: 10m
         labels:
           severity: warning
         annotations:
-          summary: "CLS budget exceeded"
-          description: "p75 CLS is {{ $value }} (budget: 0.1)"
+          summary: 'CLS budget exceeded'
+          description: 'p75 CLS is {{ $value }} (budget: 0.1)'
 
       - alert: 3DFPSBudgetExceeded
         expr: avg(kitchenxpert_3d_fps) < 30
@@ -720,8 +730,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "3D FPS below budget"
-          description: "Average FPS is {{ $value }} (budget: 30)"
+          summary: '3D FPS below budget'
+          description: 'Average FPS is {{ $value }} (budget: 30)'
 ```
 
 ### CI/CD Performance Gates
@@ -757,35 +767,41 @@ groups:
 
 **URL:** https://grafana.kitchenxpert.internal/d/ux
 
-[Dashboard: User Experience Metrics - Core Web Vitals, 3D performance, satisfaction]
+[Dashboard: User Experience Metrics - Core Web Vitals, 3D performance,
+satisfaction]
 
 ### Dashboard Layout
 
 #### Row 1: Core Web Vitals
+
 1. **LCP Gauge:** Current p75 LCP with thresholds
 2. **FID Gauge:** Current p75 FID with thresholds
 3. **CLS Gauge:** Current p75 CLS with thresholds
 4. **INP Gauge:** Current p75 INP with thresholds
 
 #### Row 2: Core Web Vitals Trends
+
 5. **LCP Over Time:** Line graph with threshold bands
 6. **FID Over Time:** Line graph with threshold bands
 7. **CLS Over Time:** Line graph with threshold bands
 8. **Web Vitals by Page:** Table view
 
 #### Row 3: 3D Performance
+
 9. **Average FPS:** Current FPS gauge
 10. **FPS Distribution:** Histogram
 11. **Scene Load Time:** p95 load time
 12. **3D Memory Usage:** Memory consumption
 
 #### Row 4: API Client Latency
+
 13. **p50 Latency:** By endpoint
 14. **p90 Latency:** By endpoint
 15. **p99 Latency:** By endpoint
 16. **Latency by Region:** Geographic map
 
 #### Row 5: User Satisfaction
+
 17. **Error Page Rate:** Percentage with errors
 18. **Rage Clicks:** Hourly count
 19. **Bounce Rate:** By landing page
@@ -803,4 +819,5 @@ groups:
 
 ---
 
-*For questions about user experience metrics, contact the Frontend Engineering team at frontend@kitchenxpert.com*
+_For questions about user experience metrics, contact the Frontend Engineering
+team at frontend@kitchenxpert.com_

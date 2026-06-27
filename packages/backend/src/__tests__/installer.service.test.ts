@@ -105,7 +105,7 @@ describe('InstallerService', () => {
       expect(mockPrisma.installer.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({ isActive: true }),
-        }),
+        })
       );
     });
 
@@ -120,7 +120,7 @@ describe('InstallerService', () => {
           where: expect.objectContaining({
             postalCode: { startsWith: '75' },
           }),
-        }),
+        })
       );
     });
 
@@ -135,7 +135,7 @@ describe('InstallerService', () => {
           where: expect.objectContaining({
             rating: { gte: 4.0 },
           }),
-        }),
+        })
       );
     });
 
@@ -150,7 +150,7 @@ describe('InstallerService', () => {
           where: expect.objectContaining({
             specialties: { hasSome: ['renovation'] },
           }),
-        }),
+        })
       );
     });
 
@@ -188,7 +188,7 @@ describe('InstallerService', () => {
         expect.objectContaining({
           skip: 20,
           take: 10,
-        }),
+        })
       );
     });
   });
@@ -242,17 +242,14 @@ describe('InstallerService', () => {
         userId: mockUser.userId,
         rating: 5,
       });
-      mockPrisma.installerReview.findMany.mockResolvedValue([
-        { rating: 5 },
-        { rating: 4 },
-      ]);
+      mockPrisma.installerReview.findMany.mockResolvedValue([{ rating: 5 }, { rating: 4 }]);
       mockPrisma.installer.update.mockResolvedValue({});
 
-      const result = await service.addReview(
-        'installer-1',
-        mockUser.userId,
-        { rating: 5, title: 'Excellent', comment: 'Great work!' },
-      );
+      const result = await service.addReview('installer-1', mockUser.userId, {
+        rating: 5,
+        title: 'Excellent',
+        comment: 'Great work!',
+      });
 
       expect(result.rating).toBe(5);
       expect(mockPrisma.installer.update).toHaveBeenCalledWith({
@@ -267,11 +264,11 @@ describe('InstallerService', () => {
       mockPrisma.installer.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.addReview('non-existent', mockUser.userId, { rating: 5 }),
+        service.addReview('non-existent', mockUser.userId, { rating: 5 })
       ).rejects.toThrow(InstallerServiceError);
 
       await expect(
-        service.addReview('non-existent', mockUser.userId, { rating: 5 }),
+        service.addReview('non-existent', mockUser.userId, { rating: 5 })
       ).rejects.toThrow('Installer not found');
     });
 
@@ -280,7 +277,7 @@ describe('InstallerService', () => {
       mockPrisma.installer.findUnique.mockResolvedValue(ownInstaller);
 
       await expect(
-        service.addReview('installer-1', mockUser.userId, { rating: 5 }),
+        service.addReview('installer-1', mockUser.userId, { rating: 5 })
       ).rejects.toThrow('You cannot review your own installer profile');
     });
 
@@ -289,7 +286,7 @@ describe('InstallerService', () => {
       mockPrisma.installerReview.findUnique.mockResolvedValue({ id: 'existing-review' });
 
       await expect(
-        service.addReview('installer-1', mockUser.userId, { rating: 5 }),
+        service.addReview('installer-1', mockUser.userId, { rating: 5 })
       ).rejects.toThrow('You have already reviewed this installer');
     });
 
@@ -299,7 +296,7 @@ describe('InstallerService', () => {
       mockPrisma.installationProject.findFirst.mockResolvedValue(null);
 
       await expect(
-        service.addReview('installer-1', mockUser.userId, { rating: 5 }),
+        service.addReview('installer-1', mockUser.userId, { rating: 5 })
       ).rejects.toThrow('You can only review an installer after a completed project');
     });
   });
@@ -339,7 +336,7 @@ describe('InstallerService', () => {
         service.requestInstallation({
           installerId: 'non-existent',
           userId: mockUser.userId,
-        }),
+        })
       ).rejects.toThrow('Installer not found');
     });
 
@@ -353,7 +350,7 @@ describe('InstallerService', () => {
         service.requestInstallation({
           installerId: 'installer-1',
           userId: mockUser.userId,
-        }),
+        })
       ).rejects.toThrow('This installer is not currently accepting requests');
     });
 
@@ -368,7 +365,7 @@ describe('InstallerService', () => {
           installerId: 'installer-1',
           userId: mockUser.userId,
           kitchenId: '550e8400-e29b-41d4-a716-446655440000',
-        }),
+        })
       ).rejects.toThrow('You do not own this kitchen');
     });
 
@@ -383,7 +380,7 @@ describe('InstallerService', () => {
         service.requestInstallation({
           installerId: 'installer-1',
           userId: mockUser.userId,
-        }),
+        })
       ).rejects.toThrow('You already have an active request with this installer');
     });
   });
@@ -421,9 +418,9 @@ describe('InstallerService', () => {
       };
       mockPrisma.installationProject.findUnique.mockResolvedValue(mockProject);
 
-      await expect(
-        service.getProjectById('project-1', mockUser.userId),
-      ).rejects.toThrow('You do not have permission to view this project');
+      await expect(service.getProjectById('project-1', mockUser.userId)).rejects.toThrow(
+        'You do not have permission to view this project'
+      );
     });
   });
 });

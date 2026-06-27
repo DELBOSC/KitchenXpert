@@ -25,22 +25,36 @@ export function zodToJsonSchema(schema: ZodTypeAny): Record<string, unknown> {
   switch (def.typeName) {
     case 'ZodString': {
       const out: Record<string, unknown> = { type: 'string' };
-      const checks = def.checks as Array<{ kind: string; value?: number; regex?: RegExp }> | undefined;
+      const checks = def.checks as
+        | Array<{ kind: string; value?: number; regex?: RegExp }>
+        | undefined;
       checks?.forEach((c) => {
-        if (c.kind === 'email') {out.format = 'email';}
-        if (c.kind === 'url') {out.format = 'uri';}
-        if (c.kind === 'min' && typeof c.value === 'number') {out.minLength = c.value;}
-        if (c.kind === 'max' && typeof c.value === 'number') {out.maxLength = c.value;}
+        if (c.kind === 'email') {
+          out.format = 'email';
+        }
+        if (c.kind === 'url') {
+          out.format = 'uri';
+        }
+        if (c.kind === 'min' && typeof c.value === 'number') {
+          out.minLength = c.value;
+        }
+        if (c.kind === 'max' && typeof c.value === 'number') {
+          out.maxLength = c.value;
+        }
       });
       return out;
     }
     case 'ZodNumber': {
       return { type: 'number' };
     }
-    case 'ZodBoolean': return { type: 'boolean' };
-    case 'ZodLiteral': return { const: def.value };
-    case 'ZodEnum': return { type: 'string', enum: def.values };
-    case 'ZodArray': return { type: 'array', items: zodToJsonSchema(def.type) };
+    case 'ZodBoolean':
+      return { type: 'boolean' };
+    case 'ZodLiteral':
+      return { const: def.value };
+    case 'ZodEnum':
+      return { type: 'string', enum: def.values };
+    case 'ZodArray':
+      return { type: 'array', items: zodToJsonSchema(def.type) };
     case 'ZodOptional':
     case 'ZodNullable':
     case 'ZodDefault':
@@ -56,7 +70,9 @@ export function zodToJsonSchema(schema: ZodTypeAny): Record<string, unknown> {
         const isOptional =
           (v as { isOptional?: () => boolean }).isOptional?.() ||
           ['ZodOptional', 'ZodDefault'].includes((v as any)._def.typeName);
-        if (!isOptional) {required.push(key);}
+        if (!isOptional) {
+          required.push(key);
+        }
       }
       return {
         type: 'object',
@@ -89,7 +105,11 @@ export function registerRoute(route: OpenAPIRoute): void {
   registry.push(route);
 }
 
-export function buildOpenApiDocument(meta: { title: string; version: string; description?: string }): Record<string, unknown> {
+export function buildOpenApiDocument(meta: {
+  title: string;
+  version: string;
+  description?: string;
+}): Record<string, unknown> {
   const paths: Record<string, Record<string, unknown>> = {};
   for (const route of registry) {
     const pathEntry = (paths[route.path] ||= {});

@@ -2,7 +2,6 @@ import { mapUnifiedProductToUpsert } from './unified-product-mapper';
 
 import type { UnifiedProduct } from '@kitchenxpert/common';
 
-
 function makeUP(over: Partial<UnifiedProduct> = {}): UnifiedProduct {
   return {
     sku: '12345',
@@ -52,9 +51,7 @@ describe('mapUnifiedProductToUpsert', () => {
   });
 
   it('upper-cases the brand in the namespaced SKU (Lapeyre)', () => {
-    const { sku } = mapUnifiedProductToUpsert(
-      makeUP({ brand: 'Lapeyre', sku: 'FPC8937243' }),
-    );
+    const { sku } = mapUnifiedProductToUpsert(makeUP({ brand: 'Lapeyre', sku: 'FPC8937243' }));
     expect(sku).toBe('LAPEYRE-FPC8937243');
   });
 
@@ -68,7 +65,7 @@ describe('mapUnifiedProductToUpsert', () => {
         depthMm: null,
         dimensionConfidence: 0,
         specifications: { rawMeasureText: null },
-      }),
+      })
     );
     expect(data.width).toBeUndefined();
     expect(data.height).toBeUndefined();
@@ -98,7 +95,10 @@ describe('mapUnifiedProductToUpsert', () => {
   });
 
   it('pose categoryId + specifications.categoryDetection quand category fourni (§15.8 Phase 2)', () => {
-    const { data } = mapUnifiedProductToUpsert(makeUP(), { categoryId: 'cat-1', detection: 'inferred' });
+    const { data } = mapUnifiedProductToUpsert(makeUP(), {
+      categoryId: 'cat-1',
+      detection: 'inferred',
+    });
     expect(data.categoryId).toBe('cat-1');
     expect((data.specifications as Record<string, unknown>).categoryDetection).toBe('inferred');
   });

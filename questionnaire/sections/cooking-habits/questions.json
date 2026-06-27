@@ -2,8 +2,14 @@
   "sectionId": "cooking-habits",
   "version": "1.0.0",
   "metadata": {
-    "title": { "en": "Cooking Habits & Preferences", "fr": "Habitudes et préférences culinaires" },
-    "description": { "en": "Tell us about your cooking style to optimize your kitchen", "fr": "Parlez-nous de votre style de cuisine pour optimiser votre cuisine" },
+    "title": {
+      "en": "Cooking Habits & Preferences",
+      "fr": "Habitudes et préférences culinaires"
+    },
+    "description": {
+      "en": "Tell us about your cooking style to optimize your kitchen",
+      "fr": "Parlez-nous de votre style de cuisine pour optimiser votre cuisine"
+    },
     "icon": "chef-hat",
     "estimatedTime": 4
   },
@@ -12,119 +18,311 @@
       "id": "cooking-frequency",
       "type": "single-choice",
       "required": true,
-      "label": { "en": "How often do you cook at home?", "fr": "À quelle fréquence cuisinez-vous à la maison ?" },
+      "label": {
+        "en": "How often do you cook at home?",
+        "fr": "À quelle fréquence cuisinez-vous à la maison ?"
+      },
       "options": [
-        { "value": "rarely", "label": { "en": "Rarely (1-2 times/week)", "fr": "Rarement (1-2 fois/semaine)" } },
-        { "value": "sometimes", "label": { "en": "Sometimes (3-4 times/week)", "fr": "Parfois (3-4 fois/semaine)" } },
-        { "value": "often", "label": { "en": "Often (5-6 times/week)", "fr": "Souvent (5-6 fois/semaine)" } },
-        { "value": "daily", "label": { "en": "Daily", "fr": "Quotidiennement" } },
-        { "value": "multiple-daily", "label": { "en": "Multiple times daily", "fr": "Plusieurs fois par jour" } }
+        {
+          "value": "rarely",
+          "label": {
+            "en": "Rarely (1-2 times/week)",
+            "fr": "Rarement (1-2 fois/semaine)"
+          }
+        },
+        {
+          "value": "sometimes",
+          "label": {
+            "en": "Sometimes (3-4 times/week)",
+            "fr": "Parfois (3-4 fois/semaine)"
+          }
+        },
+        {
+          "value": "often",
+          "label": {
+            "en": "Often (5-6 times/week)",
+            "fr": "Souvent (5-6 fois/semaine)"
+          }
+        },
+        {
+          "value": "daily",
+          "label": { "en": "Daily", "fr": "Quotidiennement" }
+        },
+        {
+          "value": "multiple-daily",
+          "label": {
+            "en": "Multiple times daily",
+            "fr": "Plusieurs fois par jour"
+          }
+        }
       ]
     },
     {
       "id": "meal-types",
       "type": "multi-choice",
       "required": true,
-      "label": { "en": "What types of meals do you typically prepare?", "fr": "Quels types de repas préparez-vous ?" },
+      "label": {
+        "en": "What types of meals do you typically prepare?",
+        "fr": "Quels types de repas préparez-vous ?"
+      },
       "options": [
-        { "value": "quick-meals", "label": { "en": "Quick meals (under 30 min)", "fr": "Repas rapides" } },
-        { "value": "everyday-cooking", "label": { "en": "Everyday home cooking", "fr": "Cuisine quotidienne" } },
-        { "value": "elaborate-dishes", "label": { "en": "Elaborate multi-course meals", "fr": "Repas élaborés" } },
-        { "value": "baking", "label": { "en": "Baking & pastries", "fr": "Pâtisserie" } },
-        { "value": "meal-prep", "label": { "en": "Batch cooking/meal prep", "fr": "Préparation en lot" } },
-        { "value": "entertaining", "label": { "en": "Cooking for guests", "fr": "Cuisine pour invités" } },
-        { "value": "preserving", "label": { "en": "Canning/preserving", "fr": "Conserves" } }
+        {
+          "value": "quick-meals",
+          "label": { "en": "Quick meals (under 30 min)", "fr": "Repas rapides" }
+        },
+        {
+          "value": "everyday-cooking",
+          "label": {
+            "en": "Everyday home cooking",
+            "fr": "Cuisine quotidienne"
+          }
+        },
+        {
+          "value": "elaborate-dishes",
+          "label": {
+            "en": "Elaborate multi-course meals",
+            "fr": "Repas élaborés"
+          }
+        },
+        {
+          "value": "baking",
+          "label": { "en": "Baking & pastries", "fr": "Pâtisserie" }
+        },
+        {
+          "value": "meal-prep",
+          "label": {
+            "en": "Batch cooking/meal prep",
+            "fr": "Préparation en lot"
+          }
+        },
+        {
+          "value": "entertaining",
+          "label": { "en": "Cooking for guests", "fr": "Cuisine pour invités" }
+        },
+        {
+          "value": "preserving",
+          "label": { "en": "Canning/preserving", "fr": "Conserves" }
+        }
       ]
     },
     {
       "id": "cuisine-types",
       "type": "multi-choice",
       "required": true,
-      "label": { "en": "What cuisines do you cook most often?", "fr": "Quelles cuisines préparez-vous ?" },
+      "label": {
+        "en": "What cuisines do you cook most often?",
+        "fr": "Quelles cuisines préparez-vous ?"
+      },
       "options": [
-        { "value": "american", "label": { "en": "American/Western", "fr": "Américain/Occidental" } },
-        { "value": "mediterranean", "label": { "en": "Mediterranean/Italian", "fr": "Méditerranéen/Italien" } },
+        {
+          "value": "american",
+          "label": { "en": "American/Western", "fr": "Américain/Occidental" }
+        },
+        {
+          "value": "mediterranean",
+          "label": {
+            "en": "Mediterranean/Italian",
+            "fr": "Méditerranéen/Italien"
+          }
+        },
         { "value": "asian", "label": { "en": "Asian", "fr": "Asiatique" } },
-        { "value": "indian", "label": { "en": "Indian/South Asian", "fr": "Indien" } },
-        { "value": "latin", "label": { "en": "Latin American", "fr": "Latino-américain" } },
+        {
+          "value": "indian",
+          "label": { "en": "Indian/South Asian", "fr": "Indien" }
+        },
+        {
+          "value": "latin",
+          "label": { "en": "Latin American", "fr": "Latino-américain" }
+        },
         { "value": "french", "label": { "en": "French", "fr": "Français" } },
-        { "value": "middle-eastern", "label": { "en": "Middle Eastern", "fr": "Moyen-oriental" } },
-        { "value": "varied", "label": { "en": "Wide variety", "fr": "Grande variété" } }
+        {
+          "value": "middle-eastern",
+          "label": { "en": "Middle Eastern", "fr": "Moyen-oriental" }
+        },
+        {
+          "value": "varied",
+          "label": { "en": "Wide variety", "fr": "Grande variété" }
+        }
       ]
     },
     {
       "id": "cooking-methods",
       "type": "multi-choice",
       "required": true,
-      "label": { "en": "Which cooking methods do you use most?", "fr": "Quelles méthodes de cuisson utilisez-vous ?" },
+      "label": {
+        "en": "Which cooking methods do you use most?",
+        "fr": "Quelles méthodes de cuisson utilisez-vous ?"
+      },
       "options": [
-        { "value": "stovetop", "label": { "en": "Stovetop cooking", "fr": "Cuisson sur plaque" } },
-        { "value": "oven-baking", "label": { "en": "Oven baking/roasting", "fr": "Four/rôtissage" } },
-        { "value": "grilling", "label": { "en": "Indoor grilling", "fr": "Grill intérieur" } },
-        { "value": "wok", "label": { "en": "Wok/high-heat stir-fry", "fr": "Wok/sauté" } },
-        { "value": "slow-cooking", "label": { "en": "Slow cooking", "fr": "Cuisson lente" } },
+        {
+          "value": "stovetop",
+          "label": { "en": "Stovetop cooking", "fr": "Cuisson sur plaque" }
+        },
+        {
+          "value": "oven-baking",
+          "label": { "en": "Oven baking/roasting", "fr": "Four/rôtissage" }
+        },
+        {
+          "value": "grilling",
+          "label": { "en": "Indoor grilling", "fr": "Grill intérieur" }
+        },
+        {
+          "value": "wok",
+          "label": { "en": "Wok/high-heat stir-fry", "fr": "Wok/sauté" }
+        },
+        {
+          "value": "slow-cooking",
+          "label": { "en": "Slow cooking", "fr": "Cuisson lente" }
+        },
         { "value": "steaming", "label": { "en": "Steaming", "fr": "Vapeur" } },
-        { "value": "sous-vide", "label": { "en": "Sous vide", "fr": "Sous vide" } },
-        { "value": "smoking", "label": { "en": "Smoking/curing", "fr": "Fumage" } }
+        {
+          "value": "sous-vide",
+          "label": { "en": "Sous vide", "fr": "Sous vide" }
+        },
+        {
+          "value": "smoking",
+          "label": { "en": "Smoking/curing", "fr": "Fumage" }
+        }
       ]
     },
     {
       "id": "range-preference",
       "type": "single-choice",
       "required": true,
-      "label": { "en": "What type of cooking range do you prefer?", "fr": "Quel type de cuisinière préférez-vous ?" },
+      "label": {
+        "en": "What type of cooking range do you prefer?",
+        "fr": "Quel type de cuisinière préférez-vous ?"
+      },
       "options": [
         { "value": "gas", "label": { "en": "Gas", "fr": "Gaz" } },
-        { "value": "electric-coil", "label": { "en": "Electric coil", "fr": "Électrique serpentin" } },
-        { "value": "electric-smooth", "label": { "en": "Electric smooth-top", "fr": "Vitrocéramique" } },
-        { "value": "induction", "label": { "en": "Induction", "fr": "Induction" } },
+        {
+          "value": "electric-coil",
+          "label": { "en": "Electric coil", "fr": "Électrique serpentin" }
+        },
+        {
+          "value": "electric-smooth",
+          "label": { "en": "Electric smooth-top", "fr": "Vitrocéramique" }
+        },
+        {
+          "value": "induction",
+          "label": { "en": "Induction", "fr": "Induction" }
+        },
         { "value": "dual-fuel", "label": { "en": "Dual fuel", "fr": "Mixte" } },
-        { "value": "no-preference", "label": { "en": "No preference", "fr": "Pas de préférence" } }
+        {
+          "value": "no-preference",
+          "label": { "en": "No preference", "fr": "Pas de préférence" }
+        }
       ]
     },
     {
       "id": "oven-needs",
       "type": "multi-choice",
       "required": true,
-      "label": { "en": "What oven features are important?", "fr": "Quelles fonctionnalités de four sont importantes ?" },
+      "label": {
+        "en": "What oven features are important?",
+        "fr": "Quelles fonctionnalités de four sont importantes ?"
+      },
       "options": [
-        { "value": "convection", "label": { "en": "Convection", "fr": "Convection" } },
-        { "value": "double-oven", "label": { "en": "Double oven", "fr": "Double four" } },
-        { "value": "steam", "label": { "en": "Steam oven", "fr": "Four vapeur" } },
-        { "value": "self-cleaning", "label": { "en": "Self-cleaning", "fr": "Auto-nettoyant" } },
-        { "value": "speed-oven", "label": { "en": "Speed/combination oven", "fr": "Four combiné" } },
-        { "value": "pizza-setting", "label": { "en": "Pizza/bread stone", "fr": "Pierre à pizza" } },
-        { "value": "air-fry", "label": { "en": "Air fry capability", "fr": "Fonction air fry" } },
-        { "value": "basic", "label": { "en": "Basic oven is fine", "fr": "Four basique suffit" } }
+        {
+          "value": "convection",
+          "label": { "en": "Convection", "fr": "Convection" }
+        },
+        {
+          "value": "double-oven",
+          "label": { "en": "Double oven", "fr": "Double four" }
+        },
+        {
+          "value": "steam",
+          "label": { "en": "Steam oven", "fr": "Four vapeur" }
+        },
+        {
+          "value": "self-cleaning",
+          "label": { "en": "Self-cleaning", "fr": "Auto-nettoyant" }
+        },
+        {
+          "value": "speed-oven",
+          "label": { "en": "Speed/combination oven", "fr": "Four combiné" }
+        },
+        {
+          "value": "pizza-setting",
+          "label": { "en": "Pizza/bread stone", "fr": "Pierre à pizza" }
+        },
+        {
+          "value": "air-fry",
+          "label": { "en": "Air fry capability", "fr": "Fonction air fry" }
+        },
+        {
+          "value": "basic",
+          "label": { "en": "Basic oven is fine", "fr": "Four basique suffit" }
+        }
       ]
     },
     {
       "id": "counter-workspace",
       "type": "single-choice",
       "required": true,
-      "label": { "en": "How much counter workspace do you need?", "fr": "De combien d'espace de travail avez-vous besoin ?" },
+      "label": {
+        "en": "How much counter workspace do you need?",
+        "fr": "De combien d'espace de travail avez-vous besoin ?"
+      },
       "options": [
         { "value": "minimal", "label": { "en": "Minimal", "fr": "Minimal" } },
-        { "value": "standard", "label": { "en": "Standard", "fr": "Standard" } },
-        { "value": "generous", "label": { "en": "Generous", "fr": "Généreux" } },
-        { "value": "extensive", "label": { "en": "Extensive - Multiple prep areas", "fr": "Extensif" } }
+        {
+          "value": "standard",
+          "label": { "en": "Standard", "fr": "Standard" }
+        },
+        {
+          "value": "generous",
+          "label": { "en": "Generous", "fr": "Généreux" }
+        },
+        {
+          "value": "extensive",
+          "label": { "en": "Extensive - Multiple prep areas", "fr": "Extensif" }
+        }
       ]
     },
     {
       "id": "small-appliances",
       "type": "multi-choice",
       "required": false,
-      "label": { "en": "Which small appliances do you use regularly?", "fr": "Quels petits appareils utilisez-vous ?" },
+      "label": {
+        "en": "Which small appliances do you use regularly?",
+        "fr": "Quels petits appareils utilisez-vous ?"
+      },
       "options": [
-        { "value": "coffee-maker", "label": { "en": "Coffee maker/espresso", "fr": "Machine à café" } },
-        { "value": "toaster", "label": { "en": "Toaster/toaster oven", "fr": "Grille-pain" } },
-        { "value": "stand-mixer", "label": { "en": "Stand mixer", "fr": "Robot pâtissier" } },
-        { "value": "food-processor", "label": { "en": "Food processor", "fr": "Robot culinaire" } },
+        {
+          "value": "coffee-maker",
+          "label": { "en": "Coffee maker/espresso", "fr": "Machine à café" }
+        },
+        {
+          "value": "toaster",
+          "label": { "en": "Toaster/toaster oven", "fr": "Grille-pain" }
+        },
+        {
+          "value": "stand-mixer",
+          "label": { "en": "Stand mixer", "fr": "Robot pâtissier" }
+        },
+        {
+          "value": "food-processor",
+          "label": { "en": "Food processor", "fr": "Robot culinaire" }
+        },
         { "value": "blender", "label": { "en": "Blender", "fr": "Blender" } },
-        { "value": "instant-pot", "label": { "en": "Instant Pot", "fr": "Autocuiseur" } },
-        { "value": "air-fryer", "label": { "en": "Air fryer", "fr": "Friteuse à air" } },
-        { "value": "rice-cooker", "label": { "en": "Rice cooker", "fr": "Cuiseur à riz" } },
-        { "value": "bread-maker", "label": { "en": "Bread maker", "fr": "Machine à pain" } }
+        {
+          "value": "instant-pot",
+          "label": { "en": "Instant Pot", "fr": "Autocuiseur" }
+        },
+        {
+          "value": "air-fryer",
+          "label": { "en": "Air fryer", "fr": "Friteuse à air" }
+        },
+        {
+          "value": "rice-cooker",
+          "label": { "en": "Rice cooker", "fr": "Cuiseur à riz" }
+        },
+        {
+          "value": "bread-maker",
+          "label": { "en": "Bread maker", "fr": "Machine à pain" }
+        }
       ]
     }
   ]

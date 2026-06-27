@@ -37,9 +37,7 @@ function easeOut(t: number): number {
   return t * (2 - t);
 }
 
-function getEasingFunction(
-  easing: AnimationConfig['easing']
-): (t: number) => number {
+function getEasingFunction(easing: AnimationConfig['easing']): (t: number) => number {
   switch (easing) {
     case 'linear':
       return easeLinear;
@@ -80,14 +78,10 @@ export class AnimationSystem {
    * If the object is currently closed or closing, it will open.
    * If the object is currently open or opening, it will close.
    */
-  toggleAnimation(
-    objectId: string,
-    mesh: THREE.Object3D,
-    config: AnimationConfig
-  ): void {
+  toggleAnimation(objectId: string, mesh: THREE.Object3D, config: AnimationConfig): void {
     if (config.duration <= 0) {
       throw new Error(
-        `AnimationSystem: config.duration must be greater than 0, received ${config.duration}`,
+        `AnimationSystem: config.duration must be greater than 0, received ${config.duration}`
       );
     }
 
@@ -95,17 +89,13 @@ export class AnimationSystem {
 
     if (existing) {
       // Reverse the current animation direction
-      existing.direction =
-        existing.direction === 'opening' ? 'closing' : 'opening';
+      existing.direction = existing.direction === 'opening' ? 'closing' : 'opening';
       // Adjust start time so progress continues smoothly from current position
-      existing.startTime =
-        performance.now() - existing.progress * existing.config.duration;
+      existing.startTime = performance.now() - existing.progress * existing.config.duration;
 
       // When reversing, we need to re-base the start time for the remaining animation
       if (existing.direction === 'closing') {
-        existing.startTime =
-          performance.now() -
-          (1 - existing.progress) * existing.config.duration;
+        existing.startTime = performance.now() - (1 - existing.progress) * existing.config.duration;
       }
       return;
     }
@@ -135,10 +125,7 @@ export class AnimationSystem {
    * that edge, we translate the door so the hinge is at the origin,
    * apply rotation, then translate back.
    */
-  private animateDoorSwing(
-    mesh: THREE.Object3D,
-    state: AnimationState
-  ): void {
+  private animateDoorSwing(mesh: THREE.Object3D, state: AnimationState): void {
     const easingFn = getEasingFunction(state.config.easing);
     const easedProgress = easingFn(state.progress);
 
@@ -186,10 +173,7 @@ export class AnimationSystem {
    * Animate a sliding door (translate along X axis).
    * Slides by the full width of the door.
    */
-  private animateDoorSlide(
-    mesh: THREE.Object3D,
-    state: AnimationState
-  ): void {
+  private animateDoorSlide(mesh: THREE.Object3D, state: AnimationState): void {
     const easingFn = getEasingFunction(state.config.easing);
     const easedProgress = easingFn(state.progress);
 
@@ -211,10 +195,7 @@ export class AnimationSystem {
    * Animate a drawer pulling out (translate along Z axis).
    * Full extension: 80% of drawer depth.
    */
-  private animateDrawerPull(
-    mesh: THREE.Object3D,
-    state: AnimationState
-  ): void {
+  private animateDrawerPull(mesh: THREE.Object3D, state: AnimationState): void {
     const easingFn = getEasingFunction(state.config.easing);
     const easedProgress = easingFn(state.progress);
 
@@ -237,10 +218,7 @@ export class AnimationSystem {
    * Animate oven door dropping down (rotation around bottom edge).
    * Rotates from 0 to -90 degrees around the X axis.
    */
-  private animateOvenDrop(
-    mesh: THREE.Object3D,
-    state: AnimationState
-  ): void {
+  private animateOvenDrop(mesh: THREE.Object3D, state: AnimationState): void {
     const easingFn = getEasingFunction(state.config.easing);
     const easedProgress = easingFn(state.progress);
 
@@ -281,10 +259,7 @@ export class AnimationSystem {
    * Animate fridge door opening (rotation around side hinge).
    * Rotates from 0 to 120 degrees around the Y axis.
    */
-  private animateFridgeOpen(
-    mesh: THREE.Object3D,
-    state: AnimationState
-  ): void {
+  private animateFridgeOpen(mesh: THREE.Object3D, state: AnimationState): void {
     const easingFn = getEasingFunction(state.config.easing);
     const easedProgress = easingFn(state.progress);
 
@@ -420,9 +395,7 @@ export class AnimationSystem {
   /**
    * Create default animation configs for common cabinet/appliance types
    */
-  static getDefaultConfig(
-    type: AnimationConfig['type']
-  ): AnimationConfig {
+  static getDefaultConfig(type: AnimationConfig['type']): AnimationConfig {
     switch (type) {
       case 'door_swing':
         return { type: 'door_swing', duration: 400, easing: 'easeInOut' };

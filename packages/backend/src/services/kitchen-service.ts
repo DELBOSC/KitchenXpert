@@ -257,7 +257,9 @@ export class KitchenService {
    */
   async addWall(layoutId: string, wall: Omit<Wall, 'id'>): Promise<KitchenLayout | null> {
     const layout = await this.repository.findLayoutById(layoutId);
-    if (!layout) {return null;}
+    if (!layout) {
+      return null;
+    }
 
     const newWall: Wall = {
       ...wall,
@@ -278,9 +280,11 @@ export class KitchenService {
     opening: Omit<Opening, 'id' | 'wallId'>
   ): Promise<KitchenLayout | null> {
     const layout = await this.repository.findLayoutById(layoutId);
-    if (!layout) {return null;}
+    if (!layout) {
+      return null;
+    }
 
-    const wall = layout.walls.find(w => w.id === wallId);
+    const wall = layout.walls.find((w) => w.id === wallId);
     if (!wall) {
       throw new KitchenServiceError('WALL_NOT_FOUND', `Wall ${wallId} not found`);
     }
@@ -293,7 +297,7 @@ export class KitchenService {
 
     return this.repository.updateLayout(layoutId, {
       openings: [...layout.openings, newOpening],
-      walls: layout.walls.map(w =>
+      walls: layout.walls.map((w) =>
         w.id === wallId ? { ...w, openings: [...w.openings, newOpening.id] } : w
       ),
     });
@@ -327,16 +331,22 @@ export class KitchenService {
     const recommendations: string[] = [];
 
     if (totalDistance < 400) {
-      recommendations.push('Le triangle de travail est trop petit. Considérez un agencement plus spacieux.');
+      recommendations.push(
+        'Le triangle de travail est trop petit. Considérez un agencement plus spacieux.'
+      );
     }
     if (totalDistance > 790) {
-      recommendations.push('Le triangle de travail est trop grand. Rapprochez les éléments principaux.');
+      recommendations.push(
+        'Le triangle de travail est trop grand. Rapprochez les éléments principaux.'
+      );
     }
     if (sinkToStove < 120) {
-      recommendations.push('Éloignez l\'évier de la plaque de cuisson pour plus de confort.');
+      recommendations.push("Éloignez l'évier de la plaque de cuisson pour plus de confort.");
     }
     if (stoveToFridge < 120) {
-      recommendations.push('Éloignez le réfrigérateur de la plaque de cuisson pour l\'efficacité énergétique.');
+      recommendations.push(
+        "Éloignez le réfrigérateur de la plaque de cuisson pour l'efficacité énergétique."
+      );
     }
 
     return {
@@ -408,7 +418,7 @@ export class KitchenService {
     if (['L', 'U', 'G'].includes(layout.type)) {
       recommendations.push({
         type: 'corner_cabinet',
-        reason: 'Maximiser l\'espace dans les coins',
+        reason: "Maximiser l'espace dans les coins",
         position: this.findCornerPositions(layout)[0],
         priority: 'high',
       });
@@ -426,7 +436,7 @@ export class KitchenService {
     if (layout.type === 'L' || layout.type === 'U') {
       recommendations.push({
         type: 'lazy_susan',
-        reason: 'Optimiser l\'accès dans les meubles d\'angle profonds',
+        reason: "Optimiser l'accès dans les meubles d'angle profonds",
         position: undefined,
         priority: 'medium',
       });
@@ -514,7 +524,10 @@ export class KitchenService {
         };
 
       default:
-        throw new KitchenServiceError('UNSUPPORTED_FORMAT', `Export format ${format} not supported`);
+        throw new KitchenServiceError(
+          'UNSUPPORTED_FORMAT',
+          `Export format ${format} not supported`
+        );
     }
   }
 
@@ -662,7 +675,10 @@ export class KitchenService {
     return false;
   }
 
-  private checkClearance(_placement: CabinetPlacement, _layout: KitchenLayout): ValidationWarning | null {
+  private checkClearance(
+    _placement: CabinetPlacement,
+    _layout: KitchenLayout
+  ): ValidationWarning | null {
     // Check if there's enough clearance around appliances and cabinets
     return null;
   }
@@ -672,7 +688,7 @@ export class KitchenService {
     const requiredZones: ZoneType[] = ['cooking', 'preparation', 'cleaning', 'storage'];
 
     for (const requiredZone of requiredZones) {
-      if (!layout.zones.some(z => z.type === requiredZone)) {
+      if (!layout.zones.some((z) => z.type === requiredZone)) {
         warnings.push({
           code: 'MISSING_ZONE',
           message: `Zone ${requiredZone} manquante`,
@@ -744,7 +760,10 @@ export class KitchenService {
     return '0\nSECTION\n2\nENTITIES\n0\nENDSEC\n0\nEOF';
   }
 
-  private async generatePDF(_layout: KitchenLayout, _placements: CabinetPlacement[]): Promise<string> {
+  private async generatePDF(
+    _layout: KitchenLayout,
+    _placements: CabinetPlacement[]
+  ): Promise<string> {
     // Generate PDF - would use a PDF library in real implementation
     return '%PDF-1.4\n1 0 obj\n<<>>\nendobj\nxref\n0 2\n0000000000 65535 f\n0000000009 00000 n\ntrailer\n<<>>\nstartxref\n25\n%%EOF';
   }

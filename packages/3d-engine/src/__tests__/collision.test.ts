@@ -71,16 +71,8 @@ jest.mock('three', () => {
     setFromObject(object: { position: MockVector3; scale: MockVector3 }): this {
       const pos = object.position;
       const scale = object.scale;
-      this.min = new MockVector3(
-        pos.x - scale.x / 2,
-        pos.y - scale.y / 2,
-        pos.z - scale.z / 2
-      );
-      this.max = new MockVector3(
-        pos.x + scale.x / 2,
-        pos.y + scale.y / 2,
-        pos.z + scale.z / 2
-      );
+      this.min = new MockVector3(pos.x - scale.x / 2, pos.y - scale.y / 2, pos.z - scale.z / 2);
+      this.max = new MockVector3(pos.x + scale.x / 2, pos.y + scale.y / 2, pos.z + scale.z / 2);
       return this;
     }
 
@@ -530,10 +522,7 @@ describe('CollisionSystem', () => {
       obj.position.set(0, 0, 0);
       obj.scale.set(1, 1, 1);
 
-      const bounds = new THREE.Box3(
-        new THREE.Vector3(-5, -5, -5),
-        new THREE.Vector3(5, 5, 5)
-      );
+      const bounds = new THREE.Box3(new THREE.Vector3(-5, -5, -5), new THREE.Vector3(5, 5, 5));
 
       const result = collisionSystem.isWithinBounds(obj, bounds);
 
@@ -545,10 +534,7 @@ describe('CollisionSystem', () => {
       obj.position.set(10, 0, 0);
       obj.scale.set(1, 1, 1);
 
-      const bounds = new THREE.Box3(
-        new THREE.Vector3(-5, -5, -5),
-        new THREE.Vector3(5, 5, 5)
-      );
+      const bounds = new THREE.Box3(new THREE.Vector3(-5, -5, -5), new THREE.Vector3(5, 5, 5));
 
       const result = collisionSystem.isWithinBounds(obj, bounds);
 
@@ -559,10 +545,7 @@ describe('CollisionSystem', () => {
   describe('clampToBounds', () => {
     it('should clamp position to bounds', () => {
       const position = new THREE.Vector3(10, 0, 10);
-      const bounds = new THREE.Box3(
-        new THREE.Vector3(-5, -5, -5),
-        new THREE.Vector3(5, 5, 5)
-      );
+      const bounds = new THREE.Box3(new THREE.Vector3(-5, -5, -5), new THREE.Vector3(5, 5, 5));
 
       const clamped = collisionSystem.clampToBounds(position, bounds);
 
@@ -572,10 +555,7 @@ describe('CollisionSystem', () => {
 
     it('should not modify position within bounds', () => {
       const position = new THREE.Vector3(2, 0, 3);
-      const bounds = new THREE.Box3(
-        new THREE.Vector3(-5, -5, -5),
-        new THREE.Vector3(5, 5, 5)
-      );
+      const bounds = new THREE.Box3(new THREE.Vector3(-5, -5, -5), new THREE.Vector3(5, 5, 5));
 
       const clamped = collisionSystem.clampToBounds(position, bounds);
 

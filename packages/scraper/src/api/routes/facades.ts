@@ -3,7 +3,12 @@
  */
 
 import { Router, Request, Response } from 'express';
-import type { FacadeStyle, FacadeMaterial, FacadeSearchParams, ColorCategory } from '../../models/facade.js';
+import type {
+  FacadeStyle,
+  FacadeMaterial,
+  FacadeSearchParams,
+  ColorCategory,
+} from '../../models/facade.js';
 import { FACADE_STYLE_LABELS } from '../../models/facade.js';
 import {
   queryFacades,
@@ -24,9 +29,13 @@ export function createFacadesRouter(): Router {
       const params: FacadeSearchParams = {
         brandIds: req.query.brand ? String(req.query.brand).split(',') : undefined,
         collectionIds: req.query.collection ? String(req.query.collection).split(',') : undefined,
-        styles: req.query.style ? String(req.query.style).split(',') as FacadeStyle[] : undefined,
-        materials: req.query.material ? String(req.query.material).split(',') as FacadeMaterial[] : undefined,
-        colorCategories: req.query.color_category ? String(req.query.color_category).split(',') as ColorCategory[] : undefined,
+        styles: req.query.style ? (String(req.query.style).split(',') as FacadeStyle[]) : undefined,
+        materials: req.query.material
+          ? (String(req.query.material).split(',') as FacadeMaterial[])
+          : undefined,
+        colorCategories: req.query.color_category
+          ? (String(req.query.color_category).split(',') as ColorCategory[])
+          : undefined,
         priceMin: req.query.price_min ? parseFloat(String(req.query.price_min)) : undefined,
         priceMax: req.query.price_max ? parseFloat(String(req.query.price_max)) : undefined,
         limit: req.query.limit ? parseInt(String(req.query.limit), 10) : 50,

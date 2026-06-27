@@ -3,7 +3,6 @@ import { CatalogIngestionService } from './catalog-ingestion.service';
 import type { ProductRepository } from '../../repositories/product-repository';
 import type { IngestionStrategy, ParseResult, UnifiedProduct } from '@kitchenxpert/common';
 
-
 function makeProduct(over: Partial<UnifiedProduct> = {}): UnifiedProduct {
   return {
     sku: 'A1',
@@ -22,7 +21,12 @@ function makeProduct(over: Partial<UnifiedProduct> = {}): UnifiedProduct {
     ...over,
   };
 }
-const ok = (p: UnifiedProduct): ParseResult => ({ success: true, product: p, errors: [], warnings: [] });
+const ok = (p: UnifiedProduct): ParseResult => ({
+  success: true,
+  product: p,
+  errors: [],
+  warnings: [],
+});
 const fail = (errors: string[]): ParseResult => ({ success: false, errors, warnings: [] });
 
 function makeStrategy(results: ParseResult[] | Error): IngestionStrategy {
@@ -31,9 +35,7 @@ function makeStrategy(results: ParseResult[] | Error): IngestionStrategy {
     sourceLevel: 2,
     fetchProductByUrl: jest.fn(),
     fetchProductsByCategory: jest.fn(
-      results instanceof Error
-        ? () => Promise.reject(results)
-        : () => Promise.resolve(results),
+      results instanceof Error ? () => Promise.reject(results) : () => Promise.resolve(results)
     ),
   };
 }
@@ -56,7 +58,14 @@ describe('CatalogIngestionService.ingestByCategory', () => {
 
     const res = await svc.ingestByCategory('cuisine');
 
-    expect(res).toEqual({ brand: 'ikea', query: 'cuisine', fetched: 3, ingested: 3, skipped: 0, errors: [] });
+    expect(res).toEqual({
+      brand: 'ikea',
+      query: 'cuisine',
+      fetched: 3,
+      ingested: 3,
+      skipped: 0,
+      errors: [],
+    });
     expect(upsert).toHaveBeenCalledTimes(3);
     expect(upsert.mock.calls[0][0]).toBe('IKEA-A1'); // namespaced sku reaches the repo
   });
@@ -130,7 +139,12 @@ describe('CatalogIngestionService.ingestByCategory', () => {
     const { repo } = makeRepo(upsert);
     const resolver = { idForSlug: jest.fn().mockResolvedValue('cat-froid') };
     const strategy = makeStrategy([
-      ok(makeProduct({ type: 'appliance', specifications: { applianceGroup: 'refrigeratingappliances2019' } })),
+      ok(
+        makeProduct({
+          type: 'appliance',
+          specifications: { applianceGroup: 'refrigeratingappliances2019' },
+        })
+      ),
     ]);
     const svc = new CatalogIngestionService(repo, strategy, undefined, resolver);
 

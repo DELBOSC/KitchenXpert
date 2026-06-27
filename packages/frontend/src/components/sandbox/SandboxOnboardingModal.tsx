@@ -84,7 +84,10 @@ export function SandboxOnboardingModal({
                 onClick={() => onPickTemplate(tpl)}
                 className="group flex flex-col gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left transition hover:border-white/20 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               >
-                <div className="aspect-video rounded-lg bg-gradient-to-br from-slate-700 to-slate-900" aria-hidden />
+                <div
+                  className="aspect-video rounded-lg bg-gradient-to-br from-slate-700 to-slate-900"
+                  aria-hidden
+                />
                 <div className="text-sm font-medium text-white">{tpl.name}</div>
                 <div className="text-xs text-white/55">{tpl.blurb}</div>
                 <div className="mt-1 text-[11px] text-white/40">
@@ -110,9 +113,17 @@ export function SandboxOnboardingModal({
 }
 
 function ChoiceCard({
-  icon, title, body, onClick, comingSoon = false,
+  icon,
+  title,
+  body,
+  onClick,
+  comingSoon = false,
 }: {
-  icon: React.ReactNode; title: string; body: string; onClick: () => void; comingSoon?: boolean;
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  onClick: () => void;
+  comingSoon?: boolean;
 }): React.ReactElement {
   return (
     <button
@@ -121,7 +132,9 @@ function ChoiceCard({
       disabled={comingSoon}
       className="group relative flex h-full flex-col gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-5 text-left transition hover:border-white/25 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 disabled:cursor-not-allowed disabled:opacity-40"
     >
-      <div className="text-3xl" aria-hidden>{icon}</div>
+      <div className="text-3xl" aria-hidden>
+        {icon}
+      </div>
       <div className="text-base font-semibold text-white">{title}</div>
       <div className="text-xs leading-relaxed text-white/55">{body}</div>
       {comingSoon && (

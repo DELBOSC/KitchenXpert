@@ -171,21 +171,9 @@ export class PathTracerPreview {
       type: THREE.FloatType,
     };
 
-    this.accumBufferA = new THREE.WebGLRenderTarget(
-      width,
-      height,
-      targetParams
-    );
-    this.accumBufferB = new THREE.WebGLRenderTarget(
-      width,
-      height,
-      targetParams
-    );
-    this.sampleTarget = new THREE.WebGLRenderTarget(
-      width,
-      height,
-      targetParams
-    );
+    this.accumBufferA = new THREE.WebGLRenderTarget(width, height, targetParams);
+    this.accumBufferB = new THREE.WebGLRenderTarget(width, height, targetParams);
+    this.sampleTarget = new THREE.WebGLRenderTarget(width, height, targetParams);
 
     // Create the blend pass (full-screen quad with accumulation shader)
     this.blendMaterial = new THREE.ShaderMaterial({
@@ -205,10 +193,7 @@ export class PathTracerPreview {
     // Create the copy pass to display the result on screen
     this.copyMaterial = new THREE.MeshBasicMaterial({ map: null });
     this.copyScene = new THREE.Scene();
-    this.copyQuad = new THREE.Mesh(
-      new THREE.PlaneGeometry(2, 2),
-      this.copyMaterial
-    );
+    this.copyQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.copyMaterial);
     this.copyScene.add(this.copyQuad);
 
     // Start the accumulation loop
@@ -242,9 +227,7 @@ export class PathTracerPreview {
    * Get current render progress (0 to 1)
    */
   get progress(): number {
-    return this.maxSamples > 0
-      ? Math.min(this.sampleCount / this.maxSamples, 1)
-      : 0;
+    return this.maxSamples > 0 ? Math.min(this.sampleCount / this.maxSamples, 1) : 0;
   }
 
   /**
@@ -276,17 +259,12 @@ export class PathTracerPreview {
    */
   setOptions(options: Partial<PathTracerOptions>): void {
     if (options.maxSamples !== undefined) this.maxSamples = options.maxSamples;
-    if (options.resolution !== undefined)
-      this.resolutionMultiplier = options.resolution;
-    if (options.depthOfField !== undefined)
-      this.depthOfFieldEnabled = options.depthOfField;
-    if (options.focalLength !== undefined)
-      this.focalLength = options.focalLength;
+    if (options.resolution !== undefined) this.resolutionMultiplier = options.resolution;
+    if (options.depthOfField !== undefined) this.depthOfFieldEnabled = options.depthOfField;
+    if (options.focalLength !== undefined) this.focalLength = options.focalLength;
     if (options.aperture !== undefined) this.aperture = options.aperture;
-    if (options.onProgress !== undefined)
-      this.onProgressCallback = options.onProgress;
-    if (options.onComplete !== undefined)
-      this.onCompleteCallback = options.onComplete;
+    if (options.onProgress !== undefined) this.onProgressCallback = options.onProgress;
+    if (options.onComplete !== undefined) this.onCompleteCallback = options.onComplete;
   }
 
   /**
@@ -324,10 +302,8 @@ export class PathTracerPreview {
     const sampleWeight = 1.0 / (this.sampleCount + 1);
 
     // Read from accumBufferA, blend with sampleTarget, write to accumBufferB
-    this.blendMaterial.uniforms['tAccum']!.value =
-      this.accumBufferA.texture;
-    this.blendMaterial.uniforms['tNew']!.value =
-      this.sampleTarget.texture;
+    this.blendMaterial.uniforms['tAccum']!.value = this.accumBufferA.texture;
+    this.blendMaterial.uniforms['tNew']!.value = this.sampleTarget.texture;
     this.blendMaterial.uniforms['sampleWeight']!.value = sampleWeight;
 
     this.renderer.setRenderTarget(this.accumBufferB);
@@ -394,10 +370,7 @@ export class PathTracerPreview {
     this.camera.projectionMatrix.copy(jitteredMatrix);
 
     // Optional DOF lens jitter
-    if (
-      this.depthOfFieldEnabled &&
-      this.camera instanceof THREE.PerspectiveCamera
-    ) {
+    if (this.depthOfFieldEnabled && this.camera instanceof THREE.PerspectiveCamera) {
       // Sample a random point on a disk (lens aperture)
       const angle = Math.random() * Math.PI * 2;
       const radius = Math.sqrt(Math.random()) * this.aperture;
@@ -432,12 +405,7 @@ export class PathTracerPreview {
    * Display the current accumulation buffer result on screen.
    */
   private displayResult(): void {
-    if (
-      !this.accumBufferA ||
-      !this.copyMaterial ||
-      !this.copyScene ||
-      !this.blendCamera
-    ) {
+    if (!this.accumBufferA || !this.copyMaterial || !this.copyScene || !this.blendCamera) {
       return;
     }
 
@@ -483,23 +451,25 @@ export class PathTracerPreview {
 
     // Read pixels from the accumulation buffer
     const pixelBuffer = new Float32Array(width * height * 4);
-    this.renderer.readRenderTargetPixels(
-      this.accumBufferA,
-      0,
-      0,
-      width,
-      height,
-      pixelBuffer
-    );
+    this.renderer.readRenderTargetPixels(this.accumBufferA, 0, 0, width, height, pixelBuffer);
 
     // Convert float pixels to 8-bit RGBA for canvas
     const imageData = new ImageData(width, height);
     for (let i = 0; i < pixelBuffer.length; i += 4) {
       // Clamp and convert from float [0,1] to uint8 [0,255]
       imageData.data[i] = Math.min(255, Math.max(0, Math.round((pixelBuffer[i] ?? 0) * 255)));
-      imageData.data[i + 1] = Math.min(255, Math.max(0, Math.round((pixelBuffer[i + 1] ?? 0) * 255)));
-      imageData.data[i + 2] = Math.min(255, Math.max(0, Math.round((pixelBuffer[i + 2] ?? 0) * 255)));
-      imageData.data[i + 3] = Math.min(255, Math.max(0, Math.round((pixelBuffer[i + 3] ?? 0) * 255)));
+      imageData.data[i + 1] = Math.min(
+        255,
+        Math.max(0, Math.round((pixelBuffer[i + 1] ?? 0) * 255))
+      );
+      imageData.data[i + 2] = Math.min(
+        255,
+        Math.max(0, Math.round((pixelBuffer[i + 2] ?? 0) * 255))
+      );
+      imageData.data[i + 3] = Math.min(
+        255,
+        Math.max(0, Math.round((pixelBuffer[i + 3] ?? 0) * 255))
+      );
     }
 
     // WebGL render targets are stored bottom-to-top, so we need to flip vertically

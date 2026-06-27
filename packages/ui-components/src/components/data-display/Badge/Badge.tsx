@@ -209,7 +209,9 @@ const RemoveButton = styled.button<{ $size: BadgeSize }>`
   color: currentColor;
   opacity: 0.6;
   cursor: pointer;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease;
   flex-shrink: 0;
 
   &:hover {
@@ -270,12 +272,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
         {icon && <IconWrapper>{icon}</IconWrapper>}
         {children}
         {onRemove && (
-          <RemoveButton
-            $size={size}
-            onClick={handleRemove}
-            aria-label="Remove"
-            type="button"
-          >
+          <RemoveButton $size={size} onClick={handleRemove} aria-label="Remove" type="button">
             <CloseIcon />
           </RemoveButton>
         )}

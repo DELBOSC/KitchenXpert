@@ -62,7 +62,7 @@ router.post(
   '/check/:kitchenId',
   generalRateLimiter,
   validateParams(kitchenIdParam),
-  complianceController.runCheck,
+  complianceController.runCheck
 );
 
 // ==================== RULES ====================
@@ -87,11 +87,7 @@ router.post(
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  '/rules',
-  validateQuery(rulesQuerySchema),
-  complianceController.getRules,
-);
+router.get('/rules', validateQuery(rulesQuerySchema), complianceController.getRules);
 
 /**
  * @swagger
@@ -114,11 +110,7 @@ router.get(
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  '/rules/:code',
-  validateParams(ruleCodeParam),
-  complianceController.getRulesByCode,
-);
+router.get('/rules/:code', validateParams(ruleCodeParam), complianceController.getRulesByCode);
 
 // ==================== CHECK HISTORY ====================
 
@@ -147,11 +139,7 @@ router.get(
  *       404:
  *         description: Kitchen not found
  */
-router.get(
-  '/history/:kitchenId',
-  validateParams(kitchenIdParam),
-  complianceController.getHistory,
-);
+router.get('/history/:kitchenId', validateParams(kitchenIdParam), complianceController.getHistory);
 
 // ==================== SEED (ADMIN ONLY) ====================
 
@@ -171,10 +159,6 @@ router.get(
  *       403:
  *         description: Insufficient permissions (admin required)
  */
-router.post(
-  '/seed',
-  requireRole('admin'),
-  complianceController.seedRules,
-);
+router.post('/seed', requireRole('admin'), complianceController.seedRules);
 
 export default router;

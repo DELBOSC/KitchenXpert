@@ -1,10 +1,10 @@
 # KitchenXpert Monitoring Overview
 
-> Comprehensive guide to the KitchenXpert monitoring infrastructure and observability practices.
+> Comprehensive guide to the KitchenXpert monitoring infrastructure and
+> observability practices.
 
-**Last Updated:** 2026-01-10
-**Owner:** Platform Engineering Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Platform Engineering Team **Version:**
+1.0
 
 ---
 
@@ -24,9 +24,11 @@
 
 ### The Three Pillars of Observability
 
-KitchenXpert's monitoring strategy is built on the three pillars of observability, providing comprehensive visibility into system behavior:
+KitchenXpert's monitoring strategy is built on the three pillars of
+observability, providing comprehensive visibility into system behavior:
 
 #### 1. Metrics
+
 - **What:** Numerical measurements collected at regular intervals
 - **Purpose:** Track system health, performance trends, and resource utilization
 - **Use Cases:**
@@ -36,6 +38,7 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
   - Capacity planning
 
 #### 2. Logs
+
 - **What:** Timestamped records of discrete events
 - **Purpose:** Detailed event history for debugging and auditing
 - **Use Cases:**
@@ -45,6 +48,7 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
   - Compliance reporting
 
 #### 3. Traces
+
 - **What:** End-to-end request paths through distributed systems
 - **Purpose:** Understand request flow and identify bottlenecks
 - **Use Cases:**
@@ -56,10 +60,13 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 ### Observability Principles
 
 1. **Proactive Monitoring:** Detect issues before users report them
-2. **Context-Rich Alerts:** Every alert includes enough information for immediate action
-3. **Correlation:** Link metrics, logs, and traces for comprehensive investigation
+2. **Context-Rich Alerts:** Every alert includes enough information for
+   immediate action
+3. **Correlation:** Link metrics, logs, and traces for comprehensive
+   investigation
 4. **Automation:** Automate routine responses and escalations
-5. **Continuous Improvement:** Regular review and refinement of monitoring coverage
+5. **Continuous Improvement:** Regular review and refinement of monitoring
+   coverage
 
 ---
 
@@ -126,14 +133,15 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 #### Metrics: Prometheus + Grafana
 
-| Component | Purpose | URL |
-|-----------|---------|-----|
-| Prometheus | Time-series metrics storage and querying | https://prometheus.kitchenxpert.internal |
-| Grafana | Metrics visualization and dashboards | https://grafana.kitchenxpert.internal |
-| Node Exporter | System-level metrics collection | Deployed on all nodes |
-| Application Exporters | Custom application metrics | Embedded in services |
+| Component             | Purpose                                  | URL                                      |
+| --------------------- | ---------------------------------------- | ---------------------------------------- |
+| Prometheus            | Time-series metrics storage and querying | https://prometheus.kitchenxpert.internal |
+| Grafana               | Metrics visualization and dashboards     | https://grafana.kitchenxpert.internal    |
+| Node Exporter         | System-level metrics collection          | Deployed on all nodes                    |
+| Application Exporters | Custom application metrics               | Embedded in services                     |
 
 **Features:**
+
 - 15-second scrape interval for high granularity
 - 90-day retention for historical analysis
 - PromQL for flexible querying
@@ -141,15 +149,16 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 #### Logs: ELK Stack
 
-| Component | Purpose | URL |
-|-----------|---------|-----|
-| Elasticsearch | Log storage and full-text search | https://elasticsearch.kitchenxpert.internal |
-| Logstash | Log processing, parsing, and enrichment | Internal service |
-| Kibana | Log visualization and analysis | https://kibana.kitchenxpert.internal |
-| Filebeat | File-based log shipping | Deployed on all nodes |
-| Fluentd | Container log aggregation | Kubernetes DaemonSet |
+| Component     | Purpose                                 | URL                                         |
+| ------------- | --------------------------------------- | ------------------------------------------- |
+| Elasticsearch | Log storage and full-text search        | https://elasticsearch.kitchenxpert.internal |
+| Logstash      | Log processing, parsing, and enrichment | Internal service                            |
+| Kibana        | Log visualization and analysis          | https://kibana.kitchenxpert.internal        |
+| Filebeat      | File-based log shipping                 | Deployed on all nodes                       |
+| Fluentd       | Container log aggregation               | Kubernetes DaemonSet                        |
 
 **Features:**
+
 - Structured JSON logging
 - Index lifecycle management (ILM)
 - Correlation ID support
@@ -157,13 +166,14 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 #### Tracing: Jaeger + OpenTelemetry
 
-| Component | Purpose | URL |
-|-----------|---------|-----|
-| Jaeger | Distributed tracing backend | https://jaeger.kitchenxpert.internal |
-| OpenTelemetry SDK | Instrumentation library | Embedded in services |
-| Jaeger Agent | Trace collection sidecar | Deployed with services |
+| Component         | Purpose                     | URL                                  |
+| ----------------- | --------------------------- | ------------------------------------ |
+| Jaeger            | Distributed tracing backend | https://jaeger.kitchenxpert.internal |
+| OpenTelemetry SDK | Instrumentation library     | Embedded in services                 |
+| Jaeger Agent      | Trace collection sidecar    | Deployed with services               |
 
 **Features:**
+
 - Automatic instrumentation for HTTP, gRPC, database calls
 - Trace sampling (1% in production, 100% in staging)
 - Service dependency visualization
@@ -171,12 +181,13 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 #### APM: Elastic APM
 
-| Component | Purpose | URL |
-|-----------|---------|-----|
+| Component  | Purpose                                 | URL                               |
+| ---------- | --------------------------------------- | --------------------------------- |
 | APM Server | Application performance data collection | https://apm.kitchenxpert.internal |
-| APM Agents | In-application instrumentation | Embedded in services |
+| APM Agents | In-application instrumentation          | Embedded in services              |
 
 **Features:**
+
 - Transaction tracking
 - Error grouping and analysis
 - Database query analysis
@@ -184,12 +195,13 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 #### Alerting: Prometheus Alertmanager + PagerDuty
 
-| Component | Purpose | URL |
-|-----------|---------|-----|
+| Component    | Purpose                            | URL                                        |
+| ------------ | ---------------------------------- | ------------------------------------------ |
 | Alertmanager | Alert routing, grouping, silencing | https://alertmanager.kitchenxpert.internal |
-| PagerDuty | Incident management and escalation | https://kitchenxpert.pagerduty.com |
+| PagerDuty    | Incident management and escalation | https://kitchenxpert.pagerduty.com         |
 
 **Features:**
+
 - Multi-channel notifications (Slack, email, SMS, phone)
 - Intelligent alert grouping
 - Escalation policies
@@ -203,13 +215,14 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 **Target:** 99.9% uptime (8.76 hours/year downtime allowed)
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Service Uptime | 99.9% | Synthetic monitoring + real user data |
-| API Success Rate | 99.5% | Non-5xx responses / total responses |
-| Database Availability | 99.95% | Connection success rate |
+| Metric                | Target | Measurement                           |
+| --------------------- | ------ | ------------------------------------- |
+| Service Uptime        | 99.9%  | Synthetic monitoring + real user data |
+| API Success Rate      | 99.5%  | Non-5xx responses / total responses   |
+| Database Availability | 99.95% | Connection success rate               |
 
 **Key Indicators:**
+
 - Health check success rate
 - Synthetic transaction success
 - Real user availability (RUM)
@@ -218,15 +231,16 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 **Target:** Sub-second response times for 95% of requests
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| API Latency (p50) | < 100ms | Response time at 50th percentile |
-| API Latency (p95) | < 500ms | Response time at 95th percentile |
+| Metric            | Target   | Measurement                      |
+| ----------------- | -------- | -------------------------------- |
+| API Latency (p50) | < 100ms  | Response time at 50th percentile |
+| API Latency (p95) | < 500ms  | Response time at 95th percentile |
 | API Latency (p99) | < 1000ms | Response time at 99th percentile |
-| Page Load Time | < 3s | First Contentful Paint |
-| 3D Scene Load | < 5s | Time to interactive 3D canvas |
+| Page Load Time    | < 3s     | First Contentful Paint           |
+| 3D Scene Load     | < 5s     | Time to interactive 3D canvas    |
 
 **Key Indicators:**
+
 - Response time distributions
 - Database query performance
 - External service latency
@@ -235,13 +249,14 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 **Target:** Rapid detection and recovery from failures
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| MTTD (Mean Time to Detect) | < 5 min | Time from issue start to alert |
+| Metric                      | Target   | Measurement                       |
+| --------------------------- | -------- | --------------------------------- |
+| MTTD (Mean Time to Detect)  | < 5 min  | Time from issue start to alert    |
 | MTTR (Mean Time to Recover) | < 30 min | Time from detection to resolution |
-| Error Budget | < 0.1% | Allowed error rate per month |
+| Error Budget                | < 0.1%   | Allowed error rate per month      |
 
 **Key Indicators:**
+
 - Alert response times
 - Incident duration
 - Change failure rate
@@ -250,12 +265,12 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 **Target:** Proactive scaling before resource exhaustion
 
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | 70% | 85% |
-| Memory Utilization | 75% | 90% |
-| Disk Utilization | 70% | 85% |
-| Database Connections | 70% | 85% |
+| Metric               | Warning | Critical |
+| -------------------- | ------- | -------- |
+| CPU Utilization      | 70%     | 85%      |
+| Memory Utilization   | 75%     | 90%      |
+| Disk Utilization     | 70%     | 85%      |
+| Database Connections | 70%     | 85%      |
 
 ---
 
@@ -295,12 +310,12 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 ### Network Architecture
 
-| Zone | Services | Monitoring Access |
-|------|----------|-------------------|
-| Public | Load Balancers, CDN | External synthetic monitoring |
-| DMZ | API Gateway, Web Servers | Prometheus scraping, Filebeat |
-| Application | Backend Services | Full monitoring stack |
-| Data | Databases, Cache | Database exporters, slow query logs |
+| Zone        | Services                 | Monitoring Access                   |
+| ----------- | ------------------------ | ----------------------------------- |
+| Public      | Load Balancers, CDN      | External synthetic monitoring       |
+| DMZ         | API Gateway, Web Servers | Prometheus scraping, Filebeat       |
+| Application | Backend Services         | Full monitoring stack               |
+| Data        | Databases, Cache         | Database exporters, slow query logs |
 
 ### High Availability
 
@@ -315,14 +330,14 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 ### Role-Based Access Control (RBAC)
 
-| Role | Grafana | Kibana | Prometheus | Alertmanager |
-|------|---------|--------|------------|--------------|
-| Admin | Admin | Admin | Full | Full |
-| Platform Engineer | Editor | Editor | Full | Full |
-| Developer | Viewer | Editor (own service) | Read | Read |
-| Operations | Editor | Editor | Full | Full |
-| Business User | Viewer (specific dashboards) | None | None | None |
-| External Auditor | Viewer (specific dashboards) | Read-only | None | None |
+| Role              | Grafana                      | Kibana               | Prometheus | Alertmanager |
+| ----------------- | ---------------------------- | -------------------- | ---------- | ------------ |
+| Admin             | Admin                        | Admin                | Full       | Full         |
+| Platform Engineer | Editor                       | Editor               | Full       | Full         |
+| Developer         | Viewer                       | Editor (own service) | Read       | Read         |
+| Operations        | Editor                       | Editor               | Full       | Full         |
+| Business User     | Viewer (specific dashboards) | None                 | None       | None         |
+| External Auditor  | Viewer (specific dashboards) | Read-only            | None       | None         |
 
 ### Access Request Process
 
@@ -333,17 +348,18 @@ KitchenXpert's monitoring strategy is built on the three pillars of observabilit
 
 ### Authentication
 
-| System | Authentication Method |
-|--------|----------------------|
-| Grafana | SSO (Okta) |
-| Kibana | SSO (Okta) |
-| Prometheus | Basic Auth + VPN |
-| Alertmanager | Basic Auth + VPN |
-| PagerDuty | SSO (Okta) |
+| System       | Authentication Method |
+| ------------ | --------------------- |
+| Grafana      | SSO (Okta)            |
+| Kibana       | SSO (Okta)            |
+| Prometheus   | Basic Auth + VPN      |
+| Alertmanager | Basic Auth + VPN      |
+| PagerDuty    | SSO (Okta)            |
 
 ### Audit Logging
 
 All monitoring system access is logged:
+
 - Login/logout events
 - Configuration changes
 - Dashboard modifications
@@ -355,62 +371,66 @@ All monitoring system access is logged:
 
 ### Dashboards
 
-| Dashboard | URL | Purpose |
-|-----------|-----|---------|
-| System Overview | https://grafana.kitchenxpert.internal/d/system | Infrastructure health |
-| Error Dashboard | https://grafana.kitchenxpert.internal/d/errors | Error analysis |
-| Business Metrics | https://grafana.kitchenxpert.internal/d/business | Business KPIs |
-| User Experience | https://grafana.kitchenxpert.internal/d/ux | Frontend performance |
-| Service Map | https://jaeger.kitchenxpert.internal/dependencies | Service dependencies |
+| Dashboard        | URL                                               | Purpose               |
+| ---------------- | ------------------------------------------------- | --------------------- |
+| System Overview  | https://grafana.kitchenxpert.internal/d/system    | Infrastructure health |
+| Error Dashboard  | https://grafana.kitchenxpert.internal/d/errors    | Error analysis        |
+| Business Metrics | https://grafana.kitchenxpert.internal/d/business  | Business KPIs         |
+| User Experience  | https://grafana.kitchenxpert.internal/d/ux        | Frontend performance  |
+| Service Map      | https://jaeger.kitchenxpert.internal/dependencies | Service dependencies  |
 
 ### Alerting
 
-| Resource | URL |
-|----------|-----|
-| Active Alerts | https://alertmanager.kitchenxpert.internal/#/alerts |
-| Alert Rules | https://prometheus.kitchenxpert.internal/rules |
-| Silences | https://alertmanager.kitchenxpert.internal/#/silences |
-| PagerDuty Console | https://kitchenxpert.pagerduty.com |
+| Resource          | URL                                                   |
+| ----------------- | ----------------------------------------------------- |
+| Active Alerts     | https://alertmanager.kitchenxpert.internal/#/alerts   |
+| Alert Rules       | https://prometheus.kitchenxpert.internal/rules        |
+| Silences          | https://alertmanager.kitchenxpert.internal/#/silences |
+| PagerDuty Console | https://kitchenxpert.pagerduty.com                    |
 
 ### Log Analysis
 
-| Resource | URL |
-|----------|-----|
-| Kibana Discover | https://kibana.kitchenxpert.internal/app/discover |
-| Log Dashboard | https://kibana.kitchenxpert.internal/app/dashboards |
-| APM | https://kibana.kitchenxpert.internal/app/apm |
+| Resource        | URL                                                 |
+| --------------- | --------------------------------------------------- |
+| Kibana Discover | https://kibana.kitchenxpert.internal/app/discover   |
+| Log Dashboard   | https://kibana.kitchenxpert.internal/app/dashboards |
+| APM             | https://kibana.kitchenxpert.internal/app/apm        |
 
 ### Documentation
 
-| Resource | URL |
-|----------|-----|
-| Runbooks | https://confluence.kitchenxpert.internal/wiki/runbooks |
-| Incident Response | /docs/operations/incident-response.md |
-| Architecture | /docs/architecture/README.md |
+| Resource          | URL                                                    |
+| ----------------- | ------------------------------------------------------ |
+| Runbooks          | https://confluence.kitchenxpert.internal/wiki/runbooks |
+| Incident Response | /docs/operations/incident-response.md                  |
+| Architecture      | /docs/architecture/README.md                           |
 
 ---
 
 ## Related Documentation
 
 ### Metrics Documentation
+
 - [System Metrics](./metrics/system-metrics.md)
 - [Error Metrics](./metrics/error-metrics.md)
 - [Business Metrics](./metrics/business-metrics.md)
 - [User Experience Metrics](./metrics/user-experience-metrics.md)
 
 ### Logging Documentation
+
 - [Log Structure](./logging/log-structure.md)
 - [Log Levels Guide](./logging/log-levels.md)
 - [Centralized Logging Setup](./logging/centralized-logging.md)
 - [Log Analysis](./logging/log-analysis.md)
 
 ### Alerting Documentation
+
 - [Alert Rules](./alerting/alert-rules.md)
 - [Escalation Policies](./alerting/escalation-policies.md)
 - [Notification Channels](./alerting/notification-channels.md)
 - [On-Call Rotation](./alerting/on-call-rotation.md)
 
 ### Dashboard Documentation
+
 - [System Dashboard](./dashboards/system-dashboard.md)
 - [Error Dashboard](./dashboards/error-dashboard.md)
 - [Business Dashboard](./dashboards/business-dashboard.md)
@@ -420,13 +440,14 @@ All monitoring system access is logged:
 
 ## Support and Contacts
 
-| Team | Contact | Responsibility |
-|------|---------|----------------|
-| Platform Engineering | platform@kitchenxpert.com | Monitoring infrastructure |
-| SRE Team | sre@kitchenxpert.com | Alerting and incident response |
-| Security Team | security@kitchenxpert.com | Security monitoring |
-| On-Call | #oncall-primary (Slack) | Current incidents |
+| Team                 | Contact                   | Responsibility                 |
+| -------------------- | ------------------------- | ------------------------------ |
+| Platform Engineering | platform@kitchenxpert.com | Monitoring infrastructure      |
+| SRE Team             | sre@kitchenxpert.com      | Alerting and incident response |
+| Security Team        | security@kitchenxpert.com | Security monitoring            |
+| On-Call              | #oncall-primary (Slack)   | Current incidents              |
 
 ---
 
-*For questions or updates to this documentation, contact the Platform Engineering team.*
+_For questions or updates to this documentation, contact the Platform
+Engineering team._

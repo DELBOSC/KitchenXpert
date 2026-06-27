@@ -1,4 +1,4 @@
-import { Router, type Router as RouterType , type Request, type Response } from 'express';
+import { Router, type Router as RouterType, type Request, type Response } from 'express';
 
 import { AdminInsightsService } from '../../services/ai/admin-insights.service';
 import { authenticate } from '../middleware/auth-middleware';

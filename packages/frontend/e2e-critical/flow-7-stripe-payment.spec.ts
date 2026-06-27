@@ -18,7 +18,7 @@
 import { test, expect, loginUI, API_BASE, captureCookies, STRIPE_TEST_CARDS } from './_fixtures';
 
 test.describe('@critical Flow 7 — Stripe payment', () => {
-  test.beforeEach(({ }, testInfo) => {
+  test.beforeEach(({}, testInfo) => {
     const key = process.env.STRIPE_SECRET_KEY || '';
     if (!key.startsWith('sk_test_')) {
       testInfo.skip(true, 'STRIPE_SECRET_KEY missing or not a sk_test_ key');
@@ -26,14 +26,17 @@ test.describe('@critical Flow 7 — Stripe payment', () => {
   });
 
   test('checkout → 3DS challenge → webhook → subscription active', async ({
-    page, request, freshUser,
+    page,
+    request,
+    freshUser,
   }) => {
     await loginUI(page, freshUser);
     const cookies = await captureCookies(page);
 
     // Click "S'abonner Premium" on the pricing page
     await page.goto('/fr/pricing');
-    await page.getByRole('button', { name: /premium/i })
+    await page
+      .getByRole('button', { name: /premium/i })
       .or(page.getByRole('link', { name: /premium/i }))
       .first()
       .click();
@@ -53,15 +56,23 @@ test.describe('@critical Flow 7 — Stripe payment', () => {
     await cardNumber.fill(STRIPE_TEST_CARDS.sca3DS.replace(/\s/g, ''));
     await page.getByPlaceholder('MM / YY').fill('12 / 34');
     await page.getByPlaceholder('CVC').fill('123');
-    await page.getByPlaceholder(/full name|nom/i).fill(`${freshUser.firstName} ${freshUser.lastName}`);
+    await page
+      .getByPlaceholder(/full name|nom/i)
+      .fill(`${freshUser.firstName} ${freshUser.lastName}`);
 
     await page.getByRole('button', { name: /pay|payer|s'abonner|subscribe/i }).click();
 
     // ---- 3DS challenge frame ----
-    const frame = page.frameLocator('iframe[name*="stripe-frame"]')
+    const frame = page
+      .frameLocator('iframe[name*="stripe-frame"]')
       .or(page.frameLocator('iframe[src*="hooks.stripe.com"]'));
     const completeBtn = frame.getByRole('button', { name: /complete|completer|approve/i });
-    if (await completeBtn.first().isVisible({ timeout: 15_000 }).catch(() => false)) {
+    if (
+      await completeBtn
+        .first()
+        .isVisible({ timeout: 15_000 })
+        .catch(() => false)
+    ) {
       await completeBtn.first().click();
     }
 

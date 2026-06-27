@@ -67,7 +67,7 @@
     "price.taxRate": {
       "source": "vat",
       "transform": "toTaxRate",
-      "default": 0.20
+      "default": 0.2
     },
     "dimensions.width": {
       "source": "width",
@@ -277,7 +277,12 @@
   },
   "validation": {
     "required": ["name", "price.price", "category", "brand"],
-    "recommended": ["energyClass", "dimensions.width", "dimensions.height", "model"],
+    "recommended": [
+      "energyClass",
+      "dimensions.width",
+      "dimensions.height",
+      "model"
+    ],
     "warnings": {
       "missingImage": "Produit sans image",
       "missingDimensions": "Dimensions d'encastrement manquantes",
@@ -323,7 +328,14 @@
       }
     },
     "smartFeatures": {
-      "detectKeywords": ["WiFi", "HomeConnect", "SmartThings", "App", "Alexa", "Google Home"],
+      "detectKeywords": [
+        "WiFi",
+        "HomeConnect",
+        "SmartThings",
+        "App",
+        "Alexa",
+        "Google Home"
+      ],
       "flagInMetadata": true
     }
   },
@@ -349,7 +361,15 @@
   "examples": [
     {
       "name": "Four Bosch",
-      "columns": ["model_number", "product_name", "price", "energy_class", "capacity", "width", "height"],
+      "columns": [
+        "model_number",
+        "product_name",
+        "price",
+        "energy_class",
+        "capacity",
+        "width",
+        "height"
+      ],
       "sample": {
         "model_number": "HBG6764S1",
         "product_name": "Four encastrable pyrolyse Série 8",
@@ -362,7 +382,14 @@
     },
     {
       "name": "Lave-vaisselle Miele",
-      "columns": ["sku", "name", "retail_price", "energy_rating", "noise", "programs"],
+      "columns": [
+        "sku",
+        "name",
+        "retail_price",
+        "energy_rating",
+        "noise",
+        "programs"
+      ],
       "sample": {
         "sku": "G7310SCIAUTODOS",
         "name": "Lave-vaisselle AutoDos 60cm",

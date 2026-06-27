@@ -2,7 +2,8 @@
 
 ## Overview
 
-Authenticate a user with email and password credentials to receive access and refresh tokens for API access.
+Authenticate a user with email and password credentials to receive access and
+refresh tokens for API access.
 
 **Endpoint:** `POST /api/v1/auth/login`
 
@@ -24,11 +25,11 @@ X-Device-ID: <unique-device-identifier> (optional)
 
 ### Request Body Schema
 
-| Field | Type | Required | Description | Constraints |
-|-------|------|----------|-------------|-------------|
-| `email` | string | Yes | User's email address | Valid email format, max 255 characters |
-| `password` | string | Yes | User's password | Min 8 characters, max 128 characters |
-| `rememberMe` | boolean | No | Extend session duration | Default: false |
+| Field        | Type    | Required | Description             | Constraints                            |
+| ------------ | ------- | -------- | ----------------------- | -------------------------------------- |
+| `email`      | string  | Yes      | User's email address    | Valid email format, max 255 characters |
+| `password`   | string  | Yes      | User's password         | Min 8 characters, max 128 characters   |
+| `rememberMe` | boolean | No       | Extend session duration | Default: false                         |
 
 ### Request Body Example
 
@@ -97,21 +98,21 @@ X-Device-ID: <unique-device-identifier> (optional)
 
 ### Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `user.id` | string | Unique user identifier |
-| `user.email` | string | User's email address |
-| `user.name` | string | User's full name |
-| `user.role` | string | User role (user, partner, admin) |
-| `user.emailVerified` | boolean | Email verification status |
-| `user.createdAt` | string | Account creation timestamp (ISO 8601) |
-| `user.lastLoginAt` | string | Most recent login timestamp (ISO 8601) |
-| `user.preferences` | object | User preferences object |
-| `tokens.accessToken` | string | JWT access token for API authentication |
-| `tokens.refreshToken` | string | Refresh token for obtaining new access tokens |
-| `tokens.tokenType` | string | Token type (always "Bearer") |
-| `tokens.expiresIn` | number | Access token expiration in seconds (3600 = 1 hour) |
-| `tokens.refreshExpiresIn` | number | Refresh token expiration in seconds |
+| Field                     | Type    | Description                                        |
+| ------------------------- | ------- | -------------------------------------------------- |
+| `user.id`                 | string  | Unique user identifier                             |
+| `user.email`              | string  | User's email address                               |
+| `user.name`               | string  | User's full name                                   |
+| `user.role`               | string  | User role (user, partner, admin)                   |
+| `user.emailVerified`      | boolean | Email verification status                          |
+| `user.createdAt`          | string  | Account creation timestamp (ISO 8601)              |
+| `user.lastLoginAt`        | string  | Most recent login timestamp (ISO 8601)             |
+| `user.preferences`        | object  | User preferences object                            |
+| `tokens.accessToken`      | string  | JWT access token for API authentication            |
+| `tokens.refreshToken`     | string  | Refresh token for obtaining new access tokens      |
+| `tokens.tokenType`        | string  | Token type (always "Bearer")                       |
+| `tokens.expiresIn`        | number  | Access token expiration in seconds (3600 = 1 hour) |
+| `tokens.refreshExpiresIn` | number  | Refresh token expiration in seconds                |
 
 ---
 
@@ -250,6 +251,7 @@ X-RateLimit-Reset: 1736522595
 ```
 
 **Exceeded Behavior:**
+
 - Returns 429 status code
 - Provides `retryAfter` seconds in response
 - IP-based throttling with exponential backoff after repeated violations
@@ -259,22 +261,26 @@ X-RateLimit-Reset: 1736522595
 ## Security Considerations
 
 ### Password Security
+
 - Passwords are hashed using bcrypt with 12 salt rounds
 - Original passwords are never stored or logged
 - Failed login attempts are tracked per IP and account
 
 ### Account Protection
+
 - Account automatically locks after 5 failed login attempts within 15 minutes
 - Lock duration: 1 hour (increases with repeated lockouts)
 - Account unlock via email verification or time expiration
 
 ### Token Security
+
 - Access tokens expire after 1 hour
 - Refresh tokens are single-use (token rotation)
 - Tokens are invalidated on logout
 - All tokens are revoked when password is changed
 
 ### Audit Logging
+
 - All login attempts are logged (success and failure)
 - IP address, device, and timestamp recorded
 - Suspicious activity triggers security alerts
@@ -308,13 +314,13 @@ const login = async (email, password, rememberMe = false) => {
       {
         email,
         password,
-        rememberMe
+        rememberMe,
       },
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-Client-Version': '1.0.0'
-        }
+          'X-Client-Version': '1.0.0',
+        },
       }
     );
 
@@ -335,10 +341,16 @@ const login = async (email, password, rememberMe = false) => {
           console.error('Invalid email or password');
           break;
         case 'ACCOUNT_LOCKED':
-          console.error('Account is locked:', error.response.data.error.details);
+          console.error(
+            'Account is locked:',
+            error.response.data.error.details
+          );
           break;
         case 'RATE_LIMIT_EXCEEDED':
-          console.error('Too many attempts, retry after:', error.response.data.error.details.retryAfter);
+          console.error(
+            'Too many attempts, retry after:',
+            error.response.data.error.details.retryAfter
+          );
           break;
         default:
           console.error('Login failed:', error.response.data.error.message);
@@ -354,7 +366,7 @@ login('user@example.com', 'SecurePassword123!', true)
     console.log('Logged in as:', user.name);
     console.log('Access token expires in:', tokens.expiresIn, 'seconds');
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Login error:', error);
   });
 ```
@@ -453,20 +465,27 @@ if __name__ == "__main__":
 ## Related Endpoints
 
 - [Register](./register.md) - Create a new user account
-- [Refresh Token](./refresh-token.md) - Obtain new access token using refresh token
+- [Refresh Token](./refresh-token.md) - Obtain new access token using refresh
+  token
 - [Logout](./logout.md) - Invalidate current session tokens
-- [Password Reset Request](./password-reset-request.md) - Request password reset email
+- [Password Reset Request](./password-reset-request.md) - Request password reset
+  email
 - [User Profile](../user/user-profile.md) - Get authenticated user's profile
 
 ---
 
 ## Notes
 
-- **Session Management:** Access tokens are short-lived (1 hour) for security. Use refresh tokens to obtain new access tokens without re-authenticating.
-- **Multi-Device Support:** Each login creates a separate session. Users can be logged in on multiple devices simultaneously.
-- **Remember Me:** When enabled, refresh token validity extends from 7 days to 30 days.
-- **Email Verification:** Users must verify their email before logging in. Unverified accounts receive a 422 error.
-- **Password Changes:** All active sessions are invalidated when a user changes their password.
+- **Session Management:** Access tokens are short-lived (1 hour) for security.
+  Use refresh tokens to obtain new access tokens without re-authenticating.
+- **Multi-Device Support:** Each login creates a separate session. Users can be
+  logged in on multiple devices simultaneously.
+- **Remember Me:** When enabled, refresh token validity extends from 7 days to
+  30 days.
+- **Email Verification:** Users must verify their email before logging in.
+  Unverified accounts receive a 422 error.
+- **Password Changes:** All active sessions are invalidated when a user changes
+  their password.
 
 ---
 

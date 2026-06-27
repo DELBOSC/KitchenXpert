@@ -10,7 +10,8 @@ import path from 'path';
 import winston from 'winston';
 
 const LOG_DIR = process.env.LOG_FILE_PATH || './logs';
-const LOG_LEVEL = process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug');
+const LOG_LEVEL =
+  process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 // Ensure log directory exists
@@ -85,7 +86,10 @@ export const logger = winston.createLogger({
 /**
  * Create a child logger with additional context
  */
-export function createChildLogger(context: string, metadata?: Record<string, unknown>): winston.Logger {
+export function createChildLogger(
+  context: string,
+  metadata?: Record<string, unknown>
+): winston.Logger {
   return logger.child({ context, ...metadata });
 }
 

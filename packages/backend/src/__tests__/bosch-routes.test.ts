@@ -18,7 +18,12 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  })),
 }));
 
 const mockPrisma = {
@@ -49,12 +54,13 @@ const mockApplianceRepository = {
     total: 1,
     totalPages: 1,
   }),
-  search: jest.fn().mockResolvedValue([
-    { id: 'a1', name: 'Bosch Oven Serie 8', type: 'oven' },
-  ]),
+  search: jest.fn().mockResolvedValue([{ id: 'a1', name: 'Bosch Oven Serie 8', type: 'oven' }]),
   getTypes: jest.fn().mockResolvedValue(['oven', 'cooktop', 'dishwasher', 'refrigerator']),
   findById: jest.fn().mockResolvedValue({
-    id: 'a1', name: 'Bosch Oven Serie 8', type: 'oven', price: 899,
+    id: 'a1',
+    name: 'Bosch Oven Serie 8',
+    type: 'oven',
+    price: 899,
   }),
 };
 
@@ -81,14 +87,20 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'user@test.com', role: 'user' };
     next();
   },
   authorize: (roles: string[]) => (req: any, res: any, next: any) => {
     if (!roles.includes(req.user?.role)) {
-      return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'Insufficient permissions' } });
+      return res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
+      });
     }
     next();
   },
@@ -135,9 +147,7 @@ describe('Bosch Routes', () => {
 
   describe('GET /bosch/info', () => {
     it('should return Bosch provider metadata', async () => {
-      const response = await request(app)
-        .get('/bosch/info')
-        .expect(200);
+      const response = await request(app).get('/bosch/info').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.code).toBe('bosch');
@@ -147,9 +157,7 @@ describe('Bosch Routes', () => {
     it('should return 404 when provider not configured', async () => {
       mockPrisma.catalogProvider.findFirst.mockResolvedValueOnce(null);
 
-      const response = await request(app)
-        .get('/bosch/info')
-        .expect(404);
+      const response = await request(app).get('/bosch/info').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -157,9 +165,7 @@ describe('Bosch Routes', () => {
 
   describe('GET /bosch/appliances', () => {
     it('should list Bosch appliances with pagination', async () => {
-      const response = await request(app)
-        .get('/bosch/appliances')
-        .expect(200);
+      const response = await request(app).get('/bosch/appliances').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -169,9 +175,7 @@ describe('Bosch Routes', () => {
     });
 
     it('should support filtering by appliance type', async () => {
-      await request(app)
-        .get('/bosch/appliances?type=oven')
-        .expect(200);
+      await request(app).get('/bosch/appliances?type=oven').expect(200);
 
       expect(mockApplianceRepository.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ type: 'oven' }),
@@ -182,18 +186,14 @@ describe('Bosch Routes', () => {
 
   describe('GET /bosch/appliances/search', () => {
     it('should search Bosch appliances', async () => {
-      const response = await request(app)
-        .get('/bosch/appliances/search?q=oven')
-        .expect(200);
+      const response = await request(app).get('/bosch/appliances/search?q=oven').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockApplianceRepository.search).toHaveBeenCalled();
     });
 
     it('should return 400 when query parameter is missing', async () => {
-      const response = await request(app)
-        .get('/bosch/appliances/search')
-        .expect(400);
+      const response = await request(app).get('/bosch/appliances/search').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.code).toBe('MISSING_QUERY');
@@ -202,9 +202,7 @@ describe('Bosch Routes', () => {
 
   describe('GET /bosch/appliances/:id', () => {
     it('should return appliance details by ID', async () => {
-      const response = await request(app)
-        .get('/bosch/appliances/a1')
-        .expect(200);
+      const response = await request(app).get('/bosch/appliances/a1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('id');
@@ -214,9 +212,7 @@ describe('Bosch Routes', () => {
     it('should return 404 when appliance not found', async () => {
       mockApplianceRepository.findById.mockResolvedValueOnce(null);
 
-      const response = await request(app)
-        .get('/bosch/appliances/nonexistent')
-        .expect(404);
+      const response = await request(app).get('/bosch/appliances/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });

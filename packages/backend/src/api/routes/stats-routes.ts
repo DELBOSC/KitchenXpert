@@ -39,8 +39,8 @@ async function computeStats(): Promise<CachedStats['data']> {
     prisma.kitchen.count({ where: { deletedAt: null } }),
     // Devis générés ce mois — uses the `Quote` model if it exists;
     // fallback to 0 if the table isn't there yet (early-stage launch).
-    (prisma as unknown as { quote?: { count: (args: { where: object }) => Promise<number> } })
-      .quote?.count?.({ where: { createdAt: { gte: monthStart } } })
+    (prisma as unknown as { quote?: { count: (args: { where: object }) => Promise<number> } }).quote
+      ?.count?.({ where: { createdAt: { gte: monthStart } } })
       .catch(() => 0) ?? 0,
     // Installateurs vérifiés et actifs sur la marketplace
     prisma.installer.count({ where: { isVerified: true, isActive: true } }).catch(() => 0),
@@ -91,7 +91,11 @@ router.get('/public', async (_req: Request, res: Response) => {
     // Soft-fail: send the last known value if we have one, otherwise zeros.
     res.status(200).json({
       success: true,
-      data: cache?.data ?? { kitchensDesigned: 0, quotesGeneratedThisMonth: 0, verifiedInstallers: 0 },
+      data: cache?.data ?? {
+        kitchensDesigned: 0,
+        quotesGeneratedThisMonth: 0,
+        verifiedInstallers: 0,
+      },
     });
   }
 });

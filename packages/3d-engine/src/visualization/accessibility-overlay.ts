@@ -148,11 +148,7 @@ export class AccessibilityOverlay {
 
       for (let i = 0; i <= segments; i++) {
         const theta = (i / segments) * Math.PI * 2;
-        points.push(new THREE.Vector3(
-          Math.cos(theta) * radius,
-          0,
-          Math.sin(theta) * radius
-        ));
+        points.push(new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius));
       }
 
       const geometry = new THREE.BufferGeometry().setFromPoints(points);

@@ -283,10 +283,7 @@ const eventTemplates = {
 function generateSignature(payload, secret) {
   const timestamp = Math.floor(Date.now() / 1000);
   const signedPayload = `${timestamp}.${JSON.stringify(payload)}`;
-  const signature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
+  const signature = crypto.createHmac('sha256', secret).update(signedPayload).digest('hex');
 
   return {
     timestamp,
@@ -348,9 +345,8 @@ function getEventTypes() {
 
 // Simulate events
 async function simulateEvents() {
-  const eventTypes = config.eventType === 'all'
-    ? getEventTypes()
-    : config.eventType.split(',').map(e => e.trim());
+  const eventTypes =
+    config.eventType === 'all' ? getEventTypes() : config.eventType.split(',').map((e) => e.trim());
 
   log('INFO', `Target URL: ${config.targetUrl}`);
   log('INFO', `Events to simulate: ${eventTypes.length}`);
@@ -417,17 +413,29 @@ async function simulateEvents() {
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}      KitchenXpert - Webhook Event Simulator                ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}      KitchenXpert - Webhook Event Simulator                ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   const { successCount, failureCount } = await simulateEvents();
 
   console.log('');
-  console.log(`${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.green}║${colors.reset}        Simulation Complete                                 ${colors.green}║${colors.reset}`);
-  console.log(`${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.green}║${colors.reset}        Simulation Complete                                 ${colors.green}║${colors.reset}`
+  );
+  console.log(
+    `${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  Successful: ${successCount}`);
   console.log(`  Failed:     ${failureCount}`);
@@ -465,7 +473,7 @@ for (let i = 0; i < args.length; i++) {
       break;
     case '--list':
       console.log('Available event types:');
-      getEventTypes().forEach(e => console.log(`  - ${e}`));
+      getEventTypes().forEach((e) => console.log(`  - ${e}`));
       process.exit(0);
     case '--help':
       console.log('Usage: simulate-events.js [options]');

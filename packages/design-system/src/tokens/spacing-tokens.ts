@@ -12,43 +12,43 @@ export const paddingTokens = {
   // Button padding
   button: {
     sm: {
-      x: spacing[3],  // 12px
+      x: spacing[3], // 12px
       y: spacing[1.5], // 6px
     },
     md: {
-      x: spacing[4],  // 16px
-      y: spacing[2],  // 8px
+      x: spacing[4], // 16px
+      y: spacing[2], // 8px
     },
     lg: {
-      x: spacing[6],  // 24px
-      y: spacing[3],  // 12px
+      x: spacing[6], // 24px
+      y: spacing[3], // 12px
     },
     xl: {
-      x: spacing[8],  // 32px
-      y: spacing[4],  // 16px
+      x: spacing[8], // 32px
+      y: spacing[4], // 16px
     },
   },
   // Input padding
   input: {
     sm: {
-      x: spacing[2],  // 8px
+      x: spacing[2], // 8px
       y: spacing[1.5], // 6px
     },
     md: {
-      x: spacing[3],  // 12px
-      y: spacing[2],  // 8px
+      x: spacing[3], // 12px
+      y: spacing[2], // 8px
     },
     lg: {
-      x: spacing[4],  // 16px
-      y: spacing[3],  // 12px
+      x: spacing[4], // 16px
+      y: spacing[3], // 12px
     },
   },
   // Card padding
   card: {
-    sm: spacing[3],   // 12px
-    md: spacing[4],   // 16px
-    lg: spacing[6],   // 24px
-    xl: spacing[8],   // 32px
+    sm: spacing[3], // 12px
+    md: spacing[4], // 16px
+    lg: spacing[6], // 24px
+    xl: spacing[8], // 32px
   },
   // Modal padding
   modal: {
@@ -59,22 +59,22 @@ export const paddingTokens = {
   // Page/container padding
   page: {
     x: {
-      mobile: spacing[4],   // 16px
-      tablet: spacing[6],   // 24px
-      desktop: spacing[8],  // 32px
+      mobile: spacing[4], // 16px
+      tablet: spacing[6], // 24px
+      desktop: spacing[8], // 32px
     },
     y: {
-      sm: spacing[4],  // 16px
-      md: spacing[8],  // 32px
+      sm: spacing[4], // 16px
+      md: spacing[8], // 32px
       lg: spacing[12], // 48px
     },
   },
   // Section padding
   section: {
-    sm: spacing[8],   // 32px
-    md: spacing[12],  // 48px
-    lg: spacing[16],  // 64px
-    xl: spacing[24],  // 96px
+    sm: spacing[8], // 32px
+    md: spacing[12], // 48px
+    lg: spacing[16], // 64px
+    xl: spacing[24], // 96px
   },
 } as const;
 
@@ -84,24 +84,24 @@ export const paddingTokens = {
 export const marginTokens = {
   // Stack spacing (vertical)
   stack: {
-    xs: spacing[1],   // 4px
-    sm: spacing[2],   // 8px
-    md: spacing[4],   // 16px
-    lg: spacing[6],   // 24px
-    xl: spacing[8],   // 32px
+    xs: spacing[1], // 4px
+    sm: spacing[2], // 8px
+    md: spacing[4], // 16px
+    lg: spacing[6], // 24px
+    xl: spacing[8], // 32px
   },
   // Inline spacing (horizontal)
   inline: {
-    xs: spacing[1],   // 4px
-    sm: spacing[2],   // 8px
-    md: spacing[3],   // 12px
-    lg: spacing[4],   // 16px
-    xl: spacing[6],   // 24px
+    xs: spacing[1], // 4px
+    sm: spacing[2], // 8px
+    md: spacing[3], // 12px
+    lg: spacing[4], // 16px
+    xl: spacing[6], // 24px
   },
   // Form element spacing
   form: {
-    field: spacing[5],  // 20px between fields
-    group: spacing[8],  // 32px between groups
+    field: spacing[5], // 20px between fields
+    group: spacing[8], // 32px between groups
     section: spacing[10], // 40px between sections
   },
 } as const;
@@ -112,26 +112,26 @@ export const marginTokens = {
 export const gapTokens = {
   // Grid gaps
   grid: {
-    xs: gaps.xs,    // 4px
-    sm: gaps.sm,    // 8px
-    md: gaps.md,    // 16px
-    lg: gaps.lg,    // 24px
-    xl: gaps.xl,    // 32px
+    xs: gaps.xs, // 4px
+    sm: gaps.sm, // 8px
+    md: gaps.md, // 16px
+    lg: gaps.lg, // 24px
+    xl: gaps.xl, // 32px
   },
   // Card grid
   cardGrid: {
-    mobile: gaps.md,   // 16px
-    tablet: gaps.lg,   // 24px
-    desktop: gaps.xl,  // 32px
+    mobile: gaps.md, // 16px
+    tablet: gaps.lg, // 24px
+    desktop: gaps.xl, // 32px
   },
   // Form gaps
   form: {
-    inline: spacing[3],  // 12px
-    stack: spacing[4],   // 16px
+    inline: spacing[3], // 12px
+    stack: spacing[4], // 16px
   },
   // Navigation gaps
   navigation: {
-    items: spacing[1],   // 4px
+    items: spacing[1], // 4px
     sections: spacing[4], // 16px
   },
 } as const;
@@ -142,25 +142,25 @@ export const gapTokens = {
 export const radiusTokens = {
   // Component radii
   button: {
-    sm: radii.md,      // 6px
-    md: radii.lg,      // 8px
-    lg: radii.xl,      // 12px
-    full: radii.full,  // pill shape
+    sm: radii.md, // 6px
+    md: radii.lg, // 8px
+    lg: radii.xl, // 12px
+    full: radii.full, // pill shape
   },
   input: {
     sm: radii.default, // 4px
-    md: radii.md,      // 6px
-    lg: radii.lg,      // 8px
+    md: radii.md, // 6px
+    lg: radii.lg, // 8px
   },
   card: {
-    sm: radii.lg,      // 8px
-    md: radii.xl,      // 12px
-    lg: radii['2xl'],  // 16px
+    sm: radii.lg, // 8px
+    md: radii.xl, // 12px
+    lg: radii['2xl'], // 16px
   },
-  modal: radii['2xl'],  // 16px
-  tooltip: radii.md,    // 6px
-  badge: radii.full,    // pill
-  avatar: radii.full,   // circle
+  modal: radii['2xl'], // 16px
+  tooltip: radii.md, // 6px
+  badge: radii.full, // pill
+  avatar: radii.full, // circle
   // Global
   none: radii.none,
   sm: radii.sm,
@@ -176,32 +176,32 @@ export const radiusTokens = {
 export const sizeTokens = {
   // Icon sizes
   icon: {
-    xs: spacing[3],   // 12px
-    sm: spacing[4],   // 16px
-    md: spacing[5],   // 20px
-    lg: spacing[6],   // 24px
-    xl: spacing[8],   // 32px
+    xs: spacing[3], // 12px
+    sm: spacing[4], // 16px
+    md: spacing[5], // 20px
+    lg: spacing[6], // 24px
+    xl: spacing[8], // 32px
   },
   // Avatar sizes
   avatar: {
-    xs: spacing[6],   // 24px
-    sm: spacing[8],   // 32px
-    md: spacing[10],  // 40px
-    lg: spacing[12],  // 48px
-    xl: spacing[16],  // 64px
+    xs: spacing[6], // 24px
+    sm: spacing[8], // 32px
+    md: spacing[10], // 40px
+    lg: spacing[12], // 48px
+    xl: spacing[16], // 64px
   },
   // Button heights
   button: {
-    sm: spacing[8],   // 32px
-    md: spacing[10],  // 40px
-    lg: spacing[12],  // 48px
-    xl: spacing[14],  // 56px
+    sm: spacing[8], // 32px
+    md: spacing[10], // 40px
+    lg: spacing[12], // 48px
+    xl: spacing[14], // 56px
   },
   // Input heights
   input: {
-    sm: spacing[8],   // 32px
-    md: spacing[10],  // 40px
-    lg: spacing[12],  // 48px
+    sm: spacing[8], // 32px
+    md: spacing[10], // 40px
+    lg: spacing[12], // 48px
   },
   // Touch targets (minimum)
   touchTarget: {

@@ -39,7 +39,7 @@
       "default": "EUR"
     },
     "price.taxRate": {
-      "default": 0.20
+      "default": 0.2
     },
     "dimensions.width": {
       "source": "width",

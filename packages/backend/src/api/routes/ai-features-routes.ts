@@ -33,11 +33,17 @@ router.use(aiRateLimiter);
  */
 function deriveTier(req: Request): AiTier {
   const role = req.user?.role;
-  if (role === 'admin') {return 'studio';}
+  if (role === 'admin') {
+    return 'studio';
+  }
   // TODO: read `subscription.tier` from the User → Subscription join.
   const subTier = (req.user as unknown as { subscriptionTier?: string })?.subscriptionTier;
-  if (subTier === 'studio') {return 'studio';}
-  if (subTier === 'premium') {return 'premium';}
+  if (subTier === 'studio') {
+    return 'studio';
+  }
+  if (subTier === 'premium') {
+    return 'premium';
+  }
   return 'free';
 }
 
@@ -45,14 +51,27 @@ function handleQuotaError(e: unknown, res: Response): boolean {
   if (e instanceof QuotaExceededError) {
     res.status(402).json({
       success: false,
-      error: { code: 'AI_QUOTA_EXCEEDED', message: e.message, tier: e.tier, limit: e.limit, currentUsd: e.currentUsd, resetAt: e.resetAt },
+      error: {
+        code: 'AI_QUOTA_EXCEEDED',
+        message: e.message,
+        tier: e.tier,
+        limit: e.limit,
+        currentUsd: e.currentUsd,
+        resetAt: e.resetAt,
+      },
     });
     return true;
   }
   if (e instanceof DailyQuotaExceededError) {
     res.status(429).json({
       success: false,
-      error: { code: 'AI_DAILY_LIMIT', message: e.message, tier: e.tier, limit: e.limit, current: e.current },
+      error: {
+        code: 'AI_DAILY_LIMIT',
+        message: e.message,
+        tier: e.tier,
+        limit: e.limit,
+        current: e.current,
+      },
     });
     return true;
   }
@@ -62,7 +81,10 @@ function handleQuotaError(e: unknown, res: Response): boolean {
 // ─── POST /api/v1/ai/auto-layout ────────────────────────────────────────────
 router.post('/auto-layout', async (req: Request, res: Response) => {
   const userId = req.user?.userId;
-  if (!userId) { res.status(401).json({ success: false, error: 'unauth' }); return; }
+  if (!userId) {
+    res.status(401).json({ success: false, error: 'unauth' });
+    return;
+  }
   try {
     const result = await generateLayoutFromPrompt({
       userId,
@@ -72,7 +94,9 @@ router.post('/auto-layout', async (req: Request, res: Response) => {
     });
     res.status(200).json({ success: true, data: result });
   } catch (e) {
-    if (handleQuotaError(e, res)) {return;}
+    if (handleQuotaError(e, res)) {
+      return;
+    }
     logger.error('auto-layout failed', { userId, error: e instanceof Error ? e.message : e });
     res.status(500).json({ success: false, error: 'auto_layout_failed' });
   }
@@ -81,14 +105,21 @@ router.post('/auto-layout', async (req: Request, res: Response) => {
 // ─── POST /api/v1/ai/snapit ─────────────────────────────────────────────────
 router.post('/snapit', async (req: Request, res: Response) => {
   const userId = req.user?.userId;
-  if (!userId) { res.status(401).json({ success: false, error: 'unauth' }); return; }
+  if (!userId) {
+    res.status(401).json({ success: false, error: 'unauth' });
+    return;
+  }
   try {
     const result = await recognizeKitchenItems({
-      userId, tier: deriveTier(req), input: req.body,
+      userId,
+      tier: deriveTier(req),
+      input: req.body,
     });
     res.status(200).json({ success: true, data: result });
   } catch (e) {
-    if (handleQuotaError(e, res)) {return;}
+    if (handleQuotaError(e, res)) {
+      return;
+    }
     logger.error('snapit failed', { userId, error: e instanceof Error ? e.message : e });
     res.status(500).json({ success: false, error: 'snapit_failed' });
   }
@@ -97,14 +128,21 @@ router.post('/snapit', async (req: Request, res: Response) => {
 // ─── POST /api/v1/ai/style-transfer ─────────────────────────────────────────
 router.post('/style-transfer', async (req: Request, res: Response) => {
   const userId = req.user?.userId;
-  if (!userId) { res.status(401).json({ success: false, error: 'unauth' }); return; }
+  if (!userId) {
+    res.status(401).json({ success: false, error: 'unauth' });
+    return;
+  }
   try {
     const result = await styleTransfer({
-      userId, tier: deriveTier(req), input: req.body,
+      userId,
+      tier: deriveTier(req),
+      input: req.body,
     });
     res.status(200).json({ success: true, data: result });
   } catch (e) {
-    if (handleQuotaError(e, res)) {return;}
+    if (handleQuotaError(e, res)) {
+      return;
+    }
     logger.error('style-transfer failed', { userId, error: e instanceof Error ? e.message : e });
     res.status(500).json({ success: false, error: 'style_transfer_failed' });
   }

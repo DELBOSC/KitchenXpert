@@ -17,7 +17,7 @@ export const I18nSeed: Seed = {
     const namespaces = await tx.query<{ id: string; name: string }>(
       `SELECT id, name FROM translation_namespaces`
     );
-    const nsMap = new Map(namespaces.rows.map(n => [n.name, n.id]));
+    const nsMap = new Map(namespaces.rows.map((n) => [n.name, n.id]));
 
     const commonNs = nsMap.get('common');
     const authNs = nsMap.get('auth');
@@ -31,7 +31,8 @@ export const I18nSeed: Seed = {
     }
 
     // Insert translation keys
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO translation_keys (id, namespace_id, key, description, context)
       VALUES
         -- Common keys
@@ -75,7 +76,9 @@ export const I18nSeed: Seed = {
         ('tk500000-0000-0000-0000-000000000003', $5, 'error.unauthorized', 'Erreur non autorisé', 'Erreurs'),
         ('tk500000-0000-0000-0000-000000000004', $5, 'error.validation', 'Erreur validation', 'Erreurs')
       ON CONFLICT DO NOTHING
-    `, [commonNs, authNs, kitchenNs, aiNs, errorsNs]);
+    `,
+      [commonNs, authNs, kitchenNs, aiNs, errorsNs]
+    );
 
     // Insert French translations
     await tx.execute(`

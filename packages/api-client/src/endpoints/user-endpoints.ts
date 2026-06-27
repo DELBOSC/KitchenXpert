@@ -79,15 +79,11 @@ export class UserEndpoints {
     const formData = new FormData();
     formData.append('avatar', file);
 
-    const response = await this.client.post<{ avatarUrl: string }>(
-      '/users/me/avatar',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
+    const response = await this.client.post<{ avatarUrl: string }>('/users/me/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   }
 
@@ -101,10 +97,7 @@ export class UserEndpoints {
   }
 
   async updatePreferences(preferences: Partial<UserPreferences>): Promise<UserPreferences> {
-    const response = await this.client.patch<UserPreferences>(
-      '/users/me/preferences',
-      preferences
-    );
+    const response = await this.client.patch<UserPreferences>('/users/me/preferences', preferences);
     return response.data;
   }
 

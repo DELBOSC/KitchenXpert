@@ -151,11 +151,15 @@ describe('ProfilePage', () => {
         if (url === '/api/v1/users/me') {
           return Promise.resolve({
             ok: true,
-            json: () => Promise.resolve({ success: true, data: { firstName: '', lastName: '', phone: '' } }),
+            json: () =>
+              Promise.resolve({ success: true, data: { firstName: '', lastName: '', phone: '' } }),
           });
         }
         if (url === '/api/v1/users/me/preferences') {
-          return Promise.resolve({ ok: true, json: () => Promise.resolve({ success: true, data: {} }) });
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ success: true, data: {} }),
+          });
         }
         return Promise.resolve({ ok: false, json: () => Promise.resolve({}) });
       });
@@ -267,7 +271,7 @@ describe('ProfilePage', () => {
       await renderAndWait();
       expect(mockFetch).toHaveBeenCalledWith(
         '/api/v1/users/me',
-        expect.objectContaining({ credentials: 'include' }),
+        expect.objectContaining({ credentials: 'include' })
       );
     });
 
@@ -275,7 +279,7 @@ describe('ProfilePage', () => {
       await renderAndWait();
       expect(mockFetch).toHaveBeenCalledWith(
         '/api/v1/users/me/preferences',
-        expect.objectContaining({ credentials: 'include' }),
+        expect.objectContaining({ credentials: 'include' })
       );
     });
 

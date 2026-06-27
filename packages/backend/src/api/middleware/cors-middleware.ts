@@ -25,7 +25,6 @@ import logger from '../../utils/logger';
  * - The CORS_ORIGINS env var takes precedence over defaults when set
  */
 
-
 /**
  * Parse CORS_ORIGINS environment variable
  * @returns Array of allowed origins or null if not configured
@@ -40,12 +39,12 @@ const parseEnvOrigins = (): string[] | null => {
   // Parse comma-separated origins, trim whitespace, filter empty
   const origins = envOrigins
     .split(',')
-    .map(origin => origin.trim())
-    .filter(origin => origin.length > 0);
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
 
   // Validate origins in production
   if (process.env.NODE_ENV === 'production') {
-    const invalidOrigins = origins.filter(origin => {
+    const invalidOrigins = origins.filter((origin) => {
       // Check for wildcard
       if (origin === '*') {
         logger.error('CORS SECURITY ERROR: Wildcard origin (*) is not allowed in production');
@@ -61,7 +60,7 @@ const parseEnvOrigins = (): string[] | null => {
     if (invalidOrigins.length > 0) {
       throw new Error(
         'CORS SECURITY ERROR: Invalid origins detected in production. ' +
-        'Wildcard (*) is not allowed. Use explicit HTTPS origins.'
+          'Wildcard (*) is not allowed. Use explicit HTTPS origins.'
       );
     }
   }
@@ -93,10 +92,10 @@ const getDefaultOrigins = (): string[] => {
     case 'development':
     default:
       return [
-        'http://localhost:3000',      // Frontend
-        'http://localhost:3001',      // Partner Portal
-        'http://localhost:3002',      // Admin
-        'http://localhost:6006',      // Storybook
+        'http://localhost:3000', // Frontend
+        'http://localhost:3001', // Partner Portal
+        'http://localhost:3002', // Admin
+        'http://localhost:6006', // Storybook
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
       ];
@@ -224,9 +223,10 @@ export const corsMiddleware: RequestHandler = cors(corsOptions);
 export const strictCorsMiddleware: RequestHandler = cors({
   ...corsOptions,
   origin: (origin, callback) => {
-    const strictOrigins = process.env.NODE_ENV === 'production'
-      ? ['https://admin.kitchenxpert.com']
-      : ['http://localhost:3002'];
+    const strictOrigins =
+      process.env.NODE_ENV === 'production'
+        ? ['https://admin.kitchenxpert.com']
+        : ['http://localhost:3002'];
 
     if (!origin || strictOrigins.includes(origin)) {
       callback(null, true);
@@ -246,10 +246,7 @@ export const apiCorsMiddleware: RequestHandler = cors({
   ...corsOptions,
   origin: partnerOrigins.length > 0 ? partnerOrigins : false,
   credentials: false, // No cookies for API
-  allowedHeaders: [
-    ...corsOptions.allowedHeaders as string[],
-    'X-API-Key',
-  ],
+  allowedHeaders: [...(corsOptions.allowedHeaders as string[]), 'X-API-Key'],
 });
 
 export default corsMiddleware;

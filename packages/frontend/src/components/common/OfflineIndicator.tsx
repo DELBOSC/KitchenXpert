@@ -46,7 +46,9 @@ export default function OfflineIndicator(): React.ReactElement | null {
     void refreshPendingCount();
 
     // Poll every 5 seconds for pending changes
-    pendingPollRef.current = setInterval(() => { void refreshPendingCount(); }, 5000);
+    pendingPollRef.current = setInterval(() => {
+      void refreshPendingCount();
+    }, 5000);
 
     return () => {
       if (pendingPollRef.current) {
@@ -58,7 +60,9 @@ export default function OfflineIndicator(): React.ReactElement | null {
 
   // ─── Auto-sync when coming back online ───
   const performSync = useCallback(async () => {
-    if (syncing) {return;}
+    if (syncing) {
+      return;
+    }
     setSyncing(true);
     setSyncResult(null);
 
@@ -171,8 +175,18 @@ export default function OfflineIndicator(): React.ReactElement | null {
             {/* Pending changes badge */}
             {pendingCount > 0 && (
               <span className="inline-flex items-center gap-1.5 bg-amber-700/50 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-3 h-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 {pendingCount} {t('common.pendingChanges', 'en attente')}
               </span>
@@ -193,11 +207,7 @@ export default function OfflineIndicator(): React.ReactElement | null {
                 stroke="currentColor"
                 strokeWidth={2}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
               {t('common.connectionRestored', 'Connexion retablie')}
             </span>
@@ -212,16 +222,36 @@ export default function OfflineIndicator(): React.ReactElement | null {
                 {syncing ? (
                   <>
                     <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
                     </svg>
                     {t('common.syncing', 'Synchronisation...')}
                   </>
                 ) : (
                   <>
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
                     </svg>
                     {t('common.syncNow', 'Synchroniser maintenant')} ({pendingCount})
                   </>
@@ -245,9 +275,18 @@ export default function OfflineIndicator(): React.ReactElement | null {
             <span className="inline-flex items-center gap-2 text-sm font-medium">
               {syncResult.failed > 0 ? (
                 <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
                   </svg>
                   {t('common.syncPartial', 'Synchronisation partielle')}: {syncResult.synced}{' '}
                   {t('common.synced', 'synchronise(s)')}, {syncResult.failed}{' '}
@@ -255,7 +294,13 @@ export default function OfflineIndicator(): React.ReactElement | null {
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   {t('common.syncSuccess', 'Synchronisation reussie')}: {syncResult.synced}{' '}
@@ -268,7 +313,13 @@ export default function OfflineIndicator(): React.ReactElement | null {
               className="p-1 hover:bg-white/20 rounded transition-colors"
               aria-label={t('common.dismiss', 'Dismiss')}
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>

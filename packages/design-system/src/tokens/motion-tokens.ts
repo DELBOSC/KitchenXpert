@@ -3,12 +3,7 @@
  * Semantic animation and transition tokens
  */
 
-import {
-  durations,
-  durationValues,
-  easings,
-  animations,
-} from '../foundations/motion';
+import { durations, durationValues, easings, animations } from '../foundations/motion';
 
 /**
  * Transition tokens by interaction type

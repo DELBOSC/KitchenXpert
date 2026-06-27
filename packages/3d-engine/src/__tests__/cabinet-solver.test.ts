@@ -7,23 +7,61 @@ jest.mock('three', () => {
   const actual = jest.requireActual('../test/__mocks__/three');
   return {
     ...actual,
-    Sprite: class extends actual.Object3D { constructor() { super(); } },
-    SpriteMaterial: class { constructor(_p?: any) {} dispose = jest.fn(); },
-    CanvasTexture: class { constructor(_c?: any) {} dispose = jest.fn(); },
-    CircleGeometry: class extends actual.BufferGeometry { constructor() { super(); } },
-    LineBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
+    Sprite: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    SpriteMaterial: class {
+      constructor(_p?: any) {}
+      dispose = jest.fn();
+    },
+    CanvasTexture: class {
+      constructor(_c?: any) {}
+      dispose = jest.fn();
+    },
+    CircleGeometry: class extends actual.BufferGeometry {
+      constructor() {
+        super();
+      }
+    },
+    LineBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
     LineDashedMaterial: class extends actual.Material {
-      constructor(_p?: any) { super(); }
+      constructor(_p?: any) {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
     LineLoop: class extends actual.Object3D {
-      constructor() { super(); }
+      constructor() {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
-    MeshBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
-    Group: class extends actual.Object3D { constructor() { super(); } },
-    PointLight: class extends actual.Light { constructor() { super(); } },
-    RectAreaLight: class extends actual.Light { constructor() { super(); } },
+    MeshBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
+    Group: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    PointLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
+    RectAreaLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
   };
 });
 
@@ -172,10 +210,7 @@ describe('CabinetSolver', () => {
 
   describe('placeEssentialAppliances()', () => {
     it('should place sink and cooktop when requested', () => {
-      const segments = [
-        makeSegment('back', 0.05, 3.95),
-        makeSegment('left', 0.05, 2.95),
-      ];
+      const segments = [makeSegment('back', 0.05, 3.95), makeSegment('left', 0.05, 2.95)];
 
       const items = solver.placeEssentialAppliances(
         segments,
@@ -189,10 +224,7 @@ describe('CabinetSolver', () => {
     });
 
     it('should place refrigerator when requested', () => {
-      const segments = [
-        makeSegment('back', 0.05, 3.95),
-        makeSegment('left', 0.05, 2.95),
-      ];
+      const segments = [makeSegment('back', 0.05, 3.95), makeSegment('left', 0.05, 2.95)];
 
       const items = solver.placeEssentialAppliances(
         segments,
@@ -205,9 +237,7 @@ describe('CabinetSolver', () => {
     });
 
     it('should not duplicate items that already exist', () => {
-      const segments = [
-        makeSegment('back', 0.05, 3.95),
-      ];
+      const segments = [makeSegment('back', 0.05, 3.95)];
 
       // Existing items already have a sink
       const existingItems = [
@@ -246,9 +276,7 @@ describe('CabinetSolver', () => {
     });
 
     it('should assign proper dimensions to placed appliances', () => {
-      const segments = [
-        makeSegment('back', 0.05, 3.95),
-      ];
+      const segments = [makeSegment('back', 0.05, 3.95)];
 
       const items = solver.placeEssentialAppliances(
         segments,
@@ -271,10 +299,7 @@ describe('CabinetSolver', () => {
     });
 
     it('should assign prices to essential appliances', () => {
-      const segments = [
-        makeSegment('back', 0.05, 3.95),
-        makeSegment('left', 0.05, 2.95),
-      ];
+      const segments = [makeSegment('back', 0.05, 3.95), makeSegment('left', 0.05, 2.95)];
 
       const items = solver.placeEssentialAppliances(
         segments,
@@ -289,10 +314,7 @@ describe('CabinetSolver', () => {
     });
 
     it('should try to place fridge on a different wall from other appliances', () => {
-      const segments = [
-        makeSegment('back', 0.05, 3.95),
-        makeSegment('left', 0.05, 2.95),
-      ];
+      const segments = [makeSegment('back', 0.05, 3.95), makeSegment('left', 0.05, 2.95)];
 
       const items = solver.placeEssentialAppliances(
         segments,

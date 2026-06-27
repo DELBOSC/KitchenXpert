@@ -17,18 +17,17 @@ const initialState: AuthState = {
   error: null,
 };
 
-export const checkAuth = createAsyncThunk<
-  Partner,
-  void,
-  { rejectValue: string }
->('auth/checkAuth', async (_, { rejectWithValue }) => {
-  try {
-    return await api.getProfile();
-  } catch (error) {
-    const apiError = error as ApiError;
-    return rejectWithValue(apiError.message);
+export const checkAuth = createAsyncThunk<Partner, void, { rejectValue: string }>(
+  'auth/checkAuth',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await api.getProfile();
+    } catch (error) {
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.message);
+    }
   }
-});
+);
 
 export const login = createAsyncThunk<
   { user: Partner; token: string },
@@ -68,18 +67,17 @@ export const fetchProfile = createAsyncThunk<Partner, void, { rejectValue: strin
   }
 );
 
-export const updateProfile = createAsyncThunk<
-  Partner,
-  Partial<Partner>,
-  { rejectValue: string }
->('auth/updateProfile', async (data, { rejectWithValue }) => {
-  try {
-    return await api.updateProfile(data);
-  } catch (error) {
-    const apiError = error as ApiError;
-    return rejectWithValue(apiError.message);
+export const updateProfile = createAsyncThunk<Partner, Partial<Partner>, { rejectValue: string }>(
+  'auth/updateProfile',
+  async (data, { rejectWithValue }) => {
+    try {
+      return await api.updateProfile(data);
+    } catch (error) {
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.message);
+    }
   }
-});
+);
 
 const authSlice = createSlice({
   name: 'auth',

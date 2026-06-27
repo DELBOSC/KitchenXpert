@@ -32,14 +32,22 @@ function productItem(name: string, sku: string, price: unknown, type = 'base_cab
 }
 
 function applianceItem(name: string, brand: string, model: string, price: unknown) {
-  return { type: 'appliance', name: 'placed', price: null, product: null, appliance: { name, brand, model, price } };
+  return {
+    type: 'appliance',
+    name: 'placed',
+    price: null,
+    product: null,
+    appliance: { name, brand, model, price },
+  };
 }
 
 function setup(opts: { items?: unknown[]; config?: unknown; kitchen?: unknown } = {}) {
   mockPrisma.kitchenItem.findMany.mockResolvedValue(opts.items ?? []);
   mockPrisma.kitchenConfiguration.findUnique.mockResolvedValue(opts.config ?? null);
   // Use `in` so an explicit `kitchen: null` is honored (not replaced by the default).
-  mockPrisma.kitchen.findUnique.mockResolvedValue('kitchen' in opts ? opts.kitchen : { id: KID, name: 'K' });
+  mockPrisma.kitchen.findUnique.mockResolvedValue(
+    'kitchen' in opts ? opts.kitchen : { id: KID, name: 'K' }
+  );
 }
 
 describe('BOMGeneratorService.generateBOM (deterministic)', () => {
@@ -88,7 +96,11 @@ describe('BOMGeneratorService.generateBOM (deterministic)', () => {
     const bom = await BOMGeneratorService.getInstance().generateBOM(KID);
 
     // countertop(quartz=2500) + flooring(parquet=2000) + installation(1500)
-    expect(bom.items.map((i) => i.name)).toEqual(['Plan de travail', 'Sol', 'Pose et installation']);
+    expect(bom.items.map((i) => i.name)).toEqual([
+      'Plan de travail',
+      'Sol',
+      'Pose et installation',
+    ]);
     expect(bom.items.every((i) => i.source === 'estimated' && i.catalogRef === null)).toBe(true);
     expect(bom.subtotalEstimated).toBe(6000);
     expect(bom.subtotalCatalog).toBe(0);
@@ -115,7 +127,9 @@ describe('BOMGeneratorService.generateBOM (deterministic)', () => {
 
   it('(e) kitchen not found -> throws', async () => {
     setup({ kitchen: null });
-    await expect(BOMGeneratorService.getInstance().generateBOM(KID)).rejects.toThrow('Kitchen not found');
+    await expect(BOMGeneratorService.getInstance().generateBOM(KID)).rejects.toThrow(
+      'Kitchen not found'
+    );
   });
 
   it('(f) Decimal-like prices are coerced to numbers (not NaN / [object])', async () => {

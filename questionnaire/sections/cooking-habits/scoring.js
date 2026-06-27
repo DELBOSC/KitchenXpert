@@ -14,14 +14,14 @@
  * Score weights for cooking factors
  */
 const SCORE_WEIGHTS = {
-  cookingFrequency: 0.20,
+  cookingFrequency: 0.2,
   mealTypes: 0.15,
   cookingMethods: 0.18,
   rangePreference: 0.12,
-  ovenNeeds: 0.10,
+  ovenNeeds: 0.1,
   counterWorkspace: 0.12,
   specialtyAppliances: 0.08,
-  mealPrep: 0.05
+  mealPrep: 0.05,
 };
 
 /**
@@ -39,8 +39,8 @@ const COOKING_FREQUENCY_SCORES = {
     characteristics: {
       mealsPerWeek: '0-3',
       typicalMealTime: '15-20 min',
-      cookingStyle: 'quick-simple'
-    }
+      cookingStyle: 'quick-simple',
+    },
   },
   sometimes: {
     score: 45,
@@ -53,8 +53,8 @@ const COOKING_FREQUENCY_SCORES = {
     characteristics: {
       mealsPerWeek: '4-7',
       typicalMealTime: '20-30 min',
-      cookingStyle: 'weeknight-meals'
-    }
+      cookingStyle: 'weeknight-meals',
+    },
   },
   often: {
     score: 70,
@@ -67,8 +67,8 @@ const COOKING_FREQUENCY_SCORES = {
     characteristics: {
       mealsPerWeek: '8-12',
       typicalMealTime: '30-45 min',
-      cookingStyle: 'varied-recipes'
-    }
+      cookingStyle: 'varied-recipes',
+    },
   },
   daily: {
     score: 85,
@@ -81,8 +81,8 @@ const COOKING_FREQUENCY_SCORES = {
     characteristics: {
       mealsPerWeek: '14-18',
       typicalMealTime: '45-60 min',
-      cookingStyle: 'from-scratch'
-    }
+      cookingStyle: 'from-scratch',
+    },
   },
   'multiple-daily': {
     score: 100,
@@ -95,9 +95,9 @@ const COOKING_FREQUENCY_SCORES = {
     characteristics: {
       mealsPerWeek: '18+',
       typicalMealTime: '60+ min',
-      cookingStyle: 'multi-course'
-    }
-  }
+      cookingStyle: 'multi-course',
+    },
+  },
 };
 
 /**
@@ -109,21 +109,21 @@ const MEAL_TYPE_CONFIGURATIONS = {
     tags: ['quick-cooking'],
     applianceRecommendations: ['microwave', 'toaster-oven', 'instant-pot'],
     storageNeeds: ['pantry-staples'],
-    workspaceNeeds: 'minimal'
+    workspaceNeeds: 'minimal',
   },
   'everyday-cooking': {
     score: 50,
     tags: ['everyday-meals'],
     applianceRecommendations: ['standard-range', 'standard-oven'],
     storageNeeds: ['spice-storage', 'pan-storage'],
-    workspaceNeeds: 'standard'
+    workspaceNeeds: 'standard',
   },
   'family-meals': {
     score: 65,
     tags: ['family-cooking', 'batch-cooking'],
     applianceRecommendations: ['large-oven', 'double-oven-option', 'large-cooktop'],
     storageNeeds: ['bulk-storage', 'large-cookware'],
-    workspaceNeeds: 'generous'
+    workspaceNeeds: 'generous',
   },
   baking: {
     score: 75,
@@ -131,14 +131,19 @@ const MEAL_TYPE_CONFIGURATIONS = {
     applianceRecommendations: ['convection-oven', 'stand-mixer', 'marble-counter-section'],
     storageNeeds: ['baking-supplies', 'sheet-pan-storage', 'mixer-storage'],
     workspaceNeeds: 'generous',
-    specialFeatures: ['cool-counter-surface', 'pull-out-mixer-shelf']
+    specialFeatures: ['cool-counter-surface', 'pull-out-mixer-shelf'],
   },
   'gourmet-cooking': {
     score: 90,
     tags: ['gourmet', 'fine-dining'],
-    applianceRecommendations: ['pro-range', 'convection-oven', 'specialty-burners', 'warming-drawer'],
+    applianceRecommendations: [
+      'pro-range',
+      'convection-oven',
+      'specialty-burners',
+      'warming-drawer',
+    ],
     storageNeeds: ['specialty-cookware', 'fine-china', 'wine-storage'],
-    workspaceNeeds: 'extensive'
+    workspaceNeeds: 'extensive',
   },
   entertaining: {
     score: 85,
@@ -146,22 +151,22 @@ const MEAL_TYPE_CONFIGURATIONS = {
     applianceRecommendations: ['double-oven', 'warming-drawer', 'beverage-center', 'wine-fridge'],
     storageNeeds: ['serving-ware', 'large-platters', 'bar-supplies'],
     workspaceNeeds: 'extensive',
-    specialFeatures: ['beverage-station', 'butler-pantry']
+    specialFeatures: ['beverage-station', 'butler-pantry'],
   },
   'meal-prep': {
     score: 70,
     tags: ['meal-prep', 'batch-cooking', 'organized-cook'],
     applianceRecommendations: ['large-fridge', 'vacuum-sealer', 'food-processor'],
     storageNeeds: ['container-storage', 'label-station', 'bulk-ingredients'],
-    workspaceNeeds: 'generous'
+    workspaceNeeds: 'generous',
   },
   'healthy-cooking': {
     score: 60,
     tags: ['health-focused', 'fresh-ingredients'],
     applianceRecommendations: ['steam-oven', 'air-fryer', 'juicer', 'blender'],
     storageNeeds: ['produce-storage', 'supplement-area'],
-    workspaceNeeds: 'standard'
-  }
+    workspaceNeeds: 'standard',
+  },
 };
 
 /**
@@ -173,78 +178,78 @@ const COOKING_METHOD_CONFIGURATIONS = {
     equipment: ['standard-cooktop'],
     tags: ['stovetop-cooking'],
     burnerNeeds: 4,
-    specialFeatures: []
+    specialFeatures: [],
   },
   oven: {
     score: 50,
     equipment: ['standard-oven'],
     tags: ['oven-cooking'],
     ovenNeeds: 'single',
-    specialFeatures: ['convection-option']
+    specialFeatures: ['convection-option'],
   },
   grilling: {
     score: 65,
     equipment: ['indoor-grill', 'grill-burner', 'powerful-ventilation'],
     tags: ['grilling', 'high-heat-cooking'],
-    specialFeatures: ['powerful-hood', 'grill-insert']
+    specialFeatures: ['powerful-hood', 'grill-insert'],
   },
   wok: {
     score: 80,
     equipment: ['wok-burner', 'high-btu-burner'],
     tags: ['high-heat-cooking', 'asian-cooking', 'wok-cooking'],
     burnerNeeds: 'high-btu',
-    specialFeatures: ['wok-ring', 'powerful-ventilation']
+    specialFeatures: ['wok-ring', 'powerful-ventilation'],
   },
   'slow-cooking': {
     score: 45,
     equipment: ['slow-cooker', 'dutch-oven'],
     tags: ['slow-cooking', 'braising'],
-    specialFeatures: ['dedicated-outlet']
+    specialFeatures: ['dedicated-outlet'],
   },
   'sous-vide': {
     score: 70,
     equipment: ['sous-vide-circulator', 'vacuum-sealer'],
     tags: ['precision-cooking', 'advanced-technique'],
-    specialFeatures: ['dedicated-outlet', 'water-access']
+    specialFeatures: ['dedicated-outlet', 'water-access'],
   },
   smoking: {
     score: 75,
     equipment: ['smoker-oven', 'outdoor-smoker-connection'],
     tags: ['smoking', 'bbq-enthusiast'],
-    specialFeatures: ['enhanced-ventilation']
+    specialFeatures: ['enhanced-ventilation'],
   },
   steaming: {
     score: 55,
     equipment: ['steam-oven', 'steamer-insert'],
     tags: ['steam-cooking', 'healthy-cooking'],
-    specialFeatures: ['steam-oven-option']
+    specialFeatures: ['steam-oven-option'],
   },
   'deep-frying': {
     score: 60,
     equipment: ['deep-fryer', 'powerful-hood'],
     tags: ['deep-frying'],
-    specialFeatures: ['powerful-ventilation', 'fire-suppression']
+    specialFeatures: ['powerful-ventilation', 'fire-suppression'],
   },
   roasting: {
     score: 55,
     equipment: ['large-oven', 'roasting-pan'],
     tags: ['roasting', 'large-format-cooking'],
     ovenNeeds: 'large-capacity',
-    specialFeatures: ['convection', 'probe-thermometer']
-  }
+    specialFeatures: ['convection', 'probe-thermometer'],
+  },
 };
 
 /**
  * Range/cooktop preference configurations
  */
 const RANGE_PREFERENCE_SCORES = {
-  'gas': {
+  gas: {
     score: 80,
     type: 'gas',
     tags: ['gas-cooking', 'traditional-cooking'],
     benefits: ['precise-heat-control', 'visual-flame', 'instant-response'],
     requirements: ['gas-line'],
-    considerations: ['ventilation-important']
+    considerations: ['ventilation-important'],
   },
   'electric-coil': {
     score: 40,
@@ -252,7 +257,7 @@ const RANGE_PREFERENCE_SCORES = {
     tags: ['budget-friendly'],
     benefits: ['low-cost', 'easy-repair'],
     requirements: ['240v-outlet'],
-    considerations: ['slow-response', 'uneven-heating']
+    considerations: ['slow-response', 'uneven-heating'],
   },
   'electric-smooth': {
     score: 60,
@@ -260,15 +265,15 @@ const RANGE_PREFERENCE_SCORES = {
     tags: ['modern-electric'],
     benefits: ['easy-clean', 'sleek-look'],
     requirements: ['240v-outlet'],
-    considerations: ['requires-flat-cookware']
+    considerations: ['requires-flat-cookware'],
   },
-  'induction': {
+  induction: {
     score: 90,
     type: 'induction',
     tags: ['induction-cooking', 'modern-cooking', 'energy-efficient'],
     benefits: ['instant-response', 'precise-control', 'cool-surface', 'energy-efficient'],
     requirements: ['240v-outlet', 'induction-cookware'],
-    considerations: ['requires-compatible-cookware']
+    considerations: ['requires-compatible-cookware'],
   },
   'dual-fuel': {
     score: 95,
@@ -276,7 +281,7 @@ const RANGE_PREFERENCE_SCORES = {
     tags: ['dual-fuel', 'professional-cooking'],
     benefits: ['gas-cooktop-precision', 'electric-oven-consistency'],
     requirements: ['gas-line', '240v-outlet'],
-    considerations: ['higher-cost', 'professional-level']
+    considerations: ['higher-cost', 'professional-level'],
   },
   'pro-range': {
     score: 100,
@@ -284,8 +289,8 @@ const RANGE_PREFERENCE_SCORES = {
     tags: ['professional-range', 'chef-kitchen'],
     benefits: ['high-btu', 'commercial-features', 'durability'],
     requirements: ['gas-line', '240v-outlet', 'reinforced-floor', 'enhanced-ventilation'],
-    considerations: ['high-cost', 'requires-professional-install']
-  }
+    considerations: ['high-cost', 'requires-professional-install'],
+  },
 };
 
 /**
@@ -297,43 +302,43 @@ const OVEN_NEEDS_SCORES = {
     type: 'single',
     capacity: 'standard',
     tags: [],
-    features: ['basic-bake', 'basic-broil']
+    features: ['basic-bake', 'basic-broil'],
   },
   'single-convection': {
     score: 70,
     type: 'single-convection',
     capacity: 'standard',
     tags: ['convection-cooking'],
-    features: ['convection', 'even-baking']
+    features: ['convection', 'even-baking'],
   },
   'double-oven': {
     score: 85,
     type: 'double',
     capacity: 'expanded',
     tags: ['double-oven', 'multi-dish-cooking'],
-    features: ['simultaneous-cooking', 'different-temps']
+    features: ['simultaneous-cooking', 'different-temps'],
   },
   'wall-oven': {
     score: 80,
     type: 'wall',
     capacity: 'standard',
     tags: ['wall-oven', 'ergonomic'],
-    features: ['eye-level', 'separate-cooktop']
+    features: ['eye-level', 'separate-cooktop'],
   },
   'steam-oven': {
     score: 90,
     type: 'steam',
     capacity: 'standard',
     tags: ['steam-oven', 'healthy-cooking', 'advanced-cooking'],
-    features: ['steam-cooking', 'bread-baking', 'reheating']
+    features: ['steam-cooking', 'bread-baking', 'reheating'],
   },
-  'combination': {
+  combination: {
     score: 95,
     type: 'combination',
     capacity: 'expanded',
     tags: ['combination-oven', 'multi-function'],
-    features: ['microwave', 'convection', 'steam', 'speed-cook']
-  }
+    features: ['microwave', 'convection', 'steam', 'speed-cook'],
+  },
 };
 
 /**
@@ -345,29 +350,29 @@ const COUNTER_WORKSPACE_SCORES = {
     linearFeet: '4-6',
     tags: ['compact-workspace'],
     suitableFor: ['quick-meals', 'single-dish'],
-    limitations: ['limited-prep', 'no-multi-tasking']
+    limitations: ['limited-prep', 'no-multi-tasking'],
   },
   standard: {
     score: 55,
     linearFeet: '8-12',
     tags: [],
     suitableFor: ['everyday-cooking', 'family-meals'],
-    limitations: ['moderate-prep-space']
+    limitations: ['moderate-prep-space'],
   },
   generous: {
     score: 80,
     linearFeet: '14-18',
     tags: ['ample-workspace'],
     suitableFor: ['baking', 'meal-prep', 'entertaining'],
-    benefits: ['multiple-prep-zones', 'helper-space']
+    benefits: ['multiple-prep-zones', 'helper-space'],
   },
   extensive: {
     score: 100,
     linearFeet: '20+',
     tags: ['extensive-workspace', 'professional-level'],
     suitableFor: ['gourmet-cooking', 'professional-level', 'serious-entertaining'],
-    benefits: ['multiple-work-zones', 'dedicated-stations', 'simultaneous-cooking']
-  }
+    benefits: ['multiple-work-zones', 'dedicated-stations', 'simultaneous-cooking'],
+  },
 };
 
 /**
@@ -379,14 +384,14 @@ const SPECIALTY_APPLIANCE_SCORES = {
     category: 'baking',
     tags: ['baking-equipment'],
     storageNeeds: 'mixer-lift-or-garage',
-    powerNeeds: 'dedicated-outlet'
+    powerNeeds: 'dedicated-outlet',
   },
   'food-processor': {
     score: 12,
     category: 'prep',
     tags: ['food-prep'],
     storageNeeds: 'cabinet-space',
-    powerNeeds: 'counter-outlet'
+    powerNeeds: 'counter-outlet',
   },
   'espresso-machine': {
     score: 15,
@@ -394,57 +399,57 @@ const SPECIALTY_APPLIANCE_SCORES = {
     tags: ['coffee-station', 'espresso'],
     storageNeeds: 'counter-space',
     powerNeeds: 'dedicated-outlet',
-    waterNeeds: 'plumbed-option'
+    waterNeeds: 'plumbed-option',
   },
   'wine-fridge': {
     score: 12,
     category: 'beverage',
     tags: ['wine-storage', 'entertaining'],
     storageNeeds: 'undercounter-space',
-    powerNeeds: 'dedicated-outlet'
+    powerNeeds: 'dedicated-outlet',
   },
   'bread-machine': {
     score: 8,
     category: 'baking',
     tags: ['bread-baking'],
     storageNeeds: 'appliance-garage',
-    powerNeeds: 'counter-outlet'
+    powerNeeds: 'counter-outlet',
   },
   'pasta-maker': {
     score: 8,
     category: 'specialty',
     tags: ['pasta-making', 'italian-cooking'],
     storageNeeds: 'drawer-storage',
-    powerNeeds: 'optional'
+    powerNeeds: 'optional',
   },
   'ice-cream-maker': {
     score: 6,
     category: 'dessert',
     tags: ['dessert-making'],
     storageNeeds: 'freezer-space',
-    powerNeeds: 'counter-outlet'
+    powerNeeds: 'counter-outlet',
   },
-  'dehydrator': {
+  dehydrator: {
     score: 8,
     category: 'preservation',
     tags: ['food-preservation', 'healthy-snacks'],
     storageNeeds: 'appliance-garage',
-    powerNeeds: 'counter-outlet'
+    powerNeeds: 'counter-outlet',
   },
   'pressure-cooker': {
     score: 12,
     category: 'cooking',
     tags: ['pressure-cooking', 'quick-cooking'],
     storageNeeds: 'cabinet-space',
-    powerNeeds: 'counter-outlet'
+    powerNeeds: 'counter-outlet',
   },
   'air-fryer': {
     score: 10,
     category: 'cooking',
     tags: ['air-frying', 'healthy-cooking'],
     storageNeeds: 'counter-or-cabinet',
-    powerNeeds: 'counter-outlet'
-  }
+    powerNeeds: 'counter-outlet',
+  },
 };
 
 /**
@@ -454,75 +459,75 @@ const COOKING_PERSONAS = {
   'minimal-cook': {
     description: {
       en: 'Prefers simple, quick meals with minimal time in the kitchen',
-      fr: 'Préfère des repas simples et rapides avec un minimum de temps en cuisine'
+      fr: 'Préfère des repas simples et rapides avec un minimum de temps en cuisine',
     },
     priorities: ['easy-clean', 'basic-appliances', 'minimal-storage'],
     budgetFocus: 'efficiency',
-    applianceLevel: 'basic'
+    applianceLevel: 'basic',
   },
   'casual-cook': {
     description: {
       en: 'Cooks regularly but values convenience and simplicity',
-      fr: 'Cuisine régulièrement mais valorise la commodité et la simplicité'
+      fr: 'Cuisine régulièrement mais valorise la commodité et la simplicité',
     },
     priorities: ['reliable-appliances', 'adequate-storage', 'easy-maintenance'],
     budgetFocus: 'value',
-    applianceLevel: 'standard'
+    applianceLevel: 'standard',
   },
   'home-cook': {
     description: {
       en: 'Enjoys cooking and experiments with various cuisines and techniques',
-      fr: 'Aime cuisiner et expérimenter avec diverses cuisines et techniques'
+      fr: 'Aime cuisiner et expérimenter avec diverses cuisines et techniques',
     },
     priorities: ['quality-appliances', 'ample-workspace', 'good-storage'],
     budgetFocus: 'quality',
-    applianceLevel: 'enhanced'
+    applianceLevel: 'enhanced',
   },
   'serious-cook': {
     description: {
       en: 'Passionate about cooking with high standards for equipment and results',
-      fr: 'Passionné de cuisine avec des normes élevées pour l\'équipement et les résultats'
+      fr: "Passionné de cuisine avec des normes élevées pour l'équipement et les résultats",
     },
     priorities: ['professional-appliances', 'extensive-workspace', 'specialty-storage'],
     budgetFocus: 'performance',
-    applianceLevel: 'professional'
+    applianceLevel: 'professional',
   },
-  'entertainer': {
+  entertainer: {
     description: {
       en: 'Focuses on cooking for guests and creating memorable dining experiences',
-      fr: 'Se concentre sur la cuisine pour les invités et la création d\'expériences culinaires mémorables'
+      fr: "Se concentre sur la cuisine pour les invités et la création d'expériences culinaires mémorables",
     },
     priorities: ['presentation-space', 'multiple-cooking-zones', 'serving-area'],
     budgetFocus: 'entertaining-features',
-    applianceLevel: 'enhanced'
+    applianceLevel: 'enhanced',
   },
-  'baker': {
+  baker: {
     description: {
       en: 'Specializes in baking with focus on precision and proper equipment',
-      fr: 'Spécialisé dans la pâtisserie avec un accent sur la précision et l\'équipement approprié'
+      fr: "Spécialisé dans la pâtisserie avec un accent sur la précision et l'équipement approprié",
     },
     priorities: ['precision-oven', 'cool-work-surface', 'baking-storage'],
     budgetFocus: 'baking-equipment',
-    applianceLevel: 'specialized'
+    applianceLevel: 'specialized',
   },
   'health-focused': {
     description: {
       en: 'Prioritizes healthy cooking methods and fresh ingredient preparation',
-      fr: 'Priorise les méthodes de cuisson saines et la préparation d\'ingrédients frais'
+      fr: "Priorise les méthodes de cuisson saines et la préparation d'ingrédients frais",
     },
     priorities: ['steam-cooking', 'fresh-storage', 'prep-space'],
     budgetFocus: 'health-appliances',
-    applianceLevel: 'specialized'
+    applianceLevel: 'specialized',
   },
   'multi-generational': {
     description: {
       en: 'Cooks for extended family with varying needs and preferences',
-      fr: 'Cuisine pour la famille élargie avec des besoins et préférences variés'
+      fr: 'Cuisine pour la famille élargie avec des besoins et préférences variés',
     },
     priorities: ['accessibility', 'multiple-heights', 'varied-appliances'],
     budgetFocus: 'versatility',
-    applianceLevel: 'enhanced'
-  }
+    applianceLevel: 'enhanced',
+  },
 };
 
 /**
@@ -539,7 +544,7 @@ function calculateSectionScore(answers) {
     applianceRequirements: [],
     workspaceRequirements: {},
     storageRequirements: [],
-    specialFeatures: []
+    specialFeatures: [],
   };
 
   // Calculate component scores
@@ -551,7 +556,7 @@ function calculateSectionScore(answers) {
     ovenNeeds: scoreOvenNeeds(answers['oven-needs']),
     counterWorkspace: scoreCounterWorkspace(answers['counter-workspace']),
     specialtyAppliances: scoreSpecialtyAppliances(answers['specialty-appliances']),
-    mealPrep: scoreMealPrep(answers['meal-prep'])
+    mealPrep: scoreMealPrep(answers['meal-prep']),
   };
 
   // Calculate weighted overall score
@@ -564,7 +569,7 @@ function calculateSectionScore(answers) {
 
       // Collect tags
       if (componentScores[key]?.tags) {
-        componentScores[key].tags.forEach(tag => scores.tags.add(tag));
+        componentScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
 
       // Collect appliance requirements
@@ -595,37 +600,37 @@ function calculateSectionScore(answers) {
     frequency: {
       score: componentScores.cookingFrequency?.score || 50,
       level: componentScores.cookingFrequency?.level || 'regular',
-      characteristics: componentScores.cookingFrequency?.characteristics || {}
+      characteristics: componentScores.cookingFrequency?.characteristics || {},
     },
     mealTypes: {
       score: componentScores.mealTypes?.score || 50,
       types: answers['meal-types'] || [],
-      primaryFocus: determinePrimaryMealFocus(answers['meal-types'])
+      primaryFocus: determinePrimaryMealFocus(answers['meal-types']),
     },
     cookingStyle: {
       score: calculateCookingStyleScore(componentScores),
       methods: answers['cooking-methods'] || [],
-      complexity: determineCookingComplexity(answers, componentScores)
+      complexity: determineCookingComplexity(answers, componentScores),
     },
     equipment: {
       range: {
         score: componentScores.rangePreference?.score || 50,
         type: componentScores.rangePreference?.type || 'gas',
-        requirements: componentScores.rangePreference?.requirements || []
+        requirements: componentScores.rangePreference?.requirements || [],
       },
       oven: {
         score: componentScores.ovenNeeds?.score || 50,
         type: componentScores.ovenNeeds?.type || 'single',
-        features: componentScores.ovenNeeds?.features || []
+        features: componentScores.ovenNeeds?.features || [],
       },
-      specialty: componentScores.specialtyAppliances || { score: 0, appliances: [] }
+      specialty: componentScores.specialtyAppliances || { score: 0, appliances: [] },
     },
     workspace: {
       score: componentScores.counterWorkspace?.score || 55,
       level: answers['counter-workspace'] || 'standard',
-      linearFeet: componentScores.counterWorkspace?.linearFeet || '8-12'
+      linearFeet: componentScores.counterWorkspace?.linearFeet || '8-12',
     },
-    mealPrep: componentScores.mealPrep || { score: 50, level: 'standard' }
+    mealPrep: componentScores.mealPrep || { score: 50, level: 'standard' },
   };
 
   // Calculate workspace requirements
@@ -661,7 +666,7 @@ function scoreCookingFrequency(value) {
     applianceNeeds: config.applianceNeeds,
     workspaceNeed: config.workspaceNeed,
     storageNeed: config.storageNeed,
-    characteristics: config.characteristics
+    characteristics: config.characteristics,
   };
 }
 
@@ -680,7 +685,7 @@ function scoreMealTypes(values) {
   const specialFeatures = [];
   let workspaceLevel = 'standard';
 
-  values.forEach(type => {
+  values.forEach((type) => {
     const config = MEAL_TYPE_CONFIGURATIONS[type];
     if (config) {
       totalScore += config.score;
@@ -709,7 +714,7 @@ function scoreMealTypes(values) {
     applianceRecommendations: [...new Set(applianceRecommendations)],
     storageNeeds: [...new Set(storageNeeds)],
     specialFeatures: [...new Set(specialFeatures)],
-    workspaceLevel
+    workspaceLevel,
   };
 }
 
@@ -728,7 +733,7 @@ function scoreCookingMethods(values) {
   let maxBurnerNeeds = 4;
   let ovenNeeds = 'single';
 
-  values.forEach(method => {
+  values.forEach((method) => {
     const config = COOKING_METHOD_CONFIGURATIONS[method];
     if (config) {
       totalScore += config.score;
@@ -755,7 +760,7 @@ function scoreCookingMethods(values) {
     equipment: [...new Set(equipment)],
     specialFeatures: [...new Set(specialFeatures)],
     burnerRequirements: maxBurnerNeeds,
-    ovenRequirements: ovenNeeds
+    ovenRequirements: ovenNeeds,
   };
 }
 
@@ -773,7 +778,7 @@ function scoreRangePreference(value) {
     tags: [...config.tags],
     benefits: config.benefits,
     requirements: config.requirements,
-    considerations: config.considerations
+    considerations: config.considerations,
   };
 }
 
@@ -790,7 +795,7 @@ function scoreOvenNeeds(value) {
     type: config.type,
     capacity: config.capacity,
     tags: [...config.tags],
-    features: config.features
+    features: config.features,
   };
 }
 
@@ -809,7 +814,7 @@ function scoreCounterWorkspace(value) {
     tags: [...config.tags],
     suitableFor: config.suitableFor,
     benefits: config.benefits,
-    limitations: config.limitations
+    limitations: config.limitations,
   };
 }
 
@@ -827,7 +832,7 @@ function scoreSpecialtyAppliances(values) {
   const powerNeeds = [];
   const categories = new Set();
 
-  values.forEach(appliance => {
+  values.forEach((appliance) => {
     const config = SPECIALTY_APPLIANCE_SCORES[appliance];
     if (config) {
       totalScore += config.score;
@@ -845,7 +850,7 @@ function scoreSpecialtyAppliances(values) {
     storageNeeds: [...new Set(storageNeeds)],
     powerNeeds: [...new Set(powerNeeds)],
     categories: [...categories],
-    count: values.length
+    count: values.length,
   };
 }
 
@@ -861,29 +866,29 @@ function scoreMealPrep(value) {
       level: 'minimal',
       tags: [],
       storageNeeds: [],
-      features: []
+      features: [],
     },
     'occasional-prep': {
       score: 55,
       level: 'occasional',
       tags: ['occasional-meal-prep'],
       storageNeeds: ['container-cabinet'],
-      features: []
+      features: [],
     },
     'weekly-prep': {
       score: 80,
       level: 'regular',
       tags: ['meal-prep', 'organized-cook'],
       storageNeeds: ['container-drawer', 'label-station', 'prep-container-storage'],
-      features: ['large-counter-space', 'multiple-cutting-boards']
+      features: ['large-counter-space', 'multiple-cutting-boards'],
     },
     'batch-cooking': {
       score: 95,
       level: 'intensive',
       tags: ['batch-cooking', 'meal-prep-focused'],
       storageNeeds: ['large-freezer-space', 'vacuum-sealer-storage', 'bulk-container-storage'],
-      features: ['extensive-counter', 'large-refrigeration', 'vacuum-sealer']
-    }
+      features: ['extensive-counter', 'large-refrigeration', 'vacuum-sealer'],
+    },
   };
 
   const config = scores[value] || scores['occasional-prep'];
@@ -893,7 +898,7 @@ function scoreMealPrep(value) {
     level: config.level,
     tags: [...config.tags],
     storageNeeds: config.storageNeeds,
-    features: config.features
+    features: config.features,
   };
 }
 
@@ -905,7 +910,7 @@ function determineCookingIntensity(answers, componentScores) {
   const methodsScore = componentScores.cookingMethods?.score || 50;
   const workspaceScore = componentScores.counterWorkspace?.score || 50;
 
-  const combinedScore = (frequencyScore * 0.5) + (methodsScore * 0.3) + (workspaceScore * 0.2);
+  const combinedScore = frequencyScore * 0.5 + methodsScore * 0.3 + workspaceScore * 0.2;
 
   if (combinedScore >= 85) return 'intensive';
   if (combinedScore >= 70) return 'dedicated';
@@ -923,10 +928,10 @@ function identifyCookingPersona(answers, componentScores, scores) {
     'casual-cook': 0,
     'home-cook': 0,
     'serious-cook': 0,
-    'entertainer': 0,
-    'baker': 0,
+    entertainer: 0,
+    baker: 0,
     'health-focused': 0,
-    'multi-generational': 0
+    'multi-generational': 0,
   };
 
   // Frequency-based indicators
@@ -965,7 +970,8 @@ function identifyCookingPersona(answers, componentScores, scores) {
   if (specialty.includes('stand-mixer')) indicators['baker'] += 2;
   if (specialty.includes('espresso-machine')) indicators['entertainer'] += 1;
   if (specialty.includes('wine-fridge')) indicators['entertainer'] += 2;
-  if (specialty.includes('air-fryer') || specialty.includes('dehydrator')) indicators['health-focused'] += 1;
+  if (specialty.includes('air-fryer') || specialty.includes('dehydrator'))
+    indicators['health-focused'] += 1;
 
   // Find the highest scoring persona
   let topPersona = 'home-cook';
@@ -987,7 +993,7 @@ function identifyCookingPersona(answers, componentScores, scores) {
     priorities: personaConfig?.priorities || [],
     budgetFocus: personaConfig?.budgetFocus || 'value',
     applianceLevel: personaConfig?.applianceLevel || 'standard',
-    allScores: indicators
+    allScores: indicators,
   };
 }
 
@@ -999,19 +1005,19 @@ function determinePrimaryMealFocus(mealTypes) {
 
   const priorities = {
     'gourmet-cooking': 6,
-    'entertaining': 5,
-    'baking': 4,
+    entertaining: 5,
+    baking: 4,
     'meal-prep': 3,
     'healthy-cooking': 3,
     'family-meals': 2,
     'everyday-cooking': 1,
-    'quick-meals': 0
+    'quick-meals': 0,
   };
 
   let topType = 'everyday-cooking';
   let topPriority = -1;
 
-  mealTypes.forEach(type => {
+  mealTypes.forEach((type) => {
     if (priorities[type] !== undefined && priorities[type] > topPriority) {
       topPriority = priorities[type];
       topType = type;
@@ -1029,7 +1035,7 @@ function calculateCookingStyleScore(componentScores) {
   const rangeScore = componentScores.rangePreference?.score || 50;
   const ovenScore = componentScores.ovenNeeds?.score || 50;
 
-  return Math.round((methodsScore * 0.5) + (rangeScore * 0.3) + (ovenScore * 0.2));
+  return Math.round(methodsScore * 0.5 + rangeScore * 0.3 + ovenScore * 0.2);
 }
 
 /**
@@ -1042,8 +1048,8 @@ function determineCookingComplexity(answers, componentScores) {
   const advancedMethods = ['sous-vide', 'wok', 'smoking', 'deep-frying'];
   const advancedMeals = ['gourmet-cooking', 'baking', 'entertaining'];
 
-  const advancedMethodCount = methods.filter(m => advancedMethods.includes(m)).length;
-  const advancedMealCount = mealTypes.filter(m => advancedMeals.includes(m)).length;
+  const advancedMethodCount = methods.filter((m) => advancedMethods.includes(m)).length;
+  const advancedMealCount = mealTypes.filter((m) => advancedMeals.includes(m)).length;
 
   const totalAdvanced = advancedMethodCount + advancedMealCount;
 
@@ -1062,7 +1068,7 @@ function calculateWorkspaceRequirements(answers, componentScores, scores) {
     recommendedLinearFeet: 12,
     zones: [],
     specialSurfaces: [],
-    heightVariations: false
+    heightVariations: false,
   };
 
   // Base on workspace preference
@@ -1111,7 +1117,7 @@ function calculateStorageRequirements(answers, componentScores, scores) {
     overall: 'standard',
     categories: [],
     specialStorage: [],
-    applianceStorage: []
+    applianceStorage: [],
   };
 
   // Base on cooking frequency
@@ -1122,7 +1128,7 @@ function calculateStorageRequirements(answers, componentScores, scores) {
 
   // Meal type storage needs
   const mealTypes = answers['meal-types'] || [];
-  mealTypes.forEach(type => {
+  mealTypes.forEach((type) => {
     const config = MEAL_TYPE_CONFIGURATIONS[type];
     if (config?.storageNeeds) {
       requirements.categories.push(...config.storageNeeds);
@@ -1131,18 +1137,21 @@ function calculateStorageRequirements(answers, componentScores, scores) {
 
   // Specialty appliance storage
   const specialty = answers['specialty-appliances'] || [];
-  specialty.forEach(appliance => {
+  specialty.forEach((appliance) => {
     const config = SPECIALTY_APPLIANCE_SCORES[appliance];
     if (config?.storageNeeds) {
       requirements.applianceStorage.push({
         appliance,
-        storage: config.storageNeeds
+        storage: config.storageNeeds,
       });
     }
   });
 
   // Meal prep storage
-  if (componentScores.mealPrep?.level === 'intensive' || componentScores.mealPrep?.level === 'regular') {
+  if (
+    componentScores.mealPrep?.level === 'intensive' ||
+    componentScores.mealPrep?.level === 'regular'
+  ) {
     requirements.specialStorage.push('container-organization', 'freezer-space');
   }
 
@@ -1166,12 +1175,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Professional-Grade Appliances',
-        fr: 'Appareils de qualité professionnelle'
+        fr: 'Appareils de qualité professionnelle',
       },
       description: {
         en: 'Your cooking frequency warrants investment in professional-grade appliances for reliability and performance.',
-        fr: 'Votre fréquence de cuisine justifie un investissement dans des appareils de qualité professionnelle pour la fiabilité et les performances.'
-      }
+        fr: 'Votre fréquence de cuisine justifie un investissement dans des appareils de qualité professionnelle pour la fiabilité et les performances.',
+      },
     });
   }
 
@@ -1184,12 +1193,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Induction-Compatible Cookware',
-        fr: 'Ustensiles compatibles induction'
+        fr: 'Ustensiles compatibles induction',
       },
       description: {
         en: 'Ensure your cookware is induction-compatible (magnetic base). Cast iron and stainless steel work well.',
-        fr: 'Assurez-vous que vos ustensiles sont compatibles avec l\'induction (base magnétique). La fonte et l\'acier inoxydable fonctionnent bien.'
-      }
+        fr: "Assurez-vous que vos ustensiles sont compatibles avec l'induction (base magnétique). La fonte et l'acier inoxydable fonctionnent bien.",
+      },
     });
   }
 
@@ -1200,12 +1209,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Enhanced Ventilation Required',
-        fr: 'Ventilation améliorée requise'
+        fr: 'Ventilation améliorée requise',
       },
       description: {
         en: 'Professional-style ranges require powerful ventilation (900+ CFM) to handle high heat output.',
-        fr: 'Les cuisinières de style professionnel nécessitent une ventilation puissante (900+ CFM) pour gérer la production de chaleur élevée.'
-      }
+        fr: 'Les cuisinières de style professionnel nécessitent une ventilation puissante (900+ CFM) pour gérer la production de chaleur élevée.',
+      },
     });
   }
 
@@ -1218,12 +1227,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Wok Cooking Setup',
-        fr: 'Configuration pour la cuisson au wok'
+        fr: 'Configuration pour la cuisson au wok',
       },
       description: {
         en: 'Consider a high-BTU burner (15,000+) or dedicated wok burner for proper wok cooking with wok hei.',
-        fr: 'Envisagez un brûleur haute puissance (15 000+ BTU) ou un brûleur wok dédié pour une cuisson au wok appropriée avec wok hei.'
-      }
+        fr: 'Envisagez un brûleur haute puissance (15 000+ BTU) ou un brûleur wok dédié pour une cuisson au wok appropriée avec wok hei.',
+      },
     });
   }
 
@@ -1234,12 +1243,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'optional',
       title: {
         en: 'Sous-Vide Station',
-        fr: 'Station sous-vide'
+        fr: 'Station sous-vide',
       },
       description: {
         en: 'Plan a dedicated area near water source with adequate outlet for sous-vide cooking.',
-        fr: 'Prévoyez une zone dédiée près d\'une source d\'eau avec une prise adéquate pour la cuisson sous-vide.'
-      }
+        fr: "Prévoyez une zone dédiée près d'une source d'eau avec une prise adéquate pour la cuisson sous-vide.",
+      },
     });
   }
 
@@ -1252,12 +1261,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Dedicated Baking Station',
-        fr: 'Station de pâtisserie dédiée'
+        fr: 'Station de pâtisserie dédiée',
       },
       description: {
         en: 'Include a cool work surface (marble or quartz), mixer lift or storage, and nearby baking supply storage.',
-        fr: 'Incluez une surface de travail fraîche (marbre ou quartz), un support ou rangement pour le batteur, et un rangement à proximité pour les fournitures de pâtisserie.'
-      }
+        fr: 'Incluez une surface de travail fraîche (marbre ou quartz), un support ou rangement pour le batteur, et un rangement à proximité pour les fournitures de pâtisserie.',
+      },
     });
   }
 
@@ -1269,12 +1278,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Entertaining-Ready Kitchen',
-        fr: 'Cuisine prête pour recevoir'
+        fr: 'Cuisine prête pour recevoir',
       },
       description: {
         en: 'Consider double ovens, warming drawer, beverage center, and ample counter space for staging.',
-        fr: 'Envisagez des fours doubles, un tiroir chauffant, un centre de boissons et un grand espace de comptoir pour la mise en place.'
-      }
+        fr: 'Envisagez des fours doubles, un tiroir chauffant, un centre de boissons et un grand espace de comptoir pour la mise en place.',
+      },
     });
   }
 
@@ -1286,12 +1295,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Extensive Counter Space',
-        fr: 'Espace de comptoir étendu'
+        fr: 'Espace de comptoir étendu',
       },
       description: {
         en: `Your cooking style requires at least ${scores.workspaceRequirements.minimumLinearFeet} linear feet of counter space. Consider an island for additional workspace.`,
-        fr: `Votre style de cuisine nécessite au moins ${scores.workspaceRequirements.minimumLinearFeet} pieds linéaires d'espace de comptoir. Envisagez un îlot pour un espace de travail supplémentaire.`
-      }
+        fr: `Votre style de cuisine nécessite au moins ${scores.workspaceRequirements.minimumLinearFeet} pieds linéaires d'espace de comptoir. Envisagez un îlot pour un espace de travail supplémentaire.`,
+      },
     });
   }
 
@@ -1303,12 +1312,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Specialty Appliance Storage',
-        fr: 'Rangement pour appareils spécialisés'
+        fr: 'Rangement pour appareils spécialisés',
       },
       description: {
         en: 'Plan for appliance garages, pull-out shelves, or dedicated counter space for your specialty appliances.',
-        fr: 'Prévoyez des garages à appareils, des étagères coulissantes ou un espace de comptoir dédié pour vos appareils spécialisés.'
-      }
+        fr: 'Prévoyez des garages à appareils, des étagères coulissantes ou un espace de comptoir dédié pour vos appareils spécialisés.',
+      },
     });
   }
 
@@ -1320,12 +1329,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Meal Prep Zone',
-        fr: 'Zone de préparation de repas'
+        fr: 'Zone de préparation de repas',
       },
       description: {
         en: 'Dedicate space for container storage, labeling station, and consider a larger refrigerator/freezer for batch storage.',
-        fr: 'Consacrez de l\'espace pour le rangement des contenants, une station d\'étiquetage, et envisagez un réfrigérateur/congélateur plus grand pour le stockage en lots.'
-      }
+        fr: "Consacrez de l'espace pour le rangement des contenants, une station d'étiquetage, et envisagez un réfrigérateur/congélateur plus grand pour le stockage en lots.",
+      },
     });
   }
 
@@ -1337,12 +1346,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'optional',
       title: {
         en: 'Health-Focused Kitchen Features',
-        fr: 'Fonctionnalités de cuisine axées sur la santé'
+        fr: 'Fonctionnalités de cuisine axées sur la santé',
       },
       description: {
         en: 'Consider a steam oven, ample produce storage, juicing/blending station, and water filtration system.',
-        fr: 'Envisagez un four vapeur, un rangement ample pour les produits frais, une station de jus/mixage et un système de filtration d\'eau.'
-      }
+        fr: "Envisagez un four vapeur, un rangement ample pour les produits frais, une station de jus/mixage et un système de filtration d'eau.",
+      },
     });
   }
 
@@ -1372,5 +1381,5 @@ module.exports = {
   OVEN_NEEDS_SCORES,
   COUNTER_WORKSPACE_SCORES,
   SPECIALTY_APPLIANCE_SCORES,
-  COOKING_PERSONAS
+  COOKING_PERSONAS,
 };

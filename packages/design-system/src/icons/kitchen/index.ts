@@ -3,30 +3,14 @@
  * Icons specific to kitchen design and appliances
  */
 
-export {
-  createCabinetIcon,
-  cabinetIconPath,
-  CabinetIconData,
-} from './cabinet-icon';
+export { createCabinetIcon, cabinetIconPath, CabinetIconData } from './cabinet-icon';
 export type { IconProps } from './cabinet-icon';
 
-export {
-  createOvenIcon,
-  ovenIconPath,
-  OvenIconData,
-} from './oven-icon';
+export { createOvenIcon, ovenIconPath, OvenIconData } from './oven-icon';
 
-export {
-  createFridgeIcon,
-  fridgeIconPath,
-  FridgeIconData,
-} from './fridge-icon';
+export { createFridgeIcon, fridgeIconPath, FridgeIconData } from './fridge-icon';
 
-export {
-  createSinkIcon,
-  sinkIconPath,
-  SinkIconData,
-} from './sink-icon';
+export { createSinkIcon, sinkIconPath, SinkIconData } from './sink-icon';
 
 // Kitchen icon collection
 export const kitchenIcons = {

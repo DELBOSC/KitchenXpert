@@ -18,13 +18,7 @@ export type WorktopMaterial =
   | 'glass'
   | 'corian';
 
-export type WorktopFinish =
-  | 'matte'
-  | 'gloss'
-  | 'satin'
-  | 'textured'
-  | 'brushed'
-  | 'polished';
+export type WorktopFinish = 'matte' | 'gloss' | 'satin' | 'textured' | 'brushed' | 'polished';
 
 export interface WorktopColor {
   id: string;
@@ -125,7 +119,10 @@ export interface WorktopSearchParams {
 /**
  * Material tiers for pricing guidance
  */
-export const WORKTOP_MATERIAL_TIERS: Record<WorktopMaterial, 'entry' | 'mid' | 'premium' | 'luxury'> = {
+export const WORKTOP_MATERIAL_TIERS: Record<
+  WorktopMaterial,
+  'entry' | 'mid' | 'premium' | 'luxury'
+> = {
   laminate: 'entry',
   wood_veneer: 'entry',
   wood_solid: 'mid',

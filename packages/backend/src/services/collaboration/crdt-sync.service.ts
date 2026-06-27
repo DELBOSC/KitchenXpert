@@ -88,7 +88,11 @@ export interface CollaborationRoom {
 
 /** Messages sent over the WebSocket. */
 export type WSMessage =
-  | { type: 'join_ack'; state: SerializedCRDTState; participants: Array<{ userId: string; userName: string; color: string }> }
+  | {
+      type: 'join_ack';
+      state: SerializedCRDTState;
+      participants: Array<{ userId: string; userName: string; color: string }>;
+    }
   | { type: 'participant_joined'; userId: string; userName: string; color: string }
   | { type: 'participant_left'; userId: string }
   | { type: 'operation'; operation: CRDTOperation }
@@ -105,8 +109,16 @@ interface SerializedCRDTState {
 // ─── Participant Colors ─────────────────────────────────────────────────────
 
 const PARTICIPANT_COLORS = [
-  '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6',
-  '#EC4899', '#F97316', '#14B8A6', '#6366F1', '#A855F7',
+  '#EF4444',
+  '#F59E0B',
+  '#10B981',
+  '#3B82F6',
+  '#8B5CF6',
+  '#EC4899',
+  '#F97316',
+  '#14B8A6',
+  '#6366F1',
+  '#A855F7',
 ];
 
 // ─── Service ────────────────────────────────────────────────────────────────
@@ -172,9 +184,12 @@ export class CRDTSyncService {
       participants: Array.from(room.participants.entries()).map(([uid, p]) => ({
         userId: uid,
         userName: p.userName,
-        color: uid === userId ? color : PARTICIPANT_COLORS[
-          Array.from(room.participants.keys()).indexOf(uid) % PARTICIPANT_COLORS.length
-        ]!,
+        color:
+          uid === userId
+            ? color
+            : PARTICIPANT_COLORS[
+                Array.from(room.participants.keys()).indexOf(uid) % PARTICIPANT_COLORS.length
+              ]!,
       })),
     };
     this.sendToUser(ws, joinAckMsg);
@@ -187,7 +202,9 @@ export class CRDTSyncService {
       color,
     });
 
-    logger.info(`[CRDT] User ${userId} joined room ${kitchenId} (${room.participants.size} participants)`);
+    logger.info(
+      `[CRDT] User ${userId} joined room ${kitchenId} (${room.participants.size} participants)`
+    );
 
     // Handle WebSocket close
     ws.on('close', () => {
@@ -214,7 +231,9 @@ export class CRDTSyncService {
    */
   leaveRoom(kitchenId: string, userId: string): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) {return;}
+    if (!room) {
+      return;
+    }
 
     room.participants.delete(userId);
 
@@ -224,7 +243,9 @@ export class CRDTSyncService {
       userId,
     });
 
-    logger.info(`[CRDT] User ${userId} left room ${kitchenId} (${room.participants.size} remaining)`);
+    logger.info(
+      `[CRDT] User ${userId} left room ${kitchenId} (${room.participants.size} remaining)`
+    );
 
     // Don't delete empty rooms immediately - they may be rejoined
     // Cleanup is handled by the periodic cleanupStaleRooms
@@ -247,7 +268,9 @@ export class CRDTSyncService {
 
     // Validate operation ownership
     if (operation.userId !== userId) {
-      logger.warn(`[CRDT] User ${userId} sent operation with mismatched userId ${operation.userId}`);
+      logger.warn(
+        `[CRDT] User ${userId} sent operation with mismatched userId ${operation.userId}`
+      );
       return;
     }
 
@@ -334,7 +357,9 @@ export class CRDTSyncService {
    */
   private handleMessage(kitchenId: string, userId: string, message: Record<string, unknown>): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) {return;}
+    if (!room) {
+      return;
+    }
 
     const participant = room.participants.get(userId);
     if (participant) {
@@ -397,14 +422,19 @@ export class CRDTSyncService {
           properties?: Record<string, unknown>;
         };
 
-        if (!objData.id) {break;}
+        if (!objData.id) {
+          break;
+        }
 
         const existing = state.objects.get(objData.id);
         if (existing && !existing.tombstone) {
           // Object already exists and is alive - LWW check
           if (operation.timestamp <= existing.lastModifiedAt) {
             // Existing is newer or same timestamp
-            if (operation.timestamp === existing.lastModifiedAt && operation.userId > existing.lastModifiedBy) {
+            if (
+              operation.timestamp === existing.lastModifiedAt &&
+              operation.userId > existing.lastModifiedBy
+            ) {
               // Same timestamp, userId tiebreaker (lexicographic)
             } else {
               break; // Existing wins
@@ -427,7 +457,9 @@ export class CRDTSyncService {
 
       case 'remove_object': {
         const removeData = operation.data as { id: string };
-        if (!removeData.id) {break;}
+        if (!removeData.id) {
+          break;
+        }
 
         const obj = state.objects.get(removeData.id);
         if (obj) {
@@ -447,7 +479,9 @@ export class CRDTSyncService {
           position: { x: number; y: number; z: number };
           rotation?: { x: number; y: number; z: number };
         };
-        if (!moveData.id) {break;}
+        if (!moveData.id) {
+          break;
+        }
 
         const moveObj = state.objects.get(moveData.id);
         if (moveObj && !moveObj.tombstone) {
@@ -468,7 +502,9 @@ export class CRDTSyncService {
           id: string;
           properties: Record<string, unknown>;
         };
-        if (!modifyData.id) {break;}
+        if (!modifyData.id) {
+          break;
+        }
 
         const modifyObj = state.objects.get(modifyData.id);
         if (modifyObj && !modifyObj.tombstone) {
@@ -513,12 +549,16 @@ export class CRDTSyncService {
    */
   private broadcast(kitchenId: string, excludeUserId: string, message: WSMessage): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) {return;}
+    if (!room) {
+      return;
+    }
 
     const msgStr = JSON.stringify(message);
 
     for (const [uid, participant] of room.participants) {
-      if (uid === excludeUserId) {continue;}
+      if (uid === excludeUserId) {
+        continue;
+      }
       try {
         if (participant.ws.readyState === WebSocket.OPEN) {
           participant.ws.send(msgStr);
@@ -565,9 +605,10 @@ export class CRDTSyncService {
 
     for (const [kitchenId, room] of this.rooms) {
       if (room.participants.size === 0) {
-        const lastActivity = room.operationLog.length > 0
-          ? room.operationLog[room.operationLog.length - 1]!.timestamp
-          : room.createdAt.getTime();
+        const lastActivity =
+          room.operationLog.length > 0
+            ? room.operationLog[room.operationLog.length - 1]!.timestamp
+            : room.createdAt.getTime();
 
         if (now - lastActivity > STALE_THRESHOLD) {
           this.rooms.delete(kitchenId);

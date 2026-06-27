@@ -64,9 +64,13 @@ export function Dialog({
 
   // Lock body scroll and close on Escape while open.
   useEffect(() => {
-    if (!open) {return;}
+    if (!open) {
+      return;
+    }
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape') {onClose();}
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
     document.addEventListener('keydown', onKey);
     const prevOverflow = document.body.style.overflow;
@@ -79,7 +83,9 @@ export function Dialog({
     };
   }, [open, onClose]);
 
-  if (typeof document === 'undefined') {return null;}
+  if (typeof document === 'undefined') {
+    return null;
+  }
 
   return createPortal(
     <AnimatePresence>
@@ -109,7 +115,7 @@ export function Dialog({
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
               'relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d14] shadow-2xl',
-              sizes[size],
+              sizes[size]
             )}
           >
             <button
@@ -124,13 +130,17 @@ export function Dialog({
                 {title && (
                   <h2
                     id="kx-dialog-title"
-                    className={titleClassName ?? 'text-base font-semibold tracking-tight text-white'}
+                    className={
+                      titleClassName ?? 'text-base font-semibold tracking-tight text-white'
+                    }
                   >
                     {title}
                   </h2>
                 )}
                 {description && (
-                  <p id="kx-dialog-desc" className="mt-1 text-sm text-white/60">{description}</p>
+                  <p id="kx-dialog-desc" className="mt-1 text-sm text-white/60">
+                    {description}
+                  </p>
                 )}
               </div>
             )}
@@ -144,6 +154,6 @@ export function Dialog({
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body,
+    document.body
   );
 }

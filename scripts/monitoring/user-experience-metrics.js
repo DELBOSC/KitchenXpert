@@ -114,13 +114,22 @@ function calculateUXScore(metrics) {
 
   scores.push(scoreMap[lcpScore] * 0.35);
   scores.push(scoreMap[fidScore] * 0.35);
-  scores.push(scoreMap[clsScore] * 0.30);
+  scores.push(scoreMap[clsScore] * 0.3);
 
   const overallScore = Math.round(scores.reduce((a, b) => a + b, 0));
 
   return {
     overall: overallScore,
-    grade: overallScore >= 90 ? 'A' : overallScore >= 80 ? 'B' : overallScore >= 70 ? 'C' : overallScore >= 60 ? 'D' : 'F',
+    grade:
+      overallScore >= 90
+        ? 'A'
+        : overallScore >= 80
+          ? 'B'
+          : overallScore >= 70
+            ? 'C'
+            : overallScore >= 60
+              ? 'D'
+              : 'F',
     breakdown: {
       LCP: lcpScore,
       FID: fidScore,
@@ -238,21 +247,31 @@ function generateMarkdownReport(metrics, uxScore) {
 
 // Generate JSON report
 function generateJsonReport(metrics, uxScore) {
-  return JSON.stringify({
-    meta: {
-      generated: new Date().toISOString(),
-      thresholds,
+  return JSON.stringify(
+    {
+      meta: {
+        generated: new Date().toISOString(),
+        thresholds,
+      },
+      score: uxScore,
+      metrics,
     },
-    score: uxScore,
-    metrics,
-  }, null, 2);
+    null,
+    2
+  );
 }
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}      KitchenXpert - User Experience Metrics                ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}      KitchenXpert - User Experience Metrics                ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   // Collect metrics
@@ -282,18 +301,37 @@ async function main() {
   log('SUCCESS', `JSON report: ${jsonPath}`);
 
   console.log('');
-  const gradeColor = uxScore.grade === 'A' ? colors.green : uxScore.grade === 'B' ? colors.green : uxScore.grade === 'C' ? colors.yellow : colors.red;
-  console.log(`${gradeColor}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${gradeColor}║${colors.reset}        UX Metrics Analysis Complete                        ${gradeColor}║${colors.reset}`);
-  console.log(`${gradeColor}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  const gradeColor =
+    uxScore.grade === 'A'
+      ? colors.green
+      : uxScore.grade === 'B'
+        ? colors.green
+        : uxScore.grade === 'C'
+          ? colors.yellow
+          : colors.red;
+  console.log(
+    `${gradeColor}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${gradeColor}║${colors.reset}        UX Metrics Analysis Complete                        ${gradeColor}║${colors.reset}`
+  );
+  console.log(
+    `${gradeColor}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  UX Score: ${uxScore.overall}/100`);
   console.log(`  Grade:    ${uxScore.grade}`);
   console.log('');
   console.log('  Core Web Vitals:');
-  console.log(`    LCP: ${uxScore.breakdown.LCP === 'good' ? '✅' : '⚠️'} ${uxScore.breakdown.LCP}`);
-  console.log(`    FID: ${uxScore.breakdown.FID === 'good' ? '✅' : '⚠️'} ${uxScore.breakdown.FID}`);
-  console.log(`    CLS: ${uxScore.breakdown.CLS === 'good' ? '✅' : '⚠️'} ${uxScore.breakdown.CLS}`);
+  console.log(
+    `    LCP: ${uxScore.breakdown.LCP === 'good' ? '✅' : '⚠️'} ${uxScore.breakdown.LCP}`
+  );
+  console.log(
+    `    FID: ${uxScore.breakdown.FID === 'good' ? '✅' : '⚠️'} ${uxScore.breakdown.FID}`
+  );
+  console.log(
+    `    CLS: ${uxScore.breakdown.CLS === 'good' ? '✅' : '⚠️'} ${uxScore.breakdown.CLS}`
+  );
   console.log('');
   console.log(`  Reports: ${config.outputDir}`);
   console.log('');

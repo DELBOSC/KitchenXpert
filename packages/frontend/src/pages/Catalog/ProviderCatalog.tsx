@@ -5,8 +5,18 @@ import { Link, useParams } from 'react-router-dom';
 
 import ImportToDesignDialog from './ImportToDesignDialog';
 import {
-  Badge, Card, Container, EmptyState, ErrorState, Input, PageHeader, Select, Skeleton,
-  Button, fadeUp, stagger,
+  Badge,
+  Card,
+  Container,
+  EmptyState,
+  ErrorState,
+  Input,
+  PageHeader,
+  Select,
+  Skeleton,
+  Button,
+  fadeUp,
+  stagger,
 } from '../../components/ui';
 
 interface DBProduct {
@@ -49,7 +59,10 @@ interface IkeaSearchResult {
   dimensions?: { width?: number; depth?: number; height?: number; unit: string };
 }
 
-type CatalogItem = (DBProduct & { _kind: 'product' }) | (DBAppliance & { _kind: 'appliance' }) | (IkeaSearchResult & { _kind: 'ikea' });
+type CatalogItem =
+  | (DBProduct & { _kind: 'product' })
+  | (DBAppliance & { _kind: 'appliance' })
+  | (IkeaSearchResult & { _kind: 'ikea' });
 
 const PROVIDER_NAMES: Record<string, string> = {
   ikea: 'IKEA',
@@ -86,7 +99,9 @@ export default function ProviderCatalog(): React.ReactElement {
             ? `/api/v1/ikea/search?q=${encodeURIComponent(search)}&limit=40`
             : '/api/v1/ikea/kitchen/cabinets?limit=40';
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
-          if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
           const json = (await res.json()) as { data?: { results?: IkeaSearchResult[] } };
           const results = json.data?.results ?? [];
           setItems(results.map((r) => ({ ...r, _kind: 'ikea' as const })));
@@ -95,7 +110,9 @@ export default function ProviderCatalog(): React.ReactElement {
             ? `/api/v1/${providerCode}/appliances/search?q=${encodeURIComponent(search)}&limit=40`
             : `/api/v1/${providerCode}/appliances?limit=40`;
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
-          if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
           const json = (await res.json()) as { data?: DBAppliance[] };
           const results = json.data ?? [];
           setItems(results.map((r) => ({ ...r, _kind: 'appliance' as const })));
@@ -104,42 +121,59 @@ export default function ProviderCatalog(): React.ReactElement {
             ? `/api/v1/${providerCode}/products/search?q=${encodeURIComponent(search)}&limit=40`
             : `/api/v1/${providerCode}/products?limit=40`;
           const res = await fetch(url, { credentials: 'include', signal: controller.signal });
-          if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
           const json = (await res.json()) as { data?: DBProduct[] };
           const results = json.data ?? [];
           setItems(results.map((r) => ({ ...r, _kind: 'product' as const })));
         }
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}
+        if ((err as Error).name !== 'AbortError') {
+          setError((err as Error).message);
+        }
       }
     };
 
-    if (debounceRef.current) {clearTimeout(debounceRef.current);}
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
     debounceRef.current = setTimeout(() => void run(), search ? 300 : 0);
 
     return () => {
-      if (debounceRef.current) {clearTimeout(debounceRef.current);}
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
       controller.abort();
     };
   }, [providerCode, search, isLive, isAppliance]);
 
   const sorted = useMemo(() => {
-    if (!items) {return null;}
+    if (!items) {
+      return null;
+    }
     const copy = [...items];
     const priceOf = (it: CatalogItem): number =>
       typeof (it as { price?: unknown }).price === 'number'
         ? Number((it as { price: number }).price)
         : Number((it as { price: string }).price ?? 0);
-    if (sortBy === 'price_asc') {copy.sort((a, b) => priceOf(a) - priceOf(b));}
-    else if (sortBy === 'price_desc') {copy.sort((a, b) => priceOf(b) - priceOf(a));}
-    else {copy.sort((a, b) => a.name.localeCompare(b.name));}
+    if (sortBy === 'price_asc') {
+      copy.sort((a, b) => priceOf(a) - priceOf(b));
+    } else if (sortBy === 'price_desc') {
+      copy.sort((a, b) => priceOf(b) - priceOf(a));
+    } else {
+      copy.sort((a, b) => a.name.localeCompare(b.name));
+    }
     return copy;
   }, [items, sortBy]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
       <Container size="xl" className="py-10">
-        <Link to="/catalog" className="mb-6 inline-flex items-center gap-2 text-sm text-white/60 hover:text-white">
+        <Link
+          to="/catalog"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-white/60 hover:text-white"
+        >
           <ArrowLeft className="h-4 w-4" /> Tous les fournisseurs
         </Link>
 
@@ -147,7 +181,7 @@ export default function ProviderCatalog(): React.ReactElement {
           title={providerName}
           description={
             isLive
-              ? 'Catalogue interrogé en direct via l\'API IKEA officielle.'
+              ? "Catalogue interrogé en direct via l'API IKEA officielle."
               : 'Catalogue local — synchronisé périodiquement.'
           }
           actions={
@@ -167,7 +201,12 @@ export default function ProviderCatalog(): React.ReactElement {
               onChange={(e) => setSearch(e.target.value)}
               leftIcon={<Search className="h-4 w-4" />}
             />
-            <Select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} aria-label="Trier les produits" className="w-full sm:w-auto">
+            <Select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              aria-label="Trier les produits"
+              className="w-full sm:w-auto"
+            >
               <option value="name">Nom A-Z</option>
               <option value="price_asc">Prix croissant</option>
               <option value="price_desc">Prix décroissant</option>
@@ -192,17 +231,28 @@ export default function ProviderCatalog(): React.ReactElement {
         )}
 
         {sorted && sorted.length === 0 && (
-          <EmptyState icon={<Package className="h-5 w-5" />} title="Aucun résultat" description="Affinez votre recherche." />
+          <EmptyState
+            icon={<Package className="h-5 w-5" />}
+            title="Aucun résultat"
+            description="Affinez votre recherche."
+          />
         )}
 
         {sorted && sorted.length > 0 && (
           <motion.div
-            initial="hidden" animate="show"
+            initial="hidden"
+            animate="show"
             variants={{ hidden: {}, show: { transition: stagger(0.03) } }}
             className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
             {sorted.map((it) => (
-              <motion.div key={(it as { id?: string; itemCode?: string }).id ?? (it as { itemCode: string }).itemCode} variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}>
+              <motion.div
+                key={
+                  (it as { id?: string; itemCode?: string }).id ??
+                  (it as { itemCode: string }).itemCode
+                }
+                variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}
+              >
                 <CatalogItemCard item={it} onImport={(target) => setImportTarget(target)} />
               </motion.div>
             ))}
@@ -211,11 +261,7 @@ export default function ProviderCatalog(): React.ReactElement {
       </Container>
 
       {importTarget && (
-        <ImportToDesignDialog
-          open
-          onClose={() => setImportTarget(null)}
-          target={importTarget}
-        />
+        <ImportToDesignDialog open onClose={() => setImportTarget(null)} target={importTarget} />
       )}
     </div>
   );
@@ -227,7 +273,8 @@ export type ImportTarget =
   | { source: 'ikea'; itemCode: string; name: string };
 
 function CatalogItemCard({
-  item, onImport,
+  item,
+  onImport,
 }: {
   item: CatalogItem;
   onImport: (target: ImportTarget) => void;
@@ -236,17 +283,27 @@ function CatalogItemCard({
   const isAppliance = item._kind === 'appliance';
 
   const dims = (() => {
-    if (isIkea) {return item.dimensions;}
+    if (isIkea) {
+      return item.dimensions;
+    }
     const w = (item as { width?: unknown }).width;
     const d = (item as { depth?: unknown }).depth;
     const h = (item as { height?: unknown }).height;
-    if (w == null && d == null && h == null) {return undefined;}
-    return { width: w == null ? undefined : Number(w), depth: d == null ? undefined : Number(d), height: h == null ? undefined : Number(h), unit: 'cm' as const };
+    if (w == null && d == null && h == null) {
+      return undefined;
+    }
+    return {
+      width: w == null ? undefined : Number(w),
+      depth: d == null ? undefined : Number(d),
+      height: h == null ? undefined : Number(h),
+      unit: 'cm' as const,
+    };
   })();
 
-  const price = typeof (item as { price?: unknown }).price === 'number'
-    ? Number((item as { price: number }).price)
-    : Number((item as { price: string }).price ?? 0);
+  const price =
+    typeof (item as { price?: unknown }).price === 'number'
+      ? Number((item as { price: number }).price)
+      : Number((item as { price: string }).price ?? 0);
 
   const imageUrl = isIkea ? (item as IkeaSearchResult).imageUrl : null;
 
@@ -266,7 +323,12 @@ function CatalogItemCard({
     <Card variant="interactive" className="group flex h-full flex-col overflow-hidden p-0">
       <div className="relative h-44 overflow-hidden bg-gradient-to-br from-white/5 to-white/[0.02]">
         {imageUrl ? (
-          <img src={imageUrl} alt={item.name} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
+          <img
+            src={imageUrl}
+            alt={item.name}
+            loading="lazy"
+            className="h-full w-full object-cover transition group-hover:scale-105"
+          />
         ) : (
           <div className="flex h-full items-center justify-center text-white/20">
             <Package className="h-10 w-10" />
@@ -284,15 +346,22 @@ function CatalogItemCard({
         {dims && (dims.width || dims.depth || dims.height) && (
           <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-white/60">
             <Ruler className="h-3.5 w-3.5" />
-            {dims.width ? `${dims.width}` : '?'} × {dims.depth ? `${dims.depth}` : '?'} × {dims.height ? `${dims.height}` : '?'} cm
+            {dims.width ? `${dims.width}` : '?'} × {dims.depth ? `${dims.depth}` : '?'} ×{' '}
+            {dims.height ? `${dims.height}` : '?'} cm
           </div>
         )}
 
         <div className="mt-auto flex items-center justify-between pt-4">
           <span className="text-base font-semibold text-white">
-            {price > 0
-              ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: (item as { currency?: string }).currency ?? 'EUR', maximumFractionDigits: 0 }).format(price)
-              : <span className="text-sm text-white/50">Sur devis</span>}
+            {price > 0 ? (
+              new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: (item as { currency?: string }).currency ?? 'EUR',
+                maximumFractionDigits: 0,
+              }).format(price)
+            ) : (
+              <span className="text-sm text-white/50">Sur devis</span>
+            )}
           </span>
           <div className="flex items-center gap-2">
             {isIkea && (item as IkeaSearchResult).url && (

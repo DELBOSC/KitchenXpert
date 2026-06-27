@@ -403,9 +403,7 @@ export async function getManufacturersCounts(): Promise<Array<{ name: string; co
 // Facade Queries
 // ===============================================================================
 
-export async function queryFacades(
-  params: FacadeSearchParams
-): Promise<PaginatedResult<unknown>> {
+export async function queryFacades(params: FacadeSearchParams): Promise<PaginatedResult<unknown>> {
   const client = getClient();
   const limit = params.limit || 50;
   const offset = params.offset || 0;
@@ -595,7 +593,9 @@ export async function getWorktopById(id: string): Promise<unknown | null> {
   }
 }
 
-export async function getWorktopMaterialsCounts(): Promise<Array<{ material: string; count: number }>> {
+export async function getWorktopMaterialsCounts(): Promise<
+  Array<{ material: string; count: number }>
+> {
   const client = getClient();
   if (!client || !client.worktop) return [];
 
@@ -637,7 +637,9 @@ export async function getBrandStatsById(brandId: string): Promise<{
 
     // Safely try to query each model
     if (client.brand) {
-      queries.push(client.brand.findUnique({ where: { id: brandId }, select: { lastScrapedAt: true } }));
+      queries.push(
+        client.brand.findUnique({ where: { id: brandId }, select: { lastScrapedAt: true } })
+      );
     } else {
       queries.push(Promise.resolve(null));
     }
@@ -672,7 +674,8 @@ export async function getBrandStatsById(brandId: string): Promise<{
       queries.push(Promise.resolve(0));
     }
 
-    const [brand, collectionsCount, cabinetsCount, facadesCount, worktopsCount, appliancesCount] = await Promise.all(queries);
+    const [brand, collectionsCount, cabinetsCount, facadesCount, worktopsCount, appliancesCount] =
+      await Promise.all(queries);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const brandData = brand as any;
@@ -892,11 +895,13 @@ export async function getSearchSuggestions(
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      suggestions.push(...brands.map((b: any) => ({
-        text: b.name,
-        type: 'brand' as const,
-        count: b.productsCount,
-      })));
+      suggestions.push(
+        ...brands.map((b: any) => ({
+          text: b.name,
+          type: 'brand' as const,
+          count: b.productsCount,
+        }))
+      );
     }
 
     // Get collection suggestions
@@ -908,10 +913,12 @@ export async function getSearchSuggestions(
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      suggestions.push(...collections.map((c: any) => ({
-        text: c.name,
-        type: 'collection' as const,
-      })));
+      suggestions.push(
+        ...collections.map((c: any) => ({
+          text: c.name,
+          type: 'collection' as const,
+        }))
+      );
     }
 
     // Get product name suggestions from cabinets
@@ -930,10 +937,12 @@ export async function getSearchSuggestions(
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      suggestions.push(...cabinets.map((c: any) => ({
-        text: c.name,
-        type: 'product' as const,
-      })));
+      suggestions.push(
+        ...cabinets.map((c: any) => ({
+          text: c.name,
+          type: 'product' as const,
+        }))
+      );
     }
 
     return suggestions.slice(0, limit);
@@ -948,7 +957,12 @@ export async function findCompatibleProducts(
   productType: string
 ): Promise<CompatibleProducts> {
   const client = getClient();
-  const emptyResult: CompatibleProducts = { handles: [], worktops: [], accessories: [], appliances: [] };
+  const emptyResult: CompatibleProducts = {
+    handles: [],
+    worktops: [],
+    accessories: [],
+    appliances: [],
+  };
 
   if (!client) return emptyResult;
 
@@ -983,7 +997,12 @@ export async function findCompatibleProducts(
         }
 
         // Find compatible appliances
-        if (client.appliance && (cabinet.type.includes('hob') || cabinet.type.includes('oven') || cabinet.type.includes('sink'))) {
+        if (
+          client.appliance &&
+          (cabinet.type.includes('hob') ||
+            cabinet.type.includes('oven') ||
+            cabinet.type.includes('sink'))
+        ) {
           compatible.appliances = await client.appliance.findMany({
             where: {
               brandId: cabinet.brandId,
@@ -1065,7 +1084,10 @@ export async function findSimilarProducts(
         type: appliance.type,
       };
       if (appliance.priceTTC) {
-        where.priceTTC = { gte: appliance.priceTTC - priceRange, lte: appliance.priceTTC + priceRange };
+        where.priceTTC = {
+          gte: appliance.priceTTC - priceRange,
+          lte: appliance.priceTTC + priceRange,
+        };
       }
 
       return await client.appliance.findMany({
@@ -1088,19 +1110,39 @@ export async function findSimilarProducts(
 
 export async function getProductStats(): Promise<ProductStats> {
   const client = getClient();
-  const defaultStats = { cabinets: 0, worktops: 0, facades: 0, handles: 0, appliances: 0, accessories: 0, total: 0 };
+  const defaultStats = {
+    cabinets: 0,
+    worktops: 0,
+    facades: 0,
+    handles: 0,
+    appliances: 0,
+    accessories: 0,
+    total: 0,
+  };
 
   if (!client) return defaultStats;
 
   try {
     const queries: Promise<number>[] = [];
 
-    queries.push(client.cabinet ? client.cabinet.count({ where: { isActive: true } }) : Promise.resolve(0));
-    queries.push(client.worktop ? client.worktop.count({ where: { isActive: true } }) : Promise.resolve(0));
-    queries.push(client.facade ? client.facade.count({ where: { isActive: true } }) : Promise.resolve(0));
-    queries.push(client.handle ? client.handle.count({ where: { isActive: true } }) : Promise.resolve(0));
-    queries.push(client.appliance ? client.appliance.count({ where: { isActive: true } }) : Promise.resolve(0));
-    queries.push(client.accessory ? client.accessory.count({ where: { isActive: true } }) : Promise.resolve(0));
+    queries.push(
+      client.cabinet ? client.cabinet.count({ where: { isActive: true } }) : Promise.resolve(0)
+    );
+    queries.push(
+      client.worktop ? client.worktop.count({ where: { isActive: true } }) : Promise.resolve(0)
+    );
+    queries.push(
+      client.facade ? client.facade.count({ where: { isActive: true } }) : Promise.resolve(0)
+    );
+    queries.push(
+      client.handle ? client.handle.count({ where: { isActive: true } }) : Promise.resolve(0)
+    );
+    queries.push(
+      client.appliance ? client.appliance.count({ where: { isActive: true } }) : Promise.resolve(0)
+    );
+    queries.push(
+      client.accessory ? client.accessory.count({ where: { isActive: true } }) : Promise.resolve(0)
+    );
 
     const results = await Promise.all(queries);
     const [cabinets, worktops, facades, handles, appliances, accessories] = results;
@@ -1112,7 +1154,13 @@ export async function getProductStats(): Promise<ProductStats> {
       handles: handles ?? 0,
       appliances: appliances ?? 0,
       accessories: accessories ?? 0,
-      total: (cabinets ?? 0) + (worktops ?? 0) + (facades ?? 0) + (handles ?? 0) + (appliances ?? 0) + (accessories ?? 0),
+      total:
+        (cabinets ?? 0) +
+        (worktops ?? 0) +
+        (facades ?? 0) +
+        (handles ?? 0) +
+        (appliances ?? 0) +
+        (accessories ?? 0),
     };
   } catch (error) {
     handleQueryError('getProductStats', error);
@@ -1179,10 +1227,26 @@ export async function getBrandProductStats(brandId: string): Promise<{
   try {
     const queries: Promise<number>[] = [];
 
-    queries.push(client.cabinet ? client.cabinet.count({ where: { brandId, isActive: true } }) : Promise.resolve(0));
-    queries.push(client.worktop ? client.worktop.count({ where: { brandId, isActive: true } }) : Promise.resolve(0));
-    queries.push(client.facade ? client.facade.count({ where: { brandId, isActive: true } }) : Promise.resolve(0));
-    queries.push(client.appliance ? client.appliance.count({ where: { brandId, isActive: true } }) : Promise.resolve(0));
+    queries.push(
+      client.cabinet
+        ? client.cabinet.count({ where: { brandId, isActive: true } })
+        : Promise.resolve(0)
+    );
+    queries.push(
+      client.worktop
+        ? client.worktop.count({ where: { brandId, isActive: true } })
+        : Promise.resolve(0)
+    );
+    queries.push(
+      client.facade
+        ? client.facade.count({ where: { brandId, isActive: true } })
+        : Promise.resolve(0)
+    );
+    queries.push(
+      client.appliance
+        ? client.appliance.count({ where: { brandId, isActive: true } })
+        : Promise.resolve(0)
+    );
 
     const results = await Promise.all(queries);
     const [cabinets, worktops, facades, appliances] = results;
@@ -1322,19 +1386,20 @@ export async function getScrapingStats(): Promise<{
   if (!client || !client.scrapeLog) return defaultStats;
 
   try {
-    const [totalRuns, successfulRuns, failedRuns, partialRuns, durationStats, productsStats] = await Promise.all([
-      client.scrapeLog.count(),
-      client.scrapeLog.count({ where: { status: 'completed' } }),
-      client.scrapeLog.count({ where: { status: 'failed' } }),
-      client.scrapeLog.count({ where: { status: 'partial' } }),
-      client.scrapeLog.aggregate({
-        where: { duration: { not: null } },
-        _avg: { duration: true },
-      }),
-      client.scrapeLog.aggregate({
-        _sum: { productsFound: true },
-      }),
-    ]);
+    const [totalRuns, successfulRuns, failedRuns, partialRuns, durationStats, productsStats] =
+      await Promise.all([
+        client.scrapeLog.count(),
+        client.scrapeLog.count({ where: { status: 'completed' } }),
+        client.scrapeLog.count({ where: { status: 'failed' } }),
+        client.scrapeLog.count({ where: { status: 'partial' } }),
+        client.scrapeLog.aggregate({
+          where: { duration: { not: null } },
+          _avg: { duration: true },
+        }),
+        client.scrapeLog.aggregate({
+          _sum: { productsFound: true },
+        }),
+      ]);
 
     return {
       totalRuns,
@@ -1350,7 +1415,10 @@ export async function getScrapingStats(): Promise<{
   }
 }
 
-export async function getScrapingLogsByBrand(brandId: string, limit: number = 10): Promise<unknown[]> {
+export async function getScrapingLogsByBrand(
+  brandId: string,
+  limit: number = 10
+): Promise<unknown[]> {
   const client = getClient();
   if (!client || !client.scrapeLog) return [];
 

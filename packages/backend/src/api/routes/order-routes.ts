@@ -14,15 +14,19 @@ router.use(authenticate);
 
 const createOrderSchema = z.object({
   projectId: z.string().optional(),
-  items: z.array(z.object({
-    productId: z.string().optional(),
-    applianceId: z.string().optional(),
-    name: z.string().optional(),
-    sku: z.string().optional(),
-    quantity: z.number().int().min(1).default(1),
-    unitPrice: z.number().min(0).optional(),
-    price: z.number().min(0).optional(),
-  })).min(1, 'At least one item is required'),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().optional(),
+        applianceId: z.string().optional(),
+        name: z.string().optional(),
+        sku: z.string().optional(),
+        quantity: z.number().int().min(1).default(1),
+        unitPrice: z.number().min(0).optional(),
+        price: z.number().min(0).optional(),
+      })
+    )
+    .min(1, 'At least one item is required'),
   shippingAddress: z.object({
     street: z.string().min(1),
     city: z.string().min(1),
@@ -30,13 +34,15 @@ const createOrderSchema = z.object({
     postalCode: z.string().min(1),
     country: z.string().min(1),
   }),
-  billingAddress: z.object({
-    street: z.string().min(1),
-    city: z.string().min(1),
-    state: z.string().optional(),
-    postalCode: z.string().min(1),
-    country: z.string().min(1),
-  }).optional(),
+  billingAddress: z
+    .object({
+      street: z.string().min(1),
+      city: z.string().min(1),
+      state: z.string().optional(),
+      postalCode: z.string().min(1),
+      country: z.string().min(1),
+    })
+    .optional(),
   notes: z.string().max(2000).optional(),
   currency: z.string().length(3).optional(),
 });
@@ -214,16 +220,26 @@ router.get('/:id', orderController.getById);
  *       404:
  *         description: Order not found
  */
-router.put('/:id', validateBody(z.object({
-  notes: z.string().max(2000).optional(),
-  shippingAddress: z.object({
-    street: z.string().min(1),
-    city: z.string().min(1),
-    state: z.string().optional(),
-    postalCode: z.string().min(1),
-    country: z.string().min(1),
-  }).optional(),
-}).strict()), orderController.update);
+router.put(
+  '/:id',
+  validateBody(
+    z
+      .object({
+        notes: z.string().max(2000).optional(),
+        shippingAddress: z
+          .object({
+            street: z.string().min(1),
+            city: z.string().min(1),
+            state: z.string().optional(),
+            postalCode: z.string().min(1),
+            country: z.string().min(1),
+          })
+          .optional(),
+      })
+      .strict()
+  ),
+  orderController.update
+);
 
 // ==================== ORDER ACTIONS ====================
 

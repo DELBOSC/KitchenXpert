@@ -1,10 +1,9 @@
 # Business Dashboard Documentation
 
-> Comprehensive guide to the KitchenXpert Business Dashboard for KPIs and business metrics.
+> Comprehensive guide to the KitchenXpert Business Dashboard for KPIs and
+> business metrics.
 
-**Last Updated:** 2026-01-10
-**Owner:** Product Analytics Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Product Analytics Team **Version:** 1.0
 
 ---
 
@@ -25,22 +24,21 @@
 
 **Dashboard URL:** https://grafana.kitchenxpert.internal/d/business
 
-**Direct Links:**
-| View | URL |
-|------|-----|
-| Executive View | https://grafana.kitchenxpert.internal/d/business?var-view=executive |
-| Product View | https://grafana.kitchenxpert.internal/d/business?var-view=product |
-| Marketing View | https://grafana.kitchenxpert.internal/d/business?var-view=marketing |
+**Direct Links:** | View | URL | |------|-----| | Executive View |
+https://grafana.kitchenxpert.internal/d/business?var-view=executive | | Product
+View | https://grafana.kitchenxpert.internal/d/business?var-view=product | |
+Marketing View |
+https://grafana.kitchenxpert.internal/d/business?var-view=marketing |
 
 ### Access Requirements
 
-| Role | Access Level | Panels Visible |
-|------|--------------|----------------|
-| Executive | View only | All panels |
-| Product Manager | View + export | All panels |
-| Marketing | View only | Marketing-related |
-| Developer | View only | Technical metrics |
-| Finance | View only | Revenue panels |
+| Role            | Access Level  | Panels Visible    |
+| --------------- | ------------- | ----------------- |
+| Executive       | View only     | All panels        |
+| Product Manager | View + export | All panels        |
+| Marketing       | View only     | Marketing-related |
+| Developer       | View only     | Technical metrics |
+| Finance         | View only     | Revenue panels    |
 
 ---
 
@@ -55,12 +53,14 @@
 **Description:** Currently active users on the platform
 
 **Query:**
+
 ```promql
 # Real-time active users
 kitchenxpert_active_sessions
 ```
 
 **Visualization:**
+
 - Large number display
 - Small sparkline showing trend
 - Comparison to same time yesterday
@@ -76,6 +76,7 @@ kitchenxpert_active_sessions
 **Description:** Daily, weekly, and monthly active user trends
 
 **Queries:**
+
 ```promql
 # Daily Active Users
 kitchenxpert_daily_active_users
@@ -88,6 +89,7 @@ kitchenxpert_monthly_active_users
 ```
 
 **Visualization:**
+
 - Three lines on same graph
 - Y-axis: User count
 - Legend with current values
@@ -101,17 +103,15 @@ kitchenxpert_monthly_active_users
 **Description:** DAU/MAU ratio indicating engagement
 
 **Query:**
+
 ```promql
 # Stickiness ratio
 kitchenxpert_daily_active_users / kitchenxpert_monthly_active_users * 100
 ```
 
-**Thresholds:**
-| Value | Rating | Color |
-|-------|--------|-------|
-| > 20% | Excellent | Green |
-| 10-20% | Good | Blue |
-| < 10% | Needs Improvement | Yellow |
+**Thresholds:** | Value | Rating | Color | |-------|--------|-------| | > 20% |
+Excellent | Green | | 10-20% | Good | Blue | | < 10% | Needs Improvement |
+Yellow |
 
 **Target:** > 20%
 
@@ -128,12 +128,14 @@ kitchenxpert_daily_active_users / kitchenxpert_monthly_active_users * 100
 **Description:** Number of designs created today
 
 **Query:**
+
 ```promql
 # Designs created today
 increase(kitchenxpert_designs_created_total[24h])
 ```
 
 **Comparison:**
+
 - vs. yesterday
 - vs. same day last week
 
@@ -146,12 +148,14 @@ increase(kitchenxpert_designs_created_total[24h])
 **Description:** Design creation rate over time
 
 **Query:**
+
 ```promql
 # Design creation rate
 rate(kitchenxpert_designs_created_total[1h]) * 3600
 ```
 
 **Visualization:**
+
 - Area chart
 - Y-axis: Designs per hour
 - Highlight peak hours
@@ -165,6 +169,7 @@ rate(kitchenxpert_designs_created_total[1h]) * 3600
 **Description:** Funnel from started to completed designs
 
 **Queries:**
+
 ```promql
 # Designs started
 increase(kitchenxpert_designs_started_total[24h])
@@ -177,6 +182,7 @@ increase(kitchenxpert_designs_completed_total[24h])
 ```
 
 **Visualization:**
+
 - Funnel chart showing drop-off
 - Percentages at each stage
 
@@ -193,6 +199,7 @@ increase(kitchenxpert_designs_completed_total[24h])
 **Description:** Complete user journey from visit to conversion
 
 **Stages:**
+
 1. **Visitors** → Website visitors
 2. **Sign-ups** → Registered users
 3. **First Design** → Created first design
@@ -200,6 +207,7 @@ increase(kitchenxpert_designs_completed_total[24h])
 5. **Quote Requested** → Requested partner quote
 
 **Queries:**
+
 ```promql
 kitchenxpert_landing_page_views_total
 kitchenxpert_signups_total
@@ -209,6 +217,7 @@ kitchenxpert_quotes_requested_total
 ```
 
 **Conversion Rates Displayed:**
+
 - Visitor → Signup: X%
 - Signup → First Design: X%
 - First Design → Completed: X%
@@ -223,6 +232,7 @@ kitchenxpert_quotes_requested_total
 **Description:** Key conversion rates over time
 
 **Queries:**
+
 ```promql
 # Signup conversion rate
 rate(kitchenxpert_signups_total[1d]) /
@@ -238,6 +248,7 @@ rate(kitchenxpert_designs_completed_total[1d]) * 100
 ```
 
 **Visualization:**
+
 - Multiple lines for each conversion rate
 - Target threshold lines
 
@@ -253,17 +264,13 @@ rate(kitchenxpert_designs_completed_total[1d]) * 100
 
 **Description:** Most viewed and added products
 
-**Columns:**
-| Column | Description |
-|--------|-------------|
-| Rank | Position by views |
-| Product Name | Product display name |
-| Category | Product category |
-| Views (7d) | View count |
-| Adds to Design | Times added |
-| Add Rate | Adds / Views |
+**Columns:** | Column | Description | |--------|-------------| | Rank | Position
+by views | | Product Name | Product display name | | Category | Product category
+| | Views (7d) | View count | | Adds to Design | Times added | | Add Rate | Adds
+/ Views |
 
 **Query:**
+
 ```promql
 topk(10, sum(increase(kitchenxpert_product_views_total[7d])) by (product_id, product_name, category))
 ```
@@ -277,11 +284,13 @@ topk(10, sum(increase(kitchenxpert_product_views_total[7d])) by (product_id, pro
 **Description:** Distribution of product views by category
 
 **Query:**
+
 ```promql
 sum(increase(kitchenxpert_product_views_total[24h])) by (category)
 ```
 
 **Categories:**
+
 - Cabinets
 - Countertops
 - Appliances
@@ -297,14 +306,13 @@ sum(increase(kitchenxpert_product_views_total[24h])) by (category)
 
 **Description:** Health of partner catalog integrations
 
-**Metrics:**
-| Partner | Products | Last Sync | Status |
-|---------|----------|-----------|--------|
-| Partner A | 5,234 | 2h ago | Healthy |
-| Partner B | 3,128 | 1h ago | Healthy |
-| Partner C | 2,891 | 6h ago | Warning |
+**Metrics:** | Partner | Products | Last Sync | Status |
+|---------|----------|-----------|--------| | Partner A | 5,234 | 2h ago |
+Healthy | | Partner B | 3,128 | 1h ago | Healthy | | Partner C | 2,891 | 6h ago
+| Warning |
 
 **Query:**
+
 ```promql
 kitchenxpert_partner_catalog_products_count
 kitchenxpert_partner_catalog_last_sync_timestamp
@@ -323,11 +331,13 @@ kitchenxpert_partner_catalog_last_sync_timestamp
 **Description:** Current MRR from subscriptions
 
 **Query:**
+
 ```promql
 kitchenxpert_mrr_dollars
 ```
 
 **Display:**
+
 - Current MRR value
 - Month-over-month change
 - Trend sparkline
@@ -341,6 +351,7 @@ kitchenxpert_mrr_dollars
 **Description:** Revenue by source over time
 
 **Queries:**
+
 ```promql
 # Subscription revenue
 kitchenxpert_subscription_revenue_dollars
@@ -353,6 +364,7 @@ kitchenxpert_onetime_revenue_dollars
 ```
 
 **Visualization:**
+
 - Stacked area showing revenue composition
 - Y-axis: Dollars
 - Legend showing breakdown
@@ -366,11 +378,13 @@ kitchenxpert_onetime_revenue_dollars
 **Description:** Users by subscription tier
 
 **Query:**
+
 ```promql
 sum(kitchenxpert_users_by_tier) by (tier)
 ```
 
 **Tiers:**
+
 - Free: $0
 - Pro: $29/month
 - Business: $99/month
@@ -389,6 +403,7 @@ sum(kitchenxpert_users_by_tier) by (tier)
 **Description:** Number of AI design generations today
 
 **Query:**
+
 ```promql
 increase(kitchenxpert_ai_generations_total[24h])
 ```
@@ -402,6 +417,7 @@ increase(kitchenxpert_ai_generations_total[24h])
 **Description:** Percentage of users using AI features
 
 **Query:**
+
 ```promql
 sum(kitchenxpert_ai_users_active) /
 sum(kitchenxpert_daily_active_users) * 100
@@ -418,12 +434,14 @@ sum(kitchenxpert_daily_active_users) * 100
 **Description:** Rate at which users accept AI recommendations
 
 **Query:**
+
 ```promql
 rate(kitchenxpert_ai_recommendations_accepted_total[1h]) /
 rate(kitchenxpert_ai_recommendations_shown_total[1h]) * 100
 ```
 
 **Visualization:**
+
 - Line chart with target threshold
 - By recommendation type
 
@@ -435,38 +453,40 @@ rate(kitchenxpert_ai_recommendations_shown_total[1h]) * 100
 
 ### KPI Summary Table
 
-| KPI | Current | Target | Status |
-|-----|---------|--------|--------|
-| DAU | 15,234 | 15,000 | On Track |
-| WAU | 45,678 | 45,000 | On Track |
-| MAU | 123,456 | 120,000 | On Track |
-| Stickiness (DAU/MAU) | 12.3% | 15% | Below Target |
-| Sign-up Conversion | 4.2% | 5% | Below Target |
-| Design Completion | 68% | 65% | Above Target |
-| Quote Request Rate | 22% | 20% | Above Target |
-| MRR | $145K | $150K | On Track |
-| AI Adoption | 35% | 40% | Below Target |
+| KPI                  | Current | Target  | Status       |
+| -------------------- | ------- | ------- | ------------ |
+| DAU                  | 15,234  | 15,000  | On Track     |
+| WAU                  | 45,678  | 45,000  | On Track     |
+| MAU                  | 123,456 | 120,000 | On Track     |
+| Stickiness (DAU/MAU) | 12.3%   | 15%     | Below Target |
+| Sign-up Conversion   | 4.2%    | 5%      | Below Target |
+| Design Completion    | 68%     | 65%     | Above Target |
+| Quote Request Rate   | 22%     | 20%     | Above Target |
+| MRR                  | $145K   | $150K   | On Track     |
+| AI Adoption          | 35%     | 40%     | Below Target |
 
 ### Target Tracking
 
 **Weekly Review:**
+
 - Every Monday: Review prior week KPIs
 - Identify trends and anomalies
 - Adjust targets if needed
 
 **Monthly Review:**
+
 - Full KPI review with stakeholders
 - Update targets based on performance
 - Strategic planning alignment
 
 ### Alert Thresholds
 
-| KPI | Warning | Critical |
-|-----|---------|----------|
-| DAU drop | -10% day-over-day | -20% day-over-day |
+| KPI             | Warning             | Critical            |
+| --------------- | ------------------- | ------------------- |
+| DAU drop        | -10% day-over-day   | -20% day-over-day   |
 | Conversion drop | -15% week-over-week | -25% week-over-week |
-| Quote failures | > 5% | > 10% |
-| Revenue anomaly | -10% from forecast | -20% from forecast |
+| Quote failures  | > 5%                | > 10%               |
+| Revenue anomaly | -10% from forecast  | -20% from forecast  |
 
 ---
 
@@ -475,21 +495,25 @@ rate(kitchenxpert_ai_recommendations_shown_total[1h]) * 100
 ### Access Levels by Role
 
 #### Executive Team
+
 - **Access:** Full dashboard, all panels
 - **Features:** PDF export, scheduled reports
 - **Restrictions:** Cannot edit
 
 #### Product Management
+
 - **Access:** Full dashboard, all panels
 - **Features:** Data export, annotations
 - **Restrictions:** Cannot edit revenue panels
 
 #### Marketing Team
+
 - **Access:** User acquisition panels, conversion funnel
 - **Features:** Campaign tracking views
 - **Restrictions:** No revenue visibility
 
 #### Finance Team
+
 - **Access:** Revenue panels only
 - **Features:** Financial data export
 - **Restrictions:** Limited user metrics
@@ -497,16 +521,23 @@ rate(kitchenxpert_ai_recommendations_shown_total[1h]) * 100
 ### Sharing and Embedding
 
 **Share Link:**
+
 ```
 https://grafana.kitchenxpert.internal/d/business?kiosk=tv
 ```
 
 **Embed in Notion/Confluence:**
+
 ```html
-<iframe src="https://grafana.kitchenxpert.internal/d/business?orgId=1&kiosk=tv" width="100%" height="600"></iframe>
+<iframe
+  src="https://grafana.kitchenxpert.internal/d/business?orgId=1&kiosk=tv"
+  width="100%"
+  height="600"
+></iframe>
 ```
 
 **TV Dashboard Mode:**
+
 - URL parameter: `?kiosk=tv`
 - Auto-refresh enabled
 - Navigation hidden
@@ -517,18 +548,17 @@ https://grafana.kitchenxpert.internal/d/business?kiosk=tv
 
 ### Daily Report
 
-**Recipients:** Executive team, Product leads
-**Schedule:** 9:00 AM daily
+**Recipients:** Executive team, Product leads **Schedule:** 9:00 AM daily
 **Content:**
+
 - Yesterday's KPIs
 - Day-over-day changes
 - Anomaly highlights
 
 ### Weekly Report
 
-**Recipients:** All stakeholders
-**Schedule:** Monday 9:00 AM
-**Content:**
+**Recipients:** All stakeholders **Schedule:** Monday 9:00 AM **Content:**
+
 - Weekly KPI summary
 - Funnel performance
 - Top products
@@ -537,9 +567,8 @@ https://grafana.kitchenxpert.internal/d/business?kiosk=tv
 
 ### Monthly Report
 
-**Recipients:** Leadership, Board
-**Schedule:** 1st of month
-**Content:**
+**Recipients:** Leadership, Board **Schedule:** 1st of month **Content:**
+
 - Full month analysis
 - Trend analysis
 - Target progress
@@ -565,4 +594,5 @@ https://grafana.kitchenxpert.internal/d/business?kiosk=tv
 
 ---
 
-*For questions about the business dashboard, contact the Product Analytics team at analytics@kitchenxpert.com*
+_For questions about the business dashboard, contact the Product Analytics team
+at analytics@kitchenxpert.com_

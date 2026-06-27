@@ -143,7 +143,10 @@ export class OfflineStorage {
       };
 
       request.onerror = (event) => {
-        console.error('[OfflineStorage] Failed to open database:', (event.target as IDBOpenDBRequest).error);
+        console.error(
+          '[OfflineStorage] Failed to open database:',
+          (event.target as IDBOpenDBRequest).error
+        );
         this.initPromise = null;
         reject((event.target as IDBOpenDBRequest).error);
       };
@@ -189,7 +192,11 @@ export class OfflineStorage {
    * Generic helper to get all records from a store.
    */
   private async getAll<T>(storeName: string): Promise<T[]> {
-    return this.transaction<T[]>(storeName, 'readonly', (store) => store.getAll() as IDBRequest<T[]>);
+    return this.transaction<T[]>(
+      storeName,
+      'readonly',
+      (store) => store.getAll() as IDBRequest<T[]>
+    );
   }
 
   // ────────────────────────────── Kitchen Operations ──────────────────────────────
@@ -197,15 +204,16 @@ export class OfflineStorage {
   /**
    * Save a kitchen design for offline use.
    */
-  async saveKitchenOffline(kitchenId: string, data: Omit<KitchenData, 'id' | 'savedAt'>): Promise<void> {
+  async saveKitchenOffline(
+    kitchenId: string,
+    data: Omit<KitchenData, 'id' | 'savedAt'>
+  ): Promise<void> {
     const record: KitchenData = {
       ...data,
       id: kitchenId,
       savedAt: new Date().toISOString(),
     };
-    await this.transaction(STORES.KITCHENS, 'readwrite', (store) =>
-      store.put(record)
-    );
+    await this.transaction(STORES.KITCHENS, 'readwrite', (store) => store.put(record));
   }
 
   /**
@@ -235,9 +243,7 @@ export class OfflineStorage {
    * Delete a kitchen from offline storage.
    */
   async deleteKitchen(kitchenId: string): Promise<void> {
-    await this.transaction(STORES.KITCHENS, 'readwrite', (store) =>
-      store.delete(kitchenId)
-    );
+    await this.transaction(STORES.KITCHENS, 'readwrite', (store) => store.delete(kitchenId));
   }
 
   // ────────────────────────────── Pending Changes ──────────────────────────────
@@ -250,9 +256,7 @@ export class OfflineStorage {
       ...change,
       synced: false,
     };
-    await this.transaction(STORES.PENDING_CHANGES, 'readwrite', (store) =>
-      store.put(record)
-    );
+    await this.transaction(STORES.PENDING_CHANGES, 'readwrite', (store) => store.put(record));
   }
 
   /**
@@ -345,7 +349,9 @@ export class OfflineStorage {
           const req = store.delete(id);
           req.onsuccess = () => {
             completed++;
-            if (completed === changeIds.length) {resolve();}
+            if (completed === changeIds.length) {
+              resolve();
+            }
           };
           req.onerror = () => reject(req.error);
         });
@@ -417,9 +423,7 @@ export class OfflineStorage {
    * Clear the catalog cache.
    */
   async clearCatalog(): Promise<void> {
-    await this.transaction(STORES.CATALOG, 'readwrite', (store) =>
-      store.clear()
-    );
+    await this.transaction(STORES.CATALOG, 'readwrite', (store) => store.clear());
   }
 
   // ────────────────────────────── User Preferences ──────────────────────────────
@@ -433,9 +437,7 @@ export class OfflineStorage {
       value,
       updatedAt: new Date().toISOString(),
     };
-    await this.transaction(STORES.USER_PREFERENCES, 'readwrite', (store) =>
-      store.put(record)
-    );
+    await this.transaction(STORES.USER_PREFERENCES, 'readwrite', (store) => store.put(record));
   }
 
   /**

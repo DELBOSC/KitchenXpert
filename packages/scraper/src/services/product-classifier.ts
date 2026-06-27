@@ -16,7 +16,15 @@ import type { AccessoryType } from '../models/accessory.js';
 // Types & Interfaces
 // ═══════════════════════════════════════════════════════════════════════════
 
-export type ProductType = 'cabinet' | 'worktop' | 'facade' | 'handle' | 'appliance' | 'accessory' | 'collection' | 'unknown';
+export type ProductType =
+  | 'cabinet'
+  | 'worktop'
+  | 'facade'
+  | 'handle'
+  | 'appliance'
+  | 'accessory'
+  | 'collection'
+  | 'unknown';
 
 export interface ClassificationResult {
   type: ProductType;
@@ -103,8 +111,8 @@ const KEYWORDS: KeywordScore[] = [
 
   // Cabinets - Corner
   { keyword: 'angle', weight: 0.8, type: 'cabinet', subType: 'corner' },
-  { keyword: 'meuble d\'angle', weight: 0.95, type: 'cabinet', subType: 'corner' },
-  { keyword: 'élément d\'angle', weight: 0.95, type: 'cabinet', subType: 'corner' },
+  { keyword: "meuble d'angle", weight: 0.95, type: 'cabinet', subType: 'corner' },
+  { keyword: "élément d'angle", weight: 0.95, type: 'cabinet', subType: 'corner' },
   { keyword: 'corner cabinet', weight: 0.95, type: 'cabinet', subType: 'corner' },
 
   // Cabinets - Categories
@@ -348,7 +356,8 @@ const DIMENSION_HEURISTICS: DimensionHeuristic[] = [
   // Standard cabinet widths
   {
     type: 'cabinet',
-    check: (d) => !!d.width && [150, 200, 300, 400, 450, 500, 600, 800, 900, 1000, 1200].includes(d.width),
+    check: (d) =>
+      !!d.width && [150, 200, 300, 400, 450, 500, 600, 800, 900, 1000, 1200].includes(d.width),
     weight: 0.3,
   },
   // Base cabinet heights
@@ -435,12 +444,9 @@ export class ProductClassifier {
     };
 
     // Combine all text for analysis
-    const allText = [
-      name,
-      description || '',
-      url || '',
-      ...Object.values(attributes || {}),
-    ].join(' ').toLowerCase();
+    const allText = [name, description || '', url || '', ...Object.values(attributes || {})]
+      .join(' ')
+      .toLowerCase();
 
     // Extract features from patterns
     const features = this.extractFeatures(allText);
@@ -808,9 +814,7 @@ export class ProductClassifier {
       attributes?: Record<string, string>;
     }>
   ): ClassificationResult[] {
-    return products.map((p) =>
-      this.classify(p.name, p.description, p.url, p.attributes)
-    );
+    return products.map((p) => this.classify(p.name, p.description, p.url, p.attributes));
   }
 
   /**
@@ -846,10 +850,7 @@ export class ProductClassifier {
           subType: llmResult.subType || result.subType,
           category: llmResult.subType || result.category,
           confidence: llmResult.confidence,
-          reasoning: [
-            ...result.reasoning,
-            `LLM fallback: ${llmResult.reasoning}`,
-          ],
+          reasoning: [...result.reasoning, `LLM fallback: ${llmResult.reasoning}`],
         };
       }
     } catch (error) {
@@ -883,7 +884,16 @@ export class ProductClassifier {
 
       const client = new Anthropic({ apiKey });
 
-      const validTypes = ['cabinet', 'worktop', 'facade', 'handle', 'appliance', 'accessory', 'collection', 'unknown'];
+      const validTypes = [
+        'cabinet',
+        'worktop',
+        'facade',
+        'handle',
+        'appliance',
+        'accessory',
+        'collection',
+        'unknown',
+      ];
 
       const prompt = `Classifie ce produit de cuisine.
 
@@ -948,8 +958,7 @@ Reponds UNIQUEMENT avec un JSON valide:
       // If module not found, log gracefully
       if (
         error instanceof Error &&
-        (error.message.includes('Cannot find module') ||
-         error.message.includes('MODULE_NOT_FOUND'))
+        (error.message.includes('Cannot find module') || error.message.includes('MODULE_NOT_FOUND'))
       ) {
         logger.info('[ProductClassifier] @anthropic-ai/sdk not available, LLM fallback disabled');
       } else {

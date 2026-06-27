@@ -46,19 +46,21 @@ export function escapeHtml(str: string): string {
  * This is a more aggressive sanitization for when HTML is not expected
  */
 export function stripDangerousPatterns(str: string): string {
-  return str
-    // Remove script tags and their content
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    // Remove event handlers
-    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
-    .replace(/\s*on\w+\s*=\s*[^\s>]*/gi, '')
-    // Remove javascript: and data: URLs
-    .replace(/javascript\s*:/gi, '')
-    .replace(/data\s*:/gi, '')
-    // Remove vbscript: URLs (IE)
-    .replace(/vbscript\s*:/gi, '')
-    // Remove expression() CSS (IE)
-    .replace(/expression\s*\([^)]*\)/gi, '');
+  return (
+    str
+      // Remove script tags and their content
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      // Remove event handlers
+      .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
+      .replace(/\s*on\w+\s*=\s*[^\s>]*/gi, '')
+      // Remove javascript: and data: URLs
+      .replace(/javascript\s*:/gi, '')
+      .replace(/data\s*:/gi, '')
+      // Remove vbscript: URLs (IE)
+      .replace(/vbscript\s*:/gi, '')
+      // Remove expression() CSS (IE)
+      .replace(/expression\s*\([^)]*\)/gi, '')
+  );
 }
 
 /**
@@ -108,11 +110,7 @@ const defaultOptions: SanitizeOptions = {
 /**
  * Recursively sanitize a value
  */
-function sanitizeValue(
-  value: unknown,
-  options: SanitizeOptions,
-  path: string = ''
-): unknown {
+function sanitizeValue(value: unknown, options: SanitizeOptions, path: string = ''): unknown {
   // Skip if path is in skipFields
   if (options.skipFields && options.skipFields.includes(path)) {
     return value;
@@ -155,9 +153,7 @@ function sanitizeValue(
     if (!options.deep) {
       return value;
     }
-    return value.map((item, index) =>
-      sanitizeValue(item, options, `${path}[${index}]`)
-    );
+    return value.map((item, index) => sanitizeValue(item, options, `${path}[${index}]`));
   }
 
   // Handle objects
@@ -249,10 +245,7 @@ export const sanitizeInputStrict = createSanitizeMiddleware({
  * Utility to sanitize a single string value
  * Useful for sanitizing individual values outside the middleware
  */
-export function sanitizeString(
-  value: string,
-  options: Partial<SanitizeOptions> = {}
-): string {
+export function sanitizeString(value: string, options: Partial<SanitizeOptions> = {}): string {
   const opts = { ...defaultOptions, ...options };
   const result = sanitizeValue(value, opts);
   return typeof result === 'string' ? result : value;
@@ -272,7 +265,7 @@ export function containsDangerousContent(str: string): boolean {
     /expression\s*\(/i,
   ];
 
-  return dangerousPatterns.some(pattern => pattern.test(str));
+  return dangerousPatterns.some((pattern) => pattern.test(str));
 }
 
 export default sanitizeInput;

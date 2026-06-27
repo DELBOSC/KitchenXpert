@@ -125,18 +125,18 @@ export class ElectroluxProvider implements SmartApplianceProvider {
 
   // Appliance type mapping
   private readonly applianceTypeMapping: Record<string, ConnectedApplianceType> = {
-    'OV': 'Oven',
-    'WM': 'Washer',
-    'TD': 'Dryer',
-    'DW': 'Dishwasher',
-    'RF': 'Refrigerator',
-    'FZ': 'Freezer',
-    'HB': 'Hob',
-    'HO': 'Hood',
-    'MW': 'Microwave',
-    'CM': 'CoffeeMaker',
-    'WD': 'WarmingDrawer',
-    'AC': 'Oven', // Air conditioner mapped to generic
+    OV: 'Oven',
+    WM: 'Washer',
+    TD: 'Dryer',
+    DW: 'Dishwasher',
+    RF: 'Refrigerator',
+    FZ: 'Freezer',
+    HB: 'Hob',
+    HO: 'Hood',
+    MW: 'Microwave',
+    CM: 'CoffeeMaker',
+    WD: 'WarmingDrawer',
+    AC: 'Oven', // Air conditioner mapped to generic
   };
 
   constructor(config?: { apiKey?: string } & Partial<ApplianceOAuthConfig>) {
@@ -156,7 +156,7 @@ export class ElectroluxProvider implements SmartApplianceProvider {
     if (credentials.accessToken) {
       this.accessToken = credentials.accessToken;
       this.refreshToken = credentials.refreshToken || null;
-      this.tokenExpiresAt = Date.now() + (3600 * 1000);
+      this.tokenExpiresAt = Date.now() + 3600 * 1000;
       return true;
     }
 
@@ -199,10 +199,10 @@ export class ElectroluxProvider implements SmartApplianceProvider {
         return false;
       }
 
-      const data = await response.json() as TokenResponse;
+      const data = (await response.json()) as TokenResponse;
       this.accessToken = data.accessToken;
       this.refreshToken = data.refreshToken || null;
-      this.tokenExpiresAt = Date.now() + (data.expiresIn * 1000);
+      this.tokenExpiresAt = Date.now() + data.expiresIn * 1000;
 
       return true;
     } catch {
@@ -236,12 +236,12 @@ export class ElectroluxProvider implements SmartApplianceProvider {
         return false;
       }
 
-      const data = await response.json() as TokenResponse;
+      const data = (await response.json()) as TokenResponse;
       this.accessToken = data.accessToken;
       if (data.refreshToken) {
         this.refreshToken = data.refreshToken;
       }
-      this.tokenExpiresAt = Date.now() + (data.expiresIn * 1000);
+      this.tokenExpiresAt = Date.now() + data.expiresIn * 1000;
 
       return true;
     } catch {
@@ -252,10 +252,7 @@ export class ElectroluxProvider implements SmartApplianceProvider {
   /**
    * Make an authenticated API request
    */
-  private async apiRequest<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     // Check if token needs refresh
     if (this.tokenExpiresAt && Date.now() > this.tokenExpiresAt - 60000) {
       await this.refreshAccessToken();
@@ -268,9 +265,9 @@ export class ElectroluxProvider implements SmartApplianceProvider {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers: {
-        'Authorization': `Bearer ${this.accessToken}`,
+        Authorization: `Bearer ${this.accessToken}`,
         'x-api-key': this.apiKey,
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
         ...options.headers,
       },
@@ -288,13 +285,11 @@ export class ElectroluxProvider implements SmartApplianceProvider {
    * Get all connected appliances
    */
   async getAppliances(): Promise<ConnectedAppliance[]> {
-    const response = await this.apiRequest<ElectroluxAppliance[]>(
-      '/appliance/api/v2/appliances'
-    );
+    const response = await this.apiRequest<ElectroluxAppliance[]>('/appliance/api/v2/appliances');
 
     return response
-      .filter(appliance => this.isKitchenAppliance(appliance.applianceType))
-      .map(appliance => this.mapToConnectedAppliance(appliance));
+      .filter((appliance) => this.isKitchenAppliance(appliance.applianceType))
+      .map((appliance) => this.mapToConnectedAppliance(appliance));
   }
 
   /**
@@ -321,11 +316,11 @@ export class ElectroluxProvider implements SmartApplianceProvider {
         return [];
       }
 
-      return response.programs.map(program => ({
+      return response.programs.map((program) => ({
         id: program.programId,
         name: program.name,
         key: program.programId,
-        options: program.options?.map(opt => ({
+        options: program.options?.map((opt) => ({
           key: opt.optionId,
           name: opt.name,
           type: this.mapOptionType(opt.type),
@@ -398,11 +393,7 @@ export class ElectroluxProvider implements SmartApplianceProvider {
   /**
    * Set an appliance setting
    */
-  async setSetting(
-    applianceId: string,
-    key: string,
-    value: unknown
-  ): Promise<boolean> {
+  async setSetting(applianceId: string, key: string, value: unknown): Promise<boolean> {
     try {
       const response = await this.apiRequest<ElectroluxCommandResponse>(
         `/appliance/api/v2/appliances/${applianceId}/command`,
@@ -423,7 +414,11 @@ export class ElectroluxProvider implements SmartApplianceProvider {
   /**
    * Execute a command on the appliance
    */
-  async executeCommand(applianceId: string, command: string, params?: Record<string, unknown>): Promise<boolean> {
+  async executeCommand(
+    applianceId: string,
+    command: string,
+    params?: Record<string, unknown>
+  ): Promise<boolean> {
     try {
       const response = await this.apiRequest<ElectroluxCommandResponse>(
         `/appliance/api/v2/appliances/${applianceId}/command`,
@@ -449,7 +444,7 @@ export class ElectroluxProvider implements SmartApplianceProvider {
   private isKitchenAppliance(type: string): boolean {
     const kitchenTypes = ['OV', 'DW', 'RF', 'FZ', 'HB', 'HO', 'MW', 'CM', 'WD'];
     // Check if the type starts with any kitchen type code
-    return kitchenTypes.some(kt => type.toUpperCase().startsWith(kt));
+    return kitchenTypes.some((kt) => type.toUpperCase().startsWith(kt));
   }
 
   private mapToConnectedAppliance(appliance: ElectroluxAppliance): ConnectedAppliance {
@@ -488,32 +483,37 @@ export class ElectroluxProvider implements SmartApplianceProvider {
 
   private getApplianceCategory(typeCode: string): string {
     const categoryMap: Record<string, string> = {
-      'OV': 'cooking',
-      'HB': 'cooking',
-      'HO': 'ventilation',
-      'MW': 'cooking',
-      'CM': 'small_appliances',
-      'DW': 'cleaning',
-      'RF': 'cold_storage',
-      'FZ': 'cold_storage',
-      'WD': 'cooking',
+      OV: 'cooking',
+      HB: 'cooking',
+      HO: 'ventilation',
+      MW: 'cooking',
+      CM: 'small_appliances',
+      DW: 'cleaning',
+      RF: 'cold_storage',
+      FZ: 'cold_storage',
+      WD: 'cooking',
     };
     return categoryMap[typeCode] || 'other';
   }
 
-  private getDefaultDimensions(typeCode: string): { width: number; height: number; depth: number; unit: 'cm' } {
+  private getDefaultDimensions(typeCode: string): {
+    width: number;
+    height: number;
+    depth: number;
+    unit: 'cm';
+  } {
     const dimensions: Record<string, { width: number; height: number; depth: number }> = {
-      'OV': { width: 60, height: 60, depth: 55 },
-      'DW': { width: 60, height: 82, depth: 55 },
-      'RF': { width: 60, height: 185, depth: 65 },
-      'FZ': { width: 60, height: 185, depth: 65 },
-      'HB': { width: 60, height: 5, depth: 52 },
-      'HO': { width: 60, height: 50, depth: 50 },
-      'MW': { width: 60, height: 38, depth: 32 },
-      'CM': { width: 60, height: 45, depth: 35 },
-      'WD': { width: 60, height: 14, depth: 55 },
+      OV: { width: 60, height: 60, depth: 55 },
+      DW: { width: 60, height: 82, depth: 55 },
+      RF: { width: 60, height: 185, depth: 65 },
+      FZ: { width: 60, height: 185, depth: 65 },
+      HB: { width: 60, height: 5, depth: 52 },
+      HO: { width: 60, height: 50, depth: 50 },
+      MW: { width: 60, height: 38, depth: 32 },
+      CM: { width: 60, height: 45, depth: 35 },
+      WD: { width: 60, height: 14, depth: 55 },
     };
-    return { ...dimensions[typeCode] || { width: 60, height: 60, depth: 55 }, unit: 'cm' };
+    return { ...(dimensions[typeCode] || { width: 60, height: 60, depth: 55 }), unit: 'cm' };
   }
 
   private mapStatusResponse(appliance: ElectroluxAppliance): ConnectedApplianceStatus {
@@ -526,8 +526,11 @@ export class ElectroluxProvider implements SmartApplianceProvider {
 
     // Door state
     if (state.doorState) {
-      status.door = state.doorState.toLowerCase().includes('open') ? 'open' :
-                    state.doorState.toLowerCase().includes('lock') ? 'locked' : 'closed';
+      status.door = state.doorState.toLowerCase().includes('open')
+        ? 'open'
+        : state.doorState.toLowerCase().includes('lock')
+          ? 'locked'
+          : 'closed';
     }
 
     // Temperature
@@ -550,7 +553,7 @@ export class ElectroluxProvider implements SmartApplianceProvider {
 
     // Alerts/errors
     if (state.alerts && state.alerts.length > 0) {
-      const errorAlert = state.alerts.find(a => a.severity === 'ERROR');
+      const errorAlert = state.alerts.find((a) => a.severity === 'ERROR');
       if (errorAlert) {
         status.state = 'error';
         status.error = errorAlert.text || errorAlert.code;
@@ -581,7 +584,9 @@ export class ElectroluxProvider implements SmartApplianceProvider {
 }
 
 // Export singleton instance factory
-export function createElectroluxProvider(config?: { apiKey?: string } & Partial<ApplianceOAuthConfig>): ElectroluxProvider {
+export function createElectroluxProvider(
+  config?: { apiKey?: string } & Partial<ApplianceOAuthConfig>
+): ElectroluxProvider {
   return new ElectroluxProvider(config);
 }
 

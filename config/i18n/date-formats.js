@@ -36,43 +36,43 @@ const LOCALE_MAP = {
 
 export const DATE_FORMATS = {
   'fr-FR': {
-    short: 'dd/MM/yyyy',         // 10/01/2026
-    medium: 'd MMM yyyy',        // 10 janv. 2026
-    long: 'd MMMM yyyy',         // 10 janvier 2026
-    full: 'EEEE d MMMM yyyy',    // vendredi 10 janvier 2026
-    numeric: 'dd/MM/yy',         // 10/01/26
+    short: 'dd/MM/yyyy', // 10/01/2026
+    medium: 'd MMM yyyy', // 10 janv. 2026
+    long: 'd MMMM yyyy', // 10 janvier 2026
+    full: 'EEEE d MMMM yyyy', // vendredi 10 janvier 2026
+    numeric: 'dd/MM/yy', // 10/01/26
     iso: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx", // ISO 8601
   },
   'en-US': {
-    short: 'MM/dd/yyyy',         // 01/10/2026
-    medium: 'MMM d, yyyy',       // Jan 10, 2026
-    long: 'MMMM d, yyyy',        // January 10, 2026
-    full: 'EEEE, MMMM d, yyyy',  // Friday, January 10, 2026
-    numeric: 'MM/dd/yy',         // 01/10/26
+    short: 'MM/dd/yyyy', // 01/10/2026
+    medium: 'MMM d, yyyy', // Jan 10, 2026
+    long: 'MMMM d, yyyy', // January 10, 2026
+    full: 'EEEE, MMMM d, yyyy', // Friday, January 10, 2026
+    numeric: 'MM/dd/yy', // 01/10/26
     iso: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
   },
   'de-DE': {
-    short: 'dd.MM.yyyy',         // 10.01.2026
-    medium: 'd. MMM yyyy',       // 10. Jan. 2026
-    long: 'd. MMMM yyyy',        // 10. Januar 2026
-    full: 'EEEE, d. MMMM yyyy',  // Freitag, 10. Januar 2026
-    numeric: 'dd.MM.yy',         // 10.01.26
+    short: 'dd.MM.yyyy', // 10.01.2026
+    medium: 'd. MMM yyyy', // 10. Jan. 2026
+    long: 'd. MMMM yyyy', // 10. Januar 2026
+    full: 'EEEE, d. MMMM yyyy', // Freitag, 10. Januar 2026
+    numeric: 'dd.MM.yy', // 10.01.26
     iso: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
   },
   'es-ES': {
-    short: 'dd/MM/yyyy',         // 10/01/2026
-    medium: 'd MMM yyyy',        // 10 ene. 2026
-    long: 'd \'de\' MMMM \'de\' yyyy', // 10 de enero de 2026
-    full: 'EEEE, d \'de\' MMMM \'de\' yyyy', // viernes, 10 de enero de 2026
-    numeric: 'dd/MM/yy',         // 10/01/26
+    short: 'dd/MM/yyyy', // 10/01/2026
+    medium: 'd MMM yyyy', // 10 ene. 2026
+    long: "d 'de' MMMM 'de' yyyy", // 10 de enero de 2026
+    full: "EEEE, d 'de' MMMM 'de' yyyy", // viernes, 10 de enero de 2026
+    numeric: 'dd/MM/yy', // 10/01/26
     iso: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
   },
   'it-IT': {
-    short: 'dd/MM/yyyy',         // 10/01/2026
-    medium: 'd MMM yyyy',        // 10 gen 2026
-    long: 'd MMMM yyyy',         // 10 gennaio 2026
-    full: 'EEEE d MMMM yyyy',    // venerdì 10 gennaio 2026
-    numeric: 'dd/MM/yy',         // 10/01/26
+    short: 'dd/MM/yyyy', // 10/01/2026
+    medium: 'd MMM yyyy', // 10 gen 2026
+    long: 'd MMMM yyyy', // 10 gennaio 2026
+    full: 'EEEE d MMMM yyyy', // venerdì 10 gennaio 2026
+    numeric: 'dd/MM/yy', // 10/01/26
     iso: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
   },
 };
@@ -83,34 +83,34 @@ export const DATE_FORMATS = {
 
 export const TIME_FORMATS = {
   'fr-FR': {
-    short: 'HH:mm',              // 14:30
-    medium: 'HH:mm:ss',          // 14:30:45
-    long: 'HH:mm:ss z',          // 14:30:45 GMT+1
-    full: 'HH:mm:ss zzzz',       // 14:30:45 heure normale d'Europe centrale
+    short: 'HH:mm', // 14:30
+    medium: 'HH:mm:ss', // 14:30:45
+    long: 'HH:mm:ss z', // 14:30:45 GMT+1
+    full: 'HH:mm:ss zzzz', // 14:30:45 heure normale d'Europe centrale
   },
   'en-US': {
-    short: 'h:mm a',             // 2:30 PM
-    medium: 'h:mm:ss a',         // 2:30:45 PM
-    long: 'h:mm:ss a z',         // 2:30:45 PM GMT+1
-    full: 'h:mm:ss a zzzz',      // 2:30:45 PM Central European Standard Time
+    short: 'h:mm a', // 2:30 PM
+    medium: 'h:mm:ss a', // 2:30:45 PM
+    long: 'h:mm:ss a z', // 2:30:45 PM GMT+1
+    full: 'h:mm:ss a zzzz', // 2:30:45 PM Central European Standard Time
   },
   'de-DE': {
-    short: 'HH:mm',              // 14:30
-    medium: 'HH:mm:ss',          // 14:30:45
-    long: 'HH:mm:ss z',          // 14:30:45 GMT+1
-    full: 'HH:mm:ss zzzz',       // 14:30:45 Mitteleuropäische Normalzeit
+    short: 'HH:mm', // 14:30
+    medium: 'HH:mm:ss', // 14:30:45
+    long: 'HH:mm:ss z', // 14:30:45 GMT+1
+    full: 'HH:mm:ss zzzz', // 14:30:45 Mitteleuropäische Normalzeit
   },
   'es-ES': {
-    short: 'HH:mm',              // 14:30
-    medium: 'HH:mm:ss',          // 14:30:45
-    long: 'HH:mm:ss z',          // 14:30:45 GMT+1
-    full: 'HH:mm:ss zzzz',       // 14:30:45 hora estándar de Europa central
+    short: 'HH:mm', // 14:30
+    medium: 'HH:mm:ss', // 14:30:45
+    long: 'HH:mm:ss z', // 14:30:45 GMT+1
+    full: 'HH:mm:ss zzzz', // 14:30:45 hora estándar de Europa central
   },
   'it-IT': {
-    short: 'HH:mm',              // 14:30
-    medium: 'HH:mm:ss',          // 14:30:45
-    long: 'HH:mm:ss z',          // 14:30:45 GMT+1
-    full: 'HH:mm:ss zzzz',       // 14:30:45 Ora standard dell'Europa centrale
+    short: 'HH:mm', // 14:30
+    medium: 'HH:mm:ss', // 14:30:45
+    long: 'HH:mm:ss z', // 14:30:45 GMT+1
+    full: 'HH:mm:ss zzzz', // 14:30:45 Ora standard dell'Europa centrale
   },
 };
 
@@ -140,8 +140,8 @@ export const DATETIME_FORMATS = {
   'es-ES': {
     short: 'dd/MM/yyyy HH:mm',
     medium: 'd MMM yyyy HH:mm',
-    long: 'd \'de\' MMMM \'de\' yyyy HH:mm:ss',
-    full: 'EEEE, d \'de\' MMMM \'de\' yyyy HH:mm:ss',
+    long: "d 'de' MMMM 'de' yyyy HH:mm:ss",
+    full: "EEEE, d 'de' MMMM 'de' yyyy HH:mm:ss",
   },
   'it-IT': {
     short: 'dd/MM/yyyy HH:mm',

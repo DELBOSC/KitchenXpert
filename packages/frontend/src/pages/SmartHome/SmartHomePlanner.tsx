@@ -95,18 +95,28 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const DEVICE_ICONS: Record<string, string> = {
   smart_outlet: 'M13 10V3L4 14h7v7l9-11h-7z',
-  smart_light: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
-  smart_light_strip: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
-  smoke_detector: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
-  water_sensor: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z',
+  smart_light:
+    'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+  smart_light_strip:
+    'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+  smoke_detector:
+    'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
+  water_sensor:
+    'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z',
   temp_humidity: 'M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z',
-  co_detector: 'M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01',
-  smart_fridge: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
-  smart_oven: 'M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z',
-  smart_dishwasher: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
+  co_detector:
+    'M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01',
+  smart_fridge:
+    'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
+  smart_oven:
+    'M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z',
+  smart_dishwasher:
+    'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
   smart_hood: 'M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12',
-  wifi_router: 'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0',
-  matter_hub: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+  wifi_router:
+    'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0',
+  matter_hub:
+    'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
 };
 
 const PROTOCOL_COLORS: Record<string, string> = {
@@ -170,11 +180,13 @@ const SmartHomePlanner: React.FC = () => {
           const data = (await res.json()) as
             | { data?: Array<{ id: string; name: string }> }
             | Array<{ id: string; name: string }>;
-          const list = Array.isArray(data) ? data : data.data ?? [];
+          const list = Array.isArray(data) ? data : (data.data ?? []);
           setKitchens(list);
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         logger.error('Failed to fetch kitchens', err instanceof Error ? err : { error: err });
       }
     };
@@ -198,7 +210,9 @@ const SmartHomePlanner: React.FC = () => {
           setCatalog(data.data ?? []);
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         logger.error('Failed to fetch device catalog', err instanceof Error ? err : { error: err });
       }
     };
@@ -209,7 +223,9 @@ const SmartHomePlanner: React.FC = () => {
 
   // Fetch existing plan when kitchenId changes
   useEffect(() => {
-    if (!kitchenId) {return;}
+    if (!kitchenId) {
+      return;
+    }
     const controller = new AbortController();
 
     const fetchPlan = async () => {
@@ -229,7 +245,9 @@ const SmartHomePlanner: React.FC = () => {
           throw new Error('Failed to load smart home plan');
         }
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const msg = err instanceof Error ? err.message : 'An unexpected error occurred';
         setError(msg);
       } finally {
@@ -243,7 +261,9 @@ const SmartHomePlanner: React.FC = () => {
 
   // Generate a new plan with AI
   const handleGeneratePlan = useCallback(async () => {
-    if (!kitchenId) {return;}
+    if (!kitchenId) {
+      return;
+    }
     setIsGenerating(true);
     setError(null);
 
@@ -278,7 +298,9 @@ const SmartHomePlanner: React.FC = () => {
 
   // Save / update plan
   const handleSavePlan = useCallback(async () => {
-    if (!kitchenId || !plan) {return;}
+    if (!kitchenId || !plan) {
+      return;
+    }
     setIsSaving(true);
     setError(null);
 
@@ -312,7 +334,9 @@ const SmartHomePlanner: React.FC = () => {
   // Remove device from plan
   const handleRemoveDevice = useCallback((deviceId: string) => {
     setPlan((prev) => {
-      if (!prev) {return prev;}
+      if (!prev) {
+        return prev;
+      }
       return {
         ...prev,
         devices: prev.devices.filter((d) => d.id !== deviceId),
@@ -327,34 +351,37 @@ const SmartHomePlanner: React.FC = () => {
   }, []);
 
   // Add device from catalog to plan
-  const handleAddDevice = useCallback(
-    (device: SmartDevice) => {
-      setPlan((prev) => {
-        if (!prev) {return prev;}
-        const newDevice: PlacedDevice = {
-          ...device,
-          id: `shd_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-          position: { x: 2, y: 1, z: 1.5 },
-          zone: 'general',
-        };
-        const devices = [...prev.devices, newDevice];
-        return {
-          ...prev,
-          devices,
-          totalPowerDraw: devices.reduce((sum, d) => sum + d.powerW, 0),
-          totalCost: devices.reduce((sum, d) => sum + d.price, 0),
-        };
-      });
-    },
-    [],
-  );
+  const handleAddDevice = useCallback((device: SmartDevice) => {
+    setPlan((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      const newDevice: PlacedDevice = {
+        ...device,
+        id: `shd_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        position: { x: 2, y: 1, z: 1.5 },
+        zone: 'general',
+      };
+      const devices = [...prev.devices, newDevice];
+      return {
+        ...prev,
+        devices,
+        totalPowerDraw: devices.reduce((sum, d) => sum + d.powerW, 0),
+        totalCost: devices.reduce((sum, d) => sum + d.price, 0),
+      };
+    });
+  }, []);
 
   // Add automation rule
   const handleAddAutomation = useCallback(() => {
-    if (!newAutomation.name || !newAutomation.triggerEvent || !newAutomation.actionCommand) {return;}
+    if (!newAutomation.name || !newAutomation.triggerEvent || !newAutomation.actionCommand) {
+      return;
+    }
 
     setPlan((prev) => {
-      if (!prev) {return prev;}
+      if (!prev) {
+        return prev;
+      }
       const rule: AutomationRule = {
         id: `sha_${Date.now()}`,
         name: newAutomation.name,
@@ -378,7 +405,9 @@ const SmartHomePlanner: React.FC = () => {
   // Remove automation
   const handleRemoveAutomation = useCallback((ruleId: string) => {
     setPlan((prev) => {
-      if (!prev) {return prev;}
+      if (!prev) {
+        return prev;
+      }
       return {
         ...prev,
         automations: prev.automations.filter((a) => a.id !== ruleId),
@@ -388,18 +417,18 @@ const SmartHomePlanner: React.FC = () => {
 
   // Calculate coverage
   const handleCalculateCoverage = useCallback(async () => {
-    if (!kitchenId) {return;}
+    if (!kitchenId) {
+      return;
+    }
 
     try {
       const res = await fetch(
         `/api/v1/smart-home/${kitchenId}/coverage?routerX=2&routerY=1.5&routerZ=0&protocol=WiFi`,
-        { credentials: 'include' },
+        { credentials: 'include' }
       );
       if (res.ok) {
         const data = (await res.json()) as { data?: CoverageMap | null };
-        setPlan((prev) =>
-          prev ? { ...prev, wifiCoverage: data.data ?? null } : prev,
-        );
+        setPlan((prev) => (prev ? { ...prev, wifiCoverage: data.data ?? null } : prev));
         setShowCoverage(true);
       }
     } catch (err) {
@@ -409,7 +438,7 @@ const SmartHomePlanner: React.FC = () => {
 
   // Filtered catalog by active category
   const filteredCatalog = catalog.filter((d) =>
-    (DEVICE_CATEGORIES[activeCategory] ?? []).includes(d.type),
+    (DEVICE_CATEGORIES[activeCategory] ?? []).includes(d.type)
   );
 
   // Power budget warnings
@@ -438,7 +467,9 @@ const SmartHomePlanner: React.FC = () => {
               }}
               className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-colors text-left"
             >
-              <h3 className="font-medium text-gray-900 dark:text-white">{k.name || 'Unnamed Kitchen'}</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white">
+                {k.name || 'Unnamed Kitchen'}
+              </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{k.id.slice(0, 8)}...</p>
             </button>
           ))}
@@ -461,7 +492,10 @@ const SmartHomePlanner: React.FC = () => {
             {t('smartHome.title', 'Smart Home Planner')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-            {t('smartHome.subtitle', 'Plan smart devices, automations, and connectivity for your kitchen.')}
+            {t(
+              'smartHome.subtitle',
+              'Plan smart devices, automations, and connectivity for your kitchen.'
+            )}
           </p>
         </div>
         <div className="flex gap-2">
@@ -482,9 +516,7 @@ const SmartHomePlanner: React.FC = () => {
               disabled={isSaving}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors font-medium text-sm"
             >
-              {isSaving
-                ? t('common.saving', 'Saving...')
-                : t('smartHome.save', 'Sauvegarder')}
+              {isSaving ? t('common.saving', 'Saving...') : t('smartHome.save', 'Sauvegarder')}
             </button>
           )}
           <button
@@ -501,7 +533,10 @@ const SmartHomePlanner: React.FC = () => {
         <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
           <p className="text-red-700 dark:text-red-300 text-sm">{error}</p>
           <button
-            onClick={() => { setError(null); setRetryCount((c) => c + 1); }}
+            onClick={() => {
+              setError(null);
+              setRetryCount((c) => c + 1);
+            }}
             className="mt-2 text-sm text-red-600 dark:text-red-400 underline hover:no-underline"
           >
             {t('common.tryAgain', 'Try Again')}
@@ -556,7 +591,12 @@ const SmartHomePlanner: React.FC = () => {
                     className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -660,7 +700,12 @@ const SmartHomePlanner: React.FC = () => {
                     }}
                     title={`${device.brand} ${device.model}`}
                   >
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-3 h-3 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -732,8 +777,18 @@ const SmartHomePlanner: React.FC = () => {
                       onClick={() => handleRemoveDevice(device.id)}
                       className="text-red-500 hover:text-red-700 dark:hover:text-red-400 ml-2 flex-shrink-0"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -776,7 +831,10 @@ const SmartHomePlanner: React.FC = () => {
                 </div>
                 {powerWarning && (
                   <p className="text-xs text-red-600 dark:text-red-400">
-                    {t('smartHome.circuitOverload', 'Warning: Exceeds single 16A circuit capacity (3680W). Consider distributing across multiple circuits.')}
+                    {t(
+                      'smartHome.circuitOverload',
+                      'Warning: Exceeds single 16A circuit capacity (3680W). Consider distributing across multiple circuits.'
+                    )}
                   </p>
                 )}
                 <div className="flex justify-between text-sm">
@@ -855,7 +913,9 @@ const SmartHomePlanner: React.FC = () => {
                   onClick={() => setShowAutomationBuilder(!showAutomationBuilder)}
                   className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  {showAutomationBuilder ? t('common.close', 'Close') : `+ ${  t('smartHome.addRule', 'Add Rule')}`}
+                  {showAutomationBuilder
+                    ? t('common.close', 'Close')
+                    : `+ ${t('smartHome.addRule', 'Add Rule')}`}
                 </button>
               </div>
 
@@ -866,7 +926,9 @@ const SmartHomePlanner: React.FC = () => {
                     type="text"
                     placeholder={t('smartHome.ruleName', 'Rule name')}
                     value={newAutomation.name}
-                    onChange={(e) => setNewAutomation((prev) => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) =>
+                      setNewAutomation((prev) => ({ ...prev, name: e.target.value }))
+                    }
                     className="w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 outline-none"
                   />
                   <div className="flex gap-2 text-xs text-gray-500 dark:text-gray-400">
@@ -876,7 +938,9 @@ const SmartHomePlanner: React.FC = () => {
                     type="text"
                     placeholder={t('smartHome.triggerEvent', 'e.g. Motion detected')}
                     value={newAutomation.triggerEvent}
-                    onChange={(e) => setNewAutomation((prev) => ({ ...prev, triggerEvent: e.target.value }))}
+                    onChange={(e) =>
+                      setNewAutomation((prev) => ({ ...prev, triggerEvent: e.target.value }))
+                    }
                     className="w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 outline-none"
                   />
                   <div className="flex gap-2 text-xs text-gray-500 dark:text-gray-400">
@@ -886,12 +950,18 @@ const SmartHomePlanner: React.FC = () => {
                     type="text"
                     placeholder={t('smartHome.actionCommand', 'e.g. Lights ON')}
                     value={newAutomation.actionCommand}
-                    onChange={(e) => setNewAutomation((prev) => ({ ...prev, actionCommand: e.target.value }))}
+                    onChange={(e) =>
+                      setNewAutomation((prev) => ({ ...prev, actionCommand: e.target.value }))
+                    }
                     className="w-full px-2 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-blue-500 outline-none"
                   />
                   <button
                     onClick={handleAddAutomation}
-                    disabled={!newAutomation.name || !newAutomation.triggerEvent || !newAutomation.actionCommand}
+                    disabled={
+                      !newAutomation.name ||
+                      !newAutomation.triggerEvent ||
+                      !newAutomation.actionCommand
+                    }
                     className="w-full px-3 py-1.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
                   >
                     {t('smartHome.addAutomation', 'Add Automation')}
@@ -907,7 +977,9 @@ const SmartHomePlanner: React.FC = () => {
                     className="flex items-center justify-between text-sm bg-gray-50 dark:bg-gray-700/50 rounded px-3 py-2"
                   >
                     <div className="min-w-0">
-                      <p className="font-medium text-gray-900 dark:text-white truncate">{rule.name}</p>
+                      <p className="font-medium text-gray-900 dark:text-white truncate">
+                        {rule.name}
+                      </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
                         IF {rule.trigger.event} → {rule.action.command}
                       </p>
@@ -916,8 +988,18 @@ const SmartHomePlanner: React.FC = () => {
                       onClick={() => handleRemoveAutomation(rule.id)}
                       className="text-red-500 hover:text-red-700 dark:hover:text-red-400 ml-2 flex-shrink-0"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -936,14 +1018,27 @@ const SmartHomePlanner: React.FC = () => {
       {/* Empty state -- no plan yet */}
       {!isLoading && !plan && !isGenerating && kitchenId && (
         <div className="text-center py-16">
-          <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          <svg
+            className="w-16 h-16 text-gray-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
           </svg>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             {t('smartHome.noplan', 'No Smart Home Plan Yet')}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-            {t('smartHome.noPlanDesc', 'Generate an AI-powered smart home plan with device recommendations, automation rules, and coverage analysis.')}
+            {t(
+              'smartHome.noPlanDesc',
+              'Generate an AI-powered smart home plan with device recommendations, automation rules, and coverage analysis.'
+            )}
           </p>
           <button
             onClick={handleGeneratePlan}

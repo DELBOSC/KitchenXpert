@@ -25,9 +25,7 @@ test.describe('@critical Flow 1 — Signup', () => {
 
     // Expect either an inline error OR the form not navigating away
     await expect(page).toHaveURL(/\/register/);
-    await expect(
-      page.getByText(/au moins|at least|minimum|trop court/i).first(),
-    ).toBeVisible();
+    await expect(page.getByText(/au moins|at least|minimum|trop court/i).first()).toBeVisible();
   });
 
   test('completes signup → verify → reaches dashboard', async ({ page, request }) => {
@@ -76,8 +74,9 @@ test.describe('@critical Flow 1 — Signup', () => {
       page.getByRole('button', { name: /se connecter|sign in|connexion/i }).click(),
     ]);
 
-    await expect(page.getByRole('heading', { name: /tableau|dashboard|bienvenue/i }).first())
-      .toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /tableau|dashboard|bienvenue/i }).first()
+    ).toBeVisible();
   });
 
   test('rejects duplicate email', async ({ page, freshUser }) => {
@@ -96,8 +95,8 @@ test.describe('@critical Flow 1 — Signup', () => {
     }
     await page.getByRole('button', { name: /créer|sign up|register/i }).click();
 
-    await expect(
-      page.getByText(/déjà utilisé|already (in use|exists|registered)/i),
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/déjà utilisé|already (in use|exists|registered)/i)).toBeVisible({
+      timeout: 10_000,
+    });
   });
 });

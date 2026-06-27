@@ -63,13 +63,34 @@ const ProjectEdit: React.FC = () => {
   const [showLeaveModal, setShowLeaveModal] = useState<boolean>(false);
   const pendingNavigationRef = useRef<string | null>(null);
   const mountedRef = useRef(true);
-  useEffect(() => () => { mountedRef.current = false; }, []);
+  useEffect(
+    () => () => {
+      mountedRef.current = false;
+    },
+    []
+  );
 
   const statusOptions: { value: ProjectFormData['status']; label: string; color: string }[] = [
-    { value: 'draft', label: t('projects.status.draft', 'Draft'), color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' },
-    { value: 'in_progress', label: t('projects.status.in_progress', 'In Progress'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
-    { value: 'completed', label: t('projects.status.completed', 'Completed'), color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' },
-    { value: 'archived', label: t('projects.status.archived', 'Archived'), color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' },
+    {
+      value: 'draft',
+      label: t('projects.status.draft', 'Draft'),
+      color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+    },
+    {
+      value: 'in_progress',
+      label: t('projects.status.in_progress', 'In Progress'),
+      color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+    },
+    {
+      value: 'completed',
+      label: t('projects.status.completed', 'Completed'),
+      color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+    },
+    {
+      value: 'archived',
+      label: t('projects.status.archived', 'Archived'),
+      color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+    },
   ];
 
   useEffect(() => {
@@ -102,7 +123,9 @@ const ProjectEdit: React.FC = () => {
 
         const data = (await response.json()) as ProjectResponse;
 
-        if (!mountedRef.current) {return;}
+        if (!mountedRef.current) {
+          return;
+        }
 
         setFormData({
           name: data.name ?? '',
@@ -114,8 +137,11 @@ const ProjectEdit: React.FC = () => {
           clientPhone: data.clientPhone ?? '',
         });
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
-        const errorMessage = err instanceof Error ? err.message : t('projects.fetchError', 'Failed to load project');
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        const errorMessage =
+          err instanceof Error ? err.message : t('projects.fetchError', 'Failed to load project');
         setLoadError(errorMessage);
       } finally {
         setIsLoading(false);
@@ -132,21 +158,36 @@ const ProjectEdit: React.FC = () => {
     if (!formData.name.trim()) {
       newErrors.name = t('projects.validation.nameRequired', 'Project name is required');
     } else if (formData.name.length < 3) {
-      newErrors.name = t('projects.validation.nameMinLength', 'Project name must be at least 3 characters');
+      newErrors.name = t(
+        'projects.validation.nameMinLength',
+        'Project name must be at least 3 characters'
+      );
     } else if (formData.name.length > 100) {
-      newErrors.name = t('projects.validation.nameMaxLength', 'Project name must be less than 100 characters');
+      newErrors.name = t(
+        'projects.validation.nameMaxLength',
+        'Project name must be less than 100 characters'
+      );
     }
 
     if (formData.description && formData.description.length > 500) {
-      newErrors.description = t('projects.validation.descriptionMaxLength', 'Description must be less than 500 characters');
+      newErrors.description = t(
+        'projects.validation.descriptionMaxLength',
+        'Description must be less than 500 characters'
+      );
     }
 
     if (formData.clientEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.clientEmail)) {
-      newErrors.clientEmail = t('projects.validation.invalidEmail', 'Please enter a valid email address');
+      newErrors.clientEmail = t(
+        'projects.validation.invalidEmail',
+        'Please enter a valid email address'
+      );
     }
 
     if (formData.clientPhone && !/^[+\d\s()-]{7,20}$/.test(formData.clientPhone)) {
-      newErrors.clientPhone = t('projects.validation.invalidPhone', 'Please enter a valid phone number');
+      newErrors.clientPhone = t(
+        'projects.validation.invalidPhone',
+        'Please enter a valid phone number'
+      );
     }
 
     setErrors(newErrors);
@@ -211,7 +252,9 @@ const ProjectEdit: React.FC = () => {
         }),
       });
 
-      if (!mountedRef.current) {return;}
+      if (!mountedRef.current) {
+        return;
+      }
 
       if (!response.ok) {
         const errorData = (await response.json().catch(() => ({}))) as ApiErrorBody;
@@ -222,7 +265,10 @@ const ProjectEdit: React.FC = () => {
       toast.success(t('projects.updateSuccess', 'Project updated successfully'));
       navigate('/projects');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : t('common.unexpectedError', 'An unexpected error occurred');
       toast.error(errorMessage);
     } finally {
       setIsSaving(false);
@@ -242,8 +288,15 @@ const ProjectEdit: React.FC = () => {
       <div className="flex items-center justify-center min-h-[400px] p-8 dark:bg-gray-900">
         <div className="text-center">
           <div className="text-6xl font-bold text-gray-300 dark:text-gray-600 mb-4">404</div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{t('common.resourceNotFound', 'Resource not found')}</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">{t('common.resourceNotFoundDesc', 'The requested resource does not exist or has been deleted.')}</p>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            {t('common.resourceNotFound', 'Resource not found')}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            {t(
+              'common.resourceNotFoundDesc',
+              'The requested resource does not exist or has been deleted.'
+            )}
+          </p>
           <button
             onClick={() => navigate('/projects')}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -259,7 +312,9 @@ const ProjectEdit: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4 dark:bg-gray-900">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md w-full">
-          <h2 className="text-red-800 dark:text-red-400 text-lg font-semibold mb-2">{t('common.error', 'Error')}</h2>
+          <h2 className="text-red-800 dark:text-red-400 text-lg font-semibold mb-2">
+            {t('common.error', 'Error')}
+          </h2>
           <p className="text-red-600 dark:text-red-300">{loadError}</p>
           <div className="mt-4 flex gap-4">
             <button
@@ -269,7 +324,10 @@ const ProjectEdit: React.FC = () => {
               {t('projects.backToProjects', 'Back to Projects')}
             </button>
             <button
-              onClick={() => { setLoadError(null); setRetryCount((c) => c + 1); }}
+              onClick={() => {
+                setLoadError(null);
+                setRetryCount((c) => c + 1);
+              }}
               className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             >
               {t('common.tryAgain', 'Try Again')}
@@ -298,13 +356,17 @@ const ProjectEdit: React.FC = () => {
               </Link>
             </li>
             <li>/</li>
-            <li className="text-gray-900 dark:text-white font-medium">{t('common.edit', 'Edit')}</li>
+            <li className="text-gray-900 dark:text-white font-medium">
+              {t('common.edit', 'Edit')}
+            </li>
           </ol>
         </nav>
 
         {/* Form Card */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('projects.editProject', 'Edit Project')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            {t('projects.editProject', 'Edit Project')}
+          </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             {t('projects.editDescription', 'Update your project details and settings.')}
           </p>
@@ -312,7 +374,10 @@ const ProjectEdit: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Project Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('projects.projectName', 'Project Name')} <span className="text-red-500">*</span>
               </label>
               <input
@@ -326,17 +391,28 @@ const ProjectEdit: React.FC = () => {
                 aria-invalid={!!errors.name}
                 aria-describedby={errors.name ? 'name-error' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
-                  errors.name ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                  errors.name
+                    ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                    : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               {errors.name && (
-                <p id="name-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{errors.name}</p>
+                <p
+                  id="name-error"
+                  className="mt-1 text-sm text-red-600 dark:text-red-400"
+                  role="alert"
+                >
+                  {errors.name}
+                </p>
               )}
             </div>
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('common.description', 'Description')}
               </label>
               <textarea
@@ -345,16 +421,27 @@ const ProjectEdit: React.FC = () => {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                placeholder={t('projects.descriptionPlaceholder', 'Describe your project goals and requirements...')}
+                placeholder={t(
+                  'projects.descriptionPlaceholder',
+                  'Describe your project goals and requirements...'
+                )}
                 aria-invalid={!!errors.description}
                 aria-describedby={errors.description ? 'description-error' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
-                  errors.description ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                  errors.description
+                    ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                    : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               <div className="mt-1 flex justify-between">
                 {errors.description ? (
-                  <p id="description-error" className="text-sm text-red-600 dark:text-red-400" role="alert">{errors.description}</p>
+                  <p
+                    id="description-error"
+                    className="text-sm text-red-600 dark:text-red-400"
+                    role="alert"
+                  >
+                    {errors.description}
+                  </p>
                 ) : (
                   <span />
                 )}
@@ -366,7 +453,10 @@ const ProjectEdit: React.FC = () => {
 
             {/* Status */}
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="status"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('projects.status.label', 'Status')}
               </label>
               <select
@@ -386,7 +476,10 @@ const ProjectEdit: React.FC = () => {
 
             {/* Address */}
             <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('projects.address', 'Address')}
               </label>
               <input
@@ -402,11 +495,16 @@ const ProjectEdit: React.FC = () => {
 
             {/* Client Information */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">{t('projects.clientInfo', 'Client Information')}</h2>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                {t('projects.clientInfo', 'Client Information')}
+              </h2>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="md:col-span-2">
-                  <label htmlFor="clientName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    htmlFor="clientName"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
                     {t('projects.clientName', 'Client Name')}
                   </label>
                   <input
@@ -421,7 +519,10 @@ const ProjectEdit: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="clientEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    htmlFor="clientEmail"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
                     {t('projects.clientEmail', 'Client Email')}
                   </label>
                   <input
@@ -434,16 +535,27 @@ const ProjectEdit: React.FC = () => {
                     aria-invalid={!!errors.clientEmail}
                     aria-describedby={errors.clientEmail ? 'clientEmail-error' : undefined}
                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors dark:bg-gray-700 dark:text-white ${
-                      errors.clientEmail ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                      errors.clientEmail
+                        ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                        : 'border-gray-300 dark:border-gray-600'
                     }`}
                   />
                   {errors.clientEmail && (
-                    <p id="clientEmail-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{errors.clientEmail}</p>
+                    <p
+                      id="clientEmail-error"
+                      className="mt-1 text-sm text-red-600 dark:text-red-400"
+                      role="alert"
+                    >
+                      {errors.clientEmail}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="clientPhone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    htmlFor="clientPhone"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
                     {t('projects.clientPhone', 'Client Phone')}
                   </label>
                   <input
@@ -456,11 +568,19 @@ const ProjectEdit: React.FC = () => {
                     aria-invalid={!!errors.clientPhone}
                     aria-describedby={errors.clientPhone ? 'clientPhone-error' : undefined}
                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors dark:bg-gray-700 dark:text-white ${
-                      errors.clientPhone ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                      errors.clientPhone
+                        ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                        : 'border-gray-300 dark:border-gray-600'
                     }`}
                   />
                   {errors.clientPhone && (
-                    <p id="clientPhone-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{errors.clientPhone}</p>
+                    <p
+                      id="clientPhone-error"
+                      className="mt-1 text-sm text-red-600 dark:text-red-400"
+                      role="alert"
+                    >
+                      {errors.clientPhone}
+                    </p>
                   )}
                 </div>
               </div>
@@ -492,7 +612,9 @@ const ProjectEdit: React.FC = () => {
                 {isSaving && (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
-                {isSaving ? t('projects.saving', 'Saving...') : t('projects.saveChanges', 'Save Changes')}
+                {isSaving
+                  ? t('projects.saving', 'Saving...')
+                  : t('projects.saveChanges', 'Save Changes')}
               </button>
             </div>
           </form>
@@ -501,10 +623,25 @@ const ProjectEdit: React.FC = () => {
 
       {/* Unsaved Changes Modal */}
       {showLeaveModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="leave-modal-title"
+        >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm mx-4">
-            <h3 id="leave-modal-title" className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('common.unsavedChanges', 'Unsaved changes')}</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{t('common.unsavedChangesMessage', 'You have unsaved changes. Are you sure you want to leave?')}</p>
+            <h3
+              id="leave-modal-title"
+              className="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+            >
+              {t('common.unsavedChanges', 'Unsaved changes')}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              {t(
+                'common.unsavedChangesMessage',
+                'You have unsaved changes. Are you sure you want to leave?'
+              )}
+            </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowLeaveModal(false)}

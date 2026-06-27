@@ -3,7 +3,13 @@
  * Toggle button for binary states or option groups
  */
 
-import React, { forwardRef, type ButtonHTMLAttributes, type ReactNode, createContext, useContext } from 'react';
+import React, {
+  forwardRef,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  createContext,
+  useContext,
+} from 'react';
 import styled, { css } from 'styled-components';
 
 export type ToggleButtonSize = 'sm' | 'md' | 'lg';
@@ -68,8 +74,7 @@ const StyledToggleButton = styled.button<{
   border: 2px solid var(--color-gray-300, #d1d5db);
   background: ${({ $selected }) =>
     $selected ? 'var(--color-primary, #2563eb)' : 'var(--color-white, #ffffff)'};
-  color: ${({ $selected }) =>
-    $selected ? 'white' : 'var(--color-gray-700, #374151)'};
+  color: ${({ $selected }) => ($selected ? 'white' : 'var(--color-gray-700, #374151)')};
   font-family: var(--font-family-sans, system-ui, sans-serif);
   font-weight: 500;
   cursor: pointer;
@@ -77,7 +82,11 @@ const StyledToggleButton = styled.button<{
   white-space: nowrap;
 
   ${({ $size }) => sizeStyles[$size]}
-  ${({ $fullWidth }) => $fullWidth && css`flex: 1;`}
+  ${({ $fullWidth }) =>
+    $fullWidth &&
+    css`
+      flex: 1;
+    `}
 
   &:hover:not(:disabled) {
     background: ${({ $selected }) =>
@@ -136,9 +145,12 @@ const GroupWrapper = styled.div<{
   $fullWidth: boolean;
 }>`
   display: inline-flex;
-  flex-direction: ${({ $orientation }) =>
-    $orientation === 'vertical' ? 'column' : 'row'};
-  ${({ $fullWidth }) => $fullWidth && css`width: 100%;`}
+  flex-direction: ${({ $orientation }) => ($orientation === 'vertical' ? 'column' : 'row')};
+  ${({ $fullWidth }) =>
+    $fullWidth &&
+    css`
+      width: 100%;
+    `}
 
   ${({ $orientation }) =>
     $orientation === 'vertical' &&
@@ -167,7 +179,10 @@ const GroupWrapper = styled.div<{
 `;
 
 export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
-  ({ value, selected, size = 'md', icon, children, fullWidth = false, disabled, ...props }, ref) => {
+  (
+    { value, selected, size = 'md', icon, children, fullWidth = false, disabled, ...props },
+    ref
+  ) => {
     const context = useContext(ToggleButtonContext);
 
     const isSelected = context
@@ -236,11 +251,7 @@ export const ToggleButtonGroup: React.FC<ToggleButtonGroupProps> = ({
     <ToggleButtonContext.Provider
       value={{ value, onChange: handleChange, size, exclusive, disabled }}
     >
-      <GroupWrapper
-        role="radiogroup"
-        $orientation={orientation}
-        $fullWidth={fullWidth}
-      >
+      <GroupWrapper role="radiogroup" $orientation={orientation} $fullWidth={fullWidth}>
         {children}
       </GroupWrapper>
     </ToggleButtonContext.Provider>

@@ -26,31 +26,25 @@ const contentSecurityPolicy = {
       ...(isDevelopment ? ["'unsafe-inline'", "'unsafe-eval'"] : []),
       'https://cdn.jsdelivr.net',
       'https://unpkg.com',
-      ...(process.env.CSP_SCRIPT_SRC?.split(',') || [])
+      ...(process.env.CSP_SCRIPT_SRC?.split(',') || []),
     ],
     styleSrc: [
       "'self'",
       "'unsafe-inline'", // Required for many CSS frameworks
       'https://fonts.googleapis.com',
-      ...(process.env.CSP_STYLE_SRC?.split(',') || [])
+      ...(process.env.CSP_STYLE_SRC?.split(',') || []),
     ],
     fontSrc: [
       "'self'",
       'https://fonts.gstatic.com',
       'data:',
-      ...(process.env.CSP_FONT_SRC?.split(',') || [])
+      ...(process.env.CSP_FONT_SRC?.split(',') || []),
     ],
-    imgSrc: [
-      "'self'",
-      'data:',
-      'blob:',
-      'https:',
-      ...(process.env.CSP_IMG_SRC?.split(',') || [])
-    ],
+    imgSrc: ["'self'", 'data:', 'blob:', 'https:', ...(process.env.CSP_IMG_SRC?.split(',') || [])],
     connectSrc: [
       "'self'",
       process.env.API_URL || 'http://localhost:3000',
-      ...(process.env.CSP_CONNECT_SRC?.split(',') || [])
+      ...(process.env.CSP_CONNECT_SRC?.split(',') || []),
     ],
     frameSrc: ["'none'"],
     objectSrc: ["'none'"],
@@ -61,9 +55,9 @@ const contentSecurityPolicy = {
     frameAncestors: ["'none'"], // Equivalent to X-Frame-Options: DENY
     baseUri: ["'self'"],
     manifestSrc: ["'self'"],
-    upgradeInsecureRequests: isProduction ? [] : null // Only in production
+    upgradeInsecureRequests: isProduction ? [] : null, // Only in production
   },
-  reportOnly: isDevelopment // Report violations in dev, block in prod
+  reportOnly: isDevelopment, // Report violations in dev, block in prod
 };
 
 /**
@@ -73,7 +67,7 @@ const contentSecurityPolicy = {
 const hsts = {
   maxAge: parseInt(process.env.HSTS_MAX_AGE) || 31536000, // 1 year in seconds
   includeSubDomains: process.env.HSTS_INCLUDE_SUBDOMAINS !== 'false', // Default true
-  preload: process.env.HSTS_PRELOAD === 'true' // Default false (requires submission to browsers)
+  preload: process.env.HSTS_PRELOAD === 'true', // Default false (requires submission to browsers)
 };
 
 /**
@@ -81,7 +75,7 @@ const hsts = {
  * Controls how much referrer information is shared
  */
 const referrerPolicy = {
-  policy: process.env.REFERRER_POLICY || 'strict-origin-when-cross-origin'
+  policy: process.env.REFERRER_POLICY || 'strict-origin-when-cross-origin',
 };
 
 /**
@@ -114,8 +108,8 @@ const permissionsPolicy = {
     vr: ["'none'"],
     wakeLock: ["'none'"],
     webShare: ["'self'"],
-    xrSpatialTracking: ["'none'"]
-  }
+    xrSpatialTracking: ["'none'"],
+  },
 };
 
 /**
@@ -125,28 +119,28 @@ const permissionsPolicy = {
 const expectCt = {
   maxAge: parseInt(process.env.EXPECT_CT_MAX_AGE) || 86400, // 24 hours
   enforce: isProduction,
-  reportUri: process.env.EXPECT_CT_REPORT_URI || undefined
+  reportUri: process.env.EXPECT_CT_REPORT_URI || undefined,
 };
 
 /**
  * Cross-Origin Embedder Policy (COEP)
  */
 const crossOriginEmbedderPolicy = {
-  policy: process.env.COEP_POLICY || 'require-corp'
+  policy: process.env.COEP_POLICY || 'require-corp',
 };
 
 /**
  * Cross-Origin Opener Policy (COOP)
  */
 const crossOriginOpenerPolicy = {
-  policy: process.env.COOP_POLICY || 'same-origin'
+  policy: process.env.COOP_POLICY || 'same-origin',
 };
 
 /**
  * Cross-Origin Resource Policy (CORP)
  */
 const crossOriginResourcePolicy = {
-  policy: process.env.CORP_POLICY || 'same-origin'
+  policy: process.env.CORP_POLICY || 'same-origin',
 };
 
 /**
@@ -154,15 +148,17 @@ const crossOriginResourcePolicy = {
  */
 const helmetConfig = {
   contentSecurityPolicy: process.env.DISABLE_CSP === 'true' ? false : contentSecurityPolicy,
-  crossOriginEmbedderPolicy: process.env.DISABLE_COEP === 'true' ? false : crossOriginEmbedderPolicy,
+  crossOriginEmbedderPolicy:
+    process.env.DISABLE_COEP === 'true' ? false : crossOriginEmbedderPolicy,
   crossOriginOpenerPolicy: process.env.DISABLE_COOP === 'true' ? false : crossOriginOpenerPolicy,
-  crossOriginResourcePolicy: process.env.DISABLE_CORP === 'true' ? false : crossOriginResourcePolicy,
+  crossOriginResourcePolicy:
+    process.env.DISABLE_CORP === 'true' ? false : crossOriginResourcePolicy,
   dnsPrefetchControl: {
-    allow: false // Disable DNS prefetching for privacy
+    allow: false, // Disable DNS prefetching for privacy
   },
   expectCt: isProduction ? expectCt : false,
   frameguard: {
-    action: 'deny' // X-Frame-Options: DENY
+    action: 'deny', // X-Frame-Options: DENY
   },
   hidePoweredBy: true, // Remove X-Powered-By header
   hsts: isProduction ? hsts : false, // Only enable HSTS in production
@@ -170,10 +166,10 @@ const helmetConfig = {
   noSniff: true, // X-Content-Type-Options: nosniff
   originAgentCluster: true, // Origin-Agent-Cluster: ?1
   permittedCrossDomainPolicies: {
-    permittedPolicies: 'none' // X-Permitted-Cross-Domain-Policies
+    permittedPolicies: 'none', // X-Permitted-Cross-Domain-Policies
   },
   referrerPolicy: referrerPolicy,
-  xssFilter: true // X-XSS-Protection: 1; mode=block
+  xssFilter: true, // X-XSS-Protection: 1; mode=block
 };
 
 /**
@@ -255,10 +251,7 @@ const noCacheHeaders = (req, res, next) => {
 /**
  * Main security headers middleware (combines Helmet + custom)
  */
-const securityHeaders = [
-  helmet(helmetConfig),
-  customSecurityHeaders
-];
+const securityHeaders = [helmet(helmetConfig), customSecurityHeaders];
 
 /**
  * CSP violation reporting endpoint handler
@@ -297,5 +290,5 @@ module.exports = {
   hsts,
   referrerPolicy,
   permissionsPolicy,
-  expectCt
+  expectCt,
 };

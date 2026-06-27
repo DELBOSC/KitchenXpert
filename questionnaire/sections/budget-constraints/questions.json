@@ -30,37 +30,55 @@
         {
           "value": "under-10k",
           "label": { "en": "Under $10,000", "fr": "Moins de 10 000 €" },
-          "description": { "en": "Minor updates and refreshes", "fr": "Mises à jour et rafraîchissements mineurs" },
+          "description": {
+            "en": "Minor updates and refreshes",
+            "fr": "Mises à jour et rafraîchissements mineurs"
+          },
           "tags": ["budget", "refresh", "cosmetic"]
         },
         {
           "value": "10k-25k",
           "label": { "en": "$10,000 - $25,000", "fr": "10 000 € - 25 000 €" },
-          "description": { "en": "Moderate renovation with some upgrades", "fr": "Rénovation modérée avec quelques améliorations" },
+          "description": {
+            "en": "Moderate renovation with some upgrades",
+            "fr": "Rénovation modérée avec quelques améliorations"
+          },
           "tags": ["mid-range", "selective-upgrades"]
         },
         {
           "value": "25k-50k",
           "label": { "en": "$25,000 - $50,000", "fr": "25 000 € - 50 000 €" },
-          "description": { "en": "Substantial renovation with quality materials", "fr": "Rénovation substantielle avec matériaux de qualité" },
+          "description": {
+            "en": "Substantial renovation with quality materials",
+            "fr": "Rénovation substantielle avec matériaux de qualité"
+          },
           "tags": ["substantial", "quality"]
         },
         {
           "value": "50k-75k",
           "label": { "en": "$50,000 - $75,000", "fr": "50 000 € - 75 000 €" },
-          "description": { "en": "Major renovation with premium options", "fr": "Rénovation majeure avec options premium" },
+          "description": {
+            "en": "Major renovation with premium options",
+            "fr": "Rénovation majeure avec options premium"
+          },
           "tags": ["major", "premium"]
         },
         {
           "value": "75k-100k",
           "label": { "en": "$75,000 - $100,000", "fr": "75 000 € - 100 000 €" },
-          "description": { "en": "High-end renovation with top-tier materials", "fr": "Rénovation haut de gamme avec matériaux de premier choix" },
+          "description": {
+            "en": "High-end renovation with top-tier materials",
+            "fr": "Rénovation haut de gamme avec matériaux de premier choix"
+          },
           "tags": ["high-end", "luxury"]
         },
         {
           "value": "over-100k",
           "label": { "en": "Over $100,000", "fr": "Plus de 100 000 €" },
-          "description": { "en": "Luxury renovation with no compromises", "fr": "Rénovation de luxe sans compromis" },
+          "description": {
+            "en": "Luxury renovation with no compromises",
+            "fr": "Rénovation de luxe sans compromis"
+          },
           "tags": ["luxury", "unlimited", "custom"]
         }
       ],
@@ -113,37 +131,61 @@
         {
           "value": "cash-savings",
           "label": { "en": "Cash/Savings", "fr": "Comptant/Épargne" },
-          "description": { "en": "Pay upfront from savings", "fr": "Payer comptant à partir de l'épargne" },
+          "description": {
+            "en": "Pay upfront from savings",
+            "fr": "Payer comptant à partir de l'épargne"
+          },
           "tags": ["immediate", "no-interest"]
         },
         {
           "value": "home-equity",
-          "label": { "en": "Home Equity Loan/HELOC", "fr": "Prêt sur valeur domiciliaire" },
-          "description": { "en": "Borrow against home equity", "fr": "Emprunter sur la valeur de la maison" },
+          "label": {
+            "en": "Home Equity Loan/HELOC",
+            "fr": "Prêt sur valeur domiciliaire"
+          },
+          "description": {
+            "en": "Borrow against home equity",
+            "fr": "Emprunter sur la valeur de la maison"
+          },
           "tags": ["low-interest", "tax-deductible"]
         },
         {
           "value": "personal-loan",
           "label": { "en": "Personal Loan", "fr": "Prêt personnel" },
-          "description": { "en": "Unsecured personal loan", "fr": "Prêt personnel non garanti" },
+          "description": {
+            "en": "Unsecured personal loan",
+            "fr": "Prêt personnel non garanti"
+          },
           "tags": ["quick-approval", "fixed-rate"]
         },
         {
           "value": "credit-card",
           "label": { "en": "Credit Card", "fr": "Carte de crédit" },
-          "description": { "en": "For smaller purchases or 0% offers", "fr": "Pour petits achats ou offres 0%" },
+          "description": {
+            "en": "For smaller purchases or 0% offers",
+            "fr": "Pour petits achats ou offres 0%"
+          },
           "tags": ["rewards", "short-term"]
         },
         {
           "value": "contractor-financing",
-          "label": { "en": "Contractor Financing", "fr": "Financement entrepreneur" },
-          "description": { "en": "Payment plans through contractor", "fr": "Plans de paiement via l'entrepreneur" },
+          "label": {
+            "en": "Contractor Financing",
+            "fr": "Financement entrepreneur"
+          },
+          "description": {
+            "en": "Payment plans through contractor",
+            "fr": "Plans de paiement via l'entrepreneur"
+          },
           "tags": ["convenient", "varies"]
         },
         {
           "value": "phased",
           "label": { "en": "Phased Project", "fr": "Projet par phases" },
-          "description": { "en": "Do it in stages as budget allows", "fr": "Faire par étapes selon le budget" },
+          "description": {
+            "en": "Do it in stages as budget allows",
+            "fr": "Faire par étapes selon le budget"
+          },
           "tags": ["flexible", "extended-timeline"]
         }
       ],
@@ -172,49 +214,73 @@
       "options": [
         {
           "value": "appliances",
-          "label": { "en": "High-quality appliances", "fr": "Appareils de haute qualité" },
+          "label": {
+            "en": "High-quality appliances",
+            "fr": "Appareils de haute qualité"
+          },
           "icon": "refrigerator",
           "tags": ["professional-grade", "smart-appliances"]
         },
         {
           "value": "cabinets",
-          "label": { "en": "Custom/quality cabinets", "fr": "Armoires sur mesure/qualité" },
+          "label": {
+            "en": "Custom/quality cabinets",
+            "fr": "Armoires sur mesure/qualité"
+          },
           "icon": "door-closed",
           "tags": ["custom-cabinets", "soft-close"]
         },
         {
           "value": "countertops",
-          "label": { "en": "Premium countertops", "fr": "Plans de travail premium" },
+          "label": {
+            "en": "Premium countertops",
+            "fr": "Plans de travail premium"
+          },
           "icon": "square",
           "tags": ["natural-stone", "quartz"]
         },
         {
           "value": "layout",
-          "label": { "en": "Layout improvements", "fr": "Améliorations de disposition" },
+          "label": {
+            "en": "Layout improvements",
+            "fr": "Améliorations de disposition"
+          },
           "icon": "layout",
           "tags": ["structural", "flow"]
         },
         {
           "value": "lighting",
-          "label": { "en": "Professional lighting", "fr": "Éclairage professionnel" },
+          "label": {
+            "en": "Professional lighting",
+            "fr": "Éclairage professionnel"
+          },
           "icon": "lightbulb",
           "tags": ["layered-lighting", "smart"]
         },
         {
           "value": "flooring",
-          "label": { "en": "High-end flooring", "fr": "Revêtement de sol haut de gamme" },
+          "label": {
+            "en": "High-end flooring",
+            "fr": "Revêtement de sol haut de gamme"
+          },
           "icon": "grid",
           "tags": ["hardwood", "natural-stone"]
         },
         {
           "value": "storage",
-          "label": { "en": "Storage solutions", "fr": "Solutions de rangement" },
+          "label": {
+            "en": "Storage solutions",
+            "fr": "Solutions de rangement"
+          },
           "icon": "package",
           "tags": ["pull-outs", "organization"]
         },
         {
           "value": "technology",
-          "label": { "en": "Smart home tech", "fr": "Technologie maison intelligente" },
+          "label": {
+            "en": "Smart home tech",
+            "fr": "Technologie maison intelligente"
+          },
           "icon": "cpu",
           "tags": ["connected", "automated"]
         }
@@ -240,17 +306,26 @@
       "options": [
         {
           "value": "cabinet-material",
-          "label": { "en": "Cabinet material (not custom)", "fr": "Matériau d'armoire (pas sur mesure)" },
+          "label": {
+            "en": "Cabinet material (not custom)",
+            "fr": "Matériau d'armoire (pas sur mesure)"
+          },
           "tags": ["stock-cabinets", "semi-custom"]
         },
         {
           "value": "countertop-edges",
-          "label": { "en": "Basic countertop edges", "fr": "Bords de comptoir basiques" },
+          "label": {
+            "en": "Basic countertop edges",
+            "fr": "Bords de comptoir basiques"
+          },
           "tags": ["standard-edge", "simple"]
         },
         {
           "value": "hardware",
-          "label": { "en": "Standard hardware", "fr": "Quincaillerie standard" },
+          "label": {
+            "en": "Standard hardware",
+            "fr": "Quincaillerie standard"
+          },
           "tags": ["budget-hardware"]
         },
         {
@@ -260,17 +335,26 @@
         },
         {
           "value": "lighting-fixtures",
-          "label": { "en": "Basic light fixtures", "fr": "Luminaires basiques" },
+          "label": {
+            "en": "Basic light fixtures",
+            "fr": "Luminaires basiques"
+          },
           "tags": ["standard-fixtures"]
         },
         {
           "value": "sink-faucet",
-          "label": { "en": "Standard sink/faucet", "fr": "Évier/robinet standard" },
+          "label": {
+            "en": "Standard sink/faucet",
+            "fr": "Évier/robinet standard"
+          },
           "tags": ["basic-plumbing"]
         },
         {
           "value": "diy-some",
-          "label": { "en": "DIY some work", "fr": "Faire certains travaux soi-même" },
+          "label": {
+            "en": "DIY some work",
+            "fr": "Faire certains travaux soi-même"
+          },
           "tags": ["self-install", "sweat-equity"]
         }
       ],
@@ -292,31 +376,46 @@
         {
           "value": "under-5k",
           "label": { "en": "Under $5,000", "fr": "Moins de 5 000 €" },
-          "description": { "en": "Basic reliable appliances", "fr": "Appareils de base fiables" },
+          "description": {
+            "en": "Basic reliable appliances",
+            "fr": "Appareils de base fiables"
+          },
           "tags": ["basic", "value"]
         },
         {
           "value": "5k-10k",
           "label": { "en": "$5,000 - $10,000", "fr": "5 000 € - 10 000 €" },
-          "description": { "en": "Mid-range with some upgrades", "fr": "Milieu de gamme avec quelques améliorations" },
+          "description": {
+            "en": "Mid-range with some upgrades",
+            "fr": "Milieu de gamme avec quelques améliorations"
+          },
           "tags": ["mid-range"]
         },
         {
           "value": "10k-20k",
           "label": { "en": "$10,000 - $20,000", "fr": "10 000 € - 20 000 €" },
-          "description": { "en": "Premium brands and features", "fr": "Marques et fonctionnalités premium" },
+          "description": {
+            "en": "Premium brands and features",
+            "fr": "Marques et fonctionnalités premium"
+          },
           "tags": ["premium"]
         },
         {
           "value": "20k-35k",
           "label": { "en": "$20,000 - $35,000", "fr": "20 000 € - 35 000 €" },
-          "description": { "en": "High-end professional-style", "fr": "Haut de gamme style professionnel" },
+          "description": {
+            "en": "High-end professional-style",
+            "fr": "Haut de gamme style professionnel"
+          },
           "tags": ["professional", "high-end"]
         },
         {
           "value": "over-35k",
           "label": { "en": "Over $35,000", "fr": "Plus de 35 000 €" },
-          "description": { "en": "Top-tier commercial grade", "fr": "Qualité commerciale haut de gamme" },
+          "description": {
+            "en": "Top-tier commercial grade",
+            "fr": "Qualité commerciale haut de gamme"
+          },
           "tags": ["commercial", "luxury"]
         }
       ],
@@ -338,19 +437,28 @@
         {
           "value": "very-important",
           "label": { "en": "Very important", "fr": "Très important" },
-          "description": { "en": "Planning to sell within 5 years", "fr": "Prévu de vendre dans les 5 ans" },
+          "description": {
+            "en": "Planning to sell within 5 years",
+            "fr": "Prévu de vendre dans les 5 ans"
+          },
           "tags": ["resale-focused", "neutral-choices"]
         },
         {
           "value": "somewhat-important",
           "label": { "en": "Somewhat important", "fr": "Assez important" },
-          "description": { "en": "Balanced approach", "fr": "Approche équilibrée" },
+          "description": {
+            "en": "Balanced approach",
+            "fr": "Approche équilibrée"
+          },
           "tags": ["balanced"]
         },
         {
           "value": "not-important",
           "label": { "en": "Not important", "fr": "Pas important" },
-          "description": { "en": "This is my forever home", "fr": "C'est ma maison pour toujours" },
+          "description": {
+            "en": "This is my forever home",
+            "fr": "C'est ma maison pour toujours"
+          },
           "tags": ["personal-preference", "custom"]
         }
       ],
@@ -375,25 +483,37 @@
       "options": [
         {
           "value": "yes-20-plus",
-          "label": { "en": "Yes, 20% or more set aside", "fr": "Oui, 20% ou plus de côté" },
+          "label": {
+            "en": "Yes, 20% or more set aside",
+            "fr": "Oui, 20% ou plus de côté"
+          },
           "score": 100,
           "tags": ["well-prepared"]
         },
         {
           "value": "yes-10-20",
-          "label": { "en": "Yes, 10-20% set aside", "fr": "Oui, 10-20% de côté" },
+          "label": {
+            "en": "Yes, 10-20% set aside",
+            "fr": "Oui, 10-20% de côté"
+          },
           "score": 80,
           "tags": ["prepared"]
         },
         {
           "value": "some-buffer",
-          "label": { "en": "Small buffer (under 10%)", "fr": "Petite marge (moins de 10%)" },
+          "label": {
+            "en": "Small buffer (under 10%)",
+            "fr": "Petite marge (moins de 10%)"
+          },
           "score": 50,
           "tags": ["limited-buffer"]
         },
         {
           "value": "no-buffer",
-          "label": { "en": "No, budget is firm", "fr": "Non, le budget est fixe" },
+          "label": {
+            "en": "No, budget is firm",
+            "fr": "Non, le budget est fixe"
+          },
           "score": 30,
           "tags": ["tight-budget", "risk"]
         }

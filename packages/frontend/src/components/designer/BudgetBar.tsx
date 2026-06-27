@@ -15,16 +15,28 @@ interface BudgetBarProps {
 
 // ─── Color helpers ────────────────────────────────────────────
 function getBarColor(percentage: number): string {
-  if (percentage > 100) {return '#ef4444';} // red
-  if (percentage >= 90) {return '#f97316';} // orange
-  if (percentage >= 70) {return '#eab308';} // yellow
+  if (percentage > 100) {
+    return '#ef4444';
+  } // red
+  if (percentage >= 90) {
+    return '#f97316';
+  } // orange
+  if (percentage >= 70) {
+    return '#eab308';
+  } // yellow
   return '#22c55e'; // green
 }
 
 function getBarColorClass(percentage: number): string {
-  if (percentage > 100) {return 'text-red-500 dark:text-red-400';}
-  if (percentage >= 90) {return 'text-orange-500 dark:text-orange-400';}
-  if (percentage >= 70) {return 'text-yellow-500 dark:text-yellow-400';}
+  if (percentage > 100) {
+    return 'text-red-500 dark:text-red-400';
+  }
+  if (percentage >= 90) {
+    return 'text-orange-500 dark:text-orange-400';
+  }
+  if (percentage >= 70) {
+    return 'text-yellow-500 dark:text-yellow-400';
+  }
   return 'text-green-500 dark:text-green-400';
 }
 
@@ -34,7 +46,11 @@ function formatEUR(value: number): string {
 }
 
 // ─── Component ────────────────────────────────────────────────
-export default function BudgetBar({ budget, spent, breakdown }: BudgetBarProps): React.ReactElement {
+export default function BudgetBar({
+  budget,
+  spent,
+  breakdown,
+}: BudgetBarProps): React.ReactElement {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [delta, setDelta] = useState<number | null>(null);
@@ -109,14 +125,24 @@ export default function BudgetBar({ budget, spent, breakdown }: BudgetBarProps):
           {/* Top row: label + amount */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                 {isOverBudget
                   ? t('budget.over', 'Over budget')
-                  : t('budget.remaining', 'Remaining')
-                }: {formatEUR(Math.abs(remaining))}
+                  : t('budget.remaining', 'Remaining')}
+                : {formatEUR(Math.abs(remaining))}
               </span>
             </div>
 
@@ -129,7 +155,8 @@ export default function BudgetBar({ budget, spent, breakdown }: BudgetBarProps):
                   } ${delta > 0 ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}`}
                   aria-live="polite"
                 >
-                  {delta > 0 ? '+' : ''}{formatEUR(delta)}
+                  {delta > 0 ? '+' : ''}
+                  {formatEUR(delta)}
                 </span>
               )}
 
@@ -160,7 +187,9 @@ export default function BudgetBar({ budget, spent, breakdown }: BudgetBarProps):
             aria-valuenow={Math.round(percentage)}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label={t('budget.progress', 'Budget usage: {{percent}}%', { percent: percentage.toFixed(1) })}
+            aria-label={t('budget.progress', 'Budget usage: {{percent}}%', {
+              percent: percentage.toFixed(1),
+            })}
           >
             <div
               className="h-full rounded-full transition-all duration-500 ease-out"
@@ -199,8 +228,14 @@ export default function BudgetBar({ budget, spent, breakdown }: BudgetBarProps):
                       .map((item, index) => {
                         const widthPercent = (item.amount / breakdownTotal) * 100;
                         const segmentColors = [
-                          '#3b82f6', '#8b5cf6', '#ec4899', '#f97316',
-                          '#14b8a6', '#6366f1', '#a855f7', '#f43f5e',
+                          '#3b82f6',
+                          '#8b5cf6',
+                          '#ec4899',
+                          '#f97316',
+                          '#14b8a6',
+                          '#6366f1',
+                          '#a855f7',
+                          '#f43f5e',
                         ];
                         return (
                           <div
@@ -220,10 +255,17 @@ export default function BudgetBar({ budget, spent, breakdown }: BudgetBarProps):
                 {/* Category list */}
                 {breakdown.map((item, index) => {
                   const segmentColors = [
-                    '#3b82f6', '#8b5cf6', '#ec4899', '#f97316',
-                    '#14b8a6', '#6366f1', '#a855f7', '#f43f5e',
+                    '#3b82f6',
+                    '#8b5cf6',
+                    '#ec4899',
+                    '#f97316',
+                    '#14b8a6',
+                    '#6366f1',
+                    '#a855f7',
+                    '#f43f5e',
                   ];
-                  const catPercentage = budget > 0 ? ((item.amount / budget) * 100).toFixed(1) : '0';
+                  const catPercentage =
+                    budget > 0 ? ((item.amount / budget) * 100).toFixed(1) : '0';
                   return (
                     <div
                       key={item.category}

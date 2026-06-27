@@ -44,7 +44,7 @@ export class AuditLogRepository {
   async findById(id: string): Promise<AuditLog | null> {
     return this.prisma.auditLog.findUnique({
       where: { id },
-      include: { user: { select: { id: true, firstName: true, lastName: true } } }
+      include: { user: { select: { id: true, firstName: true, lastName: true } } },
     });
   }
 
@@ -68,7 +68,7 @@ export class AuditLogRepository {
         createdAt: {
           ...(filters.startDate && { gte: filters.startDate }),
           ...(filters.endDate && { lte: filters.endDate }),
-        }
+        },
       }),
     };
 
@@ -78,16 +78,16 @@ export class AuditLogRepository {
         skip,
         take: limit,
         orderBy: { [sortBy]: sortOrder },
-        include: { user: { select: { id: true, firstName: true, lastName: true } } }
+        include: { user: { select: { id: true, firstName: true, lastName: true } } },
       }),
-      this.prisma.auditLog.count({ where })
+      this.prisma.auditLog.count({ where }),
     ]);
 
     return {
       data,
       total,
       page,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
     };
   }
 
@@ -98,7 +98,7 @@ export class AuditLogRepository {
     return this.prisma.auditLog.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
-      take: limit
+      take: limit,
     });
   }
 
@@ -110,7 +110,7 @@ export class AuditLogRepository {
       where: { resource, ...(resourceId && { resourceId }) },
       orderBy: { createdAt: 'desc' },
       take: limit,
-      include: { user: { select: { id: true, firstName: true, lastName: true } } }
+      include: { user: { select: { id: true, firstName: true, lastName: true } } },
     });
   }
 
@@ -129,7 +129,7 @@ export class AuditLogRepository {
         ipAddress: data.ipAddress,
         userAgent: data.userAgent,
         metadata: data.metadata as any,
-      }
+      },
     });
   }
 
@@ -138,13 +138,13 @@ export class AuditLogRepository {
    */
   async createMany(logs: CreateAuditLogDto[]): Promise<{ count: number }> {
     return this.prisma.auditLog.createMany({
-      data: logs.map(log => ({
+      data: logs.map((log) => ({
         ...log,
         action: log.action as any,
         oldValues: log.oldValues as any,
         newValues: log.newValues as any,
         metadata: log.metadata as any,
-      }))
+      })),
     });
   }
 
@@ -157,7 +157,7 @@ export class AuditLogRepository {
         ...(filters.userId && { userId: filters.userId }),
         ...(filters.action && { action: filters.action as any }),
         ...(filters.resource && { resource: filters.resource }),
-      }
+      },
     });
   }
 
@@ -166,51 +166,57 @@ export class AuditLogRepository {
    */
   async deleteOlderThan(date: Date): Promise<{ count: number }> {
     return this.prisma.auditLog.deleteMany({
-      where: { createdAt: { lt: date } }
+      where: { createdAt: { lt: date } },
     });
   }
 
   /**
    * Get audit log statistics
    */
-  async getStats(startDate?: Date, endDate?: Date): Promise<{
+  async getStats(
+    startDate?: Date,
+    endDate?: Date
+  ): Promise<{
     totalLogs: number;
     byAction: Record<string, number>;
     byResource: Record<string, number>;
     topUsers: { userId: string; count: number }[];
   }> {
-    const dateFilter = startDate && endDate ? {
-      createdAt: { gte: startDate, lte: endDate }
-    } : {};
+    const dateFilter =
+      startDate && endDate
+        ? {
+            createdAt: { gte: startDate, lte: endDate },
+          }
+        : {};
 
     const [totalLogs, actionStats, resourceStats, topUsers] = await Promise.all([
       this.prisma.auditLog.count({ where: dateFilter }),
       this.prisma.auditLog.groupBy({
         by: ['action'],
         where: dateFilter,
-        _count: { action: true }
+        _count: { action: true },
       }),
       this.prisma.auditLog.groupBy({
         by: ['resource'],
         where: dateFilter,
-        _count: { resource: true }
+        _count: { resource: true },
       }),
       this.prisma.auditLog.groupBy({
         by: ['userId'],
         where: { ...dateFilter, userId: { not: null } },
         _count: { userId: true },
         orderBy: { _count: { userId: 'desc' } },
-        take: 10
-      })
+        take: 10,
+      }),
     ]);
 
     const byAction: Record<string, number> = {};
-    actionStats.forEach(stat => {
+    actionStats.forEach((stat) => {
       byAction[stat.action] = stat._count.action;
     });
 
     const byResource: Record<string, number> = {};
-    resourceStats.forEach(stat => {
+    resourceStats.forEach((stat) => {
       byResource[stat.resource] = stat._count.resource;
     });
 
@@ -218,14 +224,17 @@ export class AuditLogRepository {
       totalLogs,
       byAction,
       byResource,
-      topUsers: topUsers.map(u => ({ userId: u.userId!, count: u._count.userId }))
+      topUsers: topUsers.map((u) => ({ userId: u.userId!, count: u._count.userId })),
     };
   }
 
   /**
    * Get user activity summary
    */
-  async getUserActivity(userId: string, days = 30): Promise<{
+  async getUserActivity(
+    userId: string,
+    days = 30
+  ): Promise<{
     totalActions: number;
     actionBreakdown: Record<string, number>;
     recentActivity: AuditLog[];
@@ -236,27 +245,27 @@ export class AuditLogRepository {
 
     const [totalActions, actionBreakdown, recentActivity, lastLogin] = await Promise.all([
       this.prisma.auditLog.count({
-        where: { userId, createdAt: { gte: startDate } }
+        where: { userId, createdAt: { gte: startDate } },
       }),
       this.prisma.auditLog.groupBy({
         by: ['action'],
         where: { userId, createdAt: { gte: startDate } },
-        _count: { action: true }
+        _count: { action: true },
       }),
       this.prisma.auditLog.findMany({
         where: { userId },
         orderBy: { createdAt: 'desc' },
-        take: 10
+        take: 10,
       }),
       this.prisma.auditLog.findFirst({
         where: { userId, action: 'login' },
         orderBy: { createdAt: 'desc' },
-        select: { createdAt: true }
-      })
+        select: { createdAt: true },
+      }),
     ]);
 
     const breakdown: Record<string, number> = {};
-    actionBreakdown.forEach(stat => {
+    actionBreakdown.forEach((stat) => {
       breakdown[stat.action] = stat._count.action;
     });
 
@@ -264,14 +273,18 @@ export class AuditLogRepository {
       totalActions,
       actionBreakdown: breakdown,
       recentActivity,
-      lastLogin: lastLogin?.createdAt || null
+      lastLogin: lastLogin?.createdAt || null,
     };
   }
 
   /**
    * Get resource history
    */
-  async getResourceHistory(resource: string, resourceId: string, limit?: number): Promise<AuditLog[]> {
+  async getResourceHistory(
+    resource: string,
+    resourceId: string,
+    limit?: number
+  ): Promise<AuditLog[]> {
     return this.prisma.auditLog.findMany({
       where: { resource, resourceId },
       orderBy: { createdAt: 'desc' },
@@ -289,9 +302,10 @@ export class AuditLogRepository {
         ...(filters.userId && { userId: filters.userId }),
         ...(filters.action && { action: filters.action as any }),
         ...(filters.resource && { resource: filters.resource }),
-        ...(filters.startDate && filters.endDate && {
-          createdAt: { gte: filters.startDate, lte: filters.endDate }
-        }),
+        ...(filters.startDate &&
+          filters.endDate && {
+            createdAt: { gte: filters.startDate, lte: filters.endDate },
+          }),
       },
       orderBy: { createdAt: 'desc' },
       include: { user: { select: { id: true, firstName: true, lastName: true } } },

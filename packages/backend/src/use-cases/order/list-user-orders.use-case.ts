@@ -21,7 +21,9 @@ export class ListUserOrdersUseCase implements UseCase<ListUserOrdersInput, unkno
     const where = { userId, ...(status && { status: status as never }) };
     const [data, total] = await Promise.all([
       this.prisma.order.findMany({
-        where, skip: (page - 1) * limit, take: limit,
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
         orderBy: { createdAt: 'desc' },
         include: { _count: { select: { items: true } } },
       }),

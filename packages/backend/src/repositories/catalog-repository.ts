@@ -49,8 +49,8 @@ export class CatalogRepository {
       where: { id },
       include: {
         provider: true,
-        _count: { select: { products: true } }
-      }
+        _count: { select: { products: true } },
+      },
     });
   }
 
@@ -76,11 +76,11 @@ export class CatalogRepository {
         take: limit,
         include: {
           provider: true,
-          _count: { select: { products: true } }
+          _count: { select: { products: true } },
         },
-        orderBy: { updatedAt: 'desc' }
+        orderBy: { updatedAt: 'desc' },
       }),
-      this.prisma.catalog.count({ where })
+      this.prisma.catalog.count({ where }),
     ]);
 
     return { data, total };
@@ -93,7 +93,7 @@ export class CatalogRepository {
     return this.prisma.catalog.findMany({
       where: { providerId, isActive: true },
       include: { _count: { select: { products: true } } },
-      orderBy: { version: 'desc' }
+      orderBy: { version: 'desc' },
     });
   }
 
@@ -108,17 +108,20 @@ export class CatalogRepository {
         description: data.description,
         version: data.version || '1.0',
       },
-      include: { provider: true }
+      include: { provider: true },
     });
   }
 
   /**
    * Update a catalog
    */
-  async updateCatalog(id: string, data: Partial<CreateCatalogDto> & { isActive?: boolean; lastSyncAt?: Date }): Promise<Catalog> {
+  async updateCatalog(
+    id: string,
+    data: Partial<CreateCatalogDto> & { isActive?: boolean; lastSyncAt?: Date }
+  ): Promise<Catalog> {
     return this.prisma.catalog.update({
       where: { id },
-      data
+      data,
     });
   }
 
@@ -127,7 +130,7 @@ export class CatalogRepository {
    */
   async deleteCatalog(id: string): Promise<Catalog> {
     return this.prisma.catalog.delete({
-      where: { id }
+      where: { id },
     });
   }
 
@@ -137,7 +140,7 @@ export class CatalogRepository {
   async markSynced(id: string): Promise<Catalog> {
     return this.prisma.catalog.update({
       where: { id },
-      data: { lastSyncAt: new Date() }
+      data: { lastSyncAt: new Date() },
     });
   }
 
@@ -151,8 +154,8 @@ export class CatalogRepository {
       where: { id },
       include: {
         catalogs: { where: { isActive: true } },
-        _count: { select: { products: true, appliances: true, materials: true } }
-      }
+        _count: { select: { products: true, appliances: true, materials: true } },
+      },
     });
   }
 
@@ -161,7 +164,7 @@ export class CatalogRepository {
    */
   async findProviderByCode(code: string): Promise<CatalogProvider | null> {
     return this.prisma.catalogProvider.findUnique({
-      where: { code }
+      where: { code },
     });
   }
 
@@ -172,9 +175,9 @@ export class CatalogRepository {
     return this.prisma.catalogProvider.findMany({
       where: isActive !== undefined ? { isActive } : undefined,
       include: {
-        _count: { select: { catalogs: true, products: true } }
+        _count: { select: { catalogs: true, products: true } },
       },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -189,7 +192,7 @@ export class CatalogRepository {
         apiEndpoint: data.apiEndpoint,
         apiKey: data.apiKey ? encrypt(data.apiKey) : undefined,
         configuration: data.configuration as Prisma.InputJsonValue,
-      }
+      },
     });
   }
 
@@ -202,10 +205,12 @@ export class CatalogRepository {
       data: {
         ...(data.name && { name: data.name }),
         ...(data.apiEndpoint !== undefined && { apiEndpoint: data.apiEndpoint }),
-        ...(data.apiKey !== undefined && { apiKey: data.apiKey ? encrypt(data.apiKey) : data.apiKey }),
+        ...(data.apiKey !== undefined && {
+          apiKey: data.apiKey ? encrypt(data.apiKey) : data.apiKey,
+        }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
         ...(data.configuration && { configuration: data.configuration as Prisma.InputJsonValue }),
-      }
+      },
     });
   }
 
@@ -214,7 +219,7 @@ export class CatalogRepository {
    */
   async deleteProvider(id: string): Promise<CatalogProvider> {
     return this.prisma.catalogProvider.delete({
-      where: { id }
+      where: { id },
     });
   }
 
@@ -224,7 +229,9 @@ export class CatalogRepository {
   async toggleProviderStatus(id: string): Promise<CatalogProvider> {
     return this.prisma.$transaction(async (tx) => {
       const provider = await tx.catalogProvider.findUnique({ where: { id } });
-      if (!provider) {throw new Error('Provider not found');}
+      if (!provider) {
+        throw new Error('Provider not found');
+      }
 
       return tx.catalogProvider.update({
         where: { id },
@@ -241,7 +248,9 @@ export class CatalogRepository {
       where: { id: providerId },
       select: { apiKey: true },
     });
-    if (!provider?.apiKey) {return null;}
+    if (!provider?.apiKey) {
+      return null;
+    }
     try {
       return isEncrypted(provider.apiKey) ? decrypt(provider.apiKey) : provider.apiKey;
     } catch {
@@ -268,14 +277,14 @@ export class CatalogRepository {
       totalCatalogs,
       totalProducts,
       totalAppliances,
-      totalMaterials
+      totalMaterials,
     ] = await Promise.all([
       this.prisma.catalogProvider.count(),
       this.prisma.catalogProvider.count({ where: { isActive: true } }),
       this.prisma.catalog.count({ where: { isActive: true } }),
       this.prisma.product.count({ where: { isActive: true, deletedAt: null } }),
       this.prisma.appliance.count({ where: { isActive: true, deletedAt: null } }),
-      this.prisma.material.count({ where: { isActive: true } })
+      this.prisma.material.count({ where: { isActive: true } }),
     ]);
 
     return {
@@ -284,7 +293,7 @@ export class CatalogRepository {
       totalCatalogs,
       totalProducts,
       totalAppliances,
-      totalMaterials
+      totalMaterials,
     };
   }
 

@@ -10,7 +10,7 @@ import { asyncHandler } from '../middleware/error-middleware';
 async function verifyKitchenOwnership(
   req: Request,
   res: Response,
-  kitchenId: string,
+  kitchenId: string
 ): Promise<{ id: string; userId: string } | null> {
   const userId = req.user?.userId;
 
@@ -56,7 +56,9 @@ export class DesignVersionController {
     const { kitchenId, label } = req.body as { kitchenId: string; label?: string };
 
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) {return;}
+    if (!kitchen) {
+      return;
+    }
 
     // Load current items and configuration as snapshot
     const [items, configuration] = await Promise.all([
@@ -121,7 +123,9 @@ export class DesignVersionController {
     }
 
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) {return;}
+    if (!kitchen) {
+      return;
+    }
 
     const versions = await prisma.designVersion.findMany({
       where: { kitchenId },
@@ -157,7 +161,9 @@ export class DesignVersionController {
     }
 
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) {return;}
+    if (!kitchen) {
+      return;
+    }
 
     const designVersion = await prisma.designVersion.findUnique({
       where: {
@@ -195,7 +201,9 @@ export class DesignVersionController {
     }
 
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) {return;}
+    if (!kitchen) {
+      return;
+    }
 
     const designVersion = await prisma.designVersion.findUnique({
       where: {
@@ -308,7 +316,9 @@ export class DesignVersionController {
     }
 
     const kitchen = await verifyKitchenOwnership(req, res, kitchenId);
-    if (!kitchen) {return;}
+    if (!kitchen) {
+      return;
+    }
 
     const designVersion = await prisma.designVersion.findUnique({
       where: {

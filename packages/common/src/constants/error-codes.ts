@@ -122,7 +122,7 @@ export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
 export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   [ERROR_CODES.AUTH_INVALID_CREDENTIALS]: 'Identifiants invalides',
   [ERROR_CODES.AUTH_TOKEN_EXPIRED]: 'Votre session a expiré',
-  [ERROR_CODES.AUTH_TOKEN_INVALID]: 'Token d\'authentification invalide',
+  [ERROR_CODES.AUTH_TOKEN_INVALID]: "Token d'authentification invalide",
   [ERROR_CODES.AUTH_REFRESH_TOKEN_EXPIRED]: 'Veuillez vous reconnecter',
   [ERROR_CODES.AUTH_ACCOUNT_LOCKED]: 'Compte temporairement verrouillé',
   [ERROR_CODES.AUTH_ACCOUNT_NOT_VERIFIED]: 'Veuillez vérifier votre email',
@@ -158,7 +158,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   [ERROR_CODES.RESOURCE_CONFLICT]: 'Conflit de ressource',
   [ERROR_CODES.RESOURCE_DELETED]: 'Ressource supprimée',
   [ERROR_CODES.RESOURCE_LOCKED]: 'Ressource verrouillée',
-  [ERROR_CODES.RESOURCE_DEPENDENCY]: 'Ressource liée à d\'autres éléments',
+  [ERROR_CODES.RESOURCE_DEPENDENCY]: "Ressource liée à d'autres éléments",
 
   [ERROR_CODES.USER_NOT_FOUND]: 'Utilisateur introuvable',
   [ERROR_CODES.USER_ALREADY_EXISTS]: 'Cet utilisateur existe déjà',
@@ -172,7 +172,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   [ERROR_CODES.PROJECT_LIMIT_REACHED]: 'Limite de projets atteinte',
   [ERROR_CODES.PROJECT_INVALID_STATE]: 'État du projet invalide',
   [ERROR_CODES.PROJECT_SAVE_FAILED]: 'Échec de la sauvegarde du projet',
-  [ERROR_CODES.PROJECT_EXPORT_FAILED]: 'Échec de l\'export du projet',
+  [ERROR_CODES.PROJECT_EXPORT_FAILED]: "Échec de l'export du projet",
 
   [ERROR_CODES.PRODUCT_NOT_FOUND]: 'Produit introuvable',
   [ERROR_CODES.PRODUCT_OUT_OF_STOCK]: 'Produit en rupture de stock',
@@ -186,7 +186,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   [ERROR_CODES.ORDER_PAYMENT_FAILED]: 'Échec du paiement',
   [ERROR_CODES.ORDER_ALREADY_CANCELLED]: 'Commande déjà annulée',
   [ERROR_CODES.ORDER_CANNOT_MODIFY]: 'Impossible de modifier cette commande',
-  [ERROR_CODES.ORDER_SHIPPING_FAILED]: 'Échec de l\'expédition',
+  [ERROR_CODES.ORDER_SHIPPING_FAILED]: "Échec de l'expédition",
 
   [ERROR_CODES.PARTNER_NOT_FOUND]: 'Partenaire introuvable',
   [ERROR_CODES.PARTNER_INACTIVE]: 'Partenaire inactif',
@@ -196,7 +196,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
 
   [ERROR_CODES.SERVER_INTERNAL_ERROR]: 'Erreur interne du serveur',
   [ERROR_CODES.SERVER_SERVICE_UNAVAILABLE]: 'Service temporairement indisponible',
-  [ERROR_CODES.SERVER_TIMEOUT]: 'Délai d\'attente dépassé',
+  [ERROR_CODES.SERVER_TIMEOUT]: "Délai d'attente dépassé",
   [ERROR_CODES.SERVER_RATE_LIMIT]: 'Trop de requêtes, veuillez réessayer plus tard',
   [ERROR_CODES.SERVER_MAINTENANCE]: 'Service en maintenance',
 
@@ -206,7 +206,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   [ERROR_CODES.EXTERNAL_INVALID_RESPONSE]: 'Réponse externe invalide',
 
   [ERROR_CODES.FILE_NOT_FOUND]: 'Fichier introuvable',
-  [ERROR_CODES.FILE_UPLOAD_FAILED]: 'Échec de l\'upload',
+  [ERROR_CODES.FILE_UPLOAD_FAILED]: "Échec de l'upload",
   [ERROR_CODES.FILE_TYPE_NOT_ALLOWED]: 'Type de fichier non autorisé',
   [ERROR_CODES.FILE_SIZE_EXCEEDED]: 'Taille de fichier dépassée',
   [ERROR_CODES.STORAGE_QUOTA_EXCEEDED]: 'Quota de stockage dépassé',

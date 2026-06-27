@@ -8,9 +8,14 @@
 
 ## Introduction
 
-This Acceptable Use Policy ("AUP" or "Policy") governs your use of the KitchenXpert platform, including our website, web application, mobile applications, APIs, and related services (collectively, the "Service").
+This Acceptable Use Policy ("AUP" or "Policy") governs your use of the
+KitchenXpert platform, including our website, web application, mobile
+applications, APIs, and related services (collectively, the "Service").
 
-This Policy is incorporated into and forms part of the KitchenXpert [Terms of Service](/legal/terms-of-service). By using the Service, you agree to comply with this Policy. Capitalized terms not defined herein have the meanings given in the Terms of Service.
+This Policy is incorporated into and forms part of the KitchenXpert
+[Terms of Service](/legal/terms-of-service). By using the Service, you agree to
+comply with this Policy. Capitalized terms not defined herein have the meanings
+given in the Terms of Service.
 
 ### Purpose
 
@@ -30,13 +35,15 @@ This Policy applies to all users of the Service, including:
 - API users and developers
 - Collaborators and invited guests
 
-Violations of this Policy may result in suspension or termination of your account and access to the Service.
+Violations of this Policy may result in suspension or termination of your
+account and access to the Service.
 
 ---
 
 ## Permitted Uses
 
-The Service is designed for legitimate kitchen design and planning purposes. Permitted uses include:
+The Service is designed for legitimate kitchen design and planning purposes.
+Permitted uses include:
 
 ### Personal Use
 
@@ -66,7 +73,9 @@ The Service is designed for legitimate kitchen design and planning purposes. Per
 
 ## Prohibited Uses
 
-The following activities are strictly prohibited when using the Service. This list is not exhaustive; KitchenXpert reserves the right to determine what constitutes a violation.
+The following activities are strictly prohibited when using the Service. This
+list is not exhaustive; KitchenXpert reserves the right to determine what
+constitutes a violation.
 
 ### Illegal Activities
 
@@ -85,7 +94,9 @@ You must not upload, create, or share content that:
 - Contains malware, viruses, trojans, or other malicious code
 - Facilitates phishing, social engineering, or identity theft
 - Promotes or incites violence, terrorism, or self-harm
-- Contains hate speech or promotes discrimination based on race, ethnicity, religion, gender, sexual orientation, disability, or other protected characteristics
+- Contains hate speech or promotes discrimination based on race, ethnicity,
+  religion, gender, sexual orientation, disability, or other protected
+  characteristics
 - Is obscene, pornographic, or sexually explicit
 - Is defamatory, libelous, or harassing
 - Threatens, intimidates, or bullies others
@@ -106,9 +117,11 @@ You must not use the Service to:
 
 You must not:
 
-- Attempt to gain unauthorized access to the Service, other accounts, or related systems
+- Attempt to gain unauthorized access to the Service, other accounts, or related
+  systems
 - Probe, scan, or test vulnerabilities without written authorization
-- Conduct denial-of-service (DoS) or distributed denial-of-service (DDoS) attacks
+- Conduct denial-of-service (DoS) or distributed denial-of-service (DDoS)
+  attacks
 - Overwhelm, flood, or spam the Service infrastructure
 - Interfere with the proper functioning of the Service
 - Exploit bugs, glitches, or vulnerabilities
@@ -134,8 +147,10 @@ You must not:
 - Create a competing product using our Service or data
 - Collect user information for commercial purposes without consent
 - Send unsolicited commercial communications (spam) through the Service
-- Use the Service to advertise or promote third-party products without authorization
-- Exploit the Service for cryptocurrency mining or similar resource-intensive activities
+- Use the Service to advertise or promote third-party products without
+  authorization
+- Exploit the Service for cryptocurrency mining or similar resource-intensive
+  activities
 
 ### Platform Manipulation
 
@@ -152,7 +167,8 @@ You must not:
 
 ## Content Standards
 
-When creating and sharing content through the Service, you must adhere to the following standards:
+When creating and sharing content through the Service, you must adhere to the
+following standards:
 
 ### Design Content
 
@@ -187,10 +203,10 @@ When creating and sharing content through the Service, you must adhere to the fo
 
 ### How to Report
 
-If you become aware of any violation of this Policy, please report it to us immediately:
+If you become aware of any violation of this Policy, please report it to us
+immediately:
 
-**Email:** abuse@kitchenxpert.com
-**Subject:** AUP Violation Report
+**Email:** abuse@kitchenxpert.com **Subject:** AUP Violation Report
 
 ### What to Include
 
@@ -204,7 +220,9 @@ When reporting a violation, please provide:
 
 ### Confidentiality
 
-All reports are treated confidentially. We will not disclose reporter information to the violating party unless required by law or necessary to resolve the issue.
+All reports are treated confidentially. We will not disclose reporter
+information to the violating party unless required by law or necessary to
+resolve the issue.
 
 ### Investigation Process
 
@@ -217,7 +235,8 @@ Upon receiving a report, we will:
 
 ### No Retaliation
 
-KitchenXpert prohibits retaliation against anyone who reports a violation in good faith.
+KitchenXpert prohibits retaliation against anyone who reports a violation in
+good faith.
 
 ---
 
@@ -225,7 +244,8 @@ KitchenXpert prohibits retaliation against anyone who reports a violation in goo
 
 ### Investigation
 
-KitchenXpert reserves the right to investigate any suspected violation of this Policy. This may include:
+KitchenXpert reserves the right to investigate any suspected violation of this
+Policy. This may include:
 
 - Reviewing account activity and content
 - Analyzing system logs and usage patterns
@@ -234,29 +254,35 @@ KitchenXpert reserves the right to investigate any suspected violation of this P
 
 ### Actions for Violations
 
-Depending on the nature and severity of the violation, KitchenXpert may take one or more of the following actions:
+Depending on the nature and severity of the violation, KitchenXpert may take one
+or more of the following actions:
 
 **Warning:**
+
 - For first-time minor violations
 - Written notice of the violation
 - Requirement to cease the prohibited activity
 
 **Temporary Suspension:**
+
 - For repeated minor violations or moderate violations
 - Account access suspended for a specified period
 - Opportunity to remedy the violation
 
 **Content Removal:**
+
 - Removal of violating content without notice
 - User notified of removal and reason
 
 **Permanent Termination:**
+
 - For serious violations or repeated offenses
 - Immediate and permanent termination of account
 - Loss of all stored data and designs
 - Prohibition from creating new accounts
 
 **Legal Action:**
+
 - For violations involving criminal activity or significant harm
 - Referral to law enforcement authorities
 - Pursuit of civil remedies
@@ -278,14 +304,15 @@ When determining appropriate action, we consider:
 
 ### Right to Appeal
 
-If your account is suspended or terminated for a Policy violation, you may appeal the decision.
+If your account is suspended or terminated for a Policy violation, you may
+appeal the decision.
 
 ### How to Appeal
 
 Submit your appeal within 30 days of the enforcement action:
 
-**Email:** appeals@kitchenxpert.com
-**Subject:** AUP Appeal - [Your Account Email]
+**Email:** appeals@kitchenxpert.com **Subject:** AUP Appeal - [Your Account
+Email]
 
 ### Appeal Contents
 
@@ -299,7 +326,8 @@ Your appeal should include:
 
 ### Review Process
 
-Appeals are reviewed by a different team member than the original decision-maker. We will:
+Appeals are reviewed by a different team member than the original
+decision-maker. We will:
 
 - Acknowledge receipt within 5 business days
 - Review all relevant information
@@ -308,7 +336,8 @@ Appeals are reviewed by a different team member than the original decision-maker
 
 ### Decision
 
-The appeal decision is final. KitchenXpert reserves sole discretion in interpreting and enforcing this Policy.
+The appeal decision is final. KitchenXpert reserves sole discretion in
+interpreting and enforcing this Policy.
 
 ---
 
@@ -316,7 +345,8 @@ The appeal decision is final. KitchenXpert reserves sole discretion in interpret
 
 ### Right to Modify
 
-KitchenXpert reserves the right to modify this Policy at any time. We will provide notice of material changes through:
+KitchenXpert reserves the right to modify this Policy at any time. We will
+provide notice of material changes through:
 
 - Email notification to registered users
 - Prominent notice on our website
@@ -324,7 +354,9 @@ KitchenXpert reserves the right to modify this Policy at any time. We will provi
 
 ### Effective Date
 
-Changes become effective upon the date specified in the updated Policy. Continued use of the Service after changes take effect constitutes acceptance of the modified Policy.
+Changes become effective upon the date specified in the updated Policy.
+Continued use of the Service after changes take effect constitutes acceptance of
+the modified Policy.
 
 ### Review
 
@@ -336,25 +368,18 @@ We encourage you to review this Policy periodically to stay informed of updates.
 
 For questions about this Acceptable Use Policy:
 
-**General Inquiries:**
-Email: support@kitchenxpert.com
+**General Inquiries:** Email: support@kitchenxpert.com
 
-**Report Violations:**
-Email: abuse@kitchenxpert.com
+**Report Violations:** Email: abuse@kitchenxpert.com
 
-**Appeals:**
-Email: appeals@kitchenxpert.com
+**Appeals:** Email: appeals@kitchenxpert.com
 
-**Legal:**
-Email: legal@kitchenxpert.com
+**Legal:** Email: legal@kitchenxpert.com
 
-**Mailing Address:**
-KitchenXpert SAS
-42 Rue de la Cuisine
-75008 Paris, France
+**Mailing Address:** KitchenXpert SAS 42 Rue de la Cuisine 75008 Paris, France
 
 Website: https://www.kitchenxpert.com
 
 ---
 
-*This Acceptable Use Policy is effective as of January 12, 2026.*
+_This Acceptable Use Policy is effective as of January 12, 2026._

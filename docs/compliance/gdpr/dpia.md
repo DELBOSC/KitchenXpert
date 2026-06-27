@@ -19,17 +19,18 @@
 
 ## Introduction
 
-A DPIA identifies and minimizes data protection risks. Under GDPR Article 35, DPIAs are mandatory for processing likely to result in high risk to individuals.
+A DPIA identifies and minimizes data protection risks. Under GDPR Article 35,
+DPIAs are mandatory for processing likely to result in high risk to individuals.
 
 ### Responsibilities
 
-| Role | Responsibility |
-|------|----------------|
-| DPO | Oversight, advice, review, sign-off |
+| Role          | Responsibility                                  |
+| ------------- | ----------------------------------------------- |
+| DPO           | Oversight, advice, review, sign-off             |
 | Project Owner | Initiate DPIA, provide info, implement measures |
-| Legal Team | Legal basis assessment |
-| Security Team | Technical measures, risk assessment |
-| Product Team | Feature design, UX considerations |
+| Legal Team    | Legal basis assessment                          |
+| Security Team | Technical measures, risk assessment             |
+| Product Team  | Feature design, UX considerations               |
 
 ---
 
@@ -37,14 +38,14 @@ A DPIA identifies and minimizes data protection risks. Under GDPR Article 35, DP
 
 ### Mandatory Triggers (Article 35)
 
-| Trigger | KitchenXpert Examples |
-|---------|----------------------|
-| Systematic evaluation/profiling | AI recommendations, behavior analytics |
-| New technologies | AI/ML models, 3D rendering |
-| Automated decisions with legal effects | Fraud detection, account suspension |
-| Large-scale processing | Platform analytics, marketing |
-| Data matching/combining | Cross-platform matching |
-| Vulnerable data subjects | Users under 18 |
+| Trigger                                | KitchenXpert Examples                  |
+| -------------------------------------- | -------------------------------------- |
+| Systematic evaluation/profiling        | AI recommendations, behavior analytics |
+| New technologies                       | AI/ML models, 3D rendering             |
+| Automated decisions with legal effects | Fraud detection, account suspension    |
+| Large-scale processing                 | Platform analytics, marketing          |
+| Data matching/combining                | Cross-platform matching                |
+| Vulnerable data subjects               | Users under 18                         |
 
 ### KitchenXpert Criteria (Two or more triggers DPIA)
 
@@ -79,19 +80,18 @@ A DPIA identifies and minimizes data protection risks. Under GDPR Article 35, DP
 
 ### DPIA 1: AI Design Generation
 
-**Purpose**: Personalized kitchen design suggestions
-**Legal Basis**: Consent (personalization) / Contract (core service)
-**Data**: Design preferences, dimensions, styles, history
-**Volume**: ~500,000 active users monthly
+**Purpose**: Personalized kitchen design suggestions **Legal Basis**: Consent
+(personalization) / Contract (core service) **Data**: Design preferences,
+dimensions, styles, history **Volume**: ~500,000 active users monthly
 
 #### Risk Assessment
 
-| Risk | Level | Mitigation |
-|------|-------|------------|
-| Profiling without awareness | Medium | Clear AI disclosure, opt-out |
-| Biased recommendations | Low | Bias audits, diverse training |
-| Data beyond purpose | Medium | Access controls, documentation |
-| Unauthorized model access | Medium | Security, logging |
+| Risk                        | Level  | Mitigation                     |
+| --------------------------- | ------ | ------------------------------ |
+| Profiling without awareness | Medium | Clear AI disclosure, opt-out   |
+| Biased recommendations      | Low    | Bias audits, diverse training  |
+| Data beyond purpose         | Medium | Access controls, documentation |
+| Unauthorized model access   | Medium | Security, logging              |
 
 **DPO Review**: Approved, November 2025. Next review: November 2026.
 
@@ -99,35 +99,33 @@ A DPIA identifies and minimizes data protection risks. Under GDPR Article 35, DP
 
 ### DPIA 2: Analytics and Profiling
 
-**Purpose**: Platform improvement, conversion optimization
-**Legal Basis**: Consent (cookies) / Legitimate interest (aggregate)
-**Data**: Page views, clicks, sessions, device info, IP (anonymized)
-**Volume**: ~2M monthly visitors
+**Purpose**: Platform improvement, conversion optimization **Legal Basis**:
+Consent (cookies) / Legitimate interest (aggregate) **Data**: Page views,
+clicks, sessions, device info, IP (anonymized) **Volume**: ~2M monthly visitors
 
 #### Risk Assessment
 
-| Risk | Level | Mitigation |
-|------|-------|------------|
-| Tracking without consent | Medium | Cookie consent, GA consent mode |
-| Behavioral profiling | Low | IP anonymization, limited retention |
-| Cross-site tracking | Medium | First-party cookies only |
+| Risk                     | Level  | Mitigation                          |
+| ------------------------ | ------ | ----------------------------------- |
+| Tracking without consent | Medium | Cookie consent, GA consent mode     |
+| Behavioral profiling     | Low    | IP anonymization, limited retention |
+| Cross-site tracking      | Medium | First-party cookies only            |
 
 ---
 
 ### DPIA 3: Partner Data Sharing
 
-**Purpose**: Order fulfillment, localized services
-**Legal Basis**: Contract (fulfillment) / Consent (marketing)
-**Data**: Contact info, orders, designs, delivery address
-**Volume**: ~50,000 orders/month, ~200 partners
+**Purpose**: Order fulfillment, localized services **Legal Basis**: Contract
+(fulfillment) / Consent (marketing) **Data**: Contact info, orders, designs,
+delivery address **Volume**: ~50,000 orders/month, ~200 partners
 
 #### Risk Assessment
 
-| Risk | Level | Mitigation |
-|------|-------|------------|
-| Partner misuse | High | DPAs, audits, limited data |
+| Risk                   | Level  | Mitigation                             |
+| ---------------------- | ------ | -------------------------------------- |
+| Partner misuse         | High   | DPAs, audits, limited data             |
 | Unauthorized marketing | Medium | Clear consent, contractual prohibition |
-| Partner breach | High | Security requirements, audits |
+| Partner breach         | High   | Security requirements, audits          |
 
 ---
 
@@ -143,13 +141,13 @@ A DPIA identifies and minimizes data protection risks. Under GDPR Article 35, DP
 
 ### Risk Levels
 
-| Likelihood/Severity | 1 | 2 | 3 | 4 |
-|---------------------|---|---|---|---|
-| 5 | Medium | High | High | Critical |
-| 4 | Low | Medium | High | Critical |
-| 3 | Low | Medium | Medium | High |
-| 2 | Low | Low | Medium | Medium |
-| 1 | Low | Low | Low | Medium |
+| Likelihood/Severity | 1      | 2      | 3      | 4        |
+| ------------------- | ------ | ------ | ------ | -------- |
+| 5                   | Medium | High   | High   | Critical |
+| 4                   | Low    | Medium | High   | Critical |
+| 3                   | Low    | Medium | Medium | High     |
+| 2                   | Low    | Low    | Medium | Medium   |
+| 1                   | Low    | Low    | Low    | Medium   |
 
 ### Response
 
@@ -164,11 +162,13 @@ A DPIA identifies and minimizes data protection risks. Under GDPR Article 35, DP
 
 ### Technical
 
-Encryption, pseudonymization, anonymization, access controls, logging, data minimization, retention automation
+Encryption, pseudonymization, anonymization, access controls, logging, data
+minimization, retention automation
 
 ### Organizational
 
-Policies, training, contracts (DPAs), privacy by design, audits, incident response, DPO consultation
+Policies, training, contracts (DPAs), privacy by design, audits, incident
+response, DPO consultation
 
 ---
 
@@ -184,7 +184,8 @@ Policies, training, contracts (DPAs), privacy by design, audits, incident respon
 
 ### Supervisory Authority Consultation
 
-Required when residual risk remains high despite mitigations, DPO recommends, or novel processing with uncertainty.
+Required when residual risk remains high despite mitigations, DPO recommends, or
+novel processing with uncertainty.
 
 ---
 
@@ -202,11 +203,11 @@ Required when residual risk remains high despite mitigations, DPO recommends, or
 
 ### Scheduled
 
-| Processing | Frequency | Next Review |
-|------------|-----------|-------------|
-| AI Design Generation | Annual | November 2026 |
-| Analytics/Profiling | Annual | January 2027 |
-| Partner Data Sharing | Annual | March 2026 |
+| Processing           | Frequency | Next Review   |
+| -------------------- | --------- | ------------- |
+| AI Design Generation | Annual    | November 2026 |
+| Analytics/Profiling  | Annual    | January 2027  |
+| Partner Data Sharing | Annual    | March 2026    |
 
 ---
 
@@ -243,14 +244,14 @@ DPIA ID, Project Name, Owner, Dates, Version, DPO Status
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
-| Document Owner | Data Protection Officer |
-| Review Frequency | Annual |
-| Last Reviewed | 2026-01-10 |
-| Next Review | 2027-01-10 |
-| Version | 2.0 |
+| Property         | Value                   |
+| ---------------- | ----------------------- |
+| Document Owner   | Data Protection Officer |
+| Review Frequency | Annual                  |
+| Last Reviewed    | 2026-01-10              |
+| Next Review      | 2027-01-10              |
+| Version          | 2.0                     |
 
 ---
 
-*For DPIA questions or consultation, contact dpo@kitchenxpert.com.*
+_For DPIA questions or consultation, contact dpo@kitchenxpert.com._

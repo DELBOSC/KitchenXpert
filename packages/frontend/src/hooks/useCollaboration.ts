@@ -41,7 +41,8 @@ interface UseCollaborationReturn {
   sendCursorUpdate: (position: { x: number; y: number; z: number }, objectId?: string) => void;
 }
 
-const WS_BASE_URL = (import.meta.env.VITE_WS_URL as string) ||
+const WS_BASE_URL =
+  (import.meta.env.VITE_WS_URL as string) ||
   `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`;
 
 export function useCollaboration(
@@ -60,7 +61,9 @@ export function useCollaboration(
   const staleCursorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const connect = useCallback(() => {
-    if (!kitchenId) {return;}
+    if (!kitchenId) {
+      return;
+    }
 
     try {
       const ws = new WebSocket(`${WS_BASE_URL}/ws/collaboration?kitchenId=${kitchenId}`);
@@ -73,13 +76,15 @@ export function useCollaboration(
       doc.on('update', (update: Uint8Array, _origin: unknown) => {
         if (ws.readyState === WebSocket.OPEN) {
           const base64 = btoa(String.fromCharCode(...update));
-          ws.send(JSON.stringify({
-            type: 'doc-update',
-            kitchenId,
-            userId: '',
-            payload: { update: base64 },
-            timestamp: Date.now(),
-          }));
+          ws.send(
+            JSON.stringify({
+              type: 'doc-update',
+              kitchenId,
+              userId: '',
+              payload: { update: base64 },
+              timestamp: Date.now(),
+            })
+          );
         }
       });
 
@@ -116,7 +121,12 @@ export function useCollaboration(
         setError(i18next.t('collaboration.wsError', 'Erreur de connexion WebSocket'));
       };
     } catch {
-      setError(i18next.t('collaboration.connectError', 'Impossible de se connecter au serveur collaboratif'));
+      setError(
+        i18next.t(
+          'collaboration.connectError',
+          'Impossible de se connecter au serveur collaboratif'
+        )
+      );
     }
   }, [kitchenId]);
 
@@ -181,7 +191,9 @@ export function useCollaboration(
 
   // Connect on mount, disconnect on unmount
   useEffect(() => {
-    if (!kitchenId || !engine) {return;}
+    if (!kitchenId || !engine) {
+      return;
+    }
 
     connect();
 
@@ -219,17 +231,24 @@ export function useCollaboration(
     };
   }, [kitchenId, engine, connect]);
 
-  const sendCursorUpdate = useCallback((position: { x: number; y: number; z: number }, objectId?: string) => {
-    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !kitchenId) {return;}
+  const sendCursorUpdate = useCallback(
+    (position: { x: number; y: number; z: number }, objectId?: string) => {
+      if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !kitchenId) {
+        return;
+      }
 
-    wsRef.current.send(JSON.stringify({
-      type: 'cursor-update',
-      kitchenId,
-      userId: '',
-      payload: { objectId, position, timestamp: Date.now() },
-      timestamp: Date.now(),
-    }));
-  }, [kitchenId]);
+      wsRef.current.send(
+        JSON.stringify({
+          type: 'cursor-update',
+          kitchenId,
+          userId: '',
+          payload: { objectId, position, timestamp: Date.now() },
+          timestamp: Date.now(),
+        })
+      );
+    },
+    [kitchenId]
+  );
 
   return { isConnected, users, cursors, error, sendCursorUpdate };
 }

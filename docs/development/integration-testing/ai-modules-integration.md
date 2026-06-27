@@ -14,7 +14,8 @@
 
 ## Overview
 
-AI modules integration tests verify that the Python FastAPI AI service integrates correctly with the Node.js backend and frontend.
+AI modules integration tests verify that the Python FastAPI AI service
+integrates correctly with the Node.js backend and frontend.
 
 ## Testing AI Service Integration
 
@@ -35,7 +36,7 @@ describe('AI Service Integration', () => {
     const params = {
       style: 'modern',
       dimensions: { width: 12, height: 10 },
-      budget: 5000
+      budget: 5000,
     };
 
     const design = await AIService.generateDesign(params);
@@ -52,7 +53,7 @@ describe('AI Service Integration', () => {
       AIService.generateDesign(
         {
           style: 'modern',
-          dimensions: { width: 12, height: 10 }
+          dimensions: { width: 12, height: 10 },
         },
         { timeout: 100 } // Very short timeout
       )
@@ -216,10 +217,10 @@ jest.mock('@/services/ai.service', () => ({
         {
           type: 'refrigerator',
           position: { x: 0, y: 0 },
-          model: 'modern-fridge-001'
-        }
+          model: 'modern-fridge-001',
+        },
       ],
-      layout: 'L-shaped'
+      layout: 'L-shaped',
     }),
 
     recommendAppliances: jest.fn().mockResolvedValue({
@@ -227,11 +228,11 @@ jest.mock('@/services/ai.service', () => ({
         {
           productId: 'REF-001',
           score: 0.95,
-          reason: 'High energy efficiency'
-        }
-      ]
-    })
-  }
+          reason: 'High energy efficiency',
+        },
+      ],
+    }),
+  },
 }));
 ```
 
@@ -264,7 +265,7 @@ describe('Design Generation Flow', () => {
         name: 'AI Generated Kitchen',
         style: 'modern',
         dimensions: { width: 12, height: 10 },
-        budget: 5000
+        budget: 5000,
       })
       .expect(201);
 
@@ -287,7 +288,7 @@ describe('Design Generation Flow', () => {
     const maxAttempts = 30; // 30 seconds max
 
     while (!completed && attempts < maxAttempts) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const checkResponse = await request(app)
         .get(`/api/v1/designs/${designId}/status`)
@@ -340,8 +341,8 @@ describe('Appliance Recommendations', () => {
         preferences: {
           energyEfficient: true,
           capacity: 'large',
-          features: ['water-dispenser', 'ice-maker']
-        }
+          features: ['water-dispenser', 'ice-maker'],
+        },
       })
       .expect(200);
 
@@ -363,14 +364,14 @@ describe('Appliance Recommendations', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         category: 'refrigerators',
-        budget: 1000 // Lower budget
+        budget: 1000, // Lower budget
       })
       .expect(200);
 
     // Verify all recommendations are within budget
     for (const rec of response.body.data.recommendations) {
       const product = await prisma.product.findUnique({
-        where: { id: rec.productId }
+        where: { id: rec.productId },
       });
       expect(product.price).toBeLessThanOrEqual(1000);
     }
@@ -442,7 +443,7 @@ describe('AI Endpoints Performance', () => {
         .send({
           name: `Design ${i}`,
           style: 'modern',
-          dimensions: { width: 10, height: 10 }
+          dimensions: { width: 10, height: 10 },
         })
     );
 
@@ -451,7 +452,7 @@ describe('AI Endpoints Performance', () => {
     const duration = Date.now() - startTime;
 
     // All requests should succeed
-    expect(responses.every(r => r.status === 201)).toBe(true);
+    expect(responses.every((r) => r.status === 201)).toBe(true);
 
     // Should complete within reasonable time (adjust as needed)
     expect(duration).toBeLessThan(30000); // 30 seconds
@@ -464,7 +465,7 @@ describe('AI Endpoints Performance', () => {
       .post('/api/v1/designs/generate')
       .send({
         style: 'modern',
-        dimensions: { width: 12, height: 10 }
+        dimensions: { width: 12, height: 10 },
       })
       .expect(201);
 
@@ -580,7 +581,7 @@ async def test_invalid_dimensions():
 it('should return valid AI response format', async () => {
   const response = await AIService.generateDesign({
     style: 'modern',
-    dimensions: { width: 12, height: 10 }
+    dimensions: { width: 12, height: 10 },
   });
 
   // Verify response structure
@@ -591,10 +592,10 @@ it('should return valid AI response format', async () => {
         type: expect.any(String),
         position: expect.objectContaining({
           x: expect.any(Number),
-          y: expect.any(Number)
-        })
-      })
-    ])
+          y: expect.any(Number),
+        }),
+      }),
+    ]),
   });
 });
 ```
@@ -602,6 +603,8 @@ it('should return valid AI response format', async () => {
 ## Related Documentation
 
 - [Integration Testing Overview](./overview.md) - Testing strategy
-- [Frontend-Backend Integration](./frontend-backend-integration.md) - API testing
-- [Performance Optimization](../performance-optimization.md) - Performance tuning
+- [Frontend-Backend Integration](./frontend-backend-integration.md) - API
+  testing
+- [Performance Optimization](../performance-optimization.md) - Performance
+  tuning
 - [AI Service API](../../api/ai-service.md) - AI service documentation

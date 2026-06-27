@@ -145,11 +145,7 @@ export function formatCurrency(
  * @param locale - Optional locale override
  * @returns The formatted currency string with symbol
  */
-export function formatCurrencySymbol(
-  amount: number,
-  currency?: string,
-  locale?: string
-): string {
+export function formatCurrencySymbol(amount: number, currency?: string, locale?: string): string {
   return formatCurrency(amount, currency, { currencyDisplay: 'symbol' }, locale);
 }
 
@@ -160,11 +156,7 @@ export function formatCurrencySymbol(
  * @param locale - Optional locale override
  * @returns The formatted currency string with narrow symbol
  */
-export function formatCurrencyNarrow(
-  amount: number,
-  currency?: string,
-  locale?: string
-): string {
+export function formatCurrencyNarrow(amount: number, currency?: string, locale?: string): string {
   return formatCurrency(amount, currency, { currencyDisplay: 'narrowSymbol' }, locale);
 }
 
@@ -175,11 +167,7 @@ export function formatCurrencyNarrow(
  * @param locale - Optional locale override
  * @returns The formatted currency string with code
  */
-export function formatCurrencyCode(
-  amount: number,
-  currency?: string,
-  locale?: string
-): string {
+export function formatCurrencyCode(amount: number, currency?: string, locale?: string): string {
   return formatCurrency(amount, currency, { currencyDisplay: 'code' }, locale);
 }
 
@@ -190,11 +178,7 @@ export function formatCurrencyCode(
  * @param locale - Optional locale override
  * @returns The formatted currency string with name
  */
-export function formatCurrencyName(
-  amount: number,
-  currency?: string,
-  locale?: string
-): string {
+export function formatCurrencyName(amount: number, currency?: string, locale?: string): string {
   return formatCurrency(amount, currency, { currencyDisplay: 'name' }, locale);
 }
 
@@ -205,11 +189,7 @@ export function formatCurrencyName(
  * @param locale - Optional locale override
  * @returns The formatted compact currency string
  */
-export function formatCurrencyCompact(
-  amount: number,
-  currency?: string,
-  locale?: string
-): string {
+export function formatCurrencyCompact(amount: number, currency?: string, locale?: string): string {
   return formatCurrency(amount, currency, { notation: 'compact' }, locale);
 }
 
@@ -251,7 +231,7 @@ export function getCurrencySymbol(currency: string, locale?: string): string {
     currencyDisplay: 'narrowSymbol',
   }).formatToParts(0);
 
-  const symbolPart = parts.find(p => p.type === 'currency');
+  const symbolPart = parts.find((p) => p.type === 'currency');
   return symbolPart?.value ?? currency;
 }
 
@@ -266,8 +246,8 @@ export function parseCurrency(value: string, locale?: string): number {
 
   // Get the decimal and grouping separators for the locale
   const parts = new Intl.NumberFormat(targetLocale).formatToParts(1234.5);
-  const groupSeparator = parts.find(p => p.type === 'group')?.value || ',';
-  const decimalSeparator = parts.find(p => p.type === 'decimal')?.value || '.';
+  const groupSeparator = parts.find((p) => p.type === 'group')?.value || ',';
+  const decimalSeparator = parts.find((p) => p.type === 'decimal')?.value || '.';
 
   // Remove currency symbols, grouping separators, and whitespace
   const cleaned = value

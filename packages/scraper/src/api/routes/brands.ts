@@ -3,12 +3,15 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { BRANDS_CONFIG, getBrandConfig, getBrandsBySegment, getBrandsByGroup, getBrandsWithPrices } from '../../config/brands.config.js';
-import type { Segment } from '../../models/brand.js';
 import {
-  getBrandStatsById,
-  getCollectionsByBrandId,
-} from '../../services/db-query.service.js';
+  BRANDS_CONFIG,
+  getBrandConfig,
+  getBrandsBySegment,
+  getBrandsByGroup,
+  getBrandsWithPrices,
+} from '../../config/brands.config.js';
+import type { Segment } from '../../models/brand.js';
+import { getBrandStatsById, getCollectionsByBrandId } from '../../services/db-query.service.js';
 
 export function createBrandsRouter(): Router {
   const router = Router();
@@ -38,14 +41,14 @@ export function createBrandsRouter(): Router {
 
       // Filter enabled only
       if (req.query.enabled !== 'false') {
-        brands = brands.filter(b => b.enabled);
+        brands = brands.filter((b) => b.enabled);
       }
 
       // Sort by priority
       brands = brands.sort((a, b) => a.priority - b.priority);
 
       res.json({
-        data: brands.map(b => ({
+        data: brands.map((b) => ({
           id: b.id,
           name: b.name,
           slug: b.slug,
@@ -76,7 +79,7 @@ export function createBrandsRouter(): Router {
     try {
       const groups = new Map<string, { name: string; brands: string[] }>();
 
-      BRANDS_CONFIG.forEach(brand => {
+      BRANDS_CONFIG.forEach((brand) => {
         const groupName = brand.parentGroup || 'Indépendant';
         if (!groups.has(groupName)) {
           groups.set(groupName, { name: groupName, brands: [] });
@@ -110,7 +113,7 @@ export function createBrandsRouter(): Router {
         luxury: { label: 'Luxe', count: 0 },
       };
 
-      BRANDS_CONFIG.forEach(brand => {
+      BRANDS_CONFIG.forEach((brand) => {
         if (segments[brand.segment]) {
           segments[brand.segment]!.count++;
         }

@@ -171,7 +171,9 @@ export class MonitoringController {
   recordMetricsBulk = asyncHandler(async (req: Request, res: Response) => {
     const { metrics } = req.body;
     const result = await metricRepository.createMany(metrics);
-    res.status(201).json({ success: true, data: result, message: `${result.count} metrics recorded` });
+    res
+      .status(201)
+      .json({ success: true, data: result, message: `${result.count} metrics recorded` });
   });
 
   /**
@@ -184,7 +186,9 @@ export class MonitoringController {
     date.setDate(date.getDate() - Number(olderThanDays));
 
     const result = await metricRepository.deleteOlderThan(date);
-    res.status(200).json({ success: true, data: result, message: `Deleted ${result.count} old metrics` });
+    res
+      .status(200)
+      .json({ success: true, data: result, message: `Deleted ${result.count} old metrics` });
   });
 
   // ==================== AGGREGATIONS ====================

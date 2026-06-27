@@ -8,11 +8,15 @@
 
 ## Introduction
 
-KitchenXpert incorporates open source software components in the development and operation of our platform. This document provides the required attributions, copyright notices, and license information for the open source software we use.
+KitchenXpert incorporates open source software components in the development and
+operation of our platform. This document provides the required attributions,
+copyright notices, and license information for the open source software we use.
 
-We are grateful to the open source community for their contributions, which help make KitchenXpert possible.
+We are grateful to the open source community for their contributions, which help
+make KitchenXpert possible.
 
-For questions regarding open source software usage, contact: legal@kitchenxpert.com
+For questions regarding open source software usage, contact:
+legal@kitchenxpert.com
 
 ---
 
@@ -242,7 +246,8 @@ SOFTWARE.
 
 **License:** MIT License
 
-**Copyright:** (c) 2009-2014 TJ Holowaychuk, (c) 2013-2014 Roman Shtylman, (c) 2014-2015 Douglas Christopher Wilson
+**Copyright:** (c) 2009-2014 TJ Holowaychuk, (c) 2013-2014 Roman Shtylman, (c)
+2014-2015 Douglas Christopher Wilson
 
 **Project URL:** https://expressjs.com/
 
@@ -791,7 +796,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **License:** BSD-3-Clause License
 
-**Copyright:** (c) 2008-2011 AQR Capital Management, LLC, Lambda Foundry, Inc., and PyData Development Team
+**Copyright:** (c) 2008-2011 AQR Capital Management, LLC, Lambda Foundry, Inc.,
+and PyData Development Team
 
 **Project URL:** https://pandas.pydata.org/
 
@@ -877,7 +883,9 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 ### MongoDB
 
-**License Note:** KitchenXpert uses MongoDB Atlas, a commercial database-as-a-service offering. The MongoDB Community Server is licensed under the Server Side Public License (SSPL).
+**License Note:** KitchenXpert uses MongoDB Atlas, a commercial
+database-as-a-service offering. The MongoDB Community Server is licensed under
+the Server Side Public License (SSPL).
 
 **Project URL:** https://www.mongodb.com/
 
@@ -1063,7 +1071,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## Additional Dependencies
 
-KitchenXpert may use additional open source packages not listed above. A complete, machine-readable list of dependencies can be found in the following project files:
+KitchenXpert may use additional open source packages not listed above. A
+complete, machine-readable list of dependencies can be found in the following
+project files:
 
 - `package.json` (Node.js/Frontend dependencies)
 - `requirements.txt` (Python dependencies)
@@ -1073,7 +1083,9 @@ KitchenXpert may use additional open source packages not listed above. A complet
 
 ## Acknowledgments
 
-KitchenXpert thanks all the open source contributors and maintainers who make their work available to the community. Their contributions are invaluable to the software industry.
+KitchenXpert thanks all the open source contributors and maintainers who make
+their work available to the community. Their contributions are invaluable to the
+software industry.
 
 ---
 
@@ -1083,11 +1095,8 @@ For questions about open source licensing or to report licensing concerns:
 
 **Email:** legal@kitchenxpert.com
 
-**Address:**
-KitchenXpert SAS
-42 Rue de la Cuisine
-75008 Paris, France
+**Address:** KitchenXpert SAS 42 Rue de la Cuisine 75008 Paris, France
 
 ---
 
-*Document Version: 1.0 | Last Updated: January 2026*
+_Document Version: 1.0 | Last Updated: January 2026_

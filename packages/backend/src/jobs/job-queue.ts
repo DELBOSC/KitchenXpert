@@ -81,7 +81,9 @@ export class JobQueue {
    * @param intervalMs - Polling interval in milliseconds (default: 5000)
    */
   start(intervalMs: number = 5000): void {
-    if (this.pollingInterval) {return;}
+    if (this.pollingInterval) {
+      return;
+    }
 
     this.pollingInterval = setInterval(() => {
       if (!this.processing) {
@@ -152,10 +154,9 @@ export class JobQueue {
         } else {
           job.status = 'failed';
           await redis.lPush(`${QUEUE_PREFIX}failed`, JSON.stringify(job));
-          logger.error(
-            `[JobQueue] Job ${job.id} failed after ${job.attempts} attempts:`,
-            { error: job.error }
-          );
+          logger.error(`[JobQueue] Job ${job.id} failed after ${job.attempts} attempts:`, {
+            error: job.error,
+          });
         }
       }
     } finally {

@@ -156,7 +156,7 @@ export class QuestionnaireController {
 
     const preferences = await advisorService.generateAutoBridgePreferences(
       questionnaireData,
-      userId,
+      userId
     );
 
     res.status(200).json({ success: true, data: preferences });
@@ -211,10 +211,7 @@ export class QuestionnaireController {
       hasBudget: !!questionnaireData.budgetData,
     });
 
-    const result = await autoDesignPipeline.generateFromQuestionnaire(
-      userId,
-      questionnaireData,
-    );
+    const result = await autoDesignPipeline.generateFromQuestionnaire(userId, questionnaireData);
 
     res.status(200).json({
       success: true,

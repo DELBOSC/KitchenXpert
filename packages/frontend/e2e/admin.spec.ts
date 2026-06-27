@@ -34,7 +34,7 @@ async function mockAuthenticatedAdmin(page: Page): Promise<void> {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ success: true, data: ADMIN_USER }),
-    }),
+    })
   );
 }
 
@@ -44,13 +44,13 @@ async function mockAuthenticatedUser(page: Page): Promise<void> {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ success: true, data: REGULAR_USER }),
-    }),
+    })
   );
 }
 
 async function mockUnauthenticated(page: Page): Promise<void> {
   await page.route('**/api/v1/auth/me', (route) =>
-    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' }),
+    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' })
   );
 }
 
@@ -205,7 +205,7 @@ test.describe('Admin -- Access control', () => {
           data: [],
           pagination: { page: 1, limit: 5, total: 0, totalPages: 0 },
         }),
-      }),
+      })
     );
 
     await page.goto('/admin/users');
@@ -222,9 +222,14 @@ test.describe('Admin -- Access control', () => {
         contentType: 'application/json',
         body: JSON.stringify({
           users: SAMPLE_USERS,
-          pagination: { currentPage: 1, totalPages: 1, totalItems: SAMPLE_USERS.length, itemsPerPage: 20 },
+          pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: SAMPLE_USERS.length,
+            itemsPerPage: 20,
+          },
         }),
-      }),
+      })
     );
 
     await page.goto('/admin/users');
@@ -249,9 +254,14 @@ test.describe('Admin -- User Management', () => {
         contentType: 'application/json',
         body: JSON.stringify({
           users: SAMPLE_USERS,
-          pagination: { currentPage: 1, totalPages: 1, totalItems: SAMPLE_USERS.length, itemsPerPage: 20 },
+          pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: SAMPLE_USERS.length,
+            itemsPerPage: 20,
+          },
         }),
-      }),
+      })
     );
   });
 
@@ -303,7 +313,10 @@ test.describe('Admin -- User Management', () => {
     await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 });
 
     // Role filter dropdown/select
-    const roleFilter = page.locator('select').filter({ hasText: /admin|user|designer|manager/i }).first();
+    const roleFilter = page
+      .locator('select')
+      .filter({ hasText: /admin|user|designer|manager/i })
+      .first();
     if (await roleFilter.isVisible({ timeout: 3_000 }).catch(() => false)) {
       await expect(roleFilter).toBeVisible();
     }
@@ -316,13 +329,15 @@ test.describe('Admin -- User Management', () => {
         status: 500,
         contentType: 'application/json',
         body: JSON.stringify({ error: { message: 'Server error' } }),
-      }),
+      })
     );
 
     await page.goto('/admin/users');
 
     // Error state should appear
-    await expect(page.locator('text=/error|erreur|failed/i').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('text=/error|erreur|failed/i').first()).toBeVisible({
+      timeout: 10_000,
+    });
   });
 });
 
@@ -340,9 +355,14 @@ test.describe('Admin -- Audit Logs', () => {
         contentType: 'application/json',
         body: JSON.stringify({
           logs: SAMPLE_AUDIT_LOGS,
-          pagination: { currentPage: 1, totalPages: 1, totalItems: SAMPLE_AUDIT_LOGS.length, itemsPerPage: 50 },
+          pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: SAMPLE_AUDIT_LOGS.length,
+            itemsPerPage: 50,
+          },
         }),
-      }),
+      })
     );
   });
 
@@ -372,7 +392,10 @@ test.describe('Admin -- Audit Logs', () => {
     await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 });
 
     // Category filter (select or button group)
-    const categoryFilter = page.locator('select').filter({ hasText: /auth|project|admin|system/i }).first();
+    const categoryFilter = page
+      .locator('select')
+      .filter({ hasText: /auth|project|admin|system/i })
+      .first();
     if (await categoryFilter.isVisible({ timeout: 3_000 }).catch(() => false)) {
       await expect(categoryFilter).toBeVisible();
     }
@@ -384,7 +407,10 @@ test.describe('Admin -- Audit Logs', () => {
     await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 });
 
     // Severity filter
-    const severityFilter = page.locator('select').filter({ hasText: /info|warning|error|critical/i }).first();
+    const severityFilter = page
+      .locator('select')
+      .filter({ hasText: /info|warning|error|critical/i })
+      .first();
     if (await severityFilter.isVisible({ timeout: 3_000 }).catch(() => false)) {
       await expect(severityFilter).toBeVisible();
     }
@@ -410,12 +436,14 @@ test.describe('Admin -- Audit Logs', () => {
         status: 500,
         contentType: 'application/json',
         body: JSON.stringify({ error: { message: 'Failed to load audit logs' } }),
-      }),
+      })
     );
 
     await page.goto('/admin/audit');
 
-    await expect(page.locator('text=/error|erreur|failed/i').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('text=/error|erreur|failed/i').first()).toBeVisible({
+      timeout: 10_000,
+    });
   });
 
   test('non-admin cannot access audit logs', async ({ page }) => {
@@ -431,7 +459,7 @@ test.describe('Admin -- Audit Logs', () => {
           data: [],
           pagination: { page: 1, limit: 5, total: 0, totalPages: 0 },
         }),
-      }),
+      })
     );
 
     await page.goto('/admin/audit');
@@ -453,7 +481,7 @@ test.describe('Admin -- Enrichment Dashboard', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ success: true, data: ENRICHMENT_STATS }),
-      }),
+      })
     );
 
     // Also mock the enrichment stats endpoint without /stats
@@ -462,7 +490,7 @@ test.describe('Admin -- Enrichment Dashboard', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ success: true, data: ENRICHMENT_STATS }),
-      }),
+      })
     );
   });
 
@@ -481,7 +509,8 @@ test.describe('Admin -- Enrichment Dashboard', () => {
 
     // At least some stat numbers should appear on the page
     const pageContent = await page.textContent('body');
-    const hasStats = pageContent?.includes('42') || pageContent?.includes('1250') || pageContent?.includes('15');
+    const hasStats =
+      pageContent?.includes('42') || pageContent?.includes('1250') || pageContent?.includes('15');
     expect(hasStats).toBeTruthy();
   });
 
@@ -492,8 +521,14 @@ test.describe('Admin -- Enrichment Dashboard', () => {
 
     // Recent enrichment entries
     const hasRecentEnrichments =
-      await page.getByText('METOD Base Cabinet 80cm').isVisible({ timeout: 5_000 }).catch(() => false) ||
-      await page.getByText('IKEA').isVisible({ timeout: 2_000 }).catch(() => false);
+      (await page
+        .getByText('METOD Base Cabinet 80cm')
+        .isVisible({ timeout: 5_000 })
+        .catch(() => false)) ||
+      (await page
+        .getByText('IKEA')
+        .isVisible({ timeout: 2_000 })
+        .catch(() => false));
 
     // This is optional -- depends on whether the component renders the recent list
     // We just verify the page loaded without errors
@@ -508,7 +543,7 @@ test.describe('Admin -- Enrichment Dashboard', () => {
         status: 500,
         contentType: 'application/json',
         body: JSON.stringify({ error: { message: 'Failed to load stats' } }),
-      }),
+      })
     );
 
     await page.route('**/api/v1/enrichment/stats*', (route) =>
@@ -516,7 +551,7 @@ test.describe('Admin -- Enrichment Dashboard', () => {
         status: 500,
         contentType: 'application/json',
         body: JSON.stringify({ error: { message: 'Failed to load stats' } }),
-      }),
+      })
     );
 
     await page.goto('/admin/enrichment');
@@ -538,7 +573,7 @@ test.describe('Admin -- Enrichment Dashboard', () => {
           data: [],
           pagination: { page: 1, limit: 5, total: 0, totalPages: 0 },
         }),
-      }),
+      })
     );
 
     await page.goto('/admin/enrichment');
@@ -562,9 +597,14 @@ test.describe('Admin -- Navigation', () => {
         contentType: 'application/json',
         body: JSON.stringify({
           users: SAMPLE_USERS,
-          pagination: { currentPage: 1, totalPages: 1, totalItems: SAMPLE_USERS.length, itemsPerPage: 20 },
+          pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: SAMPLE_USERS.length,
+            itemsPerPage: 20,
+          },
         }),
-      }),
+      })
     );
 
     await page.route('**/api/v1/admin/audit*', (route) =>
@@ -573,9 +613,14 @@ test.describe('Admin -- Navigation', () => {
         contentType: 'application/json',
         body: JSON.stringify({
           logs: SAMPLE_AUDIT_LOGS,
-          pagination: { currentPage: 1, totalPages: 1, totalItems: SAMPLE_AUDIT_LOGS.length, itemsPerPage: 50 },
+          pagination: {
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: SAMPLE_AUDIT_LOGS.length,
+            itemsPerPage: 50,
+          },
         }),
-      }),
+      })
     );
 
     await page.route('**/api/v1/admin/enrichment/stats*', (route) =>
@@ -583,7 +628,7 @@ test.describe('Admin -- Navigation', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ success: true, data: ENRICHMENT_STATS }),
-      }),
+      })
     );
 
     await page.route('**/api/v1/enrichment/stats*', (route) =>
@@ -591,7 +636,7 @@ test.describe('Admin -- Navigation', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ success: true, data: ENRICHMENT_STATS }),
-      }),
+      })
     );
   });
 

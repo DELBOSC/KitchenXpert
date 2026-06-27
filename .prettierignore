@@ -1,3 +1,7 @@
 # Astro guides sub-projects -- out of scope (separate build/deploy, see CLAUDE.md sec 3)
 packages/guides/
 docs/guides/
+
+# Living project doc -- edited by hand every session; proseWrap churn would
+# pollute every future diff. Kept out of the format pass intentionally.
+CLAUDE.md

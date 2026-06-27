@@ -46,10 +46,11 @@ const resource = new Resource({
   [SemanticResourceAttributes.SERVICE_VERSION]: SERVICE_VERSION,
   [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: NODE_ENV,
   [SemanticResourceAttributes.SERVICE_NAMESPACE]: 'kitchenxpert',
-  [SemanticResourceAttributes.SERVICE_INSTANCE_ID]: process.env.HOSTNAME || require('os').hostname(),
+  [SemanticResourceAttributes.SERVICE_INSTANCE_ID]:
+    process.env.HOSTNAME || require('os').hostname(),
   // Additional custom attributes
   'service.tier': process.env.TIER || 'api',
-  'datacenter': process.env.DATACENTER || 'us-east-1',
+  datacenter: process.env.DATACENTER || 'us-east-1',
 });
 
 /**
@@ -89,11 +90,7 @@ const instrumentations = [
   // HTTP/HTTPS client and server
   new HttpInstrumentation({
     // Ignore health check and metrics endpoints
-    ignoreIncomingPaths: [
-      '/health',
-      '/metrics',
-      '/favicon.ico',
-    ],
+    ignoreIncomingPaths: ['/health', '/metrics', '/favicon.ico'],
     // Capture request and response headers
     requestHook: (span, request) => {
       span.setAttribute('http.request_id', request.headers['x-request-id'] || 'unknown');
@@ -177,7 +174,8 @@ if (TRACING_ENABLED) {
 
   // Graceful shutdown
   process.on('SIGTERM', () => {
-    sdk.shutdown()
+    sdk
+      .shutdown()
       .then(() => console.log('Tracing terminated'))
       .catch((error) => console.error('Error terminating tracing', error))
       .finally(() => process.exit(0));

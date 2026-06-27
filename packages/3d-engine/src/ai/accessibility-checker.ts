@@ -20,21 +20,21 @@ export enum AccessibilityStandard {
  * Basee sur NF P 99-611 et NF EN 17210
  */
 export interface AccessibilityConfig {
-  wheelchairWidth: number;         // mm — largeur fauteuil roulant
-  turningCircleDiameter: number;   // mm — diametre cercle de rotation
-  minPassageWidth: number;         // mm — largeur passage minimum
-  maxReachHeight: number;          // mm — hauteur max atteignable
-  minReachHeight: number;          // mm — hauteur min atteignable
-  worktopHeightMin: number;        // mm — PDT min PMR
-  worktopHeightMax: number;        // mm — PDT max PMR
-  maxWallCabinetTop: number;       // mm — haut max meubles hauts
-  minSocketHeight: number;         // mm — prise min
-  maxSocketHeight: number;         // mm — prise max
-  kneeSpaceDepth?: number;         // mm — depth of knee space under worktop
-  kneeSpaceWidth?: number;         // mm — width of knee space under worktop
-  kneeSpaceHeight?: number;        // mm — height of knee space under worktop
-  doorClearance?: number;          // mm — clear opening width for doors
-  sinkClearFloor?: boolean;        // whether sink must have clear floor space
+  wheelchairWidth: number; // mm — largeur fauteuil roulant
+  turningCircleDiameter: number; // mm — diametre cercle de rotation
+  minPassageWidth: number; // mm — largeur passage minimum
+  maxReachHeight: number; // mm — hauteur max atteignable
+  minReachHeight: number; // mm — hauteur min atteignable
+  worktopHeightMin: number; // mm — PDT min PMR
+  worktopHeightMax: number; // mm — PDT max PMR
+  maxWallCabinetTop: number; // mm — haut max meubles hauts
+  minSocketHeight: number; // mm — prise min
+  maxSocketHeight: number; // mm — prise max
+  kneeSpaceDepth?: number; // mm — depth of knee space under worktop
+  kneeSpaceWidth?: number; // mm — width of knee space under worktop
+  kneeSpaceHeight?: number; // mm — height of knee space under worktop
+  doorClearance?: number; // mm — clear opening width for doors
+  sinkClearFloor?: boolean; // whether sink must have clear floor space
 }
 
 // --- Standard-specific rule configurations ---
@@ -56,21 +56,21 @@ const NF_P_99_611_CONFIG: AccessibilityConfig = {
 
 /** American ADA / ANSI A117.1 */
 const ADA_ANSI_A117_CONFIG: AccessibilityConfig = {
-  wheelchairWidth: 915,        // 36 inches = 915mm
+  wheelchairWidth: 915, // 36 inches = 915mm
   turningCircleDiameter: 1524, // 60 inches = 1524mm
-  minPassageWidth: 915,        // 36 inches
-  minReachHeight: 380,         // 15 inches = 380mm
-  maxReachHeight: 1220,        // 48 inches = 1220mm
-  worktopHeightMin: 710,       // 28 inches
-  worktopHeightMax: 865,       // 34 inches
-  maxWallCabinetTop: 1220,     // 48 inches max reach
-  minSocketHeight: 380,        // 15 inches
-  maxSocketHeight: 1220,       // 48 inches
-  kneeSpaceDepth: 430,         // 17 inches
-  kneeSpaceWidth: 760,         // 30 inches
-  kneeSpaceHeight: 685,        // 27 inches
-  sinkClearFloor: true,        // must have clear floor space
-  doorClearance: 815,          // 32 inches
+  minPassageWidth: 915, // 36 inches
+  minReachHeight: 380, // 15 inches = 380mm
+  maxReachHeight: 1220, // 48 inches = 1220mm
+  worktopHeightMin: 710, // 28 inches
+  worktopHeightMax: 865, // 34 inches
+  maxWallCabinetTop: 1220, // 48 inches max reach
+  minSocketHeight: 380, // 15 inches
+  maxSocketHeight: 1220, // 48 inches
+  kneeSpaceDepth: 430, // 17 inches
+  kneeSpaceWidth: 760, // 30 inches
+  kneeSpaceHeight: 685, // 27 inches
+  sinkClearFloor: true, // must have clear floor space
+  doorClearance: 815, // 32 inches
 };
 
 /** German DIN 18040 */
@@ -190,7 +190,11 @@ export class AccessibilityChecker {
    * @param room    Room configuration
    * @param standard  Optional accessibility standard to use (defaults to NF_P_99_611 for backward compatibility)
    */
-  checkAccessibility(items: PlacedItem3D[], room: RoomConfig, standard?: AccessibilityStandard): AccessibilityScore {
+  checkAccessibility(
+    items: PlacedItem3D[],
+    room: RoomConfig,
+    standard?: AccessibilityStandard
+  ): AccessibilityScore {
     // If a standard is specified, temporarily switch config for this check
     const previousConfig = this.config;
     if (standard) {
@@ -205,10 +209,7 @@ export class AccessibilityChecker {
     const safety = this.scoreSafety(items);
 
     const overall = Math.round(
-      clearances * 0.30 +
-      heights * 0.25 +
-      reachability * 0.25 +
-      safety * 0.20
+      clearances * 0.3 + heights * 0.25 + reachability * 0.25 + safety * 0.2
     );
 
     const hasCritical = violations.some((v) => v.severity === 'critical');
@@ -283,7 +284,9 @@ export class AccessibilityChecker {
   /**
    * Genere les suggestions de correction pour les violations
    */
-  getSuggestions(violations: AccessibilityViolation[]): Array<{ violationId: string; suggestion: string }> {
+  getSuggestions(
+    violations: AccessibilityViolation[]
+  ): Array<{ violationId: string; suggestion: string }> {
     return violations.map((v) => ({
       violationId: v.id,
       suggestion: v.fix || `Corrigez la violation: ${v.message}`,
@@ -370,10 +373,26 @@ export class AccessibilityChecker {
 
     // Zones de hauteur accessible sur les murs (400-1300mm)
     const wallPositions = [
-      { pos: new THREE.Vector3(roomWidthM / 2, 0, 0), size: new THREE.Vector3(roomWidthM, 1, 0.02), rot: 0 },
-      { pos: new THREE.Vector3(roomWidthM / 2, 0, roomDepthM), size: new THREE.Vector3(roomWidthM, 1, 0.02), rot: 0 },
-      { pos: new THREE.Vector3(0, 0, roomDepthM / 2), size: new THREE.Vector3(0.02, 1, roomDepthM), rot: 0 },
-      { pos: new THREE.Vector3(roomWidthM, 0, roomDepthM / 2), size: new THREE.Vector3(0.02, 1, roomDepthM), rot: 0 },
+      {
+        pos: new THREE.Vector3(roomWidthM / 2, 0, 0),
+        size: new THREE.Vector3(roomWidthM, 1, 0.02),
+        rot: 0,
+      },
+      {
+        pos: new THREE.Vector3(roomWidthM / 2, 0, roomDepthM),
+        size: new THREE.Vector3(roomWidthM, 1, 0.02),
+        rot: 0,
+      },
+      {
+        pos: new THREE.Vector3(0, 0, roomDepthM / 2),
+        size: new THREE.Vector3(0.02, 1, roomDepthM),
+        rot: 0,
+      },
+      {
+        pos: new THREE.Vector3(roomWidthM, 0, roomDepthM / 2),
+        size: new THREE.Vector3(0.02, 1, roomDepthM),
+        rot: 0,
+      },
     ];
 
     for (const wall of wallPositions) {
@@ -382,11 +401,7 @@ export class AccessibilityChecker {
       reachZones.push({
         type: 'reach_zone',
         position: new THREE.Vector3(wall.pos.x, zoneCenter, wall.pos.z),
-        size: new THREE.Vector3(
-          wall.size.x,
-          zoneHeight,
-          wall.size.z
-        ),
+        size: new THREE.Vector3(wall.size.x, zoneHeight, wall.size.z),
         rotation: wall.rot,
       });
     }
@@ -402,8 +417,8 @@ export class AccessibilityChecker {
     violations: AccessibilityViolation[],
     startId: number
   ): void {
-    const furniture = items.filter((i) =>
-      !['wall', 'floor', 'ceiling', 'cooktop', 'hood'].includes(i.type)
+    const furniture = items.filter(
+      (i) => !['wall', 'floor', 'ceiling', 'cooktop', 'hood'].includes(i.type)
     );
 
     const minPassageM = this.config.minPassageWidth / 1000;
@@ -464,8 +479,8 @@ export class AccessibilityChecker {
     startId: number
   ): void {
     const turningRadiusM = this.config.turningCircleDiameter / 2000;
-    const furniture = items.filter((i) =>
-      !['wall', 'floor', 'ceiling', 'cooktop', 'hood'].includes(i.type)
+    const furniture = items.filter(
+      (i) => !['wall', 'floor', 'ceiling', 'cooktop', 'hood'].includes(i.type)
     );
 
     // Tester sur une grille si un cercle 1500mm rentre quelque part
@@ -525,13 +540,12 @@ export class AccessibilityChecker {
     violations: AccessibilityViolation[],
     startId: number
   ): void {
-    const baseCabinets = items.filter((i) =>
-      ['base_cabinet', 'base'].includes(i.type)
-    );
+    const baseCabinets = items.filter((i) => ['base_cabinet', 'base'].includes(i.type));
 
     // En mode PMR, tous les meubles bas doivent etre a tiroirs
     for (const item of baseCabinets) {
-      const hasDrawers = item.type.includes('drawer') || (item as { hasDrawers?: boolean }).hasDrawers;
+      const hasDrawers =
+        item.type.includes('drawer') || (item as { hasDrawers?: boolean }).hasDrawers;
       if (!hasDrawers) {
         violations.push({
           id: `acc-${startId + violations.length}`,
@@ -594,14 +608,12 @@ export class AccessibilityChecker {
     violations: AccessibilityViolation[],
     startId: number
   ): void {
-    const cooktops = items.filter((i) =>
-      ['cooktop', 'stove', 'hob'].includes(i.type)
-    );
+    const cooktops = items.filter((i) => ['cooktop', 'stove', 'hob'].includes(i.type));
 
     for (const cooktop of cooktops) {
       // Recommandation plaque induction pour securite PMR
-      const isInduction = cooktop.type === 'induction' ||
-        (cooktop as { subtype?: string }).subtype === 'induction';
+      const isInduction =
+        cooktop.type === 'induction' || (cooktop as { subtype?: string }).subtype === 'induction';
 
       if (!isInduction) {
         violations.push({
@@ -624,7 +636,9 @@ export class AccessibilityChecker {
   ): void {
     // Verifier que les appareils avec commandes sont dans la zone 400-1300mm
     const appliances = items.filter((i) =>
-      ['dishwasher', 'oven', 'refrigerator', 'fridge', 'fridge_freezer', 'microwave'].includes(i.type)
+      ['dishwasher', 'oven', 'refrigerator', 'fridge', 'fridge_freezer', 'microwave'].includes(
+        i.type
+      )
     );
 
     for (const item of appliances) {
@@ -718,8 +732,8 @@ export class AccessibilityChecker {
 
   private scoreClearances(items: PlacedItem3D[], room: RoomConfig): number {
     let score = 100;
-    const furniture = items.filter((i) =>
-      !['wall', 'floor', 'ceiling', 'cooktop', 'hood'].includes(i.type)
+    const furniture = items.filter(
+      (i) => !['wall', 'floor', 'ceiling', 'cooktop', 'hood'].includes(i.type)
     );
 
     const minPassageM = this.config.minPassageWidth / 1000;
@@ -793,7 +807,9 @@ export class AccessibilityChecker {
 
     // Appliances controls in reach zone
     const appliances = items.filter((i) =>
-      ['dishwasher', 'oven', 'refrigerator', 'fridge', 'fridge_freezer', 'microwave'].includes(i.type)
+      ['dishwasher', 'oven', 'refrigerator', 'fridge', 'fridge_freezer', 'microwave'].includes(
+        i.type
+      )
     );
 
     for (const item of appliances) {
@@ -806,8 +822,8 @@ export class AccessibilityChecker {
       ['base_cabinet', 'base', 'sink', 'sink_base'].includes(i.type)
     );
 
-    const hasKneeSpace = baseItems.some((item) =>
-      (item as { kneeSpace?: boolean }).kneeSpace === true
+    const hasKneeSpace = baseItems.some(
+      (item) => (item as { kneeSpace?: boolean }).kneeSpace === true
     );
 
     if (!hasKneeSpace && baseItems.length > 0) score -= 15;
@@ -819,13 +835,11 @@ export class AccessibilityChecker {
     let score = 100;
 
     // Induction cooktop
-    const cooktops = items.filter((i) =>
-      ['cooktop', 'stove', 'hob'].includes(i.type)
-    );
+    const cooktops = items.filter((i) => ['cooktop', 'stove', 'hob'].includes(i.type));
 
     for (const cooktop of cooktops) {
-      const isInduction = cooktop.type === 'induction' ||
-        (cooktop as { subtype?: string }).subtype === 'induction';
+      const isInduction =
+        cooktop.type === 'induction' || (cooktop as { subtype?: string }).subtype === 'induction';
       if (!isInduction) score -= 20;
     }
 

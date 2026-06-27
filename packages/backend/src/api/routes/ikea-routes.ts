@@ -14,7 +14,10 @@ const router: Router = Router();
 const ikeaRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 30, // 30 requests per minute
-  message: { success: false, error: { code: 'RATE_LIMIT', message: 'Too many IKEA API requests, please try again later' } },
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMIT', message: 'Too many IKEA API requests, please try again later' },
+  },
 });
 
 router.use(authenticate);
@@ -75,13 +78,7 @@ function getClient(country: string = 'fr', language: string = 'fr'): IkeaClient 
  */
 router.get('/search', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const {
-      q,
-      query,
-      country = 'fr',
-      language = 'fr',
-      limit = '24',
-    } = req.query;
+    const { q, query, country = 'fr', language = 'fr', limit = '24' } = req.query;
 
     const searchQuery = (q || query) as string;
     if (!searchQuery) {
@@ -141,24 +138,27 @@ router.get('/search', async (req: Request, res: Response, next: NextFunction): P
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/products/:itemCode', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const itemCode = req.params.itemCode as string;
-    const { country = 'fr', language = 'fr' } = req.query;
+router.get(
+  '/products/:itemCode',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const itemCode = req.params.itemCode as string;
+      const { country = 'fr', language = 'fr' } = req.query;
 
-    const client = getClient(country as string, language as string);
-    const result = await client.getProduct(itemCode);
+      const client = getClient(country as string, language as string);
+      const result = await client.getProduct(itemCode);
 
-    if (!result.success) {
-      res.status(404).json(result);
-      return;
+      if (!result.success) {
+        res.status(404).json(result);
+        return;
+      }
+
+      res.json(result);
+    } catch (error) {
+      next(error);
     }
-
-    res.json(result);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 /**
  * @swagger
@@ -256,19 +256,22 @@ router.post('/products', async (req: Request, res: Response, next: NextFunction)
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/stock/:itemCode', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const itemCode = req.params.itemCode as string;
-    const { country = 'fr', language = 'fr' } = req.query;
+router.get(
+  '/stock/:itemCode',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const itemCode = req.params.itemCode as string;
+      const { country = 'fr', language = 'fr' } = req.query;
 
-    const client = getClient(country as string, language as string);
-    const result = await client.getStock(itemCode);
+      const client = getClient(country as string, language as string);
+      const result = await client.getStock(itemCode);
 
-    res.json(result);
-  } catch (error) {
-    next(error);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -310,21 +313,24 @@ router.get('/stock/:itemCode', async (req: Request, res: Response, next: NextFun
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/kitchen/cabinets', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { country = 'fr', language = 'fr', limit = '50', q = '' } = req.query;
+router.get(
+  '/kitchen/cabinets',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { country = 'fr', language = 'fr', limit = '50', q = '' } = req.query;
 
-    const client = getClient(country as string, language as string);
-    const result = await client.searchKitchenCabinets(
-      (q || '') as string,
-      parseInt(limit as string, 10)
-    );
+      const client = getClient(country as string, language as string);
+      const result = await client.searchKitchenCabinets(
+        (q || '') as string,
+        parseInt(limit as string, 10)
+      );
 
-    res.json(result);
-  } catch (error) {
-    next(error);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -366,21 +372,24 @@ router.get('/kitchen/cabinets', async (req: Request, res: Response, next: NextFu
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/kitchen/appliances', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { country = 'fr', language = 'fr', limit = '50', q = '' } = req.query;
+router.get(
+  '/kitchen/appliances',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { country = 'fr', language = 'fr', limit = '50', q = '' } = req.query;
 
-    const client = getClient(country as string, language as string);
-    const result = await client.searchAppliances(
-      (q || '') as string,
-      parseInt(limit as string, 10)
-    );
+      const client = getClient(country as string, language as string);
+      const result = await client.searchAppliances(
+        (q || '') as string,
+        parseInt(limit as string, 10)
+      );
 
-    res.json(result);
-  } catch (error) {
-    next(error);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -422,21 +431,24 @@ router.get('/kitchen/appliances', async (req: Request, res: Response, next: Next
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/kitchen/countertops', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { country = 'fr', language = 'fr', limit = '50', q = '' } = req.query;
+router.get(
+  '/kitchen/countertops',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { country = 'fr', language = 'fr', limit = '50', q = '' } = req.query;
 
-    const client = getClient(country as string, language as string);
-    const result = await client.searchCountertops(
-      (q || '') as string,
-      parseInt(limit as string, 10)
-    );
+      const client = getClient(country as string, language as string);
+      const result = await client.searchCountertops(
+        (q || '') as string,
+        parseInt(limit as string, 10)
+      );
 
-    res.json(result);
-  } catch (error) {
-    next(error);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -473,18 +485,21 @@ router.get('/kitchen/countertops', async (req: Request, res: Response, next: Nex
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/kitchen/metod', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { country = 'fr', language = 'fr', limit = '100' } = req.query;
+router.get(
+  '/kitchen/metod',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { country = 'fr', language = 'fr', limit = '100' } = req.query;
 
-    const client = getClient(country as string, language as string);
-    const result = await client.getMetodProducts(parseInt(limit as string, 10));
+      const client = getClient(country as string, language as string);
+      const result = await client.getMetodProducts(parseInt(limit as string, 10));
 
-    res.json(result);
-  } catch (error) {
-    next(error);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -525,18 +540,21 @@ router.get('/kitchen/metod', async (req: Request, res: Response, next: NextFunct
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/kitchen/all', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const { country = 'fr', language = 'fr', limitPerCategory = '100' } = req.query;
+router.get(
+  '/kitchen/all',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { country = 'fr', language = 'fr', limitPerCategory = '100' } = req.query;
 
-    const client = getClient(country as string, language as string);
-    const result = await client.getAllKitchenProducts(parseInt(limitPerCategory as string, 10));
+      const client = getClient(country as string, language as string);
+      const result = await client.getAllKitchenProducts(parseInt(limitPerCategory as string, 10));
 
-    res.json(result);
-  } catch (error) {
-    next(error);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -586,34 +604,52 @@ router.get('/kitchen/all', async (req: Request, res: Response, next: NextFunctio
  *       429:
  *         description: Rate limit exceeded
  */
-router.get('/kitchen/category/:category', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const category = req.params.category as string;
-    const { country = 'fr', language = 'fr', limit = '100' } = req.query;
+router.get(
+  '/kitchen/category/:category',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const category = req.params.category as string;
+      const { country = 'fr', language = 'fr', limit = '100' } = req.query;
 
-    const validCategories = ['cabinets', 'fronts', 'worktops', 'sinks', 'appliances', 'fittings', 'lighting'];
+      const validCategories = [
+        'cabinets',
+        'fronts',
+        'worktops',
+        'sinks',
+        'appliances',
+        'fittings',
+        'lighting',
+      ];
 
-    if (!validCategories.includes(category)) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'INVALID_CATEGORY',
-          message: `Invalid category. Valid categories: ${validCategories.join(', ')}`,
-        },
-      });
-      return;
+      if (!validCategories.includes(category)) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_CATEGORY',
+            message: `Invalid category. Valid categories: ${validCategories.join(', ')}`,
+          },
+        });
+        return;
+      }
+
+      const client = getClient(country as string, language as string);
+      const result = await client.getKitchenProductsByCategory(
+        category as
+          | 'cabinets'
+          | 'fronts'
+          | 'worktops'
+          | 'sinks'
+          | 'appliances'
+          | 'fittings'
+          | 'lighting',
+        parseInt(limit as string, 10)
+      );
+
+      res.json(result);
+    } catch (error) {
+      next(error);
     }
-
-    const client = getClient(country as string, language as string);
-    const result = await client.getKitchenProductsByCategory(
-      category as 'cabinets' | 'fronts' | 'worktops' | 'sinks' | 'appliances' | 'fittings' | 'lighting',
-      parseInt(limit as string, 10)
-    );
-
-    res.json(result);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 export default router;

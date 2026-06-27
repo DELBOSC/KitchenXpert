@@ -13,11 +13,7 @@
  * Cost ≈ $0.05 per transfer (1 Gemini image gen + optional small
  * Claude Haiku call).
  */
-import {
-  assertQuota,
-  recordUsage,
-  type AiTier,
-} from '../../services/ai/cost-monitor.service';
+import { assertQuota, recordUsage, type AiTier } from '../../services/ai/cost-monitor.service';
 import { buildStyleTransferPrompt } from '../../services/ai/prompts';
 import {
   StyleTransferInputSchema,
@@ -37,12 +33,14 @@ export interface StyleTransferArgs {
 }
 
 export async function styleTransfer(
-  args: StyleTransferArgs,
+  args: StyleTransferArgs
 ): Promise<StyleTransferResponse & { usage: { monthlyUsdAfter: number } }> {
   const input = StyleTransferInputSchema.parse(args.input);
 
   const before = await assertQuota({
-    userId: args.userId, tier: args.tier, projectedUsd: PROJECTED_COST_USD,
+    userId: args.userId,
+    tier: args.tier,
+    projectedUsd: PROJECTED_COST_USD,
   });
 
   const prompt = buildStyleTransferPrompt(input.targetStyle);
@@ -54,19 +52,30 @@ export async function styleTransfer(
   // Gemini 2.5 Flash Image accepts a reference image + a prompt for img2img.
   const response = await gen.models.generateContent({
     model: MODEL,
-    contents: [{
-      role: 'user',
-      parts: [
-        { text: prompt },
-        { fileData: { mimeType: 'image/jpeg', fileUri: input.sourceImageUrl } },
-      ],
-    }],
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          { text: prompt },
+          { fileData: { mimeType: 'image/jpeg', fileUri: input.sourceImageUrl } },
+        ],
+      },
+    ],
   });
   const durationMs = Date.now() - start;
 
   // Extract the generated image (first candidate, first inline part).
-  const candidates = (response as unknown as { candidates?: Array<{ content: { parts: Array<{ inlineData?: { data: string; mimeType: string } }> } }> }).candidates ?? [];
-  const inline = candidates[0]?.content?.parts?.find((p) => 'inlineData' in p && p.inlineData)?.inlineData;
+  const candidates =
+    (
+      response as unknown as {
+        candidates?: Array<{
+          content: { parts: Array<{ inlineData?: { data: string; mimeType: string } }> };
+        }>;
+      }
+    ).candidates ?? [];
+  const inline = candidates[0]?.content?.parts?.find(
+    (p) => 'inlineData' in p && p.inlineData
+  )?.inlineData;
   if (!inline) {
     throw new Error('Gemini returned no image — please retry.');
   }
@@ -85,7 +94,7 @@ export async function styleTransfer(
     userId: args.userId,
     service: 'style-transfer',
     model: MODEL,
-    inputTokens: 200,   // Gemini doesn't return tokens for image gen — approx
+    inputTokens: 200, // Gemini doesn't return tokens for image gen — approx
     outputTokens: 200,
     imagesGenerated: 1,
     durationMs,
@@ -93,7 +102,9 @@ export async function styleTransfer(
   });
 
   logger.info('style transfer ok', {
-    userId: args.userId, targetStyle: input.targetStyle, durationMs,
+    userId: args.userId,
+    targetStyle: input.targetStyle,
+    durationMs,
   });
 
   return { ...result, usage: { monthlyUsdAfter: before.monthlyUsd + PROJECTED_COST_USD } };

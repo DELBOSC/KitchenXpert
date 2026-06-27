@@ -135,15 +135,17 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -169,14 +171,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -190,9 +188,7 @@ const validShippingAddress = {
 };
 
 const validOrderPayload = {
-  items: [
-    { productId: 'prod-1', name: 'Cabinet', quantity: 2, unitPrice: 500 },
-  ],
+  items: [{ productId: 'prod-1', name: 'Cabinet', quantity: 2, unitPrice: 500 }],
   shippingAddress: validShippingAddress,
 };
 
@@ -201,9 +197,7 @@ const mockOrder = {
   orderNumber: 'ORD-001',
   userId: 'test-user-1',
   status: 'pending',
-  items: [
-    { name: 'Cabinet', sku: 'CAB-001', quantity: 2, unitPrice: 500, totalPrice: 1000 },
-  ],
+  items: [{ name: 'Cabinet', sku: 'CAB-001', quantity: 2, unitPrice: 500, totalPrice: 1000 }],
   subtotal: 1000,
   tax: 200,
   shipping: 50,
@@ -248,18 +242,13 @@ describe('Order Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /orders', async () => {
-      const response = await request(app)
-        .get('/orders')
-        .expect(401);
+      const response = await request(app).get('/orders').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to POST /orders', async () => {
-      const response = await request(app)
-        .post('/orders')
-        .send(validOrderPayload)
-        .expect(401);
+      const response = await request(app).post('/orders').send(validOrderPayload).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -272,9 +261,7 @@ describe('Order Routes', () => {
       const stats = { totalOrders: 10, totalSpent: 25000, pendingOrders: 2 };
       mockOrderRepository.getUserStats.mockResolvedValue(stats);
 
-      const response = await authedRequest(app)
-        .get('/orders/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/orders/stats').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual(stats);
@@ -289,9 +276,7 @@ describe('Order Routes', () => {
       const recentOrders = [mockOrder];
       mockOrderRepository.getRecentOrders.mockResolvedValue(recentOrders);
 
-      const response = await authedRequest(app)
-        .get('/orders/recent')
-        .expect(200);
+      const response = await authedRequest(app).get('/orders/recent').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -301,9 +286,7 @@ describe('Order Routes', () => {
     it('should respect custom limit parameter', async () => {
       mockOrderRepository.getRecentOrders.mockResolvedValue([]);
 
-      await authedRequest(app)
-        .get('/orders/recent?limit=10')
-        .expect(200);
+      await authedRequest(app).get('/orders/recent?limit=10').expect(200);
 
       expect(mockOrderRepository.getRecentOrders).toHaveBeenCalledWith('test-user-1', 10);
     });
@@ -311,9 +294,7 @@ describe('Order Routes', () => {
     it('should cap limit to 50', async () => {
       mockOrderRepository.getRecentOrders.mockResolvedValue([]);
 
-      await authedRequest(app)
-        .get('/orders/recent?limit=100')
-        .expect(200);
+      await authedRequest(app).get('/orders/recent?limit=100').expect(200);
 
       expect(mockOrderRepository.getRecentOrders).toHaveBeenCalledWith('test-user-1', 50);
     });
@@ -321,9 +302,7 @@ describe('Order Routes', () => {
     it('should default to 5 when limit is not a number', async () => {
       mockOrderRepository.getRecentOrders.mockResolvedValue([]);
 
-      await authedRequest(app)
-        .get('/orders/recent?limit=abc')
-        .expect(200);
+      await authedRequest(app).get('/orders/recent?limit=abc').expect(200);
 
       expect(mockOrderRepository.getRecentOrders).toHaveBeenCalledWith('test-user-1', 5);
     });
@@ -341,9 +320,7 @@ describe('Order Routes', () => {
       };
       mockOrderRepository.findAll.mockResolvedValue(mockResult);
 
-      const response = await authedRequest(app)
-        .get('/orders')
-        .expect(200);
+      const response = await authedRequest(app).get('/orders').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -358,12 +335,13 @@ describe('Order Routes', () => {
 
     it('should pass pagination parameters from query string', async () => {
       mockOrderRepository.findAll.mockResolvedValue({
-        data: [], page: 2, total: 30, totalPages: 3,
+        data: [],
+        page: 2,
+        total: 30,
+        totalPages: 3,
       });
 
-      await authedRequest(app)
-        .get('/orders?page=2&limit=10')
-        .expect(200);
+      await authedRequest(app).get('/orders?page=2&limit=10').expect(200);
 
       expect(mockOrderRepository.findAll).toHaveBeenCalledWith(
         expect.anything(),
@@ -373,12 +351,13 @@ describe('Order Routes', () => {
 
     it('should pass status filter to the repository', async () => {
       mockOrderRepository.findAll.mockResolvedValue({
-        data: [], page: 1, total: 0, totalPages: 0,
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
       });
 
-      await authedRequest(app)
-        .get('/orders?status=pending')
-        .expect(200);
+      await authedRequest(app).get('/orders?status=pending').expect(200);
 
       expect(mockOrderRepository.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ status: 'pending' }),
@@ -397,10 +376,7 @@ describe('Order Routes', () => {
         firstName: 'Test',
       });
 
-      const response = await authedRequest(app)
-        .post('/orders')
-        .send(validOrderPayload)
-        .expect(201);
+      const response = await authedRequest(app).post('/orders').send(validOrderPayload).expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.orderNumber).toBe('ORD-001');
@@ -549,9 +525,7 @@ describe('Order Routes', () => {
     it('should return order for the owner', async () => {
       mockOrderRepository.findById.mockResolvedValue(mockOrder);
 
-      const response = await authedRequest(app)
-        .get('/orders/order-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/orders/order-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('order-1');
@@ -560,9 +534,7 @@ describe('Order Routes', () => {
     it('should return 404 for non-existent order', async () => {
       mockOrderRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/orders/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/orders/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Order not found');
@@ -571,9 +543,7 @@ describe('Order Routes', () => {
     it('should return 403 when non-owner accesses an order (IDOR prevention)', async () => {
       mockOrderRepository.findById.mockResolvedValue(otherUserOrder);
 
-      const response = await authedRequest(app)
-        .get('/orders/order-2')
-        .expect(403);
+      const response = await authedRequest(app).get('/orders/order-2').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Access denied');
@@ -583,9 +553,7 @@ describe('Order Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockOrderRepository.findById.mockResolvedValue(otherUserOrder);
 
-      const response = await authedRequest(app)
-        .get('/orders/order-2')
-        .expect(200);
+      const response = await authedRequest(app).get('/orders/order-2').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('order-2');
@@ -594,9 +562,7 @@ describe('Order Routes', () => {
     it('should fetch order with relations (includeRelations = true)', async () => {
       mockOrderRepository.findById.mockResolvedValue(mockOrder);
 
-      await authedRequest(app)
-        .get('/orders/order-1')
-        .expect(200);
+      await authedRequest(app).get('/orders/order-1').expect(200);
 
       expect(mockOrderRepository.findById).toHaveBeenCalledWith('order-1', true);
     });
@@ -738,9 +704,7 @@ describe('Order Routes', () => {
       const cancelled = { ...mockOrder, status: 'cancelled' };
       mockOrderRepository.cancel.mockResolvedValue(cancelled);
 
-      const response = await authedRequest(app)
-        .post('/orders/order-1/cancel')
-        .expect(200);
+      const response = await authedRequest(app).post('/orders/order-1/cancel').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('cancelled');
@@ -751,9 +715,7 @@ describe('Order Routes', () => {
       mockOrderRepository.findById.mockResolvedValue(confirmedOrder);
       mockOrderRepository.cancel.mockResolvedValue({ ...confirmedOrder, status: 'cancelled' });
 
-      const response = await authedRequest(app)
-        .post('/orders/order-1/cancel')
-        .expect(200);
+      const response = await authedRequest(app).post('/orders/order-1/cancel').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -774,9 +736,7 @@ describe('Order Routes', () => {
       const shippedOrder = { ...mockOrder, status: 'shipped' };
       mockOrderRepository.findById.mockResolvedValue(shippedOrder);
 
-      const response = await authedRequest(app)
-        .post('/orders/order-1/cancel')
-        .expect(400);
+      const response = await authedRequest(app).post('/orders/order-1/cancel').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('cannot be cancelled');
@@ -786,9 +746,7 @@ describe('Order Routes', () => {
       const deliveredOrder = { ...mockOrder, status: 'delivered' };
       mockOrderRepository.findById.mockResolvedValue(deliveredOrder);
 
-      const response = await authedRequest(app)
-        .post('/orders/order-1/cancel')
-        .expect(400);
+      const response = await authedRequest(app).post('/orders/order-1/cancel').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -797,9 +755,7 @@ describe('Order Routes', () => {
       const cancelledOrder = { ...mockOrder, status: 'cancelled' };
       mockOrderRepository.findById.mockResolvedValue(cancelledOrder);
 
-      const response = await authedRequest(app)
-        .post('/orders/order-1/cancel')
-        .expect(400);
+      const response = await authedRequest(app).post('/orders/order-1/cancel').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -808,9 +764,7 @@ describe('Order Routes', () => {
       const processingOrder = { ...mockOrder, status: 'processing' };
       mockOrderRepository.findById.mockResolvedValue(processingOrder);
 
-      const response = await authedRequest(app)
-        .post('/orders/order-1/cancel')
-        .expect(400);
+      const response = await authedRequest(app).post('/orders/order-1/cancel').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -818,9 +772,7 @@ describe('Order Routes', () => {
     it('should return 404 for non-existent order', async () => {
       mockOrderRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .post('/orders/nonexistent/cancel')
-        .expect(404);
+      const response = await authedRequest(app).post('/orders/nonexistent/cancel').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -828,9 +780,7 @@ describe('Order Routes', () => {
     it('should return 403 when non-owner tries to cancel (IDOR prevention)', async () => {
       mockOrderRepository.findById.mockResolvedValue(otherUserOrder);
 
-      const response = await authedRequest(app)
-        .post('/orders/order-2/cancel')
-        .expect(403);
+      const response = await authedRequest(app).post('/orders/order-2/cancel').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Access denied');
@@ -841,9 +791,7 @@ describe('Order Routes', () => {
       mockOrderRepository.findById.mockResolvedValue(otherUserOrder);
       mockOrderRepository.cancel.mockResolvedValue({ ...otherUserOrder, status: 'cancelled' });
 
-      const response = await authedRequest(app)
-        .post('/orders/order-2/cancel')
-        .expect(200);
+      const response = await authedRequest(app).post('/orders/order-2/cancel').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -879,10 +827,7 @@ describe('Order Routes', () => {
     it('should return 400 when status is missing', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
 
-      const response = await authedRequest(app)
-        .put('/orders/order-1/status')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).put('/orders/order-1/status').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -900,7 +845,15 @@ describe('Order Routes', () => {
 
     it('should accept all valid order statuses', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
-      const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'];
+      const validStatuses = [
+        'pending',
+        'confirmed',
+        'processing',
+        'shipped',
+        'delivered',
+        'cancelled',
+        'refunded',
+      ];
 
       for (const status of validStatuses) {
         mockOrderRepository.updateStatus.mockResolvedValue({ ...mockOrder, status });
@@ -923,17 +876,17 @@ describe('Order Routes', () => {
       // User lookup fails, email won't send - but order creation should still succeed
       mockPrisma.user.findUnique.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .post('/orders')
-        .send(validOrderPayload)
-        .expect(201);
+      const response = await authedRequest(app).post('/orders').send(validOrderPayload).expect(201);
 
       expect(response.body.success).toBe(true);
     });
 
     it('should handle concurrent order listing requests', async () => {
       mockOrderRepository.findAll.mockResolvedValue({
-        data: [], page: 1, total: 0, totalPages: 0,
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
       });
 
       const results = await Promise.all([

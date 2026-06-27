@@ -12,18 +12,18 @@ const budgetCalculator = require('../sections/budget-constraints/budget-calculat
  * Enhanced budget tier definitions with granular product quality levels
  */
 const BUDGET_TIERS = {
-  'entry': {
+  entry: {
     range: [0, 15000],
-    label: { en: 'Entry Level', fr: 'Niveau d\'entrée' },
+    label: { en: 'Entry Level', fr: "Niveau d'entrée" },
     productQuality: 'value',
     applianceLevel: 'basic',
     materialLevel: 'economy',
     customization: 'none',
     laborRate: 'economy',
     contingencyRequired: 0.15,
-    expectedDuration: { min: 2, max: 4, unit: 'weeks' }
+    expectedDuration: { min: 2, max: 4, unit: 'weeks' },
   },
-  'budget': {
+  budget: {
     range: [15000, 30000],
     label: { en: 'Budget-Conscious', fr: 'Économique' },
     productQuality: 'value-plus',
@@ -32,9 +32,9 @@ const BUDGET_TIERS = {
     customization: 'minimal',
     laborRate: 'standard',
     contingencyRequired: 0.12,
-    expectedDuration: { min: 3, max: 6, unit: 'weeks' }
+    expectedDuration: { min: 3, max: 6, unit: 'weeks' },
   },
-  'mid': {
+  mid: {
     range: [30000, 55000],
     label: { en: 'Mid-Range', fr: 'Milieu de gamme' },
     productQuality: 'mid-range',
@@ -42,8 +42,8 @@ const BUDGET_TIERS = {
     materialLevel: 'standard',
     customization: 'moderate',
     laborRate: 'standard',
-    contingencyRequired: 0.10,
-    expectedDuration: { min: 4, max: 8, unit: 'weeks' }
+    contingencyRequired: 0.1,
+    expectedDuration: { min: 4, max: 8, unit: 'weeks' },
   },
   'mid-high': {
     range: [55000, 85000],
@@ -53,10 +53,10 @@ const BUDGET_TIERS = {
     materialLevel: 'premium',
     customization: 'significant',
     laborRate: 'skilled',
-    contingencyRequired: 0.10,
-    expectedDuration: { min: 6, max: 10, unit: 'weeks' }
+    contingencyRequired: 0.1,
+    expectedDuration: { min: 6, max: 10, unit: 'weeks' },
   },
-  'luxury': {
+  luxury: {
     range: [85000, 150000],
     label: { en: 'Luxury', fr: 'Luxe' },
     productQuality: 'luxury',
@@ -65,7 +65,7 @@ const BUDGET_TIERS = {
     customization: 'full',
     laborRate: 'premium',
     contingencyRequired: 0.08,
-    expectedDuration: { min: 8, max: 14, unit: 'weeks' }
+    expectedDuration: { min: 8, max: 14, unit: 'weeks' },
   },
   'ultra-luxury': {
     range: [150000, Infinity],
@@ -76,8 +76,8 @@ const BUDGET_TIERS = {
     customization: 'unlimited',
     laborRate: 'artisan',
     contingencyRequired: 0.05,
-    expectedDuration: { min: 12, max: 24, unit: 'weeks' }
-  }
+    expectedDuration: { min: 12, max: 24, unit: 'weeks' },
+  },
 };
 
 /**
@@ -86,13 +86,13 @@ const BUDGET_TIERS = {
 const ALLOCATION_TEMPLATES = {
   balanced: {
     cabinets: 0.35,
-    countertops: 0.10,
-    appliances: 0.20,
+    countertops: 0.1,
+    appliances: 0.2,
     flooring: 0.08,
     lighting: 0.05,
     plumbing: 0.07,
     electrical: 0.05,
-    labor: 0.10
+    labor: 0.1,
   },
   'appliance-focused': {
     cabinets: 0.28,
@@ -102,40 +102,40 @@ const ALLOCATION_TEMPLATES = {
     lighting: 0.05,
     plumbing: 0.06,
     electrical: 0.05,
-    labor: 0.10
+    labor: 0.1,
   },
   'cabinet-focused': {
     cabinets: 0.42,
-    countertops: 0.10,
+    countertops: 0.1,
     appliances: 0.18,
     flooring: 0.06,
     lighting: 0.04,
     plumbing: 0.06,
     electrical: 0.04,
-    labor: 0.10
+    labor: 0.1,
   },
   'surface-focused': {
-    cabinets: 0.30,
+    cabinets: 0.3,
     countertops: 0.18,
     appliances: 0.18,
     flooring: 0.12,
     lighting: 0.04,
     plumbing: 0.05,
     electrical: 0.03,
-    labor: 0.10
-  }
+    labor: 0.1,
+  },
 };
 
 /**
  * Cost per square foot estimates by tier
  */
 const COST_PER_SQFT = {
-  'entry': { min: 75, max: 150, avg: 110 },
-  'budget': { min: 150, max: 250, avg: 200 },
-  'mid': { min: 250, max: 400, avg: 325 },
+  entry: { min: 75, max: 150, avg: 110 },
+  budget: { min: 150, max: 250, avg: 200 },
+  mid: { min: 250, max: 400, avg: 325 },
   'mid-high': { min: 400, max: 600, avg: 500 },
-  'luxury': { min: 600, max: 1000, avg: 800 },
-  'ultra-luxury': { min: 1000, max: 2000, avg: 1400 }
+  luxury: { min: 600, max: 1000, avg: 800 },
+  'ultra-luxury': { min: 1000, max: 2000, avg: 1400 },
 };
 
 /**
@@ -145,7 +145,7 @@ const ROI_ESTIMATES = {
   'minor-refresh': { roi: 0.85, resaleImpact: 'moderate', paybackYears: 3 },
   'mid-range-remodel': { roi: 0.72, resaleImpact: 'significant', paybackYears: 5 },
   'major-upscale': { roi: 0.59, resaleImpact: 'high', paybackYears: 8 },
-  'luxury-renovation': { roi: 0.54, resaleImpact: 'premium', paybackYears: 10 }
+  'luxury-renovation': { roi: 0.54, resaleImpact: 'premium', paybackYears: 10 },
 };
 
 /**
@@ -153,34 +153,150 @@ const ROI_ESTIMATES = {
  */
 const VALUE_ENGINEERING = {
   cabinets: [
-    { saving: 'stock-vs-custom', percentage: 0.40, impact: 'moderate', description: { en: 'Stock cabinets instead of custom', fr: 'Armoires standard au lieu de sur mesure' } },
-    { saving: 'rta-assembly', percentage: 0.25, impact: 'low', description: { en: 'RTA (Ready-to-Assemble) cabinets', fr: 'Armoires à assembler' } },
-    { saving: 'reface-vs-replace', percentage: 0.50, impact: 'moderate', description: { en: 'Reface existing cabinets', fr: 'Refaire la façade des armoires existantes' } },
-    { saving: 'painted-vs-stained', percentage: 0.15, impact: 'minimal', description: { en: 'Painted finish vs stained wood', fr: 'Finition peinte vs bois teinté' } }
+    {
+      saving: 'stock-vs-custom',
+      percentage: 0.4,
+      impact: 'moderate',
+      description: {
+        en: 'Stock cabinets instead of custom',
+        fr: 'Armoires standard au lieu de sur mesure',
+      },
+    },
+    {
+      saving: 'rta-assembly',
+      percentage: 0.25,
+      impact: 'low',
+      description: { en: 'RTA (Ready-to-Assemble) cabinets', fr: 'Armoires à assembler' },
+    },
+    {
+      saving: 'reface-vs-replace',
+      percentage: 0.5,
+      impact: 'moderate',
+      description: {
+        en: 'Reface existing cabinets',
+        fr: 'Refaire la façade des armoires existantes',
+      },
+    },
+    {
+      saving: 'painted-vs-stained',
+      percentage: 0.15,
+      impact: 'minimal',
+      description: { en: 'Painted finish vs stained wood', fr: 'Finition peinte vs bois teinté' },
+    },
   ],
   countertops: [
-    { saving: 'quartz-vs-marble', percentage: 0.35, impact: 'minimal', description: { en: 'Quartz instead of marble', fr: 'Quartz au lieu de marbre' } },
-    { saving: 'granite-remnants', percentage: 0.50, impact: 'low', description: { en: 'Granite remnants for small areas', fr: 'Chutes de granit pour petites surfaces' } },
-    { saving: 'laminate-premium', percentage: 0.70, impact: 'moderate', description: { en: 'High-end laminate alternatives', fr: 'Alternatives stratifiées haut de gamme' } },
-    { saving: 'butcher-block-accent', percentage: 0.40, impact: 'low', description: { en: 'Butcher block for prep areas', fr: 'Bloc boucher pour zones de préparation' } }
+    {
+      saving: 'quartz-vs-marble',
+      percentage: 0.35,
+      impact: 'minimal',
+      description: { en: 'Quartz instead of marble', fr: 'Quartz au lieu de marbre' },
+    },
+    {
+      saving: 'granite-remnants',
+      percentage: 0.5,
+      impact: 'low',
+      description: {
+        en: 'Granite remnants for small areas',
+        fr: 'Chutes de granit pour petites surfaces',
+      },
+    },
+    {
+      saving: 'laminate-premium',
+      percentage: 0.7,
+      impact: 'moderate',
+      description: {
+        en: 'High-end laminate alternatives',
+        fr: 'Alternatives stratifiées haut de gamme',
+      },
+    },
+    {
+      saving: 'butcher-block-accent',
+      percentage: 0.4,
+      impact: 'low',
+      description: {
+        en: 'Butcher block for prep areas',
+        fr: 'Bloc boucher pour zones de préparation',
+      },
+    },
   ],
   appliances: [
-    { saving: 'package-deals', percentage: 0.20, impact: 'none', description: { en: 'Appliance package discounts', fr: 'Remises sur ensembles d\'appareils' } },
-    { saving: 'floor-models', percentage: 0.30, impact: 'minimal', description: { en: 'Floor model or scratch-dent', fr: 'Modèles d\'exposition ou légèrement endommagés' } },
-    { saving: 'previous-year', percentage: 0.25, impact: 'minimal', description: { en: 'Previous year models', fr: 'Modèles de l\'année précédente' } },
-    { saving: 'mid-vs-pro', percentage: 0.45, impact: 'moderate', description: { en: 'Mid-range vs professional grade', fr: 'Milieu de gamme vs qualité professionnelle' } }
+    {
+      saving: 'package-deals',
+      percentage: 0.2,
+      impact: 'none',
+      description: { en: 'Appliance package discounts', fr: "Remises sur ensembles d'appareils" },
+    },
+    {
+      saving: 'floor-models',
+      percentage: 0.3,
+      impact: 'minimal',
+      description: {
+        en: 'Floor model or scratch-dent',
+        fr: "Modèles d'exposition ou légèrement endommagés",
+      },
+    },
+    {
+      saving: 'previous-year',
+      percentage: 0.25,
+      impact: 'minimal',
+      description: { en: 'Previous year models', fr: "Modèles de l'année précédente" },
+    },
+    {
+      saving: 'mid-vs-pro',
+      percentage: 0.45,
+      impact: 'moderate',
+      description: {
+        en: 'Mid-range vs professional grade',
+        fr: 'Milieu de gamme vs qualité professionnelle',
+      },
+    },
   ],
   flooring: [
-    { saving: 'lvp-vs-hardwood', percentage: 0.50, impact: 'low', description: { en: 'Luxury vinyl plank vs hardwood', fr: 'Vinyle de luxe vs bois franc' } },
-    { saving: 'porcelain-vs-stone', percentage: 0.55, impact: 'low', description: { en: 'Porcelain tile vs natural stone', fr: 'Porcelaine vs pierre naturelle' } },
-    { saving: 'self-install', percentage: 0.40, impact: 'varies', description: { en: 'DIY flooring installation', fr: 'Installation de sol DIY' } }
+    {
+      saving: 'lvp-vs-hardwood',
+      percentage: 0.5,
+      impact: 'low',
+      description: { en: 'Luxury vinyl plank vs hardwood', fr: 'Vinyle de luxe vs bois franc' },
+    },
+    {
+      saving: 'porcelain-vs-stone',
+      percentage: 0.55,
+      impact: 'low',
+      description: { en: 'Porcelain tile vs natural stone', fr: 'Porcelaine vs pierre naturelle' },
+    },
+    {
+      saving: 'self-install',
+      percentage: 0.4,
+      impact: 'varies',
+      description: { en: 'DIY flooring installation', fr: 'Installation de sol DIY' },
+    },
   ],
   labor: [
-    { saving: 'off-season', percentage: 0.15, impact: 'none', description: { en: 'Schedule during off-season', fr: 'Planifier hors saison' } },
-    { saving: 'diy-demo', percentage: 0.08, impact: 'none', description: { en: 'DIY demolition', fr: 'Démolition DIY' } },
-    { saving: 'diy-painting', percentage: 0.05, impact: 'none', description: { en: 'DIY painting and finishing', fr: 'Peinture et finition DIY' } },
-    { saving: 'phased-approach', percentage: 0.10, impact: 'timeline', description: { en: 'Phased renovation approach', fr: 'Approche de rénovation par phases' } }
-  ]
+    {
+      saving: 'off-season',
+      percentage: 0.15,
+      impact: 'none',
+      description: { en: 'Schedule during off-season', fr: 'Planifier hors saison' },
+    },
+    {
+      saving: 'diy-demo',
+      percentage: 0.08,
+      impact: 'none',
+      description: { en: 'DIY demolition', fr: 'Démolition DIY' },
+    },
+    {
+      saving: 'diy-painting',
+      percentage: 0.05,
+      impact: 'none',
+      description: { en: 'DIY painting and finishing', fr: 'Peinture et finition DIY' },
+    },
+    {
+      saving: 'phased-approach',
+      percentage: 0.1,
+      impact: 'timeline',
+      description: { en: 'Phased renovation approach', fr: 'Approche de rénovation par phases' },
+    },
+  ],
 };
 
 /**
@@ -204,7 +320,7 @@ function analyzeBudget(responses) {
     valueEngineering: [],
     roiAnalysis: null,
     financingOptions: [],
-    riskAssessment: null
+    riskAssessment: null,
   };
 
   // Get tier details
@@ -258,7 +374,7 @@ function extractNumericBudget(budgetAnswers) {
     '25k-50k': { min: 25000, max: 50000, mid: 37500 },
     '50k-75k': { min: 50000, max: 75000, mid: 62500 },
     '75k-100k': { min: 75000, max: 100000, mid: 87500 },
-    'over-100k': { min: 100000, max: 200000, mid: 150000 }
+    'over-100k': { min: 100000, max: 200000, mid: 150000 },
   };
 
   return ranges[totalBudget] || ranges['25k-50k'];
@@ -276,7 +392,7 @@ function determineBudgetTier(budgetAnswers) {
     '25k-50k': 'mid',
     '50k-75k': 'mid-high',
     '75k-100k': 'luxury',
-    'over-100k': 'ultra-luxury'
+    'over-100k': 'ultra-luxury',
   };
 
   return tierMap[totalBudget] || 'mid';
@@ -294,20 +410,21 @@ function calculateOptimizedAllocation(budgetAnswers, responses) {
   let template = 'balanced';
   if (priorities.includes('appliances')) template = 'appliance-focused';
   else if (priorities.includes('cabinets')) template = 'cabinet-focused';
-  else if (priorities.includes('countertops') || priorities.includes('flooring')) template = 'surface-focused';
+  else if (priorities.includes('countertops') || priorities.includes('flooring'))
+    template = 'surface-focused';
 
   const baseAllocation = { ...ALLOCATION_TEMPLATES[template] };
 
   // Adjust for priorities (increase by 20%)
-  priorities.forEach(priority => {
+  priorities.forEach((priority) => {
     const category = mapPriorityToCategory(priority);
     if (category && baseAllocation[category]) {
-      baseAllocation[category] *= 1.20;
+      baseAllocation[category] *= 1.2;
     }
   });
 
   // Adjust for savings areas (decrease by 15%)
-  savingsAreas.forEach(area => {
+  savingsAreas.forEach((area) => {
     const category = mapSavingsToCategory(area);
     if (category && baseAllocation[category]) {
       baseAllocation[category] *= 0.85;
@@ -316,7 +433,7 @@ function calculateOptimizedAllocation(budgetAnswers, responses) {
 
   // Normalize to 100%
   const total = Object.values(baseAllocation).reduce((sum, val) => sum + val, 0);
-  Object.keys(baseAllocation).forEach(key => {
+  Object.keys(baseAllocation).forEach((key) => {
     baseAllocation[key] = baseAllocation[key] / total;
   });
 
@@ -327,7 +444,7 @@ function calculateOptimizedAllocation(budgetAnswers, responses) {
       percentage: Math.round(percentage * 100),
       min: Math.round(numericBudget.min * percentage),
       max: Math.round(numericBudget.max * percentage),
-      target: Math.round(numericBudget.mid * percentage)
+      target: Math.round(numericBudget.mid * percentage),
     };
   });
 
@@ -336,7 +453,7 @@ function calculateOptimizedAllocation(budgetAnswers, responses) {
     percentages: baseAllocation,
     dollars: dollarAllocation,
     totalBudget: numericBudget,
-    confidence: calculateAllocationConfidence(budgetAnswers)
+    confidence: calculateAllocationConfidence(budgetAnswers),
   };
 }
 
@@ -345,12 +462,12 @@ function calculateOptimizedAllocation(budgetAnswers, responses) {
  */
 function mapPriorityToCategory(priority) {
   const map = {
-    'appliances': 'appliances',
-    'cabinets': 'cabinets',
-    'countertops': 'countertops',
-    'flooring': 'flooring',
-    'lighting': 'lighting',
-    'fixtures': 'plumbing'
+    appliances: 'appliances',
+    cabinets: 'cabinets',
+    countertops: 'countertops',
+    flooring: 'flooring',
+    lighting: 'lighting',
+    fixtures: 'plumbing',
   };
   return map[priority];
 }
@@ -360,12 +477,12 @@ function mapPriorityToCategory(priority) {
  */
 function mapSavingsToCategory(area) {
   const map = {
-    'appliances': 'appliances',
-    'cabinets': 'cabinets',
-    'countertops': 'countertops',
-    'flooring': 'flooring',
-    'lighting': 'lighting',
-    'labor': 'labor'
+    appliances: 'appliances',
+    cabinets: 'cabinets',
+    countertops: 'countertops',
+    flooring: 'flooring',
+    lighting: 'lighting',
+    labor: 'labor',
   };
   return map[area];
 }
@@ -396,7 +513,7 @@ function generateCostEstimate(analysis, spatialAnswers) {
     small: 80,
     medium: 150,
     large: 250,
-    'very-large': 350
+    'very-large': 350,
   };
 
   const size = spatialAnswers['kitchen-size'] || 'medium';
@@ -408,10 +525,10 @@ function generateCostEstimate(analysis, spatialAnswers) {
     totalEstimate: {
       low: Math.round(sqft * costPerSqft.min),
       high: Math.round(sqft * costPerSqft.max),
-      midpoint: Math.round(sqft * costPerSqft.avg)
+      midpoint: Math.round(sqft * costPerSqft.avg),
     },
     comparisonToNational: calculateNationalComparison(sqft, costPerSqft.avg),
-    marketFactors: getMarketFactors()
+    marketFactors: getMarketFactors(),
   };
 
   // Check if estimate aligns with stated budget
@@ -419,13 +536,13 @@ function generateCostEstimate(analysis, spatialAnswers) {
   estimate.budgetAlignment = {
     aligned: estimate.totalEstimate.midpoint <= numericBudget.max,
     gap: estimate.totalEstimate.midpoint - numericBudget.mid,
-    recommendation: null
+    recommendation: null,
   };
 
   if (!estimate.budgetAlignment.aligned) {
     estimate.budgetAlignment.recommendation = {
       en: 'Consider reducing scope or increasing budget to match typical costs for your space.',
-      fr: 'Envisagez de réduire la portée ou d\'augmenter le budget pour correspondre aux coûts typiques de votre espace.'
+      fr: "Envisagez de réduire la portée ou d'augmenter le budget pour correspondre aux coûts typiques de votre espace.",
     };
   }
 
@@ -443,9 +560,10 @@ function calculateNationalComparison(sqft, costPerSqft) {
     nationalAvgPerSqft: nationalAverage,
     yourCostPerSqft: costPerSqft,
     percentDifference: Math.round(difference),
-    description: difference > 0 ?
-      { en: 'Above national average', fr: 'Au-dessus de la moyenne nationale' } :
-      { en: 'Below national average', fr: 'En dessous de la moyenne nationale' }
+    description:
+      difference > 0
+        ? { en: 'Above national average', fr: 'Au-dessus de la moyenne nationale' }
+        : { en: 'Below national average', fr: 'En dessous de la moyenne nationale' },
   };
 }
 
@@ -454,9 +572,27 @@ function calculateNationalComparison(sqft, costPerSqft) {
  */
 function getMarketFactors() {
   return [
-    { factor: 'labor-market', impact: 'variable', description: { en: 'Local labor costs vary by region', fr: 'Les coûts de main-d\'œuvre varient selon la région' } },
-    { factor: 'material-supply', impact: 'moderate', description: { en: 'Supply chain affects material pricing', fr: 'La chaîne d\'approvisionnement affecte les prix des matériaux' } },
-    { factor: 'permit-costs', impact: 'low', description: { en: 'Permit and inspection fees', fr: 'Frais de permis et d\'inspection' } }
+    {
+      factor: 'labor-market',
+      impact: 'variable',
+      description: {
+        en: 'Local labor costs vary by region',
+        fr: "Les coûts de main-d'œuvre varient selon la région",
+      },
+    },
+    {
+      factor: 'material-supply',
+      impact: 'moderate',
+      description: {
+        en: 'Supply chain affects material pricing',
+        fr: "La chaîne d'approvisionnement affecte les prix des matériaux",
+      },
+    },
+    {
+      factor: 'permit-costs',
+      impact: 'low',
+      description: { en: 'Permit and inspection fees', fr: "Frais de permis et d'inspection" },
+    },
   ];
 }
 
@@ -479,13 +615,16 @@ function identifyBudgetConstraints(budgetAnswers, responses) {
         category: 'cabinets',
         message: {
           en: 'Custom cabinets typically require $50,000+ budget. Consider semi-custom alternatives.',
-          fr: 'Les armoires sur mesure nécessitent généralement un budget de 50 000$+. Envisagez des alternatives semi-personnalisées.'
+          fr: 'Les armoires sur mesure nécessitent généralement un budget de 50 000$+. Envisagez des alternatives semi-personnalisées.',
         },
-        alternatives: ['semi-custom', 'stock-premium', 'rta-quality']
+        alternatives: ['semi-custom', 'stock-premium', 'rta-quality'],
       });
     }
 
-    if (aesthetic['countertop-material'] === 'marble' || aesthetic['countertop-material'] === 'quartzite') {
+    if (
+      aesthetic['countertop-material'] === 'marble' ||
+      aesthetic['countertop-material'] === 'quartzite'
+    ) {
       constraints.push({
         id: 'premium-counter-budget',
         type: 'budget-expectation-mismatch',
@@ -493,9 +632,9 @@ function identifyBudgetConstraints(budgetAnswers, responses) {
         category: 'countertops',
         message: {
           en: 'Premium natural stone counters may exceed budget. Consider quartz or granite.',
-          fr: 'Les comptoirs en pierre naturelle premium peuvent dépasser le budget. Envisagez le quartz ou le granit.'
+          fr: 'Les comptoirs en pierre naturelle premium peuvent dépasser le budget. Envisagez le quartz ou le granit.',
         },
-        alternatives: ['quartz', 'granite', 'solid-surface']
+        alternatives: ['quartz', 'granite', 'solid-surface'],
       });
     }
   }
@@ -509,12 +648,12 @@ function identifyBudgetConstraints(budgetAnswers, responses) {
       category: 'planning',
       message: {
         en: 'No contingency budget increases project risk. Unexpected costs average 10-20% of budget.',
-        fr: 'Aucun budget de prévoyance augmente le risque du projet. Les coûts imprévus représentent en moyenne 10-20% du budget.'
+        fr: 'Aucun budget de prévoyance augmente le risque du projet. Les coûts imprévus représentent en moyenne 10-20% du budget.',
       },
       recommendation: {
         en: 'Build in at least 10% contingency by reducing scope slightly.',
-        fr: 'Prévoyez au moins 10% de contingence en réduisant légèrement la portée.'
-      }
+        fr: 'Prévoyez au moins 10% de contingence en réduisant légèrement la portée.',
+      },
     });
   }
 
@@ -528,8 +667,8 @@ function identifyBudgetConstraints(budgetAnswers, responses) {
       category: 'planning',
       message: {
         en: 'Strict budget limits require careful planning and may limit options during execution.',
-        fr: 'Des limites budgétaires strictes nécessitent une planification minutieuse et peuvent limiter les options pendant l\'exécution.'
-      }
+        fr: "Des limites budgétaires strictes nécessitent une planification minutieuse et peuvent limiter les options pendant l'exécution.",
+      },
     });
   }
 
@@ -543,12 +682,12 @@ function identifyBudgetConstraints(budgetAnswers, responses) {
         category: 'planning',
         message: {
           en: 'Large kitchen with limited budget requires strategic prioritization or phased approach.',
-          fr: 'Grande cuisine avec budget limité nécessite une priorisation stratégique ou une approche par phases.'
+          fr: 'Grande cuisine avec budget limité nécessite une priorisation stratégique ou une approche par phases.',
         },
         recommendation: {
           en: 'Consider a phased renovation: Phase 1 cabinets/counters, Phase 2 appliances/finishes.',
-          fr: 'Envisagez une rénovation par phases: Phase 1 armoires/comptoirs, Phase 2 appareils/finitions.'
-        }
+          fr: 'Envisagez une rénovation par phases: Phase 1 armoires/comptoirs, Phase 2 appareils/finitions.',
+        },
       });
     }
   }
@@ -569,14 +708,14 @@ function identifyBudgetOpportunities(budgetAnswers, responses) {
     opportunities.push({
       id: 'diy-savings',
       type: 'labor-savings',
-      potentialSavings: { min: 0.10, max: 0.25 },
+      potentialSavings: { min: 0.1, max: 0.25 },
       effort: 'high',
       skills: ['basic-tools', 'patience', 'time'],
       message: {
         en: 'DIY installation of demolition, painting, and simple fixtures can save 10-25% on labor.',
-        fr: 'L\'installation DIY de démolition, peinture et accessoires simples peut économiser 10-25% sur la main-d\'œuvre.'
+        fr: "L'installation DIY de démolition, peinture et accessoires simples peut économiser 10-25% sur la main-d'œuvre.",
       },
-      tasks: ['demolition', 'painting', 'hardware-installation', 'backsplash', 'flooring']
+      tasks: ['demolition', 'painting', 'hardware-installation', 'backsplash', 'flooring'],
     });
   }
 
@@ -588,8 +727,8 @@ function identifyBudgetOpportunities(budgetAnswers, responses) {
       potentialSavings: { min: 0.03, max: 0.07 },
       message: {
         en: 'Cash payment may qualify for 3-7% contractor discount.',
-        fr: 'Le paiement comptant peut donner droit à une remise de 3-7% de l\'entrepreneur.'
-      }
+        fr: "Le paiement comptant peut donner droit à une remise de 3-7% de l'entrepreneur.",
+      },
     });
   }
 
@@ -601,8 +740,8 @@ function identifyBudgetOpportunities(budgetAnswers, responses) {
       benefit: 'quality-upgrade',
       message: {
         en: 'Phased approach allows for higher quality materials in each phase while spreading costs.',
-        fr: 'L\'approche par phases permet des matériaux de meilleure qualité dans chaque phase tout en étalant les coûts.'
-      }
+        fr: "L'approche par phases permet des matériaux de meilleure qualité dans chaque phase tout en étalant les coûts.",
+      },
     });
   }
 
@@ -614,8 +753,8 @@ function identifyBudgetOpportunities(budgetAnswers, responses) {
     bestMonths: ['January', 'February', 'November'],
     message: {
       en: 'Scheduling during winter months (Jan-Feb) can reduce contractor rates by 5-15%.',
-      fr: 'Planifier pendant les mois d\'hiver (Jan-Fév) peut réduire les tarifs des entrepreneurs de 5-15%.'
-    }
+      fr: "Planifier pendant les mois d'hiver (Jan-Fév) peut réduire les tarifs des entrepreneurs de 5-15%.",
+    },
   });
 
   // Package deals
@@ -625,8 +764,8 @@ function identifyBudgetOpportunities(budgetAnswers, responses) {
     potentialSavings: { min: 0.15, max: 0.25 },
     message: {
       en: 'Purchasing appliance suites/packages typically saves 15-25% vs individual items.',
-      fr: 'L\'achat d\'ensembles d\'appareils économise généralement 15-25% par rapport aux articles individuels.'
-    }
+      fr: "L'achat d'ensembles d'appareils économise généralement 15-25% par rapport aux articles individuels.",
+    },
   });
 
   // Closeout/overstock materials
@@ -634,12 +773,12 @@ function identifyBudgetOpportunities(budgetAnswers, responses) {
     opportunities.push({
       id: 'closeout-materials',
       type: 'material-savings',
-      potentialSavings: { min: 0.20, max: 0.50 },
+      potentialSavings: { min: 0.2, max: 0.5 },
       message: {
         en: 'Closeout, overstock, or slightly imperfect materials can save 20-50%.',
-        fr: 'Les matériaux de fin de série, excédentaires ou légèrement imparfaits peuvent économiser 20-50%.'
+        fr: 'Les matériaux de fin de série, excédentaires ou légèrement imparfaits peuvent économiser 20-50%.',
       },
-      sources: ['habitat-restore', 'floor-models', 'scratch-dent', 'remnants']
+      sources: ['habitat-restore', 'floor-models', 'scratch-dent', 'remnants'],
     });
   }
 
@@ -660,7 +799,7 @@ function generateBudgetWarnings(budgetAnswers, responses) {
     '5k-10k': { max: 10000 },
     '10k-20k': { max: 20000 },
     '20k-35k': { max: 35000 },
-    'over-35k': { max: 50000 }
+    'over-35k': { max: 50000 },
   };
 
   const applianceMax = applianceRanges[applianceBudget]?.max || 10000;
@@ -672,12 +811,12 @@ function generateBudgetWarnings(budgetAnswers, responses) {
       severity: 'medium',
       message: {
         en: 'Appliance budget exceeds 45% of total. This may leave insufficient funds for cabinets and installation.',
-        fr: 'Le budget appareils dépasse 45% du total. Cela peut laisser des fonds insuffisants pour les armoires et l\'installation.'
+        fr: "Le budget appareils dépasse 45% du total. Cela peut laisser des fonds insuffisants pour les armoires et l'installation.",
       },
       recommendation: {
         en: 'Consider mid-range appliances to maintain balance, unless cooking is top priority.',
-        fr: 'Envisagez des appareils milieu de gamme pour maintenir l\'équilibre, sauf si la cuisine est la priorité absolue.'
-      }
+        fr: "Envisagez des appareils milieu de gamme pour maintenir l'équilibre, sauf si la cuisine est la priorité absolue.",
+      },
     });
   }
 
@@ -694,12 +833,12 @@ function generateBudgetWarnings(budgetAnswers, responses) {
       severity: 'high',
       message: {
         en: `Your ${spatial['kitchen-size'] || 'medium'} kitchen typically requires $${Math.round(adjustedBudgetNeed / 1000)}k+ for a comprehensive renovation.`,
-        fr: `Votre cuisine ${spatial['kitchen-size'] || 'moyenne'} nécessite généralement ${Math.round(adjustedBudgetNeed / 1000)}k$+ pour une rénovation complète.`
+        fr: `Votre cuisine ${spatial['kitchen-size'] || 'moyenne'} nécessite généralement ${Math.round(adjustedBudgetNeed / 1000)}k$+ pour une rénovation complète.`,
       },
       recommendation: {
         en: 'Consider a partial renovation focusing on highest-impact areas.',
-        fr: 'Envisagez une rénovation partielle axée sur les zones à fort impact.'
-      }
+        fr: 'Envisagez une rénovation partielle axée sur les zones à fort impact.',
+      },
     });
   }
 
@@ -712,8 +851,8 @@ function generateBudgetWarnings(budgetAnswers, responses) {
       severity: 'medium',
       message: {
         en: 'Urgent timeline with limited budget may increase costs. Rush orders and expedited labor add 15-25%.',
-        fr: 'Un calendrier urgent avec un budget limité peut augmenter les coûts. Les commandes urgentes et la main-d\'œuvre accélérée ajoutent 15-25%.'
-      }
+        fr: "Un calendrier urgent avec un budget limité peut augmenter les coûts. Les commandes urgentes et la main-d'œuvre accélérée ajoutent 15-25%.",
+      },
     });
   }
 
@@ -737,8 +876,8 @@ function generateProductGuidance(tier, budgetAnswers) {
     overall: {
       qualityLevel: tierInfo.productQuality,
       customizationLevel: tierInfo.customization,
-      laborLevel: tierInfo.laborRate
-    }
+      laborLevel: tierInfo.laborRate,
+    },
   };
 
   return guidance;
@@ -751,48 +890,65 @@ function generateCabinetGuidance(tier, priorities) {
   const isPriority = priorities.includes('cabinets');
 
   const guidance = {
-    'entry': {
+    entry: {
       quality: 'basic',
       suggested: ['stock-basic', 'rta-economy'],
       brands: { en: ['IKEA', 'Home Depot stock'], fr: ['IKEA', 'Stock Home Depot'] },
       features: ['basic-hardware', 'standard-finishes'],
-      priceRange: { en: '$80-150/linear foot', fr: '80-150$/pied linéaire' }
+      priceRange: { en: '$80-150/linear foot', fr: '80-150$/pied linéaire' },
     },
-    'budget': {
+    budget: {
       quality: isPriority ? 'value-plus' : 'value',
       suggested: isPriority ? ['semi-custom-basic', 'stock-premium'] : ['stock', 'rta-quality'],
-      brands: { en: ['KraftMaid', 'Diamond', 'Shenandoah'], fr: ['KraftMaid', 'Diamond', 'Shenandoah'] },
+      brands: {
+        en: ['KraftMaid', 'Diamond', 'Shenandoah'],
+        fr: ['KraftMaid', 'Diamond', 'Shenandoah'],
+      },
       features: isPriority ? ['soft-close', 'choice-of-finishes'] : ['basic-hardware'],
-      priceRange: { en: '$150-300/linear foot', fr: '150-300$/pied linéaire' }
+      priceRange: { en: '$150-300/linear foot', fr: '150-300$/pied linéaire' },
     },
-    'mid': {
+    mid: {
       quality: isPriority ? 'mid-premium' : 'mid-range',
-      suggested: isPriority ? ['semi-custom-premium', 'custom-local'] : ['semi-custom', 'stock-premium'],
-      brands: { en: ['Thomasville', 'Schuler', 'Aristokraft'], fr: ['Thomasville', 'Schuler', 'Aristokraft'] },
+      suggested: isPriority
+        ? ['semi-custom-premium', 'custom-local']
+        : ['semi-custom', 'stock-premium'],
+      brands: {
+        en: ['Thomasville', 'Schuler', 'Aristokraft'],
+        fr: ['Thomasville', 'Schuler', 'Aristokraft'],
+      },
       features: ['soft-close', 'dovetail-drawers', 'adjustable-shelves'],
-      priceRange: { en: '$300-500/linear foot', fr: '300-500$/pied linéaire' }
+      priceRange: { en: '$300-500/linear foot', fr: '300-500$/pied linéaire' },
     },
     'mid-high': {
       quality: isPriority ? 'premium-plus' : 'premium',
       suggested: isPriority ? ['custom', 'semi-custom-premium'] : ['semi-custom-premium'],
-      brands: { en: ['Wood-Mode', 'Medallion', 'Dura Supreme'], fr: ['Wood-Mode', 'Medallion', 'Dura Supreme'] },
+      brands: {
+        en: ['Wood-Mode', 'Medallion', 'Dura Supreme'],
+        fr: ['Wood-Mode', 'Medallion', 'Dura Supreme'],
+      },
       features: ['full-extension', 'custom-inserts', 'premium-finishes'],
-      priceRange: { en: '$500-800/linear foot', fr: '500-800$/pied linéaire' }
+      priceRange: { en: '$500-800/linear foot', fr: '500-800$/pied linéaire' },
     },
-    'luxury': {
+    luxury: {
       quality: 'luxury',
       suggested: ['custom', 'bespoke'],
-      brands: { en: ['Poggenpohl', 'Bulthaup', 'SieMatic'], fr: ['Poggenpohl', 'Bulthaup', 'SieMatic'] },
+      brands: {
+        en: ['Poggenpohl', 'Bulthaup', 'SieMatic'],
+        fr: ['Poggenpohl', 'Bulthaup', 'SieMatic'],
+      },
       features: ['handcrafted', 'premium-woods', 'integrated-lighting'],
-      priceRange: { en: '$800-1500/linear foot', fr: '800-1500$/pied linéaire' }
+      priceRange: { en: '$800-1500/linear foot', fr: '800-1500$/pied linéaire' },
     },
     'ultra-luxury': {
       quality: 'bespoke',
       suggested: ['bespoke', 'artisan'],
-      brands: { en: ['Smallbone', 'Christopher Peacock', 'custom artisan'], fr: ['Smallbone', 'Christopher Peacock', 'artisan sur mesure'] },
+      brands: {
+        en: ['Smallbone', 'Christopher Peacock', 'custom artisan'],
+        fr: ['Smallbone', 'Christopher Peacock', 'artisan sur mesure'],
+      },
       features: ['museum-quality', 'exotic-materials', 'furniture-grade'],
-      priceRange: { en: '$1500+/linear foot', fr: '1500$+/pied linéaire' }
-    }
+      priceRange: { en: '$1500+/linear foot', fr: '1500$+/pied linéaire' },
+    },
   };
 
   return guidance[tier] || guidance['mid'];
@@ -805,36 +961,40 @@ function generateCountertopGuidance(tier, priorities) {
   const isPriority = priorities.includes('countertops');
 
   const guidance = {
-    'entry': {
+    entry: {
       quality: 'economy',
       suggested: ['laminate', 'tile'],
-      priceRange: { en: '$10-30/sq ft installed', fr: '10-30$/pi² installé' }
+      priceRange: { en: '$10-30/sq ft installed', fr: '10-30$/pi² installé' },
     },
-    'budget': {
+    budget: {
       quality: isPriority ? 'value-plus' : 'value',
-      suggested: isPriority ? ['quartz-basic', 'granite-tier1'] : ['laminate-premium', 'butcher-block'],
-      priceRange: { en: '$30-60/sq ft installed', fr: '30-60$/pi² installé' }
+      suggested: isPriority
+        ? ['quartz-basic', 'granite-tier1']
+        : ['laminate-premium', 'butcher-block'],
+      priceRange: { en: '$30-60/sq ft installed', fr: '30-60$/pi² installé' },
     },
-    'mid': {
+    mid: {
       quality: isPriority ? 'mid-premium' : 'mid-range',
       suggested: isPriority ? ['quartz-mid', 'granite-premium'] : ['quartz-basic', 'solid-surface'],
-      priceRange: { en: '$60-100/sq ft installed', fr: '60-100$/pi² installé' }
+      priceRange: { en: '$60-100/sq ft installed', fr: '60-100$/pi² installé' },
     },
     'mid-high': {
       quality: isPriority ? 'premium-plus' : 'premium',
-      suggested: isPriority ? ['quartz-premium', 'quartzite', 'marble-honed'] : ['quartz-mid', 'granite-premium'],
-      priceRange: { en: '$100-175/sq ft installed', fr: '100-175$/pi² installé' }
+      suggested: isPriority
+        ? ['quartz-premium', 'quartzite', 'marble-honed']
+        : ['quartz-mid', 'granite-premium'],
+      priceRange: { en: '$100-175/sq ft installed', fr: '100-175$/pi² installé' },
     },
-    'luxury': {
+    luxury: {
       quality: 'luxury',
       suggested: ['marble', 'quartzite-premium', 'exotic-granite'],
-      priceRange: { en: '$175-300/sq ft installed', fr: '175-300$/pi² installé' }
+      priceRange: { en: '$175-300/sq ft installed', fr: '175-300$/pi² installé' },
     },
     'ultra-luxury': {
       quality: 'bespoke',
       suggested: ['rare-marble', 'onyx', 'custom-fabrication'],
-      priceRange: { en: '$300+/sq ft installed', fr: '300$+/pi² installé' }
-    }
+      priceRange: { en: '$300+/sq ft installed', fr: '300$+/pi² installé' },
+    },
   };
 
   return guidance[tier] || guidance['mid'];
@@ -847,42 +1007,45 @@ function generateApplianceGuidance(tier, priorities) {
   const isPriority = priorities.includes('appliances');
 
   const guidance = {
-    'entry': {
+    entry: {
       quality: 'basic',
       suggested: ['value-brands'],
-      brands: { en: ['Frigidaire', 'Whirlpool basic', 'GE basic'], fr: ['Frigidaire', 'Whirlpool de base', 'GE de base'] },
-      features: ['standard-features']
+      brands: {
+        en: ['Frigidaire', 'Whirlpool basic', 'GE basic'],
+        fr: ['Frigidaire', 'Whirlpool de base', 'GE de base'],
+      },
+      features: ['standard-features'],
     },
-    'budget': {
+    budget: {
       quality: isPriority ? 'value-plus' : 'value',
       suggested: isPriority ? ['mid-range-brands'] : ['value-brands'],
       brands: { en: ['Whirlpool', 'GE', 'Maytag'], fr: ['Whirlpool', 'GE', 'Maytag'] },
-      features: isPriority ? ['stainless-steel', 'energy-star'] : ['standard-features']
+      features: isPriority ? ['stainless-steel', 'energy-star'] : ['standard-features'],
     },
-    'mid': {
+    mid: {
       quality: isPriority ? 'mid-premium' : 'mid-range',
       suggested: isPriority ? ['premium-brands'] : ['mid-range-brands'],
       brands: { en: ['KitchenAid', 'Samsung', 'LG'], fr: ['KitchenAid', 'Samsung', 'LG'] },
-      features: ['smart-features', 'premium-finishes']
+      features: ['smart-features', 'premium-finishes'],
     },
     'mid-high': {
       quality: isPriority ? 'premium-plus' : 'premium',
       suggested: isPriority ? ['professional-grade'] : ['premium-brands'],
       brands: { en: ['Bosch', 'GE Profile', 'Café'], fr: ['Bosch', 'GE Profile', 'Café'] },
-      features: ['wifi-connected', 'advanced-cooking']
+      features: ['wifi-connected', 'advanced-cooking'],
     },
-    'luxury': {
+    luxury: {
       quality: 'professional',
       suggested: ['professional-grade', 'commercial-style'],
       brands: { en: ['Sub-Zero', 'Wolf', 'Thermador'], fr: ['Sub-Zero', 'Wolf', 'Thermador'] },
-      features: ['commercial-grade', 'integrated-design']
+      features: ['commercial-grade', 'integrated-design'],
     },
     'ultra-luxury': {
       quality: 'commercial',
       suggested: ['commercial', 'custom-integrated'],
       brands: { en: ['La Cornue', 'Gaggenau', 'Miele'], fr: ['La Cornue', 'Gaggenau', 'Miele'] },
-      features: ['restaurant-grade', 'bespoke-finishing']
-    }
+      features: ['restaurant-grade', 'bespoke-finishing'],
+    },
   };
 
   return guidance[tier] || guidance['mid'];
@@ -893,12 +1056,15 @@ function generateApplianceGuidance(tier, priorities) {
  */
 function generateFlooringGuidance(tier) {
   const guidance = {
-    'entry': { quality: 'economy', suggested: ['vinyl-sheet', 'laminate-basic'] },
-    'budget': { quality: 'value', suggested: ['luxury-vinyl-plank', 'laminate-premium'] },
-    'mid': { quality: 'mid-range', suggested: ['engineered-hardwood', 'porcelain-tile'] },
+    entry: { quality: 'economy', suggested: ['vinyl-sheet', 'laminate-basic'] },
+    budget: { quality: 'value', suggested: ['luxury-vinyl-plank', 'laminate-premium'] },
+    mid: { quality: 'mid-range', suggested: ['engineered-hardwood', 'porcelain-tile'] },
     'mid-high': { quality: 'premium', suggested: ['hardwood', 'large-format-porcelain'] },
-    'luxury': { quality: 'luxury', suggested: ['wide-plank-hardwood', 'natural-stone'] },
-    'ultra-luxury': { quality: 'bespoke', suggested: ['reclaimed-wood', 'custom-stone', 'terrazzo'] }
+    luxury: { quality: 'luxury', suggested: ['wide-plank-hardwood', 'natural-stone'] },
+    'ultra-luxury': {
+      quality: 'bespoke',
+      suggested: ['reclaimed-wood', 'custom-stone', 'terrazzo'],
+    },
   };
 
   return guidance[tier] || guidance['mid'];
@@ -909,12 +1075,15 @@ function generateFlooringGuidance(tier) {
  */
 function generateLightingGuidance(tier) {
   const guidance = {
-    'entry': { quality: 'basic', suggested: ['builder-grade', 'led-strip-basic'] },
-    'budget': { quality: 'value', suggested: ['led-under-cabinet', 'basic-pendants'] },
-    'mid': { quality: 'mid-range', suggested: ['led-system', 'decorative-pendants'] },
+    entry: { quality: 'basic', suggested: ['builder-grade', 'led-strip-basic'] },
+    budget: { quality: 'value', suggested: ['led-under-cabinet', 'basic-pendants'] },
+    mid: { quality: 'mid-range', suggested: ['led-system', 'decorative-pendants'] },
     'mid-high': { quality: 'premium', suggested: ['layered-lighting', 'designer-fixtures'] },
-    'luxury': { quality: 'luxury', suggested: ['custom-design', 'smart-system'] },
-    'ultra-luxury': { quality: 'bespoke', suggested: ['architectural-lighting', 'artist-fixtures'] }
+    luxury: { quality: 'luxury', suggested: ['custom-design', 'smart-system'] },
+    'ultra-luxury': {
+      quality: 'bespoke',
+      suggested: ['architectural-lighting', 'artist-fixtures'],
+    },
   };
 
   return guidance[tier] || guidance['mid'];
@@ -925,12 +1094,15 @@ function generateLightingGuidance(tier) {
  */
 function generatePlumbingGuidance(tier) {
   const guidance = {
-    'entry': { quality: 'basic', suggested: ['chrome-basic', 'standard-sink'] },
-    'budget': { quality: 'value', suggested: ['chrome-quality', 'stainless-sink'] },
-    'mid': { quality: 'mid-range', suggested: ['pull-down-faucet', 'undermount-sink'] },
+    entry: { quality: 'basic', suggested: ['chrome-basic', 'standard-sink'] },
+    budget: { quality: 'value', suggested: ['chrome-quality', 'stainless-sink'] },
+    mid: { quality: 'mid-range', suggested: ['pull-down-faucet', 'undermount-sink'] },
     'mid-high': { quality: 'premium', suggested: ['touchless-faucet', 'workstation-sink'] },
-    'luxury': { quality: 'luxury', suggested: ['pot-filler', 'custom-sink'] },
-    'ultra-luxury': { quality: 'bespoke', suggested: ['designer-fixtures', 'integrated-water-systems'] }
+    luxury: { quality: 'luxury', suggested: ['pot-filler', 'custom-sink'] },
+    'ultra-luxury': {
+      quality: 'bespoke',
+      suggested: ['designer-fixtures', 'integrated-water-systems'],
+    },
   };
 
   return guidance[tier] || guidance['mid'];
@@ -952,21 +1124,22 @@ function calculateValueEngineering(analysis, responses) {
   Object.entries(VALUE_ENGINEERING).forEach(([category, savings]) => {
     const categoryBudget = allocation.dollars[category]?.target || 0;
 
-    savings.forEach(saving => {
+    savings.forEach((saving) => {
       if (categoryBudget > 0) {
         const potentialSavings = Math.round(categoryBudget * saving.percentage);
 
-        if (potentialSavings >= 500) { // Only show if saves $500+
+        if (potentialSavings >= 500) {
+          // Only show if saves $500+
           options.push({
             category,
             id: saving.saving,
             description: saving.description,
             potentialSavings: {
               amount: potentialSavings,
-              percentage: Math.round(saving.percentage * 100)
+              percentage: Math.round(saving.percentage * 100),
             },
             qualityImpact: saving.impact,
-            recommended: saving.impact === 'minimal' || saving.impact === 'low'
+            recommended: saving.impact === 'minimal' || saving.impact === 'low',
           });
         }
       }
@@ -1005,13 +1178,13 @@ function calculateROI(analysis, responses) {
       years: roiData.paybackYears,
       description: {
         en: `Typically recoups investment in ${roiData.paybackYears} years through increased home value`,
-        fr: `Récupère généralement l'investissement en ${roiData.paybackYears} ans grâce à l'augmentation de la valeur de la maison`
-      }
+        fr: `Récupère généralement l'investissement en ${roiData.paybackYears} ans grâce à l'augmentation de la valeur de la maison`,
+      },
     },
     marketNotes: {
       en: 'Kitchen renovations consistently rank among the highest ROI home improvements.',
-      fr: 'Les rénovations de cuisine se classent constamment parmi les améliorations domiciliaires au meilleur retour sur investissement.'
-    }
+      fr: 'Les rénovations de cuisine se classent constamment parmi les améliorations domiciliaires au meilleur retour sur investissement.',
+    },
   };
 }
 
@@ -1028,14 +1201,14 @@ function generateFinancingOptions(analysis, budgetAnswers) {
       type: 'cash',
       description: { en: 'Pay cash from savings', fr: 'Payer comptant à partir des économies' },
       pros: [
-        { en: 'No interest costs', fr: 'Pas de frais d\'intérêt' },
+        { en: 'No interest costs', fr: "Pas de frais d'intérêt" },
         { en: 'Possible contractor discounts', fr: 'Remises possibles des entrepreneurs' },
-        { en: 'No monthly payments', fr: 'Pas de paiements mensuels' }
+        { en: 'No monthly payments', fr: 'Pas de paiements mensuels' },
       ],
       cons: [
         { en: 'Depletes savings', fr: 'Épuise les économies' },
-        { en: 'Opportunity cost', fr: 'Coût d\'opportunité' }
-      ]
+        { en: 'Opportunity cost', fr: "Coût d'opportunité" },
+      ],
     });
   }
 
@@ -1045,14 +1218,17 @@ function generateFinancingOptions(analysis, budgetAnswers) {
       description: { en: 'Home Equity Line of Credit', fr: 'Marge de crédit hypothécaire' },
       estimatedRate: '6-9% variable',
       pros: [
-        { en: 'Lower interest rates', fr: 'Taux d\'intérêt plus bas' },
-        { en: 'Tax-deductible interest (consult CPA)', fr: 'Intérêts déductibles d\'impôt (consultez un CPA)' },
-        { en: 'Flexible draw schedule', fr: 'Calendrier de tirage flexible' }
+        { en: 'Lower interest rates', fr: "Taux d'intérêt plus bas" },
+        {
+          en: 'Tax-deductible interest (consult CPA)',
+          fr: "Intérêts déductibles d'impôt (consultez un CPA)",
+        },
+        { en: 'Flexible draw schedule', fr: 'Calendrier de tirage flexible' },
       ],
       cons: [
         { en: 'Uses home as collateral', fr: 'Utilise la maison comme garantie' },
-        { en: 'Variable rates', fr: 'Taux variables' }
-      ]
+        { en: 'Variable rates', fr: 'Taux variables' },
+      ],
     });
 
     options.push({
@@ -1061,12 +1237,12 @@ function generateFinancingOptions(analysis, budgetAnswers) {
       estimatedRate: '7-10% fixed',
       pros: [
         { en: 'Fixed rate and payment', fr: 'Taux et paiement fixes' },
-        { en: 'Lower rate than personal loan', fr: 'Taux plus bas qu\'un prêt personnel' }
+        { en: 'Lower rate than personal loan', fr: "Taux plus bas qu'un prêt personnel" },
       ],
       cons: [
         { en: 'Uses home as collateral', fr: 'Utilise la maison comme garantie' },
-        { en: 'Closing costs', fr: 'Frais de clôture' }
-      ]
+        { en: 'Closing costs', fr: 'Frais de clôture' },
+      ],
     });
   }
 
@@ -1077,12 +1253,12 @@ function generateFinancingOptions(analysis, budgetAnswers) {
     pros: [
       { en: 'No collateral required', fr: 'Aucune garantie requise' },
       { en: 'Quick approval', fr: 'Approbation rapide' },
-      { en: 'Fixed payments', fr: 'Paiements fixes' }
+      { en: 'Fixed payments', fr: 'Paiements fixes' },
     ],
     cons: [
-      { en: 'Higher interest rates', fr: 'Taux d\'intérêt plus élevés' },
-      { en: 'Shorter terms', fr: 'Termes plus courts' }
-    ]
+      { en: 'Higher interest rates', fr: "Taux d'intérêt plus élevés" },
+      { en: 'Shorter terms', fr: 'Termes plus courts' },
+    ],
   });
 
   return options;
@@ -1096,23 +1272,32 @@ function assessBudgetRisks(analysis, responses) {
   let overallRisk = 'low';
 
   // Check for no contingency
-  if (analysis.constraints.find(c => c.id === 'no-contingency')) {
+  if (analysis.constraints.find((c) => c.id === 'no-contingency')) {
     risks.push({
       type: 'contingency',
       level: 'high',
-      description: { en: 'No buffer for unexpected costs', fr: 'Aucune marge pour les coûts imprévus' },
-      mitigation: { en: 'Build in 10-15% contingency', fr: 'Prévoir 10-15% de contingence' }
+      description: {
+        en: 'No buffer for unexpected costs',
+        fr: 'Aucune marge pour les coûts imprévus',
+      },
+      mitigation: { en: 'Build in 10-15% contingency', fr: 'Prévoir 10-15% de contingence' },
     });
     overallRisk = 'high';
   }
 
   // Check for scope-budget mismatch
-  if (analysis.warnings.find(w => w.id === 'underfunded-scope')) {
+  if (analysis.warnings.find((w) => w.id === 'underfunded-scope')) {
     risks.push({
       type: 'scope',
       level: 'high',
-      description: { en: 'Budget may not cover full renovation', fr: 'Le budget peut ne pas couvrir la rénovation complète' },
-      mitigation: { en: 'Prioritize essential elements or phase the project', fr: 'Prioriser les éléments essentiels ou échelonner le projet' }
+      description: {
+        en: 'Budget may not cover full renovation',
+        fr: 'Le budget peut ne pas couvrir la rénovation complète',
+      },
+      mitigation: {
+        en: 'Prioritize essential elements or phase the project',
+        fr: 'Prioriser les éléments essentiels ou échelonner le projet',
+      },
     });
     overallRisk = 'high';
   }
@@ -1123,8 +1308,14 @@ function assessBudgetRisks(analysis, responses) {
     risks.push({
       type: 'timeline',
       level: 'medium',
-      description: { en: 'Rush timeline may increase costs', fr: 'Un calendrier urgent peut augmenter les coûts' },
-      mitigation: { en: 'Allow 8-12 weeks for optimal pricing', fr: 'Prévoir 8-12 semaines pour un prix optimal' }
+      description: {
+        en: 'Rush timeline may increase costs',
+        fr: 'Un calendrier urgent peut augmenter les coûts',
+      },
+      mitigation: {
+        en: 'Allow 8-12 weeks for optimal pricing',
+        fr: 'Prévoir 8-12 semaines pour un prix optimal',
+      },
     });
     if (overallRisk === 'low') overallRisk = 'medium';
   }
@@ -1133,16 +1324,29 @@ function assessBudgetRisks(analysis, responses) {
   risks.push({
     type: 'market',
     level: 'low',
-    description: { en: 'Material prices may fluctuate', fr: 'Les prix des matériaux peuvent fluctuer' },
-    mitigation: { en: 'Lock in prices early with deposits', fr: 'Fixer les prix tôt avec des dépôts' }
+    description: {
+      en: 'Material prices may fluctuate',
+      fr: 'Les prix des matériaux peuvent fluctuer',
+    },
+    mitigation: {
+      en: 'Lock in prices early with deposits',
+      fr: 'Fixer les prix tôt avec des dépôts',
+    },
   });
 
   return {
     overallRiskLevel: overallRisk,
     risks,
-    recommendation: overallRisk === 'high' ?
-      { en: 'Review budget allocation and consider adjustments before proceeding', fr: 'Revoir l\'allocation budgétaire et envisager des ajustements avant de continuer' } :
-      { en: 'Budget plan is reasonable with manageable risks', fr: 'Le plan budgétaire est raisonnable avec des risques gérables' }
+    recommendation:
+      overallRisk === 'high'
+        ? {
+            en: 'Review budget allocation and consider adjustments before proceeding',
+            fr: "Revoir l'allocation budgétaire et envisager des ajustements avant de continuer",
+          }
+        : {
+            en: 'Budget plan is reasonable with manageable risks',
+            fr: 'Le plan budgétaire est raisonnable avec des risques gérables',
+          },
   };
 }
 
@@ -1153,7 +1357,7 @@ function generateBudgetRecommendations(analysis, responses) {
   const recommendations = [];
 
   // Based on constraints
-  analysis.constraints.forEach(constraint => {
+  analysis.constraints.forEach((constraint) => {
     if (constraint.id === 'no-contingency') {
       recommendations.push({
         id: 'add-contingency',
@@ -1162,9 +1366,9 @@ function generateBudgetRecommendations(analysis, responses) {
         title: { en: 'Build Contingency Fund', fr: 'Créer un fonds de prévoyance' },
         description: {
           en: 'Reduce scope by 10-15% to create contingency. Kitchen renovations typically have unexpected costs.',
-          fr: 'Réduisez la portée de 10-15% pour créer une contingence. Les rénovations de cuisine ont généralement des coûts imprévus.'
+          fr: 'Réduisez la portée de 10-15% pour créer une contingence. Les rénovations de cuisine ont généralement des coûts imprévus.',
         },
-        impact: 'risk-reduction'
+        impact: 'risk-reduction',
       });
     }
 
@@ -1173,10 +1377,13 @@ function generateBudgetRecommendations(analysis, responses) {
         id: `alternative-${constraint.category}`,
         priority: 'high',
         type: 'material',
-        title: { en: `Consider ${constraint.category} Alternatives`, fr: `Envisagez des alternatives pour ${constraint.category}` },
+        title: {
+          en: `Consider ${constraint.category} Alternatives`,
+          fr: `Envisagez des alternatives pour ${constraint.category}`,
+        },
         description: constraint.message,
         alternatives: constraint.alternatives,
-        impact: 'budget-alignment'
+        impact: 'budget-alignment',
       });
     }
   });
@@ -1188,29 +1395,29 @@ function generateBudgetRecommendations(analysis, responses) {
       id: 'leverage-opportunity',
       priority: 'medium',
       type: 'savings',
-      title: { en: 'Potential Savings Opportunity', fr: 'Opportunité d\'économies potentielles' },
+      title: { en: 'Potential Savings Opportunity', fr: "Opportunité d'économies potentielles" },
       description: topOpportunity.message,
       potentialSavings: topOpportunity.potentialSavings,
-      impact: 'cost-savings'
+      impact: 'cost-savings',
     });
   }
 
   // Value engineering recommendation
   if (analysis.valueEngineering.length > 0) {
-    const topVE = analysis.valueEngineering.filter(ve => ve.recommended).slice(0, 3);
+    const topVE = analysis.valueEngineering.filter((ve) => ve.recommended).slice(0, 3);
     if (topVE.length > 0) {
       const totalSavings = topVE.reduce((sum, ve) => sum + ve.potentialSavings.amount, 0);
       recommendations.push({
         id: 'value-engineering',
         priority: 'medium',
         type: 'optimization',
-        title: { en: 'Value Engineering Options', fr: 'Options d\'ingénierie de valeur' },
+        title: { en: 'Value Engineering Options', fr: "Options d'ingénierie de valeur" },
         description: {
           en: `${topVE.length} low-impact changes could save approximately $${totalSavings.toLocaleString()}.`,
-          fr: `${topVE.length} changements à faible impact pourraient économiser environ ${totalSavings.toLocaleString()}$.`
+          fr: `${topVE.length} changements à faible impact pourraient économiser environ ${totalSavings.toLocaleString()}$.`,
         },
         options: topVE,
-        impact: 'cost-optimization'
+        impact: 'cost-optimization',
       });
     }
   }
@@ -1224,9 +1431,9 @@ function generateBudgetRecommendations(analysis, responses) {
       title: { en: 'Strategic Splurge Strategy', fr: 'Stratégie de dépenses stratégiques' },
       description: {
         en: 'Choose 2-3 high-impact items to invest in (visible areas like countertops or hardware) and save on hidden elements.',
-        fr: 'Choisissez 2-3 éléments à fort impact pour investir (zones visibles comme les comptoirs ou la quincaillerie) et économisez sur les éléments cachés.'
+        fr: 'Choisissez 2-3 éléments à fort impact pour investir (zones visibles comme les comptoirs ou la quincaillerie) et économisez sur les éléments cachés.',
       },
-      impact: 'value-maximization'
+      impact: 'value-maximization',
     });
   }
 
@@ -1238,21 +1445,21 @@ function generateBudgetRecommendations(analysis, responses) {
  */
 function checkBudgetFit(selection, budgetTier) {
   const tierLevels = {
-    'entry': 1,
-    'budget': 2,
-    'mid': 3,
+    entry: 1,
+    budget: 2,
+    mid: 3,
     'mid-high': 4,
-    'luxury': 5,
-    'ultra-luxury': 6
+    luxury: 5,
+    'ultra-luxury': 6,
   };
 
   const selectionLevels = {
-    'economy': 1,
-    'basic': 2,
-    'standard': 3,
-    'premium': 4,
-    'luxury': 5,
-    'bespoke': 6
+    economy: 1,
+    basic: 2,
+    standard: 3,
+    premium: 4,
+    luxury: 5,
+    bespoke: 6,
   };
 
   const budgetLevel = tierLevels[budgetTier] || 3;
@@ -1262,12 +1469,20 @@ function checkBudgetFit(selection, budgetTier) {
     fits: selectionLevel <= budgetLevel,
     overBudget: selectionLevel > budgetLevel,
     underBudget: selectionLevel < budgetLevel - 1,
-    suggestion: selectionLevel > budgetLevel
-      ? { en: `Consider ${Object.keys(selectionLevels).find(k => selectionLevels[k] === budgetLevel)} option`, fr: `Envisagez l'option ${Object.keys(selectionLevels).find(k => selectionLevels[k] === budgetLevel)}` }
-      : null,
-    upgradeOpportunity: selectionLevel < budgetLevel - 1
-      ? { en: 'Budget allows for upgrade in this category', fr: 'Le budget permet une amélioration dans cette catégorie' }
-      : null
+    suggestion:
+      selectionLevel > budgetLevel
+        ? {
+            en: `Consider ${Object.keys(selectionLevels).find((k) => selectionLevels[k] === budgetLevel)} option`,
+            fr: `Envisagez l'option ${Object.keys(selectionLevels).find((k) => selectionLevels[k] === budgetLevel)}`,
+          }
+        : null,
+    upgradeOpportunity:
+      selectionLevel < budgetLevel - 1
+        ? {
+            en: 'Budget allows for upgrade in this category',
+            fr: 'Le budget permet une amélioration dans cette catégorie',
+          }
+        : null,
   };
 }
 
@@ -1291,5 +1506,5 @@ module.exports = {
   ALLOCATION_TEMPLATES,
   COST_PER_SQFT,
   ROI_ESTIMATES,
-  VALUE_ENGINEERING
+  VALUE_ENGINEERING,
 };

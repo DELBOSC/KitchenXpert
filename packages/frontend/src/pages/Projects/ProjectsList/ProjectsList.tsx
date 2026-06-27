@@ -65,8 +65,13 @@ const ProjectsList: React.FC = () => {
         setProjects(data.projects);
         setPagination(data.pagination);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
-        const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : t('common.unexpectedError', 'An unexpected error occurred');
         setError(errorMessage);
       } finally {
         setIsLoading(false);
@@ -107,7 +112,11 @@ const ProjectsList: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')} />
+        <div
+          className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
+          role="status"
+          aria-label={t('common.loading', 'Loading')}
+        />
       </div>
     );
   }
@@ -116,10 +125,15 @@ const ProjectsList: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4 dark:bg-gray-900">
         <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md w-full">
-          <h2 className="text-red-800 dark:text-red-400 text-lg font-semibold mb-2">{t('projects.errorLoading')}</h2>
+          <h2 className="text-red-800 dark:text-red-400 text-lg font-semibold mb-2">
+            {t('projects.errorLoading')}
+          </h2>
           <p className="text-red-600 dark:text-red-300">{error}</p>
           <button
-            onClick={() => { setError(null); setRetryCount((c) => c + 1); }}
+            onClick={() => {
+              setError(null);
+              setRetryCount((c) => c + 1);
+            }}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
           >
             {t('common.tryAgain')}
@@ -135,17 +149,22 @@ const ProjectsList: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('projects.title')}</h1>
-            <p className="mt-1 text-gray-500 dark:text-gray-400">
-              {t('projects.subtitle')}
-            </p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {t('projects.title')}
+            </h1>
+            <p className="mt-1 text-gray-500 dark:text-gray-400">{t('projects.subtitle')}</p>
           </div>
           <button
             onClick={() => navigate('/projects/create')}
             className="mt-4 sm:mt-0 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
             </svg>
             {t('projects.newProject')}
           </button>
@@ -168,7 +187,13 @@ const ProjectsList: React.FC = () => {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   aria-label={t('common.clearSearch', 'Clear search')}
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -186,10 +211,22 @@ const ProjectsList: React.FC = () => {
         {/* Projects Grid */}
         {projects.length === 0 ? (
           <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
-            <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
             </svg>
-            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">{t('projects.noProjects')}</h3>
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+              {t('projects.noProjects')}
+            </h3>
             <p className="mt-2 text-gray-500 dark:text-gray-400">{t('projects.noProjectsDesc')}</p>
             <button
               onClick={() => navigate('/projects/create')}
@@ -215,13 +252,25 @@ const ProjectsList: React.FC = () => {
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800">
-                      <svg className="w-16 h-16 text-blue-400 dark:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      <svg
+                        className="w-16 h-16 text-blue-400 dark:text-blue-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                        />
                       </svg>
                     </div>
                   )}
-                  <span className={`absolute top-3 right-3 px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(project.status)}`}>
-                    {t(`projects.status.${  project.status}`)}
+                  <span
+                    className={`absolute top-3 right-3 px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(project.status)}`}
+                  >
+                    {t(`projects.status.${project.status}`)}
                   </span>
                 </div>
                 <div className="p-4">

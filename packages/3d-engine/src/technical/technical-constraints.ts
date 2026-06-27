@@ -58,43 +58,46 @@ export interface ItemDisplacementCostResult {
  * Couleurs par type de point technique
  */
 const TYPE_COLORS: Record<TechnicalPointType, number> = {
-  water: 0x3b82f6,      // bleu
-  electric: 0xeab308,   // jaune
-  gas: 0xef4444,        // rouge
+  water: 0x3b82f6, // bleu
+  electric: 0xeab308, // jaune
+  gas: 0xef4444, // rouge
   ventilation: 0x9ca3af, // gris
 };
 
 /**
  * Regles de cout de deplacement
  */
-const DISPLACEMENT_COSTS: Record<TechnicalPointSubtype, { baseCost: number; perMeterCost: number; freeDistance: number }> = {
-  water_cold:      { baseCost: 150, perMeterCost: 100, freeDistance: 2.0 },
-  water_hot:       { baseCost: 150, perMeterCost: 100, freeDistance: 2.0 },
-  water_drain:     { baseCost: 200, perMeterCost: 150, freeDistance: 1.5 },
-  electric_16a:    { baseCost: 150, perMeterCost: 0,   freeDistance: Infinity },
-  electric_20a:    { baseCost: 250, perMeterCost: 0,   freeDistance: Infinity },
-  electric_32a:    { baseCost: 300, perMeterCost: 0,   freeDistance: Infinity },
-  gas_inlet:       { baseCost: 400, perMeterCost: 200, freeDistance: 1.0 },
-  vmc_duct:        { baseCost: 350, perMeterCost: 0,   freeDistance: Infinity },
-  extraction_duct: { baseCost: 350, perMeterCost: 0,   freeDistance: Infinity },
+const DISPLACEMENT_COSTS: Record<
+  TechnicalPointSubtype,
+  { baseCost: number; perMeterCost: number; freeDistance: number }
+> = {
+  water_cold: { baseCost: 150, perMeterCost: 100, freeDistance: 2.0 },
+  water_hot: { baseCost: 150, perMeterCost: 100, freeDistance: 2.0 },
+  water_drain: { baseCost: 200, perMeterCost: 150, freeDistance: 1.5 },
+  electric_16a: { baseCost: 150, perMeterCost: 0, freeDistance: Infinity },
+  electric_20a: { baseCost: 250, perMeterCost: 0, freeDistance: Infinity },
+  electric_32a: { baseCost: 300, perMeterCost: 0, freeDistance: Infinity },
+  gas_inlet: { baseCost: 400, perMeterCost: 200, freeDistance: 1.0 },
+  vmc_duct: { baseCost: 350, perMeterCost: 0, freeDistance: Infinity },
+  extraction_duct: { baseCost: 350, perMeterCost: 0, freeDistance: Infinity },
 };
 
 /**
  * Mapping type d'item cuisine → types de points techniques requis
  */
 const ITEM_TECHNICAL_NEEDS: Record<string, TechnicalPointSubtype[]> = {
-  sink:         ['water_cold', 'water_hot', 'water_drain'],
-  sink_base:    ['water_cold', 'water_hot', 'water_drain'],
-  dishwasher:   ['water_cold', 'water_drain', 'electric_16a'],
-  cooktop:      ['electric_32a'],
-  stove:        ['gas_inlet'],
-  hob:          ['electric_32a'],
-  hood:         ['electric_16a', 'extraction_duct'],
-  range_hood:   ['electric_16a', 'extraction_duct'],
+  sink: ['water_cold', 'water_hot', 'water_drain'],
+  sink_base: ['water_cold', 'water_hot', 'water_drain'],
+  dishwasher: ['water_cold', 'water_drain', 'electric_16a'],
+  cooktop: ['electric_32a'],
+  stove: ['gas_inlet'],
+  hob: ['electric_32a'],
+  hood: ['electric_16a', 'extraction_duct'],
+  range_hood: ['electric_16a', 'extraction_duct'],
   refrigerator: ['electric_16a'],
-  fridge:       ['electric_16a'],
-  oven:         ['electric_20a'],
-  microwave:    ['electric_16a'],
+  fridge: ['electric_16a'],
+  oven: ['electric_20a'],
+  microwave: ['electric_16a'],
 };
 
 /**
@@ -158,7 +161,10 @@ export class TechnicalConstraints {
 
   // --- Queries ---
 
-  findNearestPoint(position: THREE.Vector3, type?: TechnicalPointType): { point: TechnicalPoint; distance: number } | null {
+  findNearestPoint(
+    position: THREE.Vector3,
+    type?: TechnicalPointType
+  ): { point: TechnicalPoint; distance: number } | null {
     let nearest: TechnicalPoint | null = null;
     let minDist = Infinity;
 
@@ -174,7 +180,10 @@ export class TechnicalConstraints {
     return nearest ? { point: nearest, distance: minDist } : null;
   }
 
-  findNearestPointBySubtype(position: THREE.Vector3, subtype: TechnicalPointSubtype): { point: TechnicalPoint; distance: number } | null {
+  findNearestPointBySubtype(
+    position: THREE.Vector3,
+    subtype: TechnicalPointSubtype
+  ): { point: TechnicalPoint; distance: number } | null {
     let nearest: TechnicalPoint | null = null;
     let minDist = Infinity;
 
@@ -190,7 +199,11 @@ export class TechnicalConstraints {
     return nearest ? { point: nearest, distance: minDist } : null;
   }
 
-  getPointsInRadius(position: THREE.Vector3, radius: number, type?: TechnicalPointType): TechnicalPoint[] {
+  getPointsInRadius(
+    position: THREE.Vector3,
+    radius: number,
+    type?: TechnicalPointType
+  ): TechnicalPoint[] {
     return this.getAllPoints().filter((p) => {
       if (type && p.type !== type) return false;
       return position.distanceTo(p.position) <= radius;
@@ -205,7 +218,12 @@ export class TechnicalConstraints {
   calculateDisplacementCost(itemPosition: THREE.Vector3, itemType: string): DisplacementCost {
     const needs = ITEM_TECHNICAL_NEEDS[itemType];
     if (!needs || needs.length === 0) {
-      return { cost: 0, nearestPoint: null, distance: 0, breakdown: 'Aucun raccordement technique requis.' };
+      return {
+        cost: 0,
+        nearestPoint: null,
+        distance: 0,
+        breakdown: 'Aucun raccordement technique requis.',
+      };
     }
 
     let totalCost = 0;
@@ -359,10 +377,7 @@ export class TechnicalConstraints {
       }
 
       // Find the nearest wall position for the new point
-      const wallPoint = this.findNearestWallPoint(
-        { x: itemPosition.x, z: itemPosition.z },
-        walls
-      );
+      const wallPoint = this.findNearestWallPoint({ x: itemPosition.x, z: itemPosition.z }, walls);
 
       const pointType = this.subtypeToType(subtype);
 
@@ -524,9 +539,9 @@ export class TechnicalConstraints {
     ctx.textBaseline = 'middle';
 
     const symbols: Record<TechnicalPointType, string> = {
-      water: '\u2206',      // triangle (drop-like)
-      electric: '\u26A1',   // lightning
-      gas: '\u2622',        // fire-like
+      water: '\u2206', // triangle (drop-like)
+      electric: '\u26A1', // lightning
+      gas: '\u2622', // fire-like
       ventilation: '\u25CB', // circle
     };
     ctx.fillText(symbols[point.type] || '?', 32, 32);
@@ -547,9 +562,7 @@ export class TechnicalConstraints {
   }
 
   private removeSprite(id: string): void {
-    const sprite = this.spriteGroup.children.find(
-      (c) => c.userData.technicalPointId === id
-    );
+    const sprite = this.spriteGroup.children.find((c) => c.userData.technicalPointId === id);
     if (sprite) {
       if (sprite instanceof THREE.Sprite) {
         sprite.material.dispose();

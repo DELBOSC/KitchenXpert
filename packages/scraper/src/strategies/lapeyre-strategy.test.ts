@@ -9,12 +9,14 @@ import type { ApiAdapter } from '../adapters/api-adapter';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const discovery = JSON.parse(readFileSync(join(here, '__fixtures__/lapeyre-sample.json'), 'utf8'));
-const v2detail = JSON.parse(readFileSync(join(here, '__fixtures__/lapeyre-v2-detail.json'), 'utf8'));
+const v2detail = JSON.parse(
+  readFileSync(join(here, '__fixtures__/lapeyre-v2-detail.json'), 'utf8')
+);
 
 /** URL-aware mock: bySearchTerm/byId -> discovery ; /api/v2/products -> v2 detail (dims). */
 function mockApi(): ApiAdapter {
   const fetchJson = vi.fn(async (url: string) =>
-    url.includes('/api/v2/products') ? v2detail : discovery,
+    url.includes('/api/v2/products') ? v2detail : discovery
   );
   return { fetchJson } as unknown as ApiAdapter;
 }
@@ -71,11 +73,19 @@ describe('LapeyreStrategy', () => {
   });
 
   it('partial dims (2 of 3) -> confidence 0.5', async () => {
-    const partial = { contents: [{ attributes: [
-      { identifier: 'DIMENSIONS-COMMUNES-DIM-LARGEUR', values: [{ value: '60' }] },
-      { identifier: 'DIMENSIONS-COMMUNES-DIM-HAUTEUR', values: [{ value: '80' }] },
-    ] }] };
-    const api = { fetchJson: vi.fn(async (u: string) => (u.includes('/api/v2/') ? partial : discovery)) } as unknown as ApiAdapter;
+    const partial = {
+      contents: [
+        {
+          attributes: [
+            { identifier: 'DIMENSIONS-COMMUNES-DIM-LARGEUR', values: [{ value: '60' }] },
+            { identifier: 'DIMENSIONS-COMMUNES-DIM-HAUTEUR', values: [{ value: '80' }] },
+          ],
+        },
+      ],
+    };
+    const api = {
+      fetchJson: vi.fn(async (u: string) => (u.includes('/api/v2/') ? partial : discovery)),
+    } as unknown as ApiAdapter;
     const s = new LapeyreStrategy(api);
     const [first] = await s.fetchProductsByCategory('x');
     expect(first.product!.widthMm).toBe(600);
@@ -93,17 +103,23 @@ describe('LapeyreStrategy', () => {
   it('detects product types from the name (cabinet / tap)', async () => {
     const s = new LapeyreStrategy(mockApi());
     const byKey = Object.fromEntries(
-      (await s.fetchProductsByCategory('x')).map((r) => [r.product!.sku, r.product!.type]),
+      (await s.fetchProductsByCategory('x')).map((r) => [r.product!.sku, r.product!.type])
     );
     expect(byKey['FPC8937243']).toBe('cabinet');
     expect(byKey['FPC3093022']).toBe('tap');
   });
 
   it('falls back to Display price when no Offer', async () => {
-    const resp = { catalogEntryView: [
-      { partNumber: 'X1', name: 'Plan de travail compact', seo: { href: '/x-1' },
-        price: [{ usage: 'Display', currency: 'EUR', value: '249.00' }] },
-    ] };
+    const resp = {
+      catalogEntryView: [
+        {
+          partNumber: 'X1',
+          name: 'Plan de travail compact',
+          seo: { href: '/x-1' },
+          price: [{ usage: 'Display', currency: 'EUR', value: '249.00' }],
+        },
+      ],
+    };
     const s = new LapeyreStrategy(mockApiFixed(resp));
     const [r] = await s.fetchProductsByCategory('x');
     expect(r.success).toBe(true);
@@ -114,9 +130,12 @@ describe('LapeyreStrategy', () => {
   it('fetchProductByUrl extracts the trailing numeric id', async () => {
     const api = mockApiFixed({ catalogEntryView: [discovery.catalogEntryView[1]] });
     const s = new LapeyreStrategy(api);
-    const r = await s.fetchProductByUrl('https://www.lapeyre.fr/mitigeur-evier-start-cuisine-noir-1249857');
+    const r = await s.fetchProductByUrl(
+      'https://www.lapeyre.fr/mitigeur-evier-start-cuisine-noir-1249857'
+    );
     expect(r.success).toBe(true);
-    const calledUrl = (api.fetchJson as unknown as { mock: { calls: string[][] } }).mock.calls[0][0];
+    const calledUrl = (api.fetchJson as unknown as { mock: { calls: string[][] } }).mock
+      .calls[0][0];
     expect(calledUrl).toContain('/byId/1249857');
   });
 
@@ -133,7 +152,9 @@ describe('LapeyreStrategy', () => {
   });
 
   it('skips an entry without SKU (Zod fail, no throw)', async () => {
-    const s = new LapeyreStrategy(mockApiFixed({ catalogEntryView: [{ name: 'no sku', seo: { href: '/x' }, price: [] }] }));
+    const s = new LapeyreStrategy(
+      mockApiFixed({ catalogEntryView: [{ name: 'no sku', seo: { href: '/x' }, price: [] }] })
+    );
     const [r] = await s.fetchProductsByCategory('x');
     expect(r.success).toBe(false);
     expect(r.errors.join(' ')).toMatch(/sku/i);

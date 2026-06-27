@@ -33,7 +33,12 @@ jest.mock('../database/client', () => ({
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: () => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() }),
+  createModuleLogger: () => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  }),
 }));
 jest.mock('../api/middleware/error-middleware', () => ({
   asyncHandler: (fn: unknown) => fn,

@@ -57,9 +57,13 @@ describe('sandbox store', () => {
     const beforeUpdated = useSandboxStore.getState().project!.updatedAt;
 
     useSandboxStore.getState().addItem({
-      sku: 'X', label: 'X', providerCode: 'IKEA',
-      unitPrice: 1, quantity: 1,
-      position: { x: 0, y: 0, z: 0 }, rotation: 0,
+      sku: 'X',
+      label: 'X',
+      providerCode: 'IKEA',
+      unitPrice: 1,
+      quantity: 1,
+      position: { x: 0, y: 0, z: 0 },
+      rotation: 0,
       size: { w: 60, d: 60, h: 80 },
     });
 
@@ -72,8 +76,26 @@ describe('sandbox store', () => {
   it('removeItem deletes the matching id only', () => {
     useSandboxStore.getState().newProject('T', 'L_SHAPED');
     const add = useSandboxStore.getState().addItem;
-    add({ sku: 'A', label: 'A', providerCode: 'IKEA', unitPrice: 1, quantity: 1, position: { x: 0, y: 0, z: 0 }, rotation: 0, size: { w: 1, d: 1, h: 1 } });
-    add({ sku: 'B', label: 'B', providerCode: 'IKEA', unitPrice: 1, quantity: 1, position: { x: 0, y: 0, z: 0 }, rotation: 0, size: { w: 1, d: 1, h: 1 } });
+    add({
+      sku: 'A',
+      label: 'A',
+      providerCode: 'IKEA',
+      unitPrice: 1,
+      quantity: 1,
+      position: { x: 0, y: 0, z: 0 },
+      rotation: 0,
+      size: { w: 1, d: 1, h: 1 },
+    });
+    add({
+      sku: 'B',
+      label: 'B',
+      providerCode: 'IKEA',
+      unitPrice: 1,
+      quantity: 1,
+      position: { x: 0, y: 0, z: 0 },
+      rotation: 0,
+      size: { w: 1, d: 1, h: 1 },
+    });
 
     const idA = useSandboxStore.getState().project!.kitchen.items[0].id;
     useSandboxStore.getState().removeItem(idA);
@@ -103,11 +125,19 @@ describe('sandbox migration', () => {
     const store = new Map<string, string>();
     const storage: Storage = {
       getItem: (k) => store.get(k) ?? null,
-      setItem: (k, v) => { store.set(k, String(v)); },
-      removeItem: (k) => { store.delete(k); },
-      clear: () => { store.clear(); },
+      setItem: (k, v) => {
+        store.set(k, String(v));
+      },
+      removeItem: (k) => {
+        store.delete(k);
+      },
+      clear: () => {
+        store.clear();
+      },
       key: (i) => Array.from(store.keys())[i] ?? null,
-      get length() { return store.size; },
+      get length() {
+        return store.size;
+      },
     };
     const originalLocalStorage = window.localStorage;
     Object.defineProperty(window, 'localStorage', { value: storage, configurable: true });
@@ -118,7 +148,13 @@ describe('sandbox migration', () => {
         state: {
           project: {
             name: 'PersistedTest',
-            kitchen: { name: 'PersistedTest', layout: 'L_SHAPED', widthCm: 400, depthCm: 350, items: [] },
+            kitchen: {
+              name: 'PersistedTest',
+              layout: 'L_SHAPED',
+              widthCm: 400,
+              depthCm: 350,
+              items: [],
+            },
             createdAt: 1700000000000,
             updatedAt: 1700000000000,
           },
@@ -129,7 +165,10 @@ describe('sandbox migration', () => {
       const fromStorage = readPersistedSandbox();
       expect(fromStorage?.name).toBe('PersistedTest');
     } finally {
-      Object.defineProperty(window, 'localStorage', { value: originalLocalStorage, configurable: true });
+      Object.defineProperty(window, 'localStorage', {
+        value: originalLocalStorage,
+        configurable: true,
+      });
     }
   });
 
@@ -140,7 +179,7 @@ describe('sandbox migration', () => {
       JSON.stringify({
         version: SCHEMA_VERSION + 98,
         state: { project: { name: 'from-future' } },
-      }),
+      })
     );
 
     // Re-import to trigger rehydration. In jsdom we can't easily reload

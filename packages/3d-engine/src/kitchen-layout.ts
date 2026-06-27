@@ -6,7 +6,7 @@ import { KitchenShape, KitchenDimensions } from '@kitchenxpert/common';
  */
 export interface AnchorPoint {
   position: THREE.Vector3;
-  normal: THREE.Vector3;  // Direction normale au mur
+  normal: THREE.Vector3; // Direction normale au mur
   wallId: string;
   type: 'wall' | 'corner' | 'island';
 }
@@ -19,7 +19,7 @@ export interface KitchenLayoutResult {
   floor: THREE.Mesh;
   ceiling?: THREE.Mesh;
   anchorPoints: AnchorPoint[];
-  workingZone?: THREE.Box3;  // Zone de travail principale
+  workingZone?: THREE.Box3; // Zone de travail principale
 }
 
 /**
@@ -33,10 +33,7 @@ export class KitchenLayoutGenerator {
   /**
    * Génère un layout de cuisine complet
    */
-  generateLayout(
-    shape: KitchenShape,
-    dimensions: KitchenDimensions
-  ): KitchenLayoutResult {
+  generateLayout(shape: KitchenShape, dimensions: KitchenDimensions): KitchenLayoutResult {
     // Convertir les dimensions en mètres
     const width = this.convertToMeters(dimensions.width, dimensions.unit);
     const depth = this.convertToMeters(dimensions.length, dimensions.unit);
@@ -78,7 +75,7 @@ export class KitchenLayoutGenerator {
     // Points d'ancrage le long du mur pour placer les meubles
     const numAnchors = Math.floor(width / 0.6); // Un point tous les 60cm
     for (let i = 0; i < numAnchors; i++) {
-      const x = (-width / 2) + (i * (width / numAnchors)) + (width / numAnchors / 2);
+      const x = -width / 2 + i * (width / numAnchors) + width / numAnchors / 2;
       anchorPoints.push({
         position: new THREE.Vector3(x, 0, -depth / 2 + 0.6), // 60cm devant le mur
         normal: new THREE.Vector3(0, 0, 1), // Pointe vers l'avant
@@ -116,7 +113,7 @@ export class KitchenLayoutGenerator {
     // Points d'ancrage mur du fond
     const numAnchorsBack = Math.floor(width / 0.6);
     for (let i = 0; i < numAnchorsBack; i++) {
-      const x = (-width / 2) + (i * (width / numAnchorsBack)) + (width / numAnchorsBack / 2);
+      const x = -width / 2 + i * (width / numAnchorsBack) + width / numAnchorsBack / 2;
       anchorPoints.push({
         position: new THREE.Vector3(x, 0, -depth / 2 + 0.6),
         normal: new THREE.Vector3(0, 0, 1),
@@ -128,7 +125,7 @@ export class KitchenLayoutGenerator {
     // Points d'ancrage mur de gauche
     const numAnchorsLeft = Math.floor(depth / 0.6);
     for (let i = 0; i < numAnchorsLeft; i++) {
-      const z = (-depth / 2) + (i * (depth / numAnchorsLeft)) + (depth / numAnchorsLeft / 2);
+      const z = -depth / 2 + i * (depth / numAnchorsLeft) + depth / numAnchorsLeft / 2;
       anchorPoints.push({
         position: new THREE.Vector3(-width / 2 + 0.6, 0, z),
         normal: new THREE.Vector3(1, 0, 0),
@@ -180,7 +177,7 @@ export class KitchenLayoutGenerator {
     // Ancres mur du fond
     const numAnchorsBack = Math.floor(width / 0.6);
     for (let i = 0; i < numAnchorsBack; i++) {
-      const x = (-width / 2) + (i * (width / numAnchorsBack)) + (width / numAnchorsBack / 2);
+      const x = -width / 2 + i * (width / numAnchorsBack) + width / numAnchorsBack / 2;
       anchorPoints.push({
         position: new THREE.Vector3(x, 0, -depth / 2 + 0.6),
         normal: new THREE.Vector3(0, 0, 1),
@@ -192,7 +189,7 @@ export class KitchenLayoutGenerator {
     // Ancres mur de gauche
     const numAnchorsLeft = Math.floor(depth / 0.6);
     for (let i = 0; i < numAnchorsLeft; i++) {
-      const z = (-depth / 2) + (i * (depth / numAnchorsLeft)) + (depth / numAnchorsLeft / 2);
+      const z = -depth / 2 + i * (depth / numAnchorsLeft) + depth / numAnchorsLeft / 2;
       anchorPoints.push({
         position: new THREE.Vector3(-width / 2 + 0.6, 0, z),
         normal: new THREE.Vector3(1, 0, 0),
@@ -203,7 +200,7 @@ export class KitchenLayoutGenerator {
 
     // Ancres mur de droite
     for (let i = 0; i < numAnchorsLeft; i++) {
-      const z = (-depth / 2) + (i * (depth / numAnchorsLeft)) + (depth / numAnchorsLeft / 2);
+      const z = -depth / 2 + i * (depth / numAnchorsLeft) + depth / numAnchorsLeft / 2;
       anchorPoints.push({
         position: new THREE.Vector3(width / 2 - 0.6, 0, z),
         normal: new THREE.Vector3(-1, 0, 0),

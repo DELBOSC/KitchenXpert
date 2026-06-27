@@ -17,12 +17,18 @@ describe('buildTypeWhereOr (Phase 2.4 — filtre par category.slug)', () => {
     expect(slugsOf(buildTypeWhereOr('hood'))).toEqual(['electromenager-cuisson']);
     expect(slugsOf(buildTypeWhereOr('refrigerator'))).toEqual(['electromenager-froid']);
     expect(slugsOf(buildTypeWhereOr('appliance')).sort()).toEqual([
-      'electromenager-cuisson', 'electromenager-froid', 'electromenager-lavage',
+      'electromenager-cuisson',
+      'electromenager-froid',
+      'electromenager-lavage',
     ]);
   });
 
   it('cabinet (coarse) -> bas/hauts/colonnes ; sous-types -> 1 slug', () => {
-    expect(slugsOf(buildTypeWhereOr('cabinet')).sort()).toEqual(['colonnes', 'meubles-bas', 'meubles-hauts']);
+    expect(slugsOf(buildTypeWhereOr('cabinet')).sort()).toEqual([
+      'colonnes',
+      'meubles-bas',
+      'meubles-hauts',
+    ]);
     expect(slugsOf(buildTypeWhereOr('base_cabinet'))).toEqual(['meubles-bas']);
     expect(slugsOf(buildTypeWhereOr('wall_cabinet'))).toEqual(['meubles-hauts']);
     expect(slugsOf(buildTypeWhereOr('tall_cabinet'))).toEqual(['colonnes']);
@@ -40,7 +46,11 @@ describe('buildTypeWhereOr (Phase 2.4 — filtre par category.slug)', () => {
     expect(slugsOf(buildTypeWhereOr('lave-vaisselle'))).toEqual(['electromenager-lavage']);
     expect(slugsOf(buildTypeWhereOr('frigo'))).toEqual(['electromenager-froid']);
     expect(slugsOf(buildTypeWhereOr('four'))).toEqual(['electromenager-cuisson']);
-    expect(slugsOf(buildTypeWhereOr('caisson')).sort()).toEqual(['colonnes', 'meubles-bas', 'meubles-hauts']);
+    expect(slugsOf(buildTypeWhereOr('caisson')).sort()).toEqual([
+      'colonnes',
+      'meubles-bas',
+      'meubles-hauts',
+    ]);
     expect(slugsOf(buildTypeWhereOr('plan de travail'))).toEqual(['plans-de-travail']);
     expect(slugsOf(buildTypeWhereOr('mitigeur'))).toEqual(['eviers-robinetterie']);
   });

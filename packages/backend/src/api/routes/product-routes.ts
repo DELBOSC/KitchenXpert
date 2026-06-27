@@ -244,7 +244,13 @@ router.get('/:id/compatibility', productController.checkCompatibility);
  *       403:
  *         description: Forbidden - admin only
  */
-router.post('/', authenticate, authorize(['admin']), validateBody(createProductSchema), productController.create);
+router.post(
+  '/',
+  authenticate,
+  authorize(['admin']),
+  validateBody(createProductSchema),
+  productController.create
+);
 
 /**
  * @swagger
@@ -289,7 +295,13 @@ router.post('/', authenticate, authorize(['admin']), validateBody(createProductS
  *       404:
  *         description: Product not found
  */
-router.put('/:id', authenticate, authorize(['admin']), validateBody(updateProductSchema), productController.update);
+router.put(
+  '/:id',
+  authenticate,
+  authorize(['admin']),
+  validateBody(updateProductSchema),
+  productController.update
+);
 
 /**
  * @swagger

@@ -6,7 +6,9 @@ const IV_LENGTH = 16;
 function getEncryptionKey(): Buffer {
   const key = process.env.DATA_ENCRYPTION_KEY;
   if (!key) {
-    throw new Error('[CRYPTO] DATA_ENCRYPTION_KEY environment variable is required for encrypting sensitive data');
+    throw new Error(
+      '[CRYPTO] DATA_ENCRYPTION_KEY environment variable is required for encrypting sensitive data'
+    );
   }
   // Key must be 32 bytes for AES-256
   return crypto.scryptSync(key, 'kitchenxpert-salt', 32);
@@ -61,7 +63,9 @@ export function decrypt(encryptedData: string): string {
  */
 export function isEncrypted(value: string): boolean {
   const parts = value.split(':');
-  if (parts.length !== 3 || !parts[0] || !parts[1]) {return false;}
+  if (parts.length !== 3 || !parts[0] || !parts[1]) {
+    return false;
+  }
   try {
     Buffer.from(parts[0], 'base64');
     Buffer.from(parts[1], 'base64');

@@ -52,7 +52,7 @@ export class MetricRepository {
         timestamp: {
           ...(filters.startDate && { gte: filters.startDate }),
           ...(filters.endDate && { lte: filters.endDate }),
-        }
+        },
       }),
     };
 
@@ -61,9 +61,9 @@ export class MetricRepository {
         where,
         skip,
         take: limit,
-        orderBy: { timestamp: 'desc' }
+        orderBy: { timestamp: 'desc' },
       }),
-      this.prisma.metric.count({ where })
+      this.prisma.metric.count({ where }),
     ]);
 
     return { data, total };
@@ -73,7 +73,7 @@ export class MetricRepository {
     return this.prisma.metric.findMany({
       where: { name },
       orderBy: { timestamp: 'desc' },
-      take: limit
+      take: limit,
     });
   }
 
@@ -81,7 +81,7 @@ export class MetricRepository {
     return this.prisma.metric.findMany({
       where: {
         timestamp: { gte: startDate, lte: endDate },
-        ...(name && { name })
+        ...(name && { name }),
       },
       orderBy: { timestamp: 'asc' },
       take: 10000,
@@ -97,20 +97,20 @@ export class MetricRepository {
         tags: data.tags as any,
         metadata: data.metadata as any,
         timestamp: data.timestamp || new Date(),
-      }
+      },
     });
   }
 
   async createMany(metrics: CreateMetricDto[]): Promise<{ count: number }> {
     return this.prisma.metric.createMany({
-      data: metrics.map(m => ({
+      data: metrics.map((m) => ({
         name: m.name,
         value: m.value,
         unit: m.unit,
         tags: m.tags as any,
         metadata: m.metadata as any,
         timestamp: m.timestamp || new Date(),
-      }))
+      })),
     });
   }
 
@@ -120,7 +120,7 @@ export class MetricRepository {
 
   async deleteOlderThan(date: Date): Promise<{ count: number }> {
     return this.prisma.metric.deleteMany({
-      where: { timestamp: { lt: date } }
+      where: { timestamp: { lt: date } },
     });
   }
 
@@ -132,10 +132,11 @@ export class MetricRepository {
     return this.prisma.metric.count({
       where: {
         ...(filters.name && { name: filters.name }),
-        ...(filters.startDate && filters.endDate && {
-          timestamp: { gte: filters.startDate, lte: filters.endDate }
-        }),
-      }
+        ...(filters.startDate &&
+          filters.endDate && {
+            timestamp: { gte: filters.startDate, lte: filters.endDate },
+          }),
+      },
     });
   }
 
@@ -143,9 +144,9 @@ export class MetricRepository {
     const names = await this.prisma.metric.findMany({
       select: { name: true },
       distinct: ['name'],
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
-    return names.map(n => n.name);
+    return names.map((n) => n.name);
   }
 
   // ==================== AGGREGATIONS ====================
@@ -160,7 +161,7 @@ export class MetricRepository {
       _sum: { value: true },
       _avg: { value: true },
       _min: { value: true },
-      _max: { value: true }
+      _max: { value: true },
     });
 
     return {
@@ -169,13 +170,17 @@ export class MetricRepository {
       sum: Number(result._sum.value) || 0,
       avg: Number(result._avg.value) || 0,
       min: Number(result._min.value) || 0,
-      max: Number(result._max.value) || 0
+      max: Number(result._max.value) || 0,
     };
   }
 
-  async aggregateMultiple(names: string[], startDate?: Date, endDate?: Date): Promise<AggregationResult[]> {
+  async aggregateMultiple(
+    names: string[],
+    startDate?: Date,
+    endDate?: Date
+  ): Promise<AggregationResult[]> {
     const results = await Promise.all(
-      names.map(name => this.aggregate(name, startDate, endDate))
+      names.map((name) => this.aggregate(name, startDate, endDate))
     );
     return results;
   }
@@ -183,13 +188,15 @@ export class MetricRepository {
   async getLatestValue(name: string): Promise<number | null> {
     const metric = await this.prisma.metric.findFirst({
       where: { name },
-      orderBy: { timestamp: 'desc' }
+      orderBy: { timestamp: 'desc' },
     });
     return metric ? Number(metric.value) : null;
   }
 
   async getLatestValues(names: string[]): Promise<Record<string, number | null>> {
-    if (names.length === 0) {return {};}
+    if (names.length === 0) {
+      return {};
+    }
 
     // Single query: get the latest metric for each name using distinct
     const metrics = await this.prisma.metric.findMany({
@@ -200,7 +207,7 @@ export class MetricRepository {
 
     const result: Record<string, number | null> = {};
     for (const name of names) {
-      const metric = metrics.find(m => m.name === name);
+      const metric = metrics.find((m) => m.name === name);
       result[name] = metric ? Number(metric.value) : null;
     }
     return result;
@@ -218,9 +225,13 @@ export class MetricRepository {
 
     // Group by interval
     const grouped = new Map<number, number[]>();
-    metrics.forEach(m => {
-      const intervalStart = Math.floor(m.timestamp.getTime() / (intervalMinutes * 60 * 1000)) * (intervalMinutes * 60 * 1000);
-      if (!grouped.has(intervalStart)) {grouped.set(intervalStart, []);}
+    metrics.forEach((m) => {
+      const intervalStart =
+        Math.floor(m.timestamp.getTime() / (intervalMinutes * 60 * 1000)) *
+        (intervalMinutes * 60 * 1000);
+      if (!grouped.has(intervalStart)) {
+        grouped.set(intervalStart, []);
+      }
       grouped.get(intervalStart)!.push(Number(m.value));
     });
 
@@ -229,7 +240,7 @@ export class MetricRepository {
     grouped.forEach((values, timestamp) => {
       result.push({
         timestamp: new Date(timestamp),
-        value: values.reduce((a, b) => a + b, 0) / values.length
+        value: values.reduce((a, b) => a + b, 0) / values.length,
       });
     });
 
@@ -247,7 +258,7 @@ export class MetricRepository {
       name: 'api_call',
       value: duration,
       unit: 'ms',
-      tags: { endpoint, status: String(statusCode) }
+      tags: { endpoint, status: String(statusCode) },
     });
   }
 
@@ -256,7 +267,7 @@ export class MetricRepository {
       name: 'error',
       value: 1,
       tags: { type },
-      metadata: { message }
+      metadata: { message },
     });
   }
 
@@ -264,7 +275,7 @@ export class MetricRepository {
     return this.create({
       name: 'user_action',
       value: 1,
-      tags: { action, ...(userId && { userId }) }
+      tags: { action, ...(userId && { userId }) },
     });
   }
 
@@ -280,14 +291,14 @@ export class MetricRepository {
     const [pageViews, apiCallsAgg, errors] = await Promise.all([
       this.count({ name: 'page_view', startDate, endDate: new Date() }),
       this.aggregate('api_call', startDate, new Date()),
-      this.count({ name: 'error', startDate, endDate: new Date() })
+      this.count({ name: 'error', startDate, endDate: new Date() }),
     ]);
 
     return {
       pageViews,
       apiCalls: apiCallsAgg.count,
       avgResponseTime: apiCallsAgg.avg,
-      errors
+      errors,
     };
   }
 }

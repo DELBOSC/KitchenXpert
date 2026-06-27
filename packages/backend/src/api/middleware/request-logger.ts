@@ -23,7 +23,15 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const SKIP_PATHS = new Set(['/health', '/api/v1/health']);
 
 /** Query parameter keys whose values should be redacted */
-const SENSITIVE_PARAMS = new Set(['token', 'key', 'secret', 'password', 'apikey', 'api_key', 'authorization']);
+const SENSITIVE_PARAMS = new Set([
+  'token',
+  'key',
+  'secret',
+  'password',
+  'apikey',
+  'api_key',
+  'authorization',
+]);
 
 /**
  * Redact sensitive query parameters from the URL for logging.
@@ -53,8 +61,12 @@ function redactUrl(originalUrl: string): string {
  * Get the appropriate winston log level based on HTTP status code.
  */
 function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
-  if (statusCode >= 500) {return 'error';}
-  if (statusCode >= 400) {return 'warn';}
+  if (statusCode >= 500) {
+    return 'error';
+  }
+  if (statusCode >= 400) {
+    return 'warn';
+  }
   return 'info';
 }
 
@@ -62,8 +74,12 @@ function getLogLevel(statusCode: number): 'error' | 'warn' | 'info' {
  * Format bytes into a human-readable string for dev output.
  */
 function formatBytes(bytes: number): string {
-  if (bytes < 1024) {return `${bytes}B`;}
-  if (bytes < 1024 * 1024) {return `${(bytes / 1024).toFixed(1)}KB`;}
+  if (bytes < 1024) {
+    return `${bytes}B`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)}KB`;
+  }
   return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
 }
 
@@ -71,10 +87,18 @@ function formatBytes(bytes: number): string {
  * Get color code for status in dev format.
  */
 function statusColor(status: number): string {
-  if (status >= 500) {return '\x1b[31m';} // red
-  if (status >= 400) {return '\x1b[33m';} // yellow
-  if (status >= 300) {return '\x1b[36m';} // cyan
-  if (status >= 200) {return '\x1b[32m';} // green
+  if (status >= 500) {
+    return '\x1b[31m';
+  } // red
+  if (status >= 400) {
+    return '\x1b[33m';
+  } // yellow
+  if (status >= 300) {
+    return '\x1b[36m';
+  } // cyan
+  if (status >= 200) {
+    return '\x1b[32m';
+  } // green
   return '\x1b[0m';
 }
 
@@ -102,7 +126,10 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
   const originalEnd = res.end;
 
   // Override res.end to log after the response is sent
-  res.end = function (this: Response, ...args: Parameters<Response['end']>): ReturnType<Response['end']> {
+  res.end = function (
+    this: Response,
+    ...args: Parameters<Response['end']>
+  ): ReturnType<Response['end']> {
     // Restore original end
     res.end = originalEnd;
 
@@ -148,11 +175,12 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
     } else {
       // Colored dev-friendly format for development
       const sc = statusColor(statusCode);
-      const timeStr = responseTime < 100
-        ? `${DIM}${responseTime}ms${RESET}`
-        : responseTime < 1000
-          ? `\x1b[33m${responseTime}ms${RESET}`
-          : `\x1b[31m${responseTime}ms${RESET}`;
+      const timeStr =
+        responseTime < 100
+          ? `${DIM}${responseTime}ms${RESET}`
+          : responseTime < 1000
+            ? `\x1b[33m${responseTime}ms${RESET}`
+            : `\x1b[31m${responseTime}ms${RESET}`;
 
       const contentStr = contentLength > 0 ? ` ${DIM}${formatBytes(contentLength)}${RESET}` : '';
       const reqIdStr = requestId ? ` ${DIM}[${requestId}]${RESET}` : '';

@@ -3,13 +3,7 @@
  * Form field wrapper with label, error, and helper text
  */
 
-import React, {
-  forwardRef,
-  useEffect,
-  useId,
-  type ReactNode,
-  type HTMLAttributes,
-} from 'react';
+import React, { forwardRef, useEffect, useId, type ReactNode, type HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { useOptionalFormContext, type ValidationRule } from '../Form/Form';
 
@@ -75,7 +69,11 @@ const stateColors = {
 const FieldWrapper = styled.div<{ $fullWidth: boolean }>`
   display: flex;
   flex-direction: column;
-  ${({ $fullWidth }) => $fullWidth && css`width: 100%;`}
+  ${({ $fullWidth }) =>
+    $fullWidth &&
+    css`
+      width: 100%;
+    `}
 `;
 
 const LabelWrapper = styled.div<{ $size: FormFieldSize }>`
@@ -135,31 +133,14 @@ const CharacterCount = styled.span<{ $isOver: boolean }>`
 
 // Icon SVGs
 const ErrorIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="2" />
-    <path
-      d="M8 4.5V8.5M8 10.5V11"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
+    <path d="M8 4.5V8.5M8 10.5V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
 const SuccessIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="2" />
     <path
       d="M5 8L7 10L11 6"
@@ -172,25 +153,14 @@ const SuccessIcon = () => (
 );
 
 const WarningIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M8 1.5L14.5 13.5H1.5L8 1.5Z"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinejoin="round"
     />
-    <path
-      d="M8 6V9M8 11V11.5"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
+    <path d="M8 6V9M8 11V11.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
@@ -263,11 +233,7 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
     const enhancedChildren = React.Children.map(children, (child) => {
       if (React.isValidElement(child)) {
         const childProps: Record<string, unknown> = {
-          'aria-describedby': displayHelperText
-            ? errorText
-              ? errorId
-              : helperId
-            : undefined,
+          'aria-describedby': displayHelperText ? (errorText ? errorId : helperId) : undefined,
           'aria-invalid': state === 'error' ? true : undefined,
           'aria-required': required ? true : undefined,
         };
@@ -282,7 +248,10 @@ export const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
         }
 
         // Pass state to child if it accepts it
-        if ('state' in (child.props as object) || child.type && typeof child.type === 'function') {
+        if (
+          'state' in (child.props as object) ||
+          (child.type && typeof child.type === 'function')
+        ) {
           childProps.state = state;
         }
 
@@ -330,10 +299,7 @@ export interface CharacterCounterProps {
   max: number;
 }
 
-export const CharacterCounter: React.FC<CharacterCounterProps> = ({
-  current,
-  max,
-}) => {
+export const CharacterCounter: React.FC<CharacterCounterProps> = ({ current, max }) => {
   const isOver = current > max;
   return (
     <CharacterCount $isOver={isOver}>

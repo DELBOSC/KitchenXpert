@@ -55,22 +55,13 @@ export class BaseValidator implements IValidator {
 
     // Validation des dimensions
     if (item.dimensions) {
-      if (
-        typeof item.dimensions.width !== 'number' ||
-        item.dimensions.width <= 0
-      ) {
+      if (typeof item.dimensions.width !== 'number' || item.dimensions.width <= 0) {
         errors.push('dimensions.width must be a positive number');
       }
-      if (
-        typeof item.dimensions.depth !== 'number' ||
-        item.dimensions.depth <= 0
-      ) {
+      if (typeof item.dimensions.depth !== 'number' || item.dimensions.depth <= 0) {
         errors.push('dimensions.depth must be a positive number');
       }
-      if (
-        typeof item.dimensions.height !== 'number' ||
-        item.dimensions.height <= 0
-      ) {
+      if (typeof item.dimensions.height !== 'number' || item.dimensions.height <= 0) {
         errors.push('dimensions.height must be a positive number');
       }
     }
@@ -92,9 +83,7 @@ export class BaseValidator implements IValidator {
     }
 
     // Validation du status
-    if (
-      !['available', 'out_of_stock', 'discontinued'].includes(item.status)
-    ) {
+    if (!['available', 'out_of_stock', 'discontinued'].includes(item.status)) {
       errors.push('status must be available, out_of_stock, or discontinued');
     }
 

@@ -323,8 +323,7 @@ beforeAll(() => {
     const message = args[0];
     if (
       typeof message === 'string' &&
-      (message.includes('componentWillReceiveProps') ||
-        message.includes('componentWillMount'))
+      (message.includes('componentWillReceiveProps') || message.includes('componentWillMount'))
     ) {
       return;
     }
@@ -354,10 +353,7 @@ expect.extend({
    */
   toBeValidKitchenDimension(received, min = 0, max = 10000) {
     const pass =
-      typeof received === 'number' &&
-      !Number.isNaN(received) &&
-      received >= min &&
-      received <= max;
+      typeof received === 'number' && !Number.isNaN(received) && received >= min && received <= max;
 
     return {
       pass,

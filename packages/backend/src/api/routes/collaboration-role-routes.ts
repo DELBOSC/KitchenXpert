@@ -68,7 +68,12 @@ const updateRoleSchema = z.object({
  *       404:
  *         description: Kitchen not found
  */
-router.post('/invite', authenticate, validateBody(inviteSchema), collaborationRoleController.invite);
+router.post(
+  '/invite',
+  authenticate,
+  validateBody(inviteSchema),
+  collaborationRoleController.invite
+);
 
 /**
  * @swagger
@@ -189,7 +194,12 @@ router.get('/members/:kitchenId', authenticate, collaborationRoleController.getM
  *       404:
  *         description: Invite not found
  */
-router.put('/:inviteId', authenticate, validateBody(updateRoleSchema), collaborationRoleController.updateRole);
+router.put(
+  '/:inviteId',
+  authenticate,
+  validateBody(updateRoleSchema),
+  collaborationRoleController.updateRole
+);
 
 /**
  * @swagger

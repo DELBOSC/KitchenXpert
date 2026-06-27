@@ -11,9 +11,7 @@ module.exports = {
     // NodeNext requires `.js` on relative imports — strip it so jest resolves to `.ts`.
     '^(\\.\\.?\\/.+)\\.js$': '$1',
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(@kitchenxpert)/)',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!(@kitchenxpert)/)'],
   setupFiles: ['<rootDir>/src/test/env.ts'],
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
   collectCoverageFrom: [

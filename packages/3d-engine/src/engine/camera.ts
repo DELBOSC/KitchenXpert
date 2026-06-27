@@ -4,9 +4,9 @@ import * as THREE from 'three';
  * Types de caméra prédéfinis pour la visualisation de cuisine
  */
 export enum CameraPreset {
-  TOP_VIEW = 'top',           // Vue du dessus (plan 2D)
-  ISOMETRIC = 'isometric',    // Vue isométrique
-  FRONT = 'front',            // Vue de face
+  TOP_VIEW = 'top', // Vue du dessus (plan 2D)
+  ISOMETRIC = 'isometric', // Vue isométrique
+  FRONT = 'front', // Vue de face
   PERSPECTIVE = 'perspective', // Vue perspective libre
 }
 
@@ -31,10 +31,7 @@ export class KitchenCamera {
   private savedPosition: THREE.Vector3 | null = null;
   private savedTarget: THREE.Vector3 | null = null;
 
-  constructor(
-    container: HTMLElement,
-    config: CameraConfig = {}
-  ) {
+  constructor(container: HTMLElement, config: CameraConfig = {}) {
     this.aspect = container.clientWidth / container.clientHeight;
 
     // Paramètres par défaut
@@ -79,11 +76,7 @@ export class KitchenCamera {
       case CameraPreset.ISOMETRIC:
         // Vue isométrique - classique pour les cuisines
         const isoDistance = maxDim * 1.5;
-        this.camera.position.set(
-          centerX + isoDistance,
-          isoDistance * 0.8,
-          centerZ + isoDistance
-        );
+        this.camera.position.set(centerX + isoDistance, isoDistance * 0.8, centerZ + isoDistance);
         this.target.set(centerX, 0, centerZ);
         break;
 
@@ -95,11 +88,7 @@ export class KitchenCamera {
 
       case CameraPreset.PERSPECTIVE:
         // Vue perspective libre
-        this.camera.position.set(
-          centerX + maxDim * 0.8,
-          maxDim * 0.5,
-          centerZ + maxDim * 0.8
-        );
+        this.camera.position.set(centerX + maxDim * 0.8, maxDim * 0.5, centerZ + maxDim * 0.8);
         this.target.set(centerX, maxDim * 0.3, centerZ);
         break;
     }

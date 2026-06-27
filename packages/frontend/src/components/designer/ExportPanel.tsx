@@ -3,13 +3,18 @@ import autoTable from 'jspdf-autotable';
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-
-import { GLTFExporterUtil, DXFExporter, IFCExporter, CNCExporter, type KitchenEngine , type KitchenSceneData } from '@kitchenxpert/3d-engine';
+import {
+  GLTFExporterUtil,
+  DXFExporter,
+  IFCExporter,
+  CNCExporter,
+  type KitchenEngine,
+  type KitchenSceneData,
+} from '@kitchenxpert/3d-engine';
 
 import { PDFQuoteGenerator } from '../../services/pdf-quote-generator';
 
 import type * as THREE from 'three';
-
 
 interface ExportPanelProps {
   engine: KitchenEngine | null;
@@ -32,7 +37,11 @@ const RESOLUTION_OPTIONS: ResolutionOption[] = [
   { label: '1080 x 1080 (Square)', width: 1080, height: 1080 },
 ];
 
-export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProps): React.ReactElement | null {
+export default function ExportPanel({
+  engine,
+  isOpen,
+  onClose,
+}: ExportPanelProps): React.ReactElement | null {
   const { t } = useTranslation();
   const [exportFormat, setExportFormat] = useState<ExportFormat>('glb');
   const [selectedResolution, setSelectedResolution] = useState(0); // index into RESOLUTION_OPTIONS
@@ -48,7 +57,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
 
   // Close on click outside
   useEffect(() => {
-    if (!isOpen) {return;}
+    if (!isOpen) {
+      return;
+    }
 
     const handleClickOutside = (e: MouseEvent) => {
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
@@ -57,7 +68,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
     };
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {onClose();}
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -71,13 +84,17 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
 
   // Auto-dismiss export status after 5 seconds
   useEffect(() => {
-    if (!exportStatus) {return;}
+    if (!exportStatus) {
+      return;
+    }
     const timer = setTimeout(() => setExportStatus(null), 5000);
     return () => clearTimeout(timer);
   }, [exportStatus]);
 
   const handleExportGLTF = useCallback(async () => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     setIsExporting(true);
     setExportStatus(null);
@@ -85,22 +102,20 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
     try {
       const exporter = exporterRef.current;
       const binary = exportFormat === 'glb';
-      await exporter.downloadGLTF(
-        engine.scene.getThreeScene(),
-        'kitchen-design',
-        binary
-      );
+      await exporter.downloadGLTF(engine.scene.getThreeScene(), 'kitchen-design', binary);
       setExportStatus(t('designer.export.success', 'Export reussi !'));
     } catch (error) {
       console.error('Export failed:', error);
-      setExportStatus(t('designer.export.error', 'Erreur lors de l\'export'));
+      setExportStatus(t('designer.export.error', "Erreur lors de l'export"));
     } finally {
       setIsExporting(false);
     }
   }, [engine, exportFormat, t]);
 
   const handleScreenshot = useCallback(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     setIsExporting(true);
     setExportStatus(null);
@@ -108,7 +123,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
     try {
       const exporter = exporterRef.current;
       const resolution = RESOLUTION_OPTIONS[selectedResolution];
-      if (!resolution) {return;}
+      if (!resolution) {
+        return;
+      }
 
       exporter.downloadScreenshot(
         engine.renderer.getThreeRenderer(),
@@ -133,7 +150,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, selectedResolution, t]);
 
   const handleDXFExport = useCallback(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     setIsExporting(true);
     setExportStatus(null);
@@ -157,14 +176,16 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       setExportStatus(t('designer.export.dxfSuccess', 'Export DXF reussi !'));
     } catch (error) {
       console.error('DXF export failed:', error);
-      setExportStatus(t('designer.export.dxfError', 'Erreur lors de l\'export DXF'));
+      setExportStatus(t('designer.export.dxfError', "Erreur lors de l'export DXF"));
     } finally {
       setIsExporting(false);
     }
   }, [engine, t]);
 
   const handleIFCExport = useCallback(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     setIsExporting(true);
     setExportStatus(null);
@@ -188,14 +209,16 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       setExportStatus(t('designer.export.ifcSuccess', 'Export IFC reussi !'));
     } catch (error) {
       console.error('IFC export failed:', error);
-      setExportStatus(t('designer.export.ifcError', 'Erreur lors de l\'export IFC'));
+      setExportStatus(t('designer.export.ifcError', "Erreur lors de l'export IFC"));
     } finally {
       setIsExporting(false);
     }
   }, [engine, pdfProjectName, t]);
 
   const handleCNCExport = useCallback(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     setIsExporting(true);
     setExportStatus(null);
@@ -216,14 +239,16 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       setExportStatus(t('designer.export.cncSuccess', 'Export CNC reussi !'));
     } catch (error) {
       console.error('CNC export failed:', error);
-      setExportStatus(t('designer.export.cncError', 'Erreur lors de l\'export CNC'));
+      setExportStatus(t('designer.export.cncError', "Erreur lors de l'export CNC"));
     } finally {
       setIsExporting(false);
     }
   }, [engine, t]);
 
   const handlePDFExport = useCallback(async () => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     setIsExporting(true);
     setExportStatus(null);
@@ -255,7 +280,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
   }, [engine, pdfProjectName, pdfClientName, t]);
 
   const handleDesignSpecsPDF = useCallback(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
 
     setIsExporting(true);
     setExportStatus(null);
@@ -269,7 +296,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       // ─── Title Page ─────────────────────────────────
       doc.setFontSize(24);
       doc.setFont('helvetica', 'bold');
-      doc.text(t('export.pdfTitle', 'Kitchen Design Specifications'), pageWidth / 2, 60, { align: 'center' });
+      doc.text(t('export.pdfTitle', 'Kitchen Design Specifications'), pageWidth / 2, 60, {
+        align: 'center',
+      });
 
       doc.setFontSize(16);
       doc.setFont('helvetica', 'normal');
@@ -318,7 +347,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
           styles: { fontSize: 10 },
           margin: { left: 14, right: 14 },
         });
-        yPos = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY + 10 || yPos + 30;
+        yPos =
+          (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY + 10 ||
+          yPos + 30;
       }
 
       // ─── Configuration Section ──────────────────────
@@ -331,7 +362,10 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       if (bp) {
         configRows.push([t('export.brand', 'Marque'), bp.name || '-']);
         if (bp.worktop) {
-          configRows.push([t('export.worktopHeight', 'Plan de travail (hauteur)'), `${((bp.worktop.surfaceY || 0) * 1000).toFixed(0)} mm`]);
+          configRows.push([
+            t('export.worktopHeight', 'Plan de travail (hauteur)'),
+            `${((bp.worktop.surfaceY || 0) * 1000).toFixed(0)} mm`,
+          ]);
         }
       }
 
@@ -345,7 +379,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
           styles: { fontSize: 10 },
           margin: { left: 14, right: 14 },
         });
-        yPos = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY + 10 || yPos + 30;
+        yPos =
+          (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY + 10 ||
+          yPos + 30;
       }
 
       // ─── Items List Table ───────────────────────────
@@ -388,7 +424,16 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
       if (items.length > 0) {
         autoTable(doc, {
           startY: yPos,
-          head: [[t('export.name', 'Nom'), t('export.type', 'Type'), t('export.brand', 'Marque'), t('export.position', 'Position'), t('export.dimensions', 'Dimensions'), t('export.price', 'Prix')]],
+          head: [
+            [
+              t('export.name', 'Nom'),
+              t('export.type', 'Type'),
+              t('export.brand', 'Marque'),
+              t('export.position', 'Position'),
+              t('export.dimensions', 'Dimensions'),
+              t('export.price', 'Prix'),
+            ],
+          ],
           body: items,
           theme: 'striped',
           headStyles: { fillColor: [59, 130, 246] },
@@ -400,7 +445,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             4: { cellWidth: 30 },
           },
         });
-        yPos = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY + 10 || yPos + 30;
+        yPos =
+          (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable?.finalY + 10 ||
+          yPos + 30;
       } else {
         doc.setFontSize(10);
         doc.setFont('helvetica', 'italic');
@@ -454,7 +501,9 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
     }
   }, [engine, pdfProjectName, t]);
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <>
@@ -473,8 +522,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              <svg
+                className="w-5 h-5 text-blue-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
               </svg>
               <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200">
                 {t('designer.export.title', 'Exporter')}
@@ -485,7 +544,13 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               aria-label={t('designer.export.close', 'Fermer')}
             >
-              <svg className="w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-5 h-5 text-gray-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -496,8 +561,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             {/* 3D Export section */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"
+                  />
                 </svg>
                 {t('designer.export.model3d', 'Modele 3D')}
               </h3>
@@ -539,12 +614,33 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               >
                 {isExporting ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
                   </svg>
                 )}
                 {t('designer.export.downloadModel', `Telecharger .${exportFormat.toUpperCase()}`)}
@@ -557,8 +653,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             {/* Screenshot section */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                  />
                   <circle cx="12" cy="13" r="3" />
                 </svg>
                 {t('designer.export.screenshot', 'Capture HD')}
@@ -589,12 +695,33 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               >
                 {isExporting ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
                     <circle cx="12" cy="13" r="3" />
                   </svg>
                 )}
@@ -608,8 +735,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             {/* DXF/CAD Export section */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4l7 7m0 0l-3 10 3-3 10-3m-10-4l7 7" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 4l7 7m0 0l-3 10 3-3 10-3m-10-4l7 7"
+                  />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 21L21 3" />
                 </svg>
                 {t('export.dxf', 'DXF (AutoCAD)')}
@@ -626,12 +763,33 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               >
                 {isExporting ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4l7 7m0 0l-3 10 3-3 10-3m-10-4l7 7" />
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 4l7 7m0 0l-3 10 3-3 10-3m-10-4l7 7"
+                    />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 21L21 3" />
                   </svg>
                 )}
@@ -645,8 +803,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             {/* IFC (BIM) Export section */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  />
                 </svg>
                 {t('export.ifc', 'IFC (BIM)')}
               </h3>
@@ -662,12 +830,33 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               >
                 {isExporting ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
                   </svg>
                 )}
                 {t('designer.export.downloadIFC', 'Telecharger .IFC')}
@@ -680,8 +869,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             {/* CNC Cut List Export section */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                  />
                 </svg>
                 {t('export.cnc', 'CNC Cut List')}
               </h3>
@@ -697,12 +896,33 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               >
                 {isExporting ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                    />
                   </svg>
                 )}
                 {t('designer.export.downloadCNC', 'Telecharger liste de decoupe')}
@@ -715,8 +935,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             {/* Design Specifications PDF section */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v6h6" />
                 </svg>
                 {t('designer.export.specsPdfTitle', 'Fiche technique PDF')}
@@ -729,12 +959,33 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               >
                 {isExporting ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v6h6" />
                   </svg>
                 )}
@@ -748,8 +999,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
             {/* PDF Quote section */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 {t('designer.export.pdfTitle', 'Devis PDF')}
               </h3>
@@ -788,12 +1049,33 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
               >
                 {isExporting ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
                   </svg>
                 )}
                 {t('designer.export.generatePDF', 'Generer devis PDF')}
@@ -826,8 +1108,18 @@ export default function ExportPanel({ engine, isOpen, onClose }: ExportPanelProp
                   className="text-current opacity-60 hover:opacity-100 flex-shrink-0"
                   aria-label={t('common.close', 'Fermer')}
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>

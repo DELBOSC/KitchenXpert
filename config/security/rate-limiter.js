@@ -16,7 +16,9 @@ const redis = require('redis');
  */
 const createRedisClient = () => {
   if (!process.env.REDIS_URL) {
-    console.warn('REDIS_URL not configured. Using memory store for rate limiting (not recommended for production)');
+    console.warn(
+      'REDIS_URL not configured. Using memory store for rate limiting (not recommended for production)'
+    );
     return null;
   }
 
@@ -30,8 +32,8 @@ const createRedisClient = () => {
             return new Error('Redis connection failed');
           }
           return Math.min(retries * 50, 500);
-        }
-      }
+        },
+      },
     });
 
     client.on('error', (err) => console.error('Redis Client Error', err));
@@ -54,7 +56,7 @@ const rateLimitHandler = (req, res) => {
     success: false,
     error: 'Too many requests',
     message: 'You have exceeded the rate limit. Please try again later.',
-    retryAfter: res.getHeader('Retry-After')
+    retryAfter: res.getHeader('Retry-After'),
   });
 };
 
@@ -68,11 +70,12 @@ const keyGenerator = (req) => {
   }
 
   // Get IP from various headers (proxy-aware)
-  const ip = req.ip
-    || req.headers['x-forwarded-for']?.split(',')[0]?.trim()
-    || req.headers['x-real-ip']
-    || req.connection.remoteAddress
-    || 'unknown';
+  const ip =
+    req.ip ||
+    req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+    req.headers['x-real-ip'] ||
+    req.connection.remoteAddress ||
+    'unknown';
 
   return `ip:${ip}`;
 };
@@ -97,7 +100,7 @@ const createRateLimiter = (options = {}) => {
     skipFailedRequests: options.skipFailedRequests || skipFailedRequests,
     standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
     legacyHeaders: false, // Disable `X-RateLimit-*` headers
-    ...options
+    ...options,
   };
 
   // Add Redis store if available
@@ -105,7 +108,7 @@ const createRateLimiter = (options = {}) => {
     config.store = new RedisStore({
       client: redisClient,
       prefix: options.prefix || 'rl:',
-      sendCommand: (...args) => redisClient.sendCommand(args)
+      sendCommand: (...args) => redisClient.sendCommand(args),
     });
   }
 
@@ -121,7 +124,7 @@ const authLimiter = createRateLimiter({
   max: parseInt(process.env.RATE_LIMIT_AUTH_MAX) || 5, // 5 requests per minute
   message: 'Too many authentication attempts. Please try again later.',
   prefix: 'rl:auth:',
-  skipSuccessfulRequests: false // Count successful login attempts too
+  skipSuccessfulRequests: false, // Count successful login attempts too
 });
 
 /**
@@ -134,7 +137,7 @@ const loginLimiter = createRateLimiter({
   message: 'Too many login attempts. Please try again after 15 minutes.',
   prefix: 'rl:login:',
   skipSuccessfulRequests: true, // Only count failed attempts
-  skipFailedRequests: false
+  skipFailedRequests: false,
 });
 
 /**
@@ -145,7 +148,7 @@ const registerLimiter = createRateLimiter({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: parseInt(process.env.RATE_LIMIT_REGISTER_MAX) || 3, // 3 registrations per hour
   message: 'Too many accounts created. Please try again later.',
-  prefix: 'rl:register:'
+  prefix: 'rl:register:',
 });
 
 /**
@@ -156,7 +159,7 @@ const passwordResetLimiter = createRateLimiter({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: parseInt(process.env.RATE_LIMIT_PASSWORD_RESET_MAX) || 3, // 3 resets per hour
   message: 'Too many password reset requests. Please try again later.',
-  prefix: 'rl:password-reset:'
+  prefix: 'rl:password-reset:',
 });
 
 /**
@@ -167,7 +170,7 @@ const apiLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
   max: parseInt(process.env.RATE_LIMIT_API_MAX) || 100, // 100 requests per minute
   message: 'API rate limit exceeded. Please slow down your requests.',
-  prefix: 'rl:api:'
+  prefix: 'rl:api:',
 });
 
 /**
@@ -177,7 +180,7 @@ const strictApiLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
   max: parseInt(process.env.RATE_LIMIT_API_STRICT_MAX) || 20, // 20 requests per minute
   message: 'API rate limit exceeded for sensitive operation.',
-  prefix: 'rl:api:strict:'
+  prefix: 'rl:api:strict:',
 });
 
 /**
@@ -188,7 +191,7 @@ const publicLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
   max: parseInt(process.env.RATE_LIMIT_PUBLIC_MAX) || 1000, // 1000 requests per minute
   message: 'Too many requests. Please try again later.',
-  prefix: 'rl:public:'
+  prefix: 'rl:public:',
 });
 
 /**
@@ -199,7 +202,7 @@ const uploadLimiter = createRateLimiter({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: parseInt(process.env.RATE_LIMIT_UPLOAD_MAX) || 50, // 50 uploads per hour
   message: 'Too many file uploads. Please try again later.',
-  prefix: 'rl:upload:'
+  prefix: 'rl:upload:',
 });
 
 /**
@@ -210,7 +213,7 @@ const searchLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
   max: parseInt(process.env.RATE_LIMIT_SEARCH_MAX) || 30, // 30 searches per minute
   message: 'Too many search requests. Please slow down.',
-  prefix: 'rl:search:'
+  prefix: 'rl:search:',
 });
 
 /**
@@ -221,7 +224,7 @@ const globalLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
   max: parseInt(process.env.RATE_LIMIT_GLOBAL_MAX) || 500, // 500 requests per minute
   message: 'Too many requests from this IP. Please try again later.',
-  prefix: 'rl:global:'
+  prefix: 'rl:global:',
 });
 
 /**
@@ -270,5 +273,5 @@ module.exports = {
   cleanup,
 
   // Redis client (for external use if needed)
-  redisClient
+  redisClient,
 };

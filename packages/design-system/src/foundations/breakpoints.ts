@@ -61,9 +61,9 @@ export const highContrastQuery = '@media (prefers-contrast: more)';
 
 // Types
 export type BreakpointKey = keyof typeof breakpointValues;
-export type BreakpointValue = typeof breakpointValues[BreakpointKey];
-export type MediaQuery = typeof mediaQueries[BreakpointKey];
-export type ContainerMaxWidth = typeof containerMaxWidths[Exclude<BreakpointKey, 'xs'>];
+export type BreakpointValue = (typeof breakpointValues)[BreakpointKey];
+export type MediaQuery = (typeof mediaQueries)[BreakpointKey];
+export type ContainerMaxWidth = (typeof containerMaxWidths)[Exclude<BreakpointKey, 'xs'>];
 
 // Utility functions
 export function getBreakpointValue(breakpoint: BreakpointKey): number {

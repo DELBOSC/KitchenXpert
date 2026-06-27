@@ -153,11 +153,7 @@ export class ImportPreviewManager {
     const stats = this.calculateStats(validProducts.map((p) => p.mapped));
 
     // Générer des recommandations
-    const recommendations = this.generateRecommendations(
-      stats,
-      validProducts,
-      invalidProducts
-    );
+    const recommendations = this.generateRecommendations(stats, validProducts, invalidProducts);
 
     return {
       stats,
@@ -298,7 +294,7 @@ export class ImportPreviewManager {
           field: 'model',
           message: 'SKU/Model dupliqué',
           value: product.model,
-          suggestion: 'Vérifier si c\'est une variante du même produit',
+          suggestion: "Vérifier si c'est une variante du même produit",
         });
       } else if (product.model) {
         this.seenSKUs.add(product.model);
@@ -380,10 +376,7 @@ export class ImportPreviewManager {
     }
 
     // Beaucoup de warnings
-    const warningCount = validProducts.reduce(
-      (sum, p) => sum + p.warnings.length,
-      0
-    );
+    const warningCount = validProducts.reduce((sum, p) => sum + p.warnings.length, 0);
     if (warningCount > validProducts.length * 0.3) {
       recommendations.push(
         `⚠️ Nombreux avertissements (${warningCount}). Réviser les données source.`
@@ -443,7 +436,7 @@ export class ImportPreviewManager {
     const lines: string[] = [];
 
     lines.push('═══════════════════════════════════════════════════════');
-    lines.push('📊 PREVIEW D\'IMPORT DE CATALOGUE');
+    lines.push("📊 PREVIEW D'IMPORT DE CATALOGUE");
     lines.push('═══════════════════════════════════════════════════════\n');
 
     // Statistiques

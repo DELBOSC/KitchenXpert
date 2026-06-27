@@ -12,9 +12,12 @@ module.exports = {
   ],
 
   transform: {
-    '^.+\\.(ts|js)$': ['ts-jest', {
-      tsconfig: '<rootDir>/packages/backend/tsconfig.json',
-    }],
+    '^.+\\.(ts|js)$': [
+      'ts-jest',
+      {
+        tsconfig: '<rootDir>/packages/backend/tsconfig.json',
+      },
+    ],
   },
 
   moduleNameMapper: {
@@ -22,12 +25,7 @@ module.exports = {
     '^@common/(.*)$': '<rootDir>/packages/common/src/$1',
   },
 
-  coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/__tests__/',
-    '/__mocks__/',
-  ],
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/__tests__/', '/__mocks__/'],
 
   collectCoverageFrom: [
     'packages/backend/src/**/*.{ts,js}',

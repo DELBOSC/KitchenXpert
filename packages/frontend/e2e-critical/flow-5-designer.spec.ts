@@ -15,7 +15,9 @@ import { test, expect, loginUI, API_BASE, captureCookies } from './_fixtures';
 
 test.describe('@critical Flow 5 — Designer', () => {
   test('drag → snap → undo → save → reload preserves state', async ({
-    page, request, freshUser,
+    page,
+    request,
+    freshUser,
   }) => {
     await loginUI(page, freshUser);
     const cookies = await captureCookies(page);
@@ -32,15 +34,19 @@ test.describe('@critical Flow 5 — Designer', () => {
         // POST /kitchens validates width/length/height (createKitchenSchema),
         // not the *Cm names — the previous widthCm/depthCm/heightCm failed Zod
         // validation (NaN) → kitchen creation 400 → kData undefined → crash.
-        projectId: pData.id, name: 'D-Kitchen',
-        width: 400, length: 350, height: 270,
+        projectId: pData.id,
+        name: 'D-Kitchen',
+        width: 400,
+        length: 350,
+        height: 270,
       },
     });
     const { data: kData } = await kitchen.json();
 
     await page.goto(`/fr/projects/${pData.id}/kitchens/${kData.id}/designer`);
 
-    const canvas = page.locator('[data-testid="designer-canvas"]')
+    const canvas = page
+      .locator('[data-testid="designer-canvas"]')
       .or(page.locator('canvas').first());
     await expect(canvas).toBeVisible({ timeout: 20_000 });
 
@@ -51,24 +57,23 @@ test.describe('@critical Flow 5 — Designer', () => {
     const canvasBox = await canvas.boundingBox();
     expect(canvasBox).toBeTruthy();
     await palette.dragTo(canvas, {
-      targetPosition: { x: (canvasBox!.width / 2), y: (canvasBox!.height / 2) },
+      targetPosition: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 },
     });
 
     // 2. Save explicitly (the designer also auto-saves but explicit is
     //    what users press)
-    await page.locator('[data-testid="designer-save"]')
+    await page
+      .locator('[data-testid="designer-save"]')
       .or(page.getByRole('button', { name: /enregistrer|save/i }))
       .first()
       .click();
 
-    await expect(page.getByText(/enregistré|saved/i).first())
-      .toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/enregistré|saved/i).first()).toBeVisible({ timeout: 10_000 });
 
     // 3. Verify backend state matches: at least one KitchenItem exists
-    const items = await request.get(
-      `${API_BASE}/kitchens/${kData.id}/items`,
-      { headers: { Cookie: cookies } },
-    );
+    const items = await request.get(`${API_BASE}/kitchens/${kData.id}/items`, {
+      headers: { Cookie: cookies },
+    });
     const { data: itemList } = await items.json();
     expect(itemList.length, 'drag-drop should create a backend item').toBeGreaterThan(0);
 
@@ -76,32 +81,31 @@ test.describe('@critical Flow 5 — Designer', () => {
     await page.reload();
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
-    const itemsAfterReload = await request.get(
-      `${API_BASE}/kitchens/${kData.id}/items`,
-      { headers: { Cookie: cookies } },
-    );
+    const itemsAfterReload = await request.get(`${API_BASE}/kitchens/${kData.id}/items`, {
+      headers: { Cookie: cookies },
+    });
     const { data: itemListAfter } = await itemsAfterReload.json();
     expect(itemListAfter.length).toBe(itemList.length);
 
     // 5. Undo removes the item
-    await page.locator('[data-testid="designer-undo"]')
+    await page
+      .locator('[data-testid="designer-undo"]')
       .or(page.getByRole('button', { name: /annuler|undo/i }))
       .first()
       .click();
 
     // Save again so backend reflects undo
-    await page.locator('[data-testid="designer-save"]')
+    await page
+      .locator('[data-testid="designer-save"]')
       .or(page.getByRole('button', { name: /enregistrer|save/i }))
       .first()
       .click();
 
-    await expect(page.getByText(/enregistré|saved/i).first())
-      .toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/enregistré|saved/i).first()).toBeVisible({ timeout: 10_000 });
 
-    const finalItems = await request.get(
-      `${API_BASE}/kitchens/${kData.id}/items`,
-      { headers: { Cookie: cookies } },
-    );
+    const finalItems = await request.get(`${API_BASE}/kitchens/${kData.id}/items`, {
+      headers: { Cookie: cookies },
+    });
     const { data: finalList } = await finalItems.json();
     expect(finalList.length, 'undo+save should remove the item').toBeLessThan(itemList.length);
   });

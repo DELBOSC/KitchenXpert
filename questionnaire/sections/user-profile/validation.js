@@ -27,7 +27,7 @@ const VALID_OPTIONS = {
     'family-young-kids',
     'family-teens',
     'multi-generational',
-    'retired'
+    'retired',
   ],
   'primary-cook': ['one-person', 'shared-equally', 'everyone-cooks', 'rarely-cook'],
   'special-needs': [
@@ -36,10 +36,10 @@ const VALID_OPTIONS = {
     'vision-impaired',
     'height-considerations',
     'child-safety',
-    'none'
+    'none',
   ],
   'ownership-status': ['owner', 'renter-allowed', 'renter-limited'],
-  'project-timeline': ['immediately', '1-3-months', '3-6-months', '6-12-months', 'just-exploring']
+  'project-timeline': ['immediately', '1-3-months', '3-6-months', '6-12-months', 'just-exploring'],
 };
 
 /**
@@ -50,7 +50,7 @@ const REQUIRED_QUESTIONS = [
   'household-type',
   'cooking-skill-level',
   'ownership-status',
-  'project-timeline'
+  'project-timeline',
 ];
 
 /**
@@ -68,7 +68,7 @@ function validateAnswer(questionId, value, context = {}) {
     'cooking-skill-level': validateCookingSkillLevel,
     'special-needs': validateSpecialNeeds,
     'ownership-status': validateOwnershipStatus,
-    'project-timeline': validateProjectTimeline
+    'project-timeline': validateProjectTimeline,
   };
 
   const validator = validators[questionId];
@@ -78,7 +78,7 @@ function validateAnswer(questionId, value, context = {}) {
       valid: true,
       questionId,
       value,
-      warnings: [{ code: 'UNKNOWN_QUESTION', message: 'No validator defined for this question' }]
+      warnings: [{ code: 'UNKNOWN_QUESTION', message: 'No validator defined for this question' }],
     };
   }
 
@@ -91,8 +91,8 @@ function validateAnswer(questionId, value, context = {}) {
         questionId: error.questionId,
         error: {
           code: error.code,
-          message: error.message
-        }
+          message: error.message,
+        },
       };
     }
     throw error;
@@ -117,7 +117,7 @@ function validateHouseholdSize(value, context) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -137,11 +137,13 @@ function validateHouseholdType(value, context) {
 
   // Cross-validation with household size
   const warnings = [];
-  if (context.answers?.['household-size'] === '1' &&
-      ['family-young-kids', 'family-teens', 'multi-generational'].includes(value)) {
+  if (
+    context.answers?.['household-size'] === '1' &&
+    ['family-young-kids', 'family-teens', 'multi-generational'].includes(value)
+  ) {
     warnings.push({
       code: 'INCONSISTENT_ANSWERS',
-      message: 'Your household type seems inconsistent with a household of 1 person'
+      message: 'Your household type seems inconsistent with a household of 1 person',
     });
   }
 
@@ -150,7 +152,7 @@ function validateHouseholdType(value, context) {
     questionId,
     value,
     normalized: value,
-    warnings: warnings.length > 0 ? warnings : undefined
+    warnings: warnings.length > 0 ? warnings : undefined,
   };
 }
 
@@ -168,7 +170,7 @@ function validatePrimaryCook(value, context) {
       value: 'one-person',
       normalized: 'one-person',
       skipped: true,
-      skipReason: 'Single-person household'
+      skipReason: 'Single-person household',
     };
   }
 
@@ -184,7 +186,7 @@ function validatePrimaryCook(value, context) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -213,7 +215,7 @@ function validateCookingSkillLevel(value, context) {
     questionId,
     value: numValue,
     normalized: numValue,
-    label: ['beginner', 'basic', 'intermediate', 'advanced', 'professional'][numValue - 1]
+    label: ['beginner', 'basic', 'intermediate', 'advanced', 'professional'][numValue - 1],
   };
 }
 
@@ -229,7 +231,7 @@ function validateSpecialNeeds(value, context) {
       valid: true,
       questionId,
       value: [],
-      normalized: []
+      normalized: [],
     };
   }
 
@@ -237,7 +239,7 @@ function validateSpecialNeeds(value, context) {
   const values = Array.isArray(value) ? value : [value];
 
   // Validate each selected option
-  const invalidOptions = values.filter(v => !VALID_OPTIONS['special-needs'].includes(v));
+  const invalidOptions = values.filter((v) => !VALID_OPTIONS['special-needs'].includes(v));
 
   if (invalidOptions.length > 0) {
     throw new ValidationError(
@@ -252,14 +254,14 @@ function validateSpecialNeeds(value, context) {
   if (values.includes('none') && values.length > 1) {
     warnings.push({
       code: 'CONFLICTING_OPTIONS',
-      message: '"No special requirements" cannot be combined with other options'
+      message: '"No special requirements" cannot be combined with other options',
     });
   }
 
   // Normalize: if 'none' is selected with others, remove 'none'
   let normalized = values;
   if (values.includes('none') && values.length > 1) {
-    normalized = values.filter(v => v !== 'none');
+    normalized = values.filter((v) => v !== 'none');
   }
 
   return {
@@ -267,7 +269,7 @@ function validateSpecialNeeds(value, context) {
     questionId,
     value: values,
     normalized,
-    warnings: warnings.length > 0 ? warnings : undefined
+    warnings: warnings.length > 0 ? warnings : undefined,
   };
 }
 
@@ -289,7 +291,7 @@ function validateOwnershipStatus(value, context) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -311,7 +313,7 @@ function validateProjectTimeline(value, context) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -328,7 +330,7 @@ function validateSection(answers, context = {}) {
     warnings: [],
     answeredQuestions: [],
     missingRequired: [],
-    validatedAnswers: {}
+    validatedAnswers: {},
   };
 
   // Check for required questions
@@ -349,7 +351,7 @@ function validateSection(answers, context = {}) {
     results.errors.push({
       code: 'MISSING_REQUIRED',
       message: `Please answer the following required questions: ${results.missingRequired.join(', ')}`,
-      questions: results.missingRequired
+      questions: results.missingRequired,
     });
   }
 
@@ -357,36 +359,38 @@ function validateSection(answers, context = {}) {
   for (const [questionId, value] of Object.entries(answers)) {
     const validationResult = validateAnswer(questionId, value, {
       ...context,
-      answers
+      answers,
     });
 
     if (!validationResult.valid) {
       results.valid = false;
       results.errors.push({
         questionId,
-        ...validationResult.error
+        ...validationResult.error,
       });
     } else {
       results.answeredQuestions.push(questionId);
       results.validatedAnswers[questionId] = validationResult.normalized || validationResult.value;
 
       if (validationResult.warnings) {
-        results.warnings.push(...validationResult.warnings.map(w => ({
-          questionId,
-          ...w
-        })));
+        results.warnings.push(
+          ...validationResult.warnings.map((w) => ({
+            questionId,
+            ...w,
+          }))
+        );
       }
     }
   }
 
   // Calculate completion percentage
-  const totalRequired = REQUIRED_QUESTIONS.filter(q => {
+  const totalRequired = REQUIRED_QUESTIONS.filter((q) => {
     // Exclude conditionally skipped questions
     if (q === 'primary-cook' && answers['household-size'] === '1') return false;
     return true;
   }).length;
 
-  const answeredRequired = results.answeredQuestions.filter(q =>
+  const answeredRequired = results.answeredQuestions.filter((q) =>
     REQUIRED_QUESTIONS.includes(q)
   ).length;
 
@@ -412,5 +416,5 @@ module.exports = {
   isSectionComplete,
   ValidationError,
   VALID_OPTIONS,
-  REQUIRED_QUESTIONS
+  REQUIRED_QUESTIONS,
 };

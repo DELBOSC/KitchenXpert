@@ -29,18 +29,43 @@ const passwordPolicy = {
   requireNumbers: process.env.PASSWORD_REQUIRE_NUMBERS !== 'false',
   requireSpecialChars: process.env.PASSWORD_REQUIRE_SPECIAL !== 'false',
   preventCommonPasswords: process.env.PASSWORD_PREVENT_COMMON !== 'false',
-  preventUserInfo: process.env.PASSWORD_PREVENT_USER_INFO !== 'false'
+  preventUserInfo: process.env.PASSWORD_PREVENT_USER_INFO !== 'false',
 };
 
 /**
  * Common weak passwords to prevent
  */
 const commonPasswords = [
-  'password', 'password123', '123456', '12345678', 'qwerty', 'abc123',
-  'monkey', '1234567', 'letmein', 'trustno1', 'dragon', 'baseball',
-  'iloveyou', 'master', 'sunshine', 'ashley', 'bailey', 'passw0rd',
-  'shadow', '123123', '654321', 'superman', 'qazwsx', 'michael',
-  'football', 'welcome', 'jesus', 'ninja', 'mustang', 'password1'
+  'password',
+  'password123',
+  '123456',
+  '12345678',
+  'qwerty',
+  'abc123',
+  'monkey',
+  '1234567',
+  'letmein',
+  'trustno1',
+  'dragon',
+  'baseball',
+  'iloveyou',
+  'master',
+  'sunshine',
+  'ashley',
+  'bailey',
+  'passw0rd',
+  'shadow',
+  '123123',
+  '654321',
+  'superman',
+  'qazwsx',
+  'michael',
+  'football',
+  'welcome',
+  'jesus',
+  'ninja',
+  'mustang',
+  'password1',
 ];
 
 /**
@@ -49,24 +74,30 @@ const commonPasswords = [
 const lockoutPolicy = {
   maxAttempts: parseInt(process.env.LOCKOUT_MAX_ATTEMPTS) || 5,
   lockoutDuration: parseInt(process.env.LOCKOUT_DURATION) || 15 * 60 * 1000, // 15 minutes
-  resetAfterSuccess: process.env.LOCKOUT_RESET_AFTER_SUCCESS !== 'false'
+  resetAfterSuccess: process.env.LOCKOUT_RESET_AFTER_SUCCESS !== 'false',
 };
 
 /**
  * Session configuration
  */
 const sessionConfig = {
-  secret: process.env.SESSION_SECRET || (process.env.NODE_ENV === 'production' ? (() => { throw new Error('SESSION_SECRET is required in production'); })() : 'dev-session-secret'),
+  secret:
+    process.env.SESSION_SECRET ||
+    (process.env.NODE_ENV === 'production'
+      ? (() => {
+          throw new Error('SESSION_SECRET is required in production');
+        })()
+      : 'dev-session-secret'),
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production', // HTTPS only in production
     httpOnly: true,
     maxAge: parseInt(process.env.SESSION_MAX_AGE) || 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: 'strict'
+    sameSite: 'strict',
   },
   name: 'sessionId', // Don't use default 'connect.sid'
-  rolling: true // Reset maxAge on every response
+  rolling: true, // Reset maxAge on every response
 };
 
 /**
@@ -77,7 +108,7 @@ const mfaConfig = {
   required: process.env.MFA_REQUIRED === 'true',
   issuer: process.env.MFA_ISSUER || 'KitchenXpert',
   window: parseInt(process.env.MFA_WINDOW) || 1, // TOTP time window
-  backupCodesCount: parseInt(process.env.MFA_BACKUP_CODES) || 10
+  backupCodesCount: parseInt(process.env.MFA_BACKUP_CODES) || 10,
 };
 
 /**
@@ -113,7 +144,10 @@ const validatePassword = (password, userInfo = {}) => {
   }
 
   // Special characters check
-  if (passwordPolicy.requireSpecialChars && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+  if (
+    passwordPolicy.requireSpecialChars &&
+    !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+  ) {
     errors.push('Password must contain at least one special character');
   }
 
@@ -138,7 +172,7 @@ const validatePassword = (password, userInfo = {}) => {
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
@@ -195,7 +229,7 @@ const configureLocalStrategy = (getUserByEmail, verifyUser) => {
       {
         usernameField: 'email', // Use email instead of username
         passwordField: 'password',
-        passReqToCallback: true
+        passReqToCallback: true,
       },
       async (req, email, password, done) => {
         try {
@@ -210,7 +244,7 @@ const configureLocalStrategy = (getUserByEmail, verifyUser) => {
           if (user.lockedUntil && user.lockedUntil > Date.now()) {
             const minutesLeft = Math.ceil((user.lockedUntil - Date.now()) / 60000);
             return done(null, false, {
-              message: `Account locked. Try again in ${minutesLeft} minute(s)`
+              message: `Account locked. Try again in ${minutesLeft} minute(s)`,
             });
           }
 
@@ -273,7 +307,7 @@ const configureJwtStrategy = (getUserById) => {
     secretOrKey: process.env.JWT_ACCESS_SECRET,
     issuer: process.env.JWT_ISSUER || 'kitchenxpert-api',
     audience: process.env.JWT_AUDIENCE || 'kitchenxpert-client',
-    algorithms: [process.env.JWT_ALGORITHM || 'HS256']
+    algorithms: [process.env.JWT_ALGORITHM || 'HS256'],
   };
 
   passport.use(
@@ -382,5 +416,5 @@ module.exports = {
   mfaConfig,
 
   // Constants
-  BCRYPT_SALT_ROUNDS
+  BCRYPT_SALT_ROUNDS,
 };

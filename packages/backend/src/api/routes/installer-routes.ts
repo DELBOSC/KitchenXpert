@@ -139,11 +139,7 @@ router.use(authenticate);
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  '/search',
-  validateQuery(searchQuerySchema),
-  installerController.search,
-);
+router.get('/search', validateQuery(searchQuerySchema), installerController.search);
 
 /**
  * @swagger
@@ -200,7 +196,7 @@ router.get('/my-projects', installerController.getMyProjects);
 router.post(
   '/request',
   validateBody(requestInstallationSchema),
-  installerController.requestInstallation,
+  installerController.requestInstallation
 );
 
 /**
@@ -229,7 +225,7 @@ router.post(
 router.get(
   '/projects/:id',
   validateParams(commonSchemas.idParam),
-  installerController.getProjectById,
+  installerController.getProjectById
 );
 
 /**
@@ -281,7 +277,7 @@ router.put(
   '/projects/:id',
   validateParams(commonSchemas.idParam),
   validateBody(updateProjectSchema),
-  installerController.updateProject,
+  installerController.updateProject
 );
 
 /**
@@ -332,7 +328,7 @@ router.post(
   '/projects/:id/milestone',
   validateParams(commonSchemas.idParam),
   validateBody(addMilestoneSchema),
-  installerController.addMilestone,
+  installerController.addMilestone
 );
 
 /**
@@ -358,11 +354,7 @@ router.post(
  *       404:
  *         description: Installer not found
  */
-router.get(
-  '/:id',
-  validateParams(commonSchemas.idParam),
-  installerController.getById,
-);
+router.get('/:id', validateParams(commonSchemas.idParam), installerController.getById);
 
 /**
  * @swagger
@@ -428,11 +420,7 @@ router.get(
  *       409:
  *         description: Already registered or email taken
  */
-router.post(
-  '/',
-  validateBody(registerInstallerSchema),
-  installerController.register,
-);
+router.post('/', validateBody(registerInstallerSchema), installerController.register);
 
 /**
  * @swagger
@@ -487,7 +475,7 @@ router.post(
   '/:id/reviews',
   validateParams(commonSchemas.idParam),
   validateBody(addReviewSchema),
-  installerController.addReview,
+  installerController.addReview
 );
 
 export default router;

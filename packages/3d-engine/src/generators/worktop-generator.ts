@@ -291,8 +291,10 @@ export class WorktopGenerator {
       }
 
       // Verifier si ce groupe est en fait aligne selon X (mur lateral)
-      const xSpread = Math.max(...group.map((c) => c.centerX)) - Math.min(...group.map((c) => c.centerX));
-      const zSpread = Math.max(...group.map((c) => c.centerZ)) - Math.min(...group.map((c) => c.centerZ));
+      const xSpread =
+        Math.max(...group.map((c) => c.centerX)) - Math.min(...group.map((c) => c.centerX));
+      const zSpread =
+        Math.max(...group.map((c) => c.centerZ)) - Math.min(...group.map((c) => c.centerZ));
 
       if (zSpread > WALL_ALIGNMENT_TOLERANCE && xSpread < WALL_ALIGNMENT_TOLERANCE) {
         // Meubles alignes en X (mur lateral), pas en Z

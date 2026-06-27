@@ -217,7 +217,9 @@ export class S3StorageService {
   /**
    * Download a file from S3
    */
-  async downloadFile(key: string): Promise<{ buffer: Buffer; contentType: string; metadata: Record<string, string> }> {
+  async downloadFile(
+    key: string
+  ): Promise<{ buffer: Buffer; contentType: string; metadata: Record<string, string> }> {
     try {
       const command = new GetObjectCommand({
         Bucket: this.bucket,
@@ -527,11 +529,8 @@ export class StorageService {
   /**
    * Upload multiple files
    */
-  async uploadFiles(
-    files: FileUpload[],
-    options: UploadOptions = {}
-  ): Promise<StoredFile[]> {
-    return Promise.all(files.map(file => this.uploadFile(file, options)));
+  async uploadFiles(files: FileUpload[], options: UploadOptions = {}): Promise<StoredFile[]> {
+    return Promise.all(files.map((file) => this.uploadFile(file, options)));
   }
 
   /**
@@ -583,7 +582,11 @@ export class StorageService {
     const fsPromise = import('fs').then((m) => m.promises);
 
     return {
-      async upload(file: FileUpload, storedName: string, options: UploadOptions): Promise<StoredFile> {
+      async upload(
+        file: FileUpload,
+        storedName: string,
+        options: UploadOptions
+      ): Promise<StoredFile> {
         const fs = await fsPromise;
         const folder = options.folder || '';
         const filePath = path.join(folder, storedName);
@@ -675,10 +678,7 @@ export class ImageService {
   /**
    * Generate thumbnail URL
    */
-  generateThumbnailUrl(
-    originalUrl: string,
-    options: ImageProcessingOptions = {}
-  ): string {
+  generateThumbnailUrl(originalUrl: string, options: ImageProcessingOptions = {}): string {
     const { width = 200, height = 200, fit = 'cover', format = 'webp' } = options;
 
     // This would integrate with an image processing service
@@ -695,11 +695,7 @@ export class ImageService {
   /**
    * Get optimized image URL
    */
-  getOptimizedUrl(
-    originalUrl: string,
-    width: number,
-    quality: number = 80
-  ): string {
+  getOptimizedUrl(originalUrl: string, width: number, quality: number = 80): string {
     const url = new URL(originalUrl, 'http://localhost');
     url.searchParams.set('w', String(width));
     url.searchParams.set('q', String(quality));

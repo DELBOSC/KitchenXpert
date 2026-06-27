@@ -1,10 +1,10 @@
 # Log Analysis Documentation
 
-> Comprehensive guide to log querying, analysis, and incident investigation for KitchenXpert.
+> Comprehensive guide to log querying, analysis, and incident investigation for
+> KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** Platform Engineering Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Platform Engineering Team **Version:**
+1.0
 
 ---
 
@@ -24,7 +24,8 @@
 
 ### Basic Syntax
 
-KQL (Kibana Query Language) is the primary query language for searching logs in Kibana.
+KQL (Kibana Query Language) is the primary query language for searching logs in
+Kibana.
 
 #### Field Queries
 
@@ -121,16 +122,16 @@ context.path: /\/api\/v[12]\/.*/
 
 ### Query Examples by Use Case
 
-| Use Case | KQL Query |
-|----------|-----------|
-| All errors | `level: (error OR fatal)` |
-| Backend errors | `level: error AND service: backend` |
-| 500 errors | `context.statusCode: 500` |
-| Slow requests | `context.duration >= 1000` |
-| Specific user | `userId: "user_abc123"` |
-| Specific trace | `traceId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"` |
-| Database errors | `error.name: *Postgres* OR error.name: *Mongo*` |
-| Authentication | `message: *auth* OR message: *login*` |
+| Use Case        | KQL Query                                         |
+| --------------- | ------------------------------------------------- |
+| All errors      | `level: (error OR fatal)`                         |
+| Backend errors  | `level: error AND service: backend`               |
+| 500 errors      | `context.statusCode: 500`                         |
+| Slow requests   | `context.duration >= 1000`                        |
+| Specific user   | `userId: "user_abc123"`                           |
+| Specific trace  | `traceId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"` |
+| Database errors | `error.name: *Postgres* OR error.name: *Mongo*`   |
+| Authentication  | `message: *auth* OR message: *login*`             |
 
 ---
 
@@ -139,6 +140,7 @@ context.path: /\/api\/v[12]\/.*/
 ### Find All Errors in Last Hour
 
 **KQL:**
+
 ```
 level: (error OR fatal)
 ```
@@ -146,6 +148,7 @@ level: (error OR fatal)
 **Time Range:** Last 1 hour (set in time picker)
 
 **Useful Columns:**
+
 - @timestamp
 - service
 - message
@@ -154,6 +157,7 @@ level: (error OR fatal)
 - traceId
 
 **Elasticsearch DSL:**
+
 ```json
 {
   "query": {
@@ -176,9 +180,7 @@ level: (error OR fatal)
       ]
     }
   },
-  "sort": [
-    { "@timestamp": "desc" }
-  ],
+  "sort": [{ "@timestamp": "desc" }],
   "size": 100
 }
 ```
@@ -188,6 +190,7 @@ level: (error OR fatal)
 ### Track User Journey by userId
 
 **KQL:**
+
 ```
 userId: "user_abc123"
 ```
@@ -197,6 +200,7 @@ userId: "user_abc123"
 **Sort:** @timestamp ascending (chronological order)
 
 **Useful Columns:**
+
 - @timestamp
 - service
 - message
@@ -204,6 +208,7 @@ userId: "user_abc123"
 - context.method
 
 **Elasticsearch DSL:**
+
 ```json
 {
   "query": {
@@ -217,9 +222,7 @@ userId: "user_abc123"
       ]
     }
   },
-  "sort": [
-    { "@timestamp": "asc" }
-  ],
+  "sort": [{ "@timestamp": "asc" }],
   "size": 500
 }
 ```
@@ -229,6 +232,7 @@ userId: "user_abc123"
 ### Find Slow Requests (> 1 second)
 
 **KQL:**
+
 ```
 context.duration > 1000
 ```
@@ -238,6 +242,7 @@ context.duration > 1000
 **Sort:** context.duration descending (slowest first)
 
 **Useful Columns:**
+
 - @timestamp
 - service
 - context.path
@@ -246,6 +251,7 @@ context.duration > 1000
 - context.statusCode
 
 **Elasticsearch DSL:**
+
 ```json
 {
   "query": {
@@ -268,9 +274,7 @@ context.duration > 1000
       ]
     }
   },
-  "sort": [
-    { "context.duration": "desc" }
-  ],
+  "sort": [{ "context.duration": "desc" }],
   "size": 100
 }
 ```
@@ -280,6 +284,7 @@ context.duration > 1000
 ### Error Patterns by Endpoint
 
 **KQL:**
+
 ```
 level: error AND context.path: *
 ```
@@ -287,6 +292,7 @@ level: error AND context.path: *
 **Aggregation:** Terms aggregation on `context.path.keyword`
 
 **Elasticsearch DSL:**
+
 ```json
 {
   "query": {
@@ -327,11 +333,13 @@ level: error AND context.path: *
 ### Database Errors
 
 **KQL:**
+
 ```
 (error.name: *Postgres* OR error.name: *Mongo* OR error.name: *Redis* OR message: *database*)
 ```
 
 **Elasticsearch DSL:**
+
 ```json
 {
   "query": {
@@ -353,6 +361,7 @@ level: error AND context.path: *
 ### External Service Failures
 
 **KQL:**
+
 ```
 (context.service: partner* OR context.service: external* OR message: *external API*)
 AND level: error
@@ -363,6 +372,7 @@ AND level: error
 ### Authentication Issues
 
 **KQL:**
+
 ```
 (message: *auth* OR message: *login* OR message: *token* OR context.path: */auth/*)
 AND level: (warn OR error)
@@ -592,13 +602,10 @@ PUT _ml/anomaly_detectors/response-time-anomaly
 
 **Navigate to:** Kibana > Machine Learning > Anomaly Explorer
 
-**Anomaly Score Interpretation:**
-| Score | Severity | Action |
-|-------|----------|--------|
-| 0-25 | Low | Monitor |
-| 25-50 | Warning | Investigate if persistent |
-| 50-75 | Minor | Investigate within 1 hour |
-| 75-100 | Critical | Investigate immediately |
+**Anomaly Score Interpretation:** | Score | Severity | Action |
+|-------|----------|--------| | 0-25 | Low | Monitor | | 25-50 | Warning |
+Investigate if persistent | | 50-75 | Minor | Investigate within 1 hour | |
+75-100 | Critical | Investigate immediately |
 
 ---
 
@@ -609,6 +616,7 @@ PUT _ml/anomaly_detectors/response-time-anomaly
 **Visualization Type:** Line chart
 
 **Configuration:**
+
 ```yaml
 Index Pattern: logs-*
 Metrics:
@@ -625,6 +633,7 @@ Filters:
 **Visualization Type:** Horizontal bar chart
 
 **Configuration:**
+
 ```yaml
 Index Pattern: logs-*
 Metrics:
@@ -640,6 +649,7 @@ Filters:
 **Visualization Type:** Pie chart
 
 **Configuration:**
+
 ```yaml
 Index Pattern: logs-*
 Metrics:
@@ -655,6 +665,7 @@ Filters:
 **Visualization Type:** Heat map
 
 **Configuration:**
+
 ```yaml
 Index Pattern: logs-*
 Metrics:
@@ -669,6 +680,7 @@ Buckets:
 **Visualization Type:** Map
 
 **Configuration:**
+
 ```yaml
 Index Pattern: logs-*
 Layer: Documents
@@ -688,16 +700,19 @@ Filters:
 #### 1. Identify the Scope
 
 **Initial Query:**
+
 ```
 level: (error OR fatal)
 ```
 
 **Questions to Answer:**
+
 - When did errors start?
 - Which services are affected?
 - What's the error rate compared to normal?
 
 **Actions:**
+
 1. Set time range to span the incident
 2. Look at error count over time
 3. Group by service to identify affected components
@@ -705,16 +720,19 @@ level: (error OR fatal)
 #### 2. Narrow Down to Affected Service
 
 **Query:**
+
 ```
 level: error AND service: "affected-service"
 ```
 
 **Questions to Answer:**
+
 - What types of errors are occurring?
 - Which endpoints are failing?
 - Is it affecting all users or specific users?
 
 **Actions:**
+
 1. Look at top error messages
 2. Check endpoint distribution
 3. Sample specific error logs for details
@@ -722,21 +740,25 @@ level: error AND service: "affected-service"
 #### 3. Find the Root Cause
 
 **Query for Error Details:**
+
 ```
 level: error AND service: "affected-service" AND error.stack: *
 ```
 
 **Trace a Single Request:**
+
 ```
 traceId: "trace-id-from-error"
 ```
 
 **Questions to Answer:**
+
 - What's the stack trace showing?
 - What downstream services are involved?
 - What changed recently (deployments, config)?
 
 **Actions:**
+
 1. Find common error stack traces
 2. Follow trace IDs across services
 3. Check for correlated events (deployments, config changes)
@@ -744,16 +766,19 @@ traceId: "trace-id-from-error"
 #### 4. Understand User Impact
 
 **Query:**
+
 ```
 level: error AND service: "affected-service" AND userId: *
 ```
 
 **Questions to Answer:**
+
 - How many users are affected?
 - Are specific users repeatedly affected?
 - What actions were users trying to perform?
 
 **Actions:**
+
 1. Count distinct userIds affected
 2. Track user journeys for affected users
 3. Identify the user action that triggers errors
@@ -761,6 +786,7 @@ level: error AND service: "affected-service" AND userId: *
 #### 5. Document Findings
 
 **Create Incident Timeline:**
+
 ```
 | Time | Event |
 |------|-------|
@@ -774,26 +800,26 @@ level: error AND service: "affected-service" AND userId: *
 
 ### Investigation Queries Cheat Sheet
 
-| Stage | Query |
-|-------|-------|
-| All errors | `level: (error OR fatal)` |
-| By service | `level: error AND service: "X"` |
-| By endpoint | `level: error AND context.path: "/api/X"` |
-| By user | `userId: "X" AND level: error` |
-| By trace | `traceId: "X"` |
-| With stack | `error.stack: * AND level: error` |
-| Slow requests | `context.duration > 1000` |
-| Database errors | `error.name: *Postgres*` |
-| External failures | `context.service: external*` |
+| Stage             | Query                                     |
+| ----------------- | ----------------------------------------- |
+| All errors        | `level: (error OR fatal)`                 |
+| By service        | `level: error AND service: "X"`           |
+| By endpoint       | `level: error AND context.path: "/api/X"` |
+| By user           | `userId: "X" AND level: error`            |
+| By trace          | `traceId: "X"`                            |
+| With stack        | `error.stack: * AND level: error`         |
+| Slow requests     | `context.duration > 1000`                 |
+| Database errors   | `error.name: *Postgres*`                  |
+| External failures | `context.service: external*`              |
 
 ### Saved Investigation Dashboards
 
-| Dashboard | URL | Purpose |
-|-----------|-----|---------|
-| Error Overview | https://kibana.kitchenxpert.internal/app/dashboards#/view/error-overview | Initial triage |
-| Service Deep Dive | https://kibana.kitchenxpert.internal/app/dashboards#/view/service-dive | Per-service analysis |
-| User Journey | https://kibana.kitchenxpert.internal/app/dashboards#/view/user-journey | Track user activity |
-| Performance | https://kibana.kitchenxpert.internal/app/dashboards#/view/performance | Response time analysis |
+| Dashboard         | URL                                                                      | Purpose                |
+| ----------------- | ------------------------------------------------------------------------ | ---------------------- |
+| Error Overview    | https://kibana.kitchenxpert.internal/app/dashboards#/view/error-overview | Initial triage         |
+| Service Deep Dive | https://kibana.kitchenxpert.internal/app/dashboards#/view/service-dive   | Per-service analysis   |
+| User Journey      | https://kibana.kitchenxpert.internal/app/dashboards#/view/user-journey   | Track user activity    |
+| Performance       | https://kibana.kitchenxpert.internal/app/dashboards#/view/performance    | Response time analysis |
 
 ---
 
@@ -807,4 +833,5 @@ level: error AND service: "affected-service" AND userId: *
 
 ---
 
-*For questions about log analysis, contact the Platform Engineering team at platform@kitchenxpert.com*
+_For questions about log analysis, contact the Platform Engineering team at
+platform@kitchenxpert.com_

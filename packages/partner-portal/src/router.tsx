@@ -9,7 +9,7 @@ import { Analytics } from '@/pages/Analytics';
 import { Settings } from '@/pages/Settings';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAppSelector(state => state.auth);
+  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
   if (isLoading) return <div>Loading...</div>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return <>{children}</>;
@@ -22,7 +22,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <RequireAuth><Layout /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <Layout />
+      </RequireAuth>
+    ),
     children: [
       {
         index: true,

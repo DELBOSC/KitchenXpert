@@ -16,7 +16,7 @@ function row(
   sku: string,
   color: string | null,
   price: number,
-  isCanonical = false,
+  isCanonical = false
 ): ResolverProductRow {
   return {
     sku,
@@ -64,12 +64,14 @@ function makeSmartDb(allRows: ResolverProductRow[]) {
     const where = args.where;
     const or = (where.OR ?? []) as Array<{ parentSku?: string; sku?: string }>;
     const x = or.find((o) => o.sku)?.sku ?? or.find((o) => o.parentSku)?.parentSku;
-    if (x === undefined) {return [];}
+    if (x === undefined) {
+      return [];
+    }
     return allRows.filter(
       (r) =>
         (r.parentSku === x || r.sku === x) &&
         (where.isActive === undefined || r.isActive === where.isActive) &&
-        (where.deletedAt === undefined || r.deletedAt === where.deletedAt),
+        (where.deletedAt === undefined || r.deletedAt === where.deletedAt)
     );
   });
   return { db: { product: { findMany } } as unknown as ResolverDb, findMany };
@@ -115,18 +117,28 @@ describe('VariantResolverService.resolveColors', () => {
 
     // Blanc = the canonical's color.
     expect(by.blanc).toMatchObject({
-      kind: 'color', score: 100, isCanonicalColor: true,
-      representativeSku: PARENT, priceFrom: 44.9, skuCount: 3,
+      kind: 'color',
+      score: 100,
+      isCanonicalColor: true,
+      representativeSku: PARENT,
+      priceFrom: 44.9,
+      skuCount: 3,
     });
 
     // Anthracite: 5 variants, no canonical, cheapest 44.9.
     expect(by.anthracite).toMatchObject({
-      score: 85, isCanonicalColor: false, priceFrom: 44.9, skuCount: 5,
+      score: 85,
+      isCanonicalColor: false,
+      priceFrom: 44.9,
+      skuCount: 5,
     });
 
     // Noir: representative is the cheapest 45.9 (sku tie-break), NOT the 46.9.
     expect(by.noir).toMatchObject({
-      score: 70, isCanonicalColor: false, priceFrom: 45.9, skuCount: 3,
+      score: 70,
+      isCanonicalColor: false,
+      priceFrom: 45.9,
+      skuCount: 3,
       representativeSku: 'CASTORAMA-4066731354139',
     });
     expect(by.noir!.representativeSku).not.toBe('CASTORAMA-4066731360017'); // the 46.9 one
@@ -221,10 +233,10 @@ describe('VariantResolverService.resolveColors — from ANY gamme SKU (OR-first)
 
   it('(h.b2) a VARIANT yields the exact same offer object as its canonical', async () => {
     const fromVariant = await new VariantResolverService(makeSmartDb(VICCO).db).resolveColors(
-      VARIANT_ANTHRACITE,
+      VARIANT_ANTHRACITE
     );
     const fromCanonical = await new VariantResolverService(makeSmartDb(VICCO).db).resolveColors(
-      PARENT,
+      PARENT
     );
     expect(fromVariant).toEqual(fromCanonical);
   });
@@ -247,7 +259,7 @@ describe('VariantResolverService.resolveColors — from ANY gamme SKU (OR-first)
   it('(h.e) resolveByColor from a VARIANT resolves like from the canonical', async () => {
     const r = await new VariantResolverService(makeSmartDb(VICCO).db).resolveByColor(
       VARIANT_ANTHRACITE,
-      'noir',
+      'noir'
     );
     expect(r).toEqual({ sku: 'CASTORAMA-4066731354139', price: 45.9 });
   });

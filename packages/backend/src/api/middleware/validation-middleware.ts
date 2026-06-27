@@ -374,4 +374,3 @@ export const commonSchemas = {
     endDate: z.coerce.date().optional(),
   }),
 };
-

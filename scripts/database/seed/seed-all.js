@@ -41,9 +41,15 @@ const seedScripts = [
 
 function printHeader() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}            KitchenXpert - Database Seeding                 ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}            KitchenXpert - Database Seeding                 ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 }
 
@@ -126,9 +132,15 @@ async function seedAll(options = {}) {
 
 function printSummary(results) {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}                    Seeding Summary                         ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}                    Seeding Summary                         ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   const successful = results.filter((r) => r.status === 'success').length;
@@ -160,7 +172,9 @@ function printSummary(results) {
   });
 
   console.log('');
-  console.log(`  Total: ${results.length} | Success: ${successful} | Failed: ${failed} | Skipped: ${skipped}`);
+  console.log(
+    `  Total: ${results.length} | Success: ${successful} | Failed: ${failed} | Skipped: ${skipped}`
+  );
   console.log('');
 
   return failed === 0;

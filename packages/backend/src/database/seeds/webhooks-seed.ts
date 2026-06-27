@@ -36,7 +36,8 @@ export const WebhooksSeed: Seed = {
     // Sample webhooks for professional users
     // NOTE: Custom headers with API keys are set to empty for seed data
     // Real integrations should configure these through the API
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO webhooks (
         id, owner_id, name, description, url, secret, events, status, custom_headers
       ) VALUES
@@ -88,7 +89,9 @@ export const WebhooksSeed: Seed = {
          '{}'
         )
       ON CONFLICT DO NOTHING
-    `, [secrets.crm, secrets.analytics, secrets.artisan, secrets.legacy]);
+    `,
+      [secrets.crm, secrets.analytics, secrets.artisan, secrets.legacy]
+    );
 
     // Sample webhook deliveries
     await tx.execute(`

@@ -33,10 +33,7 @@ const DATE_FORMAT_OPTIONS: Record<DateFormat, Intl.DateTimeFormatOptions> = {
 /**
  * Formate une date relative (il y a 5 minutes, dans 2 jours, etc.)
  */
-export function formatRelativeTime(
-  date: Date | string | number,
-  locale = DEFAULT_LOCALE
-): string {
+export function formatRelativeTime(date: Date | string | number, locale = DEFAULT_LOCALE): string {
   const d = toDate(date);
   if (!d) return '';
 
@@ -76,10 +73,7 @@ export function formatRelativeTime(
 /**
  * Formate une durée en secondes
  */
-export function formatDuration(
-  seconds: number,
-  options?: DurationFormatOptions
-): string {
+export function formatDuration(seconds: number, options?: DurationFormatOptions): string {
   const { showSeconds = true, padZeros = true, separator = ':' } = options || {};
 
   const hours = Math.floor(seconds / 3600);
@@ -131,13 +125,21 @@ export function formatDateRange(
   if (sameMonth) {
     const day1 = startDate.getDate();
     const day2 = endDate.getDate();
-    const monthYear = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(startDate);
+    const monthYear = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(
+      startDate
+    );
     return `${day1} - ${day2} ${monthYear}`;
   }
 
   if (sameYear) {
-    const fmt1 = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(startDate);
-    const fmt2 = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(endDate);
+    const fmt1 = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(
+      startDate
+    );
+    const fmt2 = new Intl.DateTimeFormat(locale, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(endDate);
     return `${fmt1} - ${fmt2}`;
   }
 
@@ -193,10 +195,7 @@ export function isSameDay(date1: Date, date2: Date): boolean {
 /**
  * Formate une date pour affichage intelligent
  */
-export function formatSmartDate(
-  date: Date | string | number,
-  locale = DEFAULT_LOCALE
-): string {
+export function formatSmartDate(date: Date | string | number, locale = DEFAULT_LOCALE): string {
   const d = toDate(date);
   if (!d) return '';
 

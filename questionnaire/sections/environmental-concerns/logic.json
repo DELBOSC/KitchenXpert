@@ -92,9 +92,21 @@
         ]
       },
       "suggestions": [
-        { "type": "appliance", "feature": "energy-star-certified", "priority": "high" },
-        { "type": "material", "category": "sustainable-countertops", "priority": "high" },
-        { "type": "fixture", "feature": "low-flow-faucets", "priority": "medium" }
+        {
+          "type": "appliance",
+          "feature": "energy-star-certified",
+          "priority": "high"
+        },
+        {
+          "type": "material",
+          "category": "sustainable-countertops",
+          "priority": "high"
+        },
+        {
+          "type": "fixture",
+          "feature": "low-flow-faucets",
+          "priority": "medium"
+        }
       ]
     }
   }

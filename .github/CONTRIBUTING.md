@@ -18,14 +18,17 @@ Ce guide vous aidera à comprendre comment contribuer efficacement au projet.
 
 ## 📜 Code de Conduite
 
-Ce projet adhère au [Code de Conduite](CODE_OF_CONDUCT.md). En participant, vous acceptez de respecter ces règles.
+Ce projet adhère au [Code de Conduite](CODE_OF_CONDUCT.md). En participant, vous
+acceptez de respecter ces règles.
 
 ## 🚀 Comment Contribuer
 
 Il existe plusieurs façons de contribuer :
 
-- 🐛 **Reporter des bugs** via les [Issues](https://github.com/kitchenxpert/issues)
-- ✨ **Proposer des features** via les [Feature Requests](https://github.com/kitchenxpert/issues/new?template=feature-request.md)
+- 🐛 **Reporter des bugs** via les
+  [Issues](https://github.com/kitchenxpert/issues)
+- ✨ **Proposer des features** via les
+  [Feature Requests](https://github.com/kitchenxpert/issues/new?template=feature-request.md)
 - 📚 **Améliorer la documentation**
 - 🔧 **Soumettre des Pull Requests**
 - 🏪 **Proposer des intégrations de catalogues**
@@ -107,6 +110,7 @@ git checkout -b chore/update-dependencies
 ```
 
 **Convention de nommage des branches:**
+
 - `feature/` - Nouvelles fonctionnalités
 - `fix/` - Corrections de bugs
 - `docs/` - Documentation
@@ -151,6 +155,7 @@ git commit -m "perf(frontend): optimize bundle size"
 ```
 
 **Types de commits:**
+
 - `feat` - Nouvelle fonctionnalité
 - `fix` - Correction de bug
 - `docs` - Documentation
@@ -163,6 +168,7 @@ git commit -m "perf(frontend): optimize bundle size"
 - `build` - Build system
 
 **Scopes courants:**
+
 - `frontend` - Frontend React
 - `backend` - Backend API
 - `3d-engine` - Moteur 3D
@@ -298,9 +304,9 @@ describe('UserService', () => {
     it('should throw error if email already exists', async () => {
       const userData = { name: 'John', email: 'existing@example.com' };
 
-      await expect(userService.createUser(userData))
-        .rejects
-        .toThrow('Email already exists');
+      await expect(userService.createUser(userData)).rejects.toThrow(
+        'Email already exists'
+      );
     });
   });
 });
@@ -352,6 +358,7 @@ Utiliser le [template de PR](.github/PULL_REQUEST_TEMPLATE.md) fourni.
 Utiliser le [template de bug report](.github/ISSUE_TEMPLATE/bug-report.md).
 
 **Informations à inclure:**
+
 - Description claire du bug
 - Étapes de reproduction
 - Comportement attendu vs actuel
@@ -360,9 +367,11 @@ Utiliser le [template de bug report](.github/ISSUE_TEMPLATE/bug-report.md).
 
 ## ✨ Proposer des Features
 
-Utiliser le [template de feature request](.github/ISSUE_TEMPLATE/feature-request.md).
+Utiliser le
+[template de feature request](.github/ISSUE_TEMPLATE/feature-request.md).
 
 **Informations à inclure:**
+
 - Description de la fonctionnalité
 - Cas d'usage (user stories)
 - Bénéfices attendus
@@ -372,7 +381,8 @@ Utiliser le [template de feature request](.github/ISSUE_TEMPLATE/feature-request
 
 Pour proposer l'intégration d'un nouveau catalogue fournisseur :
 
-1. Utiliser le [template d'intégration](.github/ISSUE_TEMPLATE/catalog-integration-request.md)
+1. Utiliser le
+   [template d'intégration](.github/ISSUE_TEMPLATE/catalog-integration-request.md)
 2. Une fois approuvé, utiliser le CLI generator :
 
 ```bash
@@ -400,6 +410,7 @@ Besoin d'aide ?
 
 ## 🎉 Reconnaissance
 
-Tous les contributeurs sont reconnus dans le [CHANGELOG](CHANGELOG.md) et sur notre [page contributeurs](https://github.com/kitchenxpert/graphs/contributors).
+Tous les contributeurs sont reconnus dans le [CHANGELOG](CHANGELOG.md) et sur
+notre [page contributeurs](https://github.com/kitchenxpert/graphs/contributors).
 
 Merci pour votre contribution ! 🙏

@@ -1,5 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import api, { Product, ProductCreateInput, ProductUpdateInput, ApiError, PaginatedResponse } from '@/services/api';
+import api, {
+  Product,
+  ProductCreateInput,
+  ProductUpdateInput,
+  ApiError,
+  PaginatedResponse,
+} from '@/services/api';
 
 interface ProductsState {
   products: Product[];
@@ -58,9 +64,9 @@ export const fetchProducts = createAsyncThunk<
     const queryParams = {
       page: params?.page ?? page,
       pageSize: params?.pageSize ?? pageSize,
-      search: params?.search ?? filters.search || undefined,
-      category: params?.category ?? filters.category || undefined,
-      status: params?.status ?? filters.status || undefined,
+      search: (params?.search ?? filters.search) || undefined,
+      category: (params?.category ?? filters.category) || undefined,
+      status: (params?.status ?? filters.status) || undefined,
       sortBy: params?.sortBy ?? filters.sortBy,
       sortOrder: params?.sortOrder ?? filters.sortOrder,
     };
@@ -83,18 +89,17 @@ export const fetchProduct = createAsyncThunk<Product, string, { rejectValue: str
   }
 );
 
-export const createProduct = createAsyncThunk<
-  Product,
-  ProductCreateInput,
-  { rejectValue: string }
->('products/createProduct', async (data, { rejectWithValue }) => {
-  try {
-    return await api.createProduct(data);
-  } catch (error) {
-    const apiError = error as ApiError;
-    return rejectWithValue(apiError.message);
+export const createProduct = createAsyncThunk<Product, ProductCreateInput, { rejectValue: string }>(
+  'products/createProduct',
+  async (data, { rejectWithValue }) => {
+    try {
+      return await api.createProduct(data);
+    } catch (error) {
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.message);
+    }
   }
-});
+);
 
 export const updateProduct = createAsyncThunk<
   Product,

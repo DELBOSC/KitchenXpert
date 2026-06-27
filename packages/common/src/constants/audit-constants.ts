@@ -15,7 +15,7 @@ export const AUDIT_ACTIONS = {
   PERMISSION_CHANGE: 'permission_change',
 } as const;
 
-export type AuditAction = typeof AUDIT_ACTIONS[keyof typeof AUDIT_ACTIONS];
+export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];
 
 export const AUDIT_RESOURCES = {
   USER: 'user',
@@ -30,7 +30,7 @@ export const AUDIT_RESOURCES = {
   SYSTEM: 'system',
 } as const;
 
-export type AuditResource = typeof AUDIT_RESOURCES[keyof typeof AUDIT_RESOURCES];
+export type AuditResource = (typeof AUDIT_RESOURCES)[keyof typeof AUDIT_RESOURCES];
 
 export const AUDIT_RETENTION_DAYS = {
   DEFAULT: 90,
@@ -46,4 +46,4 @@ export const AUDIT_LOG_LEVELS = {
   CRITICAL: 'critical',
 } as const;
 
-export type AuditLogLevel = typeof AUDIT_LOG_LEVELS[keyof typeof AUDIT_LOG_LEVELS];
+export type AuditLogLevel = (typeof AUDIT_LOG_LEVELS)[keyof typeof AUDIT_LOG_LEVELS];

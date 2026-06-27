@@ -26,13 +26,19 @@ type Filter = 'all' | ReviewPlatform;
 export default function AvisPage(): React.ReactElement {
   const [filter, setFilter] = React.useState<Filter>('all');
 
-  const reviews = filter === 'all'
-    ? STATIC_REVIEWS
-    : STATIC_REVIEWS.filter((r) => r.platform === filter);
+  const reviews =
+    filter === 'all' ? STATIC_REVIEWS : STATIC_REVIEWS.filter((r) => r.platform === filter);
 
   const agg = aggregateRating(reviews);
 
-  const platforms: Filter[] = ['all', 'g2', 'capterra', 'trustpilot', 'avis_verifies', 'google_business'];
+  const platforms: Filter[] = [
+    'all',
+    'g2',
+    'capterra',
+    'trustpilot',
+    'avis_verifies',
+    'google_business',
+  ];
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
@@ -47,7 +53,8 @@ export default function AvisPage(): React.ReactElement {
           Avis clients vérifiés
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-white/60">
-          Chaque avis est publié sur une plateforme tierce indépendante. Aucun avis n&apos;est édité ou supprimé par KitchenXpert.
+          Chaque avis est publié sur une plateforme tierce indépendante. Aucun avis n&apos;est édité
+          ou supprimé par KitchenXpert.
         </p>
 
         {agg && (
@@ -66,10 +73,13 @@ export default function AvisPage(): React.ReactElement {
             <div className="flex flex-wrap items-center justify-center gap-2 border-y border-white/5 py-4">
               {platforms.map((p) => {
                 const active = filter === p;
-                const count = p === 'all'
-                  ? STATIC_REVIEWS.length
-                  : STATIC_REVIEWS.filter((r) => r.platform === p).length;
-                if (p !== 'all' && count === 0) {return null;}
+                const count =
+                  p === 'all'
+                    ? STATIC_REVIEWS.length
+                    : STATIC_REVIEWS.filter((r) => r.platform === p).length;
+                if (p !== 'all' && count === 0) {
+                  return null;
+                }
                 return (
                   <button
                     key={p}
@@ -99,10 +109,15 @@ export default function AvisPage(): React.ReactElement {
           <h2 className="text-2xl font-semibold text-white">Les premiers avis arrivent.</h2>
           <p className="mt-4 text-white/65">
             KitchenXpert est en phase de lancement. Nous attendons que nos premiers utilisateurs
-            partagent leur expérience sur G2, Capterra ou Trustpilot — ils seront listés ici dès publication.
+            partagent leur expérience sur G2, Capterra ou Trustpilot — ils seront listés ici dès
+            publication.
           </p>
           <p className="mt-2 text-sm text-white/55">
-            Vous voulez tester&nbsp;? <Link to="/designer/sandbox" className="text-white underline">Ouvrir le designer démo</Link>.
+            Vous voulez tester&nbsp;?{' '}
+            <Link to="/designer/sandbox" className="text-white underline">
+              Ouvrir le designer démo
+            </Link>
+            .
           </p>
         </main>
       )}
@@ -111,7 +126,8 @@ export default function AvisPage(): React.ReactElement {
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8">
           <h2 className="text-xl font-semibold text-white">Vous utilisez KitchenXpert&nbsp;?</h2>
           <p className="mt-2 text-sm text-white/65">
-            Votre retour aide les futurs utilisateurs à choisir leur outil. Choisissez la plateforme qui vous parle :
+            Votre retour aide les futurs utilisateurs à choisir leur outil. Choisissez la plateforme
+            qui vous parle :
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {(['g2', 'capterra', 'trustpilot'] as const).map((p) => (

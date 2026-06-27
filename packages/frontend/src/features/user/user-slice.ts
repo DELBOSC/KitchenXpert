@@ -13,7 +13,11 @@ export interface User {
   lastLoginAt?: string;
 }
 
-export interface UserFilters { role?: string; isActive?: boolean; search?: string; }
+export interface UserFilters {
+  role?: string;
+  isActive?: boolean;
+  search?: string;
+}
 
 export interface UserState {
   users: User[];
@@ -25,7 +29,11 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  users: [], currentUser: null, isLoading: false, error: null, filters: {},
+  users: [],
+  currentUser: null,
+  isLoading: false,
+  error: null,
+  filters: {},
   pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
 };
 
@@ -35,97 +43,169 @@ export const fetchUsers = createAsyncThunk<
   { page?: number; limit?: number; filters?: UserFilters }
 >('user/fetchUsers', async ({ page = 1, limit = 20, filters = {} }, { rejectWithValue }) => {
   try {
-    const params = new URLSearchParams({ page: String(page), limit: String(limit), ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== undefined)) });
-    const response = await fetch(`${API_URL}/users?${params.toString()}`, { credentials: 'include' });
-    const data = (await response.json()) as { data: User[]; meta: { total: number; page: number; totalPages: number }; error?: string };
-    if (!response.ok) {throw new Error(data.error);}
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== undefined)),
+    });
+    const response = await fetch(`${API_URL}/users?${params.toString()}`, {
+      credentials: 'include',
+    });
+    const data = (await response.json()) as {
+      data: User[];
+      meta: { total: number; page: number; totalPages: number };
+      error?: string;
+    };
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
     return { data: data.data, ...data.meta };
   } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred';
-      return rejectWithValue(message);
-    }
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
+    return rejectWithValue(message);
+  }
 });
 
-export const fetchUserById = createAsyncThunk<User, string>('user/fetchUserById', async (id, { rejectWithValue }) => {
-  try {
-    const response = await fetch(`${API_URL}/users/${id}`, { credentials: 'include' });
-    const data = (await response.json()) as { data: User; error?: string };
-    if (!response.ok) {throw new Error(data.error);}
-    return data.data;
-  } catch (error) {
+export const fetchUserById = createAsyncThunk<User, string>(
+  'user/fetchUserById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/users/${id}`, { credentials: 'include' });
+      const data = (await response.json()) as { data: User; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return data.data;
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
-export const updateUser = createAsyncThunk<User, { id: string; updates: Partial<User> }>('user/updateUser', async ({ id, updates }, { rejectWithValue }) => {
-  try {
-    const response = await fetch(`${API_URL}/users/${id}`, {
-      method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
-    });
-    const data = (await response.json()) as { data: User; error?: string };
-    if (!response.ok) {throw new Error(data.error);}
-    return data.data;
-  } catch (error) {
+export const updateUser = createAsyncThunk<User, { id: string; updates: Partial<User> }>(
+  'user/updateUser',
+  async ({ id, updates }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/users/${id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      const data = (await response.json()) as { data: User; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return data.data;
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
-export const deleteUser = createAsyncThunk<string, string>('user/deleteUser', async (id, { rejectWithValue }) => {
-  try {
-    const response = await fetch(`${API_URL}/users/${id}`, { method: 'DELETE', credentials: 'include' });
-    const data = (await response.json()) as { error?: string };
-    if (!response.ok) {throw new Error(data.error);}
-    return id;
-  } catch (error) {
+export const deleteUser = createAsyncThunk<string, string>(
+  'user/deleteUser',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/users/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return id;
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
-export const toggleUserActive = createAsyncThunk<User, string>('user/toggleUserActive', async (id, { rejectWithValue }) => {
-  try {
-    const response = await fetch(`${API_URL}/admin/users/${id}/toggle-active`, { method: 'PUT', credentials: 'include' });
-    const data = (await response.json()) as { data: User; error?: string };
-    if (!response.ok) {throw new Error(data.error);}
-    return data.data;
-  } catch (error) {
+export const toggleUserActive = createAsyncThunk<User, string>(
+  'user/toggleUserActive',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/admin/users/${id}/toggle-active`, {
+        method: 'PUT',
+        credentials: 'include',
+      });
+      const data = (await response.json()) as { data: User; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return data.data;
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<UserFilters>) => { state.filters = action.payload; },
-    clearFilters: (state) => { state.filters = {}; },
-    clearCurrentUser: (state) => { state.currentUser = null; },
-    clearError: (state) => { state.error = null; },
+    setFilters: (state, action: PayloadAction<UserFilters>) => {
+      state.filters = action.payload;
+    },
+    clearFilters: (state) => {
+      state.filters = {};
+    },
+    clearCurrentUser: (state) => {
+      state.currentUser = null;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => { state.isLoading = true; state.error = null; })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.isLoading = false; state.users = action.payload.data;
-        state.pagination = { page: action.payload.page, limit: state.pagination.limit, total: action.payload.total, totalPages: action.payload.totalPages };
+      .addCase(fetchUsers.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
-      .addCase(fetchUsers.rejected, (state, action) => { state.isLoading = false; state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred'; })
-      .addCase(fetchUserById.fulfilled, (state, action) => { state.currentUser = action.payload; })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.users = action.payload.data;
+        state.pagination = {
+          page: action.payload.page,
+          limit: state.pagination.limit,
+          total: action.payload.total,
+          totalPages: action.payload.totalPages,
+        };
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.currentUser = action.payload;
+      })
       .addCase(updateUser.fulfilled, (state, action) => {
-        const idx = state.users.findIndex(u => u.id === action.payload.id);
-        if (idx !== -1) {state.users[idx] = action.payload;}
-        if (state.currentUser?.id === action.payload.id) {state.currentUser = action.payload;}
+        const idx = state.users.findIndex((u) => u.id === action.payload.id);
+        if (idx !== -1) {
+          state.users[idx] = action.payload;
+        }
+        if (state.currentUser?.id === action.payload.id) {
+          state.currentUser = action.payload;
+        }
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
-        state.users = state.users.filter(u => u.id !== action.payload);
-        if (state.currentUser?.id === action.payload) {state.currentUser = null;}
+        state.users = state.users.filter((u) => u.id !== action.payload);
+        if (state.currentUser?.id === action.payload) {
+          state.currentUser = null;
+        }
       })
       .addCase(toggleUserActive.fulfilled, (state, action) => {
-        const idx = state.users.findIndex(u => u.id === action.payload.id);
-        if (idx !== -1) {state.users[idx] = action.payload;}
+        const idx = state.users.findIndex((u) => u.id === action.payload.id);
+        if (idx !== -1) {
+          state.users[idx] = action.payload;
+        }
       });
   },
 });

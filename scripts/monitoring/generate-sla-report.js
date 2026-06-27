@@ -70,8 +70,18 @@ function fetchMetrics() {
       min: 45,
     },
     incidents: [
-      { date: '2024-01-15', duration: 12, impact: 'minor', description: 'Database connection pool exhausted' },
-      { date: '2024-01-22', duration: 10, impact: 'minor', description: 'Cache invalidation delay' },
+      {
+        date: '2024-01-15',
+        duration: 12,
+        impact: 'minor',
+        description: 'Database connection pool exhausted',
+      },
+      {
+        date: '2024-01-22',
+        duration: 10,
+        impact: 'minor',
+        description: 'Cache invalidation delay',
+      },
     ],
   };
 }
@@ -128,8 +138,8 @@ function calculateCompliance(metrics) {
     compliance.errorRate.met,
     compliance.throughput.met,
   ];
-  compliance.overall = allMet.every(m => m);
-  compliance.score = (allMet.filter(m => m).length / allMet.length) * 100;
+  compliance.overall = allMet.every((m) => m);
+  compliance.score = (allMet.filter((m) => m).length / allMet.length) * 100;
 
   return compliance;
 }
@@ -260,26 +270,36 @@ function generateMarkdownReport(metrics, compliance, period) {
 
 // Generate JSON report
 function generateJsonReport(metrics, compliance) {
-  return JSON.stringify({
-    meta: {
-      generated: new Date().toISOString(),
-      period: config.period,
+  return JSON.stringify(
+    {
+      meta: {
+        generated: new Date().toISOString(),
+        period: config.period,
+      },
+      summary: {
+        compliant: compliance.overall,
+        score: compliance.score,
+      },
+      targets: slaTargets,
+      metrics,
+      compliance,
     },
-    summary: {
-      compliant: compliance.overall,
-      score: compliance.score,
-    },
-    targets: slaTargets,
-    metrics,
-    compliance,
-  }, null, 2);
+    null,
+    2
+  );
 }
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}        KitchenXpert - SLA Report Generator                 ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}        KitchenXpert - SLA Report Generator                 ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   // Fetch metrics
@@ -288,7 +308,10 @@ async function main() {
   // Calculate compliance
   const compliance = calculateCompliance(metrics);
 
-  log('INFO', `Overall compliance: ${compliance.overall ? 'MET' : 'NOT MET'} (${compliance.score}%)`);
+  log(
+    'INFO',
+    `Overall compliance: ${compliance.overall ? 'MET' : 'NOT MET'} (${compliance.score}%)`
+  );
 
   // Ensure output directory exists
   if (!fs.existsSync(config.outputDir)) {
@@ -310,9 +333,15 @@ async function main() {
 
   console.log('');
   const statusColor = compliance.overall ? colors.green : colors.red;
-  console.log(`${statusColor}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${statusColor}║${colors.reset}        SLA Report Complete                                 ${statusColor}║${colors.reset}`);
-  console.log(`${statusColor}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${statusColor}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${statusColor}║${colors.reset}        SLA Report Complete                                 ${statusColor}║${colors.reset}`
+  );
+  console.log(
+    `${statusColor}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  Status:     ${compliance.overall ? '✅ COMPLIANT' : '❌ NON-COMPLIANT'}`);
   console.log(`  Score:      ${compliance.score}%`);

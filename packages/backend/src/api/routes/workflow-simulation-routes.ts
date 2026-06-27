@@ -13,8 +13,7 @@ const simulateSchema = z.object({
   kitchenId: z.string().uuid(),
   scenario: z.enum(['dinner_for_6', 'quick_breakfast', 'meal_prep', 'baking'], {
     errorMap: () => ({
-      message:
-        'Invalid scenario. Must be one of: dinner_for_6, quick_breakfast, meal_prep, baking',
+      message: 'Invalid scenario. Must be one of: dinner_for_6, quick_breakfast, meal_prep, baking',
     }),
   }),
 });
@@ -146,7 +145,7 @@ router.post('/optimize', validateBody(optimizeSchema), workflowSimulationControl
 router.get(
   '/history/:kitchenId',
   validateParams(kitchenIdParamSchema),
-  workflowSimulationController.getHistory,
+  workflowSimulationController.getHistory
 );
 
 export default router;

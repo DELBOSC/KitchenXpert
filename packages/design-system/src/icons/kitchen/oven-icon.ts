@@ -10,14 +10,11 @@ export interface IconProps {
   strokeWidth?: number;
 }
 
-export const ovenIconPath = 'M3 3h18v18H3V3zm0 6h18M6 6h.01M10 6h.01M14 6h.01M18 6h.01M6 13h12v5H6v-5z';
+export const ovenIconPath =
+  'M3 3h18v18H3V3zm0 6h18M6 6h.01M10 6h.01M14 6h.01M18 6h.01M6 13h12v5H6v-5z';
 
 export function createOvenIcon(props: IconProps = {}): string {
-  const {
-    size = 24,
-    color = 'currentColor',
-    strokeWidth = 2
-  } = props;
+  const { size = 24, color = 'currentColor', strokeWidth = 2 } = props;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="3" width="18" height="18" rx="1"/>

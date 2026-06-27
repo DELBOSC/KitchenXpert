@@ -31,9 +31,15 @@ export interface CategoryResolution {
 
 /** Slugs valides du référentiel (pour valider un override explicite). */
 const VALID_SLUGS: readonly CategorySlug[] = [
-  'meubles-bas', 'meubles-hauts', 'colonnes', 'plans-de-travail',
-  'electromenager-cuisson', 'electromenager-froid', 'electromenager-lavage',
-  'eviers-robinetterie', 'facades',
+  'meubles-bas',
+  'meubles-hauts',
+  'colonnes',
+  'plans-de-travail',
+  'electromenager-cuisson',
+  'electromenager-froid',
+  'electromenager-lavage',
+  'eviers-robinetterie',
+  'facades',
 ];
 
 /** EPREL applianceGroup -> catégorie (mapping explicit). */

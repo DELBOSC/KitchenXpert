@@ -9,31 +9,31 @@ import logger from '../utils/logger';
 
 export interface RoomScanResult {
   dimensions: {
-    width: number;   // mm
-    length: number;  // mm
-    height: number;  // mm
+    width: number; // mm
+    length: number; // mm
+    height: number; // mm
   };
   walls: {
     id: string;
     side: 'back' | 'left' | 'right' | 'front';
-    length: number;     // mm
+    length: number; // mm
     hasWindow: boolean;
     hasDoor: boolean;
   }[];
   openings: {
     type: 'door' | 'window' | 'arch';
     wall: string;
-    width: number;      // mm
-    height: number;     // mm
-    fromFloor: number;  // mm
-    position: number;   // mm from left of wall
+    width: number; // mm
+    height: number; // mm
+    fromFloor: number; // mm
+    position: number; // mm from left of wall
   }[];
   technicalPoints: {
     type: 'water' | 'electric' | 'gas' | 'ventilation';
     subtype: string;
     wall: string;
-    heightFromFloor: number;  // mm
-    position: number;         // mm from left of wall
+    heightFromFloor: number; // mm
+    position: number; // mm from left of wall
   }[];
   confidence: number; // 0-1
   notes: string[];
@@ -103,7 +103,7 @@ export class RoomScanService {
       return this.parseAIResponse(textBlock.text, context);
     } catch (error) {
       logger.error('[RoomScan] Claude Vision API error', { error });
-      throw new Error('Erreur lors de l\'analyse des photos. Verifiez votre cle API Anthropic.');
+      throw new Error("Erreur lors de l'analyse des photos. Verifiez votre cle API Anthropic.");
     }
   }
 
@@ -161,11 +161,19 @@ References pour estimation:
 Si tu ne peux pas determiner une dimension avec certitude, fais une estimation raisonnable et indique dans "notes" quelles dimensions sont estimees.`;
 
     if (context) {
-      prompt += '\n\nInformations supplementaires fournies par l\'utilisateur:';
-      if (context.estimatedWidth) {prompt += `\n- Largeur estimee: ${context.estimatedWidth}mm`;}
-      if (context.estimatedLength) {prompt += `\n- Longueur estimee: ${context.estimatedLength}mm`;}
-      if (context.estimatedHeight) {prompt += `\n- Hauteur estimee: ${context.estimatedHeight}mm`;}
-      if (context.notes) {prompt += `\n- Notes: ${context.notes}`;}
+      prompt += "\n\nInformations supplementaires fournies par l'utilisateur:";
+      if (context.estimatedWidth) {
+        prompt += `\n- Largeur estimee: ${context.estimatedWidth}mm`;
+      }
+      if (context.estimatedLength) {
+        prompt += `\n- Longueur estimee: ${context.estimatedLength}mm`;
+      }
+      if (context.estimatedHeight) {
+        prompt += `\n- Hauteur estimee: ${context.estimatedHeight}mm`;
+      }
+      if (context.notes) {
+        prompt += `\n- Notes: ${context.notes}`;
+      }
     }
 
     return prompt;
@@ -187,22 +195,39 @@ Si tu ne peux pas determiner une dimension avec certitude, fais une estimation r
       // Validate and sanitize
       const result: RoomScanResult = {
         dimensions: {
-          width: this.clampDimension(parsed.dimensions?.width, 1000, 10000, context?.estimatedWidth || 3000),
-          length: this.clampDimension(parsed.dimensions?.length, 1000, 10000, context?.estimatedLength || 3000),
-          height: this.clampDimension(parsed.dimensions?.height, 2000, 4000, context?.estimatedHeight || 2500),
+          width: this.clampDimension(
+            parsed.dimensions?.width,
+            1000,
+            10000,
+            context?.estimatedWidth || 3000
+          ),
+          length: this.clampDimension(
+            parsed.dimensions?.length,
+            1000,
+            10000,
+            context?.estimatedLength || 3000
+          ),
+          height: this.clampDimension(
+            parsed.dimensions?.height,
+            2000,
+            4000,
+            context?.estimatedHeight || 2500
+          ),
         },
         walls: Array.isArray(parsed.walls) ? parsed.walls.slice(0, 4) : [],
         openings: Array.isArray(parsed.openings) ? parsed.openings : [],
         technicalPoints: Array.isArray(parsed.technicalPoints) ? parsed.technicalPoints : [],
-        confidence: typeof parsed.confidence === 'number'
-          ? Math.max(0, Math.min(1, parsed.confidence))
-          : 0.5,
+        confidence:
+          typeof parsed.confidence === 'number' ? Math.max(0, Math.min(1, parsed.confidence)) : 0.5,
         notes: Array.isArray(parsed.notes) ? parsed.notes : [],
       };
 
       return result;
     } catch (error) {
-      logger.warn('[RoomScan] Failed to parse AI response, returning defaults', { error, text: text.slice(0, 200) });
+      logger.warn('[RoomScan] Failed to parse AI response, returning defaults', {
+        error,
+        text: text.slice(0, 200),
+      });
 
       return {
         dimensions: {
@@ -214,13 +239,15 @@ Si tu ne peux pas determiner une dimension avec certitude, fais une estimation r
         openings: [],
         technicalPoints: [],
         confidence: 0.1,
-        notes: ['Echec de l\'analyse automatique. Dimensions par defaut utilisees.'],
+        notes: ["Echec de l'analyse automatique. Dimensions par defaut utilisees."],
       };
     }
   }
 
   private clampDimension(value: unknown, min: number, max: number, fallback: number): number {
-    if (typeof value !== 'number' || isNaN(value)) {return fallback;}
+    if (typeof value !== 'number' || isNaN(value)) {
+      return fallback;
+    }
     return Math.max(min, Math.min(max, Math.round(value)));
   }
 }

@@ -62,7 +62,10 @@ function parseNumeric(value: number | string | undefined | null): number {
   if (value === undefined || value === null) return 0;
   if (typeof value === 'number') return value;
   // Handle European format: "1.234,56" or "1 234,56"
-  const cleaned = value.replace(/\s/g, '').replace(/\.(?=\d{3})/g, '').replace(',', '.');
+  const cleaned = value
+    .replace(/\s/g, '')
+    .replace(/\.(?=\d{3})/g, '')
+    .replace(',', '.');
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? 0 : parsed;
 }
@@ -102,7 +105,9 @@ export class BaseTransformer implements ITransformer {
   /**
    * Transform raw image data into standardized array
    */
-  transformImages(data: RawImage | RawImage[] | string | string[]): Array<{ url: string; isPrimary: boolean; order: number }> {
+  transformImages(
+    data: RawImage | RawImage[] | string | string[]
+  ): Array<{ url: string; isPrimary: boolean; order: number }> {
     // Normalize to array
     const items = Array.isArray(data) ? data : [data];
 

@@ -1,11 +1,31 @@
 import { motion } from 'framer-motion';
-import { Plus, FolderOpen, Library, UserCircle2, ArrowRight, TrendingUp, Clock, Euro, Layers } from 'lucide-react';
+import {
+  Plus,
+  FolderOpen,
+  Library,
+  UserCircle2,
+  ArrowRight,
+  TrendingUp,
+  Clock,
+  Euro,
+  Layers,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { SandboxMigrationBanner } from '../components/sandbox/SandboxMigrationBanner';
-import { Badge, Card, Container, EmptyState, ErrorState, PageHeader, Skeleton, fadeUp, stagger } from '../components/ui';
+import {
+  Badge,
+  Card,
+  Container,
+  EmptyState,
+  ErrorState,
+  PageHeader,
+  Skeleton,
+  fadeUp,
+  stagger,
+} from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
 import {
   fetchProjects,
@@ -41,7 +61,9 @@ export default function DashboardPage(): React.ReactElement {
     promise.unwrap().catch((err: unknown) => {
       setError(getErrorMessage(err, t('common.error')));
     });
-    return () => { promise.abort(); };
+    return () => {
+      promise.abort();
+    };
   }, [dispatch, retryCount, t]);
 
   const recent = projects.slice(0, 6);
@@ -61,7 +83,8 @@ export default function DashboardPage(): React.ReactElement {
         <PageHeader
           title={
             <>
-              Bonjour, <span className="bg-gradient-to-r from-indigo-300 to-fuchsia-300 bg-clip-text text-transparent">
+              Bonjour,{' '}
+              <span className="bg-gradient-to-r from-indigo-300 to-fuchsia-300 bg-clip-text text-transparent">
                 {user?.name?.split(' ')[0] || 'chez vous'}
               </span>
             </>
@@ -83,10 +106,34 @@ export default function DashboardPage(): React.ReactElement {
         <section className="mt-10">
           <h2 className="mb-4 text-xs uppercase tracking-widest text-white/40">Accès rapides</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <QuickAction icon={<Plus className="h-5 w-5" />} title="Nouveau design" desc="Créez une cuisine de zéro" to="/designer" accent="from-indigo-500/30" />
-            <QuickAction icon={<FolderOpen className="h-5 w-5" />} title="Mes projets" desc="Reprendre où j'en étais" to="/projects" accent="from-fuchsia-500/30" />
-            <QuickAction icon={<Library className="h-5 w-5" />} title="Catalogue" desc="Produits & marques" to="/catalog" accent="from-cyan-500/30" />
-            <QuickAction icon={<UserCircle2 className="h-5 w-5" />} title="Profil" desc="Paramètres & compte" to="/profile" accent="from-emerald-500/30" />
+            <QuickAction
+              icon={<Plus className="h-5 w-5" />}
+              title="Nouveau design"
+              desc="Créez une cuisine de zéro"
+              to="/designer"
+              accent="from-indigo-500/30"
+            />
+            <QuickAction
+              icon={<FolderOpen className="h-5 w-5" />}
+              title="Mes projets"
+              desc="Reprendre où j'en étais"
+              to="/projects"
+              accent="from-fuchsia-500/30"
+            />
+            <QuickAction
+              icon={<Library className="h-5 w-5" />}
+              title="Catalogue"
+              desc="Produits & marques"
+              to="/catalog"
+              accent="from-cyan-500/30"
+            />
+            <QuickAction
+              icon={<UserCircle2 className="h-5 w-5" />}
+              title="Profil"
+              desc="Paramètres & compte"
+              to="/profile"
+              accent="from-emerald-500/30"
+            />
           </div>
         </section>
 
@@ -94,7 +141,10 @@ export default function DashboardPage(): React.ReactElement {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xs uppercase tracking-widest text-white/40">Projets récents</h2>
             {recent.length > 0 && (
-              <Link to="/projects" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white">
+              <Link
+                to="/projects"
+                className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white"
+              >
                 Tout voir <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             )}
@@ -144,7 +194,10 @@ export default function DashboardPage(): React.ReactElement {
               className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
             >
               {recent.map((project) => (
-                <motion.div key={project.id} variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}>
+                <motion.div
+                  key={project.id}
+                  variants={{ hidden: fadeUp.initial, show: fadeUp.animate }}
+                >
                   <ProjectCard project={project} t={t} language={i18n.language} />
                 </motion.div>
               ))}
@@ -157,12 +210,26 @@ export default function DashboardPage(): React.ReactElement {
 }
 
 // ---------------------------------------------------------------------------
-function StatsGrid({ stats, loading }: { stats: { projects: number; inProgress: number; completed: number; totalBudget: number }; loading: boolean }): React.ReactElement {
+function StatsGrid({
+  stats,
+  loading,
+}: {
+  stats: { projects: number; inProgress: number; completed: number; totalBudget: number };
+  loading: boolean;
+}): React.ReactElement {
   const items = [
     { icon: <Layers className="h-4 w-4" />, label: 'Projets', value: stats.projects },
     { icon: <Clock className="h-4 w-4" />, label: 'En cours', value: stats.inProgress },
     { icon: <TrendingUp className="h-4 w-4" />, label: 'Terminés', value: stats.completed },
-    { icon: <Euro className="h-4 w-4" />, label: 'Budget cumulé', value: new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(stats.totalBudget) },
+    {
+      icon: <Euro className="h-4 w-4" />,
+      label: 'Budget cumulé',
+      value: new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'EUR',
+        maximumFractionDigits: 0,
+      }).format(stats.totalBudget),
+    },
   ];
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -182,16 +249,27 @@ function StatsGrid({ stats, loading }: { stats: { projects: number; inProgress: 
 }
 
 function QuickAction({
-  icon, title, desc, to, accent,
+  icon,
+  title,
+  desc,
+  to,
+  accent,
 }: {
-  icon: React.ReactNode; title: string; desc: string; to: string; accent: string;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  to: string;
+  accent: string;
 }): React.ReactElement {
   return (
     <Link
       to={to}
       className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/20 hover:bg-white/[0.06]"
     >
-      <div className={`absolute -top-12 -right-12 h-28 w-28 rounded-full bg-gradient-to-br ${accent} to-transparent blur-2xl transition group-hover:scale-110`} aria-hidden />
+      <div
+        className={`absolute -top-12 -right-12 h-28 w-28 rounded-full bg-gradient-to-br ${accent} to-transparent blur-2xl transition group-hover:scale-110`}
+        aria-hidden
+      />
       <div className="relative">
         <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white">
           {icon}
@@ -204,12 +282,20 @@ function QuickAction({
 }
 
 function ProjectCard({
-  project, t, language,
+  project,
+  t,
+  language,
 }: {
-  project: Project; t: (k: string) => string; language: string;
+  project: Project;
+  t: (k: string) => string;
+  language: string;
 }): React.ReactElement {
   const tone = STATUS_TONE[project.status] ?? 'default';
-  const dateStr = new Intl.DateTimeFormat(language, { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(project.updatedAt));
+  const dateStr = new Intl.DateTimeFormat(language, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(project.updatedAt));
 
   return (
     <Link
@@ -217,8 +303,12 @@ function ProjectCard({
       className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/20 hover:bg-white/[0.05]"
     >
       <div className="mb-3 flex items-start justify-between gap-2">
-        <h3 className="line-clamp-1 text-sm font-semibold text-white group-hover:text-white">{project.name}</h3>
-        <Badge variant={tone} dot>{t(`project.status.${project.status}`)}</Badge>
+        <h3 className="line-clamp-1 text-sm font-semibold text-white group-hover:text-white">
+          {project.name}
+        </h3>
+        <Badge variant={tone} dot>
+          {t(`project.status.${project.status}`)}
+        </Badge>
       </div>
       {project.description && (
         <p className="mb-4 line-clamp-2 text-xs text-white/50">{project.description}</p>
@@ -227,7 +317,11 @@ function ProjectCard({
         <span>{dateStr}</span>
         {!!project.budget && project.budget > 0 && (
           <span className="font-medium text-white/80">
-            {new Intl.NumberFormat(language, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(project.budget)}
+            {new Intl.NumberFormat(language, {
+              style: 'currency',
+              currency: 'EUR',
+              maximumFractionDigits: 0,
+            }).format(project.budget)}
           </span>
         )}
       </div>

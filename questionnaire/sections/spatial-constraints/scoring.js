@@ -16,14 +16,14 @@ const dimensionCalculator = require('./dimension-calculator');
  * Score weights for spatial factors
  */
 const SCORE_WEIGHTS = {
-  kitchenSize: 0.20,
+  kitchenSize: 0.2,
   ceilingHeight: 0.12,
   desiredLayout: 0.18,
   islandPreference: 0.12,
   storageNeeds: 0.15,
-  structuralConstraints: 0.10,
+  structuralConstraints: 0.1,
   openConcept: 0.08,
-  windowPlacement: 0.05
+  windowPlacement: 0.05,
 };
 
 /**
@@ -42,8 +42,8 @@ const SIZE_CATEGORY_SCORES = {
       'maximize-vertical-storage',
       'light-colors',
       'reflective-surfaces',
-      'multi-function-appliances'
-    ]
+      'multi-function-appliances',
+    ],
   },
   medium: {
     score: 70,
@@ -53,11 +53,7 @@ const SIZE_CATEGORY_SCORES = {
     challenges: ['moderate-storage', 'traffic-flow'],
     opportunities: ['good-work-triangle', 'flexible-layout', 'eat-in-possible'],
     tags: ['standard-kitchen'],
-    designStrategies: [
-      'optimize-work-triangle',
-      'consider-peninsula',
-      'pull-out-storage'
-    ]
+    designStrategies: ['optimize-work-triangle', 'consider-peninsula', 'pull-out-storage'],
   },
   large: {
     score: 85,
@@ -71,8 +67,8 @@ const SIZE_CATEGORY_SCORES = {
       'work-zones',
       'multiple-work-triangles',
       'island-integration',
-      'pantry-closet'
-    ]
+      'pantry-closet',
+    ],
   },
   'very-large': {
     score: 95,
@@ -87,9 +83,9 @@ const SIZE_CATEGORY_SCORES = {
       'multiple-islands',
       'pro-appliances',
       'butlers-pantry',
-      'beverage-center'
-    ]
-  }
+      'beverage-center',
+    ],
+  },
 };
 
 /**
@@ -102,7 +98,7 @@ const CEILING_HEIGHT_SCORES = {
     tags: [],
     cabinetOptions: ['standard-uppers', 'crown-molding'],
     storageMultiplier: 1.0,
-    visualImpact: 'neutral'
+    visualImpact: 'neutral',
   },
   tall: {
     score: 75,
@@ -110,7 +106,7 @@ const CEILING_HEIGHT_SCORES = {
     tags: ['tall-ceilings'],
     cabinetOptions: ['stacked-uppers', 'extended-uppers', 'display-shelving'],
     storageMultiplier: 1.25,
-    visualImpact: 'enhanced'
+    visualImpact: 'enhanced',
   },
   'very-tall': {
     score: 90,
@@ -118,7 +114,7 @@ const CEILING_HEIGHT_SCORES = {
     tags: ['dramatic-ceilings', 'architectural-feature'],
     cabinetOptions: ['ceiling-height', 'ladder-library', 'decorative-soffit'],
     storageMultiplier: 1.5,
-    visualImpact: 'dramatic'
+    visualImpact: 'dramatic',
   },
   vaulted: {
     score: 80,
@@ -126,8 +122,8 @@ const CEILING_HEIGHT_SCORES = {
     tags: ['vaulted-ceiling', 'architectural-feature'],
     cabinetOptions: ['follow-roofline', 'open-shelving', 'custom-uppers'],
     storageMultiplier: 1.3,
-    visualImpact: 'dramatic'
-  }
+    visualImpact: 'dramatic',
+  },
 };
 
 /**
@@ -144,7 +140,7 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 1,
     tags: ['linear-layout', 'small-space'],
     bestFor: ['studio', 'apartment', 'efficiency', 'secondary-kitchen'],
-    limitations: ['no-work-triangle', 'limited-counter', 'linear-workflow']
+    limitations: ['no-work-triangle', 'limited-counter', 'linear-workflow'],
   },
   galley: {
     score: 65,
@@ -156,7 +152,7 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 1,
     tags: ['galley-layout', 'efficient'],
     bestFor: ['narrow-space', 'condo', 'townhouse'],
-    limitations: ['traffic-through', 'single-cook', 'no-eat-in']
+    limitations: ['traffic-through', 'single-cook', 'no-eat-in'],
   },
   'l-shaped': {
     score: 80,
@@ -168,7 +164,7 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 2,
     tags: ['l-shaped', 'versatile'],
     bestFor: ['open-concept', 'flexible-needs', 'corner-space'],
-    limitations: ['corner-access', 'one-end-dead']
+    limitations: ['corner-access', 'one-end-dead'],
   },
   'u-shaped': {
     score: 85,
@@ -180,7 +176,7 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 2,
     tags: ['u-shaped', 'enclosed'],
     bestFor: ['dedicated-cook', 'maximum-storage', 'no-traffic'],
-    limitations: ['enclosed-feeling', 'corner-access-x2']
+    limitations: ['enclosed-feeling', 'corner-access-x2'],
   },
   peninsula: {
     score: 82,
@@ -192,7 +188,7 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 2,
     tags: ['peninsula', 'seating-integrated'],
     bestFor: ['semi-open', 'seating-needed', 'space-division'],
-    limitations: ['blocks-flow', 'fixed-position']
+    limitations: ['blocks-flow', 'fixed-position'],
   },
   island: {
     score: 90,
@@ -204,7 +200,7 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 3,
     tags: ['island-layout', 'multi-functional'],
     bestFor: ['open-concept', 'entertaining', 'large-family'],
-    limitations: ['requires-space', 'plumbing-complexity', 'higher-cost']
+    limitations: ['requires-space', 'plumbing-complexity', 'higher-cost'],
   },
   'double-island': {
     score: 95,
@@ -216,7 +212,7 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 4,
     tags: ['double-island', 'luxury', 'professional'],
     bestFor: ['luxury-kitchen', 'serious-entertainer', 'professional-cook'],
-    limitations: ['extensive-space', 'high-cost', 'complex-planning']
+    limitations: ['extensive-space', 'high-cost', 'complex-planning'],
   },
   'g-shaped': {
     score: 88,
@@ -228,8 +224,8 @@ const LAYOUT_CONFIGURATIONS = {
     maxCooks: 2,
     tags: ['g-shaped', 'wrap-around'],
     bestFor: ['maximum-counter', 'serious-cook', 'peninsula-alternative'],
-    limitations: ['potential-cramped', 'corner-access-x2', 'enclosed']
-  }
+    limitations: ['potential-cramped', 'corner-access-x2', 'enclosed'],
+  },
 };
 
 /**
@@ -243,7 +239,7 @@ const ISLAND_PREFERENCE_SCORES = {
     seatingCapacity: '4-6',
     features: ['prep-sink', 'seating', 'storage', 'cooktop-option'],
     tags: ['large-island', 'entertainment-hub'],
-    infrastructureNeeds: ['plumbing-extension', 'electrical-runs', 'structural-support']
+    infrastructureNeeds: ['plumbing-extension', 'electrical-runs', 'structural-support'],
   },
   'yes-small': {
     score: 80,
@@ -252,7 +248,7 @@ const ISLAND_PREFERENCE_SCORES = {
     seatingCapacity: '2-3',
     features: ['prep-space', 'minimal-seating', 'storage'],
     tags: ['compact-island'],
-    infrastructureNeeds: ['electrical-outlet']
+    infrastructureNeeds: ['electrical-outlet'],
   },
   'yes-mobile': {
     score: 65,
@@ -261,7 +257,7 @@ const ISLAND_PREFERENCE_SCORES = {
     seatingCapacity: '0-2',
     features: ['flexibility', 'removable', 'no-plumbing'],
     tags: ['mobile-island', 'flexible-layout'],
-    infrastructureNeeds: []
+    infrastructureNeeds: [],
   },
   peninsula: {
     score: 75,
@@ -270,7 +266,7 @@ const ISLAND_PREFERENCE_SCORES = {
     seatingCapacity: '2-4',
     features: ['seating', 'storage', 'space-division'],
     tags: ['peninsula'],
-    infrastructureNeeds: ['electrical-outlet']
+    infrastructureNeeds: ['electrical-outlet'],
   },
   no: {
     score: 50,
@@ -279,8 +275,8 @@ const ISLAND_PREFERENCE_SCORES = {
     seatingCapacity: '0',
     features: [],
     tags: [],
-    infrastructureNeeds: []
-  }
+    infrastructureNeeds: [],
+  },
 };
 
 /**
@@ -292,29 +288,34 @@ const STORAGE_NEEDS_SCORES = {
     level: 'minimal',
     cabinetFactor: 0.7,
     tags: ['minimalist-storage'],
-    solutions: ['open-shelving', 'essentials-only']
+    solutions: ['open-shelving', 'essentials-only'],
   },
   standard: {
     score: 60,
     level: 'standard',
     cabinetFactor: 1.0,
     tags: [],
-    solutions: ['standard-cabinets', 'basic-organizers']
+    solutions: ['standard-cabinets', 'basic-organizers'],
   },
   generous: {
     score: 80,
     level: 'generous',
     cabinetFactor: 1.2,
     tags: ['high-storage'],
-    solutions: ['pull-outs', 'lazy-susan', 'drawer-organizers', 'pantry-cabinet']
+    solutions: ['pull-outs', 'lazy-susan', 'drawer-organizers', 'pantry-cabinet'],
   },
   maximum: {
     score: 100,
     level: 'maximum',
     cabinetFactor: 1.5,
     tags: ['maximum-storage', 'pantry-priority'],
-    solutions: ['ceiling-height-cabinets', 'walk-in-pantry', 'specialty-storage', 'appliance-garage']
-  }
+    solutions: [
+      'ceiling-height-cabinets',
+      'walk-in-pantry',
+      'specialty-storage',
+      'appliance-garage',
+    ],
+  },
 };
 
 /**
@@ -328,7 +329,7 @@ const STRUCTURAL_CONSTRAINT_IMPACTS = {
   'window-placement': { impact: -5, flexibility: 'high', tags: ['window-consideration'] },
   'hvac-ductwork': { impact: -12, flexibility: 'moderate', tags: ['hvac-constraint'] },
   'chimney-flue': { impact: -18, flexibility: 'limited', tags: ['chimney-constraint'] },
-  'floor-drain': { impact: -8, flexibility: 'high', tags: ['drainage-consideration'] }
+  'floor-drain': { impact: -8, flexibility: 'high', tags: ['drainage-consideration'] },
 };
 
 /**
@@ -339,26 +340,26 @@ const OPEN_CONCEPT_SCORES = {
     score: 80,
     status: 'open',
     tags: ['open-concept'],
-    considerations: ['noise-management', 'odor-control', 'visual-clutter']
+    considerations: ['noise-management', 'odor-control', 'visual-clutter'],
   },
   'want-to-open': {
     score: 90,
     status: 'planned-open',
     tags: ['open-concept-planned', 'renovation-scope'],
-    considerations: ['structural-review', 'permit-required', 'budget-impact']
+    considerations: ['structural-review', 'permit-required', 'budget-impact'],
   },
   'prefer-enclosed': {
     score: 50,
     status: 'enclosed',
     tags: ['enclosed-kitchen'],
-    considerations: ['ventilation', 'natural-light']
+    considerations: ['ventilation', 'natural-light'],
   },
   undecided: {
     score: 65,
     status: 'flexible',
     tags: [],
-    considerations: ['lifestyle-assessment', 'cost-comparison']
-  }
+    considerations: ['lifestyle-assessment', 'cost-comparison'],
+  },
 };
 
 /**
@@ -375,7 +376,7 @@ function calculateSectionScore(answers) {
     feasibility: {},
     spaceAnalysis: null,
     layoutOptions: [],
-    infrastructureNeeds: []
+    infrastructureNeeds: [],
   };
 
   // Calculate space analysis from dimensions
@@ -395,12 +396,20 @@ function calculateSectionScore(answers) {
   const componentScores = {
     kitchenSize: scoreKitchenSize(sizeCategory, scores.spaceAnalysis),
     ceilingHeight: scoreCeilingHeight(answers['ceiling-height']),
-    desiredLayout: scoreDesiredLayout(answers['desired-layout'], sizeCategory, scores.spaceAnalysis),
-    islandPreference: scoreIslandPreference(answers['island-preference'], sizeCategory, scores.spaceAnalysis),
+    desiredLayout: scoreDesiredLayout(
+      answers['desired-layout'],
+      sizeCategory,
+      scores.spaceAnalysis
+    ),
+    islandPreference: scoreIslandPreference(
+      answers['island-preference'],
+      sizeCategory,
+      scores.spaceAnalysis
+    ),
     storageNeeds: scoreStorageNeeds(answers['storage-needs'], sizeCategory),
     structuralConstraints: scoreStructuralConstraints(answers['structural-constraints']),
     openConcept: scoreOpenConcept(answers['open-concept']),
-    windowPlacement: scoreWindowPlacement(answers['window-placement'])
+    windowPlacement: scoreWindowPlacement(answers['window-placement']),
   };
 
   // Calculate weighted overall score
@@ -413,7 +422,7 @@ function calculateSectionScore(answers) {
 
       // Collect tags
       if (componentScores[key]?.tags) {
-        componentScores[key].tags.forEach(tag => scores.tags.add(tag));
+        componentScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
 
       // Collect constraints
@@ -436,7 +445,11 @@ function calculateSectionScore(answers) {
   scores.spaceLevel = determineSpaceLevel(scores.overall, sizeCategory, componentScores);
 
   // Check layout feasibility
-  if (answers['desired-layout'] && answers['desired-layout'] !== 'keep-current' && scores.spaceAnalysis) {
+  if (
+    answers['desired-layout'] &&
+    answers['desired-layout'] !== 'keep-current' &&
+    scores.spaceAnalysis
+  ) {
     scores.feasibility.layout = dimensionCalculator.checkLayoutFeasibility(
       scores.spaceAnalysis.lengthFt,
       scores.spaceAnalysis.widthFt,
@@ -445,7 +458,11 @@ function calculateSectionScore(answers) {
   }
 
   // Check island feasibility
-  if (answers['island-preference'] && answers['island-preference'] !== 'no' && scores.spaceAnalysis) {
+  if (
+    answers['island-preference'] &&
+    answers['island-preference'] !== 'no' &&
+    scores.spaceAnalysis
+  ) {
     scores.feasibility.island = dimensionCalculator.calculateIslandOptions(
       scores.spaceAnalysis.lengthFt,
       scores.spaceAnalysis.widthFt,
@@ -468,35 +485,35 @@ function calculateSectionScore(answers) {
       score: componentScores.kitchenSize?.score || 50,
       category: sizeCategory,
       sqFt: scores.spaceAnalysis?.sqFt,
-      level: SIZE_CATEGORY_SCORES[sizeCategory]?.level || 'standard'
+      level: SIZE_CATEGORY_SCORES[sizeCategory]?.level || 'standard',
     },
     layout: {
       score: componentScores.desiredLayout?.score || 50,
       current: answers['current-layout'],
       desired: answers['desired-layout'],
       feasible: scores.feasibility.layout?.feasible ?? true,
-      warnings: scores.feasibility.layout?.warnings || []
+      warnings: scores.feasibility.layout?.warnings || [],
     },
     ceiling: {
       score: componentScores.ceilingHeight?.score || 50,
       height: answers['ceiling-height'] || 'standard',
-      storageMultiplier: componentScores.ceilingHeight?.storageMultiplier || 1.0
+      storageMultiplier: componentScores.ceilingHeight?.storageMultiplier || 1.0,
     },
     island: {
       score: componentScores.islandPreference?.score || 50,
       preference: answers['island-preference'] || 'no',
       feasible: scores.feasibility.island?.canFitIsland ?? true,
-      recommendedSize: scores.feasibility.island?.recommendedIslandSize
+      recommendedSize: scores.feasibility.island?.recommendedIslandSize,
     },
     storage: {
       score: componentScores.storageNeeds?.score || 60,
       level: answers['storage-needs'] || 'standard',
       capacity: scores.storageCapacity,
-      solutions: componentScores.storageNeeds?.solutions || []
+      solutions: componentScores.storageNeeds?.solutions || [],
     },
     workZones: calculateWorkZoneScore(answers, sizeCategory, scores.spaceAnalysis),
     trafficFlow: calculateTrafficFlowScore(answers, componentScores),
-    accessibility: calculateAccessibilityScore(answers, sizeCategory)
+    accessibility: calculateAccessibilityScore(answers, sizeCategory),
   };
 
   // Generate layout options
@@ -544,7 +561,7 @@ function scoreKitchenSize(category, spaceAnalysis) {
     tags: [...config.tags],
     challenges: config.challenges,
     opportunities: config.opportunities,
-    designStrategies: config.designStrategies
+    designStrategies: config.designStrategies,
   };
 
   // Adjust score based on exact dimensions if available
@@ -558,14 +575,14 @@ function scoreKitchenSize(category, spaceAnalysis) {
     const rangeSpan = range.max - range.min;
 
     if (rangeSpan > 0) {
-      const positionFactor = 1 - (distanceFromMid / rangeSpan);
+      const positionFactor = 1 - distanceFromMid / rangeSpan;
       result.score = Math.round(config.score * (0.9 + 0.1 * positionFactor));
     }
 
     result.sqFt = sqFt;
     result.dimensions = {
       length: spaceAnalysis.lengthFt,
-      width: spaceAnalysis.widthFt
+      width: spaceAnalysis.widthFt,
     };
   }
 
@@ -586,7 +603,7 @@ function scoreCeilingHeight(value) {
     tags: [...config.tags],
     cabinetOptions: config.cabinetOptions,
     storageMultiplier: config.storageMultiplier,
-    visualImpact: config.visualImpact
+    visualImpact: config.visualImpact,
   };
 }
 
@@ -612,7 +629,7 @@ function scoreDesiredLayout(value, sizeCategory, spaceAnalysis) {
     bestFor: config.bestFor,
     limitations: config.limitations,
     constraints: [],
-    warnings: []
+    warnings: [],
   };
 
   // Check feasibility based on size category
@@ -624,8 +641,8 @@ function scoreDesiredLayout(value, sizeCategory, spaceAnalysis) {
       severity: 'warning',
       message: {
         en: `${value} layout may not be ideal for a ${sizeCategory} kitchen`,
-        fr: `La disposition ${value} peut ne pas être idéale pour une cuisine ${sizeCategory}`
-      }
+        fr: `La disposition ${value} peut ne pas être idéale pour une cuisine ${sizeCategory}`,
+      },
     });
   }
 
@@ -638,8 +655,8 @@ function scoreDesiredLayout(value, sizeCategory, spaceAnalysis) {
         severity: 'critical',
         message: {
           en: `This layout requires at least ${config.minSqFt} sq ft, but your space is ${spaceAnalysis.sqFt} sq ft`,
-          fr: `Cette disposition nécessite au moins ${config.minSqFt} pi², mais votre espace est de ${spaceAnalysis.sqFt} pi²`
-        }
+          fr: `Cette disposition nécessite au moins ${config.minSqFt} pi², mais votre espace est de ${spaceAnalysis.sqFt} pi²`,
+        },
       });
     }
   }
@@ -662,7 +679,7 @@ function scoreIslandPreference(value, sizeCategory, spaceAnalysis) {
     features: config.features,
     tags: [...config.tags],
     infrastructureNeeds: [...config.infrastructureNeeds],
-    constraints: []
+    constraints: [],
   };
 
   // Check if kitchen is large enough
@@ -674,8 +691,8 @@ function scoreIslandPreference(value, sizeCategory, spaceAnalysis) {
         severity: 'warning',
         message: {
           en: `A ${config.type} typically requires at least ${config.minKitchenSqFt} sq ft`,
-          fr: `Un ${config.type} nécessite généralement au moins ${config.minKitchenSqFt} pi²`
-        }
+          fr: `Un ${config.type} nécessite généralement au moins ${config.minKitchenSqFt} pi²`,
+        },
       });
     }
   }
@@ -689,8 +706,8 @@ function scoreIslandPreference(value, sizeCategory, spaceAnalysis) {
       severity: 'warning',
       message: {
         en: 'An island in a small kitchen may reduce functionality',
-        fr: 'Un îlot dans une petite cuisine peut réduire la fonctionnalité'
-      }
+        fr: 'Un îlot dans une petite cuisine peut réduire la fonctionnalité',
+      },
     });
   }
 
@@ -711,7 +728,7 @@ function scoreStorageNeeds(value, sizeCategory) {
     cabinetFactor: config.cabinetFactor,
     tags: [...config.tags],
     solutions: [...config.solutions],
-    constraints: []
+    constraints: [],
   };
 
   // Maximum storage in small kitchen is challenging
@@ -721,8 +738,8 @@ function scoreStorageNeeds(value, sizeCategory) {
       severity: 'info',
       message: {
         en: 'Maximizing storage in a small kitchen requires creative solutions',
-        fr: 'Maximiser le rangement dans une petite cuisine nécessite des solutions créatives'
-      }
+        fr: 'Maximiser le rangement dans une petite cuisine nécessite des solutions créatives',
+      },
     });
     result.solutions.push('vertical-optimization', 'multi-function-furniture');
   }
@@ -746,7 +763,7 @@ function scoreStructuralConstraints(values) {
   const tags = [];
   const constraints = [];
 
-  values.forEach(constraint => {
+  values.forEach((constraint) => {
     const impact = STRUCTURAL_CONSTRAINT_IMPACTS[constraint];
     if (impact) {
       score += impact.impact;
@@ -754,7 +771,7 @@ function scoreStructuralConstraints(values) {
       constraints.push({
         type: constraint,
         flexibility: impact.flexibility,
-        severity: Math.abs(impact.impact) > 15 ? 'high' : 'moderate'
+        severity: Math.abs(impact.impact) > 15 ? 'high' : 'moderate',
       });
     }
   });
@@ -764,7 +781,7 @@ function scoreStructuralConstraints(values) {
     constraints: values,
     tags,
     detailedConstraints: constraints,
-    overallFlexibility: score > 70 ? 'high' : score > 50 ? 'moderate' : 'limited'
+    overallFlexibility: score > 70 ? 'high' : score > 50 ? 'moderate' : 'limited',
   };
 }
 
@@ -780,7 +797,7 @@ function scoreOpenConcept(value) {
     score: config.score,
     status: config.status,
     tags: [...config.tags],
-    considerations: config.considerations
+    considerations: config.considerations,
   };
 }
 
@@ -792,10 +809,18 @@ function scoreWindowPlacement(value) {
 
   const scores = {
     'sink-window': { score: 85, tags: ['natural-light', 'sink-view'], benefit: 'dishwashing-view' },
-    'multiple-windows': { score: 95, tags: ['abundant-light', 'well-lit'], benefit: 'excellent-lighting' },
+    'multiple-windows': {
+      score: 95,
+      tags: ['abundant-light', 'well-lit'],
+      benefit: 'excellent-lighting',
+    },
     'single-window': { score: 70, tags: ['natural-light'], benefit: 'some-lighting' },
     'no-windows': { score: 35, tags: ['interior-kitchen', 'lighting-dependent'], benefit: 'none' },
-    skylight: { score: 80, tags: ['overhead-light', 'architectural'], benefit: 'overhead-lighting' }
+    skylight: {
+      score: 80,
+      tags: ['overhead-light', 'architectural'],
+      benefit: 'overhead-lighting',
+    },
   };
 
   const config = scores[value] || { score: 50, tags: [], benefit: 'unknown' };
@@ -804,7 +829,7 @@ function scoreWindowPlacement(value) {
     score: config.score,
     placement: value,
     tags: [...config.tags],
-    benefit: config.benefit
+    benefit: config.benefit,
   };
 }
 
@@ -849,7 +874,7 @@ function calculateWorkZoneScore(answers, sizeCategory, spaceAnalysis) {
     score: Math.min(100, score),
     maxZones,
     possibleZones: zones,
-    efficiency: score >= 80 ? 'excellent' : score >= 60 ? 'good' : 'basic'
+    efficiency: score >= 80 ? 'excellent' : score >= 60 ? 'good' : 'basic',
   };
 }
 
@@ -874,7 +899,10 @@ function calculateTrafficFlowScore(answers, componentScores) {
   // Island can impede or improve flow
   if (answers['island-preference']) {
     if (answers['island-preference'] === 'yes-large') {
-      if (componentScores.kitchenSize?.category === 'small' || componentScores.kitchenSize?.category === 'medium') {
+      if (
+        componentScores.kitchenSize?.category === 'small' ||
+        componentScores.kitchenSize?.category === 'medium'
+      ) {
         score -= 15;
         concerns.push('island-may-block-flow');
       } else {
@@ -891,8 +919,9 @@ function calculateTrafficFlowScore(answers, componentScores) {
 
   return {
     score: Math.max(30, Math.min(100, score)),
-    level: score >= 80 ? 'excellent' : score >= 60 ? 'good' : score >= 40 ? 'moderate' : 'challenging',
-    concerns
+    level:
+      score >= 80 ? 'excellent' : score >= 60 ? 'good' : score >= 40 ? 'moderate' : 'challenging',
+    concerns,
   };
 }
 
@@ -928,7 +957,8 @@ function calculateAccessibilityScore(answers, sizeCategory) {
     score: Math.max(30, Math.min(100, score)),
     level: score >= 80 ? 'excellent' : score >= 60 ? 'good' : 'limited',
     features,
-    recommendations: score < 60 ? ['wider-aisles', 'pull-out-storage', 'varied-counter-heights'] : []
+    recommendations:
+      score < 60 ? ['wider-aisles', 'pull-out-storage', 'varied-counter-heights'] : [],
   };
 }
 
@@ -956,7 +986,7 @@ function generateLayoutOptions(sizeCategory, spaceAnalysis, answers) {
 
   const options = [];
 
-  categoryConfig.layoutOptions.forEach(layoutName => {
+  categoryConfig.layoutOptions.forEach((layoutName) => {
     const layoutConfig = LAYOUT_CONFIGURATIONS[layoutName];
     if (!layoutConfig) return;
 
@@ -971,14 +1001,14 @@ function generateLayoutOptions(sizeCategory, spaceAnalysis, answers) {
         score -= 30;
         notes.push({
           en: `Requires ${layoutConfig.minSqFt}+ sq ft`,
-          fr: `Nécessite ${layoutConfig.minSqFt}+ pi²`
+          fr: `Nécessite ${layoutConfig.minSqFt}+ pi²`,
         });
       } else if (spaceAnalysis.sqFt < layoutConfig.minSqFt * 1.2) {
         feasibility = 'tight-fit';
         score -= 10;
         notes.push({
           en: 'Will be a tight fit',
-          fr: 'Sera un ajustement serré'
+          fr: 'Sera un ajustement serré',
         });
       }
     }
@@ -991,7 +1021,7 @@ function generateLayoutOptions(sizeCategory, spaceAnalysis, answers) {
       maxCooks: layoutConfig.maxCooks,
       bestFor: layoutConfig.bestFor,
       limitations: layoutConfig.limitations,
-      notes
+      notes,
     });
   });
 
@@ -1016,13 +1046,13 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Reconsider Layout Choice',
-        fr: 'Reconsidérer le choix de disposition'
+        fr: 'Reconsidérer le choix de disposition',
       },
       description: {
         en: `Your desired layout may not fit well. ${warnings[0]?.message || 'Consider alternatives from our recommendations.'}`,
-        fr: `Votre disposition souhaitée peut ne pas bien s'adapter. ${warnings[0]?.message || 'Envisagez des alternatives parmi nos recommandations.'}`
+        fr: `Votre disposition souhaitée peut ne pas bien s'adapter. ${warnings[0]?.message || 'Envisagez des alternatives parmi nos recommandations.'}`,
       },
-      alternatives: scores.layoutOptions.slice(0, 3).map(o => o.layout)
+      alternatives: scores.layoutOptions.slice(0, 3).map((o) => o.layout),
     });
   }
 
@@ -1036,13 +1066,13 @@ function generateRecommendations(answers, componentScores, scores) {
         priority: 'recommended',
         title: {
           en: 'Small Space Optimization',
-          fr: 'Optimisation des petits espaces'
+          fr: 'Optimisation des petits espaces',
         },
         description: {
           en: 'Use light colors, reflective surfaces, and multi-function furniture to maximize your compact kitchen.',
-          fr: 'Utilisez des couleurs claires, des surfaces réfléchissantes et des meubles multifonctions pour maximiser votre cuisine compacte.'
+          fr: 'Utilisez des couleurs claires, des surfaces réfléchissantes et des meubles multifonctions pour maximiser votre cuisine compacte.',
         },
-        strategies: sizeConfig.designStrategies
+        strategies: sizeConfig.designStrategies,
       });
     }
 
@@ -1053,13 +1083,13 @@ function generateRecommendations(answers, componentScores, scores) {
         priority: 'recommended',
         title: {
           en: 'Zone Definition Strategy',
-          fr: 'Stratégie de définition des zones'
+          fr: 'Stratégie de définition des zones',
         },
         description: {
           en: 'Define distinct work zones to prevent excessive walking and maintain kitchen efficiency.',
-          fr: 'Définissez des zones de travail distinctes pour éviter les déplacements excessifs et maintenir l\'efficacité de la cuisine.'
+          fr: "Définissez des zones de travail distinctes pour éviter les déplacements excessifs et maintenir l'efficacité de la cuisine.",
         },
-        strategies: sizeConfig.designStrategies
+        strategies: sizeConfig.designStrategies,
       });
     }
   }
@@ -1075,28 +1105,31 @@ function generateRecommendations(answers, componentScores, scores) {
           priority: 'recommended',
           title: {
             en: 'Recommended Island Size',
-            fr: 'Taille d\'îlot recommandée'
+            fr: "Taille d'îlot recommandée",
           },
           description: {
             en: `Based on your space, we recommend an island of approximately ${islandSize.length}' x ${islandSize.width}'.`,
-            fr: `En fonction de votre espace, nous recommandons un îlot d'environ ${islandSize.length}' x ${islandSize.width}'.`
+            fr: `En fonction de votre espace, nous recommandons un îlot d'environ ${islandSize.length}' x ${islandSize.width}'.`,
           },
-          details: islandSize
+          details: islandSize,
         });
       }
-    } else if (!scores.feasibility.island.canFitIsland && answers['island-preference']?.includes('yes')) {
+    } else if (
+      !scores.feasibility.island.canFitIsland &&
+      answers['island-preference']?.includes('yes')
+    ) {
       recommendations.push({
         id: 'island-alternative',
         type: 'layout',
         priority: 'essential',
         title: {
           en: 'Island Alternative Needed',
-          fr: 'Alternative à l\'îlot nécessaire'
+          fr: "Alternative à l'îlot nécessaire",
         },
         description: {
           en: 'Your space may not accommodate a fixed island. Consider a peninsula or mobile cart instead.',
-          fr: 'Votre espace peut ne pas accueillir un îlot fixe. Envisagez une péninsule ou un chariot mobile à la place.'
-        }
+          fr: 'Votre espace peut ne pas accueillir un îlot fixe. Envisagez une péninsule ou un chariot mobile à la place.',
+        },
       });
     }
   }
@@ -1110,39 +1143,44 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Maximum Storage Solutions',
-        fr: 'Solutions de rangement maximum'
+        fr: 'Solutions de rangement maximum',
       },
       description: {
         en: 'Implement ceiling-height cabinets, a walk-in pantry if space allows, and specialty storage solutions throughout.',
-        fr: 'Installez des armoires jusqu\'au plafond, un garde-manger accessible si l\'espace le permet, et des solutions de rangement spécialisées partout.'
+        fr: "Installez des armoires jusqu'au plafond, un garde-manger accessible si l'espace le permet, et des solutions de rangement spécialisées partout.",
       },
-      solutions: storageConfig.solutions
+      solutions: storageConfig.solutions,
     });
   }
 
   // Ceiling height recommendations
-  if (componentScores.ceilingHeight?.height === '10ft+' || componentScores.ceilingHeight?.height === 'variable') {
+  if (
+    componentScores.ceilingHeight?.height === '10ft+' ||
+    componentScores.ceilingHeight?.height === 'variable'
+  ) {
     recommendations.push({
       id: 'tall-ceiling-cabinets',
       type: 'cabinet',
       priority: 'optional',
       title: {
         en: 'Tall Ceiling Cabinet Options',
-        fr: 'Options d\'armoires pour plafonds hauts'
+        fr: "Options d'armoires pour plafonds hauts",
       },
       description: {
         en: 'Your tall ceilings allow for stacked uppers, extended cabinets, or decorative display shelving.',
-        fr: 'Vos hauts plafonds permettent des armoires superposées, des armoires étendues ou des étagères décoratives.'
+        fr: 'Vos hauts plafonds permettent des armoires superposées, des armoires étendues ou des étagères décoratives.',
       },
-      options: componentScores.ceilingHeight.cabinetOptions
+      options: componentScores.ceilingHeight.cabinetOptions,
     });
   }
 
   // Structural constraint recommendations
-  if (componentScores.structuralConstraints?.constraints?.length > 0 &&
-      !componentScores.structuralConstraints.constraints.includes('none')) {
-
-    const hasLoadBearing = componentScores.structuralConstraints.constraints.includes('load-bearing-wall');
+  if (
+    componentScores.structuralConstraints?.constraints?.length > 0 &&
+    !componentScores.structuralConstraints.constraints.includes('none')
+  ) {
+    const hasLoadBearing =
+      componentScores.structuralConstraints.constraints.includes('load-bearing-wall');
     const wantsOpen = answers['open-concept'] === 'want-to-open';
 
     if (hasLoadBearing && wantsOpen) {
@@ -1152,12 +1190,12 @@ function generateRecommendations(answers, componentScores, scores) {
         priority: 'essential',
         title: {
           en: 'Structural Review Required',
-          fr: 'Révision structurelle requise'
+          fr: 'Révision structurelle requise',
         },
         description: {
           en: 'Opening up the space with a load-bearing wall will require structural engineering review and likely a support beam.',
-          fr: 'Ouvrir l\'espace avec un mur porteur nécessitera une révision d\'ingénierie structurelle et probablement une poutre de support.'
-        }
+          fr: "Ouvrir l'espace avec un mur porteur nécessitera une révision d'ingénierie structurelle et probablement une poutre de support.",
+        },
       });
     }
   }
@@ -1170,13 +1208,13 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Improve Traffic Flow',
-        fr: 'Améliorer la circulation'
+        fr: 'Améliorer la circulation',
       },
       description: {
         en: 'Consider layout adjustments to improve movement through the kitchen. Ensure 42" minimum clearance in work areas.',
-        fr: 'Envisagez des ajustements de disposition pour améliorer la circulation dans la cuisine. Assurez un dégagement minimum de 107 cm dans les zones de travail.'
+        fr: 'Envisagez des ajustements de disposition pour améliorer la circulation dans la cuisine. Assurez un dégagement minimum de 107 cm dans les zones de travail.',
       },
-      concerns: scores.categories.trafficFlow.concerns
+      concerns: scores.categories.trafficFlow.concerns,
     });
   }
 
@@ -1188,13 +1226,13 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'optional',
       title: {
         en: 'Accessibility Considerations',
-        fr: 'Considérations d\'accessibilité'
+        fr: "Considérations d'accessibilité",
       },
       description: {
         en: 'Consider wider aisles (48"+), pull-out storage, and varied counter heights for improved accessibility.',
-        fr: 'Envisagez des allées plus larges (122cm+), des rangements coulissants et des hauteurs de comptoir variées pour une meilleure accessibilité.'
+        fr: 'Envisagez des allées plus larges (122cm+), des rangements coulissants et des hauteurs de comptoir variées pour une meilleure accessibilité.',
       },
-      recommendations: scores.categories.accessibility.recommendations
+      recommendations: scores.categories.accessibility.recommendations,
     });
   }
 
@@ -1206,12 +1244,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Comprehensive Lighting Plan',
-        fr: 'Plan d\'éclairage complet'
+        fr: "Plan d'éclairage complet",
       },
       description: {
         en: 'With no natural light, invest in layered artificial lighting: task lighting under cabinets, ambient ceiling lights, and accent lighting.',
-        fr: 'Sans lumière naturelle, investissez dans un éclairage artificiel en couches: éclairage de tâche sous les armoires, lumières ambiantes au plafond et éclairage d\'accent.'
-      }
+        fr: "Sans lumière naturelle, investissez dans un éclairage artificiel en couches: éclairage de tâche sous les armoires, lumières ambiantes au plafond et éclairage d'accent.",
+      },
     });
   }
 
@@ -1241,5 +1279,5 @@ module.exports = {
   ISLAND_PREFERENCE_SCORES,
   STORAGE_NEEDS_SCORES,
   STRUCTURAL_CONSTRAINT_IMPACTS,
-  OPEN_CONCEPT_SCORES
+  OPEN_CONCEPT_SCORES,
 };

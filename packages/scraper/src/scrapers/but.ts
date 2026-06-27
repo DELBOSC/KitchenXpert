@@ -50,7 +50,8 @@ const SELECTORS = {
   productDetailStock: '.stock-status, .availability',
 
   // Cookie banner
-  cookieAccept: '#onetrust-accept-btn-handler, .cookie-accept, #didomi-notice-agree-button, .accept-cookies',
+  cookieAccept:
+    '#onetrust-accept-btn-handler, .cookie-accept, #didomi-notice-agree-button, .accept-cookies',
 
   // Pagination
   pagination: '.pagination, .pager',
@@ -63,10 +64,10 @@ const KITCHEN_CATEGORIES = {
   'meubles-cuisine': 'cabinet',
   'elements-bas': 'base',
   'elements-hauts': 'wall',
-  'colonnes': 'tall',
+  colonnes: 'tall',
   'facades-portes': 'facade',
   'plans-de-travail': 'worktop',
-  'electromenager': 'appliance',
+  electromenager: 'appliance',
   'eviers-robinetterie': 'sink',
   'rangements-cuisine': 'accessory',
   'cuisines-completes': 'collection',
@@ -79,56 +80,56 @@ const CABINET_TYPE_KEYWORDS: Record<string, CabinetType> = {
   'caisson bas': 'base_standard',
   'sous-évier': 'base_sink',
   'sous evier': 'base_sink',
-  'évier': 'base_sink',
-  'plaque': 'base_hob',
-  'tiroir': 'base_drawer',
-  'tiroirs': 'base_drawer',
+  évier: 'base_sink',
+  plaque: 'base_hob',
+  tiroir: 'base_drawer',
+  tiroirs: 'base_drawer',
   'angle bas': 'base_corner',
   'meuble angle': 'base_corner',
-  'coulissant': 'base_pull_out',
-  'poubelle': 'base_trash',
+  coulissant: 'base_pull_out',
+  poubelle: 'base_trash',
   'meuble haut': 'wall_standard',
   'element haut': 'wall_standard',
   'caisson haut': 'wall_standard',
-  'vitré': 'wall_glass',
-  'vitre': 'wall_glass',
-  'relevable': 'wall_lift_up',
-  'hotte': 'wall_extractor',
-  'colonne': 'tall_pantry',
-  'armoire': 'tall_pantry',
+  vitré: 'wall_glass',
+  vitre: 'wall_glass',
+  relevable: 'wall_lift_up',
+  hotte: 'wall_extractor',
+  colonne: 'tall_pantry',
+  armoire: 'tall_pantry',
   'colonne four': 'tall_oven',
   'colonne frigo': 'tall_fridge',
-  'réfrigérateur': 'tall_fridge',
-  'plinthe': 'plinth',
-  'corniche': 'cornice',
-  'joue': 'filler',
-  'panneau': 'end_panel',
+  réfrigérateur: 'tall_fridge',
+  plinthe: 'plinth',
+  corniche: 'cornice',
+  joue: 'filler',
+  panneau: 'end_panel',
 };
 
 const FACADE_MATERIAL_KEYWORDS: Record<string, FacadeMaterial> = {
-  'mélaminé': 'melamine',
-  'melamine': 'melamine',
-  'stratifié': 'laminate',
-  'laqué': 'lacquer_matte',
-  'laque': 'lacquer_matte',
-  'brillant': 'lacquer_gloss',
-  'mat': 'lacquer_matte',
-  'bois': 'veneer',
-  'chêne': 'veneer',
-  'pvc': 'laminate',
-  'foil': 'laminate',
+  mélaminé: 'melamine',
+  melamine: 'melamine',
+  stratifié: 'laminate',
+  laqué: 'lacquer_matte',
+  laque: 'lacquer_matte',
+  brillant: 'lacquer_gloss',
+  mat: 'lacquer_matte',
+  bois: 'veneer',
+  chêne: 'veneer',
+  pvc: 'laminate',
+  foil: 'laminate',
 };
 
 const WORKTOP_MATERIAL_KEYWORDS: Record<string, WorktopMaterial> = {
-  'stratifié': 'laminate',
-  'mélaminé': 'laminate',
+  stratifié: 'laminate',
+  mélaminé: 'laminate',
   'bois massif': 'wood_solid',
-  'bois': 'wood_solid',
-  'chêne': 'wood_solid',
-  'quartz': 'quartz',
-  'granit': 'granite',
-  'résine': 'compact',
-  'compact': 'compact',
+  bois: 'wood_solid',
+  chêne: 'wood_solid',
+  quartz: 'quartz',
+  granit: 'granite',
+  résine: 'compact',
+  compact: 'compact',
   'effet pierre': 'laminate',
   'effet bois': 'laminate',
   'effet béton': 'laminate',
@@ -172,15 +173,17 @@ export class ButScraper extends BaseScraper {
           });
 
           // Look for subcategory links
-          $('a[href*="/cuisine/"], a[href*="/meubles-cuisine/"]').each((_: number, el: cheerio.Element) => {
-            const href = $(el).attr('href');
-            if (href && !href.includes('#') && !href.includes('javascript')) {
-              const fullUrl = this.resolveUrl(href);
-              if (!urls.includes(fullUrl) && this.isKitchenUrl(fullUrl)) {
-                urls.push(fullUrl);
+          $('a[href*="/cuisine/"], a[href*="/meubles-cuisine/"]').each(
+            (_: number, el: cheerio.Element) => {
+              const href = $(el).attr('href');
+              if (href && !href.includes('#') && !href.includes('javascript')) {
+                const fullUrl = this.resolveUrl(href);
+                if (!urls.includes(fullUrl) && this.isKitchenUrl(fullUrl)) {
+                  urls.push(fullUrl);
+                }
               }
             }
-          });
+          );
         } catch (error) {
           this.logger.warn(`Failed to get collections from ${catalogPath}`, { error });
         }
@@ -229,15 +232,17 @@ export class ButScraper extends BaseScraper {
       });
 
       // Look for product links by URL pattern
-      $('a[href*="/produit/"], a[href*="-p-"], a[href*="/p/"]').each((_: number, el: cheerio.Element) => {
-        const href = $(el).attr('href');
-        if (href) {
-          const fullUrl = this.resolveUrl(href);
-          if (!urls.includes(fullUrl)) {
-            urls.push(fullUrl);
+      $('a[href*="/produit/"], a[href*="-p-"], a[href*="/p/"]').each(
+        (_: number, el: cheerio.Element) => {
+          const href = $(el).attr('href');
+          if (href) {
+            const fullUrl = this.resolveUrl(href);
+            if (!urls.includes(fullUrl)) {
+              urls.push(fullUrl);
+            }
           }
         }
-      });
+      );
 
       // Handle pagination
       if (!this.options.testMode) {
@@ -288,12 +293,13 @@ export class ButScraper extends BaseScraper {
       const html = await this.getPageContent();
       const $ = this.parseHtml(html);
 
-      const name = this.extractText($(SELECTORS.collectionTitle)) ||
-                   this.extractCategoryFromUrl(url);
+      const name =
+        this.extractText($(SELECTORS.collectionTitle)) || this.extractCategoryFromUrl(url);
       const slug = this.slugify(name);
 
-      const description = this.extractText($(SELECTORS.collectionDescription)) ||
-                         $('meta[name="description"]').attr('content');
+      const description =
+        this.extractText($(SELECTORS.collectionDescription)) ||
+        $('meta[name="description"]').attr('content');
 
       const images: string[] = [];
       $(SELECTORS.collectionImage).each((_: number, el: cheerio.Element) => {
@@ -365,9 +371,10 @@ export class ButScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) ||
-                     this.extractReferenceFromUrl(url) ||
-                     this.generateReference(url, 'BUT');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) ||
+      this.extractReferenceFromUrl(url) ||
+      this.generateReference(url, 'BUT');
     const description = this.extractText($(SELECTORS.productDetailDescription));
     const priceStr = this.extractText($(SELECTORS.productDetailPrice));
     const oldPriceStr = this.extractText($(SELECTORS.productDetailOldPrice));
@@ -385,7 +392,16 @@ export class ButScraper extends BaseScraper {
       }
     });
 
-    const specs = this.parseSpecifications($) as { width?: number; height?: number; depth?: number; doors?: number; drawers?: number; shelves?: number; material?: string; color?: string };
+    const specs = this.parseSpecifications($) as {
+      width?: number;
+      height?: number;
+      depth?: number;
+      doors?: number;
+      drawers?: number;
+      shelves?: number;
+      material?: string;
+      color?: string;
+    };
 
     const cabinet: CreateCabinetInput = {
       brandId: this.brandId,
@@ -420,8 +436,8 @@ export class ButScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) ||
-                     this.generateReference(url, 'BUT-W');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'BUT-W');
     const description = this.extractText($(SELECTORS.productDetailDescription));
     const priceStr = this.extractText($(SELECTORS.productDetailPrice));
 
@@ -463,8 +479,8 @@ export class ButScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) ||
-                     this.generateReference(url, 'BUT-F');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'BUT-F');
     const description = this.extractText($(SELECTORS.productDetailDescription));
     const priceStr = this.extractText($(SELECTORS.productDetailPrice));
 
@@ -505,8 +521,8 @@ export class ButScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) ||
-                     this.generateReference(url, 'BUT-A');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'BUT-A');
     const description = this.extractText($(SELECTORS.productDetailDescription));
     const priceStr = this.extractText($(SELECTORS.productDetailPrice));
     const brand = this.extractText($(SELECTORS.productDetailBrand));
@@ -575,25 +591,24 @@ export class ButScraper extends BaseScraper {
   }
 
   private isProductUrl(url: string): boolean {
-    return url.includes('/produit/') || url.includes('-p-') || url.includes('/p/') ||
-           url.match(/\/\d+-/) !== null;
+    return (
+      url.includes('/produit/') ||
+      url.includes('-p-') ||
+      url.includes('/p/') ||
+      url.match(/\/\d+-/) !== null
+    );
   }
 
   private extractCategoryFromUrl(url: string): string {
     const pathMatch = url.match(/\/cuisine\/([^\/]+)/);
     if (pathMatch?.[1]) {
-      return pathMatch[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      return pathMatch[1].replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
     }
     return 'Cuisine';
   }
 
   private extractReferenceFromUrl(url: string): string | null {
-    const patterns = [
-      /-p-(\d+)/,
-      /\/p\/(\d+)/,
-      /\/(\d+)-/,
-      /ref[_-]?(\d+)/i,
-    ];
+    const patterns = [/-p-(\d+)/, /\/p\/(\d+)/, /\/(\d+)-/, /ref[_-]?(\d+)/i];
 
     for (const pattern of patterns) {
       const match = url.match(pattern);
@@ -611,15 +626,29 @@ export class ButScraper extends BaseScraper {
     if (combined.includes('plan-de-travail') || combined.includes('plan de travail')) {
       return 'worktop';
     }
-    if (combined.includes('facade') || combined.includes('porte-cuisine') || combined.includes('porte de meuble')) {
+    if (
+      combined.includes('facade') ||
+      combined.includes('porte-cuisine') ||
+      combined.includes('porte de meuble')
+    ) {
       return 'facade';
     }
-    if (combined.includes('electromenager') || combined.includes('four') || combined.includes('hotte') ||
-        combined.includes('refrigerateur') || combined.includes('lave-vaisselle') || combined.includes('plaque')) {
+    if (
+      combined.includes('electromenager') ||
+      combined.includes('four') ||
+      combined.includes('hotte') ||
+      combined.includes('refrigerateur') ||
+      combined.includes('lave-vaisselle') ||
+      combined.includes('plaque')
+    ) {
       return 'appliance';
     }
-    if (combined.includes('meuble') || combined.includes('caisson') || combined.includes('colonne') ||
-        combined.includes('element')) {
+    if (
+      combined.includes('meuble') ||
+      combined.includes('caisson') ||
+      combined.includes('colonne') ||
+      combined.includes('element')
+    ) {
       return 'cabinet';
     }
 
@@ -650,8 +679,10 @@ export class ButScraper extends BaseScraper {
   private detectFacadeStyle(text: string): FacadeStyle {
     const lower = text.toLowerCase();
 
-    if (lower.includes('moderne') || lower.includes('contemporain') || lower.includes('lisse')) return 'flat';
-    if (lower.includes('shaker') || lower.includes('encadré') || lower.includes('cadre')) return 'shaker';
+    if (lower.includes('moderne') || lower.includes('contemporain') || lower.includes('lisse'))
+      return 'flat';
+    if (lower.includes('shaker') || lower.includes('encadré') || lower.includes('cadre'))
+      return 'shaker';
     if (lower.includes('classique') || lower.includes('traditionnel')) return 'classic';
     if (lower.includes('sans poignée')) return 'handleless';
     if (lower.includes('rustique') || lower.includes('campagne')) return 'rustic';
@@ -723,31 +754,53 @@ export class ButScraper extends BaseScraper {
   private parseSpecifications($: ReturnType<typeof this.parseHtml>): Record<string, unknown> {
     const specs: Record<string, unknown> = {};
 
-    $(SELECTORS.productDetailSpecs).find('tr, .spec-row, .spec-item, li, dl').each((_: number, row: cheerio.Element) => {
-      const $row = $(row);
-      const label = $row.find('th, .label, dt, .spec-label').text().toLowerCase().trim();
-      const value = $row.find('td, .value, dd, .spec-value').text().trim();
+    $(SELECTORS.productDetailSpecs)
+      .find('tr, .spec-row, .spec-item, li, dl')
+      .each((_: number, row: cheerio.Element) => {
+        const $row = $(row);
+        const label = $row.find('th, .label, dt, .spec-label').text().toLowerCase().trim();
+        const value = $row.find('td, .value, dd, .spec-value').text().trim();
 
-      if (label && value) {
-        if (label.includes('largeur') || label.includes('width') || label.includes('l (cm)')) {
-          specs.width = this.parseNumber(value);
-        } else if (label.includes('hauteur') || label.includes('height') || label.includes('h (cm)')) {
-          specs.height = this.parseNumber(value);
-        } else if (label.includes('profondeur') || label.includes('depth') || label.includes('p (cm)')) {
-          specs.depth = this.parseNumber(value);
-        } else if (label.includes('porte') || label.includes('door')) {
-          specs.doors = this.parseNumber(value);
-        } else if (label.includes('tiroir') || label.includes('drawer')) {
-          specs.drawers = this.parseNumber(value);
-        } else if (label.includes('étagère') || label.includes('tablette') || label.includes('shelf')) {
-          specs.shelves = this.parseNumber(value);
-        } else if (label.includes('matière') || label.includes('material') || label.includes('matériau')) {
-          specs.material = value;
-        } else if (label.includes('couleur') || label.includes('color') || label.includes('coloris')) {
-          specs.color = value;
+        if (label && value) {
+          if (label.includes('largeur') || label.includes('width') || label.includes('l (cm)')) {
+            specs.width = this.parseNumber(value);
+          } else if (
+            label.includes('hauteur') ||
+            label.includes('height') ||
+            label.includes('h (cm)')
+          ) {
+            specs.height = this.parseNumber(value);
+          } else if (
+            label.includes('profondeur') ||
+            label.includes('depth') ||
+            label.includes('p (cm)')
+          ) {
+            specs.depth = this.parseNumber(value);
+          } else if (label.includes('porte') || label.includes('door')) {
+            specs.doors = this.parseNumber(value);
+          } else if (label.includes('tiroir') || label.includes('drawer')) {
+            specs.drawers = this.parseNumber(value);
+          } else if (
+            label.includes('étagère') ||
+            label.includes('tablette') ||
+            label.includes('shelf')
+          ) {
+            specs.shelves = this.parseNumber(value);
+          } else if (
+            label.includes('matière') ||
+            label.includes('material') ||
+            label.includes('matériau')
+          ) {
+            specs.material = value;
+          } else if (
+            label.includes('couleur') ||
+            label.includes('color') ||
+            label.includes('coloris')
+          ) {
+            specs.color = value;
+          }
         }
-      }
-    });
+      });
 
     return specs;
   }

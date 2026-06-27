@@ -280,9 +280,9 @@ describe('ProjectDetail', () => {
       renderProjectDetail();
 
       await waitFor(() => {
-        const kitchenLinks = screen.getAllByRole('link').filter(
-          (link) => link.getAttribute('href')?.includes('/kitchens/')
-        );
+        const kitchenLinks = screen
+          .getAllByRole('link')
+          .filter((link) => link.getAttribute('href')?.includes('/kitchens/'));
         expect(kitchenLinks).toHaveLength(2);
       });
     });
@@ -299,9 +299,7 @@ describe('ProjectDetail', () => {
 
       await waitFor(() => {
         // fr.json: projects.editProject = "Modifier le projet"
-        expect(
-          screen.getByRole('button', { name: /modifier le projet/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /modifier le projet/i })).toBeInTheDocument();
       });
     });
 
@@ -315,9 +313,7 @@ describe('ProjectDetail', () => {
 
       await waitFor(() => {
         // fr.json: common.delete = "Supprimer"
-        expect(
-          screen.getByRole('button', { name: /supprimer/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /supprimer/i })).toBeInTheDocument();
       });
     });
 
@@ -331,9 +327,7 @@ describe('ProjectDetail', () => {
 
       await waitFor(() => {
         // fr.json: projects.addKitchen = "Ajouter une cuisine"
-        expect(
-          screen.getByRole('button', { name: /ajouter une cuisine/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /ajouter une cuisine/i })).toBeInTheDocument();
       });
     });
 
@@ -371,7 +365,9 @@ describe('ProjectDetail', () => {
 
       // fr.json: projects.deleteConfirmTitle = "Supprimer le projet"
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(document.getElementById('delete-modal-title')).toHaveTextContent(/supprimer le projet/i);
+      expect(document.getElementById('delete-modal-title')).toHaveTextContent(
+        /supprimer le projet/i
+      );
     });
   });
 
@@ -386,9 +382,7 @@ describe('ProjectDetail', () => {
 
       await waitFor(() => {
         // fr.json: common.error = "Erreur" — use heading role to disambiguate from error message text
-        expect(
-          screen.getByRole('heading', { name: /^erreur$/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /^erreur$/i })).toBeInTheDocument();
       });
     });
 
@@ -415,9 +409,7 @@ describe('ProjectDetail', () => {
 
       await waitFor(() => {
         // fr.json: common.tryAgain = "Réessayer"
-        expect(
-          screen.getByRole('button', { name: /réessayer/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /réessayer/i })).toBeInTheDocument();
       });
     });
 
@@ -431,19 +423,15 @@ describe('ProjectDetail', () => {
 
       await waitFor(() => {
         // fr.json: projects.backToProjects = "Retour aux projets"
-        expect(
-          screen.getByRole('button', { name: /retour aux projets/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /retour aux projets/i })).toBeInTheDocument();
       });
     });
 
     it('should retry fetch when retry button is clicked', async () => {
-      mockFetch
-        .mockResolvedValueOnce({ ok: false, status: 500 })
-        .mockResolvedValueOnce({
-          ok: true,
-          json: () => Promise.resolve(sampleProject),
-        });
+      mockFetch.mockResolvedValueOnce({ ok: false, status: 500 }).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(sampleProject),
+      });
 
       renderProjectDetail();
       const user = userEvent.setup();

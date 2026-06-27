@@ -8,7 +8,6 @@ import { asyncHandler } from '../middleware/error-middleware';
 
 import type { OrderDetails } from '../../services/mail-templates';
 
-
 const orderRepository = new OrderRepository(prisma);
 
 // Statuses that can be cancelled
@@ -34,7 +33,7 @@ export class OrderController {
 
     const result = await orderRepository.findAll(
       { userId, status: status as string | undefined },
-      { page: Number(page), limit: Number(limit) },
+      { page: Number(page), limit: Number(limit) }
     );
 
     res.status(200).json({
@@ -164,7 +163,7 @@ export class OrderController {
 
         await mailService.sendOrderConfirmation(
           { email: user.email, name: user.firstName },
-          orderDetails,
+          orderDetails
         );
       }
     } catch (error) {

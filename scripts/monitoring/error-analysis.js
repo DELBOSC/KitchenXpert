@@ -109,7 +109,9 @@ function analyzeLogFiles() {
     return;
   }
 
-  const files = fs.readdirSync(config.logDir).filter(f => f.endsWith('.log') || f.endsWith('.json'));
+  const files = fs
+    .readdirSync(config.logDir)
+    .filter((f) => f.endsWith('.log') || f.endsWith('.json'));
 
   log('INFO', `Found ${files.length} log file(s)`);
 
@@ -119,7 +121,7 @@ function analyzeLogFiles() {
 
     try {
       const content = fs.readFileSync(filePath, 'utf8');
-      const lines = content.split('\n').filter(l => l.trim());
+      const lines = content.split('\n').filter((l) => l.trim());
 
       for (const line of lines) {
         const entry = parseLogLine(line);
@@ -140,9 +142,10 @@ function calculateTrends() {
   const previous = hours.slice(-12, -6);
 
   const recentAvg = recent.reduce((sum, h) => sum + (stats.byHour[h] || 0), 0) / recent.length;
-  const previousAvg = previous.length > 0
-    ? previous.reduce((sum, h) => sum + (stats.byHour[h] || 0), 0) / previous.length
-    : recentAvg;
+  const previousAvg =
+    previous.length > 0
+      ? previous.reduce((sum, h) => sum + (stats.byHour[h] || 0), 0) / previous.length
+      : recentAvg;
 
   const trend = previousAvg > 0 ? ((recentAvg - previousAvg) / previousAvg) * 100 : 0;
 
@@ -211,7 +214,9 @@ function generateMarkdownReport() {
 |----------|-------------|
 `;
 
-  const sortedEndpoints = Object.entries(stats.byEndpoint).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  const sortedEndpoints = Object.entries(stats.byEndpoint)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
   for (const [endpoint, count] of sortedEndpoints) {
     report += `| ${endpoint} | ${count} |\n`;
   }
@@ -266,28 +271,38 @@ function generateMarkdownReport() {
 function generateJsonReport() {
   const trends = calculateTrends();
 
-  return JSON.stringify({
-    meta: {
-      generated: new Date().toISOString(),
-      timeRange: config.timeRange,
+  return JSON.stringify(
+    {
+      meta: {
+        generated: new Date().toISOString(),
+        timeRange: config.timeRange,
+      },
+      summary: {
+        total: stats.total,
+        trends,
+      },
+      byType: stats.byType,
+      byStatusCode: stats.byStatusCode,
+      byEndpoint: stats.byEndpoint,
+      byHour: stats.byHour,
+      recentErrors: stats.topErrors.slice(-20),
     },
-    summary: {
-      total: stats.total,
-      trends,
-    },
-    byType: stats.byType,
-    byStatusCode: stats.byStatusCode,
-    byEndpoint: stats.byEndpoint,
-    byHour: stats.byHour,
-    recentErrors: stats.topErrors.slice(-20),
-  }, null, 2);
+    null,
+    2
+  );
 }
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}        KitchenXpert - Error Analysis                       ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}        KitchenXpert - Error Analysis                       ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   analyzeLogFiles();
@@ -311,9 +326,15 @@ async function main() {
   log('SUCCESS', `JSON report: ${jsonPath}`);
 
   console.log('');
-  console.log(`${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.green}║${colors.reset}        Error Analysis Complete                             ${colors.green}║${colors.reset}`);
-  console.log(`${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.green}║${colors.reset}        Error Analysis Complete                             ${colors.green}║${colors.reset}`
+  );
+  console.log(
+    `${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  Total errors: ${stats.total}`);
   console.log(`  Error types:  ${Object.keys(stats.byType).length}`);

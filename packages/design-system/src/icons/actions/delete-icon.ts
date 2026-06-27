@@ -10,7 +10,8 @@ export interface IconProps {
   strokeWidth?: number;
 }
 
-export const deleteIconPath = 'M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2';
+export const deleteIconPath =
+  'M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2';
 
 export function createDeleteIcon(props: IconProps = {}): string {
   const { size = 24, color = 'currentColor', strokeWidth = 2 } = props;

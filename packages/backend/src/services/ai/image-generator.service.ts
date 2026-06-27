@@ -9,19 +9,24 @@ import path from 'path';
 // loaded via dynamic `import()` inside `loadGenAI()`.
 import logger from '../../utils/logger';
 
-import type { GoogleGenAI as GoogleGenAIType } from '@google/genai' with { 'resolution-mode': 'import' };
-
+import type { GoogleGenAI as GoogleGenAIType } from '@google/genai' with {
+  'resolution-mode': 'import',
+};
 
 type GenAIModule = typeof import('@google/genai', { with: { 'resolution-mode': 'import' } });
 let cachedGenAI: GenAIModule | null = null;
 async function loadGenAI(): Promise<GenAIModule> {
-  if (!cachedGenAI) {cachedGenAI = await import('@google/genai');}
+  if (!cachedGenAI) {
+    cachedGenAI = await import('@google/genai');
+  }
   return cachedGenAI;
 }
 
 /** Sanitize input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -43,18 +48,26 @@ function deriveStyleDirectives(desc: string): {
 
   if (d.includes('scand') || d.includes('nordic') || d.includes('hygge')) {
     return {
-      character: 'Scandinavian minimalism — light birch or ash wood, white painted shaker cabinets, open shelving, linen textiles, simple ceramic objects',
-      lighting: 'Bright Nordic diffused daylight from floor-to-ceiling windows, soft overcast sky quality, zero harsh shadows, airy and serene atmosphere',
-      colorGrade: 'high-key, cool-neutral white balance, desaturated earth tones, true whites, clean and fresh look',
-      atmosphere: 'A white ceramic bowl of lemons, a small potted herb, and a simple wood cutting board add warmth without clutter.',
+      character:
+        'Scandinavian minimalism — light birch or ash wood, white painted shaker cabinets, open shelving, linen textiles, simple ceramic objects',
+      lighting:
+        'Bright Nordic diffused daylight from floor-to-ceiling windows, soft overcast sky quality, zero harsh shadows, airy and serene atmosphere',
+      colorGrade:
+        'high-key, cool-neutral white balance, desaturated earth tones, true whites, clean and fresh look',
+      atmosphere:
+        'A white ceramic bowl of lemons, a small potted herb, and a simple wood cutting board add warmth without clutter.',
     };
   }
   if (d.includes('industri')) {
     return {
-      character: 'Industrial loft — exposed concrete ceiling, matte black steel frames, open pipe shelving, Edison filament bulbs, raw brick accent wall',
-      lighting: 'Warm Edison pendant lights (2200K) above island, moody depth, visible filament glow, dramatic shadows with strong directionality',
-      colorGrade: 'warm amber-brown tones, elevated contrast, slightly desaturated, cinematic and gritty',
-      atmosphere: 'A French press coffee maker, cast iron skillet on the range, copper kitchen tools hanging from a rail.',
+      character:
+        'Industrial loft — exposed concrete ceiling, matte black steel frames, open pipe shelving, Edison filament bulbs, raw brick accent wall',
+      lighting:
+        'Warm Edison pendant lights (2200K) above island, moody depth, visible filament glow, dramatic shadows with strong directionality',
+      colorGrade:
+        'warm amber-brown tones, elevated contrast, slightly desaturated, cinematic and gritty',
+      atmosphere:
+        'A French press coffee maker, cast iron skillet on the range, copper kitchen tools hanging from a rail.',
     };
   }
   if (
@@ -65,18 +78,31 @@ function deriveStyleDirectives(desc: string): {
     d.includes('provençal')
   ) {
     return {
-      character: 'French farmhouse — aged oak ceiling beams, cream Shaker cabinets, stone or terracotta floor, copper accents, hand-thrown pottery',
-      lighting: 'Warm late-afternoon sunlight streaming through linen curtains, dappled shadow patterns, golden-hour glow on wood surfaces',
+      character:
+        'French farmhouse — aged oak ceiling beams, cream Shaker cabinets, stone or terracotta floor, copper accents, hand-thrown pottery',
+      lighting:
+        'Warm late-afternoon sunlight streaming through linen curtains, dappled shadow patterns, golden-hour glow on wood surfaces',
       colorGrade: 'warm golden tones, earthy palette, soft vignette, analogous to film photography',
-      atmosphere: 'Fresh lavender in a stoneware jug, a tarte tatin cooling on the counter, wicker baskets with seasonal vegetables.',
+      atmosphere:
+        'Fresh lavender in a stoneware jug, a tarte tatin cooling on the counter, wicker baskets with seasonal vegetables.',
     };
   }
-  if (d.includes('japand') || d.includes('wabi') || d.includes('zen') || d.includes('japonais') || d.includes('japanese')) {
+  if (
+    d.includes('japand') ||
+    d.includes('wabi') ||
+    d.includes('zen') ||
+    d.includes('japonais') ||
+    d.includes('japanese')
+  ) {
     return {
-      character: 'Japanese wabi-sabi — natural sugi or hinoki wood, stone countertop, handmade ceramic vessels, deliberate imperfection and restraint',
-      lighting: 'Soft, directionless ambient light, no harsh highlights, tranquil atmosphere evoking a tea house',
-      colorGrade: 'muted, desaturated earth tones, very low contrast, organic and contemplative palette',
-      atmosphere: 'A single branch of cherry blossom in a narrow vase, a wooden bowl, one perfect piece of fruit.',
+      character:
+        'Japanese wabi-sabi — natural sugi or hinoki wood, stone countertop, handmade ceramic vessels, deliberate imperfection and restraint',
+      lighting:
+        'Soft, directionless ambient light, no harsh highlights, tranquil atmosphere evoking a tea house',
+      colorGrade:
+        'muted, desaturated earth tones, very low contrast, organic and contemplative palette',
+      atmosphere:
+        'A single branch of cherry blossom in a narrow vase, a wooden bowl, one perfect piece of fruit.',
     };
   }
   if (
@@ -87,26 +113,37 @@ function deriveStyleDirectives(desc: string): {
     d.includes('premium')
   ) {
     return {
-      character: 'Ultra-luxury residential — custom Boffi or SieMatic cabinetry, book-matched Calacatta marble, fully concealed integrated appliances, architectural hardware',
-      lighting: 'Dramatic sculptural pendant fixtures (3000K), perfect specular highlights on marble and lacquer, subtle under-cabinet LED strip at 2700K',
-      colorGrade: 'rich, warm, cinematic — as shot for ELLE Décor or AD France, deep blacks with detail, luminous highlights',
-      atmosphere: 'A perfectly arranged bouquet of white peonies, a bottle of champagne in an ice bucket, sleek kitchen tools as art objects.',
+      character:
+        'Ultra-luxury residential — custom Boffi or SieMatic cabinetry, book-matched Calacatta marble, fully concealed integrated appliances, architectural hardware',
+      lighting:
+        'Dramatic sculptural pendant fixtures (3000K), perfect specular highlights on marble and lacquer, subtle under-cabinet LED strip at 2700K',
+      colorGrade:
+        'rich, warm, cinematic — as shot for ELLE Décor or AD France, deep blacks with detail, luminous highlights',
+      atmosphere:
+        'A perfectly arranged bouquet of white peonies, a bottle of champagne in an ice bucket, sleek kitchen tools as art objects.',
     };
   }
   if (d.includes('contempor') || d.includes('minimaliste') || d.includes('minimalist')) {
     return {
-      character: 'Contemporary minimalism — handleless flat-front lacquered cabinets, waterfall island edge, invisible integrated appliances, zero visual noise',
-      lighting: 'Crisp cool-white recessed LED (3000K), perfectly uniform wash with subtle LED strip under upper cabinets, no visible light sources',
-      colorGrade: 'neutral, precise white balance, clinical crispness, no film grain, high fidelity',
-      atmosphere: 'A single sculptural fruit bowl, one potted monstera leaf in a concrete planter, total restraint.',
+      character:
+        'Contemporary minimalism — handleless flat-front lacquered cabinets, waterfall island edge, invisible integrated appliances, zero visual noise',
+      lighting:
+        'Crisp cool-white recessed LED (3000K), perfectly uniform wash with subtle LED strip under upper cabinets, no visible light sources',
+      colorGrade:
+        'neutral, precise white balance, clinical crispness, no film grain, high fidelity',
+      atmosphere:
+        'A single sculptural fruit bowl, one potted monstera leaf in a concrete planter, total restraint.',
     };
   }
   // Default: modern premium kitchen
   return {
-    character: 'Contemporary high-end kitchen with premium materials, impeccable craftsmanship, and considered design details',
-    lighting: 'Balanced natural daylight (large windows, left side) supplemented by warm-white 2700K recessed LEDs and under-cabinet strips',
+    character:
+      'Contemporary high-end kitchen with premium materials, impeccable craftsmanship, and considered design details',
+    lighting:
+      'Balanced natural daylight (large windows, left side) supplemented by warm-white 2700K recessed LEDs and under-cabinet strips',
     colorGrade: 'warm neutral, true-to-life colors, editorial print quality',
-    atmosphere: 'A bowl of seasonal fruit, fresh herbs in a terracotta pot, a quality espresso machine — life without clutter.',
+    atmosphere:
+      'A bowl of seasonal fruit, fresh herbs in a terracotta pot, a quality espresso machine — life without clutter.',
   };
 }
 
@@ -194,8 +231,12 @@ No clutter, dirty surfaces, misaligned tiles, or unrealistic material colors.
 /** Classify the error to decide whether to retry */
 function classifyError(err: unknown): 'auth' | 'rate_limit' | 'transient' {
   const msg = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
-  if (msg.includes('api_key') || msg.includes('unauthorized') || msg.includes('403')) {return 'auth';}
-  if (msg.includes('quota') || msg.includes('rate') || msg.includes('429')) {return 'rate_limit';}
+  if (msg.includes('api_key') || msg.includes('unauthorized') || msg.includes('403')) {
+    return 'auth';
+  }
+  if (msg.includes('quota') || msg.includes('rate') || msg.includes('429')) {
+    return 'rate_limit';
+  }
   return 'transient';
 }
 
@@ -235,7 +276,7 @@ export class ImageGeneratorService {
       logger.warn(
         '[ImageGenerator] GOOGLE_GENAI_API_KEY is not set. ' +
           'Image generation will be disabled. ' +
-          'Add the key to your .env file — see .env.example for instructions.',
+          'Add the key to your .env file — see .env.example for instructions.'
       );
     }
   }
@@ -245,8 +286,12 @@ export class ImageGeneratorService {
    * is missing so callers can degrade gracefully.
    */
   private async getClient(): Promise<GoogleGenAIType | null> {
-    if (this.client) {return this.client;}
-    if (!process.env.GOOGLE_GENAI_API_KEY) {return null;}
+    if (this.client) {
+      return this.client;
+    }
+    if (!process.env.GOOGLE_GENAI_API_KEY) {
+      return null;
+    }
     const mod = await loadGenAI();
     this.client = new mod.GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
     return this.client;
@@ -289,7 +334,9 @@ export class ImageGeneratorService {
     for (let attempt = 1; attempt <= ImageGeneratorService.MAX_RETRIES; attempt++) {
       try {
         const result = await this.attemptGeneration(client, prompt);
-        if (result) {return result;}
+        if (result) {
+          return result;
+        }
         // null result without exception = empty response — retry makes no sense
         return null;
       } catch (err) {
@@ -306,9 +353,12 @@ export class ImageGeneratorService {
 
         if (attempt < ImageGeneratorService.MAX_RETRIES) {
           const delayMs = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s
-          logger.warn(`[ImageGenerator] Attempt ${attempt} failed (${kind}), retrying in ${delayMs}ms`, {
-            error: err instanceof Error ? err.message : String(err),
-          });
+          logger.warn(
+            `[ImageGenerator] Attempt ${attempt} failed (${kind}), retrying in ${delayMs}ms`,
+            {
+              error: err instanceof Error ? err.message : String(err),
+            }
+          );
           await sleep(delayMs);
         }
       }

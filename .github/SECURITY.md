@@ -2,22 +2,25 @@
 
 ## 🔒 Supported Versions
 
-Nous fournissons des mises à jour de sécurité pour les versions suivantes de KitchenXpert :
+Nous fournissons des mises à jour de sécurité pour les versions suivantes de
+KitchenXpert :
 
-| Version | Supported          | End of Support |
-| ------- | ------------------ | -------------- |
-| 2.x.x   | ✅ Yes             | -              |
-| 1.5.x   | ✅ Yes             | 2026-06-30     |
-| 1.0-1.4 | ❌ No              | 2025-12-31     |
-| < 1.0   | ❌ No              | 2024-12-31     |
+| Version | Supported | End of Support |
+| ------- | --------- | -------------- |
+| 2.x.x   | ✅ Yes    | -              |
+| 1.5.x   | ✅ Yes    | 2026-06-30     |
+| 1.0-1.4 | ❌ No     | 2025-12-31     |
+| < 1.0   | ❌ No     | 2024-12-31     |
 
 ## 🐛 Reporting a Vulnerability
 
-**⚠️ IMPORTANT: Ne reportez JAMAIS de vulnérabilités de sécurité via les issues publiques !**
+**⚠️ IMPORTANT: Ne reportez JAMAIS de vulnérabilités de sécurité via les issues
+publiques !**
 
 ### Où Reporter
 
-Nous utilisons GitHub Security Advisories pour la gestion confidentielle des vulnérabilités :
+Nous utilisons GitHub Security Advisories pour la gestion confidentielle des
+vulnérabilités :
 
 1. **Via GitHub Security Advisory** (Recommandé)
    - Aller sur https://github.com/kitchenxpert/security/advisories/new
@@ -42,32 +45,35 @@ Pour une résolution rapide, inclure :
 
 ### Exemple de Rapport
 
-```markdown
-**Type:** SQL Injection
-**Versions affectées:** 2.0.0 à 2.1.5
-**Sévérité estimée:** Critique
+````markdown
+**Type:** SQL Injection **Versions affectées:** 2.0.0 à 2.1.5 **Sévérité
+estimée:** Critique
 
-**Description:**
-Le endpoint `/api/v1/products/search` est vulnérable à une injection SQL via
-le paramètre `query` non sanitisé.
+**Description:** Le endpoint `/api/v1/products/search` est vulnérable à une
+injection SQL via le paramètre `query` non sanitisé.
 
 **Reproduction:**
+
 1. Envoyer une requête GET à `/api/v1/products/search?query=' OR '1'='1`
 2. Observer que tous les produits sont retournés
 3. Possible d'extraire des données sensibles
 
 **Impact:**
+
 - Accès non autorisé à la base de données
 - Possible extraction de données utilisateurs
 - Possible modification/suppression de données
 
 **PoC:**
+
 ```bash
 curl "https://api.kitchenxpert.com/api/v1/products/search?query=' OR '1'='1"
 ```
+````
 
-**Suggestion de fix:**
-Utiliser des requêtes préparées (prepared statements) au lieu de concaténation.
+**Suggestion de fix:** Utiliser des requêtes préparées (prepared statements) au
+lieu de concaténation.
+
 ```
 
 ## ⏱️ Processus de Traitement
@@ -122,11 +128,13 @@ Nous reconnaissons publiquement les chercheurs en sécurité responsables :
 Pour les communications sensibles, utiliser notre clé PGP :
 
 ```
+
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 [Insérer la clé PGP publique ici]
 
 -----END PGP PUBLIC KEY BLOCK-----
+
 ```
 
 **Fingerprint:** `XXXX XXXX XXXX XXXX XXXX  XXXX XXXX XXXX XXXX XXXX`
@@ -224,3 +232,4 @@ Récompenses estimées :
 **Dernière mise à jour:** 2026-01-10
 
 Merci d'aider à garder KitchenXpert sécurisé ! 🛡️
+```

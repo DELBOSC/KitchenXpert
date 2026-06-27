@@ -20,7 +20,9 @@
 
 ## Overview
 
-KitchenXpert implements a comprehensive, defense-in-depth security architecture that protects user data, ensures privacy compliance, and maintains system integrity. Security is embedded at every layer of the application stack.
+KitchenXpert implements a comprehensive, defense-in-depth security architecture
+that protects user data, ensures privacy compliance, and maintains system
+integrity. Security is embedded at every layer of the application stack.
 
 ```mermaid
 graph TB
@@ -80,18 +82,18 @@ module.exports = {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 1000, // Limit each IP to 1000 requests per window
     standardHeaders: true,
-    legacyHeaders: false
+    legacyHeaders: false,
   },
 
   // DDoS protection
   ddosProtection: {
     burst: 10,
     limit: 5,
-    maxexpiry: 60
+    maxexpiry: 60,
   },
 
   // Geo-blocking (if needed)
-  blockedCountries: process.env.BLOCKED_COUNTRIES?.split(',') || []
+  blockedCountries: process.env.BLOCKED_COUNTRIES?.split(',') || [],
 };
 ```
 
@@ -106,63 +108,71 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 const securityMiddleware = (app) => {
   // Helmet for security headers
-  app.use(helmet({
-    contentSecurityPolicy: false, // Handled separately
-    crossOriginEmbedderPolicy: true,
-    crossOriginOpenerPolicy: true,
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
-    dnsPrefetchControl: true,
-    frameguard: { action: 'deny' },
-    hidePoweredBy: true,
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true
-    },
-    ieNoOpen: true,
-    noSniff: true,
-    originAgentCluster: true,
-    permittedCrossDomainPolicies: { permittedPolicies: 'none' },
-    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    xssFilter: true
-  }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: false, // Handled separately
+      crossOriginEmbedderPolicy: true,
+      crossOriginOpenerPolicy: true,
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      dnsPrefetchControl: true,
+      frameguard: { action: 'deny' },
+      hidePoweredBy: true,
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
+      ieNoOpen: true,
+      noSniff: true,
+      originAgentCluster: true,
+      permittedCrossDomainPolicies: { permittedPolicies: 'none' },
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+      xssFilter: true,
+    })
+  );
 
   // CORS configuration
-  app.use(cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-    exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
-    maxAge: 86400 // 24 hours
-  }));
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+      exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+      maxAge: 86400, // 24 hours
+    })
+  );
 
   // Prevent HTTP Parameter Pollution
   app.use(hpp());
 
   // Sanitize MongoDB queries
-  app.use(mongoSanitize({
-    replaceWith: '_',
-    onSanitize: ({ req, key }) => {
-      console.warn(`Sanitized ${key} in ${req.path}`);
-    }
-  }));
+  app.use(
+    mongoSanitize({
+      replaceWith: '_',
+      onSanitize: ({ req, key }) => {
+        console.warn(`Sanitized ${key} in ${req.path}`);
+      },
+    })
+  );
 
   // Body parser with limits
-  app.use(express.json({
-    limit: '10mb',
-    verify: (req, res, buf, encoding) => {
-      // Store raw body for webhook signature verification
-      req.rawBody = buf.toString(encoding || 'utf8');
-    }
-  }));
+  app.use(
+    express.json({
+      limit: '10mb',
+      verify: (req, res, buf, encoding) => {
+        // Store raw body for webhook signature verification
+        req.rawBody = buf.toString(encoding || 'utf8');
+      },
+    })
+  );
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 };
 
@@ -194,7 +204,9 @@ class JWTManager {
     this.secretRotation = {
       current: this.accessTokenSecret,
       previous: process.env.JWT_SECRET_PREVIOUS,
-      rotationDate: new Date(process.env.JWT_SECRET_ROTATION_DATE || Date.now())
+      rotationDate: new Date(
+        process.env.JWT_SECRET_ROTATION_DATE || Date.now()
+      ),
     };
   }
 
@@ -204,7 +216,7 @@ class JWTManager {
       email: user.email,
       role: user.role,
       permissions: this.getRolePermissions(user.role),
-      type: 'access'
+      type: 'access',
     };
 
     return jwt.sign(payload, this.accessTokenSecret, {
@@ -212,7 +224,7 @@ class JWTManager {
       expiresIn: '15m',
       issuer: 'kitchenxpert',
       audience: 'kitchenxpert-api',
-      jwtid: crypto.randomUUID()
+      jwtid: crypto.randomUUID(),
     });
   }
 
@@ -220,7 +232,7 @@ class JWTManager {
     const payload = {
       id: user.id,
       type: 'refresh',
-      tokenFamily: crypto.randomUUID() // For refresh token rotation
+      tokenFamily: crypto.randomUUID(), // For refresh token rotation
     };
 
     return jwt.sign(payload, this.refreshTokenSecret, {
@@ -228,7 +240,7 @@ class JWTManager {
       expiresIn: '7d',
       issuer: 'kitchenxpert',
       audience: 'kitchenxpert-api',
-      jwtid: crypto.randomUUID()
+      jwtid: crypto.randomUUID(),
     });
   }
 
@@ -238,7 +250,7 @@ class JWTManager {
       return jwt.verify(token, this.secretRotation.current, {
         algorithms: [this.algorithm],
         issuer: 'kitchenxpert',
-        audience: 'kitchenxpert-api'
+        audience: 'kitchenxpert-api',
       });
     } catch (error) {
       // Try previous secret (during rotation period)
@@ -246,7 +258,7 @@ class JWTManager {
         return jwt.verify(token, this.secretRotation.previous, {
           algorithms: [this.algorithm],
           issuer: 'kitchenxpert',
-          audience: 'kitchenxpert-api'
+          audience: 'kitchenxpert-api',
         });
       }
       throw error;
@@ -257,15 +269,20 @@ class JWTManager {
     return jwt.verify(token, this.refreshTokenSecret, {
       algorithms: [this.algorithm],
       issuer: 'kitchenxpert',
-      audience: 'kitchenxpert-api'
+      audience: 'kitchenxpert-api',
     });
   }
 
   getRolePermissions(role) {
     const permissions = {
-      customer: ['design:read:own', 'design:create', 'design:update:own', 'design:delete:own'],
+      customer: [
+        'design:read:own',
+        'design:create',
+        'design:update:own',
+        'design:delete:own',
+      ],
       partner: ['catalog:read', 'catalog:create', 'catalog:update:own'],
-      admin: ['*:*:*']
+      admin: ['*:*:*'],
     };
 
     return permissions[role] || [];
@@ -290,25 +307,25 @@ class OAuthManager {
           process.env.GOOGLE_CLIENT_ID,
           process.env.GOOGLE_CLIENT_SECRET,
           process.env.GOOGLE_REDIRECT_URI
-        )
+        ),
       },
       github: {
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        redirectUri: process.env.GITHUB_REDIRECT_URI
+        redirectUri: process.env.GITHUB_REDIRECT_URI,
       },
       microsoft: {
         clientId: process.env.MICROSOFT_CLIENT_ID,
         clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
-        redirectUri: process.env.MICROSOFT_REDIRECT_URI
-      }
+        redirectUri: process.env.MICROSOFT_REDIRECT_URI,
+      },
     };
   }
 
   async verifyGoogleToken(token) {
     const ticket = await this.providers.google.client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
@@ -320,7 +337,7 @@ class OAuthManager {
       emailVerified: payload.email_verified,
       picture: payload.picture,
       provider: 'google',
-      providerId: payload.sub
+      providerId: payload.sub,
     };
   }
 
@@ -332,10 +349,10 @@ class OAuthManager {
         client_id: this.providers.github.clientId,
         client_secret: this.providers.github.clientSecret,
         code,
-        redirect_uri: this.providers.github.redirectUri
+        redirect_uri: this.providers.github.redirectUri,
       },
       {
-        headers: { Accept: 'application/json' }
+        headers: { Accept: 'application/json' },
       }
     );
 
@@ -343,14 +360,17 @@ class OAuthManager {
 
     // Get user info
     const userResponse = await axios.get('https://api.github.com/user', {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    const emailResponse = await axios.get('https://api.github.com/user/emails', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
+    const emailResponse = await axios.get(
+      'https://api.github.com/user/emails',
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
 
-    const primaryEmail = emailResponse.data.find(email => email.primary);
+    const primaryEmail = emailResponse.data.find((email) => email.primary);
 
     return {
       email: primaryEmail.email,
@@ -359,7 +379,7 @@ class OAuthManager {
       emailVerified: primaryEmail.verified,
       picture: userResponse.data.avatar_url,
       provider: 'github',
-      providerId: userResponse.data.id.toString()
+      providerId: userResponse.data.id.toString(),
     };
   }
 }
@@ -387,7 +407,7 @@ class SessionService {
       userAgent,
       ipAddress,
       createdAt: Date.now(),
-      lastActivity: Date.now()
+      lastActivity: Date.now(),
     };
 
     await redisClient.setex(
@@ -470,14 +490,14 @@ const permissions = {
     design: ['read:own', 'create', 'update:own', 'delete:own'],
     catalog: ['read'],
     order: ['create:own', 'read:own'],
-    user: ['read:own', 'update:own']
+    user: ['read:own', 'update:own'],
   },
   partner: {
     design: ['read:own', 'create', 'update:own', 'delete:own'],
     catalog: ['read', 'create', 'update:own', 'delete:own'],
     order: ['read:own'],
     partner: ['read:own', 'update:own'],
-    webhook: ['read:own', 'create:own', 'update:own', 'delete:own']
+    webhook: ['read:own', 'create:own', 'update:own', 'delete:own'],
   },
   admin: {
     design: ['read:all', 'update:all', 'delete:all'],
@@ -486,8 +506,8 @@ const permissions = {
     user: ['read:all', 'update:all', 'delete:all', 'create'],
     partner: ['read:all', 'update:all', 'delete:all', 'create'],
     webhook: ['read:all', 'update:all', 'delete:all'],
-    system: ['configure', 'monitor', 'audit']
-  }
+    system: ['configure', 'monitor', 'audit'],
+  },
 };
 
 class AuthorizationService {
@@ -599,7 +619,9 @@ const checkDesignOwnership = async (req, res, next) => {
   }
 
   if (design.userId !== userId && req.user.role !== 'admin') {
-    throw new ForbiddenError('You do not have permission to access this design');
+    throw new ForbiddenError(
+      'You do not have permission to access this design'
+    );
   }
 
   req.resource = design;
@@ -626,7 +648,7 @@ const checkCatalogItemOwnership = async (req, res, next) => {
 
 module.exports = {
   checkDesignOwnership,
-  checkCatalogItemOwnership
+  checkCatalogItemOwnership,
 };
 ```
 
@@ -672,7 +694,7 @@ class EncryptionService {
     return {
       encrypted,
       iv: iv.toString('base64'),
-      authTag: authTag.toString('base64')
+      authTag: authTag.toString('base64'),
     };
   }
 
@@ -712,7 +734,7 @@ class EncryptionService {
 
     return {
       hash: hash.toString('base64'),
-      salt: salt.toString('base64')
+      salt: salt.toString('base64'),
     };
   }
 
@@ -761,7 +783,7 @@ const tlsConfig = {
   cipherSuites: [
     'TLS_AES_256_GCM_SHA384',
     'TLS_CHACHA20_POLY1305_SHA256',
-    'TLS_AES_128_GCM_SHA256'
+    'TLS_AES_128_GCM_SHA256',
   ].join(':'),
 
   // Security options
@@ -774,10 +796,7 @@ const tlsConfig = {
 
   // Session resumption
   sessionTimeout: 300, // 5 minutes
-  ticketKeys: [
-    crypto.randomBytes(48),
-    crypto.randomBytes(48)
-  ]
+  ticketKeys: [crypto.randomBytes(48), crypto.randomBytes(48)],
 };
 
 // Create HTTPS server
@@ -802,42 +821,22 @@ const cspConfig = {
       "'self'",
       "'nonce-{NONCE}'", // Dynamic nonce for inline scripts
       'https://cdn.jsdelivr.net',
-      'https://unpkg.com'
+      'https://unpkg.com',
     ],
 
-    scriptSrcElem: [
-      "'self'",
-      'https://cdn.jsdelivr.net',
-      'https://unpkg.com'
-    ],
+    scriptSrcElem: ["'self'", 'https://cdn.jsdelivr.net', 'https://unpkg.com'],
 
     scriptSrcAttr: ["'none'"],
 
-    styleSrc: [
-      "'self'",
-      "'nonce-{NONCE}'",
-      'https://fonts.googleapis.com'
-    ],
+    styleSrc: ["'self'", "'nonce-{NONCE}'", 'https://fonts.googleapis.com'],
 
-    styleSrcElem: [
-      "'self'",
-      'https://fonts.googleapis.com'
-    ],
+    styleSrcElem: ["'self'", 'https://fonts.googleapis.com'],
 
     styleSrcAttr: ["'unsafe-inline'"], // For dynamic styles in 3D canvas
 
-    fontSrc: [
-      "'self'",
-      'https://fonts.gstatic.com'
-    ],
+    fontSrc: ["'self'", 'https://fonts.gstatic.com'],
 
-    imgSrc: [
-      "'self'",
-      'data:',
-      'blob:',
-      'https:',
-      process.env.S3_BUCKET_URL
-    ],
+    imgSrc: ["'self'", 'data:', 'blob:', 'https:', process.env.S3_BUCKET_URL],
 
     mediaSrc: ["'self'", process.env.S3_BUCKET_URL],
 
@@ -846,7 +845,7 @@ const cspConfig = {
     frameSrc: [
       "'self'",
       'https://www.google.com', // reCAPTCHA
-      'https://js.stripe.com' // Payment
+      'https://js.stripe.com', // Payment
     ],
 
     frameAncestors: ["'none'"],
@@ -860,7 +859,7 @@ const cspConfig = {
       process.env.API_URL,
       process.env.WS_URL,
       process.env.AI_SERVICE_URL,
-      'https://api.stripe.com'
+      'https://api.stripe.com',
     ],
 
     workerSrc: ["'self'", 'blob:'],
@@ -869,12 +868,12 @@ const cspConfig = {
 
     upgradeInsecureRequests: [],
 
-    blockAllMixedContent: []
+    blockAllMixedContent: [],
   },
 
   reportOnly: process.env.NODE_ENV === 'development',
 
-  reportUri: '/api/v1/security/csp-report'
+  reportUri: '/api/v1/security/csp-report',
 };
 
 const cspMiddleware = (req, res, next) => {
@@ -887,7 +886,7 @@ const cspMiddleware = (req, res, next) => {
     .map(([directive, values]) => {
       if (values.length === 0) return directive;
 
-      const processedValues = values.map(value =>
+      const processedValues = values.map((value) =>
         value.replace('{NONCE}', nonce)
       );
 
@@ -921,7 +920,7 @@ const redisClient = new Redis({
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
   password: process.env.REDIS_PASSWORD,
-  enableOfflineQueue: false
+  enableOfflineQueue: false,
 });
 
 // Global rate limiter
@@ -932,7 +931,7 @@ const globalLimiter = new RateLimiterRedis({
   duration: 3600, // Per hour (3600 seconds)
   blockDuration: 600, // Block for 10 minutes if exceeded
   execEvenly: false,
-  execEvenlyMinDelayMs: 50
+  execEvenlyMinDelayMs: 50,
 });
 
 // Authentication endpoints (strict)
@@ -941,7 +940,7 @@ const authLimiter = new RateLimiterRedis({
   keyPrefix: 'rl:auth',
   points: 5, // 5 attempts
   duration: 60, // Per minute
-  blockDuration: 900 // Block for 15 minutes
+  blockDuration: 900, // Block for 15 minutes
 });
 
 // API endpoints (moderate)
@@ -950,7 +949,7 @@ const apiLimiter = new RateLimiterRedis({
   keyPrefix: 'rl:api',
   points: 100,
   duration: 60, // Per minute
-  blockDuration: 300 // Block for 5 minutes
+  blockDuration: 300, // Block for 5 minutes
 });
 
 // AI generation (expensive operations)
@@ -959,7 +958,7 @@ const aiLimiter = new RateLimiterRedis({
   keyPrefix: 'rl:ai',
   points: 10, // 10 generations
   duration: 3600, // Per hour
-  blockDuration: 1800 // Block for 30 minutes
+  blockDuration: 1800, // Block for 30 minutes
 });
 
 // File upload
@@ -968,7 +967,7 @@ const uploadLimiter = new RateLimiterRedis({
   keyPrefix: 'rl:upload',
   points: 20, // 20 uploads
   duration: 3600, // Per hour
-  blockDuration: 600
+  blockDuration: 600,
 });
 
 const rateLimiterMiddleware = (limiter, options = {}) => {
@@ -982,7 +981,10 @@ const rateLimiterMiddleware = (limiter, options = {}) => {
       // Set rate limit headers
       res.setHeader('X-RateLimit-Limit', limiter.points);
       res.setHeader('X-RateLimit-Remaining', rateLimiterRes.remainingPoints);
-      res.setHeader('X-RateLimit-Reset', new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString());
+      res.setHeader(
+        'X-RateLimit-Reset',
+        new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString()
+      );
 
       next();
     } catch (rejRes) {
@@ -991,13 +993,16 @@ const rateLimiterMiddleware = (limiter, options = {}) => {
 
       res.setHeader('X-RateLimit-Limit', limiter.points);
       res.setHeader('X-RateLimit-Remaining', 0);
-      res.setHeader('X-RateLimit-Reset', new Date(Date.now() + rejRes.msBeforeNext).toISOString());
+      res.setHeader(
+        'X-RateLimit-Reset',
+        new Date(Date.now() + rejRes.msBeforeNext).toISOString()
+      );
       res.setHeader('Retry-After', retrySecs);
 
       res.status(429).json({
         error: 'Too Many Requests',
         message: `Rate limit exceeded. Please try again in ${retrySecs} seconds.`,
-        retryAfter: retrySecs
+        retryAfter: retrySecs,
       });
     }
   };
@@ -1008,7 +1013,7 @@ module.exports = {
   auth: rateLimiterMiddleware(authLimiter),
   api: rateLimiterMiddleware(apiLimiter),
   ai: rateLimiterMiddleware(aiLimiter),
-  upload: rateLimiterMiddleware(uploadLimiter)
+  upload: rateLimiterMiddleware(uploadLimiter),
 };
 ```
 
@@ -1030,8 +1035,12 @@ class APIKeyService {
 
   generateAPIKey(userId, scopes = ['read']) {
     // Generate public and secret parts
-    const publicKey = crypto.randomBytes(this.publicKeyLength).toString('base64url');
-    const secretKey = crypto.randomBytes(this.secretKeyLength).toString('base64url');
+    const publicKey = crypto
+      .randomBytes(this.publicKeyLength)
+      .toString('base64url');
+    const secretKey = crypto
+      .randomBytes(this.secretKeyLength)
+      .toString('base64url');
 
     // Create checksum
     const checksum = crypto
@@ -1053,12 +1062,15 @@ class APIKeyService {
       apiKey,
       secretKey,
       secretHash,
-      scopes
+      scopes,
     };
   }
 
   async createAPIKey(userId, name, scopes = ['read']) {
-    const { apiKey, secretKey, secretHash } = this.generateAPIKey(userId, scopes);
+    const { apiKey, secretKey, secretHash } = this.generateAPIKey(
+      userId,
+      scopes
+    );
 
     // Store in database
     const apiKeyRepo = AppDataSource.getRepository('APIKey');
@@ -1072,7 +1084,7 @@ class APIKeyService {
       createdAt: new Date(),
       lastUsedAt: null,
       expiresAt: null,
-      revoked: false
+      revoked: false,
     });
 
     // Return key with secret (only shown once)
@@ -1082,7 +1094,7 @@ class APIKeyService {
       secretKey, // Only shown at creation
       name,
       scopes,
-      createdAt: newKey.createdAt
+      createdAt: newKey.createdAt,
     };
   }
 
@@ -1118,7 +1130,7 @@ class APIKeyService {
     const apiKeyRepo = AppDataSource.getRepository('APIKey');
 
     const storedKey = await apiKeyRepo.findOne({
-      where: { publicKey, secretHash }
+      where: { publicKey, secretHash },
     });
 
     if (!storedKey) {
@@ -1139,7 +1151,7 @@ class APIKeyService {
     return {
       valid: true,
       userId: storedKey.userId,
-      scopes: JSON.parse(storedKey.scopes)
+      scopes: JSON.parse(storedKey.scopes),
     };
   }
 
@@ -1185,13 +1197,13 @@ class ConsentService {
   async recordConsent(userId, consentTypes) {
     const consentRepo = AppDataSource.getRepository('UserConsent');
 
-    const consents = consentTypes.map(type => ({
+    const consents = consentTypes.map((type) => ({
       userId,
       consentType: type,
       granted: true,
       grantedAt: new Date(),
       ipAddress: req.ip,
-      userAgent: req.get('user-agent')
+      userAgent: req.get('user-agent'),
     }));
 
     await consentRepo.save(consents);
@@ -1202,7 +1214,7 @@ class ConsentService {
 
     return await consentRepo.find({
       where: { userId },
-      order: { grantedAt: 'DESC' }
+      order: { grantedAt: 'DESC' },
     });
   }
 
@@ -1258,22 +1270,22 @@ class DataExportService {
         firstName: user.firstName,
         lastName: user.lastName,
         createdAt: user.createdAt,
-        lastLogin: user.lastLogin
+        lastLogin: user.lastLogin,
       },
-      designs: designs.map(d => ({
+      designs: designs.map((d) => ({
         id: d.id,
         name: d.name,
         createdAt: d.createdAt,
-        updatedAt: d.updatedAt
+        updatedAt: d.updatedAt,
       })),
-      orders: orders.map(o => ({
+      orders: orders.map((o) => ({
         id: o.id,
         total: o.total,
         status: o.status,
-        createdAt: o.createdAt
+        createdAt: o.createdAt,
       })),
       consents: consents,
-      activityLog: activityLog
+      activityLog: activityLog,
     };
 
     return exportData;
@@ -1302,7 +1314,7 @@ class DataDeletionService {
   async deleteUserData(userId, options = {}) {
     const {
       hardDelete = false, // Complete removal vs anonymization
-      retainOrders = true // Keep order history for legal compliance
+      retainOrders = true, // Keep order history for legal compliance
     } = options;
 
     if (hardDelete) {
@@ -1323,7 +1335,7 @@ class DataDeletionService {
       passwordHash: null,
       emailVerified: false,
       profilePicture: null,
-      deletedAt: new Date()
+      deletedAt: new Date(),
     });
 
     // Delete designs
@@ -1339,10 +1351,7 @@ class DataDeletionService {
     // Anonymize orders (if not retaining)
     if (!retainOrders) {
       const orderRepo = AppDataSource.getRepository('Order');
-      await orderRepo.update(
-        { userId },
-        { userId: null, anonymized: true }
-      );
+      await orderRepo.update({ userId }, { userId: null, anonymized: true });
     }
   }
 
@@ -1382,7 +1391,7 @@ class DataRetentionService {
       sessionLogs: 90, // 3 months
       deletedUsers: 30, // 30 days before permanent deletion
       inactiveDesigns: 730, // 2 years
-      failedLoginAttempts: 30 // 30 days
+      failedLoginAttempts: 30, // 30 days
     };
   }
 
@@ -1400,19 +1409,21 @@ class DataRetentionService {
 
     const auditLogRepo = AppDataSource.getRepository('AuditLog');
     await auditLogRepo.delete({
-      createdAt: LessThan(cutoffDate)
+      createdAt: LessThan(cutoffDate),
     });
   }
 
   async cleanupDeletedUsers() {
     const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - this.retentionPeriods.deletedUsers);
+    cutoffDate.setDate(
+      cutoffDate.getDate() - this.retentionPeriods.deletedUsers
+    );
 
     const userRepo = AppDataSource.getRepository('User');
     const deletedUsers = await userRepo.find({
       where: {
-        deletedAt: LessThan(cutoffDate)
-      }
+        deletedAt: LessThan(cutoffDate),
+      },
     });
 
     for (const user of deletedUsers) {
@@ -1455,7 +1466,7 @@ module.exports = {
     'usb=()',
     'magnetometer=()',
     'gyroscope=()',
-    'accelerometer=()'
+    'accelerometer=()',
   ].join(', '),
 
   // Cross-Origin Policies
@@ -1464,7 +1475,7 @@ module.exports = {
   'Cross-Origin-Resource-Policy': 'same-origin',
 
   // Remove server info
-  'X-Powered-By': ''
+  'X-Powered-By': '',
 };
 ```
 
@@ -1590,7 +1601,7 @@ class SecurityMonitoringService {
     if (failedAttempts.length > threshold) {
       await this.triggerAlert('SUSPICIOUS_LOGIN_ACTIVITY', {
         attempts: failedAttempts.length,
-        timeWindow: '15 minutes'
+        timeWindow: '15 minutes',
       });
     }
   }

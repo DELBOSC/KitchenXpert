@@ -50,10 +50,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
  * @param algorithm - The hash algorithm (default: SHA-256)
  * @returns A promise that resolves to the hash as a hex string
  */
-export async function hash(
-  data: string,
-  algorithm: HashAlgorithm = 'SHA-256'
-): Promise<string> {
+export async function hash(data: string, algorithm: HashAlgorithm = 'SHA-256'): Promise<string> {
   const buffer = stringToArrayBuffer(data);
   const hashBuffer = await crypto.subtle.digest(algorithm, buffer);
   return arrayBufferToHex(hashBuffer);
@@ -122,11 +119,7 @@ export async function hmac(
     ['sign']
   );
 
-  const signature = await crypto.subtle.sign(
-    'HMAC',
-    cryptoKey,
-    stringToArrayBuffer(data)
-  );
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, stringToArrayBuffer(data));
 
   return arrayBufferToHex(signature);
 }
@@ -181,10 +174,7 @@ export function constantTimeCompare(a: string, b: string): boolean {
  * @param algorithm - The hash algorithm (default: SHA-256)
  * @returns A promise that resolves to the hash as a hex string
  */
-export async function hashFile(
-  file: File,
-  algorithm: HashAlgorithm = 'SHA-256'
-): Promise<string> {
+export async function hashFile(file: File, algorithm: HashAlgorithm = 'SHA-256'): Promise<string> {
   const buffer = await file.arrayBuffer();
   const hashBuffer = await crypto.subtle.digest(algorithm, buffer);
   return arrayBufferToHex(hashBuffer);
@@ -268,10 +258,7 @@ export async function checksum(data: string): Promise<string> {
  * @param expectedChecksum - The expected checksum
  * @returns A promise that resolves to true if the checksum is valid
  */
-export async function verifyChecksum(
-  data: string,
-  expectedChecksum: string
-): Promise<boolean> {
+export async function verifyChecksum(data: string, expectedChecksum: string): Promise<boolean> {
   const computedChecksum = await checksum(data);
   return constantTimeCompare(computedChecksum, expectedChecksum);
 }

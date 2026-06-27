@@ -126,7 +126,9 @@ export class CollaborationRoleService {
       },
     });
 
-    logger.info(`Collaboration invite sent: kitchen=${kitchenId}, invitee=${inviteeEmail}, role=${role}`);
+    logger.info(
+      `Collaboration invite sent: kitchen=${kitchenId}, invitee=${inviteeEmail}, role=${role}`
+    );
 
     // TODO: Send email notification using existing email service
     // e.g. emailService.sendCollaborationInvite({ to: inviteeEmail, token, role, kitchenName: kitchen.name });
@@ -289,8 +291,12 @@ export class CollaborationRoleService {
       where: { id: kitchenId },
     });
 
-    if (!kitchen) {return false;}
-    if (kitchen.userId === userId) {return true;} // Owner has all permissions
+    if (!kitchen) {
+      return false;
+    }
+    if (kitchen.userId === userId) {
+      return true;
+    } // Owner has all permissions
 
     // Look up the user's email to match against invite
     const user = await prisma.user.findUnique({
@@ -298,7 +304,9 @@ export class CollaborationRoleService {
       select: { email: true },
     });
 
-    if (!user) {return false;}
+    if (!user) {
+      return false;
+    }
 
     // Find the user's accepted invite for this kitchen
     const invite = await prisma.collaborationInvite.findFirst({
@@ -309,7 +317,9 @@ export class CollaborationRoleService {
       },
     });
 
-    if (!invite) {return false;}
+    if (!invite) {
+      return false;
+    }
 
     const permissions = invite.permissions as unknown as CollaborationPermissions;
     return (permissions as unknown as Record<string, boolean>)[permission] ?? false;

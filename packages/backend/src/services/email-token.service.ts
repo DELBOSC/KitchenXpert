@@ -370,18 +370,12 @@ export class EmailTokenService {
     const [emailResult, passwordResult] = await this.prisma.$transaction([
       this.prisma.emailVerificationToken.deleteMany({
         where: {
-          OR: [
-            { expiresAt: { lt: thirtyDaysAgo } },
-            { usedAt: { lt: thirtyDaysAgo } },
-          ],
+          OR: [{ expiresAt: { lt: thirtyDaysAgo } }, { usedAt: { lt: thirtyDaysAgo } }],
         },
       }),
       this.prisma.passwordResetToken.deleteMany({
         where: {
-          OR: [
-            { expiresAt: { lt: thirtyDaysAgo } },
-            { usedAt: { lt: thirtyDaysAgo } },
-          ],
+          OR: [{ expiresAt: { lt: thirtyDaysAgo } }, { usedAt: { lt: thirtyDaysAgo } }],
         },
       }),
     ]);
@@ -418,7 +412,9 @@ export class EmailTokenService {
    * Useful for displaying user info on verification page
    * @param token - The raw token
    */
-  async getUserByVerificationToken(token: string): Promise<{ id: string; email: string; firstName: string } | null> {
+  async getUserByVerificationToken(
+    token: string
+  ): Promise<{ id: string; email: string; firstName: string } | null> {
     const hashedToken = this.hashToken(token);
 
     const tokenRecord = await this.prisma.emailVerificationToken.findUnique({

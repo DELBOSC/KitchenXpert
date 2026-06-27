@@ -21,7 +21,9 @@ export class GetOrderUseCase implements UseCase<GetOrderInput, unknown> {
       where: { id: orderId },
       include: { items: true, project: { select: { id: true, name: true } } },
     });
-    if (!order) {return err(DomainErrors.notFound('Order'));}
+    if (!order) {
+      return err(DomainErrors.notFound('Order'));
+    }
     if (order.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this order'));
     }

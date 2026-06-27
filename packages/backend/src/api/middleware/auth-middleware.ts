@@ -1,6 +1,11 @@
 import { type Request, type Response, type NextFunction } from 'express';
 
-import { UnauthorizedError, ForbiddenError, type UserRole, type JWTPayload } from '@kitchenxpert/common';
+import {
+  UnauthorizedError,
+  ForbiddenError,
+  type UserRole,
+  type JWTPayload,
+} from '@kitchenxpert/common';
 
 import { jwtService } from '../../auth/jwt.service';
 import { getTokenBlacklist, getTokenIssuedAt } from '../../auth/token-blacklist';
@@ -131,9 +136,7 @@ export const requireRole = (...allowedRoles: UserRole[]) => {
     }
 
     if (!allowedRoles.includes(req.user.role)) {
-      throw new ForbiddenError(
-        `Access denied. Required roles: ${allowedRoles.join(', ')}`
-      );
+      throw new ForbiddenError(`Access denied. Required roles: ${allowedRoles.join(', ')}`);
     }
 
     next();
@@ -189,7 +192,9 @@ export const requireVerifiedEmail = async (
   }
 
   if (!user.emailVerified) {
-    throw new ForbiddenError('Email verification required. Please verify your email before accessing this resource.');
+    throw new ForbiddenError(
+      'Email verification required. Please verify your email before accessing this resource.'
+    );
   }
 
   next();
@@ -200,9 +205,7 @@ export const requireVerifiedEmail = async (
  * authorize(['admin', 'provider']) or authorize('admin', 'provider')
  */
 export const authorize = (rolesOrFirst: UserRole[] | UserRole, ...rest: UserRole[]) => {
-  const roles: UserRole[] = Array.isArray(rolesOrFirst)
-    ? rolesOrFirst
-    : [rolesOrFirst, ...rest];
+  const roles: UserRole[] = Array.isArray(rolesOrFirst) ? rolesOrFirst : [rolesOrFirst, ...rest];
   return requireRole(...roles);
 };
 

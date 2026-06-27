@@ -3,7 +3,12 @@ import { z } from 'zod';
 
 import { userController } from '../controllers/user-controller';
 import { authenticate, authorize } from '../middleware/auth-middleware';
-import { validateBody, validateParams, validateQuery, commonSchemas } from '../middleware/validation-middleware';
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+  commonSchemas,
+} from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 
@@ -131,7 +136,12 @@ router.get('/me/preferences', authenticate, userController.getPreferences);
  *       401:
  *         description: Unauthorized
  */
-router.put('/me/preferences', authenticate, validateBody(updatePreferencesSchema), userController.updatePreferences);
+router.put(
+  '/me/preferences',
+  authenticate,
+  validateBody(updatePreferencesSchema),
+  userController.updatePreferences
+);
 
 // ==================== ADMIN ROUTES ====================
 
@@ -189,7 +199,13 @@ router.get('/stats', authenticate, authorize(['admin']), userController.getStats
  *       403:
  *         description: Forbidden - admin only
  */
-router.get('/', authenticate, authorize(['admin']), validateQuery(userListQuerySchema), userController.getAll);
+router.get(
+  '/',
+  authenticate,
+  authorize(['admin']),
+  validateQuery(userListQuerySchema),
+  userController.getAll
+);
 
 /**
  * @swagger
@@ -215,7 +231,13 @@ router.get('/', authenticate, authorize(['admin']), validateQuery(userListQueryS
  *       404:
  *         description: User not found
  */
-router.get('/:id', authenticate, authorize(['admin']), validateParams(commonSchemas.idParam), userController.getById);
+router.get(
+  '/:id',
+  authenticate,
+  authorize(['admin']),
+  validateParams(commonSchemas.idParam),
+  userController.getById
+);
 
 /**
  * @swagger
@@ -257,7 +279,14 @@ router.get('/:id', authenticate, authorize(['admin']), validateParams(commonSche
  *       404:
  *         description: User not found
  */
-router.put('/:id', authenticate, authorize(['admin']), validateParams(commonSchemas.idParam), validateBody(updateProfileSchema), userController.update);
+router.put(
+  '/:id',
+  authenticate,
+  authorize(['admin']),
+  validateParams(commonSchemas.idParam),
+  validateBody(updateProfileSchema),
+  userController.update
+);
 
 /**
  * @swagger
@@ -283,7 +312,13 @@ router.put('/:id', authenticate, authorize(['admin']), validateParams(commonSche
  *       404:
  *         description: User not found
  */
-router.delete('/:id', authenticate, authorize(['admin']), validateParams(commonSchemas.idParam), userController.delete);
+router.delete(
+  '/:id',
+  authenticate,
+  authorize(['admin']),
+  validateParams(commonSchemas.idParam),
+  userController.delete
+);
 
 /**
  * @swagger
@@ -319,6 +354,13 @@ router.delete('/:id', authenticate, authorize(['admin']), validateParams(commonS
  *       404:
  *         description: User not found
  */
-router.put('/:id/status', authenticate, authorize(['admin']), validateParams(commonSchemas.idParam), validateBody(updateUserStatusSchema), userController.updateStatus);
+router.put(
+  '/:id/status',
+  authenticate,
+  authorize(['admin']),
+  validateParams(commonSchemas.idParam),
+  validateBody(updateUserStatusSchema),
+  userController.updateStatus
+);
 
 export default router;

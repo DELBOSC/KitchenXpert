@@ -101,9 +101,7 @@ export abstract class BaseProvider {
           // Valider le produit
           const validationResult = this.validator.validate(product);
           if (!validationResult.valid) {
-            errors.push(
-              `Invalid product ${product.id}: ${validationResult.errors.join(', ')}`
-            );
+            errors.push(`Invalid product ${product.id}: ${validationResult.errors.join(', ')}`);
             continue;
           }
 

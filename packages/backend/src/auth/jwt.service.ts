@@ -36,14 +36,14 @@ export class JWTService {
     if (!accessSecret) {
       throw new Error(
         'SECURITY ERROR: JWT_ACCESS_SECRET environment variable is required. ' +
-        'Please set a cryptographically secure secret of at least 32 characters.'
+          'Please set a cryptographically secure secret of at least 32 characters.'
       );
     }
 
     if (!refreshSecret) {
       throw new Error(
         'SECURITY ERROR: JWT_REFRESH_SECRET environment variable is required. ' +
-        'Please set a cryptographically secure secret of at least 32 characters.'
+          'Please set a cryptographically secure secret of at least 32 characters.'
       );
     }
 
@@ -84,7 +84,7 @@ export class JWTService {
       if (pattern.test(secret)) {
         logger.warn(
           `SECURITY WARNING: ${name} appears to follow a weak pattern. ` +
-          'Consider using a cryptographically secure random string.'
+            'Consider using a cryptographically secure random string.'
         );
         break;
       }
@@ -172,7 +172,9 @@ export class JWTService {
    */
   private parseExpiry(expiry: string): number {
     const match = expiry.match(/^(\d+)([smhd])$/);
-    if (!match?.[1] || !match[2]) {return 900;} // Default 15 minutes
+    if (!match?.[1] || !match[2]) {
+      return 900;
+    } // Default 15 minutes
 
     const value = parseInt(match[1], 10);
     const unit = match[2];

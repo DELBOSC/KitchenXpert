@@ -41,7 +41,12 @@
       },
       "action": {
         "type": "add-requirements",
-        "requirements": ["wider-aisles", "lower-counters", "pull-out-shelving", "lever-handles"],
+        "requirements": [
+          "wider-aisles",
+          "lower-counters",
+          "pull-out-shelving",
+          "lever-handles"
+        ],
         "message": {
           "en": "We'll incorporate universal design principles throughout the kitchen.",
           "fr": "Nous intégrerons des principes de conception universelle dans toute la cuisine."
@@ -118,12 +123,19 @@
       "condition": {
         "and": [
           { "questionId": "time-in-home", "equals": "10-plus" },
-          { "questionId": "aging-in-place", "in": ["yes-plan-now", "prepare-later"] }
+          {
+            "questionId": "aging-in-place",
+            "in": ["yes-plan-now", "prepare-later"]
+          }
         ]
       },
       "suggestions": [
         { "type": "layout", "feature": "wider-aisles", "priority": "high" },
-        { "type": "storage", "feature": "pull-down-shelving", "priority": "medium" },
+        {
+          "type": "storage",
+          "feature": "pull-down-shelving",
+          "priority": "medium"
+        },
         { "type": "fixture", "feature": "lever-handles", "priority": "medium" }
       ]
     }

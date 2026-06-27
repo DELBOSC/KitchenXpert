@@ -155,7 +155,11 @@ export class Logger {
   /**
    * Log at error level
    */
-  error(message: string, error?: Error | Record<string, unknown>, metadata?: Record<string, unknown>): void {
+  error(
+    message: string,
+    error?: Error | Record<string, unknown>,
+    metadata?: Record<string, unknown>
+  ): void {
     if (error instanceof Error) {
       this.log('error', message, {
         ...metadata,
@@ -169,7 +173,11 @@ export class Logger {
   /**
    * Log at fatal level
    */
-  fatal(message: string, error?: Error | Record<string, unknown>, metadata?: Record<string, unknown>): void {
+  fatal(
+    message: string,
+    error?: Error | Record<string, unknown>,
+    metadata?: Record<string, unknown>
+  ): void {
     if (error instanceof Error) {
       this.log('fatal', message, {
         ...metadata,
@@ -273,11 +281,7 @@ export class Logger {
    * Flush all transports
    */
   async flush(): Promise<void> {
-    await Promise.all(
-      this.transports
-        .filter(t => t.flush)
-        .map(t => t.flush!())
-    );
+    await Promise.all(this.transports.filter((t) => t.flush).map((t) => t.flush!()));
   }
 
   /**
@@ -285,11 +289,7 @@ export class Logger {
    */
   async close(): Promise<void> {
     await this.flush();
-    await Promise.all(
-      this.transports
-        .filter(t => t.close)
-        .map(t => t.close!())
-    );
+    await Promise.all(this.transports.filter((t) => t.close).map((t) => t.close!()));
   }
 
   // Private methods
@@ -324,7 +324,7 @@ export class Logger {
       entry.duration = metadata.duration;
     }
 
-    this.transports.forEach(transport => transport.log(entry));
+    this.transports.forEach((transport) => transport.log(entry));
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -364,11 +364,12 @@ export class Logger {
           return;
         }
 
-        const output = format === 'json'
-          ? this.formatJson(entry)
-          : format === 'pretty' || prettyPrint
-            ? this.formatPretty(entry)
-            : this.formatText(entry);
+        const output =
+          format === 'json'
+            ? this.formatJson(entry)
+            : format === 'pretty' || prettyPrint
+              ? this.formatPretty(entry)
+              : this.formatText(entry);
 
         if (entry.level === 'error' || entry.level === 'fatal') {
           console.error(output);
@@ -402,7 +403,9 @@ export class Logger {
         buffer.push(entry);
       },
       flush: async () => {
-        if (buffer.length === 0) {return;}
+        if (buffer.length === 0) {
+          return;
+        }
         // Would send logs to remote endpoint
         buffer.length = 0;
       },

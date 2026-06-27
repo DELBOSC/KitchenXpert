@@ -57,7 +57,11 @@ const panels = {
           mappings: [],
           thresholds: {
             mode: 'absolute',
-            steps: [{ color: 'green', value: null }, { color: 'yellow', value: 80 }, { color: 'red', value: 90 }],
+            steps: [
+              { color: 'green', value: null },
+              { color: 'yellow', value: 80 },
+              { color: 'red', value: 90 },
+            ],
           },
           unit: options.unit || 'short',
         },
@@ -141,12 +145,42 @@ function generateOverviewDashboard() {
     time: { from: 'now-1h', to: 'now' },
     panels: [
       panels.stat('Services Up', 'sum(up{job=~"backend|frontend"})', { h: 4, w: 6, x: 0, y: 0 }),
-      panels.stat('Request Rate', 'sum(rate(http_requests_total[5m]))', { h: 4, w: 6, x: 6, y: 0 }, { unit: 'reqps' }),
-      panels.stat('Error Rate', 'sum(rate(http_requests_total{status=~"5.."}[5m]))/sum(rate(http_requests_total[5m]))*100', { h: 4, w: 6, x: 12, y: 0 }, { unit: 'percent' }),
-      panels.stat('P95 Latency', 'histogram_quantile(0.95,sum(rate(http_request_duration_seconds_bucket[5m]))by(le))*1000', { h: 4, w: 6, x: 18, y: 0 }, { unit: 'ms' }),
-      panels.graph('Request Rate Over Time', 'sum(rate(http_requests_total[5m])) by (job)', { h: 8, w: 12, x: 0, y: 4 }, { unit: 'reqps', legend: '{{job}}' }),
-      panels.graph('Error Rate Over Time', 'sum(rate(http_requests_total{status=~"5.."}[5m])) by (job)', { h: 8, w: 12, x: 12, y: 4 }, { unit: 'short', legend: '{{job}}' }),
-      panels.graph('Response Time', 'histogram_quantile(0.95,sum(rate(http_request_duration_seconds_bucket[5m]))by(le,job))*1000', { h: 8, w: 24, x: 0, y: 12 }, { unit: 'ms', legend: '{{job}} p95' }),
+      panels.stat(
+        'Request Rate',
+        'sum(rate(http_requests_total[5m]))',
+        { h: 4, w: 6, x: 6, y: 0 },
+        { unit: 'reqps' }
+      ),
+      panels.stat(
+        'Error Rate',
+        'sum(rate(http_requests_total{status=~"5.."}[5m]))/sum(rate(http_requests_total[5m]))*100',
+        { h: 4, w: 6, x: 12, y: 0 },
+        { unit: 'percent' }
+      ),
+      panels.stat(
+        'P95 Latency',
+        'histogram_quantile(0.95,sum(rate(http_request_duration_seconds_bucket[5m]))by(le))*1000',
+        { h: 4, w: 6, x: 18, y: 0 },
+        { unit: 'ms' }
+      ),
+      panels.graph(
+        'Request Rate Over Time',
+        'sum(rate(http_requests_total[5m])) by (job)',
+        { h: 8, w: 12, x: 0, y: 4 },
+        { unit: 'reqps', legend: '{{job}}' }
+      ),
+      panels.graph(
+        'Error Rate Over Time',
+        'sum(rate(http_requests_total{status=~"5.."}[5m])) by (job)',
+        { h: 8, w: 12, x: 12, y: 4 },
+        { unit: 'short', legend: '{{job}}' }
+      ),
+      panels.graph(
+        'Response Time',
+        'histogram_quantile(0.95,sum(rate(http_request_duration_seconds_bucket[5m]))by(le,job))*1000',
+        { h: 8, w: 24, x: 0, y: 12 },
+        { unit: 'ms', legend: '{{job}} p95' }
+      ),
     ],
   };
 }
@@ -162,12 +196,40 @@ function generateInfrastructureDashboard() {
     refresh: '10s',
     time: { from: 'now-1h', to: 'now' },
     panels: [
-      panels.gauge('CPU Usage', '100 - (avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)', { h: 6, w: 6, x: 0, y: 0 }),
-      panels.gauge('Memory Usage', '(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100', { h: 6, w: 6, x: 6, y: 0 }),
-      panels.gauge('Disk Usage', '(node_filesystem_size_bytes - node_filesystem_avail_bytes) / node_filesystem_size_bytes * 100', { h: 6, w: 6, x: 12, y: 0 }, { warnThreshold: 80, critThreshold: 95 }),
-      panels.stat('Network In', 'sum(rate(node_network_receive_bytes_total[5m]))', { h: 6, w: 6, x: 18, y: 0 }, { unit: 'Bps' }),
-      panels.graph('CPU Over Time', '100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)', { h: 8, w: 12, x: 0, y: 6 }, { unit: 'percent', legend: '{{instance}}' }),
-      panels.graph('Memory Over Time', '(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / 1024 / 1024 / 1024', { h: 8, w: 12, x: 12, y: 6 }, { unit: 'decgbytes', legend: 'Used' }),
+      panels.gauge(
+        'CPU Usage',
+        '100 - (avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)',
+        { h: 6, w: 6, x: 0, y: 0 }
+      ),
+      panels.gauge(
+        'Memory Usage',
+        '(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100',
+        { h: 6, w: 6, x: 6, y: 0 }
+      ),
+      panels.gauge(
+        'Disk Usage',
+        '(node_filesystem_size_bytes - node_filesystem_avail_bytes) / node_filesystem_size_bytes * 100',
+        { h: 6, w: 6, x: 12, y: 0 },
+        { warnThreshold: 80, critThreshold: 95 }
+      ),
+      panels.stat(
+        'Network In',
+        'sum(rate(node_network_receive_bytes_total[5m]))',
+        { h: 6, w: 6, x: 18, y: 0 },
+        { unit: 'Bps' }
+      ),
+      panels.graph(
+        'CPU Over Time',
+        '100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)',
+        { h: 8, w: 12, x: 0, y: 6 },
+        { unit: 'percent', legend: '{{instance}}' }
+      ),
+      panels.graph(
+        'Memory Over Time',
+        '(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / 1024 / 1024 / 1024',
+        { h: 8, w: 12, x: 12, y: 6 },
+        { unit: 'decgbytes', legend: 'Used' }
+      ),
     ],
   };
 }
@@ -185,10 +247,25 @@ function generateDatabaseDashboard() {
     panels: [
       panels.stat('PostgreSQL Up', 'pg_up', { h: 4, w: 6, x: 0, y: 0 }),
       panels.stat('Active Connections', 'pg_stat_activity_count', { h: 4, w: 6, x: 6, y: 0 }),
-      panels.stat('Database Size', 'pg_database_size_bytes', { h: 4, w: 6, x: 12, y: 0 }, { unit: 'decbytes' }),
+      panels.stat(
+        'Database Size',
+        'pg_database_size_bytes',
+        { h: 4, w: 6, x: 12, y: 0 },
+        { unit: 'decbytes' }
+      ),
       panels.stat('Redis Up', 'redis_up', { h: 4, w: 6, x: 18, y: 0 }),
-      panels.graph('Query Duration', 'rate(pg_stat_user_tables_seq_scan[5m])', { h: 8, w: 12, x: 0, y: 4 }, { legend: 'Sequential scans' }),
-      panels.graph('Redis Memory', 'redis_memory_used_bytes', { h: 8, w: 12, x: 12, y: 4 }, { unit: 'decbytes', legend: 'Used' }),
+      panels.graph(
+        'Query Duration',
+        'rate(pg_stat_user_tables_seq_scan[5m])',
+        { h: 8, w: 12, x: 0, y: 4 },
+        { legend: 'Sequential scans' }
+      ),
+      panels.graph(
+        'Redis Memory',
+        'redis_memory_used_bytes',
+        { h: 8, w: 12, x: 12, y: 4 },
+        { unit: 'decbytes', legend: 'Used' }
+      ),
     ],
   };
 }
@@ -206,10 +283,30 @@ function generateBusinessDashboard() {
     panels: [
       panels.stat('Active Users', 'app_active_users', { h: 4, w: 6, x: 0, y: 0 }),
       panels.stat('Orders Today', 'increase(app_orders_total[24h])', { h: 4, w: 6, x: 6, y: 0 }),
-      panels.stat('Revenue Today', 'increase(app_revenue_total[24h])', { h: 4, w: 6, x: 12, y: 0 }, { unit: 'currencyEUR' }),
-      panels.stat('Conversion Rate', 'app_conversion_rate * 100', { h: 4, w: 6, x: 18, y: 0 }, { unit: 'percent' }),
-      panels.graph('Orders Over Time', 'rate(app_orders_total[1h])*3600', { h: 8, w: 12, x: 0, y: 4 }, { legend: 'Orders/hour' }),
-      panels.graph('Revenue Over Time', 'rate(app_revenue_total[1h])*3600', { h: 8, w: 12, x: 12, y: 4 }, { unit: 'currencyEUR', legend: 'Revenue/hour' }),
+      panels.stat(
+        'Revenue Today',
+        'increase(app_revenue_total[24h])',
+        { h: 4, w: 6, x: 12, y: 0 },
+        { unit: 'currencyEUR' }
+      ),
+      panels.stat(
+        'Conversion Rate',
+        'app_conversion_rate * 100',
+        { h: 4, w: 6, x: 18, y: 0 },
+        { unit: 'percent' }
+      ),
+      panels.graph(
+        'Orders Over Time',
+        'rate(app_orders_total[1h])*3600',
+        { h: 8, w: 12, x: 0, y: 4 },
+        { legend: 'Orders/hour' }
+      ),
+      panels.graph(
+        'Revenue Over Time',
+        'rate(app_revenue_total[1h])*3600',
+        { h: 8, w: 12, x: 12, y: 4 },
+        { unit: 'currencyEUR', legend: 'Revenue/hour' }
+      ),
     ],
   };
 }
@@ -242,9 +339,15 @@ function saveDashboard(dashboard, filename) {
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}      KitchenXpert - Dashboard Generator                    ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}      KitchenXpert - Dashboard Generator                    ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   const dashboards = [
@@ -260,9 +363,15 @@ async function main() {
   }
 
   console.log('');
-  console.log(`${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.green}║${colors.reset}        Dashboard Generation Complete                       ${colors.green}║${colors.reset}`);
-  console.log(`${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.green}║${colors.reset}        Dashboard Generation Complete                       ${colors.green}║${colors.reset}`
+  );
+  console.log(
+    `${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  Output: ${config.outputDir}`);
   console.log(`  Dashboards: ${dashboards.length}`);

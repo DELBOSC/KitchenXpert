@@ -11,10 +11,7 @@ import { SeoHead } from '../components/seo/SeoHead';
 import { Skeleton } from '../components/ui/Skeleton';
 import { useSandboxStore, selectHasSandboxProject } from '../sandbox/store';
 import { findTemplate } from '../sandbox/templates';
-import {
-  trackSandbox,
-  useSandboxSessionTracking,
-} from '../sandbox/useSandboxAnalytics';
+import { trackSandbox, useSandboxSessionTracking } from '../sandbox/useSandboxAnalytics';
 import { useSandboxLimits } from '../sandbox/useSandboxLimits';
 
 const SandboxCanvas = React.lazy(() => import('../components/sandbox/SandboxCanvas'));
@@ -77,9 +74,12 @@ export default function SandboxDesignerPage(): React.ReactElement {
 
   // ---- 15-minute "save your work" prompt -------------------------------
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      limits.forceTrigger('session_15min');
-    }, 15 * 60 * 1000);
+    const timer = setTimeout(
+      () => {
+        limits.forceTrigger('session_15min');
+      },
+      15 * 60 * 1000
+    );
     return () => clearTimeout(timer);
     // The friction trigger is one-shot per page mount; if the user
     // dismisses it we don't re-prompt this session.
@@ -141,10 +141,7 @@ export default function SandboxDesignerPage(): React.ReactElement {
         onClose={limits.closeSignupPrompt}
       />
 
-      <AutoLayoutModal
-        open={showAutoLayout}
-        onClose={() => setShowAutoLayout(false)}
-      />
+      <AutoLayoutModal open={showAutoLayout} onClose={() => setShowAutoLayout(false)} />
     </>
   );
 }
@@ -155,15 +152,21 @@ export default function SandboxDesignerPage(): React.ReactElement {
  * panel is account-only.
  */
 function SandboxItemHud({
-  itemId, onClear,
-}: { itemId: string; onClear: () => void }): React.ReactElement {
-  const item = useSandboxStore((s) =>
-    s.project?.kitchen.items.find((i) => i.id === itemId) ?? null,
+  itemId,
+  onClear,
+}: {
+  itemId: string;
+  onClear: () => void;
+}): React.ReactElement {
+  const item = useSandboxStore(
+    (s) => s.project?.kitchen.items.find((i) => i.id === itemId) ?? null
   );
   const updateItem = useSandboxStore((s) => s.updateItem);
   const removeItem = useSandboxStore((s) => s.removeItem);
 
-  if (!item) {return <></>;}
+  if (!item) {
+    return <></>;
+  }
 
   const rotate = (): void => {
     updateItem(itemId, { rotation: (item.rotation + 90) % 360 });

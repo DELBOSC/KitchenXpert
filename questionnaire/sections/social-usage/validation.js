@@ -6,8 +6,14 @@ const VALID_OPTIONS = {
   'entertaining-frequency': ['rarely', 'occasionally', 'monthly', 'weekly'],
   'party-size': ['small', 'medium', 'large', 'very-large'],
   'seating-preference': ['island-seating', 'breakfast-nook', 'small-table', 'no-seating'],
-  'beverage-station': ['full-bar', 'coffee-station', 'wine-storage', 'beverage-fridge', 'not-needed'],
-  'tv-kitchen': ['yes-mounted', 'yes-integrated', 'smart-display', 'no']
+  'beverage-station': [
+    'full-bar',
+    'coffee-station',
+    'wine-storage',
+    'beverage-fridge',
+    'not-needed',
+  ],
+  'tv-kitchen': ['yes-mounted', 'yes-integrated', 'smart-display', 'no'],
 };
 
 const REQUIRED_QUESTIONS = ['entertaining-frequency', 'party-size', 'seating-preference'];
@@ -29,7 +35,7 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'unknown-question',
-      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` }
+      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` },
     });
     return { valid: false, errors, warnings };
   }
@@ -39,7 +45,7 @@ function validateAnswer(questionId, value, context) {
       errors.push({
         questionId,
         type: 'required',
-        message: { en: 'This question is required', fr: 'Cette question est obligatoire' }
+        message: { en: 'This question is required', fr: 'Cette question est obligatoire' },
       });
       return { valid: false, errors, warnings };
     }
@@ -53,7 +59,7 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'invalid-type',
-      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' }
+      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' },
     });
     return { valid: false, errors, warnings };
   }
@@ -62,7 +68,7 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'invalid-option',
-      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` }
+      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` },
     });
   }
 
@@ -84,8 +90,8 @@ function validateWithContext(questionId, value, context) {
         type: 'frequency-size-mismatch',
         message: {
           en: 'You rarely entertain but indicated large party sizes.',
-          fr: 'Vous recevez rarement mais avez indiqué de grandes réunions.'
-        }
+          fr: 'Vous recevez rarement mais avez indiqué de grandes réunions.',
+        },
       });
     }
   }
@@ -97,21 +103,24 @@ function validateWithContext(questionId, value, context) {
         type: 'feature-frequency-mismatch',
         message: {
           en: 'A full bar may be underutilized if you rarely entertain.',
-          fr: 'Un bar complet peut être sous-utilisé si vous recevez rarement.'
-        }
+          fr: 'Un bar complet peut être sous-utilisé si vous recevez rarement.',
+        },
       });
     }
   }
 
   if (questionId === 'seating-preference' && value === 'no-seating') {
-    if (context['entertaining-frequency'] === 'weekly' || context['entertaining-frequency'] === 'monthly') {
+    if (
+      context['entertaining-frequency'] === 'weekly' ||
+      context['entertaining-frequency'] === 'monthly'
+    ) {
       warnings.push({
         questionId,
         type: 'seating-frequency-mismatch',
         message: {
           en: 'Consider adding seating since you entertain regularly.',
-          fr: 'Envisagez d\'ajouter des places assises puisque vous recevez régulièrement.'
-        }
+          fr: "Envisagez d'ajouter des places assises puisque vous recevez régulièrement.",
+        },
       });
     }
   }
@@ -139,9 +148,9 @@ function validateSection(answers) {
 
   return {
     valid: allErrors.length === 0,
-    complete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined && answers[q] !== null),
+    complete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined && answers[q] !== null),
     errors: allErrors,
-    warnings: allWarnings
+    warnings: allWarnings,
   };
 }
 
@@ -150,12 +159,14 @@ function getValidationSummary(answers) {
 
   return {
     ...result,
-    answeredCount: Object.keys(answers).filter(k => VALID_OPTIONS[k]).length,
+    answeredCount: Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length,
     totalQuestions: Object.keys(VALID_OPTIONS).length,
-    requiredComplete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined),
+    requiredComplete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined),
     percentComplete: Math.round(
-      (Object.keys(answers).filter(k => VALID_OPTIONS[k]).length / Object.keys(VALID_OPTIONS).length) * 100
-    )
+      (Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length /
+        Object.keys(VALID_OPTIONS).length) *
+        100
+    ),
   };
 }
 
@@ -166,5 +177,5 @@ module.exports = {
   getValidationSummary,
   SocialValidationError,
   VALID_OPTIONS,
-  REQUIRED_QUESTIONS
+  REQUIRED_QUESTIONS,
 };

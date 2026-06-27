@@ -33,15 +33,25 @@ const KitchenCreate = lazy(() => import('./pages/Projects/KitchenCreate/KitchenC
 
 // Questionnaire
 const UserProfile = lazy(() => import('./pages/Questionnaire/UserProfile/UserProfile'));
-const SpatialConstraints = lazy(() => import('./pages/Questionnaire/SpatialConstraints/SpatialConstraints'));
-const StylePreferences = lazy(() => import('./pages/Questionnaire/StylePreferences/StylePreferences'));
+const SpatialConstraints = lazy(
+  () => import('./pages/Questionnaire/SpatialConstraints/SpatialConstraints')
+);
+const StylePreferences = lazy(
+  () => import('./pages/Questionnaire/StylePreferences/StylePreferences')
+);
 const BudgetPlanning = lazy(() => import('./pages/Questionnaire/BudgetPlanning/BudgetPlanning'));
-const AutoDesignResults = lazy(() => import('./pages/Questionnaire/AutoDesignResults/AutoDesignResults'));
+const AutoDesignResults = lazy(
+  () => import('./pages/Questionnaire/AutoDesignResults/AutoDesignResults')
+);
 
 // AI Generator
 const PreferenceForm = lazy(() => import('./pages/AIGenerator/PreferenceForm/PreferenceForm'));
-const GeneratedDesigns = lazy(() => import('./pages/AIGenerator/GeneratedDesigns/GeneratedDesigns'));
-const DesignComparison = lazy(() => import('./pages/AIGenerator/DesignComparison/DesignComparison'));
+const GeneratedDesigns = lazy(
+  () => import('./pages/AIGenerator/GeneratedDesigns/GeneratedDesigns')
+);
+const DesignComparison = lazy(
+  () => import('./pages/AIGenerator/DesignComparison/DesignComparison')
+);
 
 // VR
 const VRViewer = lazy(() => import('./pages/VirtualReality/VRViewer/VRViewer'));
@@ -174,26 +184,102 @@ function AppRouteTree(): React.ReactElement {
   return (
     <Routes>
       {/* Sandbox designer — PUBLIC, no auth. Uses localStorage. */}
-        <Route
-          path="designer/sandbox"
-          element={
+      <Route
+        path="designer/sandbox"
+        element={
+          <DesignerErrorBoundary>
+            <SandboxDesignerPage />
+          </DesignerErrorBoundary>
+        }
+      />
+      <Route
+        path="designer/sandbox/:templateId"
+        element={
+          <DesignerErrorBoundary>
+            <SandboxDesignerPage />
+          </DesignerErrorBoundary>
+        }
+      />
+
+      {/* Designer route — full-screen, outside MainLayout, auth-only */}
+      <Route
+        path="designer/:id"
+        element={
+          <ProtectedRoute>
             <DesignerErrorBoundary>
-              <SandboxDesignerPage />
+              <KitchenDesignerPage />
             </DesignerErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* All other routes wrapped in MainLayout (Header + Sidebar) */}
+      <Route element={<MainLayout />}>
+        {/* Public routes */}
+        <Route path="" element={<HomePage />} />
+        <Route path="catalog" element={<ProvidersHub />} />
+        <Route path="catalog/legacy" element={<CatalogPage />} />
+        <Route path="catalog/:providerCode" element={<ProviderCatalog />} />
+        <Route
+          path="pricing"
+          element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <PricingPage />
+              </ErrorBoundary>
+            </Suspense>
+          }
+        />
+        <Route path="comment-ca-marche" element={<CommentCaMarchePage />} />
+        <Route path="avis" element={<AvisPage />} />
+
+        {/* Auth routes */}
+        <Route
+          path="login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
           }
         />
         <Route
-          path="designer/sandbox/:templateId"
+          path="register"
           element={
-            <DesignerErrorBoundary>
-              <SandboxDesignerPage />
-            </DesignerErrorBoundary>
+            <PublicRoute>
+              <RegisterPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="forgot-password"
+          element={
+            <PublicRoute>
+              <ForgotPasswordPage />
+            </PublicRoute>
           }
         />
 
-        {/* Designer route — full-screen, outside MainLayout, auth-only */}
+        {/* Protected routes */}
         <Route
-          path="designer/:id"
+          path="dashboard"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <DashboardPage />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="designer"
           element={
             <ProtectedRoute>
               <DesignerErrorBoundary>
@@ -202,453 +288,530 @@ function AppRouteTree(): React.ReactElement {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <ProfilePage />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-        {/* All other routes wrapped in MainLayout (Header + Sidebar) */}
-        <Route element={<MainLayout />}>
-          {/* Public routes */}
-          <Route path="" element={<HomePage />} />
-          <Route path="catalog" element={<ProvidersHub />} />
-          <Route path="catalog/legacy" element={<CatalogPage />} />
-          <Route path="catalog/:providerCode" element={<ProviderCatalog />} />
-          <Route path="pricing" element={<Suspense fallback={<LoadingSpinner />}><ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}><PricingPage /></ErrorBoundary></Suspense>} />
-          <Route path="comment-ca-marche" element={<CommentCaMarchePage />} />
-          <Route path="avis" element={<AvisPage />} />
+        {/* Projects */}
+        <Route
+          path="projects"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <ProjectsList />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="projects/new"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <CreateProject />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="projects/:id"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <ProjectDetail />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="projects/:id/edit"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <ProjectEdit />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="projects/:id/kitchens/create"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <KitchenCreate />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Auth routes */}
-          <Route
-            path="login"
-            element={
-              <PublicRoute>
-                <LoginPage />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="register"
-            element={
-              <PublicRoute>
-                <RegisterPage />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="forgot-password"
-            element={
-              <PublicRoute>
-                <ForgotPasswordPage />
-              </PublicRoute>
-            }
-          />
+        {/* Questionnaire */}
+        <Route
+          path="questionnaire"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <UserProfile />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="questionnaire/spatial"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <SpatialConstraints />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="questionnaire/style"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <StylePreferences />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="questionnaire/budget"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <BudgetPlanning />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="questionnaire/results"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <AutoDesignResults />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Protected routes */}
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <DashboardPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="designer"
-            element={
-              <ProtectedRoute>
-                <DesignerErrorBoundary>
-                  <KitchenDesignerPage />
-                </DesignerErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="profile"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <ProfilePage />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* AI Generator */}
+        <Route
+          path="ai-generator"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <PreferenceForm />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ai-generator/results"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <GeneratedDesigns />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="ai-generator/compare"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <DesignComparison />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Projects */}
-          <Route
-            path="projects"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <ProjectsList />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="projects/new"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <CreateProject />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="projects/:id"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <ProjectDetail />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="projects/:id/edit"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <ProjectEdit />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="projects/:id/kitchens/create"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <KitchenCreate />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* VR */}
+        <Route
+          path="vr/:kitchenId?"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <VRViewer />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Questionnaire */}
-          <Route
-            path="questionnaire"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <UserProfile />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="questionnaire/spatial"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <SpatialConstraints />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="questionnaire/style"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <StylePreferences />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="questionnaire/budget"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <BudgetPlanning />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="questionnaire/results"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <AutoDesignResults />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F12: AR Viewer */}
+        <Route
+          path="ar"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <ARViewerPage />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* AI Generator */}
-          <Route
-            path="ai-generator"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <PreferenceForm />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="ai-generator/results"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <GeneratedDesigns />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="ai-generator/compare"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <DesignComparison />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* Admin routes */}
+        <Route
+          path="admin/users"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <UserManagement />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/users/:id"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <UserDetail />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/roles"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <RoleManagement />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/audit"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <AuditLogs />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/enrichment"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <EnrichmentDashboard />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/digital-twin"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <DigitalTwinAdmin />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/stock"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <StockAdmin />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/carbon"
+          element={
+            <AdminRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <CarbonAdmin />
+              </ErrorBoundary>
+            </AdminRoute>
+          }
+        />
 
-          {/* VR */}
-          <Route
-            path="vr/:kitchenId?"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <VRViewer />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F1: Compliance Dashboard */}
+        <Route
+          path="compliance/:kitchenId?"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <ComplianceDashboard />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F12: AR Viewer */}
-          <Route
-            path="ar"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <ARViewerPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F5: Workflow Simulator */}
+        <Route
+          path="workflow/:kitchenId?"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <WorkflowSimulator />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Admin routes */}
-          <Route
-            path="admin/users"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <UserManagement />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="admin/users/:id"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <UserDetail />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="admin/roles"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <RoleManagement />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="admin/audit"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <AuditLogs />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="admin/enrichment"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <EnrichmentDashboard />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="admin/digital-twin"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <DigitalTwinAdmin />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="admin/stock"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <StockAdmin />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="admin/carbon"
-            element={
-              <AdminRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <CarbonAdmin />
-                </ErrorBoundary>
-              </AdminRoute>
-            }
-          />
+        {/* F6: Installer Marketplace */}
+        <Route
+          path="marketplace"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <InstallerMarketplace />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="marketplace/installer/:id"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <InstallerProfile />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="marketplace/project/:id"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <InstallationTracker />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F1: Compliance Dashboard */}
-          <Route
-            path="compliance/:kitchenId?"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <ComplianceDashboard />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F7: Renovation Before/After */}
+        <Route
+          path="renovation"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <RenovationPage />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F5: Workflow Simulator */}
-          <Route
-            path="workflow/:kitchenId?"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <WorkflowSimulator />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F8: Financing Calculator */}
+        <Route
+          path="financing"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <FinancingCalculator />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F6: Installer Marketplace */}
-          <Route
-            path="marketplace"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <InstallerMarketplace />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="marketplace/installer/:id"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <InstallerProfile />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="marketplace/project/:id"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <InstallationTracker />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F9: Price Tracker */}
+        <Route
+          path="price-tracker"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <PriceTrackerPage />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F7: Renovation Before/After */}
-          <Route
-            path="renovation"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <RenovationPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F11: Smart Home Planner */}
+        <Route
+          path="smart-home/:kitchenId?"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <SmartHomePlanner />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F8: Financing Calculator */}
-          <Route
-            path="financing"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <FinancingCalculator />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* F13: Certified Quotes */}
+        <Route
+          path="certified-quotes"
+          element={
+            <ProtectedRoute>
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />
+                )}
+              >
+                <CertifiedQuotePage />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F9: Price Tracker */}
-          <Route
-            path="price-tracker"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <PriceTrackerPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
+        {/* Legal (public) */}
+        <Route path="legal/mentions" element={<MentionsLegales />} />
+        <Route path="legal/cgv" element={<CGV />} />
+        <Route path="legal/privacy" element={<Privacy />} />
+        <Route path="legal/cookies" element={<CookiesPage />} />
+        <Route path="legal/accessibilite" element={<Accessibilite />} />
+        <Route
+          path="legal/privacy-settings"
+          element={
+            <ProtectedRoute>
+              <PrivacySettings />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* F11: Smart Home Planner */}
-          <Route
-            path="smart-home/:kitchenId?"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <SmartHomePlanner />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* F13: Certified Quotes */}
-          <Route
-            path="certified-quotes"
-            element={
-              <ProtectedRoute>
-                <ErrorBoundary fallbackRender={({ error, resetErrorBoundary }) => <ErrorFallback error={error} resetErrorBoundary={resetErrorBoundary} />}>
-                  <CertifiedQuotePage />
-                </ErrorBoundary>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Legal (public) */}
-          <Route path="legal/mentions" element={<MentionsLegales />} />
-          <Route path="legal/cgv" element={<CGV />} />
-          <Route path="legal/privacy" element={<Privacy />} />
-          <Route path="legal/cookies" element={<CookiesPage />} />
-          <Route path="legal/accessibilite" element={<Accessibilite />} />
-          <Route
-            path="legal/privacy-settings"
-            element={
-              <ProtectedRoute>
-                <PrivacySettings />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* 404 */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+        {/* 404 */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 

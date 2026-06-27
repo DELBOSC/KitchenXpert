@@ -17,7 +17,10 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
@@ -38,7 +41,10 @@ jest.mock('../repositories/product-repository', () => ({
 
 jest.mock('../repositories/appliance-repository', () => ({
   ApplianceRepository: jest.fn().mockImplementation(() => ({
-    findAll: jest.fn(), search: jest.fn(), getTypes: jest.fn(), findById: jest.fn(),
+    findAll: jest.fn(),
+    search: jest.fn(),
+    getTypes: jest.fn(),
+    findById: jest.fn(),
   })),
 }));
 
@@ -51,7 +57,13 @@ const mockPrisma = {
 jest.mock('../database/client', () => ({ prisma: mockPrisma }));
 
 jest.mock('../config/app-config', () => ({
-  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+  config: {
+    corsOrigins: ['http://localhost:3000'],
+    env: 'test',
+    port: 3000,
+    version: '1.0.0',
+    rateLimit: { maxRequests: 100 },
+  },
 }));
 
 jest.mock('../auth/token-blacklist', () => ({
@@ -67,7 +79,9 @@ jest.mock('../auth/token-blacklist', () => ({
 jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
-      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+      userId: 'test-user-id',
+      email: 'test@test.com',
+      role: 'user',
     }),
     generateTokens: jest.fn(),
   },
@@ -99,7 +113,14 @@ function createTestApp(): Application {
     displayName: 'Leroy Merlin',
     type: 'furniture',
     rateLimit: 30,
-    categories: ['meubles-cuisine', 'plans-travail', 'eviers', 'robinetterie', 'credences', 'eclairage'],
+    categories: [
+      'meubles-cuisine',
+      'plans-travail',
+      'eviers',
+      'robinetterie',
+      'credences',
+      'eclairage',
+    ],
   });
   app.use('/leroy-merlin', routes);
   app.use(errorHandler);
@@ -158,9 +179,7 @@ describe('Leroy Merlin Routes', () => {
       mockPrisma.catalogProvider.findFirst.mockResolvedValue(mockProvider);
       mockProductFindAll.mockResolvedValue(mockProductList);
 
-      const response = await request(app)
-        .get('/leroy-merlin/products?limit=500')
-        .expect(200);
+      const response = await request(app).get('/leroy-merlin/products?limit=500').expect(200);
 
       expect(response.body.meta.limit).toBe(100);
     });
@@ -181,9 +200,7 @@ describe('Leroy Merlin Routes', () => {
     });
 
     it('should return 400 when search query "q" parameter is missing', async () => {
-      const response = await request(app)
-        .get('/leroy-merlin/products/search')
-        .expect(400);
+      const response = await request(app).get('/leroy-merlin/products/search').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.code).toBe('MISSING_QUERY');

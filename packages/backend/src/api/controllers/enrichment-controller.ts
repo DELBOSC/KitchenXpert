@@ -37,7 +37,9 @@ export class EnrichmentController {
 
     const { products } = req.body;
     if (!Array.isArray(products) || products.length === 0) {
-      res.status(400).json({ success: false, error: 'products array is required and must not be empty' });
+      res
+        .status(400)
+        .json({ success: false, error: 'products array is required and must not be empty' });
       return;
     }
 
@@ -47,14 +49,23 @@ export class EnrichmentController {
     });
 
     const results = await this.enrichmentService.enrichBatch(
-      products.map((p: { type: string; id: string; name: string; brand?: string; description?: string; rawHtml?: string }) => ({
-        id: p.id,
-        type: p.type,
-        name: p.name,
-        brand: p.brand,
-        description: p.description,
-        rawHtml: p.rawHtml,
-      })),
+      products.map(
+        (p: {
+          type: string;
+          id: string;
+          name: string;
+          brand?: string;
+          description?: string;
+          rawHtml?: string;
+        }) => ({
+          id: p.id,
+          type: p.type,
+          name: p.name,
+          brand: p.brand,
+          description: p.description,
+          rawHtml: p.rawHtml,
+        })
+      )
     );
 
     res.status(200).json({ success: true, data: results });
@@ -215,13 +226,15 @@ export class EnrichmentController {
 
     const { cabinetType, applianceType } = req.query;
     if (!cabinetType || !applianceType) {
-      res.status(400).json({ success: false, error: 'cabinetType and applianceType query params are required' });
+      res
+        .status(400)
+        .json({ success: false, error: 'cabinetType and applianceType query params are required' });
       return;
     }
 
     const result = await this.compatibilityService.checkCompatibility(
       cabinetType as string,
-      applianceType as string,
+      applianceType as string
     );
 
     res.status(200).json({ success: true, data: result });
@@ -261,7 +274,7 @@ export class EnrichmentController {
     const matchCount = await this.matcherService.crossMatchBrands(
       brandA,
       brandB,
-      productType || '',
+      productType || ''
     );
 
     res.status(200).json({

@@ -1,10 +1,9 @@
 # Alert Rules Documentation
 
-> Comprehensive guide to Prometheus alerting rules and alert configurations for KitchenXpert.
+> Comprehensive guide to Prometheus alerting rules and alert configurations for
+> KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** SRE Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** SRE Team **Version:** 1.0
 
 ---
 
@@ -38,21 +37,22 @@ groups:
           team: <team_name>
           service: <service_name>
         annotations:
-          summary: "<Brief description>"
-          description: "<Detailed description with {{ $labels }} and {{ $value }}>"
-          runbook_url: "<URL to runbook>"
-          dashboard_url: "<URL to relevant dashboard>"
+          summary: '<Brief description>'
+          description:
+            '<Detailed description with {{ $labels }} and {{ $value }}>'
+          runbook_url: '<URL to runbook>'
+          dashboard_url: '<URL to relevant dashboard>'
 ```
 
 ### Rule Components
 
-| Component | Description | Example |
-|-----------|-------------|---------|
-| `alert` | Unique alert name (PascalCase) | `HighCPUUsage` |
-| `expr` | PromQL expression that triggers alert | `cpu_usage > 85` |
-| `for` | Duration before alert fires | `5m` |
-| `labels` | Key-value pairs for routing | `severity: critical` |
-| `annotations` | Descriptive information | `summary: "High CPU"` |
+| Component     | Description                           | Example               |
+| ------------- | ------------------------------------- | --------------------- |
+| `alert`       | Unique alert name (PascalCase)        | `HighCPUUsage`        |
+| `expr`        | PromQL expression that triggers alert | `cpu_usage > 85`      |
+| `for`         | Duration before alert fires           | `5m`                  |
+| `labels`      | Key-value pairs for routing           | `severity: critical`  |
+| `annotations` | Descriptive information               | `summary: "High CPU"` |
 
 ### Example Alert Rule
 
@@ -70,10 +70,11 @@ groups:
           team: platform
           service: backend
         annotations:
-          summary: "High error rate on {{ $labels.instance }}"
-          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
-          runbook_url: "https://runbooks.kitchenxpert.internal/high-error-rate"
-          dashboard_url: "https://grafana.kitchenxpert.internal/d/errors"
+          summary: 'High error rate on {{ $labels.instance }}'
+          description:
+            'Error rate is {{ $value | humanizePercentage }} (threshold: 5%)'
+          runbook_url: 'https://runbooks.kitchenxpert.internal/high-error-rate'
+          dashboard_url: 'https://grafana.kitchenxpert.internal/d/errors'
 ```
 
 ---
@@ -82,12 +83,12 @@ groups:
 
 ### Alert Categories Overview
 
-| Category | Description | Examples |
-|----------|-------------|----------|
-| **Infrastructure** | System resources (CPU, memory, disk) | High CPU, Low disk space |
-| **Application** | Service health and performance | Error rates, latency |
-| **Database** | Database health and performance | Connections, replication |
-| **Business** | Business metrics and KPIs | Zero orders, signup failures |
+| Category           | Description                          | Examples                     |
+| ------------------ | ------------------------------------ | ---------------------------- |
+| **Infrastructure** | System resources (CPU, memory, disk) | High CPU, Low disk space     |
+| **Application**    | Service health and performance       | Error rates, latency         |
+| **Database**       | Database health and performance      | Connections, replication     |
+| **Business**       | Business metrics and KPIs            | Zero orders, signup failures |
 
 ---
 
@@ -95,11 +96,11 @@ groups:
 
 ### Severity Definitions
 
-| Severity | Response Time | Description | Notification |
-|----------|---------------|-------------|--------------|
-| **Critical** | Immediate | Service down, data loss risk | PagerDuty page, Slack, SMS |
-| **Warning** | Within 1 hour | Degraded service, trending issue | Slack, Email |
-| **Info** | Business hours | Notable event, review needed | Slack, Email digest |
+| Severity     | Response Time  | Description                      | Notification               |
+| ------------ | -------------- | -------------------------------- | -------------------------- |
+| **Critical** | Immediate      | Service down, data loss risk     | PagerDuty page, Slack, SMS |
+| **Warning**  | Within 1 hour  | Degraded service, trending issue | Slack, Email               |
+| **Info**     | Business hours | Notable event, review needed     | Slack, Email digest        |
 
 ### Severity Selection Guide
 
@@ -134,9 +135,10 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "High CPU usage on {{ $labels.instance }}"
-          description: "CPU usage is {{ $value | printf \"%.1f\" }}% (warning threshold: 70%)"
-          runbook_url: "https://runbooks.kitchenxpert.internal/high-cpu"
+          summary: 'High CPU usage on {{ $labels.instance }}'
+          description:
+            'CPU usage is {{ $value | printf "%.1f" }}% (warning threshold: 70%)'
+          runbook_url: 'https://runbooks.kitchenxpert.internal/high-cpu'
 
       # High CPU Usage - Critical
       - alert: HighCPUUsageCritical
@@ -147,9 +149,11 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "Critical CPU usage on {{ $labels.instance }}"
-          description: "CPU usage is {{ $value | printf \"%.1f\" }}% (critical threshold: 85%)"
-          runbook_url: "https://runbooks.kitchenxpert.internal/high-cpu"
+          summary: 'Critical CPU usage on {{ $labels.instance }}'
+          description:
+            'CPU usage is {{ $value | printf "%.1f" }}% (critical threshold:
+            85%)'
+          runbook_url: 'https://runbooks.kitchenxpert.internal/high-cpu'
 
       # CPU Saturation
       - alert: CPUSaturation
@@ -160,8 +164,8 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "CPU saturation on {{ $labels.instance }}"
-          description: "Load average is {{ $value | printf \"%.2f\" }} per CPU"
+          summary: 'CPU saturation on {{ $labels.instance }}'
+          description: 'Load average is {{ $value | printf "%.2f" }} per CPU'
 ```
 
 ### Memory Alerts
@@ -179,8 +183,9 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "High memory usage on {{ $labels.instance }}"
-          description: "Memory usage is {{ $value | printf \"%.1f\" }}% (warning: 75%)"
+          summary: 'High memory usage on {{ $labels.instance }}'
+          description:
+            'Memory usage is {{ $value | printf "%.1f" }}% (warning: 75%)'
 
       # High Memory Usage - Critical
       - alert: HighMemoryUsageCritical
@@ -191,8 +196,9 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "Critical memory usage on {{ $labels.instance }}"
-          description: "Memory usage is {{ $value | printf \"%.1f\" }}% (critical: 90%)"
+          summary: 'Critical memory usage on {{ $labels.instance }}'
+          description:
+            'Memory usage is {{ $value | printf "%.1f" }}% (critical: 90%)'
 
       # OOM Kill Detected
       - alert: OOMKillDetected
@@ -203,8 +209,8 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "OOM kill detected on {{ $labels.instance }}"
-          description: "{{ $value }} OOM kills in the last 5 minutes"
+          summary: 'OOM kill detected on {{ $labels.instance }}'
+          description: '{{ $value }} OOM kills in the last 5 minutes'
 ```
 
 ### Disk Alerts
@@ -223,8 +229,9 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "Low disk space on {{ $labels.instance }} ({{ $labels.mountpoint }})"
-          description: "Disk usage is {{ $value | printf \"%.1f\" }}%"
+          summary:
+            'Low disk space on {{ $labels.instance }} ({{ $labels.mountpoint }})'
+          description: 'Disk usage is {{ $value | printf "%.1f" }}%'
 
       # Disk Space Low - Critical
       - alert: DiskSpaceLowCritical
@@ -236,8 +243,10 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "Critical disk space on {{ $labels.instance }} ({{ $labels.mountpoint }})"
-          description: "Disk usage is {{ $value | printf \"%.1f\" }}%"
+          summary:
+            'Critical disk space on {{ $labels.instance }} ({{
+            $labels.mountpoint }})'
+          description: 'Disk usage is {{ $value | printf "%.1f" }}%'
 
       # Disk Will Fill Soon
       - alert: DiskWillFillIn24Hours
@@ -248,8 +257,8 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "Disk will fill within 24 hours on {{ $labels.instance }}"
-          description: "Disk {{ $labels.mountpoint }} will run out of space"
+          summary: 'Disk will fill within 24 hours on {{ $labels.instance }}'
+          description: 'Disk {{ $labels.mountpoint }} will run out of space'
 
       # Disk I/O High
       - alert: HighDiskIOUtilization
@@ -260,8 +269,8 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "High disk I/O on {{ $labels.instance }}"
-          description: "Disk I/O utilization is {{ $value | printf \"%.1f\" }}%"
+          summary: 'High disk I/O on {{ $labels.instance }}'
+          description: 'Disk I/O utilization is {{ $value | printf "%.1f" }}%'
 ```
 
 ### Network Alerts
@@ -280,8 +289,9 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "Network errors on {{ $labels.instance }}"
-          description: "{{ $value | printf \"%.1f\" }} errors/second on {{ $labels.device }}"
+          summary: 'Network errors on {{ $labels.instance }}'
+          description:
+            '{{ $value | printf "%.1f" }} errors/second on {{ $labels.device }}'
 
       # Network Interface Down
       - alert: NetworkInterfaceDown
@@ -292,8 +302,8 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "Network interface down on {{ $labels.instance }}"
-          description: "Interface {{ $labels.device }} is down"
+          summary: 'Network interface down on {{ $labels.instance }}'
+          description: 'Interface {{ $labels.device }} is down'
 ```
 
 ---
@@ -316,8 +326,8 @@ groups:
           severity: critical
           team: backend
         annotations:
-          summary: "High error rate on {{ $labels.service }}"
-          description: "Error rate is {{ $value | humanizePercentage }}"
+          summary: 'High error rate on {{ $labels.service }}'
+          description: 'Error rate is {{ $value | humanizePercentage }}'
 
       # Error Rate Spike
       - alert: ErrorRateSpike
@@ -329,8 +339,8 @@ groups:
           severity: warning
           team: backend
         annotations:
-          summary: "Error rate spike detected"
-          description: "Error rate is {{ $value }}x higher than 1 hour ago"
+          summary: 'Error rate spike detected'
+          description: 'Error rate is {{ $value }}x higher than 1 hour ago'
 
       # High 4xx Error Rate
       - alert: High4xxErrorRate
@@ -342,8 +352,8 @@ groups:
           severity: warning
           team: backend
         annotations:
-          summary: "High 4xx error rate on {{ $labels.service }}"
-          description: "4xx error rate is {{ $value | humanizePercentage }}"
+          summary: 'High 4xx error rate on {{ $labels.service }}'
+          description: '4xx error rate is {{ $value | humanizePercentage }}'
 ```
 
 ### Latency Alerts
@@ -361,8 +371,8 @@ groups:
           severity: warning
           team: backend
         annotations:
-          summary: "High P95 latency on {{ $labels.service }}"
-          description: "P95 latency is {{ $value | humanizeDuration }}"
+          summary: 'High P95 latency on {{ $labels.service }}'
+          description: 'P95 latency is {{ $value | humanizeDuration }}'
 
       # High P99 Latency
       - alert: HighLatencyP99
@@ -373,8 +383,8 @@ groups:
           severity: critical
           team: backend
         annotations:
-          summary: "Critical P99 latency on {{ $labels.service }}"
-          description: "P99 latency is {{ $value | humanizeDuration }}"
+          summary: 'Critical P99 latency on {{ $labels.service }}'
+          description: 'P99 latency is {{ $value | humanizeDuration }}'
 
       # Slow Endpoint
       - alert: SlowEndpoint
@@ -385,8 +395,8 @@ groups:
           severity: warning
           team: backend
         annotations:
-          summary: "Slow endpoint: {{ $labels.path }}"
-          description: "P95 latency is {{ $value | humanizeDuration }}"
+          summary: 'Slow endpoint: {{ $labels.path }}'
+          description: 'P95 latency is {{ $value | humanizeDuration }}'
 ```
 
 ### Service Health Alerts
@@ -404,8 +414,8 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "Service {{ $labels.job }} is down"
-          description: "Instance {{ $labels.instance }} is not responding"
+          summary: 'Service {{ $labels.job }} is down'
+          description: 'Instance {{ $labels.instance }} is not responding'
 
       # High Container Restart Rate
       - alert: ContainerRestartLoop
@@ -416,8 +426,8 @@ groups:
           severity: critical
           team: platform
         annotations:
-          summary: "Container restart loop: {{ $labels.container }}"
-          description: "{{ $value }} restarts in the last hour"
+          summary: 'Container restart loop: {{ $labels.container }}'
+          description: '{{ $value }} restarts in the last hour'
 
       # Pod Not Ready
       - alert: PodNotReady
@@ -428,8 +438,8 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "Pod not ready: {{ $labels.pod }}"
-          description: "Pod has been not ready for 10 minutes"
+          summary: 'Pod not ready: {{ $labels.pod }}'
+          description: 'Pod has been not ready for 10 minutes'
 
       # Deployment Replicas Mismatch
       - alert: DeploymentReplicasMismatch
@@ -440,8 +450,9 @@ groups:
           severity: warning
           team: platform
         annotations:
-          summary: "Deployment {{ $labels.deployment }} replicas mismatch"
-          description: "Expected {{ $labels.spec_replicas }} replicas, got {{ $value }}"
+          summary: 'Deployment {{ $labels.deployment }} replicas mismatch'
+          description:
+            'Expected {{ $labels.spec_replicas }} replicas, got {{ $value }}'
 ```
 
 ### AI Service Alerts
@@ -459,8 +470,8 @@ groups:
           severity: warning
           team: ai
         annotations:
-          summary: "AI service high latency"
-          description: "P95 generation time is {{ $value | humanizeDuration }}"
+          summary: 'AI service high latency'
+          description: 'P95 generation time is {{ $value | humanizeDuration }}'
 
       # AI Service Error Rate
       - alert: AIServiceHighErrorRate
@@ -472,8 +483,8 @@ groups:
           severity: critical
           team: ai
         annotations:
-          summary: "AI service high error rate"
-          description: "Error rate is {{ $value | humanizePercentage }}"
+          summary: 'AI service high error rate'
+          description: 'Error rate is {{ $value | humanizePercentage }}'
 
       # AI GPU Memory High
       - alert: AIGPUMemoryHigh
@@ -484,8 +495,8 @@ groups:
           severity: warning
           team: ai
         annotations:
-          summary: "High GPU memory usage"
-          description: "GPU memory usage is {{ $value | humanizePercentage }}"
+          summary: 'High GPU memory usage'
+          description: 'GPU memory usage is {{ $value | humanizePercentage }}'
 ```
 
 ---
@@ -507,8 +518,9 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "PostgreSQL is down"
-          description: "PostgreSQL instance {{ $labels.instance }} is not responding"
+          summary: 'PostgreSQL is down'
+          description:
+            'PostgreSQL instance {{ $labels.instance }} is not responding'
 
       # High Connection Usage
       - alert: PostgreSQLHighConnections
@@ -519,8 +531,9 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "High PostgreSQL connection usage"
-          description: "{{ $value | humanizePercentage }} of max connections in use"
+          summary: 'High PostgreSQL connection usage'
+          description:
+            '{{ $value | humanizePercentage }} of max connections in use'
 
       # Critical Connection Usage
       - alert: PostgreSQLCriticalConnections
@@ -531,8 +544,9 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "Critical PostgreSQL connection usage"
-          description: "{{ $value | humanizePercentage }} of max connections in use"
+          summary: 'Critical PostgreSQL connection usage'
+          description:
+            '{{ $value | humanizePercentage }} of max connections in use'
 
       # Low Cache Hit Ratio
       - alert: PostgreSQLLowCacheHitRatio
@@ -544,8 +558,8 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "Low PostgreSQL cache hit ratio"
-          description: "Cache hit ratio is {{ $value | humanizePercentage }}"
+          summary: 'Low PostgreSQL cache hit ratio'
+          description: 'Cache hit ratio is {{ $value | humanizePercentage }}'
 
       # Replication Lag
       - alert: PostgreSQLReplicationLag
@@ -556,8 +570,8 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "PostgreSQL replication lag"
-          description: "Replication lag is {{ $value | humanizeDuration }}"
+          summary: 'PostgreSQL replication lag'
+          description: 'Replication lag is {{ $value | humanizeDuration }}'
 
       # Deadlocks Detected
       - alert: PostgreSQLDeadlocks
@@ -568,8 +582,8 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "PostgreSQL deadlocks detected"
-          description: "{{ $value }} deadlocks in the last 5 minutes"
+          summary: 'PostgreSQL deadlocks detected'
+          description: '{{ $value }} deadlocks in the last 5 minutes'
 
       # Slow Queries
       - alert: PostgreSQLSlowQueries
@@ -580,8 +594,8 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "PostgreSQL slow queries detected"
-          description: "Average query time is {{ $value | humanizeDuration }}"
+          summary: 'PostgreSQL slow queries detected'
+          description: 'Average query time is {{ $value | humanizeDuration }}'
 ```
 
 ### MongoDB Alerts
@@ -599,8 +613,9 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "MongoDB is down"
-          description: "MongoDB instance {{ $labels.instance }} is not responding"
+          summary: 'MongoDB is down'
+          description:
+            'MongoDB instance {{ $labels.instance }} is not responding'
 
       # MongoDB Replication Lag
       - alert: MongoDBReplicationLag
@@ -611,8 +626,8 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "MongoDB replication lag"
-          description: "Replication lag is {{ $value | humanizeDuration }}"
+          summary: 'MongoDB replication lag'
+          description: 'Replication lag is {{ $value | humanizeDuration }}'
 
       # MongoDB High Connections
       - alert: MongoDBHighConnections
@@ -623,8 +638,9 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "High MongoDB connections"
-          description: "{{ $value | humanizePercentage }} of available connections in use"
+          summary: 'High MongoDB connections'
+          description:
+            '{{ $value | humanizePercentage }} of available connections in use'
 ```
 
 ### Redis Alerts
@@ -642,8 +658,8 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "Redis is down"
-          description: "Redis instance {{ $labels.instance }} is not responding"
+          summary: 'Redis is down'
+          description: 'Redis instance {{ $labels.instance }} is not responding'
 
       # Redis High Memory
       - alert: RedisHighMemory
@@ -654,8 +670,8 @@ groups:
           severity: critical
           team: database
         annotations:
-          summary: "High Redis memory usage"
-          description: "Memory usage is {{ $value | humanizePercentage }}"
+          summary: 'High Redis memory usage'
+          description: 'Memory usage is {{ $value | humanizePercentage }}'
 
       # Redis Low Hit Rate
       - alert: RedisLowHitRate
@@ -667,8 +683,8 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "Low Redis cache hit rate"
-          description: "Hit rate is {{ $value | humanizePercentage }}"
+          summary: 'Low Redis cache hit rate'
+          description: 'Hit rate is {{ $value | humanizePercentage }}'
 
       # Redis Evictions
       - alert: RedisHighEvictions
@@ -679,8 +695,8 @@ groups:
           severity: warning
           team: database
         annotations:
-          summary: "High Redis key evictions"
-          description: "{{ $value }} evictions per second"
+          summary: 'High Redis key evictions'
+          description: '{{ $value }} evictions per second'
 ```
 
 ---
@@ -700,8 +716,8 @@ groups:
           severity: warning
           team: product
         annotations:
-          summary: "No new signups in the last hour"
-          description: "Zero signups detected during business hours"
+          summary: 'No new signups in the last hour'
+          description: 'Zero signups detected during business hours'
 
       # Design Creation Drop
       - alert: DesignCreationDrop
@@ -713,7 +729,7 @@ groups:
           severity: warning
           team: product
         annotations:
-          summary: "Significant drop in design creation"
+          summary: 'Significant drop in design creation'
           description: "Design creation is 50% below yesterday's level"
 
       # Quote Request Failures
@@ -726,8 +742,9 @@ groups:
           severity: critical
           team: product
         annotations:
-          summary: "High quote request failure rate"
-          description: "{{ $value | humanizePercentage }} of quote requests are failing"
+          summary: 'High quote request failure rate'
+          description:
+            '{{ $value | humanizePercentage }} of quote requests are failing'
 
       # Partner API Integration Failure
       - alert: PartnerAPIDown
@@ -739,8 +756,8 @@ groups:
           severity: critical
           team: integrations
         annotations:
-          summary: "Partner API {{ $labels.partner }} is failing"
-          description: "{{ $value | humanizePercentage }} error rate"
+          summary: 'Partner API {{ $labels.partner }} is failing'
+          description: '{{ $value | humanizePercentage }} error rate'
 
       # Revenue Impact - Zero Transactions
       - alert: ZeroRevenueTransactions
@@ -751,8 +768,8 @@ groups:
           severity: critical
           team: product
         annotations:
-          summary: "No revenue transactions in 2 hours"
-          description: "Zero completed transactions during active hours"
+          summary: 'No revenue transactions in 2 hours'
+          description: 'Zero completed transactions during active hours'
 ```
 
 ---
@@ -766,13 +783,13 @@ groups:
 silences:
   - matchers:
       - name: instance
-        value: "backend-1"
+        value: 'backend-1'
       - name: severity
-        value: "warning"
-    startsAt: "2026-01-15T00:00:00Z"
-    endsAt: "2026-01-15T06:00:00Z"
-    createdBy: "ops-team"
-    comment: "Planned maintenance window"
+        value: 'warning'
+    startsAt: '2026-01-15T00:00:00Z'
+    endsAt: '2026-01-15T06:00:00Z'
+    createdBy: 'ops-team'
+    comment: 'Planned maintenance window'
 ```
 
 ### Alert Inhibition Rules
@@ -781,16 +798,16 @@ silences:
 # Inhibit warnings when critical is firing
 inhibit_rules:
   - source_match:
-      severity: "critical"
+      severity: 'critical'
     target_match:
-      severity: "warning"
-    equal: ["alertname", "service"]
+      severity: 'warning'
+    equal: ['alertname', 'service']
 
   - source_match:
-      alertname: "ServiceDown"
+      alertname: 'ServiceDown'
     target_match:
-      alertname: "HighErrorRate"
-    equal: ["service"]
+      alertname: 'HighErrorRate'
+    equal: ['service']
 ```
 
 ### Alert Testing
@@ -804,9 +821,9 @@ tests:
   - interval: 1m
     input_series:
       - series: 'http_requests_total{status="500", service="backend"}'
-        values: "0+10x10"  # 10 errors per minute
+        values: '0+10x10' # 10 errors per minute
       - series: 'http_requests_total{status="200", service="backend"}'
-        values: "0+100x10"  # 100 requests per minute
+        values: '0+100x10' # 100 requests per minute
     alert_rule_test:
       - alertname: HighErrorRate
         eval_time: 10m
@@ -818,12 +835,12 @@ tests:
 
 ### URLs and Access
 
-| Resource | URL |
-|----------|-----|
-| Alertmanager | https://alertmanager.kitchenxpert.internal |
-| Alert Rules | https://prometheus.kitchenxpert.internal/rules |
-| Silences | https://alertmanager.kitchenxpert.internal/#/silences |
-| Alert History | https://grafana.kitchenxpert.internal/alerting/list |
+| Resource      | URL                                                   |
+| ------------- | ----------------------------------------------------- |
+| Alertmanager  | https://alertmanager.kitchenxpert.internal            |
+| Alert Rules   | https://prometheus.kitchenxpert.internal/rules        |
+| Silences      | https://alertmanager.kitchenxpert.internal/#/silences |
+| Alert History | https://grafana.kitchenxpert.internal/alerting/list   |
 
 ---
 
@@ -837,4 +854,4 @@ tests:
 
 ---
 
-*For questions about alert rules, contact the SRE team at sre@kitchenxpert.com*
+_For questions about alert rules, contact the SRE team at sre@kitchenxpert.com_

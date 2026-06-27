@@ -5,15 +5,15 @@ import * as THREE from 'three';
  */
 export interface DoorConfig {
   id: string;
-  width: number;       // metres
-  height: number;      // metres
+  width: number; // metres
+  height: number; // metres
   wallId?: string;
   position: THREE.Vector3;
-  rotation: number;    // radians autour de l'axe Y
+  rotation: number; // radians autour de l'axe Y
   type: 'standard' | 'sliding' | 'french';
   openDirection: 'left' | 'right';
   isOpen: boolean;
-  openAngle: number;   // 0 a Math.PI/2
+  openAngle: number; // 0 a Math.PI/2
 }
 
 /**
@@ -21,9 +21,9 @@ export interface DoorConfig {
  */
 export interface WindowConfig {
   id: string;
-  width: number;       // metres
-  height: number;      // metres
-  sillHeight: number;  // hauteur depuis le sol
+  width: number; // metres
+  height: number; // metres
+  sillHeight: number; // hauteur depuis le sol
   wallId?: string;
   position: THREE.Vector3;
   rotation: number;
@@ -88,7 +88,7 @@ export class ArchitecturalElements {
     group.userData = { ...config, type: 'door', id: config.id };
 
     // Materiau du cadre
-    const frameMat = new THREE.MeshStandardMaterial({ color: 0x8B7355, roughness: 0.8 });
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.8 });
     const frameThickness = 0.04;
     const frameDepth = 0.15;
 
@@ -120,7 +120,7 @@ export class ArchitecturalElements {
     group.add(topFrame);
 
     // Panneau de porte
-    const doorMat = new THREE.MeshStandardMaterial({ color: 0xD2B48C, roughness: 0.6 });
+    const doorMat = new THREE.MeshStandardMaterial({ color: 0xd2b48c, roughness: 0.6 });
     const doorPanel = new THREE.Mesh(
       new THREE.BoxGeometry(config.width - 0.02, config.height - 0.02, 0.04),
       doorMat
@@ -147,13 +147,15 @@ export class ArchitecturalElements {
     group.add(doorPivot);
 
     // Poignee de porte
-    const handleMat = new THREE.MeshStandardMaterial({ color: 0xC0C0C0, metalness: 0.8, roughness: 0.2 });
-    const handle = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.01, 0.01, 0.12, 8),
-      handleMat
-    );
+    const handleMat = new THREE.MeshStandardMaterial({
+      color: 0xc0c0c0,
+      metalness: 0.8,
+      roughness: 0.2,
+    });
+    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.12, 8), handleMat);
     handle.rotation.x = Math.PI / 2;
-    const handleX = config.openDirection === 'left' ? config.width / 2 - 0.08 : -config.width / 2 + 0.08;
+    const handleX =
+      config.openDirection === 'left' ? config.width / 2 - 0.08 : -config.width / 2 + 0.08;
     handle.position.set(handleX, config.height * 0.45, 0.03);
     doorPanel.add(handle);
 
@@ -230,42 +232,58 @@ export class ArchitecturalElements {
     const group = new THREE.Group();
     group.userData = { ...config, type: 'window', id: config.id };
 
-    const frameMat = new THREE.MeshStandardMaterial({ color: 0xEEEEEE, roughness: 0.3 });
+    const frameMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.3 });
     const frameThickness = 0.04;
     const frameDepth = 0.12;
 
     // Cadre exterieur - montant gauche
-    group.add(this.createFramePart(
-      frameThickness, config.height, frameDepth,
-      new THREE.Vector3(-config.width / 2, config.sillHeight + config.height / 2, 0),
-      frameMat
-    ));
+    group.add(
+      this.createFramePart(
+        frameThickness,
+        config.height,
+        frameDepth,
+        new THREE.Vector3(-config.width / 2, config.sillHeight + config.height / 2, 0),
+        frameMat
+      )
+    );
 
     // Cadre exterieur - montant droit
-    group.add(this.createFramePart(
-      frameThickness, config.height, frameDepth,
-      new THREE.Vector3(config.width / 2, config.sillHeight + config.height / 2, 0),
-      frameMat
-    ));
+    group.add(
+      this.createFramePart(
+        frameThickness,
+        config.height,
+        frameDepth,
+        new THREE.Vector3(config.width / 2, config.sillHeight + config.height / 2, 0),
+        frameMat
+      )
+    );
 
     // Cadre exterieur - traverse haute
-    group.add(this.createFramePart(
-      config.width + frameThickness * 2, frameThickness, frameDepth,
-      new THREE.Vector3(0, config.sillHeight + config.height, 0),
-      frameMat
-    ));
+    group.add(
+      this.createFramePart(
+        config.width + frameThickness * 2,
+        frameThickness,
+        frameDepth,
+        new THREE.Vector3(0, config.sillHeight + config.height, 0),
+        frameMat
+      )
+    );
 
     // Appui de fenetre (sill)
-    const sillMat = new THREE.MeshStandardMaterial({ color: 0xDDDDDD, roughness: 0.5 });
-    group.add(this.createFramePart(
-      config.width + frameThickness * 2 + 0.04, frameThickness + 0.02, frameDepth + 0.04,
-      new THREE.Vector3(0, config.sillHeight, 0),
-      sillMat
-    ));
+    const sillMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.5 });
+    group.add(
+      this.createFramePart(
+        config.width + frameThickness * 2 + 0.04,
+        frameThickness + 0.02,
+        frameDepth + 0.04,
+        new THREE.Vector3(0, config.sillHeight, 0),
+        sillMat
+      )
+    );
 
     // Vitrage
     const glassMat = new THREE.MeshPhysicalMaterial({
-      color: 0x88CCFF,
+      color: 0x88ccff,
       transparent: true,
       opacity: 0.3,
       roughness: 0.05,
@@ -275,11 +293,15 @@ export class ArchitecturalElements {
 
     if (config.type === 'double' || config.type === 'french') {
       // Meneau central
-      group.add(this.createFramePart(
-        frameThickness / 2, config.height, frameDepth,
-        new THREE.Vector3(0, config.sillHeight + config.height / 2, 0),
-        frameMat
-      ));
+      group.add(
+        this.createFramePart(
+          frameThickness / 2,
+          config.height,
+          frameDepth,
+          new THREE.Vector3(0, config.sillHeight + config.height / 2, 0),
+          frameMat
+        )
+      );
 
       // Deux vitres
       const paneW = (config.width - frameThickness / 2) / 2 - 0.02;
@@ -371,14 +393,14 @@ export class ArchitecturalElements {
    * Retourne les configurations de toutes les portes
    */
   getDoors(): DoorConfig[] {
-    return Array.from(this.doors.values()).map(d => d.config);
+    return Array.from(this.doors.values()).map((d) => d.config);
   }
 
   /**
    * Retourne les configurations de toutes les fenetres
    */
   getWindows(): WindowConfig[] {
-    return Array.from(this.windows.values()).map(w => w.config);
+    return Array.from(this.windows.values()).map((w) => w.config);
   }
 
   /**
@@ -421,10 +443,7 @@ export class ArchitecturalElements {
     for (const [id, door] of this.doors) {
       const doorPos = door.config.position;
       const clearanceRadius = door.config.width + 0.3;
-      const distance = new THREE.Vector2(
-        position.x - doorPos.x,
-        position.z - doorPos.z
-      ).length();
+      const distance = new THREE.Vector2(position.x - doorPos.x, position.z - doorPos.z).length();
       if (distance < clearanceRadius + radius) {
         return { blocked: true, doorId: id };
       }
@@ -439,11 +458,11 @@ export class ArchitecturalElements {
    */
   toJSON(): { doors: DoorConfigJSON[]; windows: WindowConfigJSON[] } {
     return {
-      doors: this.getDoors().map(d => ({
+      doors: this.getDoors().map((d) => ({
         ...d,
         position: { x: d.position.x, y: d.position.y, z: d.position.z },
       })),
-      windows: this.getWindows().map(w => ({
+      windows: this.getWindows().map((w) => ({
         ...w,
         position: { x: w.position.x, y: w.position.y, z: w.position.z },
       })),
@@ -455,14 +474,14 @@ export class ArchitecturalElements {
    */
   fromJSON(data: { doors?: DoorConfigJSON[]; windows?: WindowConfigJSON[] }): void {
     this.clear();
-    data.doors?.forEach(d => {
+    data.doors?.forEach((d) => {
       const config: DoorConfig = {
         ...d,
         position: new THREE.Vector3(d.position.x, d.position.y, d.position.z),
       };
       this.addDoor(config);
     });
-    data.windows?.forEach(w => {
+    data.windows?.forEach((w) => {
       const config: WindowConfig = {
         ...w,
         position: new THREE.Vector3(w.position.x, w.position.y, w.position.z),
@@ -480,8 +499,8 @@ export class ArchitecturalElements {
     // Copier les IDs car removeDoor/removeWindow modifient la Map
     const doorIds = Array.from(this.doors.keys());
     const windowIds = Array.from(this.windows.keys());
-    doorIds.forEach(id => this.removeDoor(id));
-    windowIds.forEach(id => this.removeWindow(id));
+    doorIds.forEach((id) => this.removeDoor(id));
+    windowIds.forEach((id) => this.removeWindow(id));
   }
 
   /**

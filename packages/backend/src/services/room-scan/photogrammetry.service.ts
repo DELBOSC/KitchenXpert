@@ -119,7 +119,9 @@ export class PhotogrammetryService {
 
     if (photos.length >= 3) {
       // Multi-photo reconstruction (would use external GPU service)
-      logger.info('[Photogrammetry] Multi-photo mode - using vanishing point estimation as fallback');
+      logger.info(
+        '[Photogrammetry] Multi-photo mode - using vanishing point estimation as fallback'
+      );
     }
 
     // For now, use vanishing point approach on the first photo
@@ -211,7 +213,7 @@ export class PhotogrammetryService {
     }
 
     // Estimate scale using assumed ceiling height
-    const focalLength = photo.focalLength || (width * this.DEFAULT_FOCAL_LENGTH_RATIO);
+    const focalLength = photo.focalLength || width * this.DEFAULT_FOCAL_LENGTH_RATIO;
     const estimatedScale = this.ASSUMED_CEILING_HEIGHT / (height / focalLength);
 
     return {
@@ -239,7 +241,7 @@ export class PhotogrammetryService {
     logger.info('[Photogrammetry] Detecting vanishing points');
 
     const { width, height } = photo;
-    const focalLength = photo.focalLength || (width * this.DEFAULT_FOCAL_LENGTH_RATIO);
+    const focalLength = photo.focalLength || width * this.DEFAULT_FOCAL_LENGTH_RATIO;
 
     // Step 1-2: Simulate edge detection
     // In production, this would decode the base64 image and run Sobel or Canny
@@ -377,7 +379,9 @@ export class PhotogrammetryService {
    * Cluster line segments by their angle using a simple binning approach.
    */
   private clusterLinesByAngle(lines: LineSegment[]): LineSegment[][] {
-    if (lines.length === 0) {return [];}
+    if (lines.length === 0) {
+      return [];
+    }
 
     // Normalize angles to 0-180 range (line direction is bidirectional)
     const normalizedLines = lines.map((l) => ({
@@ -421,7 +425,9 @@ export class PhotogrammetryService {
    * Uses least-squares intersection of line extensions.
    */
   private computeVanishingPointFromLines(lines: LineSegment[]): Point2D | null {
-    if (lines.length < 2) {return null;}
+    if (lines.length < 2) {
+      return null;
+    }
 
     // Use pairwise intersections and take the median
     const intersections: Point2D[] = [];
@@ -435,7 +441,9 @@ export class PhotogrammetryService {
       }
     }
 
-    if (intersections.length === 0) {return null;}
+    if (intersections.length === 0) {
+      return null;
+    }
 
     // Take the median position as the vanishing point (robust to outliers)
     intersections.sort((a, b) => a.x - b.x);
@@ -451,11 +459,19 @@ export class PhotogrammetryService {
    * Compute the intersection point of two line segments (extended to infinity).
    */
   private lineIntersection(l1: LineSegment, l2: LineSegment): Point2D | null {
-    const x1 = l1.x1, y1 = l1.y1, x2 = l1.x2, y2 = l1.y2;
-    const x3 = l2.x1, y3 = l2.y1, x4 = l2.x2, y4 = l2.y2;
+    const x1 = l1.x1,
+      y1 = l1.y1,
+      x2 = l1.x2,
+      y2 = l1.y2;
+    const x3 = l2.x1,
+      y3 = l2.y1,
+      x4 = l2.x2,
+      y4 = l2.y2;
 
     const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    if (Math.abs(denom) < 1e-6) {return null;} // Parallel lines
+    if (Math.abs(denom) < 1e-6) {
+      return null;
+    } // Parallel lines
 
     const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
 
@@ -552,9 +568,7 @@ export class PhotogrammetryService {
       const edge1 = verticalEdges[i]!;
       const edge2 = verticalEdges[i + 1]!;
 
-      const gap = Math.abs(
-        (edge1.start.x + edge1.end.x) / 2 - (edge2.start.x + edge2.end.x) / 2
-      );
+      const gap = Math.abs((edge1.start.x + edge1.end.x) / 2 - (edge2.start.x + edge2.end.x) / 2);
 
       // If two vertical edges are a reasonable "door-width" apart
       if (gap > 30 && gap < 200) {
@@ -586,18 +600,29 @@ export class PhotogrammetryService {
     let confidence = 0;
 
     // More photos = higher confidence
-    if (photoCount >= 4) {confidence += 0.3;}
-    else if (photoCount >= 2) {confidence += 0.2;}
-    else {confidence += 0.1;}
+    if (photoCount >= 4) {
+      confidence += 0.3;
+    } else if (photoCount >= 2) {
+      confidence += 0.2;
+    } else {
+      confidence += 0.1;
+    }
 
     // Vanishing points detected
-    if (vanishingPointCount >= 3) {confidence += 0.3;}
-    else if (vanishingPointCount >= 2) {confidence += 0.2;}
-    else if (vanishingPointCount >= 1) {confidence += 0.1;}
+    if (vanishingPointCount >= 3) {
+      confidence += 0.3;
+    } else if (vanishingPointCount >= 2) {
+      confidence += 0.2;
+    } else if (vanishingPointCount >= 1) {
+      confidence += 0.1;
+    }
 
     // Line segments detected
-    if (lineCount >= 10) {confidence += 0.2;}
-    else if (lineCount >= 5) {confidence += 0.1;}
+    if (lineCount >= 10) {
+      confidence += 0.2;
+    } else if (lineCount >= 5) {
+      confidence += 0.1;
+    }
 
     return Math.min(0.85, Math.max(0.1, confidence));
   }

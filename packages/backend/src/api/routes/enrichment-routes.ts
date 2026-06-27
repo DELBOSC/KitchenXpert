@@ -106,7 +106,11 @@ router.get('/status', enrichmentController.getStatus);
  *       404:
  *         description: Product not found
  */
-router.get('/product/:type/:id', validateParams(productTypeIdParams), enrichmentController.getProductEnrichment);
+router.get(
+  '/product/:type/:id',
+  validateParams(productTypeIdParams),
+  enrichmentController.getProductEnrichment
+);
 
 /**
  * @swagger
@@ -124,7 +128,11 @@ router.get('/product/:type/:id', validateParams(productTypeIdParams), enrichment
  *       403:
  *         description: Admin access required
  */
-router.post('/compatibility/generate', requireRole('admin'), enrichmentController.generateCompatibility);
+router.post(
+  '/compatibility/generate',
+  requireRole('admin'),
+  enrichmentController.generateCompatibility
+);
 /**
  * @swagger
  * /api/v1/enrichment/compatibility/check:
@@ -160,7 +168,11 @@ router.get('/compatibility/check', enrichmentController.checkCompatibility);
  *       401:
  *         description: Unauthorized
  */
-router.get('/compatibility/:cabinetType', validateParams(cabinetTypeParam), enrichmentController.getCompatibilityRules);
+router.get(
+  '/compatibility/:cabinetType',
+  validateParams(cabinetTypeParam),
+  enrichmentController.getCompatibilityRules
+);
 
 /**
  * @swagger
@@ -189,7 +201,12 @@ router.get('/compatibility/:cabinetType', validateParams(cabinetTypeParam), enri
  *       403:
  *         description: Admin access required
  */
-router.post('/match/:brandA/:brandB', validateParams(brandMatchParams), requireRole('admin'), enrichmentController.crossMatchBrands);
+router.post(
+  '/match/:brandA/:brandB',
+  validateParams(brandMatchParams),
+  requireRole('admin'),
+  enrichmentController.crossMatchBrands
+);
 /**
  * @swagger
  * /api/v1/enrichment/matches/{productId}:
@@ -212,6 +229,10 @@ router.post('/match/:brandA/:brandB', validateParams(brandMatchParams), requireR
  *       404:
  *         description: Product not found
  */
-router.get('/matches/:productId', validateParams(productIdParam), enrichmentController.getProductMatches);
+router.get(
+  '/matches/:productId',
+  validateParams(productIdParam),
+  enrichmentController.getProductMatches
+);
 
 export default router;

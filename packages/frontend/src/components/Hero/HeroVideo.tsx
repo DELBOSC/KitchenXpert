@@ -33,17 +33,29 @@ interface NetworkInformation extends EventTarget {
 type NavigatorWithConnection = Navigator & { connection?: NetworkInformation };
 
 function pickQuality(): 'high' | 'low' {
-  if (typeof navigator === 'undefined') {return 'high';}
+  if (typeof navigator === 'undefined') {
+    return 'high';
+  }
   const conn = (navigator as NavigatorWithConnection).connection;
-  if (!conn) {return 'high';}
-  if (conn.saveData) {return 'low';}
-  if (typeof conn.downlink === 'number' && conn.downlink < 2) {return 'low';}
-  if (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g') {return 'low';}
+  if (!conn) {
+    return 'high';
+  }
+  if (conn.saveData) {
+    return 'low';
+  }
+  if (typeof conn.downlink === 'number' && conn.downlink < 2) {
+    return 'low';
+  }
+  if (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g') {
+    return 'low';
+  }
   return 'high';
 }
 
 function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined' || !window.matchMedia) {return false;}
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    return false;
+  }
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
@@ -71,9 +83,13 @@ export function HeroVideo({
   const [quality] = useState<'high' | 'low'>(pickQuality);
 
   useEffect(() => {
-    if (reducedMotion) {return;} // poster only, no fetch
+    if (reducedMotion) {
+      return;
+    } // poster only, no fetch
     const el = wrapperRef.current;
-    if (!el) {return;}
+    if (!el) {
+      return;
+    }
     if (!('IntersectionObserver' in window)) {
       setShouldMount(true);
       return;
@@ -88,7 +104,7 @@ export function HeroVideo({
           }
         }
       },
-      { rootMargin: '200px' }, // start fetching slightly before in-view
+      { rootMargin: '200px' } // start fetching slightly before in-view
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -96,7 +112,9 @@ export function HeroVideo({
 
   useEffect(() => {
     const v = videoRef.current;
-    if (!v) {return;}
+    if (!v) {
+      return;
+    }
     const onPlaying = (): void => {
       if (!isPlaying) {
         setIsPlaying(true);
@@ -111,10 +129,15 @@ export function HeroVideo({
   // device. Resume on visibility-change.
   useEffect(() => {
     const v = videoRef.current;
-    if (!v) {return;}
+    if (!v) {
+      return;
+    }
     const onVisibility = (): void => {
-      if (document.visibilityState === 'hidden') {v.pause();}
-      else if (!reducedMotion) {v.play().catch(() => {});}
+      if (document.visibilityState === 'hidden') {
+        v.pause();
+      } else if (!reducedMotion) {
+        v.play().catch(() => {});
+      }
     };
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
@@ -124,15 +147,15 @@ export function HeroVideo({
   const variant = quality === 'low' ? 'desktop-low' : 'desktop';
   const sources = {
     webm: `${ASSET_BASE}/hero-${variant}.webm`,
-    mp4:  `${ASSET_BASE}/hero-${variant}.mp4`,
+    mp4: `${ASSET_BASE}/hero-${variant}.mp4`,
     mobileWebm: `${ASSET_BASE}/hero-mobile.webm`,
-    mobileMp4:  `${ASSET_BASE}/hero-mobile.mp4`,
+    mobileMp4: `${ASSET_BASE}/hero-mobile.mp4`,
   };
   // JPG poster lands once `bash scripts/encode-hero-video.sh` has run.
   // Until then we render the SVG fallback (committed to the repo) so
   // the layout never collapses on a fresh checkout.
-  const poster    = `${ASSET_BASE}/hero-poster.jpg`;
-  const poster2x  = `${ASSET_BASE}/hero-poster@2x.jpg`;
+  const poster = `${ASSET_BASE}/hero-poster.jpg`;
+  const poster2x = `${ASSET_BASE}/hero-poster@2x.jpg`;
   const posterSvg = `${ASSET_BASE}/hero-poster.svg`;
 
   return (
@@ -190,11 +213,19 @@ export function HeroVideo({
           className="absolute inset-0 h-full w-full object-cover"
         >
           {/* Mobile-portrait sources picked by the browser via media query */}
-          <source src={sources.mobileWebm} type="video/webm" media="(orientation: portrait) and (max-width: 480px)" />
-          <source src={sources.mobileMp4}  type="video/mp4"  media="(orientation: portrait) and (max-width: 480px)" />
+          <source
+            src={sources.mobileWebm}
+            type="video/webm"
+            media="(orientation: portrait) and (max-width: 480px)"
+          />
+          <source
+            src={sources.mobileMp4}
+            type="video/mp4"
+            media="(orientation: portrait) and (max-width: 480px)"
+          />
           {/* Desktop / landscape — WebM first, MP4 fallback for Safari */}
           <source src={sources.webm} type="video/webm" />
-          <source src={sources.mp4}  type="video/mp4" />
+          <source src={sources.mp4} type="video/mp4" />
           {/* Last-resort message if no source plays — shouldn't be reached */}
           Votre navigateur ne supporte pas la vidéo HTML5.
         </video>

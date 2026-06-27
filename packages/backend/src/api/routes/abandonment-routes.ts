@@ -13,12 +13,18 @@ router.use(authenticate);
 // --- Zod Schemas ---
 
 const analyzeSessionSchema = z.object({
-  sessionData: z.object({
-    events: z.array(z.object({
-      type: z.string(),
-      timestamp: z.string().or(z.number()).optional(),
-    }).passthrough()),
-  }).passthrough(),
+  sessionData: z
+    .object({
+      events: z.array(
+        z
+          .object({
+            type: z.string(),
+            timestamp: z.string().or(z.number()).optional(),
+          })
+          .passthrough()
+      ),
+    })
+    .passthrough(),
 });
 
 /**

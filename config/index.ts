@@ -57,16 +57,20 @@ const AuthConfigSchema = z.object({
     rolling: z.boolean().default(true),
   }),
   oauth: z.object({
-    google: z.object({
-      clientId: z.string().optional(),
-      clientSecret: z.string().optional(),
-      callbackUrl: z.string().url().optional(),
-    }).optional(),
-    facebook: z.object({
-      clientId: z.string().optional(),
-      clientSecret: z.string().optional(),
-      callbackUrl: z.string().url().optional(),
-    }).optional(),
+    google: z
+      .object({
+        clientId: z.string().optional(),
+        clientSecret: z.string().optional(),
+        callbackUrl: z.string().url().optional(),
+      })
+      .optional(),
+    facebook: z
+      .object({
+        clientId: z.string().optional(),
+        clientSecret: z.string().optional(),
+        callbackUrl: z.string().url().optional(),
+      })
+      .optional(),
   }),
 });
 
@@ -92,45 +96,52 @@ const SecurityConfigSchema = z.object({
 
 const StorageConfigSchema = z.object({
   provider: z.enum(['local', 's3', 'azure', 'gcs']),
-  local: z.object({
-    uploadDir: z.string().default('./uploads'),
-    publicUrl: z.string().url(),
-  }).optional(),
-  s3: z.object({
-    bucket: z.string(),
-    region: z.string(),
-    accessKeyId: z.string(),
-    secretAccessKey: z.string(),
-    endpoint: z.string().url().optional(),
-  }).optional(),
-  azure: z.object({
-    accountName: z.string(),
-    accountKey: z.string(),
-    containerName: z.string(),
-  }).optional(),
+  local: z
+    .object({
+      uploadDir: z.string().default('./uploads'),
+      publicUrl: z.string().url(),
+    })
+    .optional(),
+  s3: z
+    .object({
+      bucket: z.string(),
+      region: z.string(),
+      accessKeyId: z.string(),
+      secretAccessKey: z.string(),
+      endpoint: z.string().url().optional(),
+    })
+    .optional(),
+  azure: z
+    .object({
+      accountName: z.string(),
+      accountKey: z.string(),
+      containerName: z.string(),
+    })
+    .optional(),
   maxFileSize: z.number().int().positive().default(10485760), // 10MB
-  allowedMimeTypes: z.array(z.string()).default([
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'application/pdf',
-  ]),
+  allowedMimeTypes: z
+    .array(z.string())
+    .default(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']),
 });
 
 const EmailConfigSchema = z.object({
   provider: z.enum(['smtp', 'sendgrid', 'ses', 'mailgun']),
-  smtp: z.object({
-    host: z.string(),
-    port: z.number().int().positive(),
-    secure: z.boolean().default(true),
-    auth: z.object({
-      user: z.string(),
-      pass: z.string(),
-    }),
-  }).optional(),
-  sendgrid: z.object({
-    apiKey: z.string(),
-  }).optional(),
+  smtp: z
+    .object({
+      host: z.string(),
+      port: z.number().int().positive(),
+      secure: z.boolean().default(true),
+      auth: z.object({
+        user: z.string(),
+        pass: z.string(),
+      }),
+    })
+    .optional(),
+  sendgrid: z
+    .object({
+      apiKey: z.string(),
+    })
+    .optional(),
   from: z.object({
     name: z.string().default('KitchenXpert'),
     email: z.string().email(),
@@ -168,20 +179,26 @@ const MonitoringConfigSchema = z.object({
 });
 
 const AIConfigSchema = z.object({
-  openai: z.object({
-    apiKey: z.string().optional(),
-    model: z.string().default('gpt-4'),
-    maxTokens: z.number().int().positive().default(2000),
-    temperature: z.number().min(0).max(2).default(0.7),
-  }).optional(),
-  anthropic: z.object({
-    apiKey: z.string().optional(),
-    model: z.string().default('claude-3-sonnet-20240229'),
-  }).optional(),
-  huggingface: z.object({
-    apiKey: z.string().optional(),
-    model: z.string().default('mistralai/Mixtral-8x7B-Instruct-v0.1'),
-  }).optional(),
+  openai: z
+    .object({
+      apiKey: z.string().optional(),
+      model: z.string().default('gpt-4'),
+      maxTokens: z.number().int().positive().default(2000),
+      temperature: z.number().min(0).max(2).default(0.7),
+    })
+    .optional(),
+  anthropic: z
+    .object({
+      apiKey: z.string().optional(),
+      model: z.string().default('claude-3-sonnet-20240229'),
+    })
+    .optional(),
+  huggingface: z
+    .object({
+      apiKey: z.string().optional(),
+      model: z.string().default('mistralai/Mixtral-8x7B-Instruct-v0.1'),
+    })
+    .optional(),
   features: z.object({
     autoComplete: z.boolean().default(true),
     imageGeneration: z.boolean().default(false),
@@ -254,7 +271,10 @@ function parseBoolean(value: string | undefined, defaultValue: boolean): boolean
  */
 function parseArray(value: string | undefined, defaultValue: string[] = []): string[] {
   if (!value) return defaultValue;
-  return value.split(',').map((v) => v.trim()).filter(Boolean);
+  return value
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
 }
 
 /**
@@ -316,16 +336,20 @@ export function loadConfig(): AppConfig {
         rolling: parseBoolean(env.SESSION_ROLLING, true),
       },
       oauth: {
-        google: env.GOOGLE_CLIENT_ID ? {
-          clientId: env.GOOGLE_CLIENT_ID,
-          clientSecret: env.GOOGLE_CLIENT_SECRET,
-          callbackUrl: env.GOOGLE_CALLBACK_URL,
-        } : undefined,
-        facebook: env.FACEBOOK_CLIENT_ID ? {
-          clientId: env.FACEBOOK_CLIENT_ID,
-          clientSecret: env.FACEBOOK_CLIENT_SECRET,
-          callbackUrl: env.FACEBOOK_CALLBACK_URL,
-        } : undefined,
+        google: env.GOOGLE_CLIENT_ID
+          ? {
+              clientId: env.GOOGLE_CLIENT_ID,
+              clientSecret: env.GOOGLE_CLIENT_SECRET,
+              callbackUrl: env.GOOGLE_CALLBACK_URL,
+            }
+          : undefined,
+        facebook: env.FACEBOOK_CLIENT_ID
+          ? {
+              clientId: env.FACEBOOK_CLIENT_ID,
+              clientSecret: env.FACEBOOK_CLIENT_SECRET,
+              callbackUrl: env.FACEBOOK_CALLBACK_URL,
+            }
+          : undefined,
       },
     },
 
@@ -350,22 +374,31 @@ export function loadConfig(): AppConfig {
 
     storage: {
       provider: (env.STORAGE_PROVIDER || 'local') as 'local' | 's3' | 'azure' | 'gcs',
-      local: env.STORAGE_PROVIDER === 'local' ? {
-        uploadDir: env.UPLOAD_DIR || './uploads',
-        publicUrl: env.STORAGE_PUBLIC_URL || 'http://localhost:3000/uploads',
-      } : undefined,
-      s3: env.STORAGE_PROVIDER === 's3' ? {
-        bucket: env.S3_BUCKET || '',
-        region: env.S3_REGION || '',
-        accessKeyId: env.S3_ACCESS_KEY_ID || '',
-        secretAccessKey: env.S3_SECRET_ACCESS_KEY || '',
-        endpoint: env.S3_ENDPOINT,
-      } : undefined,
-      azure: env.STORAGE_PROVIDER === 'azure' ? {
-        accountName: env.AZURE_STORAGE_ACCOUNT || '',
-        accountKey: env.AZURE_STORAGE_KEY || '',
-        containerName: env.AZURE_CONTAINER || '',
-      } : undefined,
+      local:
+        env.STORAGE_PROVIDER === 'local'
+          ? {
+              uploadDir: env.UPLOAD_DIR || './uploads',
+              publicUrl: env.STORAGE_PUBLIC_URL || 'http://localhost:3000/uploads',
+            }
+          : undefined,
+      s3:
+        env.STORAGE_PROVIDER === 's3'
+          ? {
+              bucket: env.S3_BUCKET || '',
+              region: env.S3_REGION || '',
+              accessKeyId: env.S3_ACCESS_KEY_ID || '',
+              secretAccessKey: env.S3_SECRET_ACCESS_KEY || '',
+              endpoint: env.S3_ENDPOINT,
+            }
+          : undefined,
+      azure:
+        env.STORAGE_PROVIDER === 'azure'
+          ? {
+              accountName: env.AZURE_STORAGE_ACCOUNT || '',
+              accountKey: env.AZURE_STORAGE_KEY || '',
+              containerName: env.AZURE_CONTAINER || '',
+            }
+          : undefined,
       maxFileSize: parseNumber(env.MAX_FILE_SIZE, 10485760),
       allowedMimeTypes: parseArray(env.ALLOWED_MIME_TYPES, [
         'image/jpeg',
@@ -377,18 +410,24 @@ export function loadConfig(): AppConfig {
 
     email: {
       provider: (env.EMAIL_PROVIDER || 'smtp') as 'smtp' | 'sendgrid' | 'ses' | 'mailgun',
-      smtp: env.EMAIL_PROVIDER === 'smtp' ? {
-        host: env.SMTP_HOST || '',
-        port: parseNumber(env.SMTP_PORT, 587),
-        secure: parseBoolean(env.SMTP_SECURE, true),
-        auth: {
-          user: env.SMTP_USER || '',
-          pass: env.SMTP_PASS || '',
-        },
-      } : undefined,
-      sendgrid: env.EMAIL_PROVIDER === 'sendgrid' ? {
-        apiKey: env.SENDGRID_API_KEY || '',
-      } : undefined,
+      smtp:
+        env.EMAIL_PROVIDER === 'smtp'
+          ? {
+              host: env.SMTP_HOST || '',
+              port: parseNumber(env.SMTP_PORT, 587),
+              secure: parseBoolean(env.SMTP_SECURE, true),
+              auth: {
+                user: env.SMTP_USER || '',
+                pass: env.SMTP_PASS || '',
+              },
+            }
+          : undefined,
+      sendgrid:
+        env.EMAIL_PROVIDER === 'sendgrid'
+          ? {
+              apiKey: env.SENDGRID_API_KEY || '',
+            }
+          : undefined,
       from: {
         name: env.EMAIL_FROM_NAME || 'KitchenXpert',
         email: env.EMAIL_FROM_ADDRESS || '',
@@ -426,20 +465,26 @@ export function loadConfig(): AppConfig {
     },
 
     ai: {
-      openai: env.OPENAI_API_KEY ? {
-        apiKey: env.OPENAI_API_KEY,
-        model: env.OPENAI_MODEL || 'gpt-4',
-        maxTokens: parseNumber(env.OPENAI_MAX_TOKENS, 2000),
-        temperature: parseNumber(env.OPENAI_TEMPERATURE, 0.7),
-      } : undefined,
-      anthropic: env.ANTHROPIC_API_KEY ? {
-        apiKey: env.ANTHROPIC_API_KEY,
-        model: env.ANTHROPIC_MODEL || 'claude-3-sonnet-20240229',
-      } : undefined,
-      huggingface: env.HUGGINGFACE_API_KEY ? {
-        apiKey: env.HUGGINGFACE_API_KEY,
-        model: env.HUGGINGFACE_MODEL || 'mistralai/Mixtral-8x7B-Instruct-v0.1',
-      } : undefined,
+      openai: env.OPENAI_API_KEY
+        ? {
+            apiKey: env.OPENAI_API_KEY,
+            model: env.OPENAI_MODEL || 'gpt-4',
+            maxTokens: parseNumber(env.OPENAI_MAX_TOKENS, 2000),
+            temperature: parseNumber(env.OPENAI_TEMPERATURE, 0.7),
+          }
+        : undefined,
+      anthropic: env.ANTHROPIC_API_KEY
+        ? {
+            apiKey: env.ANTHROPIC_API_KEY,
+            model: env.ANTHROPIC_MODEL || 'claude-3-sonnet-20240229',
+          }
+        : undefined,
+      huggingface: env.HUGGINGFACE_API_KEY
+        ? {
+            apiKey: env.HUGGINGFACE_API_KEY,
+            model: env.HUGGINGFACE_MODEL || 'mistralai/Mixtral-8x7B-Instruct-v0.1',
+          }
+        : undefined,
       features: {
         autoComplete: parseBoolean(env.AI_AUTOCOMPLETE, true),
         imageGeneration: parseBoolean(env.AI_IMAGE_GEN, false),

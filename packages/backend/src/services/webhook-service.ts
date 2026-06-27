@@ -166,11 +166,9 @@ export class WebhookService {
    */
   async dispatch(event: WebhookEvent, payload: Record<string, unknown>): Promise<void> {
     const webhooks = await this.repository.findByEvent(event);
-    const activeWebhooks = webhooks.filter(w => w.status === 'active');
+    const activeWebhooks = webhooks.filter((w) => w.status === 'active');
 
-    await Promise.all(
-      activeWebhooks.map(webhook => this.queueDelivery(webhook, event, payload))
-    );
+    await Promise.all(activeWebhooks.map((webhook) => this.queueDelivery(webhook, event, payload)));
   }
 
   /**
@@ -298,8 +296,8 @@ export class WebhookService {
     const updatedAttempts = [...delivery.attempts, attempt];
 
     // Don't retry non-retryable status codes (4xx except 408, 429)
-    const isNonRetryableStatus = attempt.statusCode !== undefined
-      && !RETRYABLE_STATUS_CODES.has(attempt.statusCode);
+    const isNonRetryableStatus =
+      attempt.statusCode !== undefined && !RETRYABLE_STATUS_CODES.has(attempt.statusCode);
 
     if (attemptNumber >= webhook.retryPolicy.maxRetries || isNonRetryableStatus) {
       await this.repository.updateDelivery(delivery.id, {
@@ -345,7 +343,7 @@ export class WebhookService {
    */
   private async checkSuspension(webhook: Webhook): Promise<void> {
     const recentDeliveries = await this.repository.getDeliveries(webhook.id, 10);
-    const failedCount = recentDeliveries.filter(d => d.status === 'failed').length;
+    const failedCount = recentDeliveries.filter((d) => d.status === 'failed').length;
 
     // Suspend if more than 80% of recent deliveries failed
     if (recentDeliveries.length >= 5 && failedCount / recentDeliveries.length > 0.8) {
@@ -372,19 +370,11 @@ export class WebhookService {
   /**
    * Verify incoming webhook signature
    */
-  verifySignature(
-    secret: string,
-    payload: string,
-    timestamp: string,
-    signature: string
-  ): boolean {
+  verifySignature(secret: string, payload: string, timestamp: string, signature: string): boolean {
     const expectedSignature = `sha256=${crypto.createHmac('sha256', secret).update(`${timestamp}.${payload}`).digest('hex')}`;
 
     try {
-      return crypto.timingSafeEqual(
-        Buffer.from(signature),
-        Buffer.from(expectedSignature)
-      );
+      return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
     } catch {
       return false;
     }
@@ -425,7 +415,9 @@ export class WebhookService {
   /**
    * Test webhook endpoint
    */
-  async testWebhook(id: string): Promise<{ success: boolean; statusCode?: number; error?: string }> {
+  async testWebhook(
+    id: string
+  ): Promise<{ success: boolean; statusCode?: number; error?: string }> {
     const webhook = await this.repository.findById(id);
     if (!webhook) {
       return { success: false, error: 'Webhook not found' };
@@ -443,7 +435,15 @@ export class WebhookService {
     try {
       const response = await this.sendRequest(
         webhook,
-        { id: 'test', webhookId: id, event: 'project.created', payload: testPayload, status: 'pending', attempts: [], createdAt: new Date() },
+        {
+          id: 'test',
+          webhookId: id,
+          event: 'project.created',
+          payload: testPayload,
+          status: 'pending',
+          attempts: [],
+          createdAt: new Date(),
+        },
         timestamp,
         signature
       );
@@ -490,7 +490,10 @@ export class WebhookService {
 }
 
 export class WebhookServiceError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'WebhookServiceError';
   }

@@ -15,18 +15,29 @@ global.fetch = mockFetch;
 
 // Test component that uses the auth context
 function TestAuthConsumer() {
-  const { user, isAuthenticated, isLoading, error, login, register, logout, updateUser } = useAuth();
+  const { user, isAuthenticated, isLoading, error, login, register, logout, updateUser } =
+    useAuth();
 
   return (
     <div>
       <div data-testid="loading">{isLoading ? 'Loading' : 'Not Loading'}</div>
-      <div data-testid="authenticated">{isAuthenticated ? 'Authenticated' : 'Not Authenticated'}</div>
+      <div data-testid="authenticated">
+        {isAuthenticated ? 'Authenticated' : 'Not Authenticated'}
+      </div>
       <div data-testid="user">{user ? JSON.stringify(user) : 'No User'}</div>
       <div data-testid="error">{error || 'No Error'}</div>
-      <button onClick={() => login('test@example.com', 'password123').catch(() => {})}>Login</button>
-      <button onClick={() => register('test@example.com', 'password123', 'Test', 'User').catch(() => {})}>Register</button>
+      <button onClick={() => login('test@example.com', 'password123').catch(() => {})}>
+        Login
+      </button>
+      <button
+        onClick={() => register('test@example.com', 'password123', 'Test', 'User').catch(() => {})}
+      >
+        Register
+      </button>
       <button onClick={() => logout()}>Logout</button>
-      <button onClick={() => updateUser({ name: 'Updated Name' }).catch(() => {})}>Update User</button>
+      <button onClick={() => updateUser({ name: 'Updated Name' }).catch(() => {})}>
+        Update User
+      </button>
     </div>
   );
 }
@@ -77,10 +88,11 @@ describe('AuthContext', () => {
     it('should restore session from cookie on mount', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          data: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
-        }),
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+          }),
       });
 
       renderWithAuthProvider();
@@ -99,9 +111,12 @@ describe('AuthContext', () => {
       renderWithAuthProvider();
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/api/v1/auth/me', expect.objectContaining({
-          credentials: 'include',
-        }));
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/api/v1/auth/me',
+          expect.objectContaining({
+            credentials: 'include',
+          })
+        );
       });
     });
 
@@ -137,11 +152,12 @@ describe('AuthContext', () => {
       // Login call succeeds
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: {
-            user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: {
+              user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+            },
+          }),
       });
 
       await user.click(screen.getByRole('button', { name: /login/i }));
@@ -166,22 +182,26 @@ describe('AuthContext', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: {
-            user: { id: 'user-1', email: 'test@example.com' },
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: {
+              user: { id: 'user-1', email: 'test@example.com' },
+            },
+          }),
       });
 
       await user.click(screen.getByRole('button', { name: /login/i }));
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/api/v1/auth/login', expect.objectContaining({
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'test@example.com', password: 'password123' }),
-        }));
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/api/v1/auth/login',
+          expect.objectContaining({
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: 'test@example.com', password: 'password123' }),
+          })
+        );
       });
     });
 
@@ -232,11 +252,12 @@ describe('AuthContext', () => {
       mockFetch.mockImplementation(() =>
         loginPromise.then(() => ({
           ok: true,
-          json: () => Promise.resolve({
-            data: {
-              user: { id: 'user-1', email: 'test@example.com' },
-            },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: {
+                user: { id: 'user-1', email: 'test@example.com' },
+              },
+            }),
         }))
       );
 
@@ -273,11 +294,12 @@ describe('AuthContext', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: {
-            user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: {
+              user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+            },
+          }),
       });
 
       await user.click(screen.getByRole('button', { name: /register/i }));
@@ -302,26 +324,30 @@ describe('AuthContext', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: {
-            user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: {
+              user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+            },
+          }),
       });
 
       await user.click(screen.getByRole('button', { name: /register/i }));
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/api/v1/auth/register', expect.objectContaining({
-          method: 'POST',
-          credentials: 'include',
-          body: JSON.stringify({
-            email: 'test@example.com',
-            password: 'password123',
-            firstName: 'Test',
-            lastName: 'User',
-          }),
-        }));
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/api/v1/auth/register',
+          expect.objectContaining({
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({
+              email: 'test@example.com',
+              password: 'password123',
+              firstName: 'Test',
+              lastName: 'User',
+            }),
+          })
+        );
       });
     });
 
@@ -357,10 +383,11 @@ describe('AuthContext', () => {
       // Initial session check succeeds (user is authenticated)
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          data: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
-        }),
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+          }),
       });
 
       renderWithAuthProvider();
@@ -388,10 +415,11 @@ describe('AuthContext', () => {
       // Authenticated session
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          data: { id: 'user-1', email: 'test@example.com' },
-        }),
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: { id: 'user-1', email: 'test@example.com' },
+          }),
       });
 
       renderWithAuthProvider();
@@ -406,10 +434,13 @@ describe('AuthContext', () => {
       await user.click(screen.getByRole('button', { name: /logout/i }));
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/api/v1/auth/logout', expect.objectContaining({
-          method: 'POST',
-          credentials: 'include',
-        }));
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/api/v1/auth/logout',
+          expect.objectContaining({
+            method: 'POST',
+            credentials: 'include',
+          })
+        );
       });
     });
   });
@@ -418,10 +449,11 @@ describe('AuthContext', () => {
     it('should update user via API', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          data: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
-        }),
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+          }),
       });
 
       renderWithAuthProvider();
@@ -434,10 +466,11 @@ describe('AuthContext', () => {
       // Mock updateUser API response
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          success: true,
-          data: { id: 'user-1', email: 'test@example.com', name: 'Updated Name' },
-        }),
+        json: () =>
+          Promise.resolve({
+            success: true,
+            data: { id: 'user-1', email: 'test@example.com', name: 'Updated Name' },
+          }),
       });
 
       const user = userEvent.setup();

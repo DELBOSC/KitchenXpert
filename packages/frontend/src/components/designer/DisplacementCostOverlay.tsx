@@ -49,23 +49,41 @@ const SUBTYPE_FALLBACK_LABELS: Record<string, string> = {
 
 // ─── Color helpers ────────────────────────────────────────────
 function getCostColorClasses(cost: number): string {
-  if (cost === 0) {return 'text-green-600 dark:text-green-400';}
-  if (cost < 500) {return 'text-yellow-600 dark:text-yellow-400';}
-  if (cost <= 1000) {return 'text-orange-500 dark:text-orange-400';}
+  if (cost === 0) {
+    return 'text-green-600 dark:text-green-400';
+  }
+  if (cost < 500) {
+    return 'text-yellow-600 dark:text-yellow-400';
+  }
+  if (cost <= 1000) {
+    return 'text-orange-500 dark:text-orange-400';
+  }
   return 'text-red-500 dark:text-red-400';
 }
 
 function getBorderColorClass(cost: number): string {
-  if (cost === 0) {return 'border-green-400 dark:border-green-600';}
-  if (cost < 500) {return 'border-yellow-400 dark:border-yellow-600';}
-  if (cost <= 1000) {return 'border-orange-400 dark:border-orange-600';}
+  if (cost === 0) {
+    return 'border-green-400 dark:border-green-600';
+  }
+  if (cost < 500) {
+    return 'border-yellow-400 dark:border-yellow-600';
+  }
+  if (cost <= 1000) {
+    return 'border-orange-400 dark:border-orange-600';
+  }
   return 'border-red-400 dark:border-red-600';
 }
 
 function getDotColor(cost: number): string {
-  if (cost === 0) {return '#22c55e';}
-  if (cost < 500) {return '#eab308';}
-  if (cost <= 1000) {return '#f97316';}
+  if (cost === 0) {
+    return '#22c55e';
+  }
+  if (cost < 500) {
+    return '#eab308';
+  }
+  if (cost <= 1000) {
+    return '#f97316';
+  }
   return '#ef4444';
 }
 
@@ -111,7 +129,9 @@ export default function DisplacementCostOverlay({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       role="tooltip"
-      aria-label={t('displacement.label', 'Displacement cost: {{cost}}', { cost: formatEUR(totalCost) })}
+      aria-label={t('displacement.label', 'Displacement cost: {{cost}}', {
+        cost: formatEUR(totalCost),
+      })}
     >
       {/* Main badge */}
       <div
@@ -128,10 +148,7 @@ export default function DisplacementCostOverlay({
             {t('displacement.title', 'Deplacement')}:
           </span>
           <span className={`text-sm font-bold ${costColorClasses}`}>
-            {totalCost === 0
-              ? t('displacement.free', 'Gratuit')
-              : `+${formatEUR(totalCost)}`
-            }
+            {totalCost === 0 ? t('displacement.free', 'Gratuit') : `+${formatEUR(totalCost)}`}
           </span>
         </div>
       </div>
@@ -153,18 +170,14 @@ export default function DisplacementCostOverlay({
               const detailColorClass = getCostColorClasses(detail.cost);
 
               return (
-                <div
-                  key={detail.subtype}
-                  className="flex items-center justify-between gap-3"
-                >
+                <div key={detail.subtype} className="flex items-center justify-between gap-3">
                   <span className="text-xs text-gray-600 dark:text-gray-300">
                     {t(labelKey, fallback)}
                   </span>
                   <span className={`text-xs font-semibold ${detailColorClass}`}>
                     {detail.cost === 0
                       ? t('displacement.included', 'Inclus')
-                      : `+${formatEUR(detail.cost)}`
-                    }
+                      : `+${formatEUR(detail.cost)}`}
                   </span>
                 </div>
               );
@@ -180,7 +193,10 @@ export default function DisplacementCostOverlay({
                   const labelKey = SUBTYPE_LABELS[d.subtype] || 'displacement.unknown';
                   const fallback = SUBTYPE_FALLBACK_LABELS[d.subtype] || d.subtype;
                   return (
-                    <p key={`dist-${d.subtype}`} className="text-[10px] text-gray-400 dark:text-gray-500">
+                    <p
+                      key={`dist-${d.subtype}`}
+                      className="text-[10px] text-gray-400 dark:text-gray-500"
+                    >
                       {t(labelKey, fallback)}: {Math.round(d.distance * 1000)} mm
                     </p>
                   );

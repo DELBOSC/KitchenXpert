@@ -54,9 +54,7 @@ class TranslationExporter {
 
       for (const file of files) {
         const namespace = path.basename(file, '.json');
-        const content = JSON.parse(
-          fs.readFileSync(path.join(localeDir, file), 'utf-8')
-        );
+        const content = JSON.parse(fs.readFileSync(path.join(localeDir, file), 'utf-8'));
         this.translations[locale][namespace] = this.flattenObject(content);
       }
     }

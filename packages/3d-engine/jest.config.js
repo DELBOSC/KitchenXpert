@@ -14,12 +14,7 @@ module.exports = {
     '^three/examples/jsm/.+': '<rootDir>/src/test/__mocks__/three-jsm-stub.js',
   },
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/index.ts',
-    '!src/test/**',
-  ],
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/**/index.ts', '!src/test/**'],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   transformIgnorePatterns: [

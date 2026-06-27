@@ -72,15 +72,27 @@ export class FetchAdapter {
     return this.request<T>({ method: 'GET', url, headers });
   }
 
-  async post<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<HttpResponse<T>> {
+  async post<T>(
+    url: string,
+    body?: unknown,
+    headers?: Record<string, string>
+  ): Promise<HttpResponse<T>> {
     return this.request<T>({ method: 'POST', url, body, headers });
   }
 
-  async put<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<HttpResponse<T>> {
+  async put<T>(
+    url: string,
+    body?: unknown,
+    headers?: Record<string, string>
+  ): Promise<HttpResponse<T>> {
     return this.request<T>({ method: 'PUT', url, body, headers });
   }
 
-  async patch<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<HttpResponse<T>> {
+  async patch<T>(
+    url: string,
+    body?: unknown,
+    headers?: Record<string, string>
+  ): Promise<HttpResponse<T>> {
     return this.request<T>({ method: 'PATCH', url, body, headers });
   }
 
@@ -97,7 +109,7 @@ export class FetchAdapter {
   private buildHeaders(custom?: Record<string, string>): Record<string, string> {
     return {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
       ...this.config.defaultHeaders,
       ...custom,
     };
@@ -110,11 +122,7 @@ export class FetchAdapter {
       const errorBody = contentType?.includes('application/json')
         ? await response.json()
         : await response.text();
-      throw new FetchAdapterError(
-        response.status,
-        response.statusText,
-        errorBody
-      );
+      throw new FetchAdapterError(response.status, response.statusText, errorBody);
     }
 
     if (contentType?.includes('application/json')) {

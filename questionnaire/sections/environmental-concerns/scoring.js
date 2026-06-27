@@ -8,18 +8,18 @@
  */
 
 const SCORE_WEIGHTS = {
-  ecoPriority: 0.30,
+  ecoPriority: 0.3,
   energyEfficiency: 0.25,
   sustainableMaterials: 0.15,
   waterConservation: 0.15,
-  wasteManagement: 0.15
+  wasteManagement: 0.15,
 };
 
 const ECO_PRIORITY_SCORES = {
   'top-priority': 100,
-  'important': 75,
+  important: 75,
   'nice-to-have': 50,
-  'not-priority': 25
+  'not-priority': 25,
 };
 
 /**
@@ -30,43 +30,49 @@ const ECO_PERSONAS = {
   'eco-warrior': {
     description: {
       en: 'Highly committed to environmental sustainability across all choices',
-      fr: 'Très engagé envers la durabilité environnementale dans tous les choix'
+      fr: 'Très engagé envers la durabilité environnementale dans tous les choix',
     },
-    characteristics: ['top-priority', 'energy-star-only', 'sustainable-materials', 'water-saving', 'composting'],
+    characteristics: [
+      'top-priority',
+      'energy-star-only',
+      'sustainable-materials',
+      'water-saving',
+      'composting',
+    ],
     priorities: ['sustainability', 'carbon-footprint', 'lifecycle', 'certifications'],
     expectedCostImpact: 'premium',
-    certifications: ['LEED', 'Energy Star', 'FSC', 'Greenguard']
+    certifications: ['LEED', 'Energy Star', 'FSC', 'Greenguard'],
   },
   'practical-green': {
     description: {
       en: 'Balances environmental responsibility with practical considerations',
-      fr: 'Équilibre la responsabilité environnementale avec des considérations pratiques'
+      fr: 'Équilibre la responsabilité environnementale avec des considérations pratiques',
     },
     characteristics: ['important', 'energy-conscious', 'some-sustainable', 'recycling'],
     priorities: ['energy-savings', 'durability', 'value', 'efficiency'],
     expectedCostImpact: 'moderate-increase',
-    certifications: ['Energy Star', 'WaterSense']
+    certifications: ['Energy Star', 'WaterSense'],
   },
   'cost-conscious-eco': {
     description: {
       en: 'Interested in eco-friendly options that provide cost savings',
-      fr: 'Intéressé par des options écologiques qui offrent des économies de coûts'
+      fr: 'Intéressé par des options écologiques qui offrent des économies de coûts',
     },
     characteristics: ['nice-to-have', 'energy-efficiency', 'utility-savings'],
     priorities: ['energy-bill-reduction', 'water-bill-reduction', 'roi'],
     expectedCostImpact: 'neutral-to-positive',
-    certifications: ['Energy Star']
+    certifications: ['Energy Star'],
   },
   'standard-approach': {
     description: {
       en: 'Meets building codes with standard efficiency requirements',
-      fr: 'Respecte les codes du bâtiment avec les exigences d\'efficacité standard'
+      fr: "Respecte les codes du bâtiment avec les exigences d'efficacité standard",
     },
     characteristics: ['not-priority', 'standard-efficiency'],
     priorities: ['code-compliance', 'basic-efficiency'],
     expectedCostImpact: 'neutral',
-    certifications: []
-  }
+    certifications: [],
+  },
 };
 
 function calculateSectionScore(answers) {
@@ -80,7 +86,7 @@ function calculateSectionScore(answers) {
     costImpact: 'neutral',
     certifications: [],
     carbonFootprintReduction: 0,
-    roiYears: null
+    roiYears: null,
   };
 
   // Identify eco persona
@@ -91,7 +97,7 @@ function calculateSectionScore(answers) {
     energyEfficiency: scoreEnergyEfficiency(answers['energy-efficiency']),
     sustainableMaterials: scoreSustainableMaterials(answers['sustainable-materials']),
     waterConservation: scoreWaterConservation(answers['water-conservation']),
-    wasteManagement: scoreWasteManagement(answers['waste-management'])
+    wasteManagement: scoreWasteManagement(answers['waste-management']),
   };
 
   let totalWeight = 0;
@@ -101,7 +107,7 @@ function calculateSectionScore(answers) {
       totalWeight += weight;
 
       if (componentScores[key]?.tags) {
-        componentScores[key].tags.forEach(tag => scores.tags.add(tag));
+        componentScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
     }
   }
@@ -124,21 +130,21 @@ function calculateSectionScore(answers) {
     sustainability: {
       score: componentScores.ecoPriority?.score || 50,
       commitment: componentScores.ecoPriority?.commitment || 'moderate',
-      description: getCommitmentDescription(componentScores.ecoPriority?.commitment)
+      description: getCommitmentDescription(componentScores.ecoPriority?.commitment),
     },
     energy: {
       score: componentScores.energyEfficiency?.score || 50,
       focus: componentScores.energyEfficiency?.focus || 'standard',
-      estimatedSavings: estimateEnergySavings(componentScores.energyEfficiency)
+      estimatedSavings: estimateEnergySavings(componentScores.energyEfficiency),
     },
     materials: calculateMaterialsScore(answers),
     waste: calculateWasteScore(answers),
     water: {
       score: componentScores.waterConservation?.score || 50,
       level: componentScores.waterConservation?.level || 'standard',
-      estimatedSavings: estimateWaterSavings(componentScores.waterConservation)
+      estimatedSavings: estimateWaterSavings(componentScores.waterConservation),
     },
-    lifecycle: calculateLifecycleScore(answers)
+    lifecycle: calculateLifecycleScore(answers),
   };
 
   scores.recommendations = generateRecommendations(answers, componentScores, scores);
@@ -194,7 +200,8 @@ function identifyEcoPersona(answers) {
       }
     }
 
-    personaScores[personaKey] = totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
+    personaScores[personaKey] =
+      totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
   }
 
   // Find best match
@@ -207,11 +214,13 @@ function identifyEcoPersona(answers) {
     }
   }
 
-  return bestPersona && bestScore >= 40 ? {
-    key: bestPersona,
-    matchScore: bestScore,
-    ...ECO_PERSONAS[bestPersona]
-  } : null;
+  return bestPersona && bestScore >= 40
+    ? {
+        key: bestPersona,
+        matchScore: bestScore,
+        ...ECO_PERSONAS[bestPersona],
+      }
+    : null;
 }
 
 /**
@@ -271,7 +280,8 @@ function estimateROI(answers, costImpact) {
   if (savingsPerYear === 0) return null;
 
   // Estimate additional cost for eco features
-  const additionalCost = costImpact === 'premium' ? 8000 : costImpact === 'moderate-increase' ? 3000 : 0;
+  const additionalCost =
+    costImpact === 'premium' ? 8000 : costImpact === 'moderate-increase' ? 3000 : 0;
 
   return additionalCost > 0 ? Math.round(additionalCost / savingsPerYear) : 0;
 }
@@ -310,22 +320,22 @@ function recommendCertifications(answers, ecoLevel) {
  */
 function getCommitmentDescription(commitment) {
   const descriptions = {
-    'dedicated': {
+    dedicated: {
       en: 'Sustainability is a core value in all design decisions',
-      fr: 'La durabilité est une valeur fondamentale dans toutes les décisions de conception'
+      fr: 'La durabilité est une valeur fondamentale dans toutes les décisions de conception',
     },
-    'committed': {
+    committed: {
       en: 'Strong preference for environmentally responsible choices',
-      fr: 'Forte préférence pour les choix respectueux de l\'environnement'
+      fr: "Forte préférence pour les choix respectueux de l'environnement",
     },
-    'moderate': {
+    moderate: {
       en: 'Open to eco-friendly options when practical',
-      fr: 'Ouvert aux options écologiques lorsque pratique'
+      fr: 'Ouvert aux options écologiques lorsque pratique',
     },
-    'minimal': {
+    minimal: {
       en: 'Focused on meeting basic efficiency standards',
-      fr: 'Concentré sur le respect des normes d\'efficacité de base'
-    }
+      fr: "Concentré sur le respect des normes d'efficacité de base",
+    },
   };
   return descriptions[commitment] || descriptions['moderate'];
 }
@@ -336,16 +346,20 @@ function getCommitmentDescription(commitment) {
 function estimateEnergySavings(energyScore) {
   if (!energyScore) return null;
 
-  const annualSavings = energyScore.focus === 'energy-star-only' ? 350 :
-                        energyScore.focus === 'energy-conscious' ? 180 : 50;
+  const annualSavings =
+    energyScore.focus === 'energy-star-only'
+      ? 350
+      : energyScore.focus === 'energy-conscious'
+        ? 180
+        : 50;
 
   return {
     annualDollars: annualSavings,
     lifetimeDollars: annualSavings * 15, // 15-year appliance life
     description: {
       en: `Estimated $${annualSavings}/year in energy savings`,
-      fr: `Économies d'énergie estimées à ${annualSavings}$/an`
-    }
+      fr: `Économies d'énergie estimées à ${annualSavings}$/an`,
+    },
   };
 }
 
@@ -355,19 +369,19 @@ function estimateEnergySavings(energyScore) {
 function estimateWaterSavings(waterScore) {
   if (!waterScore) return null;
 
-  const annualSavings = waterScore.level === 'high' ? 150 :
-                        waterScore.level === 'moderate' ? 75 : 20;
+  const annualSavings =
+    waterScore.level === 'high' ? 150 : waterScore.level === 'moderate' ? 75 : 20;
 
-  const gallonsSaved = waterScore.level === 'high' ? 12000 :
-                       waterScore.level === 'moderate' ? 6000 : 1500;
+  const gallonsSaved =
+    waterScore.level === 'high' ? 12000 : waterScore.level === 'moderate' ? 6000 : 1500;
 
   return {
     annualDollars: annualSavings,
     annualGallons: gallonsSaved,
     description: {
       en: `Save ~${gallonsSaved.toLocaleString()} gallons/year ($${annualSavings})`,
-      fr: `Économisez ~${gallonsSaved.toLocaleString()} gallons/an (${annualSavings}$)`
-    }
+      fr: `Économisez ~${gallonsSaved.toLocaleString()} gallons/an (${annualSavings}$)`,
+    },
   };
 }
 
@@ -394,13 +408,19 @@ function calculateLifecycleScore(answers) {
     score: Math.min(100, score),
     level: score >= 75 ? 'excellent' : score >= 55 ? 'good' : 'standard',
     description: {
-      en: score >= 75 ? 'Comprehensive lifecycle sustainability approach' :
-          score >= 55 ? 'Good consideration for long-term environmental impact' :
-          'Standard lifecycle considerations',
-      fr: score >= 75 ? 'Approche complète de durabilité du cycle de vie' :
-          score >= 55 ? 'Bonne considération pour l\'impact environnemental à long terme' :
-          'Considérations standard du cycle de vie'
-    }
+      en:
+        score >= 75
+          ? 'Comprehensive lifecycle sustainability approach'
+          : score >= 55
+            ? 'Good consideration for long-term environmental impact'
+            : 'Standard lifecycle considerations',
+      fr:
+        score >= 75
+          ? 'Approche complète de durabilité du cycle de vie'
+          : score >= 55
+            ? "Bonne considération pour l'impact environnemental à long terme"
+            : 'Considérations standard du cycle de vie',
+    },
   };
 }
 
@@ -409,14 +429,14 @@ function scoreEcoPriority(value) {
 
   const levels = {
     'top-priority': { commitment: 'dedicated', tags: ['eco-conscious', 'sustainability-focused'] },
-    'important': { commitment: 'committed', tags: ['eco-minded'] },
+    important: { commitment: 'committed', tags: ['eco-minded'] },
     'nice-to-have': { commitment: 'moderate', tags: [] },
-    'not-priority': { commitment: 'minimal', tags: [] }
+    'not-priority': { commitment: 'minimal', tags: [] },
   };
 
   return {
     score: ECO_PRIORITY_SCORES[value] || 50,
-    ...levels[value]
+    ...levels[value],
   };
 }
 
@@ -424,9 +444,13 @@ function scoreEnergyEfficiency(value) {
   if (!value) return null;
 
   const scores = {
-    'very-important': { score: 100, focus: 'energy-star-only', tags: ['energy-star', 'utility-savings'] },
-    'somewhat': { score: 60, focus: 'energy-conscious', tags: ['energy-aware'] },
-    'not-primary': { score: 30, focus: 'standard', tags: [] }
+    'very-important': {
+      score: 100,
+      focus: 'energy-star-only',
+      tags: ['energy-star', 'utility-savings'],
+    },
+    somewhat: { score: 60, focus: 'energy-conscious', tags: ['energy-aware'] },
+    'not-primary': { score: 30, focus: 'standard', tags: [] },
   };
 
   return scores[value] || { score: 50, focus: 'standard', tags: [] };
@@ -442,24 +466,24 @@ function scoreSustainableMaterials(values) {
   }
 
   const materialTags = {
-    'bamboo': ['bamboo-interest'],
+    bamboo: ['bamboo-interest'],
     'reclaimed-wood': ['reclaimed-materials'],
     'recycled-glass': ['recycled-materials'],
     'low-voc': ['low-voc', 'air-quality'],
-    'fsc-certified': ['certified-wood']
+    'fsc-certified': ['certified-wood'],
   };
 
   const tags = [];
-  values.forEach(v => {
+  values.forEach((v) => {
     if (materialTags[v]) {
       tags.push(...materialTags[v]);
     }
   });
 
   return {
-    score: Math.min(100, 30 + (values.length * 15)),
+    score: Math.min(100, 30 + values.length * 15),
     materials: values,
-    tags
+    tags,
   };
 }
 
@@ -468,8 +492,8 @@ function scoreWaterConservation(value) {
 
   const scores = {
     'very-interested': { score: 100, level: 'high', tags: ['water-saving', 'low-flow'] },
-    'somewhat': { score: 60, level: 'moderate', tags: [] },
-    'not-priority': { score: 25, level: 'standard', tags: [] }
+    somewhat: { score: 60, level: 'moderate', tags: [] },
+    'not-priority': { score: 25, level: 'standard', tags: [] },
   };
 
   return scores[value] || { score: 50, level: 'standard', tags: [] };
@@ -488,20 +512,20 @@ function scoreWasteManagement(values) {
     'recycling-bins': ['recycling'],
     'compost-bin': ['composting', 'zero-waste'],
     'garbage-disposal': ['disposal-system'],
-    'trash-compactor': ['space-efficient-waste']
+    'trash-compactor': ['space-efficient-waste'],
   };
 
   const tags = [];
-  values.forEach(v => {
+  values.forEach((v) => {
     if (featureTags[v]) {
       tags.push(...featureTags[v]);
     }
   });
 
   return {
-    score: Math.min(100, 30 + (values.length * 18)),
+    score: Math.min(100, 30 + values.length * 18),
     features: values,
-    tags
+    tags,
   };
 }
 
@@ -531,19 +555,19 @@ function calculateMaterialsScore(answers) {
   const hasSustainable = materials.length > 0 && !materials.includes('none-specific');
 
   return {
-    score: hasSustainable ? 60 + (materials.length * 10) : 30,
+    score: hasSustainable ? 60 + materials.length * 10 : 30,
     sustainable: hasSustainable,
-    count: materials.filter(m => m !== 'none-specific').length
+    count: materials.filter((m) => m !== 'none-specific').length,
   };
 }
 
 function calculateWasteScore(answers) {
   const waste = answers['waste-management'] || [];
-  const hasAdvanced = waste.some(w => ['recycling-bins', 'compost-bin'].includes(w));
+  const hasAdvanced = waste.some((w) => ['recycling-bins', 'compost-bin'].includes(w));
 
   return {
     score: hasAdvanced ? 70 : 40,
-    level: hasAdvanced ? 'eco-friendly' : 'basic'
+    level: hasAdvanced ? 'eco-friendly' : 'basic',
   };
 }
 
@@ -557,13 +581,16 @@ function generateRecommendations(answers, componentScores, scores) {
       type: 'profile',
       priority: 'info',
       title: {
-        en: `${scores.ecoPersona.key.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Profile`,
-        fr: `Profil ${scores.ecoPersona.key.split('-').join(' ')}`
+        en: `${scores.ecoPersona.key
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')} Profile`,
+        fr: `Profil ${scores.ecoPersona.key.split('-').join(' ')}`,
       },
       description: {
         en: scores.ecoPersona.description.en,
-        fr: scores.ecoPersona.description.fr
-      }
+        fr: scores.ecoPersona.description.fr,
+      },
     });
   }
 
@@ -576,8 +603,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Energy Star Certified Appliances', fr: 'Appareils certifiés Energy Star' },
       description: {
         en: `Choose Energy Star appliances to reduce energy use by 10-50%. Estimated savings: $${componentScores.energyEfficiency?.score >= 90 ? '350' : '200'}/year.`,
-        fr: `Choisissez des appareils Energy Star pour réduire la consommation d'énergie de 10-50%. Économies estimées: ${componentScores.energyEfficiency?.score >= 90 ? '350' : '200'}$/an.`
-      }
+        fr: `Choisissez des appareils Energy Star pour réduire la consommation d'énergie de 10-50%. Économies estimées: ${componentScores.energyEfficiency?.score >= 90 ? '350' : '200'}$/an.`,
+      },
     });
   } else if (answers['energy-efficiency'] === 'somewhat') {
     recommendations.push({
@@ -587,8 +614,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Consider Energy Star', fr: 'Envisagez Energy Star' },
       description: {
         en: 'Energy Star appliances pay for themselves through utility savings over 5-7 years.',
-        fr: 'Les appareils Energy Star s\'amortissent grâce aux économies d\'énergie sur 5-7 ans.'
-      }
+        fr: "Les appareils Energy Star s'amortissent grâce aux économies d'énergie sur 5-7 ans.",
+      },
     });
   }
 
@@ -601,8 +628,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'WaterSense Fixtures', fr: 'Robinetterie WaterSense' },
       description: {
         en: 'Install WaterSense certified faucets to save ~12,000 gallons/year. Consider touchless activation for additional savings.',
-        fr: 'Installez des robinets certifiés WaterSense pour économiser ~12,000 gallons/an. Envisagez l\'activation sans contact pour des économies supplémentaires.'
-      }
+        fr: "Installez des robinets certifiés WaterSense pour économiser ~12,000 gallons/an. Envisagez l'activation sans contact pour des économies supplémentaires.",
+      },
     });
 
     recommendations.push({
@@ -612,8 +639,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Water-Efficient Dishwasher', fr: 'Lave-vaisselle économe en eau' },
       description: {
         en: 'Modern efficient dishwashers use just 3-4 gallons per load vs. 27 gallons for hand washing.',
-        fr: 'Les lave-vaisselles modernes efficaces utilisent seulement 3-4 gallons par charge vs. 27 gallons pour le lavage à la main.'
-      }
+        fr: 'Les lave-vaisselles modernes efficaces utilisent seulement 3-4 gallons par charge vs. 27 gallons pour le lavage à la main.',
+      },
     });
   }
 
@@ -627,8 +654,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Sustainable Material Sourcing', fr: 'Approvisionnement en matériaux durables' },
       description: {
         en: 'Request supplier documentation for sustainability claims. Look for FSC, Greenguard, or Cradle-to-Cradle certifications.',
-        fr: 'Demandez la documentation des fournisseurs pour les allégations de durabilité. Recherchez les certifications FSC, Greenguard ou Cradle-to-Cradle.'
-      }
+        fr: 'Demandez la documentation des fournisseurs pour les allégations de durabilité. Recherchez les certifications FSC, Greenguard ou Cradle-to-Cradle.',
+      },
     });
   }
 
@@ -637,11 +664,11 @@ function generateRecommendations(answers, componentScores, scores) {
       id: 'air-quality-ventilation',
       type: 'ventilation',
       priority: 'essential',
-      title: { en: 'Ventilation for Air Quality', fr: 'Ventilation pour la qualité de l\'air' },
+      title: { en: 'Ventilation for Air Quality', fr: "Ventilation pour la qualité de l'air" },
       description: {
         en: 'Pair low-VOC materials with proper ventilation. Install a range hood that vents outside (300+ CFM recommended).',
-        fr: 'Associez des matériaux à faible COV avec une ventilation appropriée. Installez une hotte aspirante qui ventile vers l\'extérieur (300+ CFM recommandé).'
-      }
+        fr: "Associez des matériaux à faible COV avec une ventilation appropriée. Installez une hotte aspirante qui ventile vers l'extérieur (300+ CFM recommandé).",
+      },
     });
   }
 
@@ -655,8 +682,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Integrated Compost Solution', fr: 'Solution de compost intégrée' },
       description: {
         en: 'Install a pull-out compost drawer (2-5 gallon capacity) near the prep area. Include charcoal filters for odor control.',
-        fr: 'Installez un tiroir à compost coulissant (capacité 2-5 gallons) près de la zone de préparation. Incluez des filtres à charbon pour le contrôle des odeurs.'
-      }
+        fr: 'Installez un tiroir à compost coulissant (capacité 2-5 gallons) près de la zone de préparation. Incluez des filtres à charbon pour le contrôle des odeurs.',
+      },
     });
   }
 
@@ -668,8 +695,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Multi-Stream Recycling Station', fr: 'Station de recyclage multi-flux' },
       description: {
         en: 'Design a pull-out cabinet with 3-4 bins for waste sorting (trash, recycling, glass, compost).',
-        fr: 'Concevez une armoire coulissante avec 3-4 bacs pour le tri des déchets (ordures, recyclage, verre, compost).'
-      }
+        fr: 'Concevez une armoire coulissante avec 3-4 bacs pour le tri des déchets (ordures, recyclage, verre, compost).',
+      },
     });
   }
 
@@ -682,8 +709,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Positive Return on Investment', fr: 'Retour sur investissement positif' },
       description: {
         en: `Your eco-friendly choices will pay for themselves in approximately ${scores.roiYears} years through utility savings.`,
-        fr: `Vos choix écologiques s'amortiront en environ ${scores.roiYears} ans grâce aux économies d'énergie.`
-      }
+        fr: `Vos choix écologiques s'amortiront en environ ${scores.roiYears} ans grâce aux économies d'énergie.`,
+      },
     });
   }
 
@@ -696,8 +723,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Significant Carbon Reduction', fr: 'Réduction significative du carbone' },
       description: {
         en: `Your choices will reduce the kitchen's carbon footprint by approximately ${Math.round(scores.carbonFootprintReduction)}% compared to standard options.`,
-        fr: `Vos choix réduiront l'empreinte carbone de la cuisine d'environ ${Math.round(scores.carbonFootprintReduction)}% par rapport aux options standard.`
-      }
+        fr: `Vos choix réduiront l'empreinte carbone de la cuisine d'environ ${Math.round(scores.carbonFootprintReduction)}% par rapport aux options standard.`,
+      },
     });
   }
 
@@ -710,13 +737,16 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Green Building Certification', fr: 'Certification de construction écologique' },
       description: {
         en: `Your selections qualify for ${scores.certifications.join(', ')}. Consider pursuing LEED or similar certification for added home value.`,
-        fr: `Vos sélections se qualifient pour ${scores.certifications.join(', ')}. Envisagez de poursuivre la certification LEED ou similaire pour une valeur ajoutée à votre maison.`
-      }
+        fr: `Vos sélections se qualifient pour ${scores.certifications.join(', ')}. Envisagez de poursuivre la certification LEED ou similaire pour une valeur ajoutée à votre maison.`,
+      },
     });
   }
 
   // Induction cooking recommendation for eco-conscious users
-  if (scores.ecoLevel === 'highly-sustainable' && !recommendations.find(r => r.id === 'induction-cooking')) {
+  if (
+    scores.ecoLevel === 'highly-sustainable' &&
+    !recommendations.find((r) => r.id === 'induction-cooking')
+  ) {
     recommendations.push({
       id: 'induction-cooking',
       type: 'appliance',
@@ -724,8 +754,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Induction Cooking Technology', fr: 'Technologie de cuisson par induction' },
       description: {
         en: 'Induction cooktops are 85-90% efficient vs. 65-70% for gas. They also improve indoor air quality by eliminating combustion.',
-        fr: 'Les plaques à induction sont efficaces à 85-90% vs. 65-70% pour le gaz. Elles améliorent également la qualité de l\'air intérieur en éliminant la combustion.'
-      }
+        fr: "Les plaques à induction sont efficaces à 85-90% vs. 65-70% pour le gaz. Elles améliorent également la qualité de l'air intérieur en éliminant la combustion.",
+      },
     });
   }
 
@@ -738,8 +768,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'LED Lighting Throughout', fr: 'Éclairage LED partout' },
       description: {
         en: 'Use LED bulbs exclusively - they use 75% less energy and last 25x longer than incandescent bulbs.',
-        fr: 'Utilisez exclusivement des ampoules LED - elles consomment 75% moins d\'énergie et durent 25 fois plus longtemps que les ampoules à incandescence.'
-      }
+        fr: "Utilisez exclusivement des ampoules LED - elles consomment 75% moins d'énergie et durent 25 fois plus longtemps que les ampoules à incandescence.",
+      },
     });
   }
 
@@ -749,11 +779,14 @@ function generateRecommendations(answers, componentScores, scores) {
       id: 'durability-focus',
       type: 'approach',
       priority: 'info',
-      title: { en: 'Lifecycle Sustainability Approach', fr: 'Approche de durabilité du cycle de vie' },
+      title: {
+        en: 'Lifecycle Sustainability Approach',
+        fr: 'Approche de durabilité du cycle de vie',
+      },
       description: {
         en: 'Your focus on durable, sustainable materials reduces long-term environmental impact through fewer replacements.',
-        fr: 'Votre accent sur les matériaux durables et durables réduit l\'impact environnemental à long terme grâce à moins de remplacements.'
-      }
+        fr: "Votre accent sur les matériaux durables et durables réduit l'impact environnemental à long terme grâce à moins de remplacements.",
+      },
     });
   }
 
@@ -766,8 +799,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Phased Implementation', fr: 'Mise en œuvre progressive' },
       description: {
         en: 'Consider prioritizing the highest-impact eco features now (appliances, insulation) and upgrading other elements over time.',
-        fr: 'Envisagez de prioriser les fonctionnalités écologiques à plus fort impact maintenant (appareils, isolation) et de mettre à niveau d\'autres éléments au fil du temps.'
-      }
+        fr: "Envisagez de prioriser les fonctionnalités écologiques à plus fort impact maintenant (appareils, isolation) et de mettre à niveau d'autres éléments au fil du temps.",
+      },
     });
   }
 
@@ -793,5 +826,5 @@ module.exports = {
   generateRecommendations,
   SCORE_WEIGHTS,
   ECO_PRIORITY_SCORES,
-  ECO_PERSONAS
+  ECO_PERSONAS,
 };

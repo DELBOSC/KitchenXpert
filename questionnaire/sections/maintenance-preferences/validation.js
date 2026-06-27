@@ -7,10 +7,16 @@ const VALID_OPTIONS = {
   'cleaning-frequency': ['daily', 'weekly', 'monthly', 'rarely'],
   'material-care': ['no-special', 'some-ok', 'willing'],
   'durability-priority': ['durability-first', 'balanced', 'aesthetics-first'],
-  'stain-concern': ['very-concerned', 'somewhat', 'not-worried']
+  'stain-concern': ['very-concerned', 'somewhat', 'not-worried'],
 };
 
-const REQUIRED_QUESTIONS = ['maintenance-time', 'cleaning-frequency', 'material-care', 'durability-priority', 'stain-concern'];
+const REQUIRED_QUESTIONS = [
+  'maintenance-time',
+  'cleaning-frequency',
+  'material-care',
+  'durability-priority',
+  'stain-concern',
+];
 
 class MaintenanceValidationError extends Error {
   constructor(message, questionId, errorType) {
@@ -29,7 +35,7 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'unknown-question',
-      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` }
+      message: { en: `Unknown question: ${questionId}`, fr: `Question inconnue: ${questionId}` },
     });
     return { valid: false, errors, warnings };
   }
@@ -39,7 +45,7 @@ function validateAnswer(questionId, value, context) {
       errors.push({
         questionId,
         type: 'required',
-        message: { en: 'This question is required', fr: 'Cette question est obligatoire' }
+        message: { en: 'This question is required', fr: 'Cette question est obligatoire' },
       });
       return { valid: false, errors, warnings };
     }
@@ -53,7 +59,7 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'invalid-type',
-      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' }
+      message: { en: 'Must be a single selection', fr: 'Doit être une sélection unique' },
     });
     return { valid: false, errors, warnings };
   }
@@ -62,7 +68,7 @@ function validateAnswer(questionId, value, context) {
     errors.push({
       questionId,
       type: 'invalid-option',
-      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` }
+      message: { en: `Invalid option: ${value}`, fr: `Option invalide: ${value}` },
     });
   }
 
@@ -84,8 +90,8 @@ function validateWithContext(questionId, value, context) {
         type: 'preference-mismatch',
         message: {
           en: 'You want minimal maintenance time but are willing to do special material care.',
-          fr: 'Vous voulez un temps d\'entretien minimal mais êtes prêt à faire des soins spéciaux.'
-        }
+          fr: "Vous voulez un temps d'entretien minimal mais êtes prêt à faire des soins spéciaux.",
+        },
       });
     }
   }
@@ -97,8 +103,8 @@ function validateWithContext(questionId, value, context) {
         type: 'preference-note',
         message: {
           en: 'Not worried about stains is noted, though durability is your priority.',
-          fr: 'Pas inquiet des taches est noté, bien que la durabilité soit votre priorité.'
-        }
+          fr: 'Pas inquiet des taches est noté, bien que la durabilité soit votre priorité.',
+        },
       });
     }
   }
@@ -126,9 +132,9 @@ function validateSection(answers) {
 
   return {
     valid: allErrors.length === 0,
-    complete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined && answers[q] !== null),
+    complete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined && answers[q] !== null),
     errors: allErrors,
-    warnings: allWarnings
+    warnings: allWarnings,
   };
 }
 
@@ -137,12 +143,14 @@ function getValidationSummary(answers) {
 
   return {
     ...result,
-    answeredCount: Object.keys(answers).filter(k => VALID_OPTIONS[k]).length,
+    answeredCount: Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length,
     totalQuestions: Object.keys(VALID_OPTIONS).length,
-    requiredComplete: REQUIRED_QUESTIONS.every(q => answers[q] !== undefined),
+    requiredComplete: REQUIRED_QUESTIONS.every((q) => answers[q] !== undefined),
     percentComplete: Math.round(
-      (Object.keys(answers).filter(k => VALID_OPTIONS[k]).length / Object.keys(VALID_OPTIONS).length) * 100
-    )
+      (Object.keys(answers).filter((k) => VALID_OPTIONS[k]).length /
+        Object.keys(VALID_OPTIONS).length) *
+        100
+    ),
   };
 }
 
@@ -153,5 +161,5 @@ module.exports = {
   getValidationSummary,
   MaintenanceValidationError,
   VALID_OPTIONS,
-  REQUIRED_QUESTIONS
+  REQUIRED_QUESTIONS,
 };

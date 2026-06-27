@@ -42,7 +42,9 @@ export class ProductController {
       {
         page: Number(page),
         limit: Number(limit),
-        sortBy: ['createdAt', 'name', 'price', 'brand', 'updatedAt'].includes(sortBy as string) ? (sortBy as string) : 'createdAt',
+        sortBy: ['createdAt', 'name', 'price', 'brand', 'updatedAt'].includes(sortBy as string)
+          ? (sortBy as string)
+          : 'createdAt',
         sortOrder: sortOrder as 'asc' | 'desc',
       }
     );

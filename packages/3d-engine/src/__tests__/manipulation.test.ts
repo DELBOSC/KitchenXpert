@@ -4,7 +4,11 @@
  */
 
 import * as THREE from 'three';
-import { ObjectManipulator, ManipulationMode, ManipulationEvent } from '../interaction/manipulation';
+import {
+  ObjectManipulator,
+  ManipulationMode,
+  ManipulationEvent,
+} from '../interaction/manipulation';
 import { CollisionSystem } from '../physics/collision';
 
 // Mock Three.js

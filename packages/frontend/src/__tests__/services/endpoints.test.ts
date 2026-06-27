@@ -73,7 +73,9 @@ describe('API Endpoints', () => {
 
     it('should generate project collaborators endpoint', () => {
       const projectId = 'project-123';
-      expect(API_ENDPOINTS.PROJECTS.COLLABORATORS(projectId)).toBe('/projects/project-123/collaborators');
+      expect(API_ENDPOINTS.PROJECTS.COLLABORATORS(projectId)).toBe(
+        '/projects/project-123/collaborators'
+      );
     });
 
     it('should generate project duplicate endpoint', () => {
@@ -137,7 +139,9 @@ describe('API Endpoints', () => {
 
     it('should generate provider by ID endpoint', () => {
       const providerId = 'provider-123';
-      expect(API_ENDPOINTS.CATALOG.PROVIDER_BY_ID(providerId)).toBe('/catalog/providers/provider-123');
+      expect(API_ENDPOINTS.CATALOG.PROVIDER_BY_ID(providerId)).toBe(
+        '/catalog/providers/provider-123'
+      );
     });
 
     it('should have products and categories endpoints', () => {
@@ -170,7 +174,9 @@ describe('API Endpoints', () => {
 
     it('should generate product compatibility endpoint', () => {
       const productId = 'product-123';
-      expect(API_ENDPOINTS.PRODUCTS.COMPATIBILITY(productId)).toBe('/products/product-123/compatibility');
+      expect(API_ENDPOINTS.PRODUCTS.COMPATIBILITY(productId)).toBe(
+        '/products/product-123/compatibility'
+      );
     });
   });
 
@@ -190,7 +196,9 @@ describe('API Endpoints', () => {
   describe('AI_GENERATOR Endpoints', () => {
     it('should generate preferences endpoint', () => {
       const projectId = 'project-123';
-      expect(API_ENDPOINTS.AI_GENERATOR.PREFERENCES(projectId)).toBe('/ai-generator/preferences/project-123');
+      expect(API_ENDPOINTS.AI_GENERATOR.PREFERENCES(projectId)).toBe(
+        '/ai-generator/preferences/project-123'
+      );
     });
 
     it('should have AI action endpoints', () => {
@@ -205,7 +213,9 @@ describe('API Endpoints', () => {
       expect(API_ENDPOINTS.KITCHEN_GENERATOR.GENERATE).toBe('/kitchen-generator/generate');
       expect(API_ENDPOINTS.KITCHEN_GENERATOR.VALIDATE).toBe('/kitchen-generator/validate');
       expect(API_ENDPOINTS.KITCHEN_GENERATOR.OPTIMIZE).toBe('/kitchen-generator/optimize');
-      expect(API_ENDPOINTS.KITCHEN_GENERATOR.COMPATIBILITY).toBe('/kitchen-generator/compatibility');
+      expect(API_ENDPOINTS.KITCHEN_GENERATOR.COMPATIBILITY).toBe(
+        '/kitchen-generator/compatibility'
+      );
     });
   });
 
@@ -221,8 +231,12 @@ describe('API Endpoints', () => {
     it('should generate admin user endpoints', () => {
       const userId = 'user-123';
       expect(API_ENDPOINTS.ADMIN.USER_BY_ID(userId)).toBe('/admin/users/user-123');
-      expect(API_ENDPOINTS.ADMIN.USER_ACTION(userId, 'suspend')).toBe('/admin/users/user-123/suspend');
-      expect(API_ENDPOINTS.ADMIN.USER_ACTION(userId, 'activate')).toBe('/admin/users/user-123/activate');
+      expect(API_ENDPOINTS.ADMIN.USER_ACTION(userId, 'suspend')).toBe(
+        '/admin/users/user-123/suspend'
+      );
+      expect(API_ENDPOINTS.ADMIN.USER_ACTION(userId, 'activate')).toBe(
+        '/admin/users/user-123/activate'
+      );
     });
 
     it('should have system endpoints', () => {

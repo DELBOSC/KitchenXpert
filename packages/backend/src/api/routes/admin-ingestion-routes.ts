@@ -52,7 +52,7 @@ router.post('/run', validateBody(runSchema), async (req, res, next) => {
       new ProductRepository(prisma),
       strategy,
       logger,
-      new PrismaCategoryResolver(prisma),
+      new PrismaCategoryResolver(prisma)
     );
     const result = await service.ingestByCategory(query);
     res.json({ success: true, data: result });

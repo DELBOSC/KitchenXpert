@@ -198,15 +198,35 @@ export class PermissionModel implements Permission {
       case 'nin':
         return Array.isArray(condition.value) && !condition.value.includes(value);
       case 'gt':
-        return typeof value === 'number' && typeof condition.value === 'number' && value > condition.value;
+        return (
+          typeof value === 'number' &&
+          typeof condition.value === 'number' &&
+          value > condition.value
+        );
       case 'gte':
-        return typeof value === 'number' && typeof condition.value === 'number' && value >= condition.value;
+        return (
+          typeof value === 'number' &&
+          typeof condition.value === 'number' &&
+          value >= condition.value
+        );
       case 'lt':
-        return typeof value === 'number' && typeof condition.value === 'number' && value < condition.value;
+        return (
+          typeof value === 'number' &&
+          typeof condition.value === 'number' &&
+          value < condition.value
+        );
       case 'lte':
-        return typeof value === 'number' && typeof condition.value === 'number' && value <= condition.value;
+        return (
+          typeof value === 'number' &&
+          typeof condition.value === 'number' &&
+          value <= condition.value
+        );
       case 'contains':
-        return typeof value === 'string' && typeof condition.value === 'string' && value.includes(condition.value);
+        return (
+          typeof value === 'string' &&
+          typeof condition.value === 'string' &&
+          value.includes(condition.value)
+        );
       default:
         return false;
     }

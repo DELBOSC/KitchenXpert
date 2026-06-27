@@ -28,7 +28,13 @@ export interface Catalog {
   lastSyncAt?: string;
 }
 
-export interface CatalogFilters { category?: string; providerId?: string; minPrice?: number; maxPrice?: number; search?: string; }
+export interface CatalogFilters {
+  category?: string;
+  providerId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  search?: string;
+}
 
 export interface CatalogState {
   catalogs: Catalog[];
@@ -44,96 +50,172 @@ export interface CatalogState {
 }
 
 const initialState: CatalogState = {
-  catalogs: [], products: [], providers: [], currentCatalog: null, currentProduct: null, categories: [],
-  isLoading: false, error: null, filters: {}, pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
+  catalogs: [],
+  products: [],
+  providers: [],
+  currentCatalog: null,
+  currentProduct: null,
+  categories: [],
+  isLoading: false,
+  error: null,
+  filters: {},
+  pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
 };
 
 const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
-export const fetchCatalogs = createAsyncThunk<Catalog[]>('catalog/fetchCatalogs', async (_, { rejectWithValue }) => {
-  try {
-    const response = await fetch(`${API_URL}/catalog`, { credentials: 'include' });
-    const data = (await response.json()) as { data: Catalog[]; error?: string };
-    if (!response.ok) {throw new Error(data.error);}
-    return data.data;
-  } catch (error) {
+export const fetchCatalogs = createAsyncThunk<Catalog[]>(
+  'catalog/fetchCatalogs',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/catalog`, { credentials: 'include' });
+      const data = (await response.json()) as { data: Catalog[]; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return data.data;
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
 export const fetchProducts = createAsyncThunk<
   { data: CatalogItem[]; total: number; page: number; totalPages: number },
   { catalogId?: string; page?: number; limit?: number; filters?: CatalogFilters }
->('catalog/fetchProducts', async ({ catalogId, page = 1, limit = 20, filters = {} }, { rejectWithValue }) => {
-  try {
-    const queryParams: Record<string, string> = { page: String(page), limit: String(limit) };
-    if (filters.category) {queryParams.category = filters.category;}
-    if (filters.providerId) {queryParams.providerId = filters.providerId;}
-    if (filters.minPrice !== undefined) {queryParams.minPrice = String(filters.minPrice);}
-    if (filters.maxPrice !== undefined) {queryParams.maxPrice = String(filters.maxPrice);}
-    if (filters.search) {queryParams.search = filters.search;}
-    const params = new URLSearchParams(queryParams);
-    const url = catalogId ? `${API_URL}/catalog/${catalogId}/products?${params.toString()}` : `${API_URL}/products?${params.toString()}`;
-    const response = await fetch(url, { credentials: 'include' });
-    const data = (await response.json()) as {
-      data: CatalogItem[];
-      meta: { total: number; page: number; totalPages: number };
-      error?: string;
-    };
-    if (!response.ok) {throw new Error(data.error);}
-    return { data: data.data, ...data.meta };
-  } catch (error) {
+>(
+  'catalog/fetchProducts',
+  async ({ catalogId, page = 1, limit = 20, filters = {} }, { rejectWithValue }) => {
+    try {
+      const queryParams: Record<string, string> = { page: String(page), limit: String(limit) };
+      if (filters.category) {
+        queryParams.category = filters.category;
+      }
+      if (filters.providerId) {
+        queryParams.providerId = filters.providerId;
+      }
+      if (filters.minPrice !== undefined) {
+        queryParams.minPrice = String(filters.minPrice);
+      }
+      if (filters.maxPrice !== undefined) {
+        queryParams.maxPrice = String(filters.maxPrice);
+      }
+      if (filters.search) {
+        queryParams.search = filters.search;
+      }
+      const params = new URLSearchParams(queryParams);
+      const url = catalogId
+        ? `${API_URL}/catalog/${catalogId}/products?${params.toString()}`
+        : `${API_URL}/products?${params.toString()}`;
+      const response = await fetch(url, { credentials: 'include' });
+      const data = (await response.json()) as {
+        data: CatalogItem[];
+        meta: { total: number; page: number; totalPages: number };
+        error?: string;
+      };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return { data: data.data, ...data.meta };
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
-export const searchProducts = createAsyncThunk<CatalogItem[], string>('catalog/searchProducts', async (query, { rejectWithValue }) => {
-  try {
-    const response = await fetch(`${API_URL}/catalog/search?q=${encodeURIComponent(query)}`, { credentials: 'include' });
-    const data = (await response.json()) as { data: CatalogItem[]; error?: string };
-    if (!response.ok) {throw new Error(data.error);}
-    return data.data;
-  } catch (error) {
+export const searchProducts = createAsyncThunk<CatalogItem[], string>(
+  'catalog/searchProducts',
+  async (query, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/catalog/search?q=${encodeURIComponent(query)}`, {
+        credentials: 'include',
+      });
+      const data = (await response.json()) as { data: CatalogItem[]; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return data.data;
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
-export const fetchCategories = createAsyncThunk<string[]>('catalog/fetchCategories', async (_, { rejectWithValue }) => {
-  try {
-    const response = await fetch(`${API_URL}/products/categories`, { credentials: 'include' });
-    const data = (await response.json()) as { data: string[]; error?: string };
-    if (!response.ok) {throw new Error(data.error);}
-    return data.data;
-  } catch (error) {
+export const fetchCategories = createAsyncThunk<string[]>(
+  'catalog/fetchCategories',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/products/categories`, { credentials: 'include' });
+      const data = (await response.json()) as { data: string[]; error?: string };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      return data.data;
+    } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return rejectWithValue(message);
     }
-});
+  }
+);
 
 const catalogSlice = createSlice({
   name: 'catalog',
   initialState,
   reducers: {
-    setFilters: (state, action: PayloadAction<CatalogFilters>) => { state.filters = action.payload; },
-    clearFilters: (state) => { state.filters = {}; },
-    setCurrentProduct: (state, action: PayloadAction<CatalogItem | null>) => { state.currentProduct = action.payload; },
-    clearError: (state) => { state.error = null; },
+    setFilters: (state, action: PayloadAction<CatalogFilters>) => {
+      state.filters = action.payload;
+    },
+    clearFilters: (state) => {
+      state.filters = {};
+    },
+    setCurrentProduct: (state, action: PayloadAction<CatalogItem | null>) => {
+      state.currentProduct = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCatalogs.pending, (state) => { state.isLoading = true; state.error = null; })
-      .addCase(fetchCatalogs.fulfilled, (state, action) => { state.isLoading = false; state.catalogs = action.payload; })
-      .addCase(fetchCatalogs.rejected, (state, action) => { state.isLoading = false; state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred'; })
-      .addCase(fetchProducts.pending, (state) => { state.isLoading = true; })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.isLoading = false; state.products = action.payload.data;
-        state.pagination = { page: action.payload.page, limit: state.pagination.limit, total: action.payload.total, totalPages: action.payload.totalPages };
+      .addCase(fetchCatalogs.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
-      .addCase(fetchProducts.rejected, (state, action) => { state.isLoading = false; state.error = (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred'; })
-      .addCase(searchProducts.fulfilled, (state, action) => { state.products = action.payload; })
-      .addCase(fetchCategories.fulfilled, (state, action) => { state.categories = action.payload; });
+      .addCase(fetchCatalogs.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.catalogs = action.payload;
+      })
+      .addCase(fetchCatalogs.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+      })
+      .addCase(fetchProducts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.products = action.payload.data;
+        state.pagination = {
+          page: action.payload.page,
+          limit: state.pagination.limit,
+          total: action.payload.total,
+          totalPages: action.payload.totalPages,
+        };
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          (action.payload as string) ?? action.error?.message ?? 'An unknown error occurred';
+      })
+      .addCase(searchProducts.fulfilled, (state, action) => {
+        state.products = action.payload;
+      })
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
+      });
   },
 });
 

@@ -72,7 +72,7 @@ type StepId = 1 | 2 | 3 | 4;
 
 function conditionLabel(
   condition: string,
-  t: (key: string, fallback: string) => string,
+  t: (key: string, fallback: string) => string
 ): { label: string; color: string } {
   switch (condition) {
     case 'good':
@@ -105,7 +105,7 @@ function conditionLabel(
 
 function overallConditionLabel(
   condition: string,
-  t: (key: string, fallback: string) => string,
+  t: (key: string, fallback: string) => string
 ): string {
   switch (condition) {
     case 'full_renovation':
@@ -154,7 +154,9 @@ export default function RenovationPage(): React.ReactElement {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (preview) {URL.revokeObjectURL(preview);}
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
       controllerRef.current?.abort();
     };
   }, [preview]);
@@ -170,7 +172,9 @@ export default function RenovationPage(): React.ReactElement {
 
   const handleFileChange = useCallback(
     (selectedFile: File | null) => {
-      if (!selectedFile) {return;}
+      if (!selectedFile) {
+        return;
+      }
 
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(selectedFile.type)) {
         setError(t('renovation.invalidFileType', 'Please upload a JPEG, PNG, or WebP image.'));
@@ -185,10 +189,12 @@ export default function RenovationPage(): React.ReactElement {
       setFile(selectedFile);
       setError(null);
 
-      if (preview) {URL.revokeObjectURL(preview);}
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
       setPreview(URL.createObjectURL(selectedFile));
     },
-    [preview, t],
+    [preview, t]
   );
 
   const handleDrop = useCallback(
@@ -196,13 +202,15 @@ export default function RenovationPage(): React.ReactElement {
       e.preventDefault();
       handleFileChange(e.dataTransfer.files[0] || null);
     },
-    [handleFileChange],
+    [handleFileChange]
   );
 
   // ── Step 1 -> 2: Analyze photo ──
 
   const handleAnalyze = useCallback(async () => {
-    if (!file) {return;}
+    if (!file) {
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -254,9 +262,9 @@ export default function RenovationPage(): React.ReactElement {
       });
 
       if (!analyzeRes.ok) {
-        const errData = (await analyzeRes
-          .json()
-          .catch(() => null)) as { error?: { message?: string } } | null;
+        const errData = (await analyzeRes.json().catch(() => null)) as {
+          error?: { message?: string };
+        } | null;
         throw new Error(errData?.error?.message || `HTTP ${analyzeRes.status}`);
       }
 
@@ -277,7 +285,7 @@ export default function RenovationPage(): React.ReactElement {
       setError(
         err instanceof Error
           ? err.message
-          : t('renovation.analyzeError', 'An error occurred during analysis.'),
+          : t('renovation.analyzeError', 'An error occurred during analysis.')
       );
     } finally {
       setIsLoading(false);
@@ -307,9 +315,9 @@ export default function RenovationPage(): React.ReactElement {
       // If comparison fails because no design linked yet, we need a PATCH endpoint
       // Use the create approach: store in state and proceed
       if (!compareRes.ok) {
-        const errData = (await compareRes
-          .json()
-          .catch(() => null)) as { error?: { message?: string } } | null;
+        const errData = (await compareRes.json().catch(() => null)) as {
+          error?: { message?: string };
+        } | null;
         // If the error is about missing design, that's expected on first call
         throw new Error(errData?.error?.message || `HTTP ${compareRes.status}`);
       }
@@ -322,9 +330,7 @@ export default function RenovationPage(): React.ReactElement {
         return;
       }
       setError(
-        err instanceof Error
-          ? err.message
-          : t('renovation.linkError', 'Failed to link design.'),
+        err instanceof Error ? err.message : t('renovation.linkError', 'Failed to link design.')
       );
     } finally {
       setIsLoading(false);
@@ -349,7 +355,7 @@ export default function RenovationPage(): React.ReactElement {
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {t(
               'renovation.subtitle',
-              'Analyze your existing kitchen and compare with a new design.',
+              'Analyze your existing kitchen and compare with a new design.'
             )}
           </p>
         </div>
@@ -368,8 +374,18 @@ export default function RenovationPage(): React.ReactElement {
                     }`}
                   >
                     {currentStep > step.id ? (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     ) : (
                       step.id
@@ -388,9 +404,7 @@ export default function RenovationPage(): React.ReactElement {
                 {index < steps.length - 1 && (
                   <div
                     className={`flex-1 h-0.5 mx-3 ${
-                      currentStep > step.id
-                        ? 'bg-blue-600'
-                        : 'bg-gray-200 dark:bg-gray-700'
+                      currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
                     }`}
                   />
                 )}
@@ -404,7 +418,11 @@ export default function RenovationPage(): React.ReactElement {
           <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-4 py-3">
             <div className="flex items-center gap-2">
               <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
               <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
             </div>
@@ -423,7 +441,7 @@ export default function RenovationPage(): React.ReactElement {
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                   {t(
                     'renovation.uploadDesc',
-                    'Take a photo showing as much of your kitchen as possible. The AI will identify cabinets, appliances, materials, and conditions.',
+                    'Take a photo showing as much of your kitchen as possible. The AI will identify cabinets, appliances, materials, and conditions.'
                   )}
                 </p>
               </div>
@@ -537,8 +555,8 @@ export default function RenovationPage(): React.ReactElement {
                     analysis.confidence >= 0.8
                       ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
                       : analysis.confidence >= 0.6
-                      ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-                      : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                        ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                        : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
                   }`}
                 >
                   {Math.round(analysis.confidence * 100)}%{' '}
@@ -581,7 +599,9 @@ export default function RenovationPage(): React.ReactElement {
                               {cab.style} - x{cab.estimatedCount}
                             </p>
                           </div>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${cond.color}`}>
+                          <span
+                            className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${cond.color}`}
+                          >
                             {cond.label}
                           </span>
                         </div>
@@ -615,7 +635,9 @@ export default function RenovationPage(): React.ReactElement {
                                 : t('renovation.freestanding', 'Freestanding')}
                             </p>
                           </div>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${cond.color}`}>
+                          <span
+                            className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${cond.color}`}
+                          >
                             {cond.label}
                           </span>
                         </div>
@@ -792,7 +814,7 @@ export default function RenovationPage(): React.ReactElement {
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                   {t(
                     'renovation.linkDesignDesc',
-                    'Enter the ID of your new kitchen design, or create a new one first.',
+                    'Enter the ID of your new kitchen design, or create a new one first.'
                   )}
                 </p>
               </div>
@@ -809,7 +831,10 @@ export default function RenovationPage(): React.ReactElement {
                   type="text"
                   value={designId}
                   onChange={(e) => setDesignId(e.target.value)}
-                  placeholder={t('renovation.designIdPlaceholder', 'e.g. xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}
+                  placeholder={t(
+                    'renovation.designIdPlaceholder',
+                    'e.g. xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                  )}
                   className="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 />
               </div>
@@ -856,9 +881,7 @@ export default function RenovationPage(): React.ReactElement {
 
               {/* Summary */}
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-4 py-3">
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  {comparison.summary}
-                </p>
+                <p className="text-sm text-blue-800 dark:text-blue-200">{comparison.summary}</p>
               </div>
 
               {/* Metrics Grid */}

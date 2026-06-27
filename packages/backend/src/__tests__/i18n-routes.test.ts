@@ -151,16 +151,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -186,14 +188,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -251,9 +249,7 @@ describe('I18n Routes', () => {
     it('should return all locales without authentication', async () => {
       mockLocaleRepository.findAllLocales.mockResolvedValue([mockLocale, mockLocaleFr]);
 
-      const response = await request(app)
-        .get('/i18n/locales')
-        .expect(200);
+      const response = await request(app).get('/i18n/locales').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
@@ -262,9 +258,7 @@ describe('I18n Routes', () => {
     it('should filter by isActive query parameter', async () => {
       mockLocaleRepository.findAllLocales.mockResolvedValue([mockLocale]);
 
-      const response = await request(app)
-        .get('/i18n/locales?isActive=true')
-        .expect(200);
+      const response = await request(app).get('/i18n/locales?isActive=true').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockLocaleRepository.findAllLocales).toHaveBeenCalledWith(true);
@@ -275,9 +269,7 @@ describe('I18n Routes', () => {
     it('should return the default locale', async () => {
       mockLocaleRepository.getDefaultLocale.mockResolvedValue(mockLocale);
 
-      const response = await request(app)
-        .get('/i18n/locales/default')
-        .expect(200);
+      const response = await request(app).get('/i18n/locales/default').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.code).toBe('en');
@@ -286,9 +278,7 @@ describe('I18n Routes', () => {
     it('should return 404 when no default locale is configured', async () => {
       mockLocaleRepository.getDefaultLocale.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/i18n/locales/default')
-        .expect(404);
+      const response = await request(app).get('/i18n/locales/default').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -298,9 +288,7 @@ describe('I18n Routes', () => {
     it('should return locale by code', async () => {
       mockLocaleRepository.findLocaleByCode.mockResolvedValue(mockLocale);
 
-      const response = await request(app)
-        .get('/i18n/locales/code/en')
-        .expect(200);
+      const response = await request(app).get('/i18n/locales/code/en').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.code).toBe('en');
@@ -309,9 +297,7 @@ describe('I18n Routes', () => {
     it('should return 404 for unknown locale code', async () => {
       mockLocaleRepository.findLocaleByCode.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/i18n/locales/code/zz')
-        .expect(404);
+      const response = await request(app).get('/i18n/locales/code/zz').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -319,11 +305,11 @@ describe('I18n Routes', () => {
 
   describe('GET /i18n/translations/:localeCode (public)', () => {
     it('should return all translations for a locale', async () => {
-      mockLocaleRepository.getAllTranslationsForLocale.mockResolvedValue({ common: { greeting: 'Hello' } });
+      mockLocaleRepository.getAllTranslationsForLocale.mockResolvedValue({
+        common: { greeting: 'Hello' },
+      });
 
-      const response = await request(app)
-        .get('/i18n/translations/en')
-        .expect(200);
+      const response = await request(app).get('/i18n/translations/en').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual({ common: { greeting: 'Hello' } });
@@ -334,9 +320,7 @@ describe('I18n Routes', () => {
     it('should return namespace translations for a locale', async () => {
       mockLocaleRepository.getNamespaceTranslations.mockResolvedValue({ greeting: 'Hello' });
 
-      const response = await request(app)
-        .get('/i18n/translations/en/common')
-        .expect(200);
+      const response = await request(app).get('/i18n/translations/en/common').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual({ greeting: 'Hello' });
@@ -347,9 +331,7 @@ describe('I18n Routes', () => {
     it('should return all namespaces', async () => {
       mockLocaleRepository.getNamespaces.mockResolvedValue(['common', 'auth', 'errors']);
 
-      const response = await request(app)
-        .get('/i18n/namespaces')
-        .expect(200);
+      const response = await request(app).get('/i18n/namespaces').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual(['common', 'auth', 'errors']);
@@ -380,17 +362,13 @@ describe('I18n Routes', () => {
     });
 
     it('should return 401 for unauthenticated request to GET /i18n/stats', async () => {
-      const response = await request(app)
-        .get('/i18n/stats')
-        .expect(401);
+      const response = await request(app).get('/i18n/stats').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to DELETE /i18n/locales/:id', async () => {
-      const response = await request(app)
-        .delete('/i18n/locales/locale-1')
-        .expect(401);
+      const response = await request(app).delete('/i18n/locales/locale-1').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -403,9 +381,7 @@ describe('I18n Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockLocaleRepository.findLocaleById.mockResolvedValue(mockLocale);
 
-      const response = await authedRequest(app)
-        .get('/i18n/locales/locale-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/i18n/locales/locale-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('locale-1');
@@ -415,9 +391,7 @@ describe('I18n Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockLocaleRepository.findLocaleById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/i18n/locales/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/i18n/locales/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -485,9 +459,7 @@ describe('I18n Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockLocaleRepository.deleteLocale.mockResolvedValue(undefined);
 
-      const response = await authedRequest(app)
-        .delete('/i18n/locales/locale-2')
-        .expect(200);
+      const response = await authedRequest(app).delete('/i18n/locales/locale-2').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');
@@ -495,11 +467,11 @@ describe('I18n Routes', () => {
 
     it('should return 400 when trying to delete the default locale', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
-      mockLocaleRepository.deleteLocale.mockRejectedValue(new Error('Cannot delete default locale'));
+      mockLocaleRepository.deleteLocale.mockRejectedValue(
+        new Error('Cannot delete default locale')
+      );
 
-      const response = await authedRequest(app)
-        .delete('/i18n/locales/locale-1')
-        .expect(400);
+      const response = await authedRequest(app).delete('/i18n/locales/locale-1').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Cannot delete default locale');
@@ -575,7 +547,10 @@ describe('I18n Routes', () => {
   describe('PUT /i18n/translations (admin)', () => {
     it('should upsert a translation', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
-      mockLocaleRepository.upsertTranslation.mockResolvedValue({ ...mockTranslation, value: 'Hi there' });
+      mockLocaleRepository.upsertTranslation.mockResolvedValue({
+        ...mockTranslation,
+        value: 'Hi there',
+      });
 
       const response = await authedRequest(app)
         .put('/i18n/translations')
@@ -601,8 +576,18 @@ describe('I18n Routes', () => {
         .post('/i18n/translations/bulk')
         .send({
           translations: [
-            { localeId: '550e8400-e29b-41d4-a716-446655440000', namespace: 'common', key: 'yes', value: 'Yes' },
-            { localeId: '550e8400-e29b-41d4-a716-446655440000', namespace: 'common', key: 'no', value: 'No' },
+            {
+              localeId: '550e8400-e29b-41d4-a716-446655440000',
+              namespace: 'common',
+              key: 'yes',
+              value: 'Yes',
+            },
+            {
+              localeId: '550e8400-e29b-41d4-a716-446655440000',
+              namespace: 'common',
+              key: 'no',
+              value: 'No',
+            },
           ],
         })
         .expect(201);
@@ -635,9 +620,7 @@ describe('I18n Routes', () => {
       mockLocaleRepository.getNamespaces.mockResolvedValue(['common', 'auth']);
       mockLocaleRepository.findAllLocales.mockResolvedValue([mockLocale, mockLocaleFr]);
 
-      const response = await authedRequest(app)
-        .get('/i18n/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/i18n/stats').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.totalTranslations).toBe(100);
@@ -653,9 +636,7 @@ describe('I18n Routes', () => {
         { namespace: 'common', key: 'farewell' },
       ]);
 
-      const response = await authedRequest(app)
-        .get('/i18n/missing/locale-1/locale-2')
-        .expect(200);
+      const response = await authedRequest(app).get('/i18n/missing/locale-1/locale-2').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -698,9 +679,7 @@ describe('I18n Routes', () => {
         common: { greeting: 'Hello' },
       });
 
-      const response = await authedRequest(app)
-        .get('/i18n/export/en')
-        .expect(200);
+      const response = await authedRequest(app).get('/i18n/export/en').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual({ common: { greeting: 'Hello' } });

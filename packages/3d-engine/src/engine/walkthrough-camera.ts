@@ -153,9 +153,7 @@ export class WalkthroughCamera {
     }
 
     // Transform direction from camera-local to world space (only yaw, no pitch)
-    const yawRotation = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(0, this.euler.y, 0)
-    );
+    const yawRotation = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, this.euler.y, 0));
     moveDirection.applyQuaternion(yawRotation);
 
     // Apply speed
@@ -235,10 +233,7 @@ export class WalkthroughCamera {
    * Resolves collision between current position and desired new position.
    * If a collision is detected, slides along the wall normal.
    */
-  private resolveCollision(
-    currentPos: THREE.Vector3,
-    desiredPos: THREE.Vector3
-  ): THREE.Vector3 {
+  private resolveCollision(currentPos: THREE.Vector3, desiredPos: THREE.Vector3): THREE.Vector3 {
     if (this.walls.length === 0) {
       return desiredPos;
     }

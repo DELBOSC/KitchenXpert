@@ -28,14 +28,16 @@ const profileSchema = z.object({
   address: z.string().min(5, 'Address is required'),
 });
 
-const passwordSchema = z.object({
-  currentPassword: z.string().min(6, 'Current password is required'),
-  newPassword: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
+const passwordSchema = z
+  .object({
+    currentPassword: z.string().min(6, 'Current password is required'),
+    newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 type PasswordFormData = z.infer<typeof passwordSchema>;
@@ -145,14 +147,10 @@ export function Settings() {
 
       {/* Success/Error Messages */}
       {successMessage && (
-        <div className="rounded-lg bg-green-50 p-4 text-sm text-green-600">
-          {successMessage}
-        </div>
+        <div className="rounded-lg bg-green-50 p-4 text-sm text-green-600">{successMessage}</div>
       )}
       {errorMessage && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">
-          {errorMessage}
-        </div>
+        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">{errorMessage}</div>
       )}
 
       <div className="flex flex-col gap-6 lg:flex-row">
@@ -169,7 +167,9 @@ export function Settings() {
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <tab.icon className={`mr-3 h-5 w-5 ${activeTab === tab.id ? 'text-primary-600' : 'text-gray-400'}`} />
+                <tab.icon
+                  className={`mr-3 h-5 w-5 ${activeTab === tab.id ? 'text-primary-600' : 'text-gray-400'}`}
+                />
                 {tab.label}
               </button>
             ))}
@@ -198,7 +198,9 @@ export function Settings() {
                       />
                     </div>
                     {profileErrors.companyName && (
-                      <p className="mt-1 text-xs text-red-600">{profileErrors.companyName.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {profileErrors.companyName.message}
+                      </p>
                     )}
                   </div>
 
@@ -217,7 +219,9 @@ export function Settings() {
                       />
                     </div>
                     {profileErrors.contactName && (
-                      <p className="mt-1 text-xs text-red-600">{profileErrors.contactName.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {profileErrors.contactName.message}
+                      </p>
                     )}
                   </div>
 
@@ -282,8 +286,8 @@ export function Settings() {
                           user.tier === 'enterprise'
                             ? 'bg-purple-100 text-purple-800'
                             : user.tier === 'premium'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-gray-100 text-gray-800'
                         }`}
                       >
                         {user.tier}
@@ -310,7 +314,10 @@ export function Settings() {
             <div className="space-y-6">
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <h2 className="mb-6 text-lg font-semibold text-gray-900">Change Password</h2>
-                <form onSubmit={handleSubmitPassword(onPasswordSubmit)} className="max-w-md space-y-4">
+                <form
+                  onSubmit={handleSubmitPassword(onPasswordSubmit)}
+                  className="max-w-md space-y-4"
+                >
                   <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">
                       Current Password
@@ -323,7 +330,9 @@ export function Settings() {
                       }`}
                     />
                     {passwordErrors.currentPassword && (
-                      <p className="mt-1 text-xs text-red-600">{passwordErrors.currentPassword.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {passwordErrors.currentPassword.message}
+                      </p>
                     )}
                   </div>
 
@@ -339,7 +348,9 @@ export function Settings() {
                       }`}
                     />
                     {passwordErrors.newPassword && (
-                      <p className="mt-1 text-xs text-red-600">{passwordErrors.newPassword.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {passwordErrors.newPassword.message}
+                      </p>
                     )}
                   </div>
 
@@ -355,7 +366,9 @@ export function Settings() {
                       }`}
                     />
                     {passwordErrors.confirmPassword && (
-                      <p className="mt-1 text-xs text-red-600">{passwordErrors.confirmPassword.message}</p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {passwordErrors.confirmPassword.message}
+                      </p>
                     )}
                   </div>
 
@@ -371,9 +384,12 @@ export function Settings() {
               </div>
 
               <div className="rounded-xl bg-white p-6 shadow-sm">
-                <h2 className="mb-4 text-lg font-semibold text-gray-900">Two-Factor Authentication</h2>
+                <h2 className="mb-4 text-lg font-semibold text-gray-900">
+                  Two-Factor Authentication
+                </h2>
                 <p className="mb-4 text-sm text-gray-500">
-                  Add an extra layer of security to your account by enabling two-factor authentication.
+                  Add an extra layer of security to your account by enabling two-factor
+                  authentication.
                 </p>
                 <button className="rounded-lg border border-primary-600 px-4 py-2 text-sm font-medium text-primary-600 hover:bg-primary-50">
                   Enable 2FA
@@ -387,13 +403,16 @@ export function Settings() {
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <h2 className="mb-4 text-lg font-semibold text-gray-900">API Keys</h2>
                 <p className="mb-6 text-sm text-gray-500">
-                  Use your API key to integrate KitchenXpert with your systems. Keep your key secure and never share it publicly.
+                  Use your API key to integrate KitchenXpert with your systems. Keep your key secure
+                  and never share it publicly.
                 </p>
 
                 <div className="mb-6 rounded-lg border border-gray-200 p-4">
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-700">Live API Key</span>
-                    <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Active</span>
+                    <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                      Active
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 rounded-lg bg-gray-100 px-4 py-2 font-mono text-sm">
@@ -409,7 +428,11 @@ export function Settings() {
                       onClick={copyApiKey}
                       className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                     >
-                      {copiedKey ? <Check className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
+                      {copiedKey ? (
+                        <Check className="h-5 w-5 text-green-500" />
+                      ) : (
+                        <Copy className="h-5 w-5" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -448,7 +471,9 @@ export function Settings() {
                 <h2 className="mb-4 text-lg font-semibold text-gray-900">Current Plan</h2>
                 <div className="flex items-center justify-between rounded-lg border border-primary-200 bg-primary-50 p-4">
                   <div>
-                    <p className="font-semibold text-gray-900 capitalize">{user?.tier || 'Basic'} Plan</p>
+                    <p className="font-semibold text-gray-900 capitalize">
+                      {user?.tier || 'Basic'} Plan
+                    </p>
                     <p className="text-sm text-gray-500">Billed monthly</p>
                   </div>
                   <div className="text-right">
@@ -485,10 +510,18 @@ export function Settings() {
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Date</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Description</th>
-                        <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">Amount</th>
-                        <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">Invoice</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          Date
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                          Description
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                          Amount
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                          Invoice
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -522,11 +555,31 @@ export function Settings() {
               <h2 className="mb-6 text-lg font-semibold text-gray-900">Notification Preferences</h2>
               <div className="space-y-6">
                 {[
-                  { id: 'orders', label: 'New Orders', description: 'Get notified when you receive new orders' },
-                  { id: 'products', label: 'Product Updates', description: 'Notifications about product approval status' },
-                  { id: 'reports', label: 'Weekly Reports', description: 'Receive weekly sales and performance reports' },
-                  { id: 'promotions', label: 'Promotions', description: 'Updates about promotions and special offers' },
-                  { id: 'security', label: 'Security Alerts', description: 'Important security notifications' },
+                  {
+                    id: 'orders',
+                    label: 'New Orders',
+                    description: 'Get notified when you receive new orders',
+                  },
+                  {
+                    id: 'products',
+                    label: 'Product Updates',
+                    description: 'Notifications about product approval status',
+                  },
+                  {
+                    id: 'reports',
+                    label: 'Weekly Reports',
+                    description: 'Receive weekly sales and performance reports',
+                  },
+                  {
+                    id: 'promotions',
+                    label: 'Promotions',
+                    description: 'Updates about promotions and special offers',
+                  },
+                  {
+                    id: 'security',
+                    label: 'Security Alerts',
+                    description: 'Important security notifications',
+                  },
                 ].map((pref) => (
                   <div key={pref.id} className="flex items-center justify-between">
                     <div>

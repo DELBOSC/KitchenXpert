@@ -48,9 +48,7 @@ describe('CreateProject', () => {
     it('should render the description text', () => {
       renderCreateProject();
 
-      expect(
-        screen.getByText(/start a new kitchen design project/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/start a new kitchen design project/i)).toBeInTheDocument();
     });
 
     it('should render the project name input', () => {
@@ -96,18 +94,14 @@ describe('CreateProject', () => {
     it('should render the submit button', () => {
       renderCreateProject();
 
-      expect(
-        screen.getByRole('button', { name: /create project/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /create project/i })).toBeInTheDocument();
     });
 
     it('should render the cancel button', () => {
       renderCreateProject();
 
       // fr.json: common.cancel = "Annuler"
-      expect(
-        screen.getByRole('button', { name: /annuler/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /annuler/i })).toBeInTheDocument();
     });
 
     it('should render tips section', () => {
@@ -294,7 +288,10 @@ describe('CreateProject', () => {
 
     it('should disable submit button while submitting', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({ id: '1' }) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({ id: '1' }) }), 1000)
+          )
       );
 
       renderCreateProject();
@@ -310,7 +307,10 @@ describe('CreateProject', () => {
 
     it('should show loading text while submitting', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({ id: '1' }) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({ id: '1' }) }), 1000)
+          )
       );
 
       renderCreateProject();

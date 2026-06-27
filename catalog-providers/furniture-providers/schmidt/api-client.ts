@@ -36,7 +36,7 @@ export class SchmidtApiClient extends BaseApiClient {
     const url = `${this.config.apiEndpoint}/products?${params.toString()}`;
     const response = await this.request<{ products: ProviderProduct[] }>(url);
 
-    return response.products.map(product => ({
+    return response.products.map((product) => ({
       ...product,
       providerId: 'schmidt-fr',
     }));

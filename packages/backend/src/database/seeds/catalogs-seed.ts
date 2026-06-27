@@ -18,7 +18,8 @@ export const CatalogsSeed: Seed = {
     const now = new Date().toISOString();
 
     // Insert categories
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "ProductCategory" (id, name, slug, description, "sortOrder", "isActive", "createdAt", "updatedAt")
       VALUES
         ('c1000000-0000-0000-0000-000000000001', 'Meubles bas', 'meubles-bas', 'Caissons et meubles de rangement bas', 1, true, $1, $1),
@@ -31,10 +32,13 @@ export const CatalogsSeed: Seed = {
         ('c1000000-0000-0000-0000-000000000008', 'Electromenager lavage', 'electromenager-lavage', 'Lave-vaisselle, lave-linge', 8, true, $1, $1),
         ('c1000000-0000-0000-0000-000000000009', 'Facades', 'facades', 'Facades et fronts (portes, tiroirs)', 9, true, $1, $1)
       ON CONFLICT (slug) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Meubles bas
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Product" (id, sku, name, description, brand, "categoryId", price, currency, width, height, depth, material, color, specifications, "isActive", "createdAt", "updatedAt")
       VALUES
         ('p1000000-0000-0000-0000-000000000001', 'MB-60-STD', 'Meuble bas 60cm 2 portes',
@@ -54,10 +58,13 @@ export const CatalogsSeed: Seed = {
          'c1000000-0000-0000-0000-000000000001', 279.00, 'EUR', 80.0, 87.0, 56.0,
          'melamine hydrofuge', 'blanc', '{"sinkCutout": true}', true, $1, $1)
       ON CONFLICT (sku) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Meubles hauts
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Product" (id, sku, name, description, brand, "categoryId", price, currency, width, height, depth, material, color, specifications, "isActive", "createdAt", "updatedAt")
       VALUES
         ('p2000000-0000-0000-0000-000000000001', 'MH-60-STD', 'Meuble haut 60cm 2 portes',
@@ -69,10 +76,13 @@ export const CatalogsSeed: Seed = {
          'c1000000-0000-0000-0000-000000000002', 249.00, 'EUR', 80.0, 72.0, 32.0,
          'melamine', 'blanc', '{"loadCapacity": 18, "shelves": 2}', true, $1, $1)
       ON CONFLICT (sku) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Electromenager cuisson + froid + lavage
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Product" (id, sku, name, description, brand, "categoryId", price, currency, width, height, depth, specifications, "isActive", "createdAt", "updatedAt")
       VALUES
         ('p3000000-0000-0000-0000-000000000001', 'PI-60-4Z', 'Plaque induction 60cm 4 zones',
@@ -92,10 +102,13 @@ export const CatalogsSeed: Seed = {
          'c1000000-0000-0000-0000-000000000008', 799.00, 'EUR', 59.8, 81.5, 55.0,
          '{"capacity": 14, "programs": 6}', true, $1, $1)
       ON CONFLICT (sku) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Eviers + Plans de travail
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Product" (id, sku, name, description, brand, "categoryId", price, currency, width, height, depth, material, specifications, "isActive", "createdAt", "updatedAt")
       VALUES
         ('p5000000-0000-0000-0000-000000000001', 'EV-80-1B', 'Evier inox 1 grand bac 80cm',
@@ -107,14 +120,20 @@ export const CatalogsSeed: Seed = {
          'c1000000-0000-0000-0000-000000000004', 199.00, 'EUR', 300.0, 3.8, 65.0,
          'stratifie', '{"thickness": 38}', true, $1, $1)
       ON CONFLICT (sku) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     logger.info('[Seed] Created catalog with 9 categories and 12 products');
   },
 
   async cleanup(tx: Transaction): Promise<void> {
-    await tx.execute(`DELETE FROM "Product" WHERE sku LIKE 'MB-%' OR sku LIKE 'MH-%' OR sku LIKE 'PI-%' OR sku LIKE 'FE-%' OR sku LIKE 'RF-%' OR sku LIKE 'LV-%' OR sku LIKE 'EV-%' OR sku LIKE 'PDT-%'`);
-    await tx.execute(`DELETE FROM "ProductCategory" WHERE slug IN ('meubles-bas','meubles-hauts','colonnes','plans-de-travail','electromenager-cuisson','electromenager-froid','eviers-robinetterie','electromenager-lavage','facades')`);
+    await tx.execute(
+      `DELETE FROM "Product" WHERE sku LIKE 'MB-%' OR sku LIKE 'MH-%' OR sku LIKE 'PI-%' OR sku LIKE 'FE-%' OR sku LIKE 'RF-%' OR sku LIKE 'LV-%' OR sku LIKE 'EV-%' OR sku LIKE 'PDT-%'`
+    );
+    await tx.execute(
+      `DELETE FROM "ProductCategory" WHERE slug IN ('meubles-bas','meubles-hauts','colonnes','plans-de-travail','electromenager-cuisson','electromenager-froid','eviers-robinetterie','electromenager-lavage','facades')`
+    );
   },
 };
 

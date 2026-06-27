@@ -43,33 +43,33 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure'
+    screenshot: 'only-on-failure',
   },
 
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] }
+      use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
+      use: { ...devices['Desktop Safari'] },
     },
     {
       name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] }
-    }
+      use: { ...devices['Pixel 5'] },
+    },
   ],
 
   webServer: {
     command: 'pnpm dev',
     url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI
-  }
+    reuseExistingServer: !process.env.CI,
+  },
 });
 ```
 
@@ -311,7 +311,7 @@ test.describe('Visual Regression', () => {
     await page.goto('/products');
     const card = page.locator('.product-card').first();
     await expect(card).toHaveScreenshot('product-card.png', {
-      maxDiffPixels: 100 // Allow small differences
+      maxDiffPixels: 100, // Allow small differences
     });
   });
 });
@@ -324,7 +324,7 @@ test('full page screenshot', async ({ page }) => {
   await page.goto('/');
   await page.screenshot({
     path: 'screenshots/homepage-full.png',
-    fullPage: true
+    fullPage: true,
   });
 });
 ```
@@ -384,11 +384,15 @@ test.describe('Shopping Cart', () => {
     await page.goto('/products');
 
     // Add product to cart
-    await page.click('.product-card:first-child button:has-text("Add to Cart")');
+    await page.click(
+      '.product-card:first-child button:has-text("Add to Cart")'
+    );
     await expect(page.locator('.cart-badge')).toHaveText('1');
 
     // Add another product
-    await page.click('.product-card:nth-child(2) button:has-text("Add to Cart")');
+    await page.click(
+      '.product-card:nth-child(2) button:has-text("Add to Cart")'
+    );
     await expect(page.locator('.cart-badge')).toHaveText('2');
 
     // View cart
@@ -396,8 +400,12 @@ test.describe('Shopping Cart', () => {
     await expect(page.locator('.cart-item')).toHaveCount(2);
 
     // Update quantity
-    await page.click('.cart-item:first-child button[aria-label="Increase quantity"]');
-    await expect(page.locator('.cart-item:first-child .quantity')).toHaveText('2');
+    await page.click(
+      '.cart-item:first-child button[aria-label="Increase quantity"]'
+    );
+    await expect(page.locator('.cart-item:first-child .quantity')).toHaveText(
+      '2'
+    );
 
     // Proceed to checkout
     await page.click('button:has-text("Checkout")');
@@ -450,7 +458,7 @@ export const test = base.extend<Fixtures>({
     await loginPage.goto();
     await loginPage.login('test@example.com', 'password123');
     await use(page);
-  }
+  },
 });
 
 // Use in tests
@@ -492,6 +500,7 @@ test.afterEach(async ({ page }) => {
 ## Related Documentation
 
 - [Integration Testing Overview](./overview.md) - Testing strategy
-- [Frontend-Backend Integration](./frontend-backend-integration.md) - API testing
+- [Frontend-Backend Integration](./frontend-backend-integration.md) - API
+  testing
 - [CI Integration](./ci-integration.md) - Running in CI
 - [Testing Guide](../testing.md) - General testing

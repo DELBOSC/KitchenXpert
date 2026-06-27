@@ -124,7 +124,7 @@ export async function disconnectPrisma(): Promise<void> {
     logger.info('Prisma disconnected from database');
   } catch (error) {
     logger.error('Error disconnecting Prisma', {
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message : String(error),
     });
   }
 }

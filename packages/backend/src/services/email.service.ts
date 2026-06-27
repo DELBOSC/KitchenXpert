@@ -166,11 +166,7 @@ export class EmailService {
     });
   }
 
-  static async sendWelcome(
-    to: string,
-    name: string,
-    loginUrl: string
-  ): Promise<boolean> {
+  static async sendWelcome(to: string, name: string, loginUrl: string): Promise<boolean> {
     return EmailService.send({
       to,
       subject: 'Bienvenue sur KitchenXpert !',

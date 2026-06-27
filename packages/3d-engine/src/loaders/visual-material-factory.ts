@@ -76,18 +76,20 @@ export class VisualMaterialFactory {
     // anything that already holds a reference automatically picks it up.
     const url = pickTextureUrl(visuals);
     if (url && !this.opts.disableTextures) {
-      void this.loadTexture(url).then((tex) => {
-        material.map = tex;
-        // When a colour map is set we keep `color` neutral so the texture
-        // shows its own tint instead of being tinted by the base colour.
-        material.color.set('#ffffff');
-        material.needsUpdate = true;
-      }).catch((err) => {
-        // Best-effort — leave the placeholder colour. Log via console.warn
-        // so it's visible in DevTools without a hard dep on a logger here.
-        // eslint-disable-next-line no-console
-        console.warn('[VisualMaterialFactory] texture load failed', { url, err });
-      });
+      void this.loadTexture(url)
+        .then((tex) => {
+          material.map = tex;
+          // When a colour map is set we keep `color` neutral so the texture
+          // shows its own tint instead of being tinted by the base colour.
+          material.color.set('#ffffff');
+          material.needsUpdate = true;
+        })
+        .catch((err) => {
+          // Best-effort — leave the placeholder colour. Log via console.warn
+          // so it's visible in DevTools without a hard dep on a logger here.
+          // eslint-disable-next-line no-console
+          console.warn('[VisualMaterialFactory] texture load failed', { url, err });
+        });
     }
 
     this.materialCache.set(cacheKey, material);
@@ -95,11 +97,17 @@ export class VisualMaterialFactory {
   }
 
   /** Returns a Promise so the caller can await full readiness when needed. */
-  async buildAsync(visuals: VisualsPayload | null | undefined): Promise<THREE.MeshStandardMaterial> {
+  async buildAsync(
+    visuals: VisualsPayload | null | undefined
+  ): Promise<THREE.MeshStandardMaterial> {
     const material = this.build(visuals);
     const url = pickTextureUrl(visuals);
     if (url && !this.opts.disableTextures) {
-      try { await this.loadTexture(url); } catch { /* ignore */ }
+      try {
+        await this.loadTexture(url);
+      } catch {
+        /* ignore */
+      }
     }
     return material;
   }
@@ -111,8 +119,12 @@ export class VisualMaterialFactory {
 
     void Promise.allSettled(
       [...this.textureCache.values()].map(async (p) => {
-        try { (await p).dispose(); } catch { /* ignore */ }
-      }),
+        try {
+          (await p).dispose();
+        } catch {
+          /* ignore */
+        }
+      })
     );
     this.textureCache.clear();
   }
@@ -133,7 +145,7 @@ export class VisualMaterialFactory {
           resolve(tex);
         },
         undefined,
-        (err) => reject(err),
+        (err) => reject(err)
       );
     });
     this.textureCache.set(url, promise);
@@ -223,8 +235,10 @@ export function cssColorOrFallback(input: string | null | undefined, fallback: s
   // it can't parse, which we detect by round-tripping via getHex.
   try {
     const c = new THREE.Color(trimmed);
-    if (Number.isFinite(c.r) && (c.r + c.g + c.b) > 0) return trimmed;
-  } catch { /* swallow */ }
+    if (Number.isFinite(c.r) && c.r + c.g + c.b > 0) return trimmed;
+  } catch {
+    /* swallow */
+  }
   return fallback;
 }
 

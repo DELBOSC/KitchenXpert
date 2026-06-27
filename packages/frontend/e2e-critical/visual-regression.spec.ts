@@ -30,24 +30,28 @@ const VISUAL_USER = {
 async function mockAuthed(page: import('@playwright/test').Page) {
   await page.route('**/api/v1/auth/me', (route) =>
     route.fulfill({
-      status: 200, contentType: 'application/json',
+      status: 200,
+      contentType: 'application/json',
       body: JSON.stringify({ success: true, data: VISUAL_USER }),
-    }),
+    })
   );
   await page.route('**/api/v1/projects*', (route) =>
     route.fulfill({
-      status: 200, contentType: 'application/json',
+      status: 200,
+      contentType: 'application/json',
       body: JSON.stringify({
-        success: true, data: [],
+        success: true,
+        data: [],
         pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
       }),
-    }),
+    })
   );
   await page.route('**/api/v1/catalog/**', (route) =>
     route.fulfill({
-      status: 200, contentType: 'application/json',
+      status: 200,
+      contentType: 'application/json',
       body: JSON.stringify({ success: true, data: [] }),
-    }),
+    })
   );
 }
 

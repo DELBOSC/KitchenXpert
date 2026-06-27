@@ -1,8 +1,7 @@
 # Exploring Product Catalogs
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Beginner
-**Estimated Time:** 25-35 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Beginner **Estimated Time:**
+25-35 minutes
 
 ## Learning Objectives
 
@@ -19,7 +18,8 @@ By the end of this tutorial, you will be able to:
 ## Prerequisites
 
 - KitchenXpert account (free or paid tier)
-- An existing kitchen design (create one using [First Design](first-design.md) or [AI Questionnaire](using-questionnaire.md) tutorials)
+- An existing kitchen design (create one using [First Design](first-design.md)
+  or [AI Questionnaire](using-questionnaire.md) tutorials)
 - Basic understanding of kitchen components (cabinets, appliances, countertops)
 - Optional: Preferred brands or budget constraints in mind
 
@@ -28,6 +28,7 @@ By the end of this tutorial, you will be able to:
 KitchenXpert integrates with major kitchen product manufacturers and retailers:
 
 **Cabinet Manufacturers:**
+
 - IKEA (SEKTION system)
 - Home Depot (Hampton Bay, Thomasville)
 - Lowe's (Diamond NOW, Shenandoah)
@@ -35,18 +36,22 @@ KitchenXpert integrates with major kitchen product manufacturers and retailers:
 - Merillat
 
 **Appliance Brands:**
+
 - Whirlpool, GE, Samsung, LG, Bosch
 - KitchenAid, Frigidaire, Maytag
 
 **Countertop Suppliers:**
+
 - Home Depot, Lowe's
 - Local fabricators (by region)
 - Online suppliers (Countertops.com, etc.)
 
 **Other Products:**
+
 - Lighting, plumbing fixtures, hardware, flooring
 
-Each catalog includes real products with accurate dimensions, pricing, and availability.
+Each catalog includes real products with accurate dimensions, pricing, and
+availability.
 
 ## Step-by-Step Instructions
 
@@ -68,7 +73,8 @@ Each catalog includes real products with accurate dimensions, pricing, and avail
 
 We'll replace these with specific branded products.
 
-> **TIP:** You can browse catalogs even without a design, but it's more useful to do so in the context of your actual kitchen.
+> **TIP:** You can browse catalogs even without a design, but it's more useful
+> to do so in the context of your actual kitchen.
 
 ### Step 2: Access the Product Catalogs
 
@@ -92,7 +98,8 @@ We'll replace these with specific branded products.
    - Appliances: 1,523 products
    - Countertops: 456 products
 
-> **TIP:** Premium members get access to luxury brand catalogs (Sub-Zero, Wolf, custom cabinet makers). Free tier includes major retailers.
+> **TIP:** Premium members get access to luxury brand catalogs (Sub-Zero, Wolf,
+> custom cabinet makers). Free tier includes major retailers.
 
 ### Step 3: Browse Cabinet Catalogs
 
@@ -167,7 +174,8 @@ We'll replace these with specific branded products.
 
 [Screenshot: 3D product preview rotating view]
 
-> **TIP:** IKEA cabinets require assembly. Factor in 1-2 hours assembly time per cabinet, or hire a pro installer.
+> **TIP:** IKEA cabinets require assembly. Factor in 1-2 hours assembly time per
+> cabinet, or hire a pro installer.
 
 ### Step 5: Compare Cabinet Options
 
@@ -206,7 +214,8 @@ We'll replace these with specific branded products.
     - **Best value:** Diamond NOW (plywood, soft-close, reasonable price)
     - **Fastest delivery:** IKEA or Diamond NOW (in stock)
 
-> **TIP:** Plywood boxes are more durable than particleboard. Worth the extra cost if budget allows.
+> **TIP:** Plywood boxes are more durable than particleboard. Worth the extra
+> cost if budget allows.
 
 ### Step 6: Select and Apply Cabinet to Design
 
@@ -241,7 +250,8 @@ We'll replace these with specific branded products.
 
 [Screenshot: Updated design with Diamond NOW cabinets]
 
-> **WARNING:** When changing brands, verify that door sizes and styles match. Some manufacturers have different standard widths.
+> **WARNING:** When changing brands, verify that door sizes and styles match.
+> Some manufacturers have different standard widths.
 
 ### Step 7: Browse and Select Appliances
 
@@ -273,6 +283,7 @@ We'll replace these with specific branded products.
    - Negative: "Fingerprints show on stainless, water filter expensive"
 
 8. Check specifications:
+
    ```
    Dimensions:
    - Width: 35.75" (with doors)
@@ -299,7 +310,8 @@ We'll replace these with specific branded products.
     - Check clearances: ✓ 1" on each side (good)
     - Check door swing: ✓ No obstructions (good)
 
-> **TIP:** Always verify refrigerator depth. "Counter-depth" models (32-33") are shallower than standard (35-36") and look more built-in but cost more.
+> **TIP:** Always verify refrigerator depth. "Counter-depth" models (32-33") are
+> shallower than standard (35-36") and look more built-in but cost more.
 
 ### Step 8: Complete Appliance Selection
 
@@ -358,7 +370,8 @@ We'll replace these with specific branded products.
 
 [Screenshot: All appliances updated in design]
 
-> **TIP:** Mix brands strategically. You don't need all matching appliances. Prioritize quality where it matters (dishwasher noise, range power).
+> **TIP:** Mix brands strategically. You don't need all matching appliances.
+> Prioritize quality where it matters (dishwasher noise, range power).
 
 ### Step 9: Explore Countertop Options
 
@@ -399,6 +412,7 @@ We'll replace these with specific branded products.
 [Screenshot: Full slab photo with note about variation]
 
 9. Check installation details:
+
    ```
    Price breakdown (for your 42 sq ft kitchen):
    - Material: $72/sq ft × 42 sq ft = $3,024
@@ -416,7 +430,8 @@ We'll replace these with specific branded products.
 11. The countertop updates in your design
 12. Budget automatically recalculates
 
-> **TIP:** Schedule countertop template after cabinets are installed. Fabricators need exact measurements, not estimates from plans.
+> **TIP:** Schedule countertop template after cabinets are installed.
+> Fabricators need exact measurements, not estimates from plans.
 
 ### Step 10: Select Backsplash Tile
 
@@ -439,6 +454,7 @@ We'll replace these with specific branded products.
    - Rating: 4.4/5 stars
 
 6. Calculate for your kitchen:
+
    ```
    Backsplash area: 35 sq ft (18" high × 23 linear feet)
    Tile needed: 35 sq ft × 1.1 (10% overage) = 38.5 sq ft
@@ -458,7 +474,8 @@ We'll replace these with specific branded products.
    - Light Gray (recommended for white tile)
    - Shows less dirt than white, less contrast than dark
 
-> **TIP:** Buy 10-15% extra tile. You'll need it for cuts, mistakes, and future repairs. Tile lots vary in color slightly.
+> **TIP:** Buy 10-15% extra tile. You'll need it for cuts, mistakes, and future
+> repairs. Tile lots vary in color slightly.
 
 ### Step 11: Browse Lighting Options
 
@@ -515,7 +532,9 @@ We'll replace these with specific branded products.
    - Recessed: $176
    - **Total: $379** (vs. generic $640)
 
-> **TIP:** LED color temperature matters. 2700K is very warm (yellow), 3000K is warm white (most kitchens), 4000K is neutral, 5000K is daylight (too cold for homes).
+> **TIP:** LED color temperature matters. 2700K is very warm (yellow), 3000K is
+> warm white (most kitchens), 4000K is neutral, 5000K is daylight (too cold for
+> homes).
 
 ### Step 12: Add Products to Wishlist
 
@@ -541,7 +560,8 @@ We'll replace these with specific branded products.
    - **Share:** Send wishlist to family/contractor
    - **Move to design:** Add item to active design
 
-> **TIP:** Use wishlist for "Phase 2" items you'll add later, like a second oven or wine fridge.
+> **TIP:** Use wishlist for "Phase 2" items you'll add later, like a second oven
+> or wine fridge.
 
 ### Step 13: Generate Shopping List with SKUs
 
@@ -585,7 +605,8 @@ We'll replace these with specific branded products.
    - **CSV:** Import to spreadsheet
    - **Send to retailer:** Direct order (Home Depot, Lowe's integration)
 
-> **TIP:** Having exact SKUs eliminates ordering errors and speeds up procurement.
+> **TIP:** Having exact SKUs eliminates ordering errors and speeds up
+> procurement.
 
 ### Step 14: Check Local Availability
 
@@ -623,7 +644,8 @@ We'll replace these with specific branded products.
    - Order countertop from local fabricator
    - Pick up tile from any location (always available)
 
-> **TIP:** Call stores before visiting to reserve high-value items. In-stock status updates hourly but isn't real-time.
+> **TIP:** Call stores before visiting to reserve high-value items. In-stock
+> status updates hourly but isn't real-time.
 
 ### Step 15: Compare Total Costs
 
@@ -655,7 +677,8 @@ We'll replace these with specific branded products.
    - **Net savings:** $1,821
    - **Better value:** Higher quality appliances for less total cost
 
-> **TIP:** Generic estimates are intentionally conservative (high). Actual products often cost less, especially if you shop sales.
+> **TIP:** Generic estimates are intentionally conservative (high). Actual
+> products often cost less, especially if you shop sales.
 
 ### Step 16: Set Price Alerts
 
@@ -681,7 +704,8 @@ We'll replace these with specific branded products.
 
 [Screenshot: Price alert confirmation]
 
-> **TIP:** Major sales occur on Memorial Day, July 4th, Labor Day, and Black Friday. Plan purchases around these if timeline allows.
+> **TIP:** Major sales occur on Memorial Day, July 4th, Labor Day, and Black
+> Friday. Plan purchases around these if timeline allows.
 
 ### Step 17: Share Catalog Selections
 
@@ -704,14 +728,17 @@ We'll replace these with specific branded products.
    - **Spouse:** Reviews selections before purchase
    - **Designer friend:** Gets feedback on choices
 
-> **TIP:** When sharing with contractors, include alternative products. They may have better pricing on equivalents through their trade accounts.
+> **TIP:** When sharing with contractors, include alternative products. They may
+> have better pricing on equivalents through their trade accounts.
 
 ## What You Learned
 
-Congratulations! You're now proficient with KitchenXpert's product catalogs. You learned how to:
+Congratulations! You're now proficient with KitchenXpert's product catalogs. You
+learned how to:
 
 - **Browse integrated catalogs** from major retailers and manufacturers
-- **Filter and search** using multiple criteria (price, dimensions, style, ratings)
+- **Filter and search** using multiple criteria (price, dimensions, style,
+  ratings)
 - **Compare products** side-by-side to make informed decisions
 - **Replace generic items** in designs with specific branded products
 - **Select appliances** considering features, reviews, and value
@@ -724,10 +751,13 @@ Congratulations! You're now proficient with KitchenXpert's product catalogs. You
 
 ## Real-World Shopping Tips
 
-1. **Don't buy everything at once:** Start with cabinets, then countertops, then appliances
-2. **Watch for bundle deals:** Some retailers offer discounts when buying 3+ appliances
+1. **Don't buy everything at once:** Start with cabinets, then countertops, then
+   appliances
+2. **Watch for bundle deals:** Some retailers offer discounts when buying 3+
+   appliances
 3. **Consider open-box/returns:** Major savings on perfect-condition returns
-4. **Use store credit cards:** Often 12-24 months interest-free on large purchases
+4. **Use store credit cards:** Often 12-24 months interest-free on large
+   purchases
 5. **Price match:** Most retailers will match competitor prices
 6. **Shop end of season:** Old models get deep discounts when new models arrive
 7. **Join loyalty programs:** Free, and earns rewards on big purchases
@@ -735,28 +765,34 @@ Congratulations! You're now proficient with KitchenXpert's product catalogs. You
 
 ## Common Questions
 
-**Q: Are catalog prices accurate and current?**
-A: Prices update daily from retailer APIs. Always verify before purchasing, as sales and promotions change frequently.
+**Q: Are catalog prices accurate and current?** A: Prices update daily from
+retailer APIs. Always verify before purchasing, as sales and promotions change
+frequently.
 
-**Q: Can I buy directly through KitchenXpert?**
-A: Premium members can order from Home Depot and Lowe's directly. Others use shopping lists to purchase from retailers.
+**Q: Can I buy directly through KitchenXpert?** A: Premium members can order
+from Home Depot and Lowe's directly. Others use shopping lists to purchase from
+retailers.
 
-**Q: What if a product becomes unavailable?**
-A: The system suggests alternatives. You can also save backups to your wishlist.
+**Q: What if a product becomes unavailable?** A: The system suggests
+alternatives. You can also save backups to your wishlist.
 
-**Q: Do catalogs include professional/trade brands?**
-A: Free tier: Consumer brands. Premium: Adds trade-only brands (for use with contractors who have access).
+**Q: Do catalogs include professional/trade brands?** A: Free tier: Consumer
+brands. Premium: Adds trade-only brands (for use with contractors who have
+access).
 
-**Q: How often are new products added?**
-A: Catalogs update weekly with new products and discontinued items are removed.
+**Q: How often are new products added?** A: Catalogs update weekly with new
+products and discontinued items are removed.
 
 ## Next Steps
 
 Continue building your kitchen design expertise:
 
-1. **[Budget Optimization](../intermediate/budget-optimization.md)** - Strategies to reduce costs while maintaining quality
-2. **[Multi-Brand Design](../intermediate/multi-brand-design.md)** - Mix products from different manufacturers effectively
-3. **[Custom Surfaces](../intermediate/custom-surfaces.md)** - Work with custom or specialized materials
+1. **[Budget Optimization](../intermediate/budget-optimization.md)** -
+   Strategies to reduce costs while maintaining quality
+2. **[Multi-Brand Design](../intermediate/multi-brand-design.md)** - Mix
+   products from different manufacturers effectively
+3. **[Custom Surfaces](../intermediate/custom-surfaces.md)** - Work with custom
+   or specialized materials
 
 ## Additional Resources
 
@@ -768,6 +804,7 @@ Continue building your kitchen design expertise:
 ## Feedback
 
 Help us improve our product catalogs:
+
 - Email: catalog-feedback@kitchenxpert.com
 - Request new brands: [Brand request form]
 - Report pricing errors: [Report issue]
@@ -775,13 +812,14 @@ Help us improve our product catalogs:
 ---
 
 **Related Tutorials:**
+
 - [Creating Your First Kitchen Design](first-design.md)
 - [Using the AI Questionnaire](using-questionnaire.md)
 - [Budget Optimization](../intermediate/budget-optimization.md)
 
 **Documentation:**
+
 - [Supported Manufacturers](../../reference/supported-manufacturers.md)
 - [Product Selection Guide](../../guides/product-selection.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1

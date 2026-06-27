@@ -12,7 +12,7 @@ export const DEFAULT_ROLES = {
   GUEST: 'guest',
 } as const;
 
-export type DefaultRole = typeof DEFAULT_ROLES[keyof typeof DEFAULT_ROLES];
+export type DefaultRole = (typeof DEFAULT_ROLES)[keyof typeof DEFAULT_ROLES];
 
 export const ROLE_HIERARCHY: Record<DefaultRole, number> = {
   super_admin: 100,
@@ -27,7 +27,7 @@ export const ROLE_HIERARCHY: Record<DefaultRole, number> = {
 export const ROLE_DESCRIPTIONS: Record<DefaultRole, string> = {
   super_admin: 'Super administrateur avec accès complet au système',
   admin: 'Administrateur avec accès étendu',
-  manager: 'Gestionnaire d\'équipe',
+  manager: "Gestionnaire d'équipe",
   designer: 'Concepteur de cuisines',
   sales: 'Commercial',
   user: 'Utilisateur standard',
@@ -46,19 +46,8 @@ export const ROLE_COLORS: Record<DefaultRole, string> = {
 
 export const ROLE_DEFAULT_PERMISSIONS: Record<DefaultRole, string[]> = {
   super_admin: ['*'],
-  admin: [
-    'user:*',
-    'kitchen:*',
-    'project:*',
-    'catalog:*',
-    'system:admin',
-  ],
-  manager: [
-    'user:read',
-    'kitchen:*',
-    'project:*',
-    'catalog:read',
-  ],
+  admin: ['user:*', 'kitchen:*', 'project:*', 'catalog:*', 'system:admin'],
+  manager: ['user:read', 'kitchen:*', 'project:*', 'catalog:read'],
   designer: [
     'kitchen:create',
     'kitchen:read',
@@ -68,11 +57,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<DefaultRole, string[]> = {
     'project:update',
     'catalog:read',
   ],
-  sales: [
-    'kitchen:read',
-    'project:read',
-    'catalog:read',
-  ],
+  sales: ['kitchen:read', 'project:read', 'catalog:read'],
   user: [
     'kitchen:create',
     'kitchen:read:own',
@@ -80,7 +65,5 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<DefaultRole, string[]> = {
     'project:read:own',
     'catalog:read',
   ],
-  guest: [
-    'catalog:read',
-  ],
+  guest: ['catalog:read'],
 };

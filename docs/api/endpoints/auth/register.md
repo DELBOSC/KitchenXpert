@@ -2,7 +2,9 @@
 
 ## Overview
 
-Create a new user account with email, password, and basic profile information. After successful registration, a verification email is sent to the provided email address.
+Create a new user account with email, password, and basic profile information.
+After successful registration, a verification email is sent to the provided
+email address.
 
 **Endpoint:** `POST /api/v1/auth/register`
 
@@ -24,13 +26,13 @@ X-Device-ID: <unique-device-identifier> (optional)
 
 ### Request Body Schema
 
-| Field | Type | Required | Description | Constraints |
-|-------|------|----------|-------------|-------------|
-| `email` | string | Yes | User's email address | Valid email format, unique, max 255 characters |
-| `password` | string | Yes | User's password | Min 8 chars, 1 uppercase, 1 lowercase, 1 number |
-| `name` | string | Yes | User's full name | Min 2 characters, max 100 characters |
-| `acceptTerms` | boolean | Yes | Terms and conditions acceptance | Must be `true` |
-| `newsletter` | boolean | No | Subscribe to newsletter | Default: false |
+| Field         | Type    | Required | Description                     | Constraints                                     |
+| ------------- | ------- | -------- | ------------------------------- | ----------------------------------------------- |
+| `email`       | string  | Yes      | User's email address            | Valid email format, unique, max 255 characters  |
+| `password`    | string  | Yes      | User's password                 | Min 8 chars, 1 uppercase, 1 lowercase, 1 number |
+| `name`        | string  | Yes      | User's full name                | Min 2 characters, max 100 characters            |
+| `acceptTerms` | boolean | Yes      | Terms and conditions acceptance | Must be `true`                                  |
+| `newsletter`  | boolean | No       | Subscribe to newsletter         | Default: false                                  |
 
 ### Request Body Example
 
@@ -58,7 +60,7 @@ X-Device-ID: <unique-device-identifier> (optional)
   - Must contain at least one uppercase letter (A-Z)
   - Must contain at least one lowercase letter (a-z)
   - Must contain at least one number (0-9)
-  - Recommended: Include special characters (!@#$%^&*)
+  - Recommended: Include special characters (!@#$%^&\*)
   - Cannot contain common patterns (e.g., "password123", "12345678")
 
 - **Name:**
@@ -110,18 +112,18 @@ X-Device-ID: <unique-device-identifier> (optional)
 
 ### Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `user.id` | string | Unique user identifier |
-| `user.email` | string | User's email address |
-| `user.name` | string | User's full name |
-| `user.role` | string | User role (always "user" for registration) |
-| `user.emailVerified` | boolean | Email verification status (always false initially) |
-| `user.createdAt` | string | Account creation timestamp (ISO 8601) |
-| `user.preferences` | object | Default user preferences |
-| `verification.emailSent` | boolean | Whether verification email was sent |
-| `verification.expiresAt` | string | Verification link expiration (24 hours) |
-| `verification.message` | string | User-friendly message about verification |
+| Field                    | Type    | Description                                        |
+| ------------------------ | ------- | -------------------------------------------------- |
+| `user.id`                | string  | Unique user identifier                             |
+| `user.email`             | string  | User's email address                               |
+| `user.name`              | string  | User's full name                                   |
+| `user.role`              | string  | User role (always "user" for registration)         |
+| `user.emailVerified`     | boolean | Email verification status (always false initially) |
+| `user.createdAt`         | string  | Account creation timestamp (ISO 8601)              |
+| `user.preferences`       | object  | Default user preferences                           |
+| `verification.emailSent` | boolean | Whether verification email was sent                |
+| `verification.expiresAt` | string  | Verification link expiration (24 hours)            |
+| `verification.message`   | string  | User-friendly message about verification           |
 
 ---
 
@@ -248,6 +250,7 @@ X-RateLimit-Reset: 1736526000
 ```
 
 **Exceeded Behavior:**
+
 - Returns 429 status code
 - Provides `retryAfter` seconds in response
 - Stricter limits apply for suspicious patterns (VPN, repeated failures)
@@ -257,24 +260,28 @@ X-RateLimit-Reset: 1736526000
 ## Security Considerations
 
 ### Password Requirements
+
 - Enforces strong password policy
 - Passwords hashed using bcrypt with 12 salt rounds
 - Common passwords are rejected (uses dictionary check)
 - Password strength score calculated using zxcvbn algorithm
 
 ### Email Verification
+
 - Verification email sent immediately after registration
 - Verification link expires after 24 hours
 - Account cannot log in until email is verified
 - Resend verification option available
 
 ### Anti-Fraud Measures
+
 - IP-based rate limiting
 - Disposable email detection and blocking
 - reCAPTCHA integration (optional, based on risk score)
 - Suspicious pattern detection (multiple accounts from same IP)
 
 ### Data Privacy
+
 - Passwords never stored in plain text
 - Personal data encrypted at rest
 - GDPR and CCPA compliant
@@ -304,7 +311,13 @@ curl -X POST https://api.kitchenxpert.com/api/v1/auth/register \
 ```javascript
 import axios from 'axios';
 
-const register = async (email, password, name, acceptTerms, newsletter = false) => {
+const register = async (
+  email,
+  password,
+  name,
+  acceptTerms,
+  newsletter = false
+) => {
   try {
     const response = await axios.post(
       'https://api.kitchenxpert.com/api/v1/auth/register',
@@ -313,13 +326,13 @@ const register = async (email, password, name, acceptTerms, newsletter = false) 
         password,
         name,
         acceptTerms,
-        newsletter
+        newsletter,
       },
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-Client-Version': '1.0.0'
-        }
+          'X-Client-Version': '1.0.0',
+        },
       }
     );
 
@@ -336,11 +349,14 @@ const register = async (email, password, name, acceptTerms, newsletter = false) 
 
       switch (errorCode) {
         case 'EMAIL_EXISTS':
-          console.error('Email already registered:', error.response.data.error.details.suggestion);
+          console.error(
+            'Email already registered:',
+            error.response.data.error.details.suggestion
+          );
           break;
         case 'VALIDATION_ERROR':
           console.error('Validation errors:');
-          error.response.data.error.details.forEach(err => {
+          error.response.data.error.details.forEach((err) => {
             console.error(`- ${err.field}: ${err.message}`);
           });
           break;
@@ -352,7 +368,10 @@ const register = async (email, password, name, acceptTerms, newsletter = false) 
           console.error(`Too many attempts. Retry in ${retryAfter} seconds`);
           break;
         default:
-          console.error('Registration failed:', error.response.data.error.message);
+          console.error(
+            'Registration failed:',
+            error.response.data.error.message
+          );
       }
     }
     throw error;
@@ -360,18 +379,12 @@ const register = async (email, password, name, acceptTerms, newsletter = false) 
 };
 
 // Usage
-register(
-  'newuser@example.com',
-  'SecurePassword123!',
-  'Jane Smith',
-  true,
-  false
-)
+register('newuser@example.com', 'SecurePassword123!', 'Jane Smith', true, false)
   .then(({ user, verification }) => {
     console.log('Welcome,', user.name);
     console.log('Please check your email to verify your account');
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Registration error:', error);
   });
 ```
@@ -475,19 +488,27 @@ if __name__ == "__main__":
 
 - [Login](./login.md) - Authenticate with credentials
 - [Verify Email](./verify-email.md) - Confirm email address
-- [Resend Verification](./resend-verification.md) - Request new verification email
-- [Check Email Availability](./check-email.md) - Check if email is available before registration
+- [Resend Verification](./resend-verification.md) - Request new verification
+  email
+- [Check Email Availability](./check-email.md) - Check if email is available
+  before registration
 
 ---
 
 ## Notes
 
-- **Email Uniqueness:** Each email address can only be registered once. Duplicate registrations return 409 error.
-- **Password Security:** Weak passwords are rejected. Use combination of uppercase, lowercase, numbers, and special characters.
-- **Email Verification Required:** Users must verify email before logging in. Unverified accounts cannot access protected endpoints.
-- **Default Preferences:** New accounts receive default preferences (English, USD, metric) which can be updated later.
-- **Newsletter Opt-in:** Newsletter subscription is optional and can be changed anytime in account settings.
-- **Account Deletion:** Users can delete their account at any time via the account settings.
+- **Email Uniqueness:** Each email address can only be registered once.
+  Duplicate registrations return 409 error.
+- **Password Security:** Weak passwords are rejected. Use combination of
+  uppercase, lowercase, numbers, and special characters.
+- **Email Verification Required:** Users must verify email before logging in.
+  Unverified accounts cannot access protected endpoints.
+- **Default Preferences:** New accounts receive default preferences (English,
+  USD, metric) which can be updated later.
+- **Newsletter Opt-in:** Newsletter subscription is optional and can be changed
+  anytime in account settings.
+- **Account Deletion:** Users can delete their account at any time via the
+  account settings.
 
 ---
 

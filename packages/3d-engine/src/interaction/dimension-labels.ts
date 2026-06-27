@@ -118,10 +118,7 @@ export class DimensionLabels {
   /**
    * Affiche les distances aux objets voisins
    */
-  showDistancesToNeighbors(
-    object: THREE.Object3D,
-    neighbors: Map<string, THREE.Object3D>
-  ): void {
+  showDistancesToNeighbors(object: THREE.Object3D, neighbors: Map<string, THREE.Object3D>): void {
     const objectBox = new THREE.Box3().setFromObject(object);
     const objectCenter = objectBox.getCenter(new THREE.Vector3());
     const objectId = object.userData.id;

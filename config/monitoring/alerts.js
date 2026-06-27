@@ -54,7 +54,7 @@ const notificationChannels = {
     url: process.env.WEBHOOK_ALERT_URL || '',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.WEBHOOK_AUTH_TOKEN || ''}`,
+      Authorization: `Bearer ${process.env.WEBHOOK_AUTH_TOKEN || ''}`,
     },
     minSeverity: 'info',
   },
@@ -65,8 +65,8 @@ const notificationChannels = {
  */
 const severityLevels = {
   CRITICAL: 'critical', // System is down or severely degraded
-  WARNING: 'warning',   // Potential issues that need attention
-  INFO: 'info',         // Informational alerts
+  WARNING: 'warning', // Potential issues that need attention
+  INFO: 'info', // Informational alerts
 };
 
 /**
@@ -82,7 +82,8 @@ const alertRules = {
     description: 'HTTP 5xx error rate exceeds threshold',
     severity: severityLevels.CRITICAL,
     metric: 'http_requests_total',
-    condition: 'rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05',
+    condition:
+      'rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05',
     threshold: 0.05, // 5% error rate
     duration: '5m',
     annotations: {
@@ -143,7 +144,8 @@ const alertRules = {
     description: 'CPU usage exceeds 80%',
     severity: severityLevels.WARNING,
     metric: 'node_cpu_usage',
-    condition: '100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80',
+    condition:
+      '100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80',
     threshold: 80, // 80%
     duration: '5m',
     annotations: {
@@ -186,7 +188,8 @@ const alertRules = {
     duration: '5m',
     annotations: {
       summary: 'Low disk space detected',
-      description: 'Only {{ $value | humanize }}% disk space available on {{ $labels.instance }}:{{ $labels.mountpoint }}',
+      description:
+        'Only {{ $value | humanize }}% disk space available on {{ $labels.instance }}:{{ $labels.mountpoint }}',
       runbook_url: 'https://runbooks.kitchenxpert.com/low-disk',
     },
     labels: {
@@ -331,7 +334,8 @@ const alertRules = {
     duration: '1h',
     annotations: {
       summary: 'SSL certificate expiring soon',
-      description: 'SSL certificate for {{ $labels.domain }} expires in {{ $value | humanize }} days',
+      description:
+        'SSL certificate for {{ $labels.domain }} expires in {{ $value | humanize }} days',
       runbook_url: 'https://runbooks.kitchenxpert.com/ssl-expiry',
     },
     labels: {
@@ -493,16 +497,20 @@ const AlertUtils = {
     if (silencingRules.maintenanceWindow.enabled) {
       const now = new Date();
       const schedule = silencingRules.maintenanceWindow.schedule;
-      if (now.getDay() === schedule.dayOfWeek &&
-          now.getUTCHours() >= schedule.startHour &&
-          now.getUTCHours() < schedule.endHour) {
+      if (
+        now.getDay() === schedule.dayOfWeek &&
+        now.getUTCHours() >= schedule.startHour &&
+        now.getUTCHours() < schedule.endHour
+      ) {
         return true;
       }
     }
 
     // Check deployment window
-    if (silencingRules.deploymentWindow.enabled &&
-        silencingRules.deploymentWindow.silencedAlerts.includes(alert.name)) {
+    if (
+      silencingRules.deploymentWindow.enabled &&
+      silencingRules.deploymentWindow.silencedAlerts.includes(alert.name)
+    ) {
       // Check if we're in deployment window (implementation specific)
       return false; // Placeholder
     }

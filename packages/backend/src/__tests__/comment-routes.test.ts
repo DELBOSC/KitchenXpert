@@ -116,16 +116,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -151,14 +153,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -234,9 +232,7 @@ describe('Comment Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /comments', async () => {
-      const response = await request(app)
-        .get('/comments?projectId=project-1')
-        .expect(401);
+      const response = await request(app).get('/comments?projectId=project-1').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -260,9 +256,7 @@ describe('Comment Routes', () => {
     });
 
     it('should return 401 for unauthenticated request to DELETE /comments/:id', async () => {
-      const response = await request(app)
-        .delete('/comments/comment-1')
-        .expect(401);
+      const response = await request(app).delete('/comments/comment-1').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -340,7 +334,11 @@ describe('Comment Routes', () => {
 
       const response = await authedRequest(app)
         .post('/comments')
-        .send({ projectId: 'project-1', content: 'Reply', parentId: '00000000-0000-0000-0000-000000000000' })
+        .send({
+          projectId: 'project-1',
+          content: 'Reply',
+          parentId: '00000000-0000-0000-0000-000000000000',
+        })
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -379,18 +377,14 @@ describe('Comment Routes', () => {
       mockPrisma.project.findUnique.mockResolvedValue(mockProject);
       mockPrisma.projectComment.findMany.mockResolvedValue([mockComment, otherUserComment]);
 
-      const response = await authedRequest(app)
-        .get('/comments?projectId=project-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/comments?projectId=project-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
     });
 
     it('should return 400 when projectId query is missing', async () => {
-      const response = await authedRequest(app)
-        .get('/comments')
-        .expect(400);
+      const response = await authedRequest(app).get('/comments').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -398,9 +392,7 @@ describe('Comment Routes', () => {
     it('should return 404 when project does not exist', async () => {
       mockPrisma.project.findUnique.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/comments?projectId=nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/comments?projectId=nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -409,9 +401,7 @@ describe('Comment Routes', () => {
       mockPrisma.project.findUnique.mockResolvedValue(mockProject);
       mockPrisma.projectComment.findMany.mockResolvedValue([]);
 
-      const response = await authedRequest(app)
-        .get('/comments?projectId=project-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/comments?projectId=project-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual([]);
@@ -436,10 +426,7 @@ describe('Comment Routes', () => {
     });
 
     it('should return 400 when content is missing', async () => {
-      const response = await authedRequest(app)
-        .put('/comments/comment-1')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).put('/comments/comment-1').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -466,7 +453,7 @@ describe('Comment Routes', () => {
       expect(response.body.success).toBe(false);
     });
 
-    it('should return 403 when trying to update another user\'s comment (IDOR prevention)', async () => {
+    it("should return 403 when trying to update another user's comment (IDOR prevention)", async () => {
       mockPrisma.projectComment.findUnique.mockResolvedValue(otherUserComment);
 
       const response = await authedRequest(app)
@@ -485,9 +472,7 @@ describe('Comment Routes', () => {
       mockPrisma.projectComment.findUnique.mockResolvedValue(mockComment);
       mockPrisma.projectComment.update.mockResolvedValue({ ...mockComment, deletedAt: new Date() });
 
-      const response = await authedRequest(app)
-        .delete('/comments/comment-1')
-        .expect(200);
+      const response = await authedRequest(app).delete('/comments/comment-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');
@@ -502,9 +487,7 @@ describe('Comment Routes', () => {
     it('should return 404 for non-existent comment', async () => {
       mockPrisma.projectComment.findUnique.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .delete('/comments/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).delete('/comments/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -512,19 +495,15 @@ describe('Comment Routes', () => {
     it('should return 404 for already-deleted comment', async () => {
       mockPrisma.projectComment.findUnique.mockResolvedValue(deletedComment);
 
-      const response = await authedRequest(app)
-        .delete('/comments/comment-deleted')
-        .expect(404);
+      const response = await authedRequest(app).delete('/comments/comment-deleted').expect(404);
 
       expect(response.body.success).toBe(false);
     });
 
-    it('should return 403 when trying to delete another user\'s comment (IDOR prevention)', async () => {
+    it("should return 403 when trying to delete another user's comment (IDOR prevention)", async () => {
       mockPrisma.projectComment.findUnique.mockResolvedValue(otherUserComment);
 
-      const response = await authedRequest(app)
-        .delete('/comments/comment-2')
-        .expect(403);
+      const response = await authedRequest(app).delete('/comments/comment-2').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -532,11 +511,12 @@ describe('Comment Routes', () => {
     it('should allow admin to delete any comment', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockPrisma.projectComment.findUnique.mockResolvedValue(otherUserComment);
-      mockPrisma.projectComment.update.mockResolvedValue({ ...otherUserComment, deletedAt: new Date() });
+      mockPrisma.projectComment.update.mockResolvedValue({
+        ...otherUserComment,
+        deletedAt: new Date(),
+      });
 
-      const response = await authedRequest(app)
-        .delete('/comments/comment-2')
-        .expect(200);
+      const response = await authedRequest(app).delete('/comments/comment-2').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');

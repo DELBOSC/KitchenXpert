@@ -9,13 +9,15 @@ const router: RouterType = Router();
 
 // ==================== ZOD SCHEMAS ====================
 
-const generateSchema = z.object({
-  projectId: z.string().uuid(),
-  kitchenStyle: z.string().min(1).max(100),
-  colorPalette: z.string().min(1).max(100).optional(),
-  layoutPreference: z.string().min(1).max(100).optional(),
-  numberOfDesigns: z.number().int().min(1).max(5).optional(),
-}).passthrough();
+const generateSchema = z
+  .object({
+    projectId: z.string().uuid(),
+    kitchenStyle: z.string().min(1).max(100),
+    colorPalette: z.string().min(1).max(100).optional(),
+    layoutPreference: z.string().min(1).max(100).optional(),
+    numberOfDesigns: z.number().int().min(1).max(5).optional(),
+  })
+  .passthrough();
 
 const saveDesignSchema = z.object({
   generationId: z.string().min(1, 'generationId is required'),

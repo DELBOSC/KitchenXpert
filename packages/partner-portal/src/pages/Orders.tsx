@@ -27,13 +27,40 @@ const statusOptions = [
   { value: 'cancelled', label: 'Cancelled' },
 ];
 
-const statusConfig: Record<Order['status'], { color: string; icon: React.ReactNode; label: string }> = {
-  pending: { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="h-4 w-4" />, label: 'Pending' },
-  confirmed: { color: 'bg-blue-100 text-blue-800', icon: <CheckCircle className="h-4 w-4" />, label: 'Confirmed' },
-  processing: { color: 'bg-purple-100 text-purple-800', icon: <Package className="h-4 w-4" />, label: 'Processing' },
-  shipped: { color: 'bg-indigo-100 text-indigo-800', icon: <Truck className="h-4 w-4" />, label: 'Shipped' },
-  delivered: { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="h-4 w-4" />, label: 'Delivered' },
-  cancelled: { color: 'bg-red-100 text-red-800', icon: <XCircle className="h-4 w-4" />, label: 'Cancelled' },
+const statusConfig: Record<
+  Order['status'],
+  { color: string; icon: React.ReactNode; label: string }
+> = {
+  pending: {
+    color: 'bg-yellow-100 text-yellow-800',
+    icon: <Clock className="h-4 w-4" />,
+    label: 'Pending',
+  },
+  confirmed: {
+    color: 'bg-blue-100 text-blue-800',
+    icon: <CheckCircle className="h-4 w-4" />,
+    label: 'Confirmed',
+  },
+  processing: {
+    color: 'bg-purple-100 text-purple-800',
+    icon: <Package className="h-4 w-4" />,
+    label: 'Processing',
+  },
+  shipped: {
+    color: 'bg-indigo-100 text-indigo-800',
+    icon: <Truck className="h-4 w-4" />,
+    label: 'Shipped',
+  },
+  delivered: {
+    color: 'bg-green-100 text-green-800',
+    icon: <CheckCircle className="h-4 w-4" />,
+    label: 'Delivered',
+  },
+  cancelled: {
+    color: 'bg-red-100 text-red-800',
+    icon: <XCircle className="h-4 w-4" />,
+    label: 'Cancelled',
+  },
 };
 
 export function Orders() {
@@ -50,7 +77,10 @@ export function Orders() {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
-  const [updatingStatus, setUpdatingStatus] = useState<{ orderId: string; status: Order['status'] } | null>(null);
+  const [updatingStatus, setUpdatingStatus] = useState<{
+    orderId: string;
+    status: Order['status'];
+  } | null>(null);
   const [trackingNumber, setTrackingNumber] = useState('');
 
   useEffect(() => {
@@ -84,8 +114,22 @@ export function Orders() {
           customerName: 'John Smith',
           customerEmail: 'john.smith@email.com',
           items: [
-            { productId: 'p1', productName: 'Modern Kitchen Cabinet', sku: 'CAB-001', quantity: 4, unitPrice: 450, total: 1800 },
-            { productId: 'p2', productName: 'Granite Countertop', sku: 'CNT-002', quantity: 1, unitPrice: 1200, total: 1200 },
+            {
+              productId: 'p1',
+              productName: 'Modern Kitchen Cabinet',
+              sku: 'CAB-001',
+              quantity: 4,
+              unitPrice: 450,
+              total: 1800,
+            },
+            {
+              productId: 'p2',
+              productName: 'Granite Countertop',
+              sku: 'CNT-002',
+              quantity: 1,
+              unitPrice: 1200,
+              total: 1200,
+            },
           ],
           subtotal: 3000,
           tax: 300,
@@ -93,7 +137,13 @@ export function Orders() {
           total: 3450,
           currency: 'EUR',
           status: 'pending',
-          shippingAddress: { street: '123 Main St', city: 'Berlin', state: 'Berlin', postalCode: '10115', country: 'Germany' },
+          shippingAddress: {
+            street: '123 Main St',
+            city: 'Berlin',
+            state: 'Berlin',
+            postalCode: '10115',
+            country: 'Germany',
+          },
           createdAt: '2024-01-20T10:30:00Z',
           updatedAt: '2024-01-20T10:30:00Z',
         },
@@ -105,7 +155,14 @@ export function Orders() {
           customerName: 'Maria Garcia',
           customerEmail: 'maria.garcia@email.com',
           items: [
-            { productId: 'p3', productName: 'Stainless Steel Sink', sku: 'SNK-003', quantity: 2, unitPrice: 350, total: 700 },
+            {
+              productId: 'p3',
+              productName: 'Stainless Steel Sink',
+              sku: 'SNK-003',
+              quantity: 2,
+              unitPrice: 350,
+              total: 700,
+            },
           ],
           subtotal: 700,
           tax: 70,
@@ -113,7 +170,13 @@ export function Orders() {
           total: 820,
           currency: 'EUR',
           status: 'processing',
-          shippingAddress: { street: '456 Oak Ave', city: 'Munich', state: 'Bavaria', postalCode: '80331', country: 'Germany' },
+          shippingAddress: {
+            street: '456 Oak Ave',
+            city: 'Munich',
+            state: 'Bavaria',
+            postalCode: '80331',
+            country: 'Germany',
+          },
           createdAt: '2024-01-19T14:20:00Z',
           updatedAt: '2024-01-20T09:00:00Z',
         },
@@ -125,8 +188,22 @@ export function Orders() {
           customerName: 'Hans Mueller',
           customerEmail: 'hans.mueller@email.com',
           items: [
-            { productId: 'p4', productName: 'LED Under Cabinet Light', sku: 'LGT-004', quantity: 6, unitPrice: 75, total: 450 },
-            { productId: 'p5', productName: 'Drawer Organizer Set', sku: 'ORG-005', quantity: 3, unitPrice: 45, total: 135 },
+            {
+              productId: 'p4',
+              productName: 'LED Under Cabinet Light',
+              sku: 'LGT-004',
+              quantity: 6,
+              unitPrice: 75,
+              total: 450,
+            },
+            {
+              productId: 'p5',
+              productName: 'Drawer Organizer Set',
+              sku: 'ORG-005',
+              quantity: 3,
+              unitPrice: 45,
+              total: 135,
+            },
           ],
           subtotal: 585,
           tax: 58.5,
@@ -134,7 +211,13 @@ export function Orders() {
           total: 668.5,
           currency: 'EUR',
           status: 'shipped',
-          shippingAddress: { street: '789 Pine Rd', city: 'Hamburg', state: 'Hamburg', postalCode: '20095', country: 'Germany' },
+          shippingAddress: {
+            street: '789 Pine Rd',
+            city: 'Hamburg',
+            state: 'Hamburg',
+            postalCode: '20095',
+            country: 'Germany',
+          },
           trackingNumber: 'DHL-123456789',
           createdAt: '2024-01-18T08:45:00Z',
           updatedAt: '2024-01-19T16:30:00Z',
@@ -147,7 +230,14 @@ export function Orders() {
           customerName: 'Sophie Laurent',
           customerEmail: 'sophie.laurent@email.com',
           items: [
-            { productId: 'p1', productName: 'Modern Kitchen Cabinet', sku: 'CAB-001', quantity: 8, unitPrice: 450, total: 3600 },
+            {
+              productId: 'p1',
+              productName: 'Modern Kitchen Cabinet',
+              sku: 'CAB-001',
+              quantity: 8,
+              unitPrice: 450,
+              total: 3600,
+            },
           ],
           subtotal: 3600,
           tax: 360,
@@ -155,7 +245,13 @@ export function Orders() {
           total: 4160,
           currency: 'EUR',
           status: 'delivered',
-          shippingAddress: { street: '321 Elm St', city: 'Frankfurt', state: 'Hesse', postalCode: '60311', country: 'Germany' },
+          shippingAddress: {
+            street: '321 Elm St',
+            city: 'Frankfurt',
+            state: 'Hesse',
+            postalCode: '60311',
+            country: 'Germany',
+          },
           trackingNumber: 'UPS-987654321',
           createdAt: '2024-01-15T11:00:00Z',
           updatedAt: '2024-01-18T14:00:00Z',
@@ -177,7 +273,11 @@ export function Orders() {
     if (!updatingStatus) return;
     try {
       setIsLoading(true);
-      await api.updateOrderStatus(updatingStatus.orderId, updatingStatus.status, trackingNumber || undefined);
+      await api.updateOrderStatus(
+        updatingStatus.orderId,
+        updatingStatus.status,
+        trackingNumber || undefined
+      );
       setUpdatingStatus(null);
       setTrackingNumber('');
       fetchOrders();
@@ -319,7 +419,9 @@ export function Orders() {
                         <div className="font-medium text-gray-900">{order.orderNumber}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{order.customerName}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {order.customerName}
+                        </div>
                         <div className="text-sm text-gray-500">{order.customerEmail}</div>
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
@@ -359,7 +461,8 @@ export function Orders() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4">
             <div className="text-sm text-gray-500">
-              Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} orders
+              Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total}{' '}
+              orders
             </div>
             <div className="flex items-center space-x-2">
               <button
@@ -376,7 +479,9 @@ export function Orders() {
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
                     className={`rounded-lg px-3 py-2 text-sm font-medium ${
-                      pageNum === page ? 'bg-primary-600 text-white' : 'text-gray-700 hover:bg-gray-50'
+                      pageNum === page
+                        ? 'bg-primary-600 text-white'
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
                     {pageNum}
@@ -403,7 +508,7 @@ export function Orders() {
               <div>
                 <h2 className="text-xl font-bold text-gray-900">{viewingOrder.orderNumber}</h2>
                 <p className="text-sm text-gray-500">
-                  Placed on {format(new Date(viewingOrder.createdAt), 'MMMM d, yyyy \'at\' h:mm a')}
+                  Placed on {format(new Date(viewingOrder.createdAt), "MMMM d, yyyy 'at' h:mm a")}
                 </p>
               </div>
               <button
@@ -419,8 +524,12 @@ export function Orders() {
               <div className="rounded-lg bg-gray-50 p-4">
                 <h3 className="mb-3 font-semibold text-gray-900">Customer Information</h3>
                 <div className="space-y-2 text-sm">
-                  <p><span className="text-gray-500">Name:</span> {viewingOrder.customerName}</p>
-                  <p><span className="text-gray-500">Email:</span> {viewingOrder.customerEmail}</p>
+                  <p>
+                    <span className="text-gray-500">Name:</span> {viewingOrder.customerName}
+                  </p>
+                  <p>
+                    <span className="text-gray-500">Email:</span> {viewingOrder.customerEmail}
+                  </p>
                 </div>
               </div>
 
@@ -429,7 +538,10 @@ export function Orders() {
                 <h3 className="mb-3 font-semibold text-gray-900">Shipping Address</h3>
                 <div className="text-sm">
                   <p>{viewingOrder.shippingAddress.street}</p>
-                  <p>{viewingOrder.shippingAddress.city}, {viewingOrder.shippingAddress.state} {viewingOrder.shippingAddress.postalCode}</p>
+                  <p>
+                    {viewingOrder.shippingAddress.city}, {viewingOrder.shippingAddress.state}{' '}
+                    {viewingOrder.shippingAddress.postalCode}
+                  </p>
                   <p>{viewingOrder.shippingAddress.country}</p>
                 </div>
               </div>
@@ -482,19 +594,33 @@ export function Orders() {
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Product</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">SKU</th>
-                      <th className="px-4 py-3 text-center text-xs font-medium uppercase text-gray-500">Qty</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">Unit Price</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">Total</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                        Product
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">
+                        SKU
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium uppercase text-gray-500">
+                        Qty
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                        Unit Price
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">
+                        Total
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {viewingOrder.items.map((item) => (
                       <tr key={item.productId}>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.productName}</td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                          {item.productName}
+                        </td>
                         <td className="px-4 py-3 text-sm text-gray-500">{item.sku}</td>
-                        <td className="px-4 py-3 text-center text-sm text-gray-500">{item.quantity}</td>
+                        <td className="px-4 py-3 text-center text-sm text-gray-500">
+                          {item.quantity}
+                        </td>
                         <td className="px-4 py-3 text-right text-sm text-gray-500">
                           {viewingOrder.currency} {item.unitPrice.toLocaleString()}
                         </td>
@@ -513,19 +639,27 @@ export function Orders() {
               <div className="w-64 space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Subtotal</span>
-                  <span>{viewingOrder.currency} {viewingOrder.subtotal.toLocaleString()}</span>
+                  <span>
+                    {viewingOrder.currency} {viewingOrder.subtotal.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Tax</span>
-                  <span>{viewingOrder.currency} {viewingOrder.tax.toLocaleString()}</span>
+                  <span>
+                    {viewingOrder.currency} {viewingOrder.tax.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Shipping</span>
-                  <span>{viewingOrder.currency} {viewingOrder.shipping.toLocaleString()}</span>
+                  <span>
+                    {viewingOrder.currency} {viewingOrder.shipping.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between border-t border-gray-200 pt-2 font-semibold">
                   <span>Total</span>
-                  <span>{viewingOrder.currency} {viewingOrder.total.toLocaleString()}</span>
+                  <span>
+                    {viewingOrder.currency} {viewingOrder.total.toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>
@@ -546,11 +680,10 @@ export function Orders() {
       {updatingStatus && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="w-full max-w-md rounded-xl bg-white p-6">
-            <h3 className="text-lg font-bold text-gray-900">
-              Update Order Status
-            </h3>
+            <h3 className="text-lg font-bold text-gray-900">Update Order Status</h3>
             <p className="mt-2 text-gray-500">
-              Change status to <span className="font-medium capitalize">{updatingStatus.status}</span>
+              Change status to{' '}
+              <span className="font-medium capitalize">{updatingStatus.status}</span>
             </p>
 
             {updatingStatus.status === 'shipped' && (

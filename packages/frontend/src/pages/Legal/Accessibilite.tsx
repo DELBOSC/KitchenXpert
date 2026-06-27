@@ -28,7 +28,7 @@ const LAST_AUDIT_DATE = '2026-05-10';
 const AUDIT_TOOL = 'axe-core 4.10 + audit manuel';
 
 interface NonConformity {
-  ref: string;          // RGAA criterion (e.g. "1.1")
+  ref: string; // RGAA criterion (e.g. "1.1")
   page: string;
   description: string;
   workaround: string;
@@ -39,9 +39,9 @@ const KNOWN_NON_CONFORMITIES: NonConformity[] = [
     ref: '1.3',
     page: 'Designer 3D (/projects/.../designer)',
     description:
-      'Le canvas WebGL n\'expose pas d\'arborescence DOM accessible aux lecteurs d\'écran. Une description textuelle live (« Plan-type îlot ouvert, 4×3,5 m, 8 meubles bas blancs… ») est en cours d\'intégration.',
+      "Le canvas WebGL n'expose pas d'arborescence DOM accessible aux lecteurs d'écran. Une description textuelle live (« Plan-type îlot ouvert, 4×3,5 m, 8 meubles bas blancs… ») est en cours d'intégration.",
     workaround:
-      'Une vue alternative en liste textuelle est accessible via le bouton « Mode liste » dans la barre d\'outils.',
+      "Une vue alternative en liste textuelle est accessible via le bouton « Mode liste » dans la barre d'outils.",
   },
   {
     ref: '11.10',
@@ -57,23 +57,24 @@ const COMPLIANT_RATIO = 0.94; // À recalculer après chaque audit axe
 
 export default function Accessibilite(): React.ReactElement {
   const fmtDate = new Date(LAST_AUDIT_DATE).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long', year: 'numeric',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
   const compliancePct = Math.round(COMPLIANT_RATIO * 100);
 
   return (
     <LegalLayout title="Déclaration d'accessibilité">
       <p className="text-sm text-white/50">
-        Établie selon le modèle officiel publié par la DINUM. Dernière
-        mise à jour&nbsp;: {fmtDate}.
+        Établie selon le modèle officiel publié par la DINUM. Dernière mise à jour&nbsp;: {fmtDate}.
       </p>
 
       <h2>État de conformité</h2>
       <p>
-        Le site <strong>{LEGAL.editor.brandName}</strong> ({LEGAL.editor.socialName})
-        est en <strong>conformité partielle</strong> avec le Référentiel
-        général d&apos;amélioration de l&apos;accessibilité (RGAA) version 4.1.2,
-        en raison des non-conformités énumérées ci-dessous.
+        Le site <strong>{LEGAL.editor.brandName}</strong> ({LEGAL.editor.socialName}) est en{' '}
+        <strong>conformité partielle</strong> avec le Référentiel général d&apos;amélioration de
+        l&apos;accessibilité (RGAA) version 4.1.2, en raison des non-conformités énumérées
+        ci-dessous.
       </p>
 
       <div className="not-prose my-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6">
@@ -95,17 +96,13 @@ export default function Accessibilite(): React.ReactElement {
           />
         </div>
         <p className="mt-4 text-xs text-white/55">
-          Calculé par {AUDIT_TOOL} le {fmtDate} sur les 8 pages publiques
-          (accueil, login, inscription, tarifs, catalogue, IKEA, mentions
-          légales, CGV).
+          Calculé par {AUDIT_TOOL} le {fmtDate} sur les 8 pages publiques (accueil, login,
+          inscription, tarifs, catalogue, IKEA, mentions légales, CGV).
         </p>
       </div>
 
       <h2>Résultats des tests</h2>
-      <p>
-        L&apos;audit a été conduit par notre équipe interne avec les outils
-        suivants&nbsp;:
-      </p>
+      <p>L&apos;audit a été conduit par notre équipe interne avec les outils suivants&nbsp;:</p>
       <ul>
         <li>axe-core 4.10 (Playwright) — exécuté en CI sur chaque PR</li>
         <li>Lighthouse 12 — score Accessibilité ≥ 95 requis pour tout merge</li>
@@ -136,43 +133,38 @@ export default function Accessibilite(): React.ReactElement {
 
       <h3>Contenus non soumis à l&apos;obligation d&apos;accessibilité</h3>
       <p>
-        Les rendus 3D générés par notre moteur WebGL (canvas) sont par
-        nature non textuels. Une vue alternative en liste structurée est
-        proposée pour chaque cuisine.
+        Les rendus 3D générés par notre moteur WebGL (canvas) sont par nature non textuels. Une vue
+        alternative en liste structurée est proposée pour chaque cuisine.
       </p>
 
       <h2>Établissement de cette déclaration</h2>
       <p>Cette déclaration a été établie le {fmtDate}.</p>
       <p>
-        Technologies utilisées pour la réalisation du site&nbsp;: HTML5,
-        WAI-ARIA, CSS, JavaScript (React), WebGL (Three.js).
+        Technologies utilisées pour la réalisation du site&nbsp;: HTML5, WAI-ARIA, CSS, JavaScript
+        (React), WebGL (Three.js).
       </p>
 
       <h2>Retour d&apos;information et contact</h2>
       <p>
-        Si vous n&apos;arrivez pas à accéder à un contenu ou à un service,
-        vous pouvez nous contacter pour être orienté vers une alternative
-        accessible ou obtenir le contenu sous une autre forme&nbsp;:
+        Si vous n&apos;arrivez pas à accéder à un contenu ou à un service, vous pouvez nous
+        contacter pour être orienté vers une alternative accessible ou obtenir le contenu sous une
+        autre forme&nbsp;:
       </p>
       <ul>
         <li>
-          E-mail&nbsp;:{' '}
-          <a href={`mailto:${LEGAL.editor.email}`}>{LEGAL.editor.email}</a>
+          E-mail&nbsp;: <a href={`mailto:${LEGAL.editor.email}`}>{LEGAL.editor.email}</a>
         </li>
         <li>
-          Adresse postale&nbsp;: {LEGAL.editor.address.street},{' '}
-          {LEGAL.editor.address.postalCode} {LEGAL.editor.address.city},{' '}
-          {LEGAL.editor.address.country}
+          Adresse postale&nbsp;: {LEGAL.editor.address.street}, {LEGAL.editor.address.postalCode}{' '}
+          {LEGAL.editor.address.city}, {LEGAL.editor.address.country}
         </li>
       </ul>
 
       <h2>Voies de recours</h2>
       <p>
-        Cette procédure est à utiliser dans le cas suivant&nbsp;: vous
-        avez signalé au responsable du site internet un défaut
-        d&apos;accessibilité qui vous empêche d&apos;accéder à un contenu ou à un
-        service du portail et vous n&apos;avez pas obtenu de réponse
-        satisfaisante.
+        Cette procédure est à utiliser dans le cas suivant&nbsp;: vous avez signalé au responsable
+        du site internet un défaut d&apos;accessibilité qui vous empêche d&apos;accéder à un contenu
+        ou à un service du portail et vous n&apos;avez pas obtenu de réponse satisfaisante.
       </p>
       <ul>
         <li>
@@ -198,9 +190,8 @@ export default function Accessibilite(): React.ReactElement {
           .
         </li>
         <li>
-          Envoyer un courrier par la poste (gratuit, ne pas mettre de
-          timbre)&nbsp;: Défenseur des droits, Libre réponse 71120, 75342
-          Paris CEDEX 07.
+          Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre)&nbsp;: Défenseur des
+          droits, Libre réponse 71120, 75342 Paris CEDEX 07.
         </li>
       </ul>
     </LegalLayout>

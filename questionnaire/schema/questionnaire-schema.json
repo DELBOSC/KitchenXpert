@@ -57,7 +57,11 @@
         },
         "weights": {
           "type": "object",
-          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
         }
       }
     }
@@ -231,7 +235,16 @@
         "questionId": { "type": "string" },
         "operator": {
           "type": "string",
-          "enum": ["equals", "not-equals", "contains", "not-contains", "greater-than", "less-than", "in", "not-in"]
+          "enum": [
+            "equals",
+            "not-equals",
+            "contains",
+            "not-contains",
+            "greater-than",
+            "less-than",
+            "in",
+            "not-in"
+          ]
         },
         "value": {
           "type": ["string", "number", "boolean", "array"]
@@ -255,7 +268,15 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["budget", "style", "functionality", "space", "technology", "sustainability", "maintenance"]
+            "enum": [
+              "budget",
+              "style",
+              "functionality",
+              "space",
+              "technology",
+              "sustainability",
+              "maintenance"
+            ]
           }
         }
       }

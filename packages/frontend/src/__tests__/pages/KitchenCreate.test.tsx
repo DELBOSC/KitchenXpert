@@ -73,9 +73,7 @@ describe('KitchenCreate', () => {
     it('should render description text', () => {
       renderKitchenCreate();
 
-      expect(
-        screen.getByText(/define the kitchen space dimensions/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/define the kitchen space dimensions/i)).toBeInTheDocument();
     });
 
     it('should render kitchen name input', () => {
@@ -102,9 +100,7 @@ describe('KitchenCreate', () => {
     it('should render design style section heading', () => {
       renderKitchenCreate();
 
-      expect(
-        screen.getByRole('heading', { level: 2, name: /design style/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 2, name: /design style/i })).toBeInTheDocument();
     });
 
     it('should render all 8 style options', () => {
@@ -123,13 +119,9 @@ describe('KitchenCreate', () => {
     it('should render submit and cancel buttons', () => {
       renderKitchenCreate();
 
-      expect(
-        screen.getByRole('button', { name: /create & open designer/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /create & open designer/i })).toBeInTheDocument();
       // fr.json: common.cancel = "Annuler"
-      expect(
-        screen.getByRole('button', { name: /annuler/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /annuler/i })).toBeInTheDocument();
     });
 
     it('should render tips section', () => {
@@ -300,9 +292,7 @@ describe('KitchenCreate', () => {
       await user.click(screen.getByRole('button', { name: /create & open designer/i }));
 
       // Only the initial project name fetch should have been called
-      const kitchenCreateCalls = mockFetch.mock.calls.filter(
-        (call) => call[1]?.method === 'POST'
-      );
+      const kitchenCreateCalls = mockFetch.mock.calls.filter((call) => call[1]?.method === 'POST');
       expect(kitchenCreateCalls).toHaveLength(0);
     });
   });

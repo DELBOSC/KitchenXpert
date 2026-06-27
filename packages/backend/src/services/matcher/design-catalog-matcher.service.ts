@@ -53,7 +53,9 @@ const SLOT_CATEGORY: Record<SlotType, SlotCategory> = {
 
 const GROUP = (g: string) => ({ specifications: { path: ['applianceGroup'], equals: g } });
 const num = (v: unknown): number | null => {
-  if (v == null) {return null;}
+  if (v == null) {
+    return null;
+  }
   const n = Number(v as number);
   return Number.isFinite(n) ? n : null;
 };
@@ -66,7 +68,7 @@ const STATUS_TIER: Record<Exclude<MatchResult['status'], 'no_match'>, number> = 
 export class DesignCatalogMatcher {
   constructor(
     private readonly db: MatcherDb,
-    private readonly weights: RankingWeights = RANKING_WEIGHTS,
+    private readonly weights: RankingWeights = RANKING_WEIGHTS
   ) {}
 
   /** Résout un slot vers le meilleur SKU réel + alternatives. Ne touche pas la DB en écriture. */
@@ -100,7 +102,9 @@ export class DesignCatalogMatcher {
     const candidates: MatchedProduct[] = [];
     for (const r of rows) {
       const c = this.evaluate(r, slot, exactTol, degradedTol, budgetMax);
-      if (c) {candidates.push(c);}
+      if (c) {
+        candidates.push(c);
+      }
     }
 
     if (candidates.length === 0) {
@@ -142,7 +146,7 @@ export class DesignCatalogMatcher {
     slot: SlotInput,
     exactTol: number,
     degradedTol: number,
-    budgetMax?: number,
+    budgetMax?: number
   ): MatchedProduct | null {
     const pw = num(r.width);
     const ph = num(r.height);
@@ -152,13 +156,21 @@ export class DesignCatalogMatcher {
     // Distance dimensionnelle (mm) sur les cotes FOURNIES par le slot.
     const diffs: number[] = [];
     diffs.push(this.dimDiffMm(slot.dimensions.width, pw));
-    if (slot.dimensions.height != null) {diffs.push(this.dimDiffMm(slot.dimensions.height, ph));}
-    if (slot.dimensions.depth != null) {diffs.push(this.dimDiffMm(slot.dimensions.depth, pd));}
+    if (slot.dimensions.height != null) {
+      diffs.push(this.dimDiffMm(slot.dimensions.height, ph));
+    }
+    if (slot.dimensions.depth != null) {
+      diffs.push(this.dimDiffMm(slot.dimensions.depth, pd));
+    }
     const dimMaxMm = Math.max(...diffs);
-    if (!Number.isFinite(dimMaxMm) || dimMaxMm > degradedTol) {return null;} // cotes incompatibles / inconnues
+    if (!Number.isFinite(dimMaxMm) || dimMaxMm > degradedTol) {
+      return null;
+    } // cotes incompatibles / inconnues
 
     // Budget : au-delà de max×facteur = exclu.
-    if (budgetMax != null && price > budgetMax * BUDGET_DEGRADED_MULTIPLIER) {return null;}
+    if (budgetMax != null && price > budgetMax * BUDGET_DEGRADED_MULTIPLIER) {
+      return null;
+    }
 
     let status: MatchedProduct['status'];
     const reasons: string[] = [`cotes à ${Math.round(dimMaxMm)}mm de l'objectif`];
@@ -170,7 +182,9 @@ export class DesignCatalogMatcher {
     } else {
       status = 'matched_degraded';
     }
-    if (budgetMax != null && price <= budgetMax) {reasons.push(`prix ${price}EUR dans le budget`);}
+    if (budgetMax != null && price <= budgetMax) {
+      reasons.push(`prix ${price}EUR dans le budget`);
+    }
 
     return {
       productId: r.id,
@@ -190,16 +204,23 @@ export class DesignCatalogMatcher {
 
   /** Diff en mm entre une cote slot (cm) et une cote produit (cm). null produit -> Infinity. */
   private dimDiffMm(slotCm: number, prodCm: number | null): number {
-    if (prodCm == null) {return Infinity;}
+    if (prodCm == null) {
+      return Infinity;
+    }
     return Math.abs(slotCm - prodCm) * 10;
   }
 
   /** Score composite (pénalités, bas = meilleur). */
-  private score(c: MatchedProduct, pricePenalty: number, slot: SlotInput, degradedTol: number): number {
+  private score(
+    c: MatchedProduct,
+    pricePenalty: number,
+    slot: SlotInput,
+    degradedTol: number
+  ): number {
     const dimMm = Math.max(
       this.dimDiffMm(slot.dimensions.width, c.width),
       slot.dimensions.height != null ? this.dimDiffMm(slot.dimensions.height, c.height) : 0,
-      slot.dimensions.depth != null ? this.dimDiffMm(slot.dimensions.depth, c.depth) : 0,
+      slot.dimensions.depth != null ? this.dimDiffMm(slot.dimensions.depth, c.depth) : 0
     );
     const dimPenalty = Math.min(1, dimMm / degradedTol);
     const pref = slot.brandPreference;

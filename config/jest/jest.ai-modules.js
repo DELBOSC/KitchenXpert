@@ -52,13 +52,7 @@ module.exports = {
   /**
    * Ignore certain test files
    */
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/build/',
-    '/__fixtures__/',
-    '/__mocks__/',
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/__fixtures__/', '/__mocks__/'],
 
   // ============================================================
   // Test Environment

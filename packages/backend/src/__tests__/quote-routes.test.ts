@@ -133,16 +133,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -168,14 +170,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -265,34 +263,25 @@ describe('Quote Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to POST /quotes/send', async () => {
-      const response = await request(app)
-        .post('/quotes/send')
-        .send(validSendBody)
-        .expect(401);
+      const response = await request(app).post('/quotes/send').send(validSendBody).expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to GET /quotes', async () => {
-      const response = await request(app)
-        .get('/quotes')
-        .expect(401);
+      const response = await request(app).get('/quotes').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to GET /quotes/:id', async () => {
-      const response = await request(app)
-        .get(`/quotes/${validQuoteId}`)
-        .expect(401);
+      const response = await request(app).get(`/quotes/${validQuoteId}`).expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to GET /quotes/partners/nearby', async () => {
-      const response = await request(app)
-        .get('/quotes/partners/nearby')
-        .expect(401);
+      const response = await request(app).get('/quotes/partners/nearby').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -451,9 +440,7 @@ describe('Quote Routes', () => {
       mockPrisma.quoteRequest.findMany.mockResolvedValue([mockQuoteRequest]);
       mockPrisma.quoteRequest.count.mockResolvedValue(1);
 
-      const response = await authedRequest(app)
-        .get('/quotes')
-        .expect(200);
+      const response = await authedRequest(app).get('/quotes').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -466,9 +453,7 @@ describe('Quote Routes', () => {
       mockPrisma.quoteRequest.findMany.mockResolvedValue([]);
       mockPrisma.quoteRequest.count.mockResolvedValue(0);
 
-      const response = await authedRequest(app)
-        .get('/quotes')
-        .expect(200);
+      const response = await authedRequest(app).get('/quotes').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual([]);
@@ -479,9 +464,7 @@ describe('Quote Routes', () => {
       mockPrisma.quoteRequest.findMany.mockResolvedValue([mockQuoteRequest]);
       mockPrisma.quoteRequest.count.mockResolvedValue(25);
 
-      const response = await authedRequest(app)
-        .get('/quotes?page=2&limit=10')
-        .expect(200);
+      const response = await authedRequest(app).get('/quotes?page=2&limit=10').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.meta.page).toBe(2);
@@ -494,9 +477,7 @@ describe('Quote Routes', () => {
     it('should return a specific quote request', async () => {
       mockPrisma.quoteRequest.findUnique.mockResolvedValue(mockQuoteRequest);
 
-      const response = await authedRequest(app)
-        .get(`/quotes/${validQuoteId}`)
-        .expect(200);
+      const response = await authedRequest(app).get(`/quotes/${validQuoteId}`).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.reference).toBe('QR-ABC123-DEF456');
@@ -505,19 +486,15 @@ describe('Quote Routes', () => {
     it('should return 404 when quote does not exist', async () => {
       mockPrisma.quoteRequest.findUnique.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get(`/quotes/${validQuoteId}`)
-        .expect(404);
+      const response = await authedRequest(app).get(`/quotes/${validQuoteId}`).expect(404);
 
       expect(response.body.success).toBe(false);
     });
 
-    it('should return 403 when trying to access another user\'s quote (IDOR prevention)', async () => {
+    it("should return 403 when trying to access another user's quote (IDOR prevention)", async () => {
       mockPrisma.quoteRequest.findUnique.mockResolvedValue(otherUserQuote);
 
-      const response = await authedRequest(app)
-        .get('/quotes/quote-other')
-        .expect(403);
+      const response = await authedRequest(app).get('/quotes/quote-other').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Access denied');
@@ -527,9 +504,7 @@ describe('Quote Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockPrisma.quoteRequest.findUnique.mockResolvedValue(otherUserQuote);
 
-      const response = await authedRequest(app)
-        .get('/quotes/quote-other')
-        .expect(200);
+      const response = await authedRequest(app).get('/quotes/quote-other').expect(200);
 
       expect(response.body.success).toBe(true);
     });

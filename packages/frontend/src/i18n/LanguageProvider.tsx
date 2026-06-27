@@ -2,12 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import {
-  DEFAULT_LANGUAGE,
-  SUPPORTED_LANGUAGES,
-  type SupportedLanguage,
-  isSupported,
-} from './i18n';
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, type SupportedLanguage, isSupported } from './i18n';
 
 /**
  * LanguageProvider — single source of truth for the active locale.
@@ -44,36 +39,41 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 function detectFromUrl(pathname: string): SupportedLanguage | null {
   const seg = pathname.split('/').filter(Boolean)[0];
-  if (seg && isSupported(seg)) {return seg;}
+  if (seg && isSupported(seg)) {
+    return seg;
+  }
   return null;
 }
 
 function detectFromCookie(): SupportedLanguage | null {
-  if (typeof document === 'undefined') {return null;}
+  if (typeof document === 'undefined') {
+    return null;
+  }
   const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]+)`));
-  if (!match?.[1]) {return null;}
+  if (!match?.[1]) {
+    return null;
+  }
   const value = decodeURIComponent(match[1]);
   return isSupported(value) ? value : null;
 }
 
 function detectFromNavigator(): SupportedLanguage | null {
-  if (typeof navigator === 'undefined') {return null;}
+  if (typeof navigator === 'undefined') {
+    return null;
+  }
   // navigator.language returns "fr-FR", "en-US"… — keep only the prefix.
   const lang = (navigator.language || '').split('-')[0] ?? '';
   return isSupported(lang) ? lang : null;
 }
 
 function detectInitialLanguage(pathname: string): SupportedLanguage {
-  return (
-    detectFromUrl(pathname) ??
-    detectFromCookie() ??
-    detectFromNavigator() ??
-    DEFAULT_LANGUAGE
-  );
+  return detectFromUrl(pathname) ?? detectFromCookie() ?? detectFromNavigator() ?? DEFAULT_LANGUAGE;
 }
 
 function writeCookie(lang: SupportedLanguage): void {
-  if (typeof document === 'undefined') {return;}
+  if (typeof document === 'undefined') {
+    return;
+  }
   // SameSite=Lax + Secure when on HTTPS — Path=/ so it works across the SPA.
   const secure = typeof window !== 'undefined' && window.location.protocol === 'https:';
   document.cookie = [
@@ -82,7 +82,9 @@ function writeCookie(lang: SupportedLanguage): void {
     `Max-Age=${COOKIE_MAX_AGE_S}`,
     'SameSite=Lax',
     secure ? 'Secure' : '',
-  ].filter(Boolean).join('; ');
+  ]
+    .filter(Boolean)
+    .join('; ');
 }
 
 // ---------------------------------------------------------------------------
@@ -92,12 +94,14 @@ function writeCookie(lang: SupportedLanguage): void {
 function withPrefixFn(path: string, lang: SupportedLanguage): string {
   // Idempotent: don't double-prefix.
   const stripped = stripPrefixFn(path);
-  return `/${lang}${stripped.startsWith('/') ? stripped : `/${  stripped}`}`;
+  return `/${lang}${stripped.startsWith('/') ? stripped : `/${stripped}`}`;
 }
 
 function stripPrefixFn(path: string): string {
   const m = path.match(/^\/(fr|en)(\/.*|$)/);
-  if (!m) {return path;}
+  if (!m) {
+    return path;
+  }
   return m[2] || '/';
 }
 
@@ -122,28 +126,40 @@ export function LanguageProvider({ children }: { children: React.ReactNode }): R
   }, [location.pathname, i18nHook]);
 
   const setLanguage = useMemo(
-    () => (next: SupportedLanguage): void => {
-      writeCookie(next);
-      // Rewrite the URL so the source of truth (URL) reflects the choice.
-      // Note: even FR gets a /fr prefix for consistency + hreflang.
-      const stripped = stripPrefixFn(location.pathname);
-      const target = `/${next}${stripped}`;
-      navigate(target + location.search + location.hash);
-      void i18nHook.changeLanguage(next);
-      if (typeof document !== 'undefined') {
-        document.documentElement.lang = next;
-      }
-    },
-    [location.pathname, location.search, location.hash, navigate, i18nHook],
+    () =>
+      (next: SupportedLanguage): void => {
+        writeCookie(next);
+        // Rewrite the URL so the source of truth (URL) reflects the choice.
+        // Note: even FR gets a /fr prefix for consistency + hreflang.
+        const stripped = stripPrefixFn(location.pathname);
+        const target = `/${next}${stripped}`;
+        navigate(target + location.search + location.hash);
+        void i18nHook.changeLanguage(next);
+        if (typeof document !== 'undefined') {
+          document.documentElement.lang = next;
+        }
+      },
+    [location.pathname, location.search, location.hash, navigate, i18nHook]
   );
 
-  const value = useMemo<LanguageContextValue>(() => ({
-    language: (isSupported(i18nHook.language) ? i18nHook.language : DEFAULT_LANGUAGE) as SupportedLanguage,
-    setLanguage,
-    stripPrefix: stripPrefixFn,
-    withPrefix: (path, lang) =>
-      withPrefixFn(path, lang ?? ((isSupported(i18nHook.language) ? i18nHook.language : DEFAULT_LANGUAGE) as SupportedLanguage)),
-  }), [i18nHook.language, setLanguage]);
+  const value = useMemo<LanguageContextValue>(
+    () => ({
+      language: (isSupported(i18nHook.language)
+        ? i18nHook.language
+        : DEFAULT_LANGUAGE) as SupportedLanguage,
+      setLanguage,
+      stripPrefix: stripPrefixFn,
+      withPrefix: (path, lang) =>
+        withPrefixFn(
+          path,
+          lang ??
+            ((isSupported(i18nHook.language)
+              ? i18nHook.language
+              : DEFAULT_LANGUAGE) as SupportedLanguage)
+        ),
+    }),
+    [i18nHook.language, setLanguage]
+  );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

@@ -14,11 +14,7 @@
  * The pipeline is intentionally Gemini-Flash-only — vision is the
  * cheap branch, no Claude in the loop. Cost per call ≈ $0.01.
  */
-import {
-  assertQuota,
-  recordUsage,
-  type AiTier,
-} from '../../services/ai/cost-monitor.service';
+import { assertQuota, recordUsage, type AiTier } from '../../services/ai/cost-monitor.service';
 import { SNAPIT_GEMINI_INSTRUCTIONS } from '../../services/ai/prompts';
 import {
   SnapItInputSchema,
@@ -43,12 +39,14 @@ export interface RecognizePhotoResult {
 }
 
 export async function recognizeKitchenItems(
-  args: RecognizePhotoArgs,
+  args: RecognizePhotoArgs
 ): Promise<RecognizePhotoResult> {
   const input = SnapItInputSchema.parse(args.input);
 
   const before = await assertQuota({
-    userId: args.userId, tier: args.tier, projectedUsd: PROJECTED_COST_USD,
+    userId: args.userId,
+    tier: args.tier,
+    projectedUsd: PROJECTED_COST_USD,
   });
 
   // Lazy dynamic import — `@google/genai` is ESM-only, this matches the
@@ -60,11 +58,14 @@ export async function recognizeKitchenItems(
   const response = await gen.models.generateContent({
     model: MODEL,
     contents: [
-      { role: 'user', parts: [
-        { text: SNAPIT_GEMINI_INSTRUCTIONS },
-        { fileData: { mimeType: 'image/jpeg', fileUri: input.imageUrl } },
-        { text: input.contextNote ? `\nContexte utilisateur : ${input.contextNote}` : '' },
-      ] },
+      {
+        role: 'user',
+        parts: [
+          { text: SNAPIT_GEMINI_INSTRUCTIONS },
+          { fileData: { mimeType: 'image/jpeg', fileUri: input.imageUrl } },
+          { text: input.contextNote ? `\nContexte utilisateur : ${input.contextNote}` : '' },
+        ],
+      },
     ],
     config: {
       // Force JSON output — Gemini supports this natively.
@@ -93,7 +94,11 @@ export async function recognizeKitchenItems(
   }
 
   // Gemini SDK doesn't always expose token counts — best-effort.
-  const usage = (response as unknown as { usageMetadata?: { promptTokenCount: number; candidatesTokenCount: number } }).usageMetadata;
+  const usage = (
+    response as unknown as {
+      usageMetadata?: { promptTokenCount: number; candidatesTokenCount: number };
+    }
+  ).usageMetadata;
   await recordUsage({
     userId: args.userId,
     service: 'snapit',
@@ -118,8 +123,10 @@ export async function recognizeKitchenItems(
  */
 async function matchCatalog(
   _description: string,
-  _estimatedSize?: { w: number; d: number; h: number },
-): Promise<Array<{ sku: string; brand: string; label: string; unitPriceEur: number; score: number }>> {
+  _estimatedSize?: { w: number; d: number; h: number }
+): Promise<
+  Array<{ sku: string; brand: string; label: string; unitPriceEur: number; score: number }>
+> {
   // Returning empty so the route still produces a valid response.
   // The frontend renders "no matches yet" gracefully.
   return [];

@@ -1,4 +1,4 @@
-import { Router, type Router as RouterType , type Request, type Response } from 'express';
+import { Router, type Router as RouterType, type Request, type Response } from 'express';
 import { z } from 'zod';
 
 import { prisma } from '../../database/client';

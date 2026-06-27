@@ -20,7 +20,9 @@ describe('tagConversion', () => {
     plausibleSpy = vi.fn();
     window.plausible = plausibleSpy;
     vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
-      if (key === 'kx-ab-hero') {return 'B';}
+      if (key === 'kx-ab-hero') {
+        return 'B';
+      }
       return null;
     });
   });

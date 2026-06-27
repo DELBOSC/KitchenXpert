@@ -17,18 +17,32 @@ const router: RouterType = Router();
 const roomScanRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 10, // 10 scans per hour per user
-  message: { success: false, error: { code: 'RATE_LIMIT', message: 'Trop de scans. Reessayez dans une heure.' } },
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMIT', message: 'Trop de scans. Reessayez dans une heure.' },
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
 // Zod schema for optional context body field
-export const roomScanContextSchema = z.object({
-  context: z.string().optional().transform((val) => {
-    if (!val) {return undefined;}
-    try { return JSON.parse(val); } catch { return undefined; }
-  }),
-}).passthrough();
+export const roomScanContextSchema = z
+  .object({
+    context: z
+      .string()
+      .optional()
+      .transform((val) => {
+        if (!val) {
+          return undefined;
+        }
+        try {
+          return JSON.parse(val);
+        } catch {
+          return undefined;
+        }
+      }),
+  })
+  .passthrough();
 
 // All routes require authentication
 router.use(authenticate);

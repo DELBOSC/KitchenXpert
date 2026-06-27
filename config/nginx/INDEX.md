@@ -2,11 +2,11 @@
 
 ## Overview
 
-This directory contains a complete, production-ready Nginx configuration for the KitchenXpert project. All configurations follow modern best practices with security, performance, and scalability in mind.
+This directory contains a complete, production-ready Nginx configuration for the
+KitchenXpert project. All configurations follow modern best practices with
+security, performance, and scalability in mind.
 
-**Total Files:** 14
-**Last Updated:** 2026-01-10
-**Nginx Version:** 1.24+
+**Total Files:** 14 **Last Updated:** 2026-01-10 **Nginx Version:** 1.24+
 **Environment Support:** Development & Production
 
 ---
@@ -14,11 +14,13 @@ This directory contains a complete, production-ready Nginx configuration for the
 ## Quick Navigation
 
 ### Getting Started
+
 - **[QUICK_START.md](QUICK_START.md)** - Fast setup guide (start here!)
 - **[deploy.sh](deploy.sh)** - Automated deployment script
 - **[.checklist.md](.checklist.md)** - Pre-deployment checklist
 
 ### Documentation
+
 - **[README.md](README.md)** - Complete documentation (400+ lines)
 - **[FILE_SUMMARY.txt](FILE_SUMMARY.txt)** - Detailed file descriptions
 
@@ -26,22 +28,22 @@ This directory contains a complete, production-ready Nginx configuration for the
 
 ## Core Configuration Files
 
-| File | Size | Purpose |
-|------|------|---------|
-| **nginx.conf** | 8.3 KB | Main configuration with workers, gzip, SSL, rate limiting |
-| **nginx.dev.conf** | 5.6 KB | Development settings (verbose logs, no SSL, permissive CORS) |
-| **nginx.prod.conf** | 9.4 KB | Production settings (HTTPS, HTTP/2, strict security) |
-| **mime.types** | 9.1 KB | Comprehensive MIME type mappings (200+ types) |
-| **proxy_params.conf** | 2.7 KB | Reusable proxy headers and settings |
+| File                  | Size   | Purpose                                                      |
+| --------------------- | ------ | ------------------------------------------------------------ |
+| **nginx.conf**        | 8.3 KB | Main configuration with workers, gzip, SSL, rate limiting    |
+| **nginx.dev.conf**    | 5.6 KB | Development settings (verbose logs, no SSL, permissive CORS) |
+| **nginx.prod.conf**   | 9.4 KB | Production settings (HTTPS, HTTP/2, strict security)         |
+| **mime.types**        | 9.1 KB | Comprehensive MIME type mappings (200+ types)                |
+| **proxy_params.conf** | 2.7 KB | Reusable proxy headers and settings                          |
 
 ---
 
 ## Virtual Host Configurations
 
 ### API Server (api.conf) - 11 KB
-**Domain:** api.kitchenxpert.com
-**Backend:** localhost:4000
-**Features:**
+
+**Domain:** api.kitchenxpert.com **Backend:** localhost:4000 **Features:**
+
 - WebSocket support for real-time connections
 - Rate limiting (10 req/s general, 5 req/min auth)
 - CORS with origin whitelisting
@@ -51,9 +53,10 @@ This directory contains a complete, production-ready Nginx configuration for the
 - API response caching
 
 ### Frontend App (app.conf) - 9.1 KB
-**Domain:** kitchenxpert.com, www.kitchenxpert.com
-**Type:** Single Page Application (React/Vue)
-**Features:**
+
+**Domain:** kitchenxpert.com, www.kitchenxpert.com **Type:** Single Page
+Application (React/Vue) **Features:**
+
 - SPA routing with fallback to index.html
 - Aggressive asset caching (1 year)
 - Service worker support
@@ -62,9 +65,9 @@ This directory contains a complete, production-ready Nginx configuration for the
 - Custom error pages
 
 ### Partner Portal (partner-portal.conf) - 12 KB
-**Domain:** partners.kitchenxpert.com
-**Security:** Enhanced
-**Features:**
+
+**Domain:** partners.kitchenxpert.com **Security:** Enhanced **Features:**
+
 - HTTPS required (forced)
 - Optional client certificate auth (mTLS)
 - Strict rate limiting
@@ -74,9 +77,9 @@ This directory contains a complete, production-ready Nginx configuration for the
 - Secure downloads directory
 
 ### Documentation (documentation.conf) - 12 KB
-**Domain:** docs.kitchenxpert.com
-**Type:** Documentation site
-**Features:**
+
+**Domain:** docs.kitchenxpert.com **Type:** Documentation site **Features:**
+
 - Optional basic authentication
 - Clean URLs (no .html extension)
 - Versioned documentation (/v1/, /v2/)
@@ -90,7 +93,9 @@ This directory contains a complete, production-ready Nginx configuration for the
 ## Documentation Files
 
 ### README.md (11 KB)
+
 Complete reference documentation covering:
+
 - Directory structure
 - Installation & configuration
 - Security features
@@ -101,7 +106,9 @@ Complete reference documentation covering:
 - Best practices
 
 ### QUICK_START.md (9.7 KB)
+
 Fast-track guide with:
+
 - Quick installation (automated & manual)
 - Common tasks
 - SSL certificate setup
@@ -111,7 +118,9 @@ Fast-track guide with:
 - Useful commands
 
 ### .checklist.md (9.2 KB)
+
 Comprehensive deployment checklist:
+
 - Pre-deployment requirements
 - Configuration verification
 - Security validation
@@ -121,7 +130,9 @@ Comprehensive deployment checklist:
 - Rollback procedures
 
 ### FILE_SUMMARY.txt (13 KB)
+
 Detailed breakdown of all files including:
+
 - File descriptions
 - Feature lists
 - Configuration details
@@ -133,7 +144,9 @@ Detailed breakdown of all files including:
 ## Deployment Script
 
 ### deploy.sh (9.3 KB, executable)
+
 Automated deployment with:
+
 - Environment selection (dev/prod)
 - Automatic backup
 - Directory creation
@@ -145,6 +158,7 @@ Automated deployment with:
 - Color-coded output
 
 **Usage:**
+
 ```bash
 sudo ./deploy.sh dev      # Development
 sudo ./deploy.sh prod     # Production
@@ -155,6 +169,7 @@ sudo ./deploy.sh prod     # Production
 ## Key Features
 
 ### Security (Production-Grade)
+
 - ✅ TLS 1.2+ only with modern ciphers
 - ✅ HSTS headers (2-year max-age)
 - ✅ Content Security Policy
@@ -166,6 +181,7 @@ sudo ./deploy.sh prod     # Production
 - ✅ Hidden file blocking
 
 ### Performance (Optimized)
+
 - ✅ HTTP/2 support
 - ✅ Gzip compression (level 6)
 - ✅ Brotli compression ready
@@ -177,6 +193,7 @@ sudo ./deploy.sh prod     # Production
 - ✅ Efficient file serving
 
 ### Monitoring (Observable)
+
 - ✅ Detailed access logging
 - ✅ Per-service log files
 - ✅ Request timing information
@@ -190,6 +207,7 @@ sudo ./deploy.sh prod     # Production
 ## Supported Environments
 
 ### Development
+
 - HTTP only (no SSL)
 - Verbose debugging
 - Permissive CORS
@@ -198,6 +216,7 @@ sudo ./deploy.sh prod     # Production
 - Single backend
 
 ### Production
+
 - HTTPS required
 - HTTP/2 enabled
 - Strict security
@@ -295,12 +314,12 @@ Before deployment, update these items:
 
 ## Version Information
 
-| Component | Version | Notes |
-|-----------|---------|-------|
-| Nginx | 1.24+ | Required for modern features |
-| OpenSSL | 1.1+ | For TLS 1.3 support |
-| HTTP | 2 | Enabled in production |
-| TLS | 1.2, 1.3 | Minimum TLS 1.2 |
+| Component | Version  | Notes                        |
+| --------- | -------- | ---------------------------- |
+| Nginx     | 1.24+    | Required for modern features |
+| OpenSSL   | 1.1+     | For TLS 1.3 support          |
+| HTTP      | 2        | Enabled in production        |
+| TLS       | 1.2, 1.3 | Minimum TLS 1.2              |
 
 ---
 
@@ -310,5 +329,4 @@ Copyright © 2024-2026 KitchenXpert. All rights reserved.
 
 ---
 
-**Last Updated:** 2026-01-10
-**Maintained By:** KitchenXpert DevOps Team
+**Last Updated:** 2026-01-10 **Maintained By:** KitchenXpert DevOps Team

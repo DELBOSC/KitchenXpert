@@ -16,18 +16,27 @@ export const CreatePaymentIntentSchema = z.object({
 
 export type CreatePaymentIntentInput = z.infer<typeof CreatePaymentIntentSchema>;
 
-export class CreatePaymentIntentUseCase implements UseCase<CreatePaymentIntentInput, { clientSecret: string; paymentIntentId: string }> {
+export class CreatePaymentIntentUseCase implements UseCase<
+  CreatePaymentIntentInput,
+  { clientSecret: string; paymentIntentId: string }
+> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async execute(input: CreatePaymentIntentInput): Promise<Result<{ clientSecret: string; paymentIntentId: string }>> {
+  async execute(
+    input: CreatePaymentIntentInput
+  ): Promise<Result<{ clientSecret: string; paymentIntentId: string }>> {
     if (input.orderId) {
       // IDOR protection: caller must own the order they're paying for.
       const order = await this.prisma.order.findUnique({
         where: { id: input.orderId },
         select: { userId: true, total: true },
       });
-      if (!order) {return err(DomainErrors.notFound('Order'));}
-      if (order.userId !== input.userId) {return err(DomainErrors.forbidden('Order not owned'));}
+      if (!order) {
+        return err(DomainErrors.notFound('Order'));
+      }
+      if (order.userId !== input.userId) {
+        return err(DomainErrors.forbidden('Order not owned'));
+      }
     }
 
     const stripe = getStripeService();

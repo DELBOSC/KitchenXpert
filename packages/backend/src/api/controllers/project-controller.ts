@@ -72,7 +72,9 @@ export class ProjectController {
    */
   getById = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string, true);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     res.status(200).json({ success: true, data: project });
   });
@@ -101,7 +103,14 @@ export class ProjectController {
         fromTemplate: string | null;
         kitchen: {
           name: string;
-          layout: 'L_SHAPED' | 'U_SHAPED' | 'GALLEY' | 'ISLAND' | 'PENINSULA' | 'ONE_WALL' | 'OPEN_PLAN';
+          layout:
+            | 'L_SHAPED'
+            | 'U_SHAPED'
+            | 'GALLEY'
+            | 'ISLAND'
+            | 'PENINSULA'
+            | 'ONE_WALL'
+            | 'OPEN_PLAN';
           widthCm: number;
           depthCm: number;
           heightCm: number;
@@ -224,7 +233,9 @@ export class ProjectController {
    */
   update = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     const { name, description, status, budget, currency, deadline, metadata } = req.body;
 
@@ -251,7 +262,9 @@ export class ProjectController {
    */
   delete = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     await projectRepository.delete(project.id);
 
@@ -264,7 +277,9 @@ export class ProjectController {
    */
   updateStatus = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     const { status } = req.body;
     const updated = await projectRepository.updateStatus(project.id, status);
@@ -282,7 +297,9 @@ export class ProjectController {
    */
   duplicate = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     const { name } = req.body;
     const duplicated = await projectRepository.duplicate(project.id, name);
@@ -300,7 +317,9 @@ export class ProjectController {
    */
   getCollaborators = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     const collaborators = await projectRepository.getCollaborators(project.id);
 
@@ -313,7 +332,9 @@ export class ProjectController {
    */
   addCollaborator = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     const { email, role } = req.body;
     const collaborator = await projectRepository.addCollaborator(project.id, email, role);
@@ -337,7 +358,7 @@ export class ProjectController {
           ownerName,
           projectName: project.name || 'Projet sans nom',
           projectUrl: `${config.corsOrigins[0] || 'http://localhost:3000'}/projects/${project.id}`,
-        },
+        }
       );
     } catch (error) {
       logger.error('Failed to send project shared email', { error, projectId: project.id, email });
@@ -356,7 +377,9 @@ export class ProjectController {
    */
   removeCollaborator = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     const email = req.params.email as string;
     await projectRepository.removeCollaborator(project.id, email);
@@ -386,7 +409,9 @@ export class ProjectController {
    */
   getKitchens = asyncHandler(async (req: Request, res: Response) => {
     const project = await verifyOwnership(req, res, req.params.id as string);
-    if (!project) {return;}
+    if (!project) {
+      return;
+    }
 
     const full = await projectRepository.findById(project.id, true);
 

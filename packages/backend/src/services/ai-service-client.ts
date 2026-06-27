@@ -41,7 +41,7 @@ class AiServiceClient {
     method: 'GET' | 'POST',
     path: string,
     body?: unknown,
-    timeoutMs: number = DEFAULT_TIMEOUT,
+    timeoutMs: number = DEFAULT_TIMEOUT
   ): Promise<T> {
     let lastError: Error | null = null;
 
@@ -84,11 +84,14 @@ class AiServiceClient {
 
         if (attempt < MAX_RETRIES - 1) {
           const delay = Math.pow(2, attempt) * 500; // 500ms, 1s, 2s
-          logger.warn(`AI service request failed (attempt ${attempt + 1}/${MAX_RETRIES}), retrying in ${delay}ms`, {
-            path,
-            error: lastError.message,
-          });
-          await new Promise(resolve => setTimeout(resolve, delay));
+          logger.warn(
+            `AI service request failed (attempt ${attempt + 1}/${MAX_RETRIES}), retrying in ${delay}ms`,
+            {
+              path,
+              error: lastError.message,
+            }
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
@@ -110,7 +113,9 @@ class AiServiceClient {
    * Performs a health check if status is unknown.
    */
   async isAvailable(): Promise<boolean> {
-    if (this.healthy !== null) {return this.healthy;}
+    if (this.healthy !== null) {
+      return this.healthy;
+    }
     try {
       await this.healthCheck();
       return this.healthy === true;
@@ -132,7 +137,12 @@ class AiServiceClient {
    * Optimize kitchen layout using genetic algorithms
    */
   async optimizeLayout(request: Record<string, unknown>): Promise<Record<string, unknown>> {
-    return this.request<Record<string, unknown>>('POST', '/api/optimize-layout', request, LAYOUT_TIMEOUT);
+    return this.request<Record<string, unknown>>(
+      'POST',
+      '/api/optimize-layout',
+      request,
+      LAYOUT_TIMEOUT
+    );
   }
 
   /**

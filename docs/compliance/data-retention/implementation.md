@@ -17,7 +17,8 @@
 
 ## Introduction
 
-This document provides technical implementation details for the Data Retention Policy.
+This document provides technical implementation details for the Data Retention
+Policy.
 
 ### Implementation Goals
 
@@ -33,13 +34,13 @@ This document provides technical implementation details for the Data Retention P
 
 ### Components
 
-| Component | Purpose | Technology |
-|-----------|---------|------------|
+| Component         | Purpose                     | Technology     |
+| ----------------- | --------------------------- | -------------- |
 | Retention Service | Apply labels, track periods | Custom service |
-| Label Store | Store retention metadata | PostgreSQL |
-| Deletion Service | Execute deletions | Custom service |
-| Hold Manager | Legal hold management | Custom service |
-| Audit Logger | Log all actions | Audit system |
+| Label Store       | Store retention metadata    | PostgreSQL     |
+| Deletion Service  | Execute deletions           | Custom service |
+| Hold Manager      | Legal hold management       | Custom service |
+| Audit Logger      | Log all actions             | Audit system   |
 
 ---
 
@@ -47,25 +48,27 @@ This document provides technical implementation details for the Data Retention P
 
 ### Label Types
 
-| Label | Retention | Data Types |
-|-------|-----------|------------|
-| CUSTOMER_ACCOUNT | Active + 3 years | Account data |
-| CUSTOMER_DESIGN | Active + 5 years | Design files |
-| TRANSACTION | 7 years | Orders, payments |
-| SUPPORT | 3 years | Support tickets |
-| MARKETING | Until withdrawn | Marketing data |
-| SYSTEM_LOG | 90 days | System logs |
-| SECURITY_LOG | 3 years | Security events |
-| AUDIT_LOG | 7 years | Audit trail |
+| Label            | Retention        | Data Types       |
+| ---------------- | ---------------- | ---------------- |
+| CUSTOMER_ACCOUNT | Active + 3 years | Account data     |
+| CUSTOMER_DESIGN  | Active + 5 years | Design files     |
+| TRANSACTION      | 7 years          | Orders, payments |
+| SUPPORT          | 3 years          | Support tickets  |
+| MARKETING        | Until withdrawn  | Marketing data   |
+| SYSTEM_LOG       | 90 days          | System logs      |
+| SECURITY_LOG     | 3 years          | Security events  |
+| AUDIT_LOG        | 7 years          | Audit trail      |
 
 ### Label Application
 
 **Automatic Labeling**:
+
 - Applied at data creation based on schema
 - Derived from data type and category
 - Inherited from parent records
 
 **Manual Labeling**:
+
 - Override for exceptional cases
 - Requires authorized approval
 - Logged in audit trail
@@ -79,6 +82,7 @@ This document provides technical implementation details for the Data Retention P
 **Schedule**: Daily at 02:00 UTC
 
 **Process Flow**:
+
 1. Query for expired data
 2. Filter out data with active legal holds
 3. Generate deletion manifest
@@ -90,22 +94,22 @@ This document provides technical implementation details for the Data Retention P
 
 ### Deletion Methods
 
-| Data Type | Method | Verification |
-|-----------|--------|--------------|
-| Database records | Hard delete | Row count verification |
-| Files | Secure delete | File system check |
-| Backups | Expiration | Backup catalog |
-| Logs | Rotation | Log index check |
-| Cache | Invalidation | Cache flush verification |
+| Data Type        | Method        | Verification             |
+| ---------------- | ------------- | ------------------------ |
+| Database records | Hard delete   | Row count verification   |
+| Files            | Secure delete | File system check        |
+| Backups          | Expiration    | Backup catalog           |
+| Logs             | Rotation      | Log index check          |
+| Cache            | Invalidation  | Cache flush verification |
 
 ### Batch Processing
 
-| Setting | Value | Rationale |
-|---------|-------|-----------|
-| Batch size | 1000 records | Performance balance |
-| Batch delay | 100ms | Rate limiting |
-| Max daily | 100000 records | Resource management |
-| Retry attempts | 3 | Resilience |
+| Setting        | Value          | Rationale           |
+| -------------- | -------------- | ------------------- |
+| Batch size     | 1000 records   | Performance balance |
+| Batch delay    | 100ms          | Rate limiting       |
+| Max daily      | 100000 records | Resource management |
+| Retry attempts | 3              | Resilience          |
 
 ---
 
@@ -113,15 +117,16 @@ This document provides technical implementation details for the Data Retention P
 
 ### Hold Types
 
-| Type | Scope | Duration |
-|------|-------|----------|
-| Litigation | Case-specific | Case resolution |
-| Regulatory | Inquiry scope | Inquiry closure |
-| Internal | Investigation scope | Investigation end |
+| Type       | Scope               | Duration          |
+| ---------- | ------------------- | ----------------- |
+| Litigation | Case-specific       | Case resolution   |
+| Regulatory | Inquiry scope       | Inquiry closure   |
+| Internal   | Investigation scope | Investigation end |
 
 ### Hold Process
 
 **Initiation**:
+
 1. Legal/Compliance submits hold request
 2. Scope defined (users, date range, data types)
 3. Hold created in Hold Manager
@@ -129,6 +134,7 @@ This document provides technical implementation details for the Data Retention P
 5. Confirmation sent to requester
 
 **Release**:
+
 1. Authorization received from Legal
 2. Verify no other holds apply
 3. Remove hold_id from labels
@@ -148,21 +154,21 @@ This document provides technical implementation details for the Data Retention P
 
 ### Backup Types
 
-| Type | Frequency | Retention |
-|------|-----------|-----------|
-| Full | Weekly | 90 days |
-| Incremental | Daily | 30 days |
-| Transaction logs | Continuous | 7 days |
-| Archive | Monthly | Per policy |
+| Type             | Frequency  | Retention  |
+| ---------------- | ---------- | ---------- |
+| Full             | Weekly     | 90 days    |
+| Incremental      | Daily      | 30 days    |
+| Transaction logs | Continuous | 7 days     |
+| Archive          | Monthly    | Per policy |
 
 ### Backup Storage Tiers
 
-| Tier | Age | Storage | Access Time |
-|------|-----|---------|-------------|
-| Hot | 0-7 days | Local SSD | Seconds |
-| Warm | 7-30 days | Cloud block | Minutes |
-| Cold | 30-90 days | Cloud object | Hours |
-| Archive | 90+ days | Glacier | Days |
+| Tier    | Age        | Storage      | Access Time |
+| ------- | ---------- | ------------ | ----------- |
+| Hot     | 0-7 days   | Local SSD    | Seconds     |
+| Warm    | 7-30 days  | Cloud block  | Minutes     |
+| Cold    | 30-90 days | Cloud object | Hours       |
+| Archive | 90+ days   | Glacier      | Days        |
 
 ---
 
@@ -170,22 +176,22 @@ This document provides technical implementation details for the Data Retention P
 
 ### Automated Verification
 
-| Check | Frequency | Method |
-|-------|-----------|--------|
-| Label coverage | Daily | Query all untagged data |
-| Expiration accuracy | Daily | Validate expiration dates |
-| Hold enforcement | Real-time | Pre-deletion check |
-| Deletion completion | Daily | Verify deleted records |
-| Backup alignment | Weekly | Compare catalogs |
+| Check               | Frequency | Method                    |
+| ------------------- | --------- | ------------------------- |
+| Label coverage      | Daily     | Query all untagged data   |
+| Expiration accuracy | Daily     | Validate expiration dates |
+| Hold enforcement    | Real-time | Pre-deletion check        |
+| Deletion completion | Daily     | Verify deleted records    |
+| Backup alignment    | Weekly    | Compare catalogs          |
 
 ### Audit Reports
 
-| Report | Frequency | Contents |
-|--------|-----------|----------|
-| Deletion Summary | Daily | Records deleted by type |
-| Retention Status | Weekly | Data by retention category |
-| Hold Report | Monthly | Active holds, scope |
-| Compliance Dashboard | Real-time | Key metrics |
+| Report               | Frequency | Contents                   |
+| -------------------- | --------- | -------------------------- |
+| Deletion Summary     | Daily     | Records deleted by type    |
+| Retention Status     | Weekly    | Data by retention category |
+| Hold Report          | Monthly   | Active holds, scope        |
+| Compliance Dashboard | Real-time | Key metrics                |
 
 ---
 
@@ -199,12 +205,12 @@ This document provides technical implementation details for the Data Retention P
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value         |
+| -------------- | ------------- |
 | Document Owner | IT Operations |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10    |
+| Version        | 2.0           |
 
 ---
 
-*For questions, contact it-operations@kitchenxpert.com.*
+_For questions, contact it-operations@kitchenxpert.com._

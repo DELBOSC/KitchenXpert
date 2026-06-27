@@ -137,9 +137,7 @@ export class GuidedWalkthrough {
   generateWorkTriangleTour(kitchenItems: KitchenItem[]): Waypoint[] {
     const sink = kitchenItems.find((i) => i.type === 'sink');
     const hob = kitchenItems.find((i) => i.type === 'hob' || i.type === 'cooktop');
-    const fridge = kitchenItems.find(
-      (i) => i.type === 'fridge' || i.type === 'refrigerator'
-    );
+    const fridge = kitchenItems.find((i) => i.type === 'fridge' || i.type === 'refrigerator');
 
     const waypoints: Waypoint[] = [];
 
@@ -153,7 +151,7 @@ export class GuidedWalkthrough {
           position: new THREE.Vector3(0, EYE_HEIGHT, 2),
           lookAt: new THREE.Vector3(0, 1, 0),
           duration: 3,
-          annotation: { text: 'Vue d\'ensemble de la cuisine', type: 'info' },
+          annotation: { text: "Vue d'ensemble de la cuisine", type: 'info' },
         },
       ];
     }
@@ -168,7 +166,7 @@ export class GuidedWalkthrough {
       lookAt: new THREE.Vector3(center.x, 1.0, center.z),
       duration: 2,
       annotation: {
-        text: 'Triangle de travail - Vue d\'ensemble',
+        text: "Triangle de travail - Vue d'ensemble",
         type: 'info',
       },
     });
@@ -229,10 +227,7 @@ export class GuidedWalkthrough {
    * Starts at entrance, tours the perimeter, pauses at each major appliance,
    * ends at center for overview.
    */
-  generateFullTour(
-    kitchenItems: KitchenItem[],
-    roomDimensions: RoomDimensions
-  ): Waypoint[] {
+  generateFullTour(kitchenItems: KitchenItem[], roomDimensions: RoomDimensions): Waypoint[] {
     const { width, depth } = roomDimensions;
     const waypoints: Waypoint[] = [];
 
@@ -288,9 +283,7 @@ export class GuidedWalkthrough {
 
     // Visit major appliances along the way
     const majorAppliances = kitchenItems.filter((item) =>
-      ['sink', 'hob', 'cooktop', 'fridge', 'refrigerator', 'oven', 'dishwasher'].includes(
-        item.type
-      )
+      ['sink', 'hob', 'cooktop', 'fridge', 'refrigerator', 'oven', 'dishwasher'].includes(item.type)
     );
 
     for (const appliance of majorAppliances) {
@@ -326,7 +319,7 @@ export class GuidedWalkthrough {
       lookAt: new THREE.Vector3(cx, 0.5, cz - 1),
       duration: 3,
       annotation: {
-        text: 'Vue d\'ensemble - Fin de la visite',
+        text: "Vue d'ensemble - Fin de la visite",
         type: 'tip',
       },
     });
@@ -575,10 +568,7 @@ export class GuidedWalkthrough {
     this.listeners.get(event)?.delete(callback);
   }
 
-  private emit<K extends keyof WalkthroughEventMap>(
-    event: K,
-    data: WalkthroughEventMap[K]
-  ): void {
+  private emit<K extends keyof WalkthroughEventMap>(event: K, data: WalkthroughEventMap[K]): void {
     this.listeners.get(event)?.forEach((cb) => cb(data));
   }
 
@@ -615,9 +605,7 @@ export class GuidedWalkthrough {
 
     // Smooth easing (ease in-out)
     const localT = this.splineProgress;
-    const easedLocalT = localT < 0.5
-      ? 2 * localT * localT
-      : 1 - Math.pow(-2 * localT + 2, 2) / 2;
+    const easedLocalT = localT < 0.5 ? 2 * localT * localT : 1 - Math.pow(-2 * localT + 2, 2) / 2;
 
     // Interpolate between current and next waypoint on the spline
     const prevIdx = this.currentWaypointIndex;
@@ -666,10 +654,7 @@ export class GuidedWalkthrough {
 
     this.waypoints.forEach((wp, index) => {
       if (wp.annotation) {
-        const sprite = this.createAnnotationSprite(
-          wp.annotation.text,
-          wp.annotation.type
-        );
+        const sprite = this.createAnnotationSprite(wp.annotation.text, wp.annotation.type);
         sprite.position.copy(wp.lookAt).add(ANNOTATION_OFFSET);
         sprite.userData = { waypointIndex: index };
         this.annotationGroup.add(sprite);
@@ -678,10 +663,7 @@ export class GuidedWalkthrough {
     });
   }
 
-  private createAnnotationSprite(
-    text: string,
-    type: 'info' | 'warning' | 'tip'
-  ): THREE.Sprite {
+  private createAnnotationSprite(text: string, type: 'info' | 'warning' | 'tip'): THREE.Sprite {
     // Create a canvas for the annotation billboard
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;

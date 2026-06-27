@@ -46,7 +46,9 @@ const respondSchema = z.object({
   rating: z.number().int().min(1).max(5),
   message: z.string().max(2000).optional(),
   context: z.string().max(200).optional(),
-  preferredPlatform: z.enum(['g2', 'capterra', 'trustpilot', 'avis_verifies', 'google_business']).optional(),
+  preferredPlatform: z
+    .enum(['g2', 'capterra', 'trustpilot', 'avis_verifies', 'google_business'])
+    .optional(),
 });
 
 router.post('/respond', validateBody(respondSchema), async (req: Request, res: Response) => {

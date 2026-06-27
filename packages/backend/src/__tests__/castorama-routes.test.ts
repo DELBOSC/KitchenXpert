@@ -18,7 +18,12 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  })),
 }));
 
 const mockPrisma = {
@@ -53,7 +58,10 @@ const mockProductRepository = {
     totalPages: 1,
   }),
   findById: jest.fn().mockResolvedValue({
-    id: 'p1', name: 'GoodHome Alpinia', price: 129.99, provider: 'castorama',
+    id: 'p1',
+    name: 'GoodHome Alpinia',
+    price: 129.99,
+    provider: 'castorama',
   }),
 };
 
@@ -82,14 +90,20 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'user@test.com', role: 'user' };
     next();
   },
   authorize: (roles: string[]) => (req: any, res: any, next: any) => {
     if (!roles.includes(req.user?.role)) {
-      return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'Insufficient permissions' } });
+      return res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
+      });
     }
     next();
   },
@@ -136,9 +150,7 @@ describe('Castorama Routes', () => {
 
   describe('GET /castorama/info', () => {
     it('should return Castorama provider metadata', async () => {
-      const response = await request(app)
-        .get('/castorama/info')
-        .expect(200);
+      const response = await request(app).get('/castorama/info').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.code).toBe('castorama');
@@ -148,9 +160,7 @@ describe('Castorama Routes', () => {
     it('should return 404 when provider not configured', async () => {
       mockPrisma.catalogProvider.findFirst.mockResolvedValueOnce(null);
 
-      const response = await request(app)
-        .get('/castorama/info')
-        .expect(404);
+      const response = await request(app).get('/castorama/info').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -158,9 +168,7 @@ describe('Castorama Routes', () => {
 
   describe('GET /castorama/products', () => {
     it('should list Castorama products with pagination', async () => {
-      const response = await request(app)
-        .get('/castorama/products')
-        .expect(200);
+      const response = await request(app).get('/castorama/products').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -172,9 +180,7 @@ describe('Castorama Routes', () => {
     it('should return 404 when provider not found', async () => {
       mockPrisma.catalogProvider.findFirst.mockResolvedValueOnce(null);
 
-      const response = await request(app)
-        .get('/castorama/products')
-        .expect(404);
+      const response = await request(app).get('/castorama/products').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -182,18 +188,14 @@ describe('Castorama Routes', () => {
 
   describe('GET /castorama/products/search', () => {
     it('should search Castorama products', async () => {
-      const response = await request(app)
-        .get('/castorama/products/search?q=GoodHome')
-        .expect(200);
+      const response = await request(app).get('/castorama/products/search?q=GoodHome').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockProductRepository.findAll).toHaveBeenCalled();
     });
 
     it('should return 400 when query parameter is missing', async () => {
-      const response = await request(app)
-        .get('/castorama/products/search')
-        .expect(400);
+      const response = await request(app).get('/castorama/products/search').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.code).toBe('MISSING_QUERY');
@@ -202,9 +204,7 @@ describe('Castorama Routes', () => {
 
   describe('GET /castorama/products/:id', () => {
     it('should return product details by ID', async () => {
-      const response = await request(app)
-        .get('/castorama/products/p1')
-        .expect(200);
+      const response = await request(app).get('/castorama/products/p1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('id');
@@ -214,9 +214,7 @@ describe('Castorama Routes', () => {
     it('should return 404 when product not found', async () => {
       mockProductRepository.findById.mockResolvedValueOnce(null);
 
-      const response = await request(app)
-        .get('/castorama/products/nonexistent')
-        .expect(404);
+      const response = await request(app).get('/castorama/products/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -224,9 +222,7 @@ describe('Castorama Routes', () => {
 
   describe('GET /castorama/categories', () => {
     it('should return product categories', async () => {
-      const response = await request(app)
-        .get('/castorama/categories')
-        .expect(200);
+      const response = await request(app).get('/castorama/categories').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);

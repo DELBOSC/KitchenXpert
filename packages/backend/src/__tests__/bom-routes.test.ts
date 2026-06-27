@@ -138,7 +138,11 @@ describe('BOMController', () => {
   // ==========================================================================
   describe('generate', () => {
     it('should generate a BOM for an owned kitchen', async () => {
-      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'test-user-id', name: 'My Kitchen' };
+      const mockKitchen = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        userId: 'test-user-id',
+        name: 'My Kitchen',
+      };
       const mockBOM = {
         items: [
           { id: 'item-1', name: 'Base Cabinet 60cm', quantity: 3, unitPrice: 250, total: 750 },
@@ -155,14 +159,22 @@ describe('BOMController', () => {
 
       await controller.generate(req as Request, res as Response);
 
-      expect(mockPrisma.kitchen.findUnique).toHaveBeenCalledWith({ where: { id: '550e8400-e29b-41d4-a716-446655440000' } });
-      expect(mockBOMGeneratorService.generateBOM).toHaveBeenCalledWith('550e8400-e29b-41d4-a716-446655440000');
+      expect(mockPrisma.kitchen.findUnique).toHaveBeenCalledWith({
+        where: { id: '550e8400-e29b-41d4-a716-446655440000' },
+      });
+      expect(mockBOMGeneratorService.generateBOM).toHaveBeenCalledWith(
+        '550e8400-e29b-41d4-a716-446655440000'
+      );
       expect(statusMock).toHaveBeenCalledWith(200);
       expect(jsonMock).toHaveBeenCalledWith({ success: true, data: mockBOM });
     });
 
     it('should allow admin to generate BOM for any kitchen', async () => {
-      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'other-user-id', name: 'Other Kitchen' };
+      const mockKitchen = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        userId: 'other-user-id',
+        name: 'Other Kitchen',
+      };
       const mockBOM = { items: [], total: 0 };
 
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
@@ -216,7 +228,11 @@ describe('BOMController', () => {
     });
 
     it('should return 403 if user does not own the kitchen and is not admin', async () => {
-      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'other-user-id', name: 'Other Kitchen' };
+      const mockKitchen = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        userId: 'other-user-id',
+        name: 'Other Kitchen',
+      };
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
       const req = createMockReq({ body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
@@ -229,7 +245,11 @@ describe('BOMController', () => {
     });
 
     it('should return 500 if BOM generation service fails', async () => {
-      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'test-user-id', name: 'My Kitchen' };
+      const mockKitchen = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        userId: 'test-user-id',
+        name: 'My Kitchen',
+      };
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockBOMGeneratorService.generateBOM.mockRejectedValue(new Error('AI service unavailable'));
 
@@ -257,7 +277,11 @@ describe('BOMController', () => {
     });
 
     it('should not call BOM service if user is not authorized', async () => {
-      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'other-user-id', name: 'Other Kitchen' };
+      const mockKitchen = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        userId: 'other-user-id',
+        name: 'Other Kitchen',
+      };
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
       const req = createMockReq({ body: { kitchenId: '550e8400-e29b-41d4-a716-446655440000' } });
@@ -269,8 +293,15 @@ describe('BOMController', () => {
     });
 
     it('should verify kitchen ownership pattern (userId match)', async () => {
-      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'test-user-id', name: 'My Kitchen' };
-      const mockBOM = { items: [{ id: 'i1', name: 'Cabinet', quantity: 1, unitPrice: 100, total: 100 }], total: 100 };
+      const mockKitchen = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        userId: 'test-user-id',
+        name: 'My Kitchen',
+      };
+      const mockBOM = {
+        items: [{ id: 'i1', name: 'Cabinet', quantity: 1, unitPrice: 100, total: 100 }],
+        total: 100,
+      };
 
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockBOMGeneratorService.generateBOM.mockResolvedValue(mockBOM);
@@ -285,7 +316,11 @@ describe('BOMController', () => {
     });
 
     it('should handle non-Error exceptions in the catch block', async () => {
-      const mockKitchen = { id: '550e8400-e29b-41d4-a716-446655440000', userId: 'test-user-id', name: 'My Kitchen' };
+      const mockKitchen = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        userId: 'test-user-id',
+        name: 'My Kitchen',
+      };
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockBOMGeneratorService.generateBOM.mockRejectedValue('string error');
 

@@ -63,7 +63,12 @@ export interface RefundResult {
 export interface WebhookEvent {
   type: string;
   data: {
-    object: Stripe.PaymentIntent | Stripe.Subscription | Stripe.Customer | Stripe.Charge | Stripe.Invoice;
+    object:
+      | Stripe.PaymentIntent
+      | Stripe.Subscription
+      | Stripe.Customer
+      | Stripe.Charge
+      | Stripe.Invoice;
   };
 }
 
@@ -121,7 +126,19 @@ export class StripeService {
       // PSD2/SCA: force 3DS for EU currencies above the regulatory threshold (€30 = 3000 cents).
       // Stripe normally triggers SCA automatically, but requesting it explicitly guarantees
       // strong customer authentication and creates an auditable decision trail.
-      const euCurrencies = new Set(['eur', 'gbp', 'chf', 'sek', 'nok', 'dkk', 'pln', 'czk', 'ron', 'bgn', 'huf']);
+      const euCurrencies = new Set([
+        'eur',
+        'gbp',
+        'chf',
+        'sek',
+        'nok',
+        'dkk',
+        'pln',
+        'czk',
+        'ron',
+        'bgn',
+        'huf',
+      ]);
       const requiresSca = euCurrencies.has(currencyLower) && amount >= 3000;
 
       const paymentIntentParams: Stripe.PaymentIntentCreateParams = {
@@ -136,9 +153,15 @@ export class StripeService {
         }),
       };
 
-      if (customerId) {paymentIntentParams.customer = customerId;}
-      if (description) {paymentIntentParams.description = description;}
-      if (receiptEmail) {paymentIntentParams.receipt_email = receiptEmail;}
+      if (customerId) {
+        paymentIntentParams.customer = customerId;
+      }
+      if (description) {
+        paymentIntentParams.description = description;
+      }
+      if (receiptEmail) {
+        paymentIntentParams.receipt_email = receiptEmail;
+      }
 
       const paymentIntent = await this.stripe.paymentIntents.create(paymentIntentParams);
 
@@ -321,20 +344,27 @@ export class StripeService {
    * @param data - Data to update
    * @returns The updated customer
    */
-  async updateCustomer(
-    customerId: string,
-    data: Partial<CustomerData>
-  ): Promise<Stripe.Customer> {
+  async updateCustomer(customerId: string, data: Partial<CustomerData>): Promise<Stripe.Customer> {
     logger.info('Updating Stripe customer', { customerId });
 
     try {
       const updateParams: Stripe.CustomerUpdateParams = {};
 
-      if (data.email) {updateParams.email = data.email;}
-      if (data.name) {updateParams.name = data.name;}
-      if (data.phone) {updateParams.phone = data.phone;}
-      if (data.metadata) {updateParams.metadata = data.metadata;}
-      if (data.address) {updateParams.address = data.address;}
+      if (data.email) {
+        updateParams.email = data.email;
+      }
+      if (data.name) {
+        updateParams.name = data.name;
+      }
+      if (data.phone) {
+        updateParams.phone = data.phone;
+      }
+      if (data.metadata) {
+        updateParams.metadata = data.metadata;
+      }
+      if (data.address) {
+        updateParams.address = data.address;
+      }
 
       const customer = await this.stripe.customers.update(customerId, updateParams);
 
@@ -577,11 +607,7 @@ export class StripeService {
     }
 
     try {
-      const event = this.stripe.webhooks.constructEvent(
-        payload,
-        signature,
-        this.webhookSecret
-      );
+      const event = this.stripe.webhooks.constructEvent(payload, signature, this.webhookSecret);
 
       logger.info('Webhook event verified successfully', {
         eventId: event.id,
@@ -655,11 +681,14 @@ export class StripeService {
       customerId: paymentIntent.customer,
     });
 
-    const customerId = typeof paymentIntent.customer === 'string'
-      ? paymentIntent.customer
-      : paymentIntent.customer?.id;
+    const customerId =
+      typeof paymentIntent.customer === 'string'
+        ? paymentIntent.customer
+        : paymentIntent.customer?.id;
 
-    if (!customerId) {return;}
+    if (!customerId) {
+      return;
+    }
 
     try {
       // Find the user linked to this Stripe customer
@@ -686,7 +715,10 @@ export class StripeService {
         },
       });
 
-      logger.info('Payment recorded for user', { userId: user.id, paymentIntentId: paymentIntent.id });
+      logger.info('Payment recorded for user', {
+        userId: user.id,
+        paymentIntentId: paymentIntent.id,
+      });
     } catch (error) {
       logger.error('Failed to process payment success webhook', {
         error: error instanceof Error ? error.message : String(error),
@@ -705,18 +737,23 @@ export class StripeService {
       message: err?.message,
     });
 
-    const customerId = typeof paymentIntent.customer === 'string'
-      ? paymentIntent.customer
-      : paymentIntent.customer?.id;
+    const customerId =
+      typeof paymentIntent.customer === 'string'
+        ? paymentIntent.customer
+        : paymentIntent.customer?.id;
 
-    if (!customerId) {return;}
+    if (!customerId) {
+      return;
+    }
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) {return;}
+      if (!user) {
+        return;
+      }
 
       await prisma.auditLog.create({
         data: {
@@ -731,7 +768,8 @@ export class StripeService {
             declineCode: err?.decline_code || null,
             type: err?.type || null,
             paymentMethodType: err?.payment_method?.type || null,
-            network: (err?.payment_method?.card as { network?: string } | undefined)?.network || null,
+            network:
+              (err?.payment_method?.card as { network?: string } | undefined)?.network || null,
             message: err?.message || 'Unknown error',
           },
         },
@@ -750,9 +788,8 @@ export class StripeService {
       status: subscription.status,
     });
 
-    const customerId = typeof subscription.customer === 'string'
-      ? subscription.customer
-      : subscription.customer.id;
+    const customerId =
+      typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id;
 
     try {
       const user = await prisma.user.findFirst({
@@ -783,7 +820,10 @@ export class StripeService {
         },
       });
 
-      logger.info('User subscription provisioned', { userId: user.id, subscriptionId: subscription.id });
+      logger.info('User subscription provisioned', {
+        userId: user.id,
+        subscriptionId: subscription.id,
+      });
     } catch (error) {
       logger.error('Failed to process subscription created webhook', {
         error: error instanceof Error ? error.message : String(error),
@@ -798,16 +838,17 @@ export class StripeService {
       status: subscription.status,
     });
 
-    const customerId = typeof subscription.customer === 'string'
-      ? subscription.customer
-      : subscription.customer.id;
+    const customerId =
+      typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id;
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) {return;}
+      if (!user) {
+        return;
+      }
 
       await prisma.user.update({
         where: { id: user.id },
@@ -841,16 +882,17 @@ export class StripeService {
       customerId: subscription.customer,
     });
 
-    const customerId = typeof subscription.customer === 'string'
-      ? subscription.customer
-      : subscription.customer.id;
+    const customerId =
+      typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id;
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) {return;}
+      if (!user) {
+        return;
+      }
 
       // Downgrade user: clear subscription and revert to free tier
       await prisma.user.update({
@@ -885,18 +927,21 @@ export class StripeService {
       amountPaid: invoice.amount_paid,
     });
 
-    const customerId = typeof invoice.customer === 'string'
-      ? invoice.customer
-      : invoice.customer?.id;
+    const customerId =
+      typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id;
 
-    if (!customerId) {return;}
+    if (!customerId) {
+      return;
+    }
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) {return;}
+      if (!user) {
+        return;
+      }
 
       await prisma.auditLog.create({
         data: {
@@ -925,18 +970,21 @@ export class StripeService {
       attemptCount: invoice.attempt_count,
     });
 
-    const customerId = typeof invoice.customer === 'string'
-      ? invoice.customer
-      : invoice.customer?.id;
+    const customerId =
+      typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id;
 
-    if (!customerId) {return;}
+    if (!customerId) {
+      return;
+    }
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) {return;}
+      if (!user) {
+        return;
+      }
 
       await prisma.auditLog.create({
         data: {
@@ -959,7 +1007,9 @@ export class StripeService {
           where: { id: user.id },
           data: { subscriptionStatus: 'past_due' },
         });
-        logger.warn('User subscription marked as past_due after 3 failed attempts', { userId: user.id });
+        logger.warn('User subscription marked as past_due after 3 failed attempts', {
+          userId: user.id,
+        });
       }
     } catch (error) {
       logger.error('Failed to process invoice payment failed webhook', {
@@ -975,18 +1025,20 @@ export class StripeService {
       paymentIntentId: charge.payment_intent,
     });
 
-    const customerId = typeof charge.customer === 'string'
-      ? charge.customer
-      : charge.customer?.id;
+    const customerId = typeof charge.customer === 'string' ? charge.customer : charge.customer?.id;
 
-    if (!customerId) {return;}
+    if (!customerId) {
+      return;
+    }
 
     try {
       const user = await prisma.user.findFirst({
         where: { stripeCustomerId: customerId },
       });
 
-      if (!user) {return;}
+      if (!user) {
+        return;
+      }
 
       await prisma.auditLog.create({
         data: {
@@ -997,9 +1049,10 @@ export class StripeService {
           metadata: {
             amountRefunded: charge.amount_refunded,
             currency: charge.currency,
-            paymentIntentId: typeof charge.payment_intent === 'string'
-              ? charge.payment_intent
-              : charge.payment_intent?.id,
+            paymentIntentId:
+              typeof charge.payment_intent === 'string'
+                ? charge.payment_intent
+                : charge.payment_intent?.id,
           },
         },
       });
@@ -1040,7 +1093,7 @@ export class StripeService {
       if ((customer as Stripe.Customer).metadata?.userId !== userId) {
         throw new StripeServiceError(
           'PAYMENT_HISTORY_UNAUTHORIZED',
-          'You are not authorized to view this customer\'s payment history'
+          "You are not authorized to view this customer's payment history"
         );
       }
 

@@ -84,15 +84,18 @@ src/
 ## API Endpoints
 
 ### Auth
+
 - `POST /api/v1/auth/register` - Inscription
 - `POST /api/v1/auth/login` - Connexion
 - `POST /api/v1/auth/refresh` - Renouveler le token
 
 ### Users
+
 - `GET /api/v1/users/me` - Profil utilisateur
 - `PUT /api/v1/users/me` - Mettre à jour le profil
 
 ### Kitchens
+
 - `GET /api/v1/kitchens` - Liste des cuisines
 - `POST /api/v1/kitchens` - Créer une cuisine
 - `GET /api/v1/kitchens/:id` - Détails d'une cuisine
@@ -100,11 +103,13 @@ src/
 - `DELETE /api/v1/kitchens/:id` - Supprimer une cuisine
 
 ### Products
+
 - `GET /api/v1/products` - Liste des produits
 - `GET /api/v1/products/search` - Rechercher des produits
 - `GET /api/v1/products/:id` - Détails d'un produit
 
 ### Orders
+
 - `GET /api/v1/orders` - Liste des commandes
 - `POST /api/v1/orders` - Créer une commande
 - `GET /api/v1/orders/:id` - Détails d'une commande

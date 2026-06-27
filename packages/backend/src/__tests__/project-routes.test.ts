@@ -145,16 +145,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -180,14 +182,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -231,18 +229,13 @@ describe('Project Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /projects', async () => {
-      const response = await request(app)
-        .get('/projects')
-        .expect(401);
+      const response = await request(app).get('/projects').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to POST /projects', async () => {
-      const response = await request(app)
-        .post('/projects')
-        .send({ name: 'Test' })
-        .expect(401);
+      const response = await request(app).post('/projects').send({ name: 'Test' }).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -260,9 +253,7 @@ describe('Project Routes', () => {
       };
       mockProjectRepository.findAll.mockResolvedValue(mockResult);
 
-      const response = await authedRequest(app)
-        .get('/projects')
-        .expect(200);
+      const response = await authedRequest(app).get('/projects').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -277,12 +268,13 @@ describe('Project Routes', () => {
 
     it('should pass pagination parameters from query string', async () => {
       mockProjectRepository.findAll.mockResolvedValue({
-        data: [], page: 3, total: 50, totalPages: 5,
+        data: [],
+        page: 3,
+        total: 50,
+        totalPages: 5,
       });
 
-      await authedRequest(app)
-        .get('/projects?page=3&limit=10')
-        .expect(200);
+      await authedRequest(app).get('/projects?page=3&limit=10').expect(200);
 
       expect(mockProjectRepository.findAll).toHaveBeenCalledWith(
         expect.anything(),
@@ -292,12 +284,13 @@ describe('Project Routes', () => {
 
     it('should pass status filter to the repository', async () => {
       mockProjectRepository.findAll.mockResolvedValue({
-        data: [], page: 1, total: 0, totalPages: 0,
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
       });
 
-      await authedRequest(app)
-        .get('/projects?status=draft')
-        .expect(200);
+      await authedRequest(app).get('/projects?status=draft').expect(200);
 
       expect(mockProjectRepository.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ status: 'draft' }),
@@ -307,12 +300,13 @@ describe('Project Routes', () => {
 
     it('should pass search query to the repository', async () => {
       mockProjectRepository.findAll.mockResolvedValue({
-        data: [], page: 1, total: 0, totalPages: 0,
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
       });
 
-      await authedRequest(app)
-        .get('/projects?search=kitchen')
-        .expect(200);
+      await authedRequest(app).get('/projects?search=kitchen').expect(200);
 
       expect(mockProjectRepository.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ search: 'kitchen' }),
@@ -330,13 +324,15 @@ describe('Project Routes', () => {
     };
 
     it('should create a project successfully and return 201', async () => {
-      const created = { id: 'new-project', ...validProject, userId: 'test-user-1', status: 'draft' };
+      const created = {
+        id: 'new-project',
+        ...validProject,
+        userId: 'test-user-1',
+        status: 'draft',
+      };
       mockProjectRepository.create.mockResolvedValue(created);
 
-      const response = await authedRequest(app)
-        .post('/projects')
-        .send(validProject)
-        .expect(201);
+      const response = await authedRequest(app).post('/projects').send(validProject).expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.name).toBe('New Kitchen Project');
@@ -359,10 +355,7 @@ describe('Project Routes', () => {
     });
 
     it('should return 400 when name is empty string', async () => {
-      const response = await authedRequest(app)
-        .post('/projects')
-        .send({ name: '' })
-        .expect(400);
+      const response = await authedRequest(app).post('/projects').send({ name: '' }).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -386,7 +379,12 @@ describe('Project Routes', () => {
     });
 
     it('should accept optional status field with valid value', async () => {
-      const created = { id: 'new-project', name: 'Test', userId: 'test-user-1', status: 'in_progress' };
+      const created = {
+        id: 'new-project',
+        name: 'Test',
+        userId: 'test-user-1',
+        status: 'in_progress',
+      };
       mockProjectRepository.create.mockResolvedValue(created);
 
       const response = await authedRequest(app)
@@ -407,7 +405,13 @@ describe('Project Routes', () => {
     });
 
     it('should accept optional metadata as a record', async () => {
-      const created = { id: 'new-project', name: 'Test', userId: 'test-user-1', status: 'draft', metadata: { key: 'value' } };
+      const created = {
+        id: 'new-project',
+        name: 'Test',
+        userId: 'test-user-1',
+        status: 'draft',
+        metadata: { key: 'value' },
+      };
       mockProjectRepository.create.mockResolvedValue(created);
 
       const response = await authedRequest(app)
@@ -425,9 +429,7 @@ describe('Project Routes', () => {
     it('should return project for the owner', async () => {
       mockProjectRepository.findById.mockResolvedValue(mockProject);
 
-      const response = await authedRequest(app)
-        .get('/projects/project-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/projects/project-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('project-1');
@@ -436,9 +438,7 @@ describe('Project Routes', () => {
     it('should return 404 for non-existent project', async () => {
       mockProjectRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/projects/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/projects/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Project not found');
@@ -447,9 +447,7 @@ describe('Project Routes', () => {
     it('should return 403 when non-owner accesses a project (IDOR prevention)', async () => {
       mockProjectRepository.findById.mockResolvedValue(otherUserProject);
 
-      const response = await authedRequest(app)
-        .get('/projects/project-2')
-        .expect(403);
+      const response = await authedRequest(app).get('/projects/project-2').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Access denied');
@@ -459,9 +457,7 @@ describe('Project Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockProjectRepository.findById.mockResolvedValue(otherUserProject);
 
-      const response = await authedRequest(app)
-        .get('/projects/project-2')
-        .expect(200);
+      const response = await authedRequest(app).get('/projects/project-2').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('project-2');
@@ -470,9 +466,7 @@ describe('Project Routes', () => {
     it('should request project with relations (includeRelations = true)', async () => {
       mockProjectRepository.findById.mockResolvedValue(mockProject);
 
-      await authedRequest(app)
-        .get('/projects/project-1')
-        .expect(200);
+      await authedRequest(app).get('/projects/project-1').expect(200);
 
       // The getById controller calls verifyOwnership with includeRelations=true
       expect(mockProjectRepository.findById).toHaveBeenCalledWith('project-1', true);
@@ -523,7 +517,10 @@ describe('Project Routes', () => {
     it('should allow admin to update any project', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockProjectRepository.findById.mockResolvedValue(otherUserProject);
-      mockProjectRepository.update.mockResolvedValue({ ...otherUserProject, name: 'Admin Updated' });
+      mockProjectRepository.update.mockResolvedValue({
+        ...otherUserProject,
+        name: 'Admin Updated',
+      });
 
       const response = await authedRequest(app)
         .put('/projects/project-2')
@@ -564,9 +561,7 @@ describe('Project Routes', () => {
       mockProjectRepository.findById.mockResolvedValue(mockProject);
       mockProjectRepository.delete.mockResolvedValue(undefined);
 
-      const response = await authedRequest(app)
-        .delete('/projects/project-1')
-        .expect(200);
+      const response = await authedRequest(app).delete('/projects/project-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');
@@ -576,9 +571,7 @@ describe('Project Routes', () => {
     it('should return 404 for non-existent project', async () => {
       mockProjectRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .delete('/projects/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).delete('/projects/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -586,9 +579,7 @@ describe('Project Routes', () => {
     it('should return 403 when non-owner tries to delete (IDOR prevention)', async () => {
       mockProjectRepository.findById.mockResolvedValue(otherUserProject);
 
-      const response = await authedRequest(app)
-        .delete('/projects/project-2')
-        .expect(403);
+      const response = await authedRequest(app).delete('/projects/project-2').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Access denied');
@@ -599,9 +590,7 @@ describe('Project Routes', () => {
       mockProjectRepository.findById.mockResolvedValue(otherUserProject);
       mockProjectRepository.delete.mockResolvedValue(undefined);
 
-      const response = await authedRequest(app)
-        .delete('/projects/project-2')
-        .expect(200);
+      const response = await authedRequest(app).delete('/projects/project-2').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -687,12 +676,14 @@ describe('Project Routes', () => {
   describe('POST /projects/:id/duplicate', () => {
     it('should duplicate a project and return 201', async () => {
       mockProjectRepository.findById.mockResolvedValue(mockProject);
-      const duplicated = { ...mockProject, id: 'project-dup', name: 'Copy of Test Kitchen Project' };
+      const duplicated = {
+        ...mockProject,
+        id: 'project-dup',
+        name: 'Copy of Test Kitchen Project',
+      };
       mockProjectRepository.duplicate.mockResolvedValue(duplicated);
 
-      const response = await authedRequest(app)
-        .post('/projects/project-1/duplicate')
-        .expect(201);
+      const response = await authedRequest(app).post('/projects/project-1/duplicate').expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('project-dup');
@@ -701,7 +692,11 @@ describe('Project Routes', () => {
 
     it('should pass custom name for duplicate', async () => {
       mockProjectRepository.findById.mockResolvedValue(mockProject);
-      mockProjectRepository.duplicate.mockResolvedValue({ ...mockProject, id: 'dup-2', name: 'Custom Name' });
+      mockProjectRepository.duplicate.mockResolvedValue({
+        ...mockProject,
+        id: 'dup-2',
+        name: 'Custom Name',
+      });
 
       await authedRequest(app)
         .post('/projects/project-1/duplicate')
@@ -714,9 +709,7 @@ describe('Project Routes', () => {
     it('should return 403 when non-owner tries to duplicate (IDOR prevention)', async () => {
       mockProjectRepository.findById.mockResolvedValue(otherUserProject);
 
-      const response = await authedRequest(app)
-        .post('/projects/project-2/duplicate')
-        .expect(403);
+      const response = await authedRequest(app).post('/projects/project-2/duplicate').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -724,9 +717,7 @@ describe('Project Routes', () => {
     it('should return 404 for non-existent project', async () => {
       mockProjectRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .post('/projects/nonexistent/duplicate')
-        .expect(404);
+      const response = await authedRequest(app).post('/projects/nonexistent/duplicate').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -955,9 +946,7 @@ describe('Project Routes', () => {
         .mockResolvedValueOnce(mockProject)
         .mockResolvedValueOnce(projectWithKitchens);
 
-      const response = await authedRequest(app)
-        .get('/projects/project-1/kitchens')
-        .expect(200);
+      const response = await authedRequest(app).get('/projects/project-1/kitchens').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
@@ -966,9 +955,7 @@ describe('Project Routes', () => {
     it('should return 403 when non-owner tries to access kitchens (IDOR prevention)', async () => {
       mockProjectRepository.findById.mockResolvedValue(otherUserProject);
 
-      const response = await authedRequest(app)
-        .get('/projects/project-2/kitchens')
-        .expect(403);
+      const response = await authedRequest(app).get('/projects/project-2/kitchens').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -978,9 +965,7 @@ describe('Project Routes', () => {
         .mockResolvedValueOnce(mockProject)
         .mockResolvedValueOnce({ ...mockProject, kitchens: [] });
 
-      const response = await authedRequest(app)
-        .get('/projects/project-1/kitchens')
-        .expect(200);
+      const response = await authedRequest(app).get('/projects/project-1/kitchens').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual([]);
@@ -995,9 +980,7 @@ describe('Project Routes', () => {
       const stats = { totalKitchens: 3, totalItems: 25, estimatedCost: 15000 };
       mockProjectRepository.getUserStats.mockResolvedValue(stats);
 
-      const response = await authedRequest(app)
-        .get('/projects/project-1/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/projects/project-1/stats').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toEqual(stats);
@@ -1009,7 +992,10 @@ describe('Project Routes', () => {
   describe('Edge cases', () => {
     it('should handle concurrent requests gracefully', async () => {
       mockProjectRepository.findAll.mockResolvedValue({
-        data: [], page: 1, total: 0, totalPages: 0,
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
       });
 
       const results = await Promise.all([
@@ -1028,10 +1014,7 @@ describe('Project Routes', () => {
       mockProjectRepository.findById.mockResolvedValue(mockProject);
       mockProjectRepository.update.mockResolvedValue(mockProject);
 
-      const response = await authedRequest(app)
-        .put('/projects/project-1')
-        .send({})
-        .expect(200);
+      const response = await authedRequest(app).put('/projects/project-1').send({}).expect(200);
 
       expect(response.body.success).toBe(true);
     });

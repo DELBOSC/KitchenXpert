@@ -170,12 +170,17 @@ describe('AuditController', () => {
           success: true,
           data: mockResult.data,
           meta: expect.objectContaining({ total: 2 }),
-        }),
+        })
       );
     });
 
     it('should pass filter parameters to repository', async () => {
-      mockAuditLogRepository.findAll.mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 });
+      mockAuditLogRepository.findAll.mockResolvedValue({
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
+      });
 
       const req = createMockReq({
         query: {
@@ -200,12 +205,17 @@ describe('AuditController', () => {
           resourceId: 'k-1',
           ipAddress: '192.168.1.1',
         }),
-        expect.objectContaining({ page: 2, limit: 25 }),
+        expect.objectContaining({ page: 2, limit: 25 })
       );
     });
 
     it('should cap limit to 100', async () => {
-      mockAuditLogRepository.findAll.mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 });
+      mockAuditLogRepository.findAll.mockResolvedValue({
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
+      });
 
       const req = createMockReq({ query: { limit: '500' } });
       const { res } = createMockRes();
@@ -214,12 +224,17 @@ describe('AuditController', () => {
 
       expect(mockAuditLogRepository.findAll).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ limit: 100 }),
+        expect.objectContaining({ limit: 100 })
       );
     });
 
     it('should use default limit of 50 when not provided', async () => {
-      mockAuditLogRepository.findAll.mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 });
+      mockAuditLogRepository.findAll.mockResolvedValue({
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
+      });
 
       const req = createMockReq();
       const { res } = createMockRes();
@@ -228,12 +243,17 @@ describe('AuditController', () => {
 
       expect(mockAuditLogRepository.findAll).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ limit: 50 }),
+        expect.objectContaining({ limit: 50 })
       );
     });
 
     it('should parse date filters', async () => {
-      mockAuditLogRepository.findAll.mockResolvedValue({ data: [], page: 1, total: 0, totalPages: 0 });
+      mockAuditLogRepository.findAll.mockResolvedValue({
+        data: [],
+        page: 1,
+        total: 0,
+        totalPages: 0,
+      });
 
       const req = createMockReq({
         query: { startDate: '2025-01-01', endDate: '2025-12-31' },
@@ -247,7 +267,7 @@ describe('AuditController', () => {
           startDate: expect.any(Date),
           endDate: expect.any(Date),
         }),
-        expect.anything(),
+        expect.anything()
       );
     });
   });
@@ -288,9 +308,7 @@ describe('AuditController', () => {
   // ==========================================================================
   describe('getByUser', () => {
     it('should return audit logs for a specific user', async () => {
-      const mockLogs = [
-        { id: 'log-1', action: 'CREATE', resource: 'kitchen', userId: 'user-1' },
-      ];
+      const mockLogs = [{ id: 'log-1', action: 'CREATE', resource: 'kitchen', userId: 'user-1' }];
       mockAuditLogRepository.findByUserId.mockResolvedValue(mockLogs);
 
       const req = createMockReq({ params: { userId: 'user-1' } });
@@ -345,7 +363,7 @@ describe('AuditController', () => {
 
       expect(mockAuditLogRepository.getStats).toHaveBeenCalledWith(
         expect.any(Date),
-        expect.any(Date),
+        expect.any(Date)
       );
     });
   });
@@ -433,7 +451,7 @@ describe('AuditController', () => {
           resource: 'kitchen',
           startDate: expect.any(Date),
           endDate: expect.any(Date),
-        }),
+        })
       );
     });
   });
@@ -505,7 +523,7 @@ describe('AuditController', () => {
           success: true,
           data: { count: 42 },
           message: 'Deleted 42 old audit logs',
-        }),
+        })
       );
     });
   });

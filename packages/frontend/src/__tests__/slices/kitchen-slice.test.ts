@@ -224,10 +224,12 @@ describe('Kitchen Slice', () => {
           },
         });
 
-        store.dispatch(updateItem({
-          id: 'item-123',
-          updates: { position: { x: 100, y: 50, z: 0 } },
-        }));
+        store.dispatch(
+          updateItem({
+            id: 'item-123',
+            updates: { position: { x: 100, y: 50, z: 0 } },
+          })
+        );
 
         const state = store.getState().kitchen;
         expect(state.currentKitchen?.items?.[0]?.position).toEqual({ x: 100, y: 50, z: 0 });
@@ -248,10 +250,12 @@ describe('Kitchen Slice', () => {
           },
         });
 
-        store.dispatch(updateItem({
-          id: 'non-existent-id',
-          updates: { position: { x: 100, y: 50, z: 0 } },
-        }));
+        store.dispatch(
+          updateItem({
+            id: 'non-existent-id',
+            updates: { position: { x: 100, y: 50, z: 0 } },
+          })
+        );
 
         const state = store.getState().kitchen;
         expect(state.currentKitchen?.items?.[0]?.position).toEqual(mockKitchenItem.position);
@@ -287,7 +291,8 @@ describe('Kitchen Slice', () => {
       it('should fetch kitchens successfully', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ data: [mockKitchen], meta: { total: 1, page: 1, totalPages: 1 } }),
+          json: () =>
+            Promise.resolve({ data: [mockKitchen], meta: { total: 1, page: 1, totalPages: 1 } }),
         });
 
         await store.dispatch(fetchKitchens({ page: 1, limit: 20 }));
@@ -318,11 +323,13 @@ describe('Kitchen Slice', () => {
           json: () => Promise.resolve({ data: [], meta: { total: 0, page: 1, totalPages: 0 } }),
         });
 
-        await store.dispatch(fetchKitchens({
-          page: 1,
-          limit: 20,
-          filters: { status: 'designing', search: 'modern' },
-        }));
+        await store.dispatch(
+          fetchKitchens({
+            page: 1,
+            limit: 20,
+            filters: { status: 'designing', search: 'modern' },
+          })
+        );
 
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringContaining('status=designing'),
@@ -371,10 +378,12 @@ describe('Kitchen Slice', () => {
           json: () => Promise.resolve({ data: newKitchen }),
         });
 
-        await store.dispatch(createKitchen({
-          name: 'New Kitchen',
-          dimensions: { width: 400, length: 300, height: 270 },
-        }));
+        await store.dispatch(
+          createKitchen({
+            name: 'New Kitchen',
+            dimensions: { width: 400, length: 300, height: 270 },
+          })
+        );
 
         const state = store.getState().kitchen;
         expect(state.kitchens).toContainEqual(newKitchen);
@@ -435,10 +444,12 @@ describe('Kitchen Slice', () => {
           json: () => Promise.resolve({ data: updatedKitchen }),
         });
 
-        await store.dispatch(updateKitchen({
-          id: 'kitchen-123',
-          updates: { name: 'Updated Kitchen' },
-        }));
+        await store.dispatch(
+          updateKitchen({
+            id: 'kitchen-123',
+            updates: { name: 'Updated Kitchen' },
+          })
+        );
 
         const state = store.getState().kitchen;
         expect(state.kitchens[0].name).toBe('Updated Kitchen');
@@ -477,7 +488,11 @@ describe('Kitchen Slice', () => {
 
     describe('duplicateKitchen', () => {
       it('should duplicate kitchen successfully', async () => {
-        const duplicatedKitchen = { ...mockKitchen, id: 'duplicated-kitchen-123', name: 'Modern Kitchen (Copy)' };
+        const duplicatedKitchen = {
+          ...mockKitchen,
+          id: 'duplicated-kitchen-123',
+          name: 'Modern Kitchen (Copy)',
+        };
 
         mockFetch.mockResolvedValueOnce({
           ok: true,

@@ -32,9 +32,10 @@ export function useFormatNumber(): (n: number, opts?: Intl.NumberFormatOptions) 
   const { i18n } = useTranslation();
   const formatter = useMemo(
     () => new Intl.NumberFormat(intlLocale(i18n.language)),
-    [i18n.language],
+    [i18n.language]
   );
-  return (n, opts) => (opts ? new Intl.NumberFormat(intlLocale(i18n.language), opts).format(n) : formatter.format(n));
+  return (n, opts) =>
+    opts ? new Intl.NumberFormat(intlLocale(i18n.language), opts).format(n) : formatter.format(n);
 }
 
 // ---------------------------------------------------------------------------
@@ -73,7 +74,10 @@ export function useFormatCurrency(): (amount: number, currency?: string) => stri
 // `short` is shipped behind a kwarg for tables where space matters.
 // ---------------------------------------------------------------------------
 
-export function useFormatDate(): (d: Date | string | number, style?: 'short' | 'medium' | 'long') => string {
+export function useFormatDate(): (
+  d: Date | string | number,
+  style?: 'short' | 'medium' | 'long'
+) => string {
   const { i18n } = useTranslation();
   return (d, style = 'medium') => {
     const date = d instanceof Date ? d : new Date(d);
@@ -88,12 +92,12 @@ export function useFormatDate(): (d: Date | string | number, style?: 'short' | '
 // ---------------------------------------------------------------------------
 
 const RELATIVE_UNITS: Array<{ unit: Intl.RelativeTimeFormatUnit; ms: number }> = [
-  { unit: 'year',   ms: 365 * 24 * 60 * 60 * 1000 },
-  { unit: 'month',  ms: 30  * 24 * 60 * 60 * 1000 },
-  { unit: 'week',   ms: 7   * 24 * 60 * 60 * 1000 },
-  { unit: 'day',    ms: 24  * 60 * 60 * 1000 },
-  { unit: 'hour',   ms: 60  * 60 * 1000 },
-  { unit: 'minute', ms: 60  * 1000 },
+  { unit: 'year', ms: 365 * 24 * 60 * 60 * 1000 },
+  { unit: 'month', ms: 30 * 24 * 60 * 60 * 1000 },
+  { unit: 'week', ms: 7 * 24 * 60 * 60 * 1000 },
+  { unit: 'day', ms: 24 * 60 * 60 * 1000 },
+  { unit: 'hour', ms: 60 * 60 * 1000 },
+  { unit: 'minute', ms: 60 * 1000 },
   { unit: 'second', ms: 1000 },
 ];
 
@@ -101,7 +105,7 @@ export function useFormatRelativeTime(): (d: Date | string | number) => string {
   const { i18n } = useTranslation();
   const rtf = useMemo(
     () => new Intl.RelativeTimeFormat(intlLocale(i18n.language), { numeric: 'auto' }),
-    [i18n.language],
+    [i18n.language]
   );
   return (d) => {
     const date = d instanceof Date ? d : new Date(d);
@@ -140,11 +144,15 @@ export function useFormatLength(): (cm: number) => string {
   return (cm) => {
     if (units === 'imperial') {
       const inches = cm / 2.54;
-      if (inches < 12) {return `${numberFmt(inches, { maximumFractionDigits: 1 })} in`;}
+      if (inches < 12) {
+        return `${numberFmt(inches, { maximumFractionDigits: 1 })} in`;
+      }
       const feet = inches / 12;
       return `${numberFmt(feet, { maximumFractionDigits: 1 })} ft`;
     }
-    if (cm < 100) {return `${numberFmt(cm)} cm`;}
+    if (cm < 100) {
+      return `${numberFmt(cm)} cm`;
+    }
     return `${numberFmt(cm / 100, { maximumFractionDigits: 2 })} m`;
   };
 }

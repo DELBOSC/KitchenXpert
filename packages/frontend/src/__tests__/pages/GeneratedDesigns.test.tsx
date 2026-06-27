@@ -27,9 +27,14 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, fallbackOrOpts?: string | Record<string, unknown>, opts?: Record<string, unknown>) => {
+    t: (
+      key: string,
+      fallbackOrOpts?: string | Record<string, unknown>,
+      opts?: Record<string, unknown>
+    ) => {
       if (typeof fallbackOrOpts === 'string') return fallbackOrOpts;
-      if (fallbackOrOpts && typeof fallbackOrOpts === 'object' && 'defaultValue' in fallbackOrOpts) return fallbackOrOpts.defaultValue as string;
+      if (fallbackOrOpts && typeof fallbackOrOpts === 'object' && 'defaultValue' in fallbackOrOpts)
+        return fallbackOrOpts.defaultValue as string;
       return key;
     },
     i18n: { language: 'fr' },
@@ -192,7 +197,9 @@ describe('GeneratedDesigns', () => {
       renderGeneratedDesigns();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /generated designs/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /generated designs/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -200,7 +207,9 @@ describe('GeneratedDesigns', () => {
       renderGeneratedDesigns();
 
       await waitFor(() => {
-        expect(screen.getByText(/design\(s\) generated based on your preferences/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/design\(s\) generated based on your preferences/i)
+        ).toBeInTheDocument();
       });
     });
 
@@ -424,7 +433,8 @@ describe('GeneratedDesigns', () => {
 
       await waitFor(() => {
         const ratingCall = mockFetch.mock.calls.find(
-          (call: unknown[]) => typeof call[0] === 'string' && (call[0] as string).includes('design-ratings')
+          (call: unknown[]) =>
+            typeof call[0] === 'string' && (call[0] as string).includes('design-ratings')
         );
         expect(ratingCall).toBeDefined();
       });
@@ -661,7 +671,8 @@ describe('GeneratedDesigns', () => {
 
       await waitFor(() => {
         const saveCall = mockFetch.mock.calls.find(
-          (call: unknown[]) => typeof call[0] === 'string' && (call[0] as string).includes('save-design')
+          (call: unknown[]) =>
+            typeof call[0] === 'string' && (call[0] as string).includes('save-design')
         );
         expect(saveCall).toBeDefined();
       });
@@ -851,7 +862,9 @@ describe('GeneratedDesigns', () => {
       renderGeneratedDesigns();
 
       await waitFor(() => {
-        expect(screen.getByText(/our ai is crafting personalized kitchen designs/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/our ai is crafting personalized kitchen designs/i)
+        ).toBeInTheDocument();
       });
     });
   });

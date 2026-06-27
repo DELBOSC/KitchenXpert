@@ -8,7 +8,6 @@ import { getMailService } from '../../services/mail.service';
 import logger from '../../utils/logger';
 import { asyncHandler } from '../middleware/error-middleware';
 
-
 /**
  * Quote Controller
  * Handles sending kitchen design quote requests to partners/installers
@@ -75,7 +74,9 @@ export class QuoteController {
     }
 
     if (!partner.isActive) {
-      res.status(400).json({ success: false, error: 'This partner is currently not accepting quote requests' });
+      res
+        .status(400)
+        .json({ success: false, error: 'This partner is currently not accepting quote requests' });
       return;
     }
 
@@ -258,7 +259,9 @@ export class QuoteController {
     const partners = await prisma.partner.findMany({
       where: {
         isActive: true,
-        ...(postalCode ? { configuration: { path: ['postalCode'], equals: postalCode as string } } : {}),
+        ...(postalCode
+          ? { configuration: { path: ['postalCode'], equals: postalCode as string } }
+          : {}),
       },
       select: {
         id: true,
@@ -333,12 +336,16 @@ function buildPartnerEmailHtml(data: {
         ${data.contactInfo.phone ? `<p><strong>Phone:</strong> ${data.contactInfo.phone}</p>` : ''}
       </div>
 
-      ${data.message ? `
+      ${
+        data.message
+          ? `
         <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin: 16px 0;">
           <h3 style="margin-top: 0; color: #334155;">Additional Notes</h3>
           <p>${data.message}</p>
         </div>
-      ` : ''}
+      `
+          : ''
+      }
 
       <div style="margin: 24px 0;">
         <a href="${data.designPackageUrl}" style="display: inline-block; background: #3b82f6; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold;">

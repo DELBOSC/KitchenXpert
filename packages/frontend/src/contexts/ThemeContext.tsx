@@ -12,19 +12,25 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function getSystemTheme(): 'light' | 'dark' {
-  if (typeof window === 'undefined') {return 'light';}
+  if (typeof window === 'undefined') {
+    return 'light';
+  }
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined') {return 'system';}
+    if (typeof window === 'undefined') {
+      return 'system';
+    }
     const stored = localStorage.getItem('theme');
     return stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
   });
 
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
-    if (theme === 'system') {return getSystemTheme();}
+    if (theme === 'system') {
+      return getSystemTheme();
+    }
     return theme;
   });
 
@@ -40,7 +46,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
 
   // Listen for system theme changes
   useEffect(() => {
-    if (theme !== 'system') {return;}
+    if (theme !== 'system') {
+      return;
+    }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent): void => {

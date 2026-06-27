@@ -117,9 +117,9 @@ module.exports = merge(prodConfig, {
        * Exclude modules from report
        */
       excludeAssets: [
-        /\.map$/,          // Source maps
-        /LICENSE$/,        // License files
-        /\.txt$/,          // Text files
+        /\.map$/, // Source maps
+        /LICENSE$/, // License files
+        /\.txt$/, // Text files
       ],
 
       /**
@@ -142,8 +142,8 @@ module.exports = merge(prodConfig, {
    */
   performance: {
     hints: 'warning',
-    maxEntrypointSize: 512000,  // 500 KB
-    maxAssetSize: 512000,       // 500 KB
+    maxEntrypointSize: 512000, // 500 KB
+    maxAssetSize: 512000, // 500 KB
 
     /**
      * Filter which assets to check

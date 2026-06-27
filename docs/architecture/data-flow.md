@@ -17,7 +17,9 @@
 
 ## Overview
 
-This document outlines the detailed data flows for critical operations in the KitchenXpert platform. Each flow includes sequence diagrams, data transformations, error handling, and performance considerations.
+This document outlines the detailed data flows for critical operations in the
+KitchenXpert platform. Each flow includes sequence diagrams, data
+transformations, error handling, and performance considerations.
 
 ## User Authentication Flow
 
@@ -104,6 +106,7 @@ sequenceDiagram
 ### Authentication Flow Details
 
 **Request Payload (Login)**:
+
 ```json
 {
   "email": "user@example.com",
@@ -112,6 +115,7 @@ sequenceDiagram
 ```
 
 **Response Payload**:
+
 ```json
 {
   "accessToken": "eyJhbGciOiJIUzI1NiIs...",
@@ -128,6 +132,7 @@ sequenceDiagram
 ```
 
 **Token Structure**:
+
 ```javascript
 // Access Token (JWT)
 {
@@ -222,6 +227,7 @@ sequenceDiagram
 ### Design Data Structure
 
 **Create Design Request**:
+
 ```json
 {
   "name": "Modern Kitchen Design",
@@ -262,6 +268,7 @@ sequenceDiagram
 ```
 
 **MongoDB Document**:
+
 ```javascript
 {
   _id: ObjectId("..."),
@@ -360,6 +367,7 @@ sequenceDiagram
 ### Catalog Sync Details
 
 **Partner API Response**:
+
 ```json
 {
   "items": [
@@ -380,9 +388,7 @@ sequenceDiagram
         "energyRating": "A++",
         "color": "Stainless Steel"
       },
-      "images": [
-        "https://partner-cdn.com/images/item-123-1.jpg"
-      ],
+      "images": ["https://partner-cdn.com/images/item-123-1.jpg"],
       "availability": "in_stock",
       "updatedAt": "2026-01-10T09:00:00Z"
     }
@@ -394,6 +400,7 @@ sequenceDiagram
 ```
 
 **PostgreSQL Schema**:
+
 ```sql
 CREATE TABLE catalog_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -500,6 +507,7 @@ sequenceDiagram
 ### AI Generation Request
 
 **Questionnaire Payload**:
+
 ```json
 {
   "dimensions": {
@@ -520,9 +528,7 @@ sequenceDiagram
   },
   "constraints": {
     "doorLocation": { "wall": "north", "position": 0.5 },
-    "windowLocations": [
-      { "wall": "east", "position": 0.3, "width": 1.5 }
-    ],
+    "windowLocations": [{ "wall": "east", "position": 0.3, "width": 1.5 }],
     "plumbingLocation": { "wall": "west", "position": 0.7 }
   },
   "priorities": {
@@ -535,6 +541,7 @@ sequenceDiagram
 ```
 
 **AI Response**:
+
 ```json
 {
   "designId": "uuid-v4",
@@ -653,6 +660,7 @@ sequenceDiagram
 ### Order Data Structure
 
 **Create Order Request**:
+
 ```json
 {
   "cartItems": [
@@ -673,12 +681,15 @@ sequenceDiagram
     "country": "US",
     "phone": "+1-555-0123"
   },
-  "billingAddress": { /* same structure */ },
+  "billingAddress": {
+    /* same structure */
+  },
   "notes": "Please deliver after 5 PM"
 }
 ```
 
 **Order States**:
+
 ```
 created → paid → processing → shipped → delivered
                       ↓
@@ -740,6 +751,7 @@ sequenceDiagram
 ### Webhook Payload Format
 
 **Event Payload**:
+
 ```json
 {
   "id": "evt_uuid-v4",
@@ -763,6 +775,7 @@ sequenceDiagram
 ```
 
 **Headers**:
+
 ```
 X-Webhook-Signature: sha256=abc123def456...
 X-Webhook-Event: order.created
@@ -852,6 +865,7 @@ sequenceDiagram
 ### WebSocket Message Format
 
 **Client to Server**:
+
 ```json
 {
   "type": "object.moved",
@@ -865,6 +879,7 @@ sequenceDiagram
 ```
 
 **Server to Client**:
+
 ```json
 {
   "type": "object.moved",
@@ -945,6 +960,7 @@ sequenceDiagram
 ### Upload Configuration
 
 **File Validation Rules**:
+
 ```javascript
 {
   images: {
@@ -964,6 +980,7 @@ sequenceDiagram
 ```
 
 **S3 Bucket Policy**:
+
 ```json
 {
   "Version": "2012-10-17",

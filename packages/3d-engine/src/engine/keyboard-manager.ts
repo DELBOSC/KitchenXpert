@@ -4,10 +4,26 @@ import type { TransformMode } from '../interaction/controls';
  * Actions clavier disponibles dans le moteur 3D
  */
 export type ShortcutAction =
-  | 'undo' | 'redo' | 'delete' | 'duplicate' | 'copy' | 'paste'
-  | 'mode_translate' | 'mode_rotate' | 'mode_scale' | 'deselect'
-  | 'snap_toggle' | 'view_top' | 'view_front' | 'view_right' | 'view_left' | 'view_back'
-  | 'nudge_left' | 'nudge_right' | 'nudge_forward' | 'nudge_backward';
+  | 'undo'
+  | 'redo'
+  | 'delete'
+  | 'duplicate'
+  | 'copy'
+  | 'paste'
+  | 'mode_translate'
+  | 'mode_rotate'
+  | 'mode_scale'
+  | 'deselect'
+  | 'snap_toggle'
+  | 'view_top'
+  | 'view_front'
+  | 'view_right'
+  | 'view_left'
+  | 'view_back'
+  | 'nudge_left'
+  | 'nudge_right'
+  | 'nudge_forward'
+  | 'nudge_backward';
 
 /**
  * Definition d'un raccourci clavier
@@ -93,22 +109,24 @@ export class KeyboardManager {
 
     // Ne pas intercepter si l'utilisateur tape dans un champ de saisie
     const target = e.target as HTMLElement;
-    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+      return;
 
     // Trouver le binding correspondant
     // Pour les raccourcis avec Ctrl+Shift (ex: Ctrl+Shift+Z = redo), on doit matcher exactement
-    const binding = this.bindings.find(b =>
-      b.key.toLowerCase() === e.key.toLowerCase() &&
-      !!b.ctrl === (e.ctrlKey || e.metaKey) &&
-      !!b.shift === e.shiftKey &&
-      !!b.alt === e.altKey
+    const binding = this.bindings.find(
+      (b) =>
+        b.key.toLowerCase() === e.key.toLowerCase() &&
+        !!b.ctrl === (e.ctrlKey || e.metaKey) &&
+        !!b.shift === e.shiftKey &&
+        !!b.alt === e.altKey
     );
 
     if (binding) {
       e.preventDefault();
       const callbacks = this.listeners.get(binding.action);
       if (callbacks) {
-        callbacks.forEach(cb => {
+        callbacks.forEach((cb) => {
           try {
             cb();
           } catch (err) {
@@ -133,7 +151,10 @@ export class KeyboardManager {
    */
   off(action: ShortcutAction, callback: () => void): void {
     const existing = this.listeners.get(action) || [];
-    this.listeners.set(action, existing.filter(cb => cb !== callback));
+    this.listeners.set(
+      action,
+      existing.filter((cb) => cb !== callback)
+    );
   }
 
   /**
@@ -168,7 +189,7 @@ export class KeyboardManager {
    * Supprime tous les bindings pour une action donnee
    */
   removeBindingsForAction(action: ShortcutAction): void {
-    this.bindings = this.bindings.filter(b => b.action !== action);
+    this.bindings = this.bindings.filter((b) => b.action !== action);
   }
 
   /**
@@ -182,7 +203,7 @@ export class KeyboardManager {
    * Retourne le label de raccourci pour l'affichage UI (ex: "Ctrl+Z")
    */
   getShortcutLabel(action: ShortcutAction): string | null {
-    const binding = this.bindings.find(b => b.action === action);
+    const binding = this.bindings.find((b) => b.action === action);
     if (!binding) return null;
 
     const parts: string[] = [];
@@ -191,9 +212,7 @@ export class KeyboardManager {
     if (binding.alt) parts.push('Alt');
 
     // Formate la touche pour l'affichage
-    const keyDisplay = binding.key.length === 1
-      ? binding.key.toUpperCase()
-      : binding.key;
+    const keyDisplay = binding.key.length === 1 ? binding.key.toUpperCase() : binding.key;
     parts.push(keyDisplay);
 
     return parts.join('+');
@@ -213,9 +232,13 @@ export class KeyboardManager {
  */
 export function shortcutToTransformMode(action: ShortcutAction): TransformMode | null {
   switch (action) {
-    case 'mode_translate': return 'translate';
-    case 'mode_rotate': return 'rotate';
-    case 'mode_scale': return 'scale';
-    default: return null;
+    case 'mode_translate':
+      return 'translate';
+    case 'mode_rotate':
+      return 'rotate';
+    case 'mode_scale':
+      return 'scale';
+    default:
+      return null;
   }
 }

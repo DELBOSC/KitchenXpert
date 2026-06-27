@@ -69,10 +69,18 @@ describe('baseNorm / deaccent', () => {
 
 describe('extractColor', () => {
   it('matches a tier-1 colour with score 100', () => {
-    expect(extractColor('vicco element haut blanc haute brillance')).toEqual({ color: 'blanc', tier: 1, score: 100 });
+    expect(extractColor('vicco element haut blanc haute brillance')).toEqual({
+      color: 'blanc',
+      tier: 1,
+      score: 100,
+    });
   });
   it('matches a tier-3 colour (noir) with score 70', () => {
-    expect(extractColor('vicco element haut noir haute brillance')).toEqual({ color: 'noir', tier: 3, score: 70 });
+    expect(extractColor('vicco element haut noir haute brillance')).toEqual({
+      color: 'noir',
+      tier: 3,
+      score: 70,
+    });
   });
   it('matches a tier-6 colour (rouge) with score 10', () => {
     expect(extractColor('porte rouge mat')?.score).toBe(10);
@@ -100,7 +108,9 @@ describe('gammeName', () => {
 
 describe('extractSizeKey (anti-fusion)', () => {
   it('"60cm" and "45cm" produce DIFFERENT size keys', () => {
-    const k60 = extractSizeKey(baseNorm('Vicco Elément haut de cuisine Blanc Haute brillance 60cm'));
+    const k60 = extractSizeKey(
+      baseNorm('Vicco Elément haut de cuisine Blanc Haute brillance 60cm')
+    );
     const k45 = extractSizeKey(baseNorm('Vicco Façade Chêne Artisan 45cm sans PT'));
     expect(k60).toBe('60');
     expect(k45).toBe('45');
@@ -120,15 +130,23 @@ describe('buildSignature', () => {
     const blanc = VICCO_15.find((r) => r.specColor?.startsWith('Blanc'))!;
     const noir = VICCO_15.find((r) => r.specColor?.startsWith('Noir'))!;
     expect(buildSignature(blanc)).toBe(buildSignature(noir));
-    expect(buildSignature(blanc)).toBe('cabinet|vicco|vicco element haut cuisine haute brillance|n:60');
+    expect(buildSignature(blanc)).toBe(
+      'cabinet|vicco|vicco element haut cuisine haute brillance|n:60'
+    );
   });
   it('different size -> different signature (anti-fusion at signature level)', () => {
     const sig60 = buildSignature(VICCO_15[0]!);
     const facade45: CanonicalRow = {
       sku: 'CASTORAMA-4066731446032',
       name: 'Vicco Façade Chêne Artisan 45cm sans PT',
-      brand: 'Castorama', realBrand: 'Vicco', specColor: 'Chêne Artisan',
-      productType: 'facade', width: null, height: null, depth: null, price: 36.9,
+      brand: 'Castorama',
+      realBrand: 'Vicco',
+      specColor: 'Chêne Artisan',
+      productType: 'facade',
+      width: null,
+      height: null,
+      depth: null,
+      price: 36.9,
     };
     expect(buildSignature(facade45)).not.toBe(sig60);
   });
@@ -150,7 +168,7 @@ describe('clusterAndSelect', () => {
     expect(variants).toHaveLength(2);
     expect(variants.every((v) => v.parentSku === 'CASTORAMA-4251421927513')).toBe(true);
     expect(variants.map((v) => v.sku).sort()).toEqual(
-      ['CASTORAMA-4066731035823', 'CASTORAMA-4066731344253'].sort(),
+      ['CASTORAMA-4066731035823', 'CASTORAMA-4066731344253'].sort()
     );
   });
 

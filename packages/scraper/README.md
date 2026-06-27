@@ -4,7 +4,8 @@ Module de scraping pour alimenter la base de données produits de KitchenXpert.
 
 ## 📋 Fonctionnalités
 
-- **Scraping multi-marques** : Schmidt, Cuisinella, Mobalpa, IKEA, Leroy Merlin, etc.
+- **Scraping multi-marques** : Schmidt, Cuisinella, Mobalpa, IKEA, Leroy Merlin,
+  etc.
 - **Extraction de données** :
   - Meubles de cuisine (bas, hauts, colonnes, angles)
   - Plans de travail
@@ -87,37 +88,39 @@ npm run api:start
 
 ### Produits
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/v1/cabinets` | Rechercher des meubles |
-| `GET /api/v1/worktops` | Rechercher des plans de travail |
-| `GET /api/v1/facades` | Rechercher des façades |
-| `GET /api/v1/appliances` | Rechercher de l'électroménager |
-| `GET /api/v1/brands` | Liste des marques |
+| Endpoint                 | Description                     |
+| ------------------------ | ------------------------------- |
+| `GET /api/v1/cabinets`   | Rechercher des meubles          |
+| `GET /api/v1/worktops`   | Rechercher des plans de travail |
+| `GET /api/v1/facades`    | Rechercher des façades          |
+| `GET /api/v1/appliances` | Rechercher de l'électroménager  |
+| `GET /api/v1/brands`     | Liste des marques               |
 
 ### Recherche intelligente
 
-| Endpoint | Description |
-|----------|-------------|
-| `POST /api/v1/search/smart` | Recherche IA pour configurations |
-| `GET /api/v1/search/suggest` | Suggestions autocomplete |
-| `GET /api/v1/search/compatible` | Produits compatibles |
+| Endpoint                        | Description                      |
+| ------------------------------- | -------------------------------- |
+| `POST /api/v1/search/smart`     | Recherche IA pour configurations |
+| `GET /api/v1/search/suggest`    | Suggestions autocomplete         |
+| `GET /api/v1/search/compatible` | Produits compatibles             |
 
 ### Scraping
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/v1/scraping/status` | État des jobs |
-| `POST /api/v1/scraping/start/:brandId` | Démarrer un scrape |
-| `POST /api/v1/scraping/stop/:brandId` | Arrêter un scrape |
-| `GET /api/v1/scraping/progress/:brandId` | Progression |
+| Endpoint                                 | Description        |
+| ---------------------------------------- | ------------------ |
+| `GET /api/v1/scraping/status`            | État des jobs      |
+| `POST /api/v1/scraping/start/:brandId`   | Démarrer un scrape |
+| `POST /api/v1/scraping/stop/:brandId`    | Arrêter un scrape  |
+| `GET /api/v1/scraping/progress/:brandId` | Progression        |
 
 ## 🏷️ Marques supportées
 
 ### Scrapers implémentés
+
 - ✅ Schmidt
 
 ### À implémenter
+
 - ⏳ Cuisinella (Schmidt Groupe)
 - ⏳ Mobalpa (Fournier)
 - ⏳ IKEA
@@ -149,17 +152,20 @@ PROXY_LIST=""
 ## 📊 Modèles de données
 
 ### Cabinet (Meuble)
+
 - Type : base, wall, tall, corner, island
 - Dimensions : largeur, hauteur, profondeur
 - Configuration : portes, tiroirs, étagères
 - Prix et compatibilités
 
 ### Worktop (Plan de travail)
+
 - Matériau : stratifié, quartz, granit, etc.
 - Épaisseurs et profondeurs disponibles
 - Propriétés : résistance chaleur, rayures, etc.
 
 ### Facade (Façade)
+
 - Style : flat, shaker, handleless, etc.
 - Matériau : mélaminé, laqué, bois, etc.
 - Couleurs et finitions disponibles

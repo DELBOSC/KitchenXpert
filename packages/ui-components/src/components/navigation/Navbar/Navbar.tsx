@@ -167,9 +167,7 @@ const StyledNavLink = styled.a<{
       background: ${$variant === 'filled'
         ? 'rgba(255, 255, 255, 0.15)'
         : 'var(--color-primary-light, #eff6ff)'};
-      color: ${$variant === 'filled'
-        ? 'white'
-        : 'var(--color-primary, #2563eb)'};
+      color: ${$variant === 'filled' ? 'white' : 'var(--color-primary, #2563eb)'};
     `}
 
   ${({ $disabled }) =>
@@ -182,9 +180,7 @@ const StyledNavLink = styled.a<{
 
   &:hover:not([aria-disabled='true']) {
     background: ${({ $variant }) =>
-      $variant === 'filled'
-        ? 'rgba(255, 255, 255, 0.1)'
-        : 'var(--color-gray-100, #f3f4f6)'};
+      $variant === 'filled' ? 'rgba(255, 255, 255, 0.1)' : 'var(--color-gray-100, #f3f4f6)'};
   }
 
   &:focus-visible {
@@ -228,9 +224,7 @@ const MobileMenuButton = styled.button<{
 
   &:hover {
     background: ${({ $variant }) =>
-      $variant === 'filled'
-        ? 'rgba(255, 255, 255, 0.1)'
-        : 'var(--color-gray-100, #f3f4f6)'};
+      $variant === 'filled' ? 'rgba(255, 255, 255, 0.1)' : 'var(--color-gray-100, #f3f4f6)'};
   }
 
   &:focus-visible {
@@ -303,8 +297,7 @@ const MobileMenuPanel = styled.div<{
   background: var(--color-background, #ffffff);
   box-shadow: var(--shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.1));
   z-index: var(--z-index-navbar, 1000);
-  transform: ${({ $isOpen }) =>
-    $isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  transform: ${({ $isOpen }) => ($isOpen ? 'translateY(0)' : 'translateY(-10px)')};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
   transition: all 0.2s ease;
@@ -435,84 +428,72 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
     }, [mobileBreakpoint, isMobileMenuOpen, closeMobileMenu]);
 
     // Handle keyboard navigation for nav links
-    const handleNavKeyDown = useCallback(
-      (e: KeyboardEvent<HTMLUListElement>) => {
-        const focusableLinks = navLinksRef.current?.querySelectorAll(
-          'a:not([aria-disabled="true"])'
-        );
-        if (!focusableLinks || focusableLinks.length === 0) return;
+    const handleNavKeyDown = useCallback((e: KeyboardEvent<HTMLUListElement>) => {
+      const focusableLinks = navLinksRef.current?.querySelectorAll('a:not([aria-disabled="true"])');
+      if (!focusableLinks || focusableLinks.length === 0) return;
 
-        const currentIndex = Array.from(focusableLinks).findIndex(
-          (el) => el === document.activeElement
-        );
+      const currentIndex = Array.from(focusableLinks).findIndex(
+        (el) => el === document.activeElement
+      );
 
-        let nextIndex: number;
+      let nextIndex: number;
 
-        switch (e.key) {
-          case 'ArrowRight':
-            e.preventDefault();
-            nextIndex =
-              currentIndex < focusableLinks.length - 1 ? currentIndex + 1 : 0;
-            (focusableLinks[nextIndex] as HTMLElement).focus();
-            break;
-          case 'ArrowLeft':
-            e.preventDefault();
-            nextIndex =
-              currentIndex > 0 ? currentIndex - 1 : focusableLinks.length - 1;
-            (focusableLinks[nextIndex] as HTMLElement).focus();
-            break;
-          case 'Home':
-            e.preventDefault();
-            (focusableLinks[0] as HTMLElement).focus();
-            break;
-          case 'End':
-            e.preventDefault();
-            (focusableLinks[focusableLinks.length - 1] as HTMLElement).focus();
-            break;
-        }
-      },
-      []
-    );
+      switch (e.key) {
+        case 'ArrowRight':
+          e.preventDefault();
+          nextIndex = currentIndex < focusableLinks.length - 1 ? currentIndex + 1 : 0;
+          (focusableLinks[nextIndex] as HTMLElement).focus();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          nextIndex = currentIndex > 0 ? currentIndex - 1 : focusableLinks.length - 1;
+          (focusableLinks[nextIndex] as HTMLElement).focus();
+          break;
+        case 'Home':
+          e.preventDefault();
+          (focusableLinks[0] as HTMLElement).focus();
+          break;
+        case 'End':
+          e.preventDefault();
+          (focusableLinks[focusableLinks.length - 1] as HTMLElement).focus();
+          break;
+      }
+    }, []);
 
     // Handle keyboard navigation for mobile menu
-    const handleMobileNavKeyDown = useCallback(
-      (e: KeyboardEvent<HTMLUListElement>) => {
-        const focusableLinks = mobileMenuRef.current?.querySelectorAll(
-          'a:not([aria-disabled="true"])'
-        );
-        if (!focusableLinks || focusableLinks.length === 0) return;
+    const handleMobileNavKeyDown = useCallback((e: KeyboardEvent<HTMLUListElement>) => {
+      const focusableLinks = mobileMenuRef.current?.querySelectorAll(
+        'a:not([aria-disabled="true"])'
+      );
+      if (!focusableLinks || focusableLinks.length === 0) return;
 
-        const currentIndex = Array.from(focusableLinks).findIndex(
-          (el) => el === document.activeElement
-        );
+      const currentIndex = Array.from(focusableLinks).findIndex(
+        (el) => el === document.activeElement
+      );
 
-        let nextIndex: number;
+      let nextIndex: number;
 
-        switch (e.key) {
-          case 'ArrowDown':
-            e.preventDefault();
-            nextIndex =
-              currentIndex < focusableLinks.length - 1 ? currentIndex + 1 : 0;
-            (focusableLinks[nextIndex] as HTMLElement).focus();
-            break;
-          case 'ArrowUp':
-            e.preventDefault();
-            nextIndex =
-              currentIndex > 0 ? currentIndex - 1 : focusableLinks.length - 1;
-            (focusableLinks[nextIndex] as HTMLElement).focus();
-            break;
-          case 'Home':
-            e.preventDefault();
-            (focusableLinks[0] as HTMLElement).focus();
-            break;
-          case 'End':
-            e.preventDefault();
-            (focusableLinks[focusableLinks.length - 1] as HTMLElement).focus();
-            break;
-        }
-      },
-      []
-    );
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          nextIndex = currentIndex < focusableLinks.length - 1 ? currentIndex + 1 : 0;
+          (focusableLinks[nextIndex] as HTMLElement).focus();
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          nextIndex = currentIndex > 0 ? currentIndex - 1 : focusableLinks.length - 1;
+          (focusableLinks[nextIndex] as HTMLElement).focus();
+          break;
+        case 'Home':
+          e.preventDefault();
+          (focusableLinks[0] as HTMLElement).focus();
+          break;
+        case 'End':
+          e.preventDefault();
+          (focusableLinks[focusableLinks.length - 1] as HTMLElement).focus();
+          break;
+      }
+    }, []);
 
     const handleLinkClick = useCallback(
       (link: NavLink) => {
@@ -571,9 +552,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
           </NavLinksContainer>
 
           {actions && (
-            <ActionsContainer $mobileBreakpoint={mobileBreakpoint}>
-              {actions}
-            </ActionsContainer>
+            <ActionsContainer $mobileBreakpoint={mobileBreakpoint}>{actions}</ActionsContainer>
           )}
 
           <MobileMenuButton
@@ -635,9 +614,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                     </li>
                   ))}
                 </MobileNavLinks>
-                {actions && (
-                  <MobileActionsContainer>{actions}</MobileActionsContainer>
-                )}
+                {actions && <MobileActionsContainer>{actions}</MobileActionsContainer>}
               </>
             )}
           </MobileMenuContent>

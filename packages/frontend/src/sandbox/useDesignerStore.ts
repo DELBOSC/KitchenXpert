@@ -29,7 +29,9 @@ export interface DesignerStoreView {
 
 /** Detect sandbox-mode from the URL. SSR-safe. */
 function isOnSandboxRoute(): boolean {
-  if (typeof window === 'undefined') {return false;}
+  if (typeof window === 'undefined') {
+    return false;
+  }
   return window.location.pathname.startsWith('/designer/sandbox');
 }
 

@@ -108,7 +108,9 @@ Options:
   --help, -h              Show this help message
 
 Available brands:
-  ${BRANDS_CONFIG.filter(b => b.enabled).map(b => b.id).join(', ')}
+  ${BRANDS_CONFIG.filter((b) => b.enabled)
+    .map((b) => b.id)
+    .join(', ')}
 
 Examples:
   npm run check:urls
@@ -136,8 +138,9 @@ async function checkUrl(
       maxRedirects: 0,
       validateStatus: () => true, // Accept all status codes
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
       },
     });
@@ -296,10 +299,10 @@ function printSummary(results: UrlCheckResult[]): void {
   console.log('Summary');
   console.log('='.repeat(60));
 
-  const ok = results.filter(r => r.status === 'ok').length;
-  const redirects = results.filter(r => r.status === 'redirect').length;
-  const errors = results.filter(r => r.status === 'error').length;
-  const timeouts = results.filter(r => r.status === 'timeout').length;
+  const ok = results.filter((r) => r.status === 'ok').length;
+  const redirects = results.filter((r) => r.status === 'redirect').length;
+  const errors = results.filter((r) => r.status === 'error').length;
+  const timeouts = results.filter((r) => r.status === 'timeout').length;
 
   console.log(`\n  Total URLs checked: ${results.length}`);
   console.log(`  [OK] Accessible: ${ok}`);
@@ -308,13 +311,11 @@ function printSummary(results: UrlCheckResult[]): void {
   console.log(`  [TIMEOUT] Timeouts: ${timeouts}`);
 
   // Average response time
-  const avgTime = Math.round(
-    results.reduce((sum, r) => sum + r.responseTime, 0) / results.length
-  );
+  const avgTime = Math.round(results.reduce((sum, r) => sum + r.responseTime, 0) / results.length);
   console.log(`\n  Average response time: ${avgTime}ms`);
 
   // List errors
-  const errorResults = results.filter(r => r.status === 'error' || r.status === 'timeout');
+  const errorResults = results.filter((r) => r.status === 'error' || r.status === 'timeout');
   if (errorResults.length > 0) {
     console.log('\n  Issues found:');
     for (const result of errorResults) {
@@ -324,7 +325,7 @@ function printSummary(results: UrlCheckResult[]): void {
   }
 
   // List redirects
-  const redirectResults = results.filter(r => r.status === 'redirect');
+  const redirectResults = results.filter((r) => r.status === 'redirect');
   if (redirectResults.length > 0) {
     console.log('\n  Redirects detected:');
     for (const result of redirectResults) {
@@ -357,7 +358,7 @@ async function main(): Promise<void> {
     const brand = getBrandConfig(options.brand);
     if (!brand) {
       console.error(`Error: Brand "${options.brand}" not found in configuration`);
-      console.error('Available brands:', BRANDS_CONFIG.map(b => b.id).join(', '));
+      console.error('Available brands:', BRANDS_CONFIG.map((b) => b.id).join(', '));
       process.exit(1);
     }
     brands = [brand];
@@ -388,7 +389,7 @@ async function main(): Promise<void> {
     printSummary(allResults);
 
     // Exit with error code if any URLs failed
-    const hasErrors = allResults.some(r => r.status === 'error' || r.status === 'timeout');
+    const hasErrors = allResults.some((r) => r.status === 'error' || r.status === 'timeout');
     process.exit(hasErrors ? 1 : 0);
   } catch (error) {
     logger.error('URL check failed', { error });

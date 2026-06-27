@@ -3,7 +3,10 @@ import { useTranslation } from 'react-i18next';
 
 import type { TFunction } from 'i18next';
 
-type FallbackRender = (props: { error: Error | null; resetErrorBoundary: () => void }) => React.ReactNode;
+type FallbackRender = (props: {
+  error: Error | null;
+  resetErrorBoundary: () => void;
+}) => React.ReactNode;
 
 interface ErrorBoundaryInnerProps {
   children: React.ReactNode;
@@ -68,11 +71,12 @@ class ErrorBoundaryInner extends React.Component<ErrorBoundaryInnerProps, ErrorB
             <p className="text-base text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
               {t('error.description', 'An unexpected error occurred. Please try again.')}
             </p>
-            {(process.env.NODE_ENV === 'development' || import.meta.env.DEV) && this.state.error && (
-              <pre className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 p-3 rounded mb-6 text-left overflow-auto max-h-32 whitespace-pre-wrap break-words">
-                {this.state.error.message}
-              </pre>
-            )}
+            {(process.env.NODE_ENV === 'development' || import.meta.env.DEV) &&
+              this.state.error && (
+                <pre className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 p-3 rounded mb-6 text-left overflow-auto max-h-32 whitespace-pre-wrap break-words">
+                  {this.state.error.message}
+                </pre>
+              )}
             <button
               type="button"
               onClick={this.handleReset}

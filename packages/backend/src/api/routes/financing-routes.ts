@@ -9,42 +9,51 @@ const router: RouterType = Router();
 
 // ─── Validation Schemas ───────────────────────────────────────────────────────
 
-const simulateSchema = z.object({
-  totalAmount: z.number().positive('Total amount must be positive').max(500000),
-  downPayment: z.number().min(0, 'Down payment cannot be negative').max(500000),
-  kitchenId: z.string().uuid().optional(),
-  projectId: z.string().uuid().optional(),
-}).refine(data => data.downPayment < data.totalAmount, {
-  message: 'Down payment must be less than total amount',
-  path: ['downPayment'],
-});
+const simulateSchema = z
+  .object({
+    totalAmount: z.number().positive('Total amount must be positive').max(500000),
+    downPayment: z.number().min(0, 'Down payment cannot be negative').max(500000),
+    kitchenId: z.string().uuid().optional(),
+    projectId: z.string().uuid().optional(),
+  })
+  .refine((data) => data.downPayment < data.totalAmount, {
+    message: 'Down payment must be less than total amount',
+    path: ['downPayment'],
+  });
 
 const ecoAidsSchema = z.object({
   totalAmount: z.number().positive('Total amount must be positive').max(500000),
   incomeBracket: z.enum(['tres_modeste', 'modeste', 'intermediaire', 'superieur']),
   householdSize: z.number().int().min(1).max(20),
-  equipmentTypes: z.array(
-    z.enum([
-      'chauffe_eau_thermodynamique',
-      'pompe_a_chaleur',
-      'isolation_murs',
-      'isolation_combles',
-      'fenetre_double_vitrage',
-      'chaudiere_condensation',
-      'ventilation_double_flux',
-      'panneau_solaire',
-    ])
-  ).max(10),
+  equipmentTypes: z
+    .array(
+      z.enum([
+        'chauffe_eau_thermodynamique',
+        'pompe_a_chaleur',
+        'isolation_murs',
+        'isolation_combles',
+        'fenetre_double_vitrage',
+        'chaudiere_condensation',
+        'ventilation_double_flux',
+        'panneau_solaire',
+      ])
+    )
+    .max(10),
   isRenovation: z.boolean(),
   buildingAge: z.number().int().min(0).max(500).optional(),
 });
 
 const aiAdviceSchema = z.object({
   totalBudget: z.number().positive('Budget must be positive').max(500000),
-  categories: z.array(z.object({
-    name: z.string().max(100),
-    currentAmount: z.number().min(0),
-  })).max(20).optional(),
+  categories: z
+    .array(
+      z.object({
+        name: z.string().max(100),
+        currentAmount: z.number().min(0),
+      })
+    )
+    .max(20)
+    .optional(),
   style: z.string().max(100).optional(),
   roomSizeM2: z.number().positive().max(200).optional(),
   isRenovation: z.boolean().optional(),

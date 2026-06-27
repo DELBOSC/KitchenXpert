@@ -52,9 +52,7 @@ describe('Project Slice', () => {
         },
       },
     ],
-    kitchens: [
-      { id: 'kitchen-1', name: 'Main Kitchen' },
-    ],
+    kitchens: [{ id: 'kitchen-1', name: 'Main Kitchen' }],
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-15T00:00:00.000Z',
   };
@@ -152,10 +150,11 @@ describe('Project Slice', () => {
       it('should fetch projects successfully', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [mockProject],
-            meta: { total: 1, page: 1, totalPages: 1 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [mockProject],
+              meta: { total: 1, page: 1, totalPages: 1 },
+            }),
         });
 
         await store.dispatch(fetchProjects({ page: 1, limit: 20 }));
@@ -183,10 +182,11 @@ describe('Project Slice', () => {
       it('should handle pagination correctly', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [mockProject],
-            meta: { total: 50, page: 2, totalPages: 5 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [mockProject],
+              meta: { total: 50, page: 2, totalPages: 5 },
+            }),
         });
 
         await store.dispatch(fetchProjects({ page: 2, limit: 10 }));
@@ -200,17 +200,20 @@ describe('Project Slice', () => {
       it('should apply filters when fetching', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [],
-            meta: { total: 0, page: 1, totalPages: 0 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [],
+              meta: { total: 0, page: 1, totalPages: 0 },
+            }),
         });
 
-        await store.dispatch(fetchProjects({
-          page: 1,
-          limit: 20,
-          filters: { status: 'active', search: 'kitchen' },
-        }));
+        await store.dispatch(
+          fetchProjects({
+            page: 1,
+            limit: 20,
+            filters: { status: 'active', search: 'kitchen' },
+          })
+        );
 
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringContaining('status=active'),
@@ -259,10 +262,12 @@ describe('Project Slice', () => {
           json: () => Promise.resolve({ data: newProject }),
         });
 
-        await store.dispatch(createProject({
-          name: 'New Project',
-          description: 'A new project',
-        }));
+        await store.dispatch(
+          createProject({
+            name: 'New Project',
+            description: 'A new project',
+          })
+        );
 
         const state = store.getState().project;
         expect(state.projects).toContainEqual(newProject);
@@ -322,10 +327,12 @@ describe('Project Slice', () => {
           json: () => Promise.resolve({ data: updatedProject }),
         });
 
-        await store.dispatch(updateProject({
-          id: 'project-123',
-          updates: { name: 'Updated Project Name' },
-        }));
+        await store.dispatch(
+          updateProject({
+            id: 'project-123',
+            updates: { name: 'Updated Project Name' },
+          })
+        );
 
         const state = store.getState().project;
         expect(state.projects[0].name).toBe('Updated Project Name');
@@ -354,10 +361,12 @@ describe('Project Slice', () => {
           json: () => Promise.resolve({ data: updatedProject }),
         });
 
-        await store.dispatch(updateProject({
-          id: 'project-123',
-          updates: { budget: 30000 },
-        }));
+        await store.dispatch(
+          updateProject({
+            id: 'project-123',
+            updates: { budget: 30000 },
+          })
+        );
 
         const state = store.getState().project;
         expect(state.projects[0].budget).toBe(30000);
@@ -446,10 +455,12 @@ describe('Project Slice', () => {
           json: () => Promise.resolve({ data: updatedProject }),
         });
 
-        await store.dispatch(updateProjectStatus({
-          id: 'project-123',
-          status: 'completed',
-        }));
+        await store.dispatch(
+          updateProjectStatus({
+            id: 'project-123',
+            status: 'completed',
+          })
+        );
 
         const state = store.getState().project;
         expect(state.projects[0].status).toBe('completed');
@@ -480,10 +491,12 @@ describe('Project Slice', () => {
           json: () => Promise.resolve({ data: activatedProject }),
         });
 
-        await store.dispatch(updateProjectStatus({
-          id: 'project-123',
-          status: 'active',
-        }));
+        await store.dispatch(
+          updateProjectStatus({
+            id: 'project-123',
+            status: 'active',
+          })
+        );
 
         const state = store.getState().project;
         expect(state.projects[0].status).toBe('active');

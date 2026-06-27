@@ -1,8 +1,7 @@
 # Creating Your First Kitchen Design
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Beginner
-**Estimated Time:** 30-45 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Beginner **Estimated Time:**
+30-45 minutes
 
 ## Learning Objectives
 
@@ -10,7 +9,8 @@ By the end of this tutorial, you will be able to:
 
 - Create a new kitchen design project from scratch
 - Input basic room measurements and layout constraints
-- Select and place essential kitchen elements (cabinets, appliances, countertops)
+- Select and place essential kitchen elements (cabinets, appliances,
+  countertops)
 - Navigate the 3D design interface
 - Save and share your first kitchen design
 - Generate a basic cost estimate
@@ -51,7 +51,9 @@ Before starting, gather the following information:
 
 [Screenshot: Completed project creation form]
 
-> **TIP:** Choose a descriptive project name. You might create multiple designs, so names like "Modern Kitchen - White Cabinets" are more helpful than "Kitchen 1".
+> **TIP:** Choose a descriptive project name. You might create multiple designs,
+> so names like "Modern Kitchen - White Cabinets" are more helpful than "Kitchen
+> 1".
 
 ### Step 2: Enter Room Dimensions
 
@@ -70,13 +72,14 @@ Before starting, gather the following information:
    - **Width:** 12 feet (3.66 meters)
    - **Ceiling Height:** 9 feet (2.74 meters)
 
-   *Note: These are example dimensions. Use your actual measurements.*
+   _Note: These are example dimensions. Use your actual measurements._
 
 5. Click **"Next"** to continue
 
 [Screenshot: Dimension input form with example values]
 
-> **TIP:** Measure twice, design once! Accurate measurements are crucial. Measure from wall to wall, not baseboard to baseboard.
+> **TIP:** Measure twice, design once! Accurate measurements are crucial.
+> Measure from wall to wall, not baseboard to baseboard.
 
 ### Step 3: Add Doors and Windows
 
@@ -105,7 +108,8 @@ Before starting, gather the following information:
 
 6. Click **"Next: Utilities"** when done
 
-> **WARNING:** Don't forget to mark door swing directions accurately. This affects where you can place cabinets and appliances.
+> **WARNING:** Don't forget to mark door swing directions accurately. This
+> affects where you can place cabinets and appliances.
 
 ### Step 4: Mark Utility Locations
 
@@ -136,7 +140,8 @@ Before starting, gather the following information:
 
 [Screenshot: Room with utility points marked]
 
-> **TIP:** If you're planning to move plumbing or add new electrical, mark those as "Planned" instead of "Existing". This helps with cost estimates.
+> **TIP:** If you're planning to move plumbing or add new electrical, mark those
+> as "Planned" instead of "Existing". This helps with cost estimates.
 
 ### Step 5: Choose Your Kitchen Layout
 
@@ -155,7 +160,9 @@ Before starting, gather the following information:
 
 [Screenshot: L-shaped layout selected with cabinet zones highlighted]
 
-> **TIP:** The L-shaped layout is ideal for small to medium kitchens. It maximizes counter space while maintaining an efficient work triangle between sink, stove, and refrigerator.
+> **TIP:** The L-shaped layout is ideal for small to medium kitchens. It
+> maximizes counter space while maintaining an efficient work triangle between
+> sink, stove, and refrigerator.
 
 ### Step 6: Select Your Cabinet Style
 
@@ -174,9 +181,11 @@ Before starting, gather the following information:
 
 [Screenshot: Cabinet style detail page showing finish options]
 
-6. The system will automatically populate your layout with cabinets in this style
+6. The system will automatically populate your layout with cabinets in this
+   style
 
-> **TIP:** You can mix cabinet styles later, but starting with one consistent style makes your first design easier.
+> **TIP:** You can mix cabinet styles later, but starting with one consistent
+> style makes your first design easier.
 
 ### Step 7: Place Base Cabinets
 
@@ -205,7 +214,8 @@ Before starting, gather the following information:
 
 5. Click **"Apply"** to save changes
 
-> **WARNING:** Base cabinets must be 24 inches deep to accommodate standard countertops. Changing depth may create fitting issues.
+> **WARNING:** Base cabinets must be 24 inches deep to accommodate standard
+> countertops. Changing depth may create fitting issues.
 
 ### Step 8: Add Wall Cabinets
 
@@ -233,7 +243,8 @@ Before starting, gather the following information:
 
 [Screenshot: Wall cabinet height adjustment tool]
 
-> **TIP:** For cabinets above the sink, consider using shorter 24" cabinets to accommodate the window.
+> **TIP:** For cabinets above the sink, consider using shorter 24" cabinets to
+> accommodate the window.
 
 ### Step 9: Add Countertops
 
@@ -266,7 +277,8 @@ Before starting, gather the following information:
 
 [Screenshot: Countertop customization panel]
 
-> **TIP:** Quartz is a great beginner choice - it's durable, low-maintenance, and more affordable than natural stone.
+> **TIP:** Quartz is a great beginner choice - it's durable, low-maintenance,
+> and more affordable than natural stone.
 
 ### Step 10: Place Major Appliances
 
@@ -313,6 +325,7 @@ Before starting, gather the following information:
 [Screenshot: Over-range microwave installed]
 
 > **WARNING:** Maintain proper clearances:
+>
 > - 15" minimum between cooktop and wall cabinets
 > - 18" recommended for safety
 > - Over-range microwaves typically install at 66" from floor
@@ -348,7 +361,8 @@ Before starting, gather the following information:
    - Switch between daylight and evening lighting
    - See how your kitchen looks at different times
 
-> **TIP:** Under-cabinet lighting dramatically improves functionality and ambiance. It's one of the most impactful upgrades you can make.
+> **TIP:** Under-cabinet lighting dramatically improves functionality and
+> ambiance. It's one of the most impactful upgrades you can make.
 
 ### Step 12: Customize Colors and Finishes
 
@@ -389,7 +403,8 @@ Before starting, gather the following information:
 
 [Screenshot: Hardware selection with preview on cabinets]
 
-> **TIP:** Stick to 2-3 main colors in your kitchen. White cabinets + wood floors + one accent color creates a cohesive, timeless look.
+> **TIP:** Stick to 2-3 main colors in your kitchen. White cabinets + wood
+> floors + one accent color creates a cohesive, timeless look.
 
 ### Step 13: Review in 3D
 
@@ -420,7 +435,8 @@ Before starting, gather the following information:
 
 6. Click the **"Full Screen"** button for immersive view
 
-> **TIP:** Take screenshots from different angles. These are helpful when discussing your design with contractors or family members.
+> **TIP:** Take screenshots from different angles. These are helpful when
+> discussing your design with contractors or family members.
 
 ### Step 14: Generate Cost Estimate
 
@@ -433,6 +449,7 @@ Before starting, gather the following information:
 [Screenshot: Budget overview dashboard]
 
 3. Review the cost breakdown:
+
    ```
    Cabinets:             $8,450
    - Base cabinets:      $4,200
@@ -476,7 +493,9 @@ Before starting, gather the following information:
 
 5. With 15% contingency: **$21,919**
 
-> **WARNING:** These are estimates only. Actual costs vary by location, contractor, and specific product availability. Always get multiple quotes from professionals.
+> **WARNING:** These are estimates only. Actual costs vary by location,
+> contractor, and specific product availability. Always get multiple quotes from
+> professionals.
 
 ### Step 15: Save Your Design
 
@@ -497,7 +516,8 @@ Before starting, gather the following information:
 
 5. This creates a snapshot you can return to later, even after making changes
 
-> **TIP:** Create versions at major milestones. If you experiment and want to go back, you can restore any saved version.
+> **TIP:** Create versions at major milestones. If you experiment and want to go
+> back, you can restore any saved version.
 
 ### Step 16: Share Your Design
 
@@ -528,7 +548,8 @@ Before starting, gather the following information:
 
 [Screenshot: PDF export options]
 
-> **TIP:** PDF exports are perfect for sharing with contractors who may not want to use the online platform.
+> **TIP:** PDF exports are perfect for sharing with contractors who may not want
+> to use the online platform.
 
 ### Step 17: Export Shopping List
 
@@ -562,11 +583,13 @@ Before starting, gather the following information:
 
 [Screenshot: Exported CSV opened in spreadsheet]
 
-> **TIP:** Take this shopping list to home improvement stores or share with contractors for accurate quotes.
+> **TIP:** Take this shopping list to home improvement stores or share with
+> contractors for accurate quotes.
 
 ## What You Learned
 
-Congratulations! You've completed your first kitchen design in KitchenXpert. Let's review what you accomplished:
+Congratulations! You've completed your first kitchen design in KitchenXpert.
+Let's review what you accomplished:
 
 - **Created a project** with proper room dimensions and constraints
 - **Defined your space** by adding doors, windows, and utility locations
@@ -582,25 +605,26 @@ Congratulations! You've completed your first kitchen design in KitchenXpert. Let
 
 ## Common Issues and Solutions
 
-**Issue:** Cabinets overlap with door swing
-**Solution:** Select the cabinet and move it 3-4 inches away from the door path, or change door swing direction
+**Issue:** Cabinets overlap with door swing **Solution:** Select the cabinet and
+move it 3-4 inches away from the door path, or change door swing direction
 
-**Issue:** Cannot place dishwasher next to sink
-**Solution:** Delete the base cabinet in that location first, then place the dishwasher
+**Issue:** Cannot place dishwasher next to sink **Solution:** Delete the base
+cabinet in that location first, then place the dishwasher
 
-**Issue:** Countertop doesn't look continuous at corner
-**Solution:** Click the corner, select "Miter Joint" instead of "Butt Joint"
+**Issue:** Countertop doesn't look continuous at corner **Solution:** Click the
+corner, select "Miter Joint" instead of "Butt Joint"
 
-**Issue:** Budget seems too low/high
-**Solution:** Check Settings > Location to ensure correct region. Labor costs vary significantly by area
+**Issue:** Budget seems too low/high **Solution:** Check Settings > Location to
+ensure correct region. Labor costs vary significantly by area
 
-**Issue:** 3D view is slow or choppy
-**Solution:** Switch to "Performance Mode" in Settings > Graphics. Reduces detail but improves speed
+**Issue:** 3D view is slow or choppy **Solution:** Switch to "Performance Mode"
+in Settings > Graphics. Reduces detail but improves speed
 
 ## Tips for Success
 
 1. **Measure carefully:** Use a laser measure for accuracy
-2. **Follow the work triangle:** Sink, stove, and fridge should form a triangle with 4-6 foot sides
+2. **Follow the work triangle:** Sink, stove, and fridge should form a triangle
+   with 4-6 foot sides
 3. **Plan for traffic:** Allow 42-48 inches for walkways
 4. **Consider workflow:** Place dishwasher near where you store dishes
 5. **Don't forget outlets:** You'll need outlets every 4 feet along counters
@@ -612,9 +636,12 @@ Congratulations! You've completed your first kitchen design in KitchenXpert. Let
 
 Now that you've created your first design, explore these next tutorials:
 
-1. **[Using the AI Questionnaire](using-questionnaire.md)** - Let AI help design your kitchen based on your preferences and lifestyle
-2. **[Exploring Product Catalogs](exploring-catalogs.md)** - Browse and select specific products from manufacturer catalogs
-3. **[Budget Optimization](../intermediate/budget-optimization.md)** - Learn strategies to maximize value within your budget
+1. **[Using the AI Questionnaire](using-questionnaire.md)** - Let AI help design
+   your kitchen based on your preferences and lifestyle
+2. **[Exploring Product Catalogs](exploring-catalogs.md)** - Browse and select
+   specific products from manufacturer catalogs
+3. **[Budget Optimization](../intermediate/budget-optimization.md)** - Learn
+   strategies to maximize value within your budget
 
 ## Additional Resources
 
@@ -626,6 +653,7 @@ Now that you've created your first design, explore these next tutorials:
 ## Feedback
 
 Was this tutorial helpful? Let us know:
+
 - Email: tutorials@kitchenxpert.com
 - Rate this tutorial: [5-star rating widget]
 - Suggest improvements: [Feedback form link]
@@ -633,13 +661,14 @@ Was this tutorial helpful? Let us know:
 ---
 
 **Related Tutorials:**
+
 - [Using the AI Questionnaire](using-questionnaire.md)
 - [Exploring Product Catalogs](exploring-catalogs.md)
 - [Kitchen Design Best Practices](../../guides/design-best-practices.md)
 
 **Documentation:**
+
 - [Design Interface Reference](../../reference/design-interface.md)
 - [Keyboard Shortcuts](../../reference/keyboard-shortcuts.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1

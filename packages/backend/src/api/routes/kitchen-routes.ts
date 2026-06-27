@@ -4,7 +4,12 @@ import { z } from 'zod';
 import { kitchenController } from '../controllers/kitchen-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { generalRateLimiter } from '../middleware/rate-limit-middleware';
-import { validateBody, validateQuery, validateParams, commonSchemas } from '../middleware/validation-middleware';
+import {
+  validateBody,
+  validateQuery,
+  validateParams,
+  commonSchemas,
+} from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 
@@ -23,7 +28,9 @@ const createKitchenSchema = z.object({
   projectId: z.string().uuid(),
   name: z.string().min(1, 'Name is required').max(200),
   style: z.string().optional(),
-  layout: z.enum(['l_shaped', 'u_shaped', 'galley', 'island', 'peninsula', 'one_wall', 'open_plan']).optional(),
+  layout: z
+    .enum(['l_shaped', 'u_shaped', 'galley', 'island', 'peninsula', 'one_wall', 'open_plan'])
+    .optional(),
   width: z.coerce.number().positive('Width must be positive'),
   length: z.coerce.number().positive('Length must be positive'),
   height: z.coerce.number().positive('Height must be positive').optional(),
@@ -33,7 +40,9 @@ const createKitchenSchema = z.object({
 const updateKitchenSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   style: z.string().optional(),
-  layout: z.enum(['l_shaped', 'u_shaped', 'galley', 'island', 'peninsula', 'one_wall', 'open_plan']).optional(),
+  layout: z
+    .enum(['l_shaped', 'u_shaped', 'galley', 'island', 'peninsula', 'one_wall', 'open_plan'])
+    .optional(),
   width: z.coerce.number().positive().optional(),
   length: z.coerce.number().positive().optional(),
   height: z.coerce.number().positive().optional(),
@@ -161,11 +170,7 @@ router.get('/archived', kitchenController.getArchived);
  *       404:
  *         description: Project not found
  */
-router.get(
-  '/project/:projectId',
-  validateParams(projectIdParam),
-  kitchenController.getByProject
-);
+router.get('/project/:projectId', validateParams(projectIdParam), kitchenController.getByProject);
 
 // ==================== KITCHEN CRUD ====================
 
@@ -317,7 +322,12 @@ router.get('/:id', validateParams(commonSchemas.idParam), kitchenController.getB
  *       404:
  *         description: Kitchen not found
  */
-router.put('/:id', validateParams(commonSchemas.idParam), validateBody(updateKitchenSchema), kitchenController.update);
+router.put(
+  '/:id',
+  validateParams(commonSchemas.idParam),
+  validateBody(updateKitchenSchema),
+  kitchenController.update
+);
 
 /**
  * @swagger
@@ -393,7 +403,11 @@ router.post('/:id/duplicate', validateParams(commonSchemas.idParam), kitchenCont
  *       404:
  *         description: Kitchen not found
  */
-router.get('/:id/configuration', validateParams(commonSchemas.idParam), kitchenController.getConfiguration);
+router.get(
+  '/:id/configuration',
+  validateParams(commonSchemas.idParam),
+  kitchenController.getConfiguration
+);
 
 /**
  * @swagger
@@ -437,15 +451,26 @@ router.get('/:id/configuration', validateParams(commonSchemas.idParam), kitchenC
  *       404:
  *         description: Kitchen not found
  */
-router.put('/:id/configuration', validateParams(commonSchemas.idParam), validateBody(z.object({
-  layout: z.enum(['l_shaped', 'u_shaped', 'galley', 'island', 'peninsula', 'one_wall', 'open_plan']).optional(),
-  style: z.string().max(100).optional(),
-  countertopMaterial: z.string().max(100).optional(),
-  cabinetFinish: z.string().max(100).optional(),
-  backsplash: z.string().max(100).optional(),
-  lighting: z.string().max(100).optional(),
-  metadata: z.record(z.unknown()).optional(),
-}).strict()), kitchenController.updateConfiguration);
+router.put(
+  '/:id/configuration',
+  validateParams(commonSchemas.idParam),
+  validateBody(
+    z
+      .object({
+        layout: z
+          .enum(['l_shaped', 'u_shaped', 'galley', 'island', 'peninsula', 'one_wall', 'open_plan'])
+          .optional(),
+        style: z.string().max(100).optional(),
+        countertopMaterial: z.string().max(100).optional(),
+        cabinetFinish: z.string().max(100).optional(),
+        backsplash: z.string().max(100).optional(),
+        lighting: z.string().max(100).optional(),
+        metadata: z.record(z.unknown()).optional(),
+      })
+      .strict()
+  ),
+  kitchenController.updateConfiguration
+);
 
 // ==================== KITCHEN ITEMS ====================
 
@@ -520,17 +545,26 @@ router.get('/:id/items', validateParams(commonSchemas.idParam), kitchenControlle
  *       404:
  *         description: Kitchen not found
  */
-router.post('/:id/items', validateParams(commonSchemas.idParam), validateBody(z.object({
-  productId: z.string().uuid(),
-  quantity: z.number().int().positive().default(1),
-  position: z.object({
-    x: z.number(),
-    y: z.number(),
-    z: z.number().optional(),
-  }).optional(),
-  rotation: z.number().optional(),
-  metadata: z.record(z.unknown()).optional(),
-})), kitchenController.addItem);
+router.post(
+  '/:id/items',
+  validateParams(commonSchemas.idParam),
+  validateBody(
+    z.object({
+      productId: z.string().uuid(),
+      quantity: z.number().int().positive().default(1),
+      position: z
+        .object({
+          x: z.number(),
+          y: z.number(),
+          z: z.number().optional(),
+        })
+        .optional(),
+      rotation: z.number().optional(),
+      metadata: z.record(z.unknown()).optional(),
+    })
+  ),
+  kitchenController.addItem
+);
 
 /**
  * @swagger
@@ -581,16 +615,25 @@ router.post('/:id/items', validateParams(commonSchemas.idParam), validateBody(z.
  *       404:
  *         description: Item not found
  */
-router.put('/:kitchenId/items/:itemId', validateParams(kitchenItemParams), validateBody(z.object({
-  quantity: z.number().int().positive().optional(),
-  position: z.object({
-    x: z.number(),
-    y: z.number(),
-    z: z.number().optional(),
-  }).optional(),
-  rotation: z.number().optional(),
-  metadata: z.record(z.unknown()).optional(),
-})), kitchenController.updateItem);
+router.put(
+  '/:kitchenId/items/:itemId',
+  validateParams(kitchenItemParams),
+  validateBody(
+    z.object({
+      quantity: z.number().int().positive().optional(),
+      position: z
+        .object({
+          x: z.number(),
+          y: z.number(),
+          z: z.number().optional(),
+        })
+        .optional(),
+      rotation: z.number().optional(),
+      metadata: z.record(z.unknown()).optional(),
+    })
+  ),
+  kitchenController.updateItem
+);
 
 /**
  * @swagger
@@ -621,7 +664,11 @@ router.put('/:kitchenId/items/:itemId', validateParams(kitchenItemParams), valid
  *       404:
  *         description: Item not found
  */
-router.delete('/:kitchenId/items/:itemId', validateParams(kitchenItemParams), kitchenController.removeItem);
+router.delete(
+  '/:kitchenId/items/:itemId',
+  validateParams(kitchenItemParams),
+  kitchenController.removeItem
+);
 
 // ==================== ARCHIVE / RESTORE ====================
 
@@ -732,7 +779,12 @@ router.get('/:id/model', validateParams(commonSchemas.idParam), kitchenControlle
  *       404:
  *         description: Kitchen not found
  */
-router.put('/:id/thumbnail', validateParams(commonSchemas.idParam), validateBody(thumbnailSchema), kitchenController.updateThumbnail);
+router.put(
+  '/:id/thumbnail',
+  validateParams(commonSchemas.idParam),
+  validateBody(thumbnailSchema),
+  kitchenController.updateThumbnail
+);
 
 // ==================== EXPORT ====================
 
@@ -764,7 +816,12 @@ router.put('/:id/thumbnail', validateParams(commonSchemas.idParam), validateBody
  *       404:
  *         description: Kitchen not found
  */
-router.get('/:id/export', validateParams(commonSchemas.idParam), validateQuery(exportQuerySchema), kitchenController.exportKitchen);
+router.get(
+  '/:id/export',
+  validateParams(commonSchemas.idParam),
+  validateQuery(exportQuerySchema),
+  kitchenController.exportKitchen
+);
 
 // ==================== SHARING ====================
 
@@ -803,7 +860,12 @@ router.get('/:id/export', validateParams(commonSchemas.idParam), validateQuery(e
  *       404:
  *         description: Kitchen not found
  */
-router.post('/:id/share', validateParams(commonSchemas.idParam), validateBody(shareLinkSchema), kitchenController.createShareLink);
+router.post(
+  '/:id/share',
+  validateParams(commonSchemas.idParam),
+  validateBody(shareLinkSchema),
+  kitchenController.createShareLink
+);
 
 /**
  * @swagger
@@ -833,6 +895,10 @@ router.post('/:id/share', validateParams(commonSchemas.idParam), validateBody(sh
  *       404:
  *         description: Share link not found
  */
-router.delete('/:id/share/:shareId', validateParams(z.object({ id: z.string().uuid(), shareId: z.string() })), kitchenController.revokeShareLink);
+router.delete(
+  '/:id/share/:shareId',
+  validateParams(z.object({ id: z.string().uuid(), shareId: z.string() })),
+  kitchenController.revokeShareLink
+);
 
 export default router;

@@ -73,7 +73,7 @@ function mockCatalogProducts(
   page: Page,
   products = PRODUCTS,
   total = PRODUCTS.length,
-  totalPages = 1,
+  totalPages = 1
 ): Promise<void> {
   return page.route('**/api/v1/catalog/products*', (route) =>
     route.fulfill({
@@ -89,7 +89,7 @@ function mockCatalogProducts(
           totalPages,
         },
       }),
-    }),
+    })
   );
 }
 
@@ -99,7 +99,7 @@ function mockCatalogProducts(
 // by the app on mount, so we stub it to prevent 404/network noise.
 async function stubAuthForPublicPage(page: Page): Promise<void> {
   await page.route('**/api/v1/auth/me', (route) =>
-    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' }),
+    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' })
   );
 }
 
@@ -154,7 +154,9 @@ test.describe('Catalog -- Product listing', () => {
 
     await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 });
 
-    const sortSelect = page.locator('select[aria-label*="Trier"], select[aria-label*="sort"]').first();
+    const sortSelect = page
+      .locator('select[aria-label*="Trier"], select[aria-label*="sort"]')
+      .first();
     await expect(sortSelect).toBeVisible({ timeout: 5_000 });
 
     // Should have at least relevance, price_asc, price_desc, newest
@@ -223,7 +225,10 @@ test.describe('Catalog -- Search', () => {
     await searchInput.fill('hotte');
 
     // Click the search button
-    const searchButton = page.locator('button').filter({ hasText: /search|rechercher/i }).first();
+    const searchButton = page
+      .locator('button')
+      .filter({ hasText: /search|rechercher/i })
+      .first();
     await searchButton.click();
 
     // Should stay on catalog page
@@ -254,7 +259,12 @@ test.describe('Catalog -- Category filtering', () => {
         body: JSON.stringify({
           success: true,
           data: categoryRequested === 'cabinets' ? [PRODUCTS[0]] : PRODUCTS,
-          pagination: { page: 1, limit: 20, total: categoryRequested === 'cabinets' ? 1 : PRODUCTS.length, totalPages: 1 },
+          pagination: {
+            page: 1,
+            limit: 20,
+            total: categoryRequested === 'cabinets' ? 1 : PRODUCTS.length,
+            totalPages: 1,
+          },
         }),
       });
     });
@@ -329,7 +339,9 @@ test.describe('Catalog -- Sorting', () => {
 
     await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 });
 
-    const sortSelect = page.locator('select[aria-label*="Trier"], select[aria-label*="sort"]').first();
+    const sortSelect = page
+      .locator('select[aria-label*="Trier"], select[aria-label*="sort"]')
+      .first();
     await expect(sortSelect).toBeVisible({ timeout: 5_000 });
 
     await sortSelect.selectOption('price_asc');
@@ -343,7 +355,9 @@ test.describe('Catalog -- Sorting', () => {
 
     await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 });
 
-    const sortSelect = page.locator('select[aria-label*="Trier"], select[aria-label*="sort"]').first();
+    const sortSelect = page
+      .locator('select[aria-label*="Trier"], select[aria-label*="sort"]')
+      .first();
     await sortSelect.selectOption('price_desc');
 
     await expect(sortSelect).toHaveValue('price_desc');
@@ -367,7 +381,7 @@ test.describe('Catalog -- Empty and error states', () => {
           data: [],
           pagination: { page: 1, limit: 20, total: 0, totalPages: 0 },
         }),
-      }),
+      })
     );
 
     await page.goto('/catalog');
@@ -392,7 +406,7 @@ test.describe('Catalog -- Empty and error states', () => {
         status: 500,
         contentType: 'application/json',
         body: JSON.stringify({ message: 'Internal server error' }),
-      }),
+      })
     );
 
     await page.goto('/catalog');
@@ -425,7 +439,7 @@ test.describe('Catalog -- Pagination', () => {
           data: PRODUCTS,
           pagination: { page: 1, limit: 20, total: 60, totalPages: 3 },
         }),
-      }),
+      })
     );
 
     await page.goto('/catalog');
@@ -475,10 +489,14 @@ test.describe('Catalog -- AI Search', () => {
     await expect(page.locator('h1')).toBeVisible({ timeout: 10_000 });
 
     // AI search label
-    await expect(page.locator('text=/Recherche intelligente|AI search/i')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('text=/Recherche intelligente|AI search/i')).toBeVisible({
+      timeout: 5_000,
+    });
 
     // AI search input
-    const aiInput = page.locator('input[aria-label*="langage naturel"], input[aria-label*="natural language"]').first();
+    const aiInput = page
+      .locator('input[aria-label*="langage naturel"], input[aria-label*="natural language"]')
+      .first();
     await expect(aiInput).toBeVisible();
   });
 
@@ -492,24 +510,36 @@ test.describe('Catalog -- AI Search', () => {
           data: {
             filters: { material: 'quartz' },
             results: [
-              { id: 'ai-1', name: 'Plan Quartz Blanc', brand: 'Premium', material: 'quartz', price: 450, currency: 'EUR' },
+              {
+                id: 'ai-1',
+                name: 'Plan Quartz Blanc',
+                brand: 'Premium',
+                material: 'quartz',
+                price: 450,
+                currency: 'EUR',
+              },
             ],
             explanation: 'Voici les plans de travail en quartz blanc disponibles.',
             suggestions: ['plan de travail marbre', 'plan de travail bois'],
           },
         }),
-      }),
+      })
     );
 
     await page.goto('/catalog');
 
-    const aiInput = page.locator('input[aria-label*="langage naturel"], input[aria-label*="natural language"]').first();
+    const aiInput = page
+      .locator('input[aria-label*="langage naturel"], input[aria-label*="natural language"]')
+      .first();
     await expect(aiInput).toBeVisible({ timeout: 10_000 });
 
     await aiInput.fill('plan de travail en quartz blanc');
 
     // Click AI search button
-    const aiButton = page.locator('button').filter({ hasText: /Recherche IA|AI search/i }).first();
+    const aiButton = page
+      .locator('button')
+      .filter({ hasText: /Recherche IA|AI search/i })
+      .first();
     await aiButton.click();
 
     // Results should appear

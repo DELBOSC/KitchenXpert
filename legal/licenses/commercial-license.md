@@ -10,13 +10,14 @@
 
 ## INTRODUCTION
 
-This Commercial License Agreement ("License" or "Agreement") governs the use of the KitchenXpert platform and services ("Platform" or "Service") by businesses, professionals, and commercial entities ("Licensee" or "You"). By subscribing to any paid tier of KitchenXpert, you agree to be bound by the terms of this License.
+This Commercial License Agreement ("License" or "Agreement") governs the use of
+the KitchenXpert platform and services ("Platform" or "Service") by businesses,
+professionals, and commercial entities ("Licensee" or "You"). By subscribing to
+any paid tier of KitchenXpert, you agree to be bound by the terms of this
+License.
 
-**Licensor:**
-KitchenXpert SAS
-42 Rue de la Cuisine
-75008 Paris, France
-Email: legal@kitchenxpert.com
+**Licensor:** KitchenXpert SAS 42 Rue de la Cuisine 75008 Paris, France Email:
+legal@kitchenxpert.com
 
 ---
 
@@ -24,7 +25,10 @@ Email: legal@kitchenxpert.com
 
 ### 1.1 License Grant
 
-Subject to the terms and conditions of this Agreement and payment of applicable fees, KitchenXpert grants Licensee a non-exclusive, non-transferable, limited license to access and use the Platform for commercial purposes during the subscription term.
+Subject to the terms and conditions of this Agreement and payment of applicable
+fees, KitchenXpert grants Licensee a non-exclusive, non-transferable, limited
+license to access and use the Platform for commercial purposes during the
+subscription term.
 
 ### 1.2 Scope of License
 
@@ -39,21 +43,26 @@ This License permits Licensee to:
 
 ### 1.3 Non-Transferability
 
-This License is granted solely to the Licensee identified in the subscription account. Licensee may not transfer, sublicense, or assign this License to any third party without KitchenXpert's prior written consent.
+This License is granted solely to the Licensee identified in the subscription
+account. Licensee may not transfer, sublicense, or assign this License to any
+third party without KitchenXpert's prior written consent.
 
 ### 1.4 Number of Authorized Users
 
-The number of authorized users permitted under this License depends on the subscription tier, as detailed in Section 2 below.
+The number of authorized users permitted under this License depends on the
+subscription tier, as detailed in Section 2 below.
 
 ---
 
 ## 2. LICENSE TIERS
 
-KitchenXpert offers three commercial license tiers, each designed to meet different business needs:
+KitchenXpert offers three commercial license tiers, each designed to meet
+different business needs:
 
 ### 2.1 Pro License (Single User)
 
-**Price:** EUR 29 per month (billed monthly) or EUR 290 per year (billed annually)
+**Price:** EUR 29 per month (billed monthly) or EUR 290 per year (billed
+annually)
 
 **Authorized Users:** One (1) named user
 
@@ -74,7 +83,8 @@ KitchenXpert offers three commercial license tiers, each designed to meet differ
 
 ### 2.2 Business License (Team)
 
-**Price:** EUR 199 per month (billed monthly) or EUR 1,990 per year (billed annually)
+**Price:** EUR 199 per month (billed monthly) or EUR 1,990 per year (billed
+annually)
 
 **Authorized Users:** Up to ten (10) named users
 
@@ -177,21 +187,30 @@ Licensee may fully utilize AI-powered features including:
 
 Licensee shall NOT:
 
-- **Resell or Redistribute Access:** Sell, lease, or otherwise provide access to the Platform to third parties
-- **White-Labeling:** Present the Platform as Licensee's own proprietary software (except under separate Enterprise white-label agreement)
-- **Competitive Development:** Use the Platform, its features, or outputs to develop or enhance a competing product or service
-- **Automated Bulk Operations:** Use automated tools, bots, or scripts to generate designs in bulk without explicit authorization
-- **Circumvent Limitations:** Attempt to bypass user limits, feature restrictions, or security measures
-- **Reverse Engineering:** Decompile, disassemble, or reverse engineer any Platform component
-- **Data Extraction:** Systematically extract or scrape data from the Platform beyond normal usage
+- **Resell or Redistribute Access:** Sell, lease, or otherwise provide access to
+  the Platform to third parties
+- **White-Labeling:** Present the Platform as Licensee's own proprietary
+  software (except under separate Enterprise white-label agreement)
+- **Competitive Development:** Use the Platform, its features, or outputs to
+  develop or enhance a competing product or service
+- **Automated Bulk Operations:** Use automated tools, bots, or scripts to
+  generate designs in bulk without explicit authorization
+- **Circumvent Limitations:** Attempt to bypass user limits, feature
+  restrictions, or security measures
+- **Reverse Engineering:** Decompile, disassemble, or reverse engineer any
+  Platform component
+- **Data Extraction:** Systematically extract or scrape data from the Platform
+  beyond normal usage
 
 ### 4.2 Attribution Requirements
 
 For publicly shared designs (social media, websites, publications):
 
-- **Pro Tier:** Attribution encouraged but not required: "Designed with KitchenXpert"
+- **Pro Tier:** Attribution encouraged but not required: "Designed with
+  KitchenXpert"
 - **Business Tier:** No attribution required
-- **Enterprise Tier:** No attribution required; custom branding options available
+- **Enterprise Tier:** No attribution required; custom branding options
+  available
 
 ### 4.3 User Account Restrictions
 
@@ -206,7 +225,8 @@ For publicly shared designs (social media, websites, publications):
 
 ### 5.1 Ownership of Client Work
 
-Licensee retains full ownership of all original design work created using the Platform for clients. This includes:
+Licensee retains full ownership of all original design work created using the
+Platform for clients. This includes:
 
 - Kitchen layout designs and configurations
 - Custom design decisions and selections
@@ -243,10 +263,10 @@ Licensee may provide clients with:
 
 ### 6.1 Support Channels and Response Times
 
-| Tier | Channels | Response Time |
-|------|----------|---------------|
-| Pro | Email | 48 hours |
-| Business | Email + Live Chat | 24 hours |
+| Tier       | Channels             | Response Time      |
+| ---------- | -------------------- | ------------------ |
+| Pro        | Email                | 48 hours           |
+| Business   | Email + Live Chat    | 24 hours           |
 | Enterprise | Email + Chat + Phone | 4 hours (critical) |
 
 ### 6.2 Support Scope
@@ -291,16 +311,19 @@ Subscriptions automatically renew at the end of each billing period unless:
 ### 7.3 Cancellation Policy
 
 **Monthly Subscriptions:**
+
 - Cancel anytime via account settings
 - Access continues until end of current billing period
 - No refunds for partial months
 
 **Annual Subscriptions:**
+
 - Cancel anytime via account settings
 - Access continues until end of annual period
 - No pro-rata refunds (see Refund Policy for exceptions)
 
 **Enterprise Contracts:**
+
 - Governed by individual contract terms
 - Typically require written notice 90 days before renewal
 
@@ -316,7 +339,8 @@ Subscriptions automatically renew at the end of each billing period unless:
 
 ### 8.1 Compliance Verification
 
-KitchenXpert reserves the right to verify Licensee's compliance with this License, including:
+KitchenXpert reserves the right to verify Licensee's compliance with this
+License, including:
 
 - Number of users accessing the Platform
 - Compliance with usage restrictions
@@ -324,10 +348,12 @@ KitchenXpert reserves the right to verify Licensee's compliance with this Licens
 
 ### 8.2 Audit Process
 
-- KitchenXpert shall provide at least thirty (30) days written notice before any audit
+- KitchenXpert shall provide at least thirty (30) days written notice before any
+  audit
 - Audits shall be conducted during normal business hours
 - Audits shall not unreasonably interfere with Licensee's business operations
-- KitchenXpert shall bear audit costs unless material non-compliance is discovered
+- KitchenXpert shall bear audit costs unless material non-compliance is
+  discovered
 
 ### 8.3 Remediation
 
@@ -362,7 +388,9 @@ Licensee retains ownership of:
 
 ### 9.3 Product Catalog Content
 
-Product information and images from the catalog remain the property of respective manufacturers and partners. Licensee's right to use catalog content is limited to designing projects on the Platform.
+Product information and images from the catalog remain the property of
+respective manufacturers and partners. Licensee's right to use catalog content
+is limited to designing projects on the Platform.
 
 ---
 
@@ -410,7 +438,10 @@ KitchenXpert warrants that:
 
 ### 11.2 Disclaimer
 
-EXCEPT AS EXPRESSLY PROVIDED HEREIN, THE PLATFORM IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. KITCHENXPERT DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+EXCEPT AS EXPRESSLY PROVIDED HEREIN, THE PLATFORM IS PROVIDED "AS IS" WITHOUT
+WARRANTY OF ANY KIND. KITCHENXPERT DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+NON-INFRINGEMENT.
 
 ### 11.3 Third-Party Products
 
@@ -426,11 +457,14 @@ KitchenXpert does not warrant:
 
 ### 12.1 Liability Cap
 
-KITCHENXPERT'S TOTAL LIABILITY SHALL NOT EXCEED THE FEES PAID BY LICENSEE IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.
+KITCHENXPERT'S TOTAL LIABILITY SHALL NOT EXCEED THE FEES PAID BY LICENSEE IN THE
+TWELVE (12) MONTHS PRECEDING THE CLAIM.
 
 ### 12.2 Exclusion of Damages
 
-IN NO EVENT SHALL KITCHENXPERT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, OR BUSINESS OPPORTUNITIES.
+IN NO EVENT SHALL KITCHENXPERT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL,
+CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, OR BUSINESS
+OPPORTUNITIES.
 
 ### 12.3 Essential Purpose
 
@@ -442,7 +476,8 @@ THESE LIMITATIONS APPLY EVEN IF ANY REMEDY FAILS OF ITS ESSENTIAL PURPOSE.
 
 ### 13.1 Termination by Licensee
 
-Licensee may terminate by cancelling the subscription through account settings or by contacting billing@kitchenxpert.com.
+Licensee may terminate by cancelling the subscription through account settings
+or by contacting billing@kitchenxpert.com.
 
 ### 13.2 Termination by KitchenXpert
 
@@ -472,15 +507,18 @@ This License is governed by the laws of France.
 
 ### 14.2 Dispute Resolution
 
-Disputes shall be resolved through negotiation, then mediation in Paris, then arbitration under ICC rules.
+Disputes shall be resolved through negotiation, then mediation in Paris, then
+arbitration under ICC rules.
 
 ### 14.3 Entire Agreement
 
-This License, together with the Terms of Service and Privacy Policy, constitutes the entire agreement.
+This License, together with the Terms of Service and Privacy Policy, constitutes
+the entire agreement.
 
 ### 14.4 Amendments
 
-KitchenXpert may update this License with thirty (30) days notice. Continued use constitutes acceptance.
+KitchenXpert may update this License with thirty (30) days notice. Continued use
+constitutes acceptance.
 
 ### 14.5 Severability
 
@@ -496,16 +534,14 @@ Failure to enforce any provision does not waive that right.
 
 For questions regarding this Commercial License:
 
-**KitchenXpert SAS**
-42 Rue de la Cuisine
-75008 Paris, France
+**KitchenXpert SAS** 42 Rue de la Cuisine 75008 Paris, France
 
-Email: legal@kitchenxpert.com
-Sales: sales@kitchenxpert.com
-Support: support@kitchenxpert.com
+Email: legal@kitchenxpert.com Sales: sales@kitchenxpert.com Support:
+support@kitchenxpert.com
 
 ---
 
-*Document Version: 1.0 | Last Updated: January 2026*
+_Document Version: 1.0 | Last Updated: January 2026_
 
-*This Commercial License Agreement is subject to KitchenXpert's Terms of Service and Privacy Policy, which are incorporated herein by reference.*
+_This Commercial License Agreement is subject to KitchenXpert's Terms of Service
+and Privacy Policy, which are incorporated herein by reference._

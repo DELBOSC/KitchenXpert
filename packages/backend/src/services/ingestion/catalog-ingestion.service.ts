@@ -10,7 +10,12 @@
  * invalid ParseResult, or a single failed upsert never aborts the run — each is
  * counted and recorded so the caller gets an honest tally.
  */
-import { resolveCategorySlug, type IngestionStrategy, type CategorySlug, type UnifiedProduct } from '@kitchenxpert/common';
+import {
+  resolveCategorySlug,
+  type IngestionStrategy,
+  type CategorySlug,
+  type UnifiedProduct,
+} from '@kitchenxpert/common';
 
 import { mapUnifiedProductToUpsert } from './unified-product-mapper';
 
@@ -46,7 +51,7 @@ export class CatalogIngestionService {
     private readonly repo: ProductRepository,
     private readonly strategy: IngestionStrategy,
     private readonly logger?: IngestionLogger,
-    private readonly categoryResolver?: CategoryIdResolver,
+    private readonly categoryResolver?: CategoryIdResolver
   ) {}
 
   /**
@@ -69,10 +74,9 @@ export class CatalogIngestionService {
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       result.errors.push(`fetch failed: ${msg}`);
-      this.logger?.warn(
-        `[ingestion] ${this.strategy.brandId} fetch failed for "${query}"`,
-        { error: msg },
-      );
+      this.logger?.warn(`[ingestion] ${this.strategy.brandId} fetch failed for "${query}"`, {
+        error: msg,
+      });
       return result;
     }
 
@@ -97,7 +101,7 @@ export class CatalogIngestionService {
 
     this.logger?.info(
       `[ingestion] ${this.strategy.brandId} "${query}": ` +
-        `${result.ingested}/${result.fetched} ingested, ${result.skipped} skipped`,
+        `${result.ingested}/${result.fetched} ingested, ${result.skipped} skipped`
     );
     return result;
   }
@@ -111,9 +115,13 @@ export class CatalogIngestionService {
     categoryId?: string | null;
     detection?: 'explicit' | 'inferred' | null;
   }> {
-    if (!this.categoryResolver) {return {};}
+    if (!this.categoryResolver) {
+      return {};
+    }
     const { slug, detection } = resolveCategorySlug(product);
-    if (!slug) {return { detection };}
+    if (!slug) {
+      return { detection };
+    }
     const categoryId = await this.categoryResolver.idForSlug(slug);
     if (categoryId == null) {
       this.logger?.warn(`[ingestion] category slug "${slug}" introuvable -> categoryId NULL`);

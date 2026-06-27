@@ -123,7 +123,11 @@ const StyledButton = styled.button<{
 
   ${({ $size }) => sizeStyles[$size]}
   ${({ $variant }) => variantStyles[$variant]}
-  ${({ $fullWidth }) => $fullWidth && css`width: 100%;`}
+  ${({ $fullWidth }) =>
+    $fullWidth &&
+    css`
+      width: 100%;
+    `}
 
   &:disabled {
     opacity: 0.5;
@@ -190,11 +194,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         {...props}
       >
-        {loading ? (
-          <Spinner />
-        ) : (
-          leftIcon && <IconWrapper>{leftIcon}</IconWrapper>
-        )}
+        {loading ? <Spinner /> : leftIcon && <IconWrapper>{leftIcon}</IconWrapper>}
         {children}
         {!loading && rightIcon && <IconWrapper>{rightIcon}</IconWrapper>}
       </StyledButton>

@@ -12,10 +12,14 @@ import PropTypes from 'prop-types';
  */
 function calculateSectionProgress(responses, totalQuestions) {
   if (!responses || totalQuestions === 0) return 0;
-  const answered = Object.keys(responses).filter(key => {
+  const answered = Object.keys(responses).filter((key) => {
     const value = responses[key];
-    return value !== null && value !== undefined && value !== '' &&
-           !(Array.isArray(value) && value.length === 0);
+    return (
+      value !== null &&
+      value !== undefined &&
+      value !== '' &&
+      !(Array.isArray(value) && value.length === 0)
+    );
   }).length;
   return Math.round((answered / totalQuestions) * 100);
 }
@@ -30,7 +34,7 @@ function ProgressIndicator({
   sectionQuestionCounts,
   onSectionClick,
   language,
-  allowNavigation
+  allowNavigation,
 }) {
   const totalSections = sections.length;
   const completedSections = sections.filter((section) => {
@@ -95,9 +99,7 @@ function ProgressIndicator({
                   index + 1
                 )}
               </span>
-              <span className="step-label">
-                {section.title[language] || section.title.en}
-              </span>
+              <span className="step-label">{section.title[language] || section.title.en}</span>
               {!isComplete && sectionProgress > 0 && (
                 <span className="step-progress">{sectionProgress}%</span>
               )}
@@ -119,19 +121,21 @@ function ProgressIndicator({
 }
 
 ProgressIndicator.propTypes = {
-  sections: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.shape({
-      en: PropTypes.string.isRequired,
-      fr: PropTypes.string
-    }).isRequired
-  })).isRequired,
+  sections: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.shape({
+        en: PropTypes.string.isRequired,
+        fr: PropTypes.string,
+      }).isRequired,
+    })
+  ).isRequired,
   currentSectionIndex: PropTypes.number.isRequired,
   sectionResponses: PropTypes.object,
   sectionQuestionCounts: PropTypes.object,
   onSectionClick: PropTypes.func,
   language: PropTypes.oneOf(['en', 'fr']),
-  allowNavigation: PropTypes.bool
+  allowNavigation: PropTypes.bool,
 };
 
 ProgressIndicator.defaultProps = {
@@ -139,7 +143,7 @@ ProgressIndicator.defaultProps = {
   sectionQuestionCounts: {},
   onSectionClick: () => {},
   language: 'en',
-  allowNavigation: true
+  allowNavigation: true,
 };
 
 export default ProgressIndicator;

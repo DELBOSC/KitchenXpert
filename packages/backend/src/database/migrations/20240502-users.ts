@@ -3,7 +3,7 @@
  * Creates users and authentication tables
  */
 
-import type { Migration , Transaction } from './migration-runner';
+import type { Migration, Transaction } from './migration-runner';
 
 export const UsersMigration: Migration = {
   id: '20240502-users',
@@ -95,10 +95,16 @@ export const UsersMigration: Migration = {
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_users_status ON users(status)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON user_sessions(user_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON user_sessions(user_id)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_sessions_token ON user_sessions(token)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_oauth_provider ON user_oauth_providers(provider, provider_user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_addresses_user_id ON user_addresses(user_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_user_oauth_provider ON user_oauth_providers(provider, provider_user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_user_addresses_user_id ON user_addresses(user_id)`
+    );
 
     // Create updated_at trigger function
     await tx.execute(`

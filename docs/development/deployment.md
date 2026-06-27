@@ -20,7 +20,8 @@
 
 ## Overview
 
-KitchenXpert uses a containerized deployment strategy with Docker and Kubernetes, supported by automated CI/CD pipelines through GitHub Actions.
+KitchenXpert uses a containerized deployment strategy with Docker and
+Kubernetes, supported by automated CI/CD pipelines through GitHub Actions.
 
 ### Deployment Architecture
 
@@ -50,7 +51,7 @@ KitchenXpert uses a containerized deployment strategy with Docker and Kubernetes
 ### Development (dev)
 
 - **Purpose**: Local development and testing
-- **URL**: http://localhost:*
+- **URL**: http://localhost:\*
 - **Database**: Local PostgreSQL, MongoDB, Redis
 - **Features**: All features enabled, debug logging
 - **Auto-deploy**: No
@@ -141,11 +142,11 @@ services:
       POSTGRES_USER: kitchenxpert_user
       POSTGRES_PASSWORD: dev_password
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kitchenxpert_user"]
+      test: ['CMD-SHELL', 'pg_isready -U kitchenxpert_user']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -155,11 +156,11 @@ services:
     environment:
       MONGO_INITDB_DATABASE: kitchenxpert_dev
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongodb_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -167,11 +168,11 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -182,7 +183,7 @@ services:
       dockerfile: packages/backend/Dockerfile
       target: development
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://kitchenxpert_user:dev_password@postgres:5432/kitchenxpert_dev
@@ -206,7 +207,7 @@ services:
       dockerfile: packages/frontend/Dockerfile
       target: development
     ports:
-      - "5173:5173"
+      - '5173:5173'
     environment:
       - VITE_API_URL=http://localhost:3000/api/v1
     volumes:
@@ -221,7 +222,7 @@ services:
       context: ../../packages/ai-modules
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - '8000:8000'
     environment:
       - ENVIRONMENT=development
       - MONGODB_URI=mongodb://mongodb:27017/kitchenxpert_dev
@@ -607,6 +608,7 @@ pnpm build
 ```
 
 **Build output structure:**
+
 ```
 dist/
 ├── api/
@@ -639,6 +641,7 @@ pnpm build
 ```
 
 **Build output structure:**
+
 ```
 dist/
 ├── assets/
@@ -650,6 +653,7 @@ dist/
 ```
 
 **Build optimizations:**
+
 - Code splitting
 - Tree shaking
 - Minification
@@ -810,15 +814,15 @@ router.get('/health/detailed', async (req, res) => {
     postgres: await checkPostgres(),
     mongodb: await checkMongoDB(),
     redis: await checkRedis(),
-    ai: await checkAI()
+    ai: await checkAI(),
   };
 
-  const allHealthy = Object.values(checks).every(c => c.status === 'healthy');
+  const allHealthy = Object.values(checks).every((c) => c.status === 'healthy');
 
   res.status(allHealthy ? 200 : 503).json({
     status: allHealthy ? 'healthy' : 'degraded',
     timestamp: new Date().toISOString(),
-    checks
+    checks,
   });
 });
 
@@ -847,7 +851,7 @@ const httpRequestDuration = new promClient.Histogram({
   name: 'http_request_duration_seconds',
   help: 'Duration of HTTP requests in seconds',
   labelNames: ['method', 'route', 'status_code'],
-  registers: [register]
+  registers: [register],
 });
 
 // Database query duration
@@ -855,7 +859,7 @@ const dbQueryDuration = new promClient.Histogram({
   name: 'db_query_duration_seconds',
   help: 'Duration of database queries in seconds',
   labelNames: ['operation', 'table'],
-  registers: [register]
+  registers: [register],
 });
 ```
 
@@ -876,12 +880,12 @@ const logger = winston.createLogger({
     new winston.transports.Console(),
     new winston.transports.File({
       filename: 'error.log',
-      level: 'error'
+      level: 'error',
     }),
     new winston.transports.File({
-      filename: 'combined.log'
-    })
-  ]
+      filename: 'combined.log',
+    }),
+  ],
 });
 ```
 
@@ -920,9 +924,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
         ports:
           - 5432:5432

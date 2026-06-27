@@ -28,11 +28,16 @@ export class UpdateProjectUseCase implements UseCase<UpdateProjectInput, unknown
       where: { id: projectId },
       select: { userId: true },
     });
-    if (!project) {return err(DomainErrors.notFound('Project'));}
+    if (!project) {
+      return err(DomainErrors.notFound('Project'));
+    }
     if (project.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this project'));
     }
-    const updated = await this.prisma.project.update({ where: { id: projectId }, data: patch as never });
+    const updated = await this.prisma.project.update({
+      where: { id: projectId },
+      data: patch as never,
+    });
     return ok(updated);
   }
 }

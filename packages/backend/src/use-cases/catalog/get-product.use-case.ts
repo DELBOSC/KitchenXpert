@@ -22,7 +22,9 @@ export class GetProductUseCase implements UseCase<GetProductInput, unknown> {
         provider: { select: { id: true, name: true } },
       },
     });
-    if (!product) {return err(DomainErrors.notFound('Product'));}
+    if (!product) {
+      return err(DomainErrors.notFound('Product'));
+    }
     return ok(product);
   }
 }

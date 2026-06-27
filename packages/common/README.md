@@ -1,6 +1,7 @@
 # @kitchenxpert/common
 
-Package partagé contenant les types, utilitaires et constantes communs à tous les packages KitchenXpert.
+Package partagé contenant les types, utilitaires et constantes communs à tous
+les packages KitchenXpert.
 
 ## Installation
 
@@ -24,36 +25,39 @@ import {
   Product,
   Order,
   ApiResponse,
-  PaginatedResponse
+  PaginatedResponse,
 } from '@kitchenxpert/common';
 ```
 
 ### Utilitaires
 
 #### Validation
+
 ```typescript
 import {
   isValidEmail,
   isValidPassword,
-  validateSchema
+  validateSchema,
 } from '@kitchenxpert/common/utils/validation';
 ```
 
 #### Formatage
+
 ```typescript
 import {
   formatCurrency,
   formatDate,
-  formatNumber
+  formatNumber,
 } from '@kitchenxpert/common/utils/formatting';
 ```
 
 #### Transformation
+
 ```typescript
 import {
   groupBy,
   sortBy,
-  uniqueBy
+  uniqueBy,
 } from '@kitchenxpert/common/utils/transformation';
 ```
 

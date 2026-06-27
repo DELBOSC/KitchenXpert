@@ -19,7 +19,10 @@ jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
@@ -47,7 +50,13 @@ const mockPrisma = {
 jest.mock('../database/client', () => ({ prisma: mockPrisma }));
 
 jest.mock('../config/app-config', () => ({
-  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+  config: {
+    corsOrigins: ['http://localhost:3000'],
+    env: 'test',
+    port: 3000,
+    version: '1.0.0',
+    rateLimit: { maxRequests: 100 },
+  },
 }));
 
 jest.mock('../auth/token-blacklist', () => ({
@@ -63,7 +72,9 @@ jest.mock('../auth/token-blacklist', () => ({
 jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
-      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+      userId: 'test-user-id',
+      email: 'test@test.com',
+      role: 'user',
     }),
     generateTokens: jest.fn(),
   },
@@ -201,9 +212,7 @@ describe('Smart Home Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockGetPlan.mockResolvedValue(mockPlan);
 
-      const response = await authedRequest(app)
-        .get(`/smart-home/${validKitchenId}`)
-        .expect(200);
+      const response = await authedRequest(app).get(`/smart-home/${validKitchenId}`).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.kitchenId).toBe(validKitchenId);
@@ -213,18 +222,14 @@ describe('Smart Home Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockGetPlan.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get(`/smart-home/${validKitchenId}`)
-        .expect(404);
+      const response = await authedRequest(app).get(`/smart-home/${validKitchenId}`).expect(404);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Smart home plan not found');
     });
 
     it('should return 401 when user is not authenticated', async () => {
-      const response = await request(app)
-        .get(`/smart-home/${validKitchenId}`)
-        .expect(401);
+      const response = await request(app).get(`/smart-home/${validKitchenId}`).expect(401);
 
       expect(response.body.success).toBe(false);
     });

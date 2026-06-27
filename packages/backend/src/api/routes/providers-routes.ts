@@ -47,7 +47,7 @@ router.get(
         applianceCount: p._count.appliances,
       })),
     });
-  }),
+  })
 );
 
 const ImportSchema = z.discriminatedUnion('source', [
@@ -104,7 +104,9 @@ router.post(
       return;
     }
     if (kitchen.userId !== userId && req.user?.role !== 'admin') {
-      res.status(403).json({ error: { code: 'FORBIDDEN', message: 'You do not own this kitchen' } });
+      res
+        .status(403)
+        .json({ error: { code: 'FORBIDDEN', message: 'You do not own this kitchen' } });
       return;
     }
 
@@ -118,14 +120,20 @@ router.post(
 
     if (body.source === 'product') {
       const item = await importProduct(body.sourceId, body.kitchenId, sharedPos);
-      if (!item) { res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Product not found' } }); return; }
+      if (!item) {
+        res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Product not found' } });
+        return;
+      }
       res.status(201).json({ data: item });
       return;
     }
 
     if (body.source === 'appliance') {
       const item = await importAppliance(body.sourceId, body.kitchenId, sharedPos);
-      if (!item) { res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Appliance not found' } }); return; }
+      if (!item) {
+        res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Appliance not found' } });
+        return;
+      }
       res.status(201).json({ data: item });
       return;
     }
@@ -140,7 +148,7 @@ router.post(
     }
     const item = await importProduct(product.id, body.kitchenId, sharedPos);
     res.status(201).json({ data: item });
-  }),
+  })
 );
 
 // ---------------------------------------------------------------------------
@@ -148,8 +156,11 @@ router.post(
 // ---------------------------------------------------------------------------
 
 interface SharedImportFields {
-  positionX: number; positionY: number; positionZ: number;
-  rotationY: number; quantity: number;
+  positionX: number;
+  positionY: number;
+  positionZ: number;
+  rotationY: number;
+  quantity: number;
 }
 
 /**
@@ -188,22 +199,36 @@ function buildItemMetadata(opts: {
 }
 
 function imagesFromJson(raw: unknown): string[] {
-  if (!raw) {return [];}
-  if (Array.isArray(raw)) {return raw.filter((x): x is string => typeof x === 'string');}
-  if (typeof raw === 'string') {return [raw];}
+  if (!raw) {
+    return [];
+  }
+  if (Array.isArray(raw)) {
+    return raw.filter((x): x is string => typeof x === 'string');
+  }
+  if (typeof raw === 'string') {
+    return [raw];
+  }
   if (typeof raw === 'object') {
     const out: string[] = [];
     for (const v of Object.values(raw as Record<string, unknown>)) {
-      if (typeof v === 'string') {out.push(v);}
+      if (typeof v === 'string') {
+        out.push(v);
+      }
     }
     return out;
   }
   return [];
 }
 
-async function importProduct(productId: string, kitchenId: string, shared: SharedImportFields): Promise<unknown | null> {
+async function importProduct(
+  productId: string,
+  kitchenId: string,
+  shared: SharedImportFields
+): Promise<unknown | null> {
   const product = await prisma.product.findUnique({ where: { id: productId } });
-  if (!product) {return null;}
+  if (!product) {
+    return null;
+  }
 
   const images = imagesFromJson(product.images);
   return prisma.kitchenItem.create({
@@ -237,9 +262,15 @@ async function importProduct(productId: string, kitchenId: string, shared: Share
   });
 }
 
-async function importAppliance(applianceId: string, kitchenId: string, shared: SharedImportFields): Promise<unknown | null> {
+async function importAppliance(
+  applianceId: string,
+  kitchenId: string,
+  shared: SharedImportFields
+): Promise<unknown | null> {
   const appliance = await prisma.appliance.findUnique({ where: { id: applianceId } });
-  if (!appliance) {return null;}
+  if (!appliance) {
+    return null;
+  }
 
   const images = imagesFromJson(appliance.images);
   return prisma.kitchenItem.create({
@@ -280,10 +311,16 @@ async function importAppliance(applianceId: string, kitchenId: string, shared: S
  * reuse the existing row, and a future scraper sync can backfill missing
  * fields without disturbing the relations.
  */
-async function upsertIkeaProduct(itemCode: string, country: string, language: string): Promise<{ id: string } | null> {
+async function upsertIkeaProduct(
+  itemCode: string,
+  country: string,
+  language: string
+): Promise<{ id: string } | null> {
   const ikea = createIkeaClient({ country, language });
   const result = await ikea.getProduct(itemCode);
-  if (!result.success || !result.data) {return null;}
+  if (!result.success || !result.data) {
+    return null;
+  }
   const ikeaProduct = result.data;
 
   // Make sure the IKEA provider row exists; idempotent upsert on `code`.
@@ -310,7 +347,9 @@ async function upsertIkeaProduct(itemCode: string, country: string, language: st
       providerId: provider.id,
       price: ikeaProduct.price || 0,
       currency: ikeaProduct.currency || 'EUR',
-      width, depth, height,
+      width,
+      depth,
+      height,
       images: images as never,
       isActive: true,
     },

@@ -89,7 +89,11 @@ const variantStyles = {
   elevated: css`
     background: var(--color-surface, #ffffff);
     border: none;
-    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06));
+    box-shadow: var(
+      --shadow-md,
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06)
+    );
   `,
   outlined: css`
     background: transparent;
@@ -150,7 +154,11 @@ const StyledCard = styled.div<StyledCardProps>`
       cursor: pointer;
 
       &:hover {
-        box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
+        box-shadow: var(
+          --shadow-lg,
+          0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05)
+        );
         transform: translateY(-2px);
       }
 
@@ -236,13 +244,21 @@ const StyledCardFooter = styled.div<{ $align: string; $divider: boolean }>`
   ${({ $align }) => {
     switch ($align) {
       case 'center':
-        return css`justify-content: center;`;
+        return css`
+          justify-content: center;
+        `;
       case 'right':
-        return css`justify-content: flex-end;`;
+        return css`
+          justify-content: flex-end;
+        `;
       case 'space-between':
-        return css`justify-content: space-between;`;
+        return css`
+          justify-content: space-between;
+        `;
       default:
-        return css`justify-content: flex-start;`;
+        return css`
+          justify-content: flex-start;
+        `;
     }
   }}
 `;
@@ -290,7 +306,7 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
       <StyledCardHeader ref={ref} $hasAction={hasAction} title={htmlTitle} {...props}>
         <HeaderContent>
           {avatar}
-          {(title || subtitle) ? (
+          {title || subtitle ? (
             <HeaderTextWrapper>
               {title && <HeaderTitle>{title}</HeaderTitle>}
               {subtitle && <HeaderSubtitle>{subtitle}</HeaderSubtitle>}

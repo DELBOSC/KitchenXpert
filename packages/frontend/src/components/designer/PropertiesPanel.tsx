@@ -6,9 +6,8 @@ import {
   KITCHEN_MATERIALS,
   MaterialLibrary,
   type KitchenEngine,
- type KitchenMaterial } from '@kitchenxpert/3d-engine';
-
-
+  type KitchenMaterial,
+} from '@kitchenxpert/3d-engine';
 
 interface PropertiesPanelProps {
   selectedObject: THREE.Object3D | null;
@@ -37,7 +36,11 @@ function getUserData(object: THREE.Object3D): KitchenObjectUserData {
   return object.userData as KitchenObjectUserData;
 }
 
-function getObjectDimensions(object: THREE.Object3D): { width: number; height: number; depth: number } {
+function getObjectDimensions(object: THREE.Object3D): {
+  width: number;
+  height: number;
+  depth: number;
+} {
   // Try userData first (set by CatalogPanel)
   const dimensions = getUserData(object).dimensions;
   if (dimensions) {
@@ -92,9 +95,10 @@ function NumberInput({
           max={max}
           step={step}
           className={`w-full px-2 py-1.5 text-xs border border-gray-200 dark:border-gray-600 rounded-md
-            ${readOnly
-              ? 'bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-default'
-              : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500'
+            ${
+              readOnly
+                ? 'bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-default'
+                : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500'
             }
           `}
         />
@@ -145,7 +149,9 @@ export default function PropertiesPanel({
 
   // Close delete confirmation on Escape key
   useEffect(() => {
-    if (!showDeleteConfirm) {return;}
+    if (!showDeleteConfirm) {
+      return;
+    }
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -158,7 +164,9 @@ export default function PropertiesPanel({
 
   // Focus trap for delete confirmation modal
   useEffect(() => {
-    if (!showDeleteConfirm) {return;}
+    if (!showDeleteConfirm) {
+      return;
+    }
     requestAnimationFrame(() => {
       const modal = document.querySelector('[data-delete-confirm-modal]');
       if (modal) {
@@ -170,7 +178,9 @@ export default function PropertiesPanel({
 
   // Sync transform state from the selected object
   useEffect(() => {
-    if (!selectedObject) {return;}
+    if (!selectedObject) {
+      return;
+    }
 
     const updateFromObject = () => {
       setTransform({
@@ -200,7 +210,9 @@ export default function PropertiesPanel({
 
   const updatePosition = useCallback(
     (axis: 'x' | 'y' | 'z', valueMm: number) => {
-      if (!selectedObject) {return;}
+      if (!selectedObject) {
+        return;
+      }
       const valueMeters = valueMm / 1000;
       selectedObject.position[axis] = valueMeters;
 
@@ -214,7 +226,9 @@ export default function PropertiesPanel({
 
   const updateRotationY = useCallback(
     (degrees: number) => {
-      if (!selectedObject) {return;}
+      if (!selectedObject) {
+        return;
+      }
       selectedObject.rotation.y = THREE.MathUtils.degToRad(degrees);
       setTransform((prev) => ({ ...prev, rotY: degrees }));
     },
@@ -223,7 +237,9 @@ export default function PropertiesPanel({
 
   const applyMaterial = useCallback(
     (material: KitchenMaterial) => {
-      if (!selectedObject) {return;}
+      if (!selectedObject) {
+        return;
+      }
       materialLibrary.applyMaterial(selectedObject, material);
       selectedObject.userData.materialId = material.id;
       setSelectedMaterialId(material.id);
@@ -294,21 +310,9 @@ export default function PropertiesPanel({
         {/* Position */}
         <SectionHeader>{t('designer.properties.position', 'Position')}</SectionHeader>
         <div className="space-y-1.5 mb-3">
-          <NumberInput
-            label="X"
-            value={transform.posX}
-            onChange={(v) => updatePosition('x', v)}
-          />
-          <NumberInput
-            label="Y"
-            value={transform.posY}
-            onChange={(v) => updatePosition('y', v)}
-          />
-          <NumberInput
-            label="Z"
-            value={transform.posZ}
-            onChange={(v) => updatePosition('z', v)}
-          />
+          <NumberInput label="X" value={transform.posX} onChange={(v) => updatePosition('x', v)} />
+          <NumberInput label="Y" value={transform.posY} onChange={(v) => updatePosition('y', v)} />
+          <NumberInput label="Z" value={transform.posZ} onChange={(v) => updatePosition('z', v)} />
         </div>
 
         {/* Rotation */}
@@ -337,9 +341,21 @@ export default function PropertiesPanel({
         {/* Dimensions (read-only) */}
         <SectionHeader>{t('designer.properties.dimensions', 'Dimensions')}</SectionHeader>
         <div className="space-y-1.5 mb-3">
-          <NumberInput label={t('designer.properties.widthLabel', 'L')} value={dimensions.width} readOnly />
-          <NumberInput label={t('designer.properties.heightLabel', 'H')} value={dimensions.height} readOnly />
-          <NumberInput label={t('designer.properties.depthLabel', 'P')} value={dimensions.depth} readOnly />
+          <NumberInput
+            label={t('designer.properties.widthLabel', 'L')}
+            value={dimensions.width}
+            readOnly
+          />
+          <NumberInput
+            label={t('designer.properties.heightLabel', 'H')}
+            value={dimensions.height}
+            readOnly
+          />
+          <NumberInput
+            label={t('designer.properties.depthLabel', 'P')}
+            value={dimensions.depth}
+            readOnly
+          />
         </div>
 
         {/* Material selector */}
@@ -354,14 +370,15 @@ export default function PropertiesPanel({
                 className="w-4 h-4 rounded-sm border border-gray-300 dark:border-gray-500 inline-block"
                 style={{
                   backgroundColor:
-                    KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === selectedMaterialId)?.color || '#888',
+                    KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === selectedMaterialId)
+                      ?.color || '#888',
                 }}
               />
             )}
             <span className="text-gray-700 dark:text-gray-300">
               {selectedMaterialId
-                ? KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === selectedMaterialId)?.name ||
-                  t('designer.properties.unknownMaterial', 'Inconnu')
+                ? KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === selectedMaterialId)
+                    ?.name || t('designer.properties.unknownMaterial', 'Inconnu')
                 : t('designer.properties.selectMaterial', 'Choisir un materiau')}
             </span>
           </span>
@@ -379,11 +396,18 @@ export default function PropertiesPanel({
         {materialSectionOpen && (
           <div className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden mb-3">
             {MATERIAL_TYPES.map((group) => {
-              const materials = KITCHEN_MATERIALS.filter((m: KitchenMaterial) => m.type === group.type);
-              if (materials.length === 0) {return null;}
+              const materials = KITCHEN_MATERIALS.filter(
+                (m: KitchenMaterial) => m.type === group.type
+              );
+              if (materials.length === 0) {
+                return null;
+              }
 
               return (
-                <div key={group.type} className="border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+                <div
+                  key={group.type}
+                  className="border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+                >
                   <div className="px-3 py-1.5 bg-gray-50 dark:bg-gray-750 text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     {t(`designer.materials.${group.type}`, group.label)}
                   </div>
@@ -422,7 +446,13 @@ export default function PropertiesPanel({
             onClick={duplicateSelected}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
               <rect x="8" y="8" width="12" height="12" rx="2" />
               <path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2" />
             </svg>
@@ -432,8 +462,18 @@ export default function PropertiesPanel({
             onClick={() => setShowDeleteConfirm(true)}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
             </svg>
             {t('designer.properties.delete', 'Supprimer')}
           </button>
@@ -451,12 +491,20 @@ export default function PropertiesPanel({
           />
 
           {/* Modal content */}
-          <div data-delete-confirm-modal role="dialog" aria-modal="true" className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6">
+          <div
+            data-delete-confirm-modal
+            role="dialog"
+            aria-modal="true"
+            className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6"
+          >
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               {t('designer.properties.deleteConfirmTitle', 'Supprimer cet element ?')}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-              {t('designer.properties.deleteConfirmMessage', 'Cet element sera supprime de la scene. Vous pouvez annuler avec Ctrl+Z.')}
+              {t(
+                'designer.properties.deleteConfirmMessage',
+                'Cet element sera supprime de la scene. Vous pouvez annuler avec Ctrl+Z.'
+              )}
             </p>
 
             <div className="flex gap-3">

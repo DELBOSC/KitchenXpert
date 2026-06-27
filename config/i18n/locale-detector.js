@@ -105,9 +105,7 @@ export const getBrowserLocale = () => {
 
   // Try language code only (fr → fr-FR)
   const langCode = browserLang.split('-')[0];
-  const match = Object.keys(SUPPORTED_LOCALES).find(locale =>
-    locale.startsWith(langCode)
-  );
+  const match = Object.keys(SUPPORTED_LOCALES).find((locale) => locale.startsWith(langCode));
 
   return match || null;
 };

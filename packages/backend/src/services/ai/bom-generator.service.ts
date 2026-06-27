@@ -40,8 +40,25 @@ const TVA_RATE = 0.2;
  * catalogue matcher. Kept explicit (no scattered magic numbers) and auditable.
  */
 const BAREME_ESTIMATION = {
-  countertop: { quartz: 2500, granit: 3000, marbre: 4000, ceramique: 3500, dekton: 3500, inox: 2800, bois: 1500, stratifie: 800, _default: 1200 },
-  flooring: { carrelage: 1500, parquet: 2000, stratifie: 1000, vinyle: 900, beton: 1800, _default: 1200 },
+  countertop: {
+    quartz: 2500,
+    granit: 3000,
+    marbre: 4000,
+    ceramique: 3500,
+    dekton: 3500,
+    inox: 2800,
+    bois: 1500,
+    stratifie: 800,
+    _default: 1200,
+  },
+  flooring: {
+    carrelage: 1500,
+    parquet: 2000,
+    stratifie: 1000,
+    vinyle: 900,
+    beton: 1800,
+    _default: 1200,
+  },
   backsplash: { verre: 800, inox: 900, carrelage: 600, faience: 500, credence: 600, _default: 600 },
   hardware: { _default: 300 },
   installation: 1500,
@@ -49,7 +66,10 @@ const BAREME_ESTIMATION = {
 
 /** Strip accents + lowercase for keyword matching. */
 function norm(value: string): string {
-  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
 }
 
 /** Round to 2 decimals (avoid dirty floats). */
@@ -67,7 +87,9 @@ function toPrice(value: unknown): number {
 function lookupBareme(table: Record<string, number>, value: string): number {
   const v = norm(value);
   for (const key of Object.keys(table)) {
-    if (key !== '_default' && v.includes(key)) {return table[key]!;}
+    if (key !== '_default' && v.includes(key)) {
+      return table[key]!;
+    }
   }
   return table._default!;
 }
@@ -75,18 +97,36 @@ function lookupBareme(table: Record<string, number>, value: string): number {
 /** Map a kitchen item `type` to a French BOM category label. */
 function categoryFromType(type: string | null | undefined): string {
   const t = norm(type ?? '');
-  if (/cabinet|caisson|meuble|colonne|facade|tiroir/.test(t)) {return 'Meubles';}
-  if (/worktop|counter|plan/.test(t)) {return 'Plan de travail';}
-  if (/sink|evier|tap|robinet/.test(t)) {return 'Plomberie';}
-  if (/fridge|oven|hob|cooktop|dishwasher|hood|electro|appliance/.test(t)) {return 'Electromenager';}
-  if (/light|eclairage/.test(t)) {return 'Eclairage';}
+  if (/cabinet|caisson|meuble|colonne|facade|tiroir/.test(t)) {
+    return 'Meubles';
+  }
+  if (/worktop|counter|plan/.test(t)) {
+    return 'Plan de travail';
+  }
+  if (/sink|evier|tap|robinet/.test(t)) {
+    return 'Plomberie';
+  }
+  if (/fridge|oven|hob|cooktop|dishwasher|hood|electro|appliance/.test(t)) {
+    return 'Electromenager';
+  }
+  if (/light|eclairage/.test(t)) {
+    return 'Eclairage';
+  }
   return 'Mobilier';
 }
 
 /** Build an `estimated` BOM line (config-derived, no real SKU yet). */
 function estimatedLine(name: string, category: string, price: number): BOMItem {
   const p = round2(price);
-  return { name, category, quantity: 1, unitPrice: p, totalPrice: p, catalogRef: null, source: 'estimated' };
+  return {
+    name,
+    category,
+    quantity: 1,
+    unitPrice: p,
+    totalPrice: p,
+    catalogRef: null,
+    source: 'estimated',
+  };
 }
 
 /** Kitchen config row shape the BOM reads (subset of Prisma KitchenConfiguration). */
@@ -149,10 +189,10 @@ export class BOMGeneratorService {
       ];
 
       const subtotalCatalog = round2(
-        items.filter((i) => i.source === 'catalog').reduce((s, i) => s + i.totalPrice, 0),
+        items.filter((i) => i.source === 'catalog').reduce((s, i) => s + i.totalPrice, 0)
       );
       const subtotalEstimated = round2(
-        items.filter((i) => i.source === 'estimated').reduce((s, i) => s + i.totalPrice, 0),
+        items.filter((i) => i.source === 'estimated').reduce((s, i) => s + i.totalPrice, 0)
       );
       const subtotal = round2(subtotalCatalog + subtotalEstimated);
       const tax = round2(subtotal * TVA_RATE);
@@ -166,7 +206,16 @@ export class BOMGeneratorService {
         total,
       });
 
-      return { kitchenId, items, subtotal, subtotalCatalog, subtotalEstimated, tax, total, generatedAt: new Date().toISOString() };
+      return {
+        kitchenId,
+        items,
+        subtotal,
+        subtotalCatalog,
+        subtotalEstimated,
+        tax,
+        total,
+        generatedAt: new Date().toISOString(),
+      };
     } catch (error) {
       logger.error('[BOMGenerator] BOM generation failed', {
         error: error instanceof Error ? error.message : String(error),
@@ -193,7 +242,7 @@ export class BOMGeneratorService {
       price?: unknown;
       product?: { name: string; sku: string; price: unknown } | null;
       appliance?: { name: string; brand: string; model: string; price: unknown } | null;
-    }>,
+    }>
   ): BOMItem[] {
     return kitchenItems.map((item) => {
       if (item.product) {
@@ -236,23 +285,46 @@ export class BOMGeneratorService {
 
   /** `estimated` lines derived from the kitchen configuration (barème-priced). */
   private estimatedLines(config: ConfigRow | null): BOMItem[] {
-    if (!config) {return [];}
+    if (!config) {
+      return [];
+    }
     const lines: BOMItem[] = [];
 
     if (config.countertopMaterial) {
-      lines.push(estimatedLine('Plan de travail', 'Plan de travail', lookupBareme(BAREME_ESTIMATION.countertop, config.countertopMaterial)));
+      lines.push(
+        estimatedLine(
+          'Plan de travail',
+          'Plan de travail',
+          lookupBareme(BAREME_ESTIMATION.countertop, config.countertopMaterial)
+        )
+      );
     }
     if (config.flooringType) {
-      lines.push(estimatedLine('Sol', 'Sol', lookupBareme(BAREME_ESTIMATION.flooring, config.flooringType)));
+      lines.push(
+        estimatedLine('Sol', 'Sol', lookupBareme(BAREME_ESTIMATION.flooring, config.flooringType))
+      );
     }
     if (config.backsplashType ?? config.backsplashMaterial) {
-      lines.push(estimatedLine('Credence', 'Credence', lookupBareme(BAREME_ESTIMATION.backsplash, config.backsplashMaterial ?? config.backsplashType ?? '')));
+      lines.push(
+        estimatedLine(
+          'Credence',
+          'Credence',
+          lookupBareme(
+            BAREME_ESTIMATION.backsplash,
+            config.backsplashMaterial ?? config.backsplashType ?? ''
+          )
+        )
+      );
     }
     if (config.hardwareStyle) {
-      lines.push(estimatedLine('Quincaillerie', 'Quincaillerie', BAREME_ESTIMATION.hardware._default));
+      lines.push(
+        estimatedLine('Quincaillerie', 'Quincaillerie', BAREME_ESTIMATION.hardware._default)
+      );
     }
     // Labour/installation: a single estimated line whenever a config exists.
-    lines.push(estimatedLine('Pose et installation', 'Installation', BAREME_ESTIMATION.installation));
+    lines.push(
+      estimatedLine('Pose et installation', 'Installation', BAREME_ESTIMATION.installation)
+    );
 
     return lines;
   }

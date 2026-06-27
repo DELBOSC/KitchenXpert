@@ -160,7 +160,9 @@ export const t = translate;
  * @param namespace - The namespace prefix
  * @returns A translate function scoped to the namespace
  */
-export function createScopedTranslator(namespace: string): (key: string, options?: TranslateOptions) => string {
+export function createScopedTranslator(
+  namespace: string
+): (key: string, options?: TranslateOptions) => string {
   return (key: string, options?: TranslateOptions) => {
     return translate(`${namespace}.${key}`, options);
   };

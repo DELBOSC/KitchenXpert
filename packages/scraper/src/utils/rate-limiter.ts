@@ -78,8 +78,8 @@ export class RateLimiter {
    * Calculate delay with optional jitter
    */
   private calculateDelay(): number {
-    let delay = this.options.minDelay +
-      Math.random() * (this.options.maxDelay - this.options.minDelay);
+    let delay =
+      this.options.minDelay + Math.random() * (this.options.maxDelay - this.options.minDelay);
 
     if (this.options.addJitter) {
       delay += Math.random() * this.options.jitterRange;
@@ -108,10 +108,7 @@ export class RateLimiter {
       await Promise.race([
         this.waitInQueue(domain),
         new Promise<never>((_, reject) =>
-          setTimeout(
-            () => reject(new RateLimiterTimeoutError(domain, timeoutMs)),
-            timeoutMs
-          )
+          setTimeout(() => reject(new RateLimiterTimeoutError(domain, timeoutMs)), timeoutMs)
         ),
       ]);
     }

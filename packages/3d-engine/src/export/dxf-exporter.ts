@@ -47,7 +47,7 @@ export interface KitchenSceneData {
 
 interface DXFLayerDef {
   name: string;
-  color: number;   // ACI color index
+  color: number; // ACI color index
   lineweight: number; // in hundredths of mm
 }
 
@@ -65,9 +65,9 @@ const LAYERS: DXFLayerDef[] = [
 
 // ACI color indices for technical point types
 const TECHNICAL_COLORS: Record<string, number> = {
-  water: 5,       // blue
-  electric: 1,    // red
-  gas: 2,         // yellow
+  water: 5, // blue
+  electric: 1, // red
+  gas: 2, // yellow
   ventilation: 8, // gray
 };
 
@@ -113,7 +113,7 @@ export class DXFExporter {
   export(scene: KitchenSceneData, options?: DXFExportOptions): string {
     if (scene.roomWidth <= 0 || scene.roomDepth <= 0) {
       throw new Error(
-        `DXFExporter: invalid room dimensions — roomWidth (${scene.roomWidth}) and roomDepth (${scene.roomDepth}) must both be greater than 0`,
+        `DXFExporter: invalid room dimensions — roomWidth (${scene.roomWidth}) and roomDepth (${scene.roomDepth}) must both be greater than 0`
       );
     }
 
@@ -156,7 +156,11 @@ export class DXFExporter {
   /**
    * Export and trigger a browser download of the DXF file.
    */
-  download(scene: KitchenSceneData, filename: string = 'kitchen-plan', options?: DXFExportOptions): void {
+  download(
+    scene: KitchenSceneData,
+    filename: string = 'kitchen-plan',
+    options?: DXFExportOptions
+  ): void {
     const dxfContent = this.export(scene, options);
     const blob = new Blob([dxfContent], { type: 'application/dxf' });
     const url = URL.createObjectURL(blob);
@@ -165,12 +169,18 @@ export class DXFExporter {
     link.download = `${filename}.dxf`;
     link.click();
     // Delayed revocation for download to complete
-    requestAnimationFrame(() => { setTimeout(() => URL.revokeObjectURL(url), 0); });
+    requestAnimationFrame(() => {
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
   }
 
   // ---------- HEADER section ----------
 
-  private writeHeader(lines: string[], scene: KitchenSceneData, opts: Required<DXFExportOptions>): void {
+  private writeHeader(
+    lines: string[],
+    scene: KitchenSceneData,
+    opts: Required<DXFExportOptions>
+  ): void {
     const scale = opts.scale;
     const roomW = scene.roomWidth * 1000 * scale; // meters -> mm -> scaled
     const roomD = scene.roomDepth * 1000 * scale;
@@ -180,19 +190,52 @@ export class DXFExporter {
     const titleBlockHeight = 300;
 
     lines.push(
-      '0', 'SECTION',
-      '2', 'HEADER',
+      '0',
+      'SECTION',
+      '2',
+      'HEADER',
       // AutoCAD version AC1009 = R12
-      '9', '$ACADVER', '1', 'AC1009',
+      '9',
+      '$ACADVER',
+      '1',
+      'AC1009',
       // Insert units: 4 = millimeters
-      '9', '$INSUNITS', '70', '4',
+      '9',
+      '$INSUNITS',
+      '70',
+      '4',
       // Drawing extents (expanded to include title block and margins)
-      '9', '$EXTMIN', '10', (-margin).toFixed(1), '20', (-margin - titleBlockHeight).toFixed(1), '30', '0.0',
-      '9', '$EXTMAX', '10', (roomW + margin).toFixed(1), '20', (roomD + margin).toFixed(1), '30', '0.0',
+      '9',
+      '$EXTMIN',
+      '10',
+      (-margin).toFixed(1),
+      '20',
+      (-margin - titleBlockHeight).toFixed(1),
+      '30',
+      '0.0',
+      '9',
+      '$EXTMAX',
+      '10',
+      (roomW + margin).toFixed(1),
+      '20',
+      (roomD + margin).toFixed(1),
+      '30',
+      '0.0',
       // Limits
-      '9', '$LIMMIN', '10', (-margin).toFixed(1), '20', (-margin - titleBlockHeight).toFixed(1),
-      '9', '$LIMMAX', '10', (roomW + margin).toFixed(1), '20', (roomD + margin).toFixed(1),
-      '0', 'ENDSEC'
+      '9',
+      '$LIMMIN',
+      '10',
+      (-margin).toFixed(1),
+      '20',
+      (-margin - titleBlockHeight).toFixed(1),
+      '9',
+      '$LIMMAX',
+      '10',
+      (roomW + margin).toFixed(1),
+      '20',
+      (roomD + margin).toFixed(1),
+      '0',
+      'ENDSEC'
     );
   }
 
@@ -205,13 +248,20 @@ export class DXFExporter {
     lines.push('0', 'TABLE', '2', 'LTYPE', '70', String(LAYERS.length + 1));
     // CONTINUOUS line type
     lines.push(
-      '0', 'LTYPE',
-      '2', 'CONTINUOUS',
-      '70', '0',
-      '3', 'Solid line',
-      '72', '65',
-      '73', '0',
-      '40', '0.0'
+      '0',
+      'LTYPE',
+      '2',
+      'CONTINUOUS',
+      '70',
+      '0',
+      '3',
+      'Solid line',
+      '72',
+      '65',
+      '73',
+      '0',
+      '40',
+      '0.0'
     );
     lines.push('0', 'ENDTAB');
 
@@ -220,11 +270,16 @@ export class DXFExporter {
 
     for (const layer of LAYERS) {
       lines.push(
-        '0', 'LAYER',
-        '2', layer.name,
-        '70', '0',             // not frozen, not locked
-        '62', String(layer.color),
-        '6', 'CONTINUOUS'
+        '0',
+        'LAYER',
+        '2',
+        layer.name,
+        '70',
+        '0', // not frozen, not locked
+        '62',
+        String(layer.color),
+        '6',
+        'CONTINUOUS'
       );
     }
 
@@ -233,16 +288,26 @@ export class DXFExporter {
     // STYLE table (text style)
     lines.push('0', 'TABLE', '2', 'STYLE', '70', '1');
     lines.push(
-      '0', 'STYLE',
-      '2', 'STANDARD',
-      '70', '0',
-      '40', '0.0',   // text height (0 = variable)
-      '41', '1.0',   // width factor
-      '50', '0.0',   // oblique angle
-      '71', '0',
-      '42', '2.5',   // last used text height
-      '3', 'txt',    // font file
-      '4', ''
+      '0',
+      'STYLE',
+      '2',
+      'STANDARD',
+      '70',
+      '0',
+      '40',
+      '0.0', // text height (0 = variable)
+      '41',
+      '1.0', // width factor
+      '50',
+      '0.0', // oblique angle
+      '71',
+      '0',
+      '42',
+      '2.5', // last used text height
+      '3',
+      'txt', // font file
+      '4',
+      ''
     );
     lines.push('0', 'ENDTAB');
 
@@ -326,10 +391,7 @@ export class DXFExporter {
   /**
    * Collects wall LINE entities from wall objects in the scene.
    */
-  private collectWallEntities(
-    scene: KitchenSceneData,
-    toMm: (m: number) => number
-  ): string[] {
+  private collectWallEntities(scene: KitchenSceneData, toMm: (m: number) => number): string[] {
     const entities: string[] = [];
 
     for (const [, obj] of scene.objects) {
@@ -500,9 +562,9 @@ export class DXFExporter {
 
     // Categorize cabinets by wall proximity
     const bottomWall: FurnitureBox[] = []; // near Y=0
-    const topWall: FurnitureBox[] = [];    // near Y=roomD
-    const leftWall: FurnitureBox[] = [];   // near X=0
-    const rightWall: FurnitureBox[] = [];  // near X=roomW
+    const topWall: FurnitureBox[] = []; // near Y=roomD
+    const leftWall: FurnitureBox[] = []; // near X=0
+    const rightWall: FurnitureBox[] = []; // near X=roomW
 
     const wallThreshold = 150; // mm tolerance for "near wall"
 
@@ -535,7 +597,15 @@ export class DXFExporter {
         const next = sorted[i + 1]!;
         const gap = next.minX - current.maxX;
         if (gap > 10) {
-          this.addLinearDimension(entities, current.maxX, 0, next.minX, 0, dimY - 120, 'horizontal');
+          this.addLinearDimension(
+            entities,
+            current.maxX,
+            0,
+            next.minX,
+            0,
+            dimY - 120,
+            'horizontal'
+          );
         }
       }
 
@@ -596,8 +666,10 @@ export class DXFExporter {
    */
   private addLinearDimension(
     entities: string[],
-    x1: number, y1: number,
-    x2: number, y2: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
     offset: number,
     direction: 'horizontal' | 'vertical'
   ): void {
@@ -620,12 +692,33 @@ export class DXFExporter {
       this.addLine(entities, 'DIMENSIONS', startX, dimY, endX, dimY);
 
       // Tick marks at both ends (oblique slash style)
-      this.addLine(entities, 'DIMENSIONS', startX - tickSize / 2, dimY - tickSize / 2, startX + tickSize / 2, dimY + tickSize / 2);
-      this.addLine(entities, 'DIMENSIONS', endX - tickSize / 2, dimY - tickSize / 2, endX + tickSize / 2, dimY + tickSize / 2);
+      this.addLine(
+        entities,
+        'DIMENSIONS',
+        startX - tickSize / 2,
+        dimY - tickSize / 2,
+        startX + tickSize / 2,
+        dimY + tickSize / 2
+      );
+      this.addLine(
+        entities,
+        'DIMENSIONS',
+        endX - tickSize / 2,
+        dimY - tickSize / 2,
+        endX + tickSize / 2,
+        dimY + tickSize / 2
+      );
 
       // Dimension text
       const midX = (startX + endX) / 2;
-      this.addText(entities, 'DIMENSIONS', midX, dimY + textHeight / 2 + 5, `${Math.round(length)}`, textHeight);
+      this.addText(
+        entities,
+        'DIMENSIONS',
+        midX,
+        dimY + textHeight / 2 + 5,
+        `${Math.round(length)}`,
+        textHeight
+      );
     } else {
       const dimX = x1 + offset;
       const length = Math.abs(y2 - y1);
@@ -642,12 +735,34 @@ export class DXFExporter {
       this.addLine(entities, 'DIMENSIONS', dimX, startY, dimX, endY);
 
       // Tick marks
-      this.addLine(entities, 'DIMENSIONS', dimX - tickSize / 2, startY - tickSize / 2, dimX + tickSize / 2, startY + tickSize / 2);
-      this.addLine(entities, 'DIMENSIONS', dimX - tickSize / 2, endY - tickSize / 2, dimX + tickSize / 2, endY + tickSize / 2);
+      this.addLine(
+        entities,
+        'DIMENSIONS',
+        dimX - tickSize / 2,
+        startY - tickSize / 2,
+        dimX + tickSize / 2,
+        startY + tickSize / 2
+      );
+      this.addLine(
+        entities,
+        'DIMENSIONS',
+        dimX - tickSize / 2,
+        endY - tickSize / 2,
+        dimX + tickSize / 2,
+        endY + tickSize / 2
+      );
 
       // Dimension text (rotated 90 degrees)
       const midY = (startY + endY) / 2;
-      this.addText(entities, 'DIMENSIONS', dimX - textHeight / 2 - 5, midY, `${Math.round(length)}`, textHeight, 90);
+      this.addText(
+        entities,
+        'DIMENSIONS',
+        dimX - textHeight / 2 - 5,
+        midY,
+        `${Math.round(length)}`,
+        textHeight,
+        90
+      );
     }
   }
 
@@ -693,8 +808,10 @@ export class DXFExporter {
    */
   private addDiagonalHatch(
     entities: string[],
-    minX: number, minY: number,
-    maxX: number, maxY: number,
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
     spacing: number
   ): void {
     const width = maxX - minX;
@@ -722,8 +839,16 @@ export class DXFExporter {
       }
 
       // Clip to bounding box
-      if (x1 >= minX && x1 <= maxX && y1 >= minY && y1 <= maxY &&
-          x2 >= minX && x2 <= maxX && y2 >= minY && y2 <= maxY) {
+      if (
+        x1 >= minX &&
+        x1 <= maxX &&
+        y1 >= minY &&
+        y1 <= maxY &&
+        x2 >= minX &&
+        x2 <= maxX &&
+        y2 >= minY &&
+        y2 <= maxY
+      ) {
         this.addLine(entities, 'HATCH', x1, y1, x2, y2);
       }
     }
@@ -734,8 +859,10 @@ export class DXFExporter {
    */
   private addDotHatch(
     entities: string[],
-    minX: number, minY: number,
-    maxX: number, maxY: number,
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
     spacing: number
   ): void {
     const dotRadius = 3;
@@ -754,8 +881,10 @@ export class DXFExporter {
    */
   private addCrossHatch(
     entities: string[],
-    minX: number, minY: number,
-    maxX: number, maxY: number,
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
     spacing: number
   ): void {
     // Forward diagonal lines (bottom-left to top-right)
@@ -786,8 +915,16 @@ export class DXFExporter {
         y2 = minY;
       }
 
-      if (x1 >= minX && x1 <= maxX && y1 >= minY && y1 <= maxY &&
-          x2 >= minX && x2 <= maxX && y2 >= minY && y2 <= maxY) {
+      if (
+        x1 >= minX &&
+        x1 <= maxX &&
+        y1 >= minY &&
+        y1 <= maxY &&
+        x2 >= minX &&
+        x2 <= maxX &&
+        y2 >= minY &&
+        y2 <= maxY
+      ) {
         this.addLine(entities, 'HATCH', x1, y1, x2, y2);
       }
     }
@@ -804,7 +941,8 @@ export class DXFExporter {
    */
   private addTechnicalSymbol(
     entities: string[],
-    x: number, y: number,
+    x: number,
+    y: number,
     tpType: string,
     color: number
   ): void {
@@ -847,10 +985,38 @@ export class DXFExporter {
 
     // Drawing border (rectangle around the entire drawing with margins)
     const borderMargin = 50;
-    this.addLine(entities, layer, -borderMargin, -250 - borderMargin, roomW + borderMargin, -250 - borderMargin);
-    this.addLine(entities, layer, roomW + borderMargin, -250 - borderMargin, roomW + borderMargin, roomD + borderMargin);
-    this.addLine(entities, layer, roomW + borderMargin, roomD + borderMargin, -borderMargin, roomD + borderMargin);
-    this.addLine(entities, layer, -borderMargin, roomD + borderMargin, -borderMargin, -250 - borderMargin);
+    this.addLine(
+      entities,
+      layer,
+      -borderMargin,
+      -250 - borderMargin,
+      roomW + borderMargin,
+      -250 - borderMargin
+    );
+    this.addLine(
+      entities,
+      layer,
+      roomW + borderMargin,
+      -250 - borderMargin,
+      roomW + borderMargin,
+      roomD + borderMargin
+    );
+    this.addLine(
+      entities,
+      layer,
+      roomW + borderMargin,
+      roomD + borderMargin,
+      -borderMargin,
+      roomD + borderMargin
+    );
+    this.addLine(
+      entities,
+      layer,
+      -borderMargin,
+      roomD + borderMargin,
+      -borderMargin,
+      -250 - borderMargin
+    );
 
     // Title block rectangle
     this.addLine(entities, layer, tbX, tbY, tbX + tbWidth, tbY);
@@ -870,19 +1036,47 @@ export class DXFExporter {
     const date = new Date().toISOString().split('T')[0] || '';
 
     // Row 1: Project name
-    this.addText(entities, layer, textX + tbWidth / 2 - 10, tbY + rowHeight * 0.5, opts.projectName, textH + 5);
+    this.addText(
+      entities,
+      layer,
+      textX + tbWidth / 2 - 10,
+      tbY + rowHeight * 0.5,
+      opts.projectName,
+      textH + 5
+    );
 
     // Row 2: Date
     this.addText(entities, layer, textX + 30, tbY + rowHeight * 1.5, `Date: ${date}`, textH);
 
     // Row 3: Scale
-    this.addText(entities, layer, textX + 30, tbY + rowHeight * 2.5, `Scale: ${opts.drawingScale}`, textH);
+    this.addText(
+      entities,
+      layer,
+      textX + 30,
+      tbY + rowHeight * 2.5,
+      `Scale: ${opts.drawingScale}`,
+      textH
+    );
 
     // Row 4: Room dimensions
-    this.addText(entities, layer, textX + 30, tbY + rowHeight * 3.5, `Room: ${Math.round(roomW)} x ${Math.round(roomD)} mm`, textH);
+    this.addText(
+      entities,
+      layer,
+      textX + 30,
+      tbY + rowHeight * 3.5,
+      `Room: ${Math.round(roomW)} x ${Math.round(roomD)} mm`,
+      textH
+    );
 
     // Row 5: Generated by
-    this.addText(entities, layer, textX + tbWidth / 2 - 10, tbY + rowHeight * 4.5, 'Generated by KitchenXpert', textH - 5);
+    this.addText(
+      entities,
+      layer,
+      textX + tbWidth / 2 - 10,
+      tbY + rowHeight * 4.5,
+      'Generated by KitchenXpert',
+      textH - 5
+    );
   }
 
   // ---------- North arrow ----------
@@ -904,11 +1098,32 @@ export class DXFExporter {
     this.addLine(entities, layer, cx, cy - arrowLength / 2, cx, cy + arrowLength / 2);
 
     // Arrow head (two lines forming a triangle)
-    this.addLine(entities, layer, cx, cy + arrowLength / 2, cx - arrowHeadSize / 2, cy + arrowLength / 2 - arrowHeadSize);
-    this.addLine(entities, layer, cx, cy + arrowLength / 2, cx + arrowHeadSize / 2, cy + arrowLength / 2 - arrowHeadSize);
+    this.addLine(
+      entities,
+      layer,
+      cx,
+      cy + arrowLength / 2,
+      cx - arrowHeadSize / 2,
+      cy + arrowLength / 2 - arrowHeadSize
+    );
+    this.addLine(
+      entities,
+      layer,
+      cx,
+      cy + arrowLength / 2,
+      cx + arrowHeadSize / 2,
+      cy + arrowLength / 2 - arrowHeadSize
+    );
 
     // Fill the arrowhead with a line connecting the two sides
-    this.addLine(entities, layer, cx - arrowHeadSize / 2, cy + arrowLength / 2 - arrowHeadSize, cx + arrowHeadSize / 2, cy + arrowLength / 2 - arrowHeadSize);
+    this.addLine(
+      entities,
+      layer,
+      cx - arrowHeadSize / 2,
+      cy + arrowLength / 2 - arrowHeadSize,
+      cx + arrowHeadSize / 2,
+      cy + arrowLength / 2 - arrowHeadSize
+    );
 
     // "N" label above the arrow
     this.addText(entities, layer, cx, cy + arrowLength / 2 + 30, 'N', 40);
@@ -925,18 +1140,28 @@ export class DXFExporter {
   private addLine(
     entities: string[],
     layer: string,
-    x1: number, y1: number,
-    x2: number, y2: number
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number
   ): void {
     entities.push(
-      '0', 'LINE',
-      '8', layer,
-      '10', x1.toFixed(1),
-      '20', y1.toFixed(1),
-      '30', '0.0',
-      '11', x2.toFixed(1),
-      '21', y2.toFixed(1),
-      '31', '0.0'
+      '0',
+      'LINE',
+      '8',
+      layer,
+      '10',
+      x1.toFixed(1),
+      '20',
+      y1.toFixed(1),
+      '30',
+      '0.0',
+      '11',
+      x2.toFixed(1),
+      '21',
+      y2.toFixed(1),
+      '31',
+      '0.0'
     );
   }
 
@@ -947,17 +1172,25 @@ export class DXFExporter {
   private addLwpolylineRect(
     entities: string[],
     layer: string,
-    minX: number, minY: number,
-    maxX: number, maxY: number
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number
   ): void {
     // R12 uses POLYLINE entity with VERTEX sub-entities
     entities.push(
-      '0', 'POLYLINE',
-      '8', layer,
-      '66', '1',   // vertices follow
-      '70', '1',   // closed polyline
-      '40', '0.0', // default start width
-      '41', '0.0'  // default end width
+      '0',
+      'POLYLINE',
+      '8',
+      layer,
+      '66',
+      '1', // vertices follow
+      '70',
+      '1', // closed polyline
+      '40',
+      '0.0', // default start width
+      '41',
+      '0.0' // default end width
     );
 
     // Four corners of the rectangle
@@ -970,11 +1203,16 @@ export class DXFExporter {
 
     for (const [x, y] of corners) {
       entities.push(
-        '0', 'VERTEX',
-        '8', layer,
-        '10', x!.toFixed(1),
-        '20', y!.toFixed(1),
-        '30', '0.0'
+        '0',
+        'VERTEX',
+        '8',
+        layer,
+        '10',
+        x!.toFixed(1),
+        '20',
+        y!.toFixed(1),
+        '30',
+        '0.0'
       );
     }
 
@@ -987,17 +1225,24 @@ export class DXFExporter {
   private addCircle(
     entities: string[],
     layer: string,
-    x: number, y: number,
+    x: number,
+    y: number,
     radius: number,
     color?: number
   ): void {
     entities.push(
-      '0', 'CIRCLE',
-      '8', layer,
-      '10', x.toFixed(1),
-      '20', y.toFixed(1),
-      '30', '0.0',
-      '40', radius.toFixed(1)
+      '0',
+      'CIRCLE',
+      '8',
+      layer,
+      '10',
+      x.toFixed(1),
+      '20',
+      y.toFixed(1),
+      '30',
+      '0.0',
+      '40',
+      radius.toFixed(1)
     );
     if (color !== undefined) {
       // Insert color override before the entity closes
@@ -1017,29 +1262,35 @@ export class DXFExporter {
   private addText(
     entities: string[],
     layer: string,
-    x: number, y: number,
+    x: number,
+    y: number,
     text: string,
     height: number = 50,
     rotation: number = 0
   ): void {
     entities.push(
-      '0', 'TEXT',
-      '8', layer,
-      '10', x.toFixed(1),
-      '20', y.toFixed(1),
-      '30', '0.0',
-      '40', height.toFixed(1), // text height
-      '1', text,
-      '50', rotation.toFixed(1), // rotation angle in degrees
-      '72', '1'  // horizontal justification = center
+      '0',
+      'TEXT',
+      '8',
+      layer,
+      '10',
+      x.toFixed(1),
+      '20',
+      y.toFixed(1),
+      '30',
+      '0.0',
+      '40',
+      height.toFixed(1), // text height
+      '1',
+      text,
+      '50',
+      rotation.toFixed(1), // rotation angle in degrees
+      '72',
+      '1' // horizontal justification = center
     );
 
     // Second alignment point for center justification
-    entities.push(
-      '11', x.toFixed(1),
-      '21', y.toFixed(1),
-      '31', '0.0'
-    );
+    entities.push('11', x.toFixed(1), '21', y.toFixed(1), '31', '0.0');
   }
 
   // ---------- Utility ----------
@@ -1049,9 +1300,21 @@ export class DXFExporter {
    */
   private isAppliance(type: string): boolean {
     const applianceTypes = [
-      'appliance', 'oven', 'dishwasher', 'refrigerator', 'fridge',
-      'fridge_freezer', 'microwave', 'cooktop', 'stove', 'hob',
-      'hood', 'washer', 'dryer', 'freezer', 'induction',
+      'appliance',
+      'oven',
+      'dishwasher',
+      'refrigerator',
+      'fridge',
+      'fridge_freezer',
+      'microwave',
+      'cooktop',
+      'stove',
+      'hob',
+      'hood',
+      'washer',
+      'dryer',
+      'freezer',
+      'induction',
     ];
     return applianceTypes.includes(type);
   }
@@ -1065,10 +1328,16 @@ export class DXFExporter {
     const material = (obj.userData.material as string)?.toLowerCase() || '';
     const subtype = (obj.userData.subtype as string)?.toLowerCase() || '';
 
-    if (material.includes('stone') || material.includes('granite') ||
-        material.includes('marble') || material.includes('quartz') ||
-        subtype.includes('countertop') || subtype.includes('worktop') ||
-        objType === 'countertop' || objType === 'worktop') {
+    if (
+      material.includes('stone') ||
+      material.includes('granite') ||
+      material.includes('marble') ||
+      material.includes('quartz') ||
+      subtype.includes('countertop') ||
+      subtype.includes('worktop') ||
+      objType === 'countertop' ||
+      objType === 'worktop'
+    ) {
       return 'stone';
     }
 
@@ -1077,9 +1346,13 @@ export class DXFExporter {
     }
 
     // Default to wood for cabinets and furniture
-    if (objType === 'cabinet' || objType === 'furniture' ||
-        objType.includes('cabinet') || objType.includes('shelf') ||
-        objType.includes('drawer')) {
+    if (
+      objType === 'cabinet' ||
+      objType === 'furniture' ||
+      objType.includes('cabinet') ||
+      objType.includes('shelf') ||
+      objType.includes('drawer')
+    ) {
       return 'wood';
     }
 

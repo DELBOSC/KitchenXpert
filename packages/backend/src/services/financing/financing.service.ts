@@ -187,13 +187,17 @@ const CEE_AMOUNTS: Record<EquipmentType, { min: number; max: number }> = {
 // ─── AI Response Schema ─────────────────────────────────────────────────────
 
 const BudgetAdviceSchema = z.object({
-  recommendations: z.array(z.object({
-    category: z.string().max(100),
-    suggestedAmount: z.number().min(0),
-    suggestedPercentage: z.number().min(0).max(100),
-    reason: z.string().max(500),
-    priority: z.enum(['high', 'medium', 'low']),
-  })).max(15),
+  recommendations: z
+    .array(
+      z.object({
+        category: z.string().max(100),
+        suggestedAmount: z.number().min(0),
+        suggestedPercentage: z.number().min(0).max(100),
+        reason: z.string().max(500),
+        priority: z.enum(['high', 'medium', 'low']),
+      })
+    )
+    .max(15),
   totalSuggested: z.number().min(0),
   savingsTips: z.array(z.string().max(300)).max(10),
   warnings: z.array(z.string().max(300)).max(10),
@@ -203,7 +207,9 @@ const BudgetAdviceSchema = z.object({
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -221,11 +227,15 @@ export class FinancingService {
    * Standard amortization formula: monthly payment for a fixed-rate loan.
    */
   calculateMonthlyPayment(amount: number, annualRate: number, months: number): number {
-    if (amount <= 0 || months <= 0) {return 0;}
-    if (annualRate <= 0) {return amount / months;}
+    if (amount <= 0 || months <= 0) {
+      return 0;
+    }
+    if (annualRate <= 0) {
+      return amount / months;
+    }
 
     const monthlyRate = annualRate / 100 / 12;
-    const payment = amount * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
+    const payment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
     return Math.round(payment * 100) / 100;
   }
 
@@ -253,7 +263,9 @@ export class FinancingService {
         }
 
         const rate = provider.rates[months];
-        if (rate === undefined) {continue;}
+        if (rate === undefined) {
+          continue;
+        }
 
         const monthlyPayment = this.calculateMonthlyPayment(loanAmount, rate, months);
         const totalCost = Math.round(monthlyPayment * months * 100) / 100;
@@ -337,9 +349,10 @@ export class FinancingService {
       eligible: maprimeAmount > 0 && data.isRenovation,
       amount: data.isRenovation ? Math.min(maprimeAmount, data.totalAmount * 0.5) : 0,
       bracket,
-      details: maprimeAmount > 0 && data.isRenovation
-        ? `MaPrimeRenov: aide jusqu'a ${maprimeAmount} EUR pour le profil ${bracket.replace('_', ' ')}`
-        : 'Non eligible (profil superieur ou logement neuf)',
+      details:
+        maprimeAmount > 0 && data.isRenovation
+          ? `MaPrimeRenov: aide jusqu'a ${maprimeAmount} EUR pour le profil ${bracket.replace('_', ' ')}`
+          : 'Non eligible (profil superieur ou logement neuf)',
     };
 
     // ── CEE ──────────────────────────────────────────────────────
@@ -359,17 +372,23 @@ export class FinancingService {
     const cee = {
       eligible: perEquipment.length > 0,
       amount: ceeTotal,
-      details: perEquipment.length > 0
-        ? `CEE: ${ceeTotal} EUR pour ${perEquipment.length} equipement(s) eligibles`
-        : 'Aucun equipement eligible aux CEE selectionne',
+      details:
+        perEquipment.length > 0
+          ? `CEE: ${ceeTotal} EUR pour ${perEquipment.length} equipement(s) eligibles`
+          : 'Aucun equipement eligible aux CEE selectionne',
       perEquipment,
     };
 
     // ── TVA Reduite ──────────────────────────────────────────────
     let tvaRate = 20;
     let tvaDetails = 'TVA standard 20%';
-    const hasEnergyEquipment = data.equipmentTypes.some(t =>
-      ['pompe_a_chaleur', 'chauffe_eau_thermodynamique', 'chaudiere_condensation', 'panneau_solaire'].includes(t)
+    const hasEnergyEquipment = data.equipmentTypes.some((t) =>
+      [
+        'pompe_a_chaleur',
+        'chauffe_eau_thermodynamique',
+        'chaudiere_condensation',
+        'panneau_solaire',
+      ].includes(t)
     );
 
     if (data.isRenovation && data.buildingAge && data.buildingAge > 2) {
@@ -395,7 +414,11 @@ export class FinancingService {
     };
 
     // ── Eco-PTZ ──────────────────────────────────────────────────
-    const ecoEligible = data.isRenovation && hasEnergyEquipment && data.buildingAge !== undefined && data.buildingAge > 2;
+    const ecoEligible =
+      data.isRenovation &&
+      hasEnergyEquipment &&
+      data.buildingAge !== undefined &&
+      data.buildingAge > 2;
     const ecoPtz = {
       eligible: ecoEligible,
       maxAmount: ecoEligible ? 50000 : 0,
@@ -433,7 +456,7 @@ export class FinancingService {
   async getAIBudgetAdvice(userId: string, projectData: ProjectBudgetData): Promise<BudgetAdvice> {
     const safeStyle = sanitizeInput(projectData.style);
     const categorySummary = projectData.categories
-      .map(c => `${sanitizeInput(c.name)}: ${c.currentAmount} EUR`)
+      .map((c) => `${sanitizeInput(c.name)}: ${c.currentAmount} EUR`)
       .join(', ');
 
     const startTime = Date.now();
@@ -470,7 +493,7 @@ Reponds en JSON avec le format: { "recommendations": [...], "totalSuggested": nu
       result.inputTokens,
       result.outputTokens,
       durationMs,
-      { feature: 'financing_budget_advice' },
+      { feature: 'financing_budget_advice' }
     );
 
     return result.data;
@@ -479,19 +502,21 @@ Reponds en JSON avec le format: { "recommendations": [...], "totalSuggested": nu
   /**
    * Retrieve the current user's simulation history.
    */
-  async getMySimulations(userId: string): Promise<Array<{
-    id: string;
-    totalAmount: number;
-    downPayment: number;
-    loanAmount: number;
-    interestRate: number;
-    durationMonths: number;
-    monthlyPayment: number;
-    totalCost: number;
-    provider: string | null;
-    status: string;
-    createdAt: Date;
-  }>> {
+  async getMySimulations(userId: string): Promise<
+    Array<{
+      id: string;
+      totalAmount: number;
+      downPayment: number;
+      loanAmount: number;
+      interestRate: number;
+      durationMonths: number;
+      monthlyPayment: number;
+      totalCost: number;
+      provider: string | null;
+      status: string;
+      createdAt: Date;
+    }>
+  > {
     const simulations = await prisma.financingSimulation.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -504,7 +529,11 @@ Reponds en JSON avec le format: { "recommendations": [...], "totalSuggested": nu
   /**
    * Get a single simulation by ID (with ownership check).
    */
-  async getSimulationById(userId: string, simulationId: string, isAdmin: boolean): Promise<{
+  async getSimulationById(
+    userId: string,
+    simulationId: string,
+    isAdmin: boolean
+  ): Promise<{
     id: string;
     userId: string;
     kitchenId: string | null;
@@ -525,7 +554,9 @@ Reponds en JSON avec le format: { "recommendations": [...], "totalSuggested": nu
       where: { id: simulationId },
     });
 
-    if (!simulation) {return null;}
+    if (!simulation) {
+      return null;
+    }
 
     // Ownership check
     if (simulation.userId !== userId && !isAdmin) {

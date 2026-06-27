@@ -158,8 +158,14 @@ export interface ApplianceSearchParams {
  * Map appliance type to category
  */
 export function getApplianceCategory(type: ApplianceType): ApplianceCategory {
-  if (type.startsWith('hob_') || type.startsWith('oven_') || type.startsWith('microwave') ||
-      type === 'steam_oven' || type === 'warming_drawer' || type === 'coffee_machine') {
+  if (
+    type.startsWith('hob_') ||
+    type.startsWith('oven_') ||
+    type.startsWith('microwave') ||
+    type === 'steam_oven' ||
+    type === 'warming_drawer' ||
+    type === 'coffee_machine'
+  ) {
     return 'cooking';
   }
   if (type.startsWith('hood_')) return 'extraction';

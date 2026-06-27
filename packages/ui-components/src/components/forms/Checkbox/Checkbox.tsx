@@ -16,8 +16,10 @@ import styled, { css } from 'styled-components';
 export type CheckboxSize = 'sm' | 'md' | 'lg';
 export type CheckboxState = 'default' | 'error' | 'success' | 'warning';
 
-export interface CheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
+export interface CheckboxProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'size' | 'type'
+> {
   label?: ReactNode;
   description?: string;
   size?: CheckboxSize;
@@ -247,12 +249,7 @@ const IndeterminateIcon = ({ size }: { size: number }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M4 8H12"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-    />
+    <path d="M4 8H12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -310,13 +307,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       onChange?.(e);
     };
 
-    const describedBy = [
-      description ? descriptionId : null,
-      errorText ? errorId : null,
-      ariaDescribedBy,
-    ]
-      .filter(Boolean)
-      .join(' ') || undefined;
+    const describedBy =
+      [description ? descriptionId : null, errorText ? errorId : null, ariaDescribedBy]
+        .filter(Boolean)
+        .join(' ') || undefined;
 
     return (
       <CheckboxWrapper>

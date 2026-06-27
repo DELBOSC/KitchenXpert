@@ -72,11 +72,7 @@ interface Product {
 
 // ─── SVG Mini Chart ─────────────────────────────────────────────────────────
 
-function MiniPriceChart({
-  history,
-}: {
-  history: PriceHistoryEntry[];
-}): React.ReactElement {
+function MiniPriceChart({ history }: { history: PriceHistoryEntry[] }): React.ReactElement {
   if (history.length < 2) {
     return (
       <div className="w-full h-20 flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
@@ -113,11 +109,7 @@ function MiniPriceChart({
   const areaPoints = `${firstX},${height - padding} ${points} ${lastX},${height - padding}`;
 
   return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      className="w-full h-20"
-      preserveAspectRatio="none"
-    >
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-20" preserveAspectRatio="none">
       <polygon points={areaPoints} fill={fillColor} />
       <polyline
         points={points}
@@ -135,12 +127,24 @@ function MiniPriceChart({
 
 function TrendArrow({ direction }: { direction: 'up' | 'down' | 'stable' }): React.ReactElement {
   if (direction === 'up') {
-    return <span className="text-red-500 text-lg" title="Trending up">&#9650;</span>;
+    return (
+      <span className="text-red-500 text-lg" title="Trending up">
+        &#9650;
+      </span>
+    );
   }
   if (direction === 'down') {
-    return <span className="text-green-500 text-lg" title="Trending down">&#9660;</span>;
+    return (
+      <span className="text-green-500 text-lg" title="Trending down">
+        &#9660;
+      </span>
+    );
   }
-  return <span className="text-gray-400 text-lg" title="Stable">&#9654;</span>;
+  return (
+    <span className="text-gray-400 text-lg" title="Stable">
+      &#9654;
+    </span>
+  );
 }
 
 // ─── Best-Time Badge ────────────────────────────────────────────────────────
@@ -165,7 +169,9 @@ function BestTimeBadge({
   };
 
   return (
-    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${colors[recommendation] || ''}`}>
+    <span
+      className={`inline-block px-2 py-1 rounded text-xs font-medium ${colors[recommendation] || ''}`}
+    >
       {labels[recommendation] || recommendation}
     </span>
   );
@@ -258,9 +264,7 @@ function AlertModal({
             </select>
           </div>
 
-          {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
           <div className="flex justify-end gap-3 pt-2">
             <button
@@ -316,39 +320,36 @@ export default function PriceTrackerPage(): React.ReactElement {
 
   // ─── Search products ────────────────────────────────────────────────────
 
-  const handleSearch = useCallback(
-    (query: string) => {
-      setSearchQuery(query);
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
 
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
 
-      if (query.trim().length < 2) {
-        setSearchResults([]);
-        return;
-      }
+    if (query.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
 
-      searchTimeoutRef.current = setTimeout(() => {
-        void (async () => {
-          setIsSearching(true);
-          try {
-            const response = await api.get<Product[]>(API_ENDPOINTS.PRODUCTS.SEARCH, {
-              params: { q: query, limit: 10 },
-            });
-            if (response.success && response.data) {
-              setSearchResults(response.data);
-            }
-          } catch {
-            // Silently fail search
-          } finally {
-            setIsSearching(false);
+    searchTimeoutRef.current = setTimeout(() => {
+      void (async () => {
+        setIsSearching(true);
+        try {
+          const response = await api.get<Product[]>(API_ENDPOINTS.PRODUCTS.SEARCH, {
+            params: { q: query, limit: 10 },
+          });
+          if (response.success && response.data) {
+            setSearchResults(response.data);
           }
-        })();
-      }, 300);
-    },
-    [],
-  );
+        } catch {
+          // Silently fail search
+        } finally {
+          setIsSearching(false);
+        }
+      })();
+    }, 300);
+  }, []);
 
   // Cleanup search timeout
   useEffect(() => {
@@ -363,14 +364,16 @@ export default function PriceTrackerPage(): React.ReactElement {
 
   const trackProduct = useCallback(
     (product: Product) => {
-      if (trackedProductIds.includes(product.id)) {return;}
+      if (trackedProductIds.includes(product.id)) {
+        return;
+      }
 
       setTrackedProductIds((prev) => [...prev, product.id]);
       setProductNames((prev) => ({ ...prev, [product.id]: product.name }));
       setSearchQuery('');
       setSearchResults([]);
     },
-    [trackedProductIds],
+    [trackedProductIds]
   );
 
   const untrackProduct = useCallback((productId: string) => {
@@ -395,7 +398,9 @@ export default function PriceTrackerPage(): React.ReactElement {
   // ─── Load price data for tracked products ──────────────────────────────
 
   useEffect(() => {
-    if (trackedProductIds.length === 0) {return;}
+    if (trackedProductIds.length === 0) {
+      return;
+    }
 
     const controller = new AbortController();
     let cancelled = false;
@@ -407,23 +412,20 @@ export default function PriceTrackerPage(): React.ReactElement {
         const historyPromises = trackedProductIds.map(async (id) => {
           const response = await api.get<PriceHistoryEntry[]>(
             API_ENDPOINTS.PRICE_TRACKER.HISTORY(id),
-            { signal: controller.signal },
+            { signal: controller.signal }
           );
           return { id, data: response.success && response.data ? response.data : [] };
         });
 
-        const trendsResponse = await api.get<PriceTrends[]>(
-          API_ENDPOINTS.PRICE_TRACKER.TRENDS,
-          {
-            params: { productIds: trackedProductIds.join(',') },
-            signal: controller.signal,
-          },
-        );
+        const trendsResponse = await api.get<PriceTrends[]>(API_ENDPOINTS.PRICE_TRACKER.TRENDS, {
+          params: { productIds: trackedProductIds.join(',') },
+          signal: controller.signal,
+        });
 
         const bestTimePromises = trackedProductIds.map(async (id) => {
           const response = await api.get<BestTimeSuggestion>(
             API_ENDPOINTS.PRICE_TRACKER.BEST_TIME(id),
-            { signal: controller.signal },
+            { signal: controller.signal }
           );
           return { id, data: response.success && response.data ? response.data : null };
         });
@@ -433,7 +435,9 @@ export default function PriceTrackerPage(): React.ReactElement {
           Promise.all(bestTimePromises),
         ]);
 
-        if (cancelled) {return;}
+        if (cancelled) {
+          return;
+        }
 
         // Update histories
         const newHistories: Record<string, PriceHistoryEntry[]> = {};
@@ -460,10 +464,14 @@ export default function PriceTrackerPage(): React.ReactElement {
         }
         setBestTimes(newBestTimes);
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         // Silently fail, data will be empty
       } finally {
-        if (!cancelled) {setIsLoadingData(false);}
+        if (!cancelled) {
+          setIsLoadingData(false);
+        }
       }
     };
 
@@ -499,19 +507,16 @@ export default function PriceTrackerPage(): React.ReactElement {
 
   // ─── Delete alert ────────────────────────────────────────────────────────
 
-  const handleDeleteAlert = useCallback(
-    async (alertId: string): Promise<void> => {
-      try {
-        const response = await api.delete(API_ENDPOINTS.PRICE_TRACKER.ALERT_BY_ID(alertId));
-        if (response.success) {
-          setAlerts((prev) => prev.filter((a) => a.id !== alertId));
-        }
-      } catch {
-        // Silently fail
+  const handleDeleteAlert = useCallback(async (alertId: string): Promise<void> => {
+    try {
+      const response = await api.delete(API_ENDPOINTS.PRICE_TRACKER.ALERT_BY_ID(alertId));
+      if (response.success) {
+        setAlerts((prev) => prev.filter((a) => a.id !== alertId));
       }
-    },
-    [],
-  );
+    } catch {
+      // Silently fail
+    }
+  }, []);
 
   // ─── Render ───────────────────────────────────────────────────────────────
 
@@ -542,8 +547,20 @@ export default function PriceTrackerPage(): React.ReactElement {
         {isSearching && (
           <div className="absolute right-3 top-9 text-gray-400">
             <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
             </svg>
           </div>
         )}
@@ -599,16 +616,24 @@ export default function PriceTrackerPage(): React.ReactElement {
                 >
                   {/* Header with name and remove button */}
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-                      {name}
-                    </h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white truncate">{name}</h3>
                     <button
                       onClick={() => untrackProduct(productId)}
                       className="text-gray-400 hover:text-red-500 transition-colors ml-2 flex-shrink-0"
                       title={t('priceTracker.untrack', 'Remove from tracking')}
                     >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -679,9 +704,7 @@ export default function PriceTrackerPage(): React.ReactElement {
 
                   {/* Best time badge + alert button */}
                   <div className="flex items-center justify-between">
-                    {bestTime && (
-                      <BestTimeBadge recommendation={bestTime.recommendation} t={t} />
-                    )}
+                    {bestTime && <BestTimeBadge recommendation={bestTime.recommendation} t={t} />}
                     <button
                       onClick={() => setAlertModalProductId(productId)}
                       className="px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
@@ -706,8 +729,18 @@ export default function PriceTrackerPage(): React.ReactElement {
       {/* Empty state */}
       {trackedProductIds.length === 0 && (
         <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 mb-8">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+          <svg
+            className="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+            />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
             {t('priceTracker.noProducts', 'No products tracked')}
@@ -733,7 +766,10 @@ export default function PriceTrackerPage(): React.ReactElement {
         {!isLoadingAlerts && alerts.length === 0 && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t('priceTracker.noAlerts', 'No price alerts set. Track a product and click "Set Alert" to get notified.')}
+              {t(
+                'priceTracker.noAlerts',
+                'No price alerts set. Track a product and click "Set Alert" to get notified.'
+              )}
             </p>
           </div>
         )}
@@ -768,14 +804,10 @@ export default function PriceTrackerPage(): React.ReactElement {
                   {alerts.map((alert) => (
                     <tr
                       key={alert.id}
-                      className={
-                        alert.isTriggered
-                          ? 'bg-green-50 dark:bg-green-900/20'
-                          : ''
-                      }
+                      className={alert.isTriggered ? 'bg-green-50 dark:bg-green-900/20' : ''}
                     >
                       <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-medium">
-                        {productNames[alert.productId] || `${alert.productId.substring(0, 8)  }...`}
+                        {productNames[alert.productId] || `${alert.productId.substring(0, 8)}...`}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                         {alert.targetPrice.toFixed(2)} EUR
@@ -784,11 +816,13 @@ export default function PriceTrackerPage(): React.ReactElement {
                         {alert.currentPrice !== null ? `${alert.currentPrice.toFixed(2)} EUR` : '-'}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                          alert.direction === 'below'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                        }`}>
+                        <span
+                          className={`px-2 py-0.5 rounded text-xs font-medium ${
+                            alert.direction === 'below'
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                          }`}
+                        >
                           {alert.direction === 'below'
                             ? t('priceTracker.below', 'Below')
                             : t('priceTracker.above', 'Above')}

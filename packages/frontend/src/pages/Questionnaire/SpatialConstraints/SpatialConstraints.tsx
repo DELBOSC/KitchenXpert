@@ -48,7 +48,11 @@ const SpatialConstraints: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [aiTips, setAiTips] = useState<{ tips: string[]; warnings: string[]; suggestions: string[] } | null>(null);
+  const [aiTips, setAiTips] = useState<{
+    tips: string[];
+    warnings: string[];
+    suggestions: string[];
+  } | null>(null);
   const [aiTipsLoading, setAiTipsLoading] = useState<boolean>(false);
 
   const layoutOptions = [
@@ -110,15 +114,25 @@ const SpatialConstraints: React.FC = () => {
     const controller = new AbortController();
     const fetchSpatialData = async (): Promise<void> => {
       try {
-        const response = await fetch('/api/v1/questionnaire/spatial-constraints', { credentials: 'include', signal: controller.signal });
+        const response = await fetch('/api/v1/questionnaire/spatial-constraints', {
+          credentials: 'include',
+          signal: controller.signal,
+        });
 
         if (response.ok) {
           const result = (await response.json()) as { data?: SpatialData };
-          if (result.data) {setFormData(result.data);}
+          if (result.data) {
+            setFormData(result.data);
+          }
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
-        logger.debug('Failed to fetch spatial data, using defaults', err instanceof Error ? { error: err.message } : { error: err });
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
+        logger.debug(
+          'Failed to fetch spatial data, using defaults',
+          err instanceof Error ? { error: err.message } : { error: err }
+        );
       } finally {
         setIsLoading(false);
       }
@@ -151,9 +165,7 @@ const SpatialConstraints: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ): void => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value, type } = e.target;
     const target = e.target as HTMLInputElement;
 
@@ -262,8 +274,12 @@ const SpatialConstraints: React.FC = () => {
         {/* Progress Indicator */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">{t('questionnaire.step', { current: 2, total: 4, defaultValue: 'Step 2 of 4' })}</span>
-            <span className="text-sm text-gray-500">{t('questionnaire.spatialConstraints', 'Spatial Constraints')}</span>
+            <span className="text-sm font-medium text-gray-700">
+              {t('questionnaire.step', { current: 2, total: 4, defaultValue: 'Step 2 of 4' })}
+            </span>
+            <span className="text-sm text-gray-500">
+              {t('questionnaire.spatialConstraints', 'Spatial Constraints')}
+            </span>
           </div>
           <div className="h-2 bg-gray-200 rounded-full">
             <div
@@ -280,9 +296,14 @@ const SpatialConstraints: React.FC = () => {
 
         {/* Form Card */}
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('questionnaire.roomDimensions', 'Room Dimensions')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            {t('questionnaire.roomDimensions', 'Room Dimensions')}
+          </h1>
           <p className="text-gray-600 mb-6">
-            {t('questionnaire.roomDimensionsDesc', 'Enter your kitchen room dimensions and layout preferences.')}
+            {t(
+              'questionnaire.roomDimensionsDesc',
+              'Enter your kitchen room dimensions and layout preferences.'
+            )}
           </p>
 
           {saveError && (
@@ -294,13 +315,13 @@ const SpatialConstraints: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Unit Selection */}
             <div>
-              <span className="block text-sm font-medium text-gray-700 mb-2">
-                Measurement Unit
-              </span>
+              <span className="block text-sm font-medium text-gray-700 mb-2">Measurement Unit</span>
               <div className="flex gap-4">
-                <label className={`flex items-center px-4 py-2 border rounded-lg cursor-pointer ${
-                  formData.unit === 'meters' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-                }`}>
+                <label
+                  className={`flex items-center px-4 py-2 border rounded-lg cursor-pointer ${
+                    formData.unit === 'meters' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                  }`}
+                >
                   <input
                     type="radio"
                     name="unit"
@@ -311,9 +332,11 @@ const SpatialConstraints: React.FC = () => {
                   />
                   <span className="text-sm">Meters (m)</span>
                 </label>
-                <label className={`flex items-center px-4 py-2 border rounded-lg cursor-pointer ${
-                  formData.unit === 'feet' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-                }`}>
+                <label
+                  className={`flex items-center px-4 py-2 border rounded-lg cursor-pointer ${
+                    formData.unit === 'feet' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                  }`}
+                >
                   <input
                     type="radio"
                     name="unit"
@@ -333,7 +356,10 @@ const SpatialConstraints: React.FC = () => {
 
               <div className="grid gap-6 md:grid-cols-3">
                 <div>
-                  <label htmlFor="roomWidth" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="roomWidth"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Width ({formData.unit}) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -353,12 +379,21 @@ const SpatialConstraints: React.FC = () => {
                     }`}
                   />
                   {errors.roomWidth && (
-                    <p id="spatial-roomWidth-error" className="mt-1 text-sm text-red-600" role="alert">{errors.roomWidth}</p>
+                    <p
+                      id="spatial-roomWidth-error"
+                      className="mt-1 text-sm text-red-600"
+                      role="alert"
+                    >
+                      {errors.roomWidth}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="roomLength" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="roomLength"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Length ({formData.unit}) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -378,12 +413,21 @@ const SpatialConstraints: React.FC = () => {
                     }`}
                   />
                   {errors.roomLength && (
-                    <p id="spatial-roomLength-error" className="mt-1 text-sm text-red-600" role="alert">{errors.roomLength}</p>
+                    <p
+                      id="spatial-roomLength-error"
+                      className="mt-1 text-sm text-red-600"
+                      role="alert"
+                    >
+                      {errors.roomLength}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="ceilingHeight" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="ceilingHeight"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Ceiling Height ({formData.unit}) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -397,13 +441,21 @@ const SpatialConstraints: React.FC = () => {
                     placeholder={formData.unit === 'meters' ? '2.7' : '9'}
                     aria-required="true"
                     aria-invalid={!!errors.ceilingHeight}
-                    aria-describedby={errors.ceilingHeight ? 'spatial-ceilingHeight-error' : undefined}
+                    aria-describedby={
+                      errors.ceilingHeight ? 'spatial-ceilingHeight-error' : undefined
+                    }
                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                       errors.ceilingHeight ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                   />
                   {errors.ceilingHeight && (
-                    <p id="spatial-ceilingHeight-error" className="mt-1 text-sm text-red-600" role="alert">{errors.ceilingHeight}</p>
+                    <p
+                      id="spatial-ceilingHeight-error"
+                      className="mt-1 text-sm text-red-600"
+                      role="alert"
+                    >
+                      {errors.ceilingHeight}
+                    </p>
                   )}
                 </div>
               </div>
@@ -412,7 +464,10 @@ const SpatialConstraints: React.FC = () => {
               {formData.roomWidth > 0 && formData.roomLength > 0 && (
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                   <p className="text-sm text-blue-800">
-                    Total Floor Area: <strong>{calculateArea()} {formData.unit === 'meters' ? 'sq m' : 'sq ft'}</strong>
+                    Total Floor Area:{' '}
+                    <strong>
+                      {calculateArea()} {formData.unit === 'meters' ? 'sq m' : 'sq ft'}
+                    </strong>
                   </p>
                 </div>
               )}
@@ -466,7 +521,10 @@ const SpatialConstraints: React.FC = () => {
 
                   {formData.hasWindow && (
                     <div className="mt-4">
-                      <label htmlFor="windowLocation" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="windowLocation"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Window Direction
                       </label>
                       <select
@@ -486,7 +544,10 @@ const SpatialConstraints: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="doorCount" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="doorCount"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Number of Doors
                   </label>
                   <select
@@ -507,11 +568,16 @@ const SpatialConstraints: React.FC = () => {
 
             {/* Utilities */}
             <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Utilities & Infrastructure</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Utilities & Infrastructure
+              </h2>
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="plumbingLocation" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="plumbingLocation"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Plumbing Location
                   </label>
                   <select
@@ -558,7 +624,9 @@ const SpatialConstraints: React.FC = () => {
             {/* Existing Features */}
             <section>
               <h2 className="text-lg font-semibold text-gray-800 mb-4">Existing Features</h2>
-              <p className="text-sm text-gray-500 mb-4">Select any features that cannot be moved or removed</p>
+              <p className="text-sm text-gray-500 mb-4">
+                Select any features that cannot be moved or removed
+              </p>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {existingFeatureOptions.map((feature) => (
@@ -576,14 +644,20 @@ const SpatialConstraints: React.FC = () => {
                       onChange={() => handleFeatureToggle(feature)}
                       className="sr-only"
                     />
-                    <span className={`w-5 h-5 rounded border mr-3 flex items-center justify-center ${
-                      formData.existingFeatures.includes(feature)
-                        ? 'bg-blue-600 border-blue-600'
-                        : 'border-gray-300'
-                    }`}>
+                    <span
+                      className={`w-5 h-5 rounded border mr-3 flex items-center justify-center ${
+                        formData.existingFeatures.includes(feature)
+                          ? 'bg-blue-600 border-blue-600'
+                          : 'border-gray-300'
+                      }`}
+                    >
                       {formData.existingFeatures.includes(feature) && (
                         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       )}
                     </span>
@@ -603,17 +677,26 @@ const SpatialConstraints: React.FC = () => {
             {aiTips && (
               <div className="mt-6 space-y-3">
                 {aiTips.tips.map((tip, i) => (
-                  <div key={i} className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+                  <div
+                    key={i}
+                    className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800"
+                  >
                     <span className="font-medium">Conseil IA :</span> {tip}
                   </div>
                 ))}
                 {aiTips.warnings.map((w, i) => (
-                  <div key={i} className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+                  <div
+                    key={i}
+                    className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800"
+                  >
                     <span className="font-medium">Attention :</span> {w}
                   </div>
                 ))}
                 {aiTips.suggestions.map((s, i) => (
-                  <div key={i} className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700">
+                  <div
+                    key={i}
+                    className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700"
+                  >
                     <span className="font-medium">Suggestion :</span> {s}
                   </div>
                 ))}
@@ -627,7 +710,12 @@ const SpatialConstraints: React.FC = () => {
                 className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
                 {t('common.back', 'Back')}
               </Link>
@@ -640,10 +728,17 @@ const SpatialConstraints: React.FC = () => {
                 {isSaving && (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
-                {isSaving ? t('common.saving', 'Enregistrement...') : t('common.continue', 'Continue')}
+                {isSaving
+                  ? t('common.saving', 'Enregistrement...')
+                  : t('common.continue', 'Continue')}
                 {!isSaving && (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 )}
               </button>

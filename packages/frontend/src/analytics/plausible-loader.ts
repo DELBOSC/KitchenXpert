@@ -29,8 +29,12 @@ declare global {
 type PlausibleWithQueue = NonNullable<Window['plausible']> & { q?: unknown[] };
 
 export function loadPlausible(): void {
-  if (typeof document === 'undefined') {return;}
-  if (document.getElementById(SCRIPT_ID)) {return;} // already loaded
+  if (typeof document === 'undefined') {
+    return;
+  }
+  if (document.getElementById(SCRIPT_ID)) {
+    return;
+  } // already loaded
 
   // Plausible's outbound-links script wraps history.pushState. On localhost
   // it logs "Ignoring Event: localhost" and the wrapped pushState becomes a
@@ -61,7 +65,9 @@ export function loadPlausible(): void {
 }
 
 export function unloadPlausible(): void {
-  if (typeof document === 'undefined') {return;}
+  if (typeof document === 'undefined') {
+    return;
+  }
   document.getElementById(SCRIPT_ID)?.remove();
   delete window.plausible;
 }
@@ -72,12 +78,18 @@ export function unloadPlausible(): void {
  * opted in to analytics. Cheap to call multiple times.
  */
 export function bootAnalyticsFromConsent(): void {
-  if (typeof window === 'undefined') {return;}
+  if (typeof window === 'undefined') {
+    return;
+  }
   try {
     const raw = localStorage.getItem('kx.cookie-consent.v1');
-    if (!raw) {return;}
+    if (!raw) {
+      return;
+    }
     const consent = JSON.parse(raw) as { analytics?: boolean };
-    if (consent?.analytics) {loadPlausible();}
+    if (consent?.analytics) {
+      loadPlausible();
+    }
   } catch {
     /* corrupted cookie consent — ignore, will be re-prompted */
   }

@@ -29,7 +29,7 @@ const googleConfig = {
   // Additional options
   accessType: 'offline', // Get refresh token
   prompt: 'consent', // Force consent screen to get refresh token
-  state: true // Enable state parameter for CSRF protection
+  state: true, // Enable state parameter for CSRF protection
 };
 
 /**
@@ -43,7 +43,7 @@ const githubConfig = {
   callbackURL: `${BASE_URL}/auth/github/callback`,
   scope: ['user:email'],
   // Additional options
-  state: true // Enable state parameter for CSRF protection
+  state: true, // Enable state parameter for CSRF protection
 };
 
 /**
@@ -58,7 +58,7 @@ const microsoftConfig = {
   scope: ['user.read'],
   tenant: process.env.MICROSOFT_TENANT || 'common', // 'common', 'organizations', 'consumers', or tenant ID
   authorizationURL: `https://login.microsoftonline.com/${process.env.MICROSOFT_TENANT || 'common'}/oauth2/v2.0/authorize`,
-  tokenURL: `https://login.microsoftonline.com/${process.env.MICROSOFT_TENANT || 'common'}/oauth2/v2.0/token`
+  tokenURL: `https://login.microsoftonline.com/${process.env.MICROSOFT_TENANT || 'common'}/oauth2/v2.0/token`,
 };
 
 /**
@@ -71,7 +71,7 @@ const facebookConfig = {
   clientSecret: process.env.FACEBOOK_APP_SECRET || '',
   callbackURL: `${BASE_URL}/auth/facebook/callback`,
   scope: ['email', 'public_profile'],
-  profileFields: ['id', 'emails', 'name', 'picture.type(large)']
+  profileFields: ['id', 'emails', 'name', 'picture.type(large)'],
 };
 
 /**
@@ -83,7 +83,7 @@ const twitterConfig = {
   consumerKey: process.env.TWITTER_CONSUMER_KEY || '',
   consumerSecret: process.env.TWITTER_CONSUMER_SECRET || '',
   callbackURL: `${BASE_URL}/auth/twitter/callback`,
-  includeEmail: true
+  includeEmail: true,
 };
 
 /**
@@ -95,7 +95,7 @@ const linkedinConfig = {
   clientID: process.env.LINKEDIN_CLIENT_ID || '',
   clientSecret: process.env.LINKEDIN_CLIENT_SECRET || '',
   callbackURL: `${BASE_URL}/auth/linkedin/callback`,
-  scope: ['r_emailaddress', 'r_liteprofile']
+  scope: ['r_emailaddress', 'r_liteprofile'],
 };
 
 /**
@@ -110,7 +110,7 @@ const validateOAuthConfig = (config, provider) => {
   }
 
   const requiredFields = ['clientID', 'clientSecret'];
-  const missing = requiredFields.filter(field => !config[field]);
+  const missing = requiredFields.filter((field) => !config[field]);
 
   if (missing.length > 0) {
     console.warn(`${provider} OAuth: Missing configuration: ${missing.join(', ')}`);
@@ -130,30 +130,27 @@ const configureGoogleStrategy = (findOrCreateUser) => {
   }
 
   passport.use(
-    new GoogleStrategy(
-      googleConfig,
-      async (accessToken, refreshToken, profile, done) => {
-        try {
-          const userData = {
-            provider: 'google',
-            providerId: profile.id,
-            email: profile.emails?.[0]?.value,
-            name: profile.displayName,
-            firstName: profile.name?.givenName,
-            lastName: profile.name?.familyName,
-            picture: profile.photos?.[0]?.value,
-            emailVerified: profile.emails?.[0]?.verified || false,
-            accessToken,
-            refreshToken
-          };
+    new GoogleStrategy(googleConfig, async (accessToken, refreshToken, profile, done) => {
+      try {
+        const userData = {
+          provider: 'google',
+          providerId: profile.id,
+          email: profile.emails?.[0]?.value,
+          name: profile.displayName,
+          firstName: profile.name?.givenName,
+          lastName: profile.name?.familyName,
+          picture: profile.photos?.[0]?.value,
+          emailVerified: profile.emails?.[0]?.verified || false,
+          accessToken,
+          refreshToken,
+        };
 
-          const user = await findOrCreateUser(userData);
-          return done(null, user);
-        } catch (error) {
-          return done(error, null);
-        }
+        const user = await findOrCreateUser(userData);
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
       }
-    )
+    })
   );
 
   console.log('Google OAuth strategy configured');
@@ -169,30 +166,27 @@ const configureGitHubStrategy = (findOrCreateUser) => {
   }
 
   passport.use(
-    new GitHubStrategy(
-      githubConfig,
-      async (accessToken, refreshToken, profile, done) => {
-        try {
-          const userData = {
-            provider: 'github',
-            providerId: profile.id,
-            username: profile.username,
-            email: profile.emails?.[0]?.value,
-            name: profile.displayName || profile.username,
-            picture: profile.photos?.[0]?.value,
-            profileUrl: profile.profileUrl,
-            emailVerified: true, // GitHub emails are verified
-            accessToken,
-            refreshToken
-          };
+    new GitHubStrategy(githubConfig, async (accessToken, refreshToken, profile, done) => {
+      try {
+        const userData = {
+          provider: 'github',
+          providerId: profile.id,
+          username: profile.username,
+          email: profile.emails?.[0]?.value,
+          name: profile.displayName || profile.username,
+          picture: profile.photos?.[0]?.value,
+          profileUrl: profile.profileUrl,
+          emailVerified: true, // GitHub emails are verified
+          accessToken,
+          refreshToken,
+        };
 
-          const user = await findOrCreateUser(userData);
-          return done(null, user);
-        } catch (error) {
-          return done(error, null);
-        }
+        const user = await findOrCreateUser(userData);
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
       }
-    )
+    })
   );
 
   console.log('GitHub OAuth strategy configured');
@@ -217,7 +211,7 @@ const configureMicrosoftStrategy = (findOrCreateUser) => {
       clientID: microsoftConfig.clientID,
       clientSecret: microsoftConfig.clientSecret,
       callbackURL: microsoftConfig.callbackURL,
-      scope: microsoftConfig.scope
+      scope: microsoftConfig.scope,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -228,7 +222,7 @@ const configureMicrosoftStrategy = (findOrCreateUser) => {
           name: profile.displayName,
           picture: profile.photos?.[0]?.value,
           accessToken,
-          refreshToken
+          refreshToken,
         };
 
         const user = await findOrCreateUser(userData);
@@ -240,11 +234,11 @@ const configureMicrosoftStrategy = (findOrCreateUser) => {
   );
 
   // Override userProfile to use Microsoft Graph API
-  strategy.userProfile = function(accessToken, done) {
+  strategy.userProfile = function (accessToken, done) {
     this._oauth2._request(
       'GET',
       'https://graph.microsoft.com/v1.0/me',
-      { 'Authorization': `Bearer ${accessToken}` },
+      { Authorization: `Bearer ${accessToken}` },
       null,
       null,
       (err, body) => {
@@ -257,7 +251,7 @@ const configureMicrosoftStrategy = (findOrCreateUser) => {
             id: json.id,
             displayName: json.displayName,
             emails: [{ value: json.mail || json.userPrincipalName }],
-            photos: [{ value: `https://graph.microsoft.com/v1.0/users/${json.id}/photo/$value` }]
+            photos: [{ value: `https://graph.microsoft.com/v1.0/users/${json.id}/photo/$value` }],
           };
           done(null, profile);
         } catch (e) {
@@ -316,7 +310,7 @@ const getAuthorizationUrl = (provider, state) => {
   const configs = {
     google: googleConfig,
     github: githubConfig,
-    microsoft: microsoftConfig
+    microsoft: microsoftConfig,
   };
 
   const config = configs[provider];
@@ -330,13 +324,13 @@ const getAuthorizationUrl = (provider, state) => {
     redirect_uri: config.callbackURL,
     scope: Array.isArray(config.scope) ? config.scope.join(' ') : config.scope,
     state: state,
-    response_type: 'code'
+    response_type: 'code',
   });
 
   const authUrls = {
     google: `https://accounts.google.com/o/oauth2/v2/auth?${params}`,
     github: `https://github.com/login/oauth/authorize?${params}`,
-    microsoft: `${config.authorizationURL}?${params}`
+    microsoft: `${config.authorizationURL}?${params}`,
   };
 
   return authUrls[provider];
@@ -403,5 +397,5 @@ module.exports = {
   oauthErrorHandler,
 
   // Base URL
-  BASE_URL
+  BASE_URL,
 };

@@ -18,7 +18,13 @@ export type OrderStatus =
 
 export type QuoteStatus = 'draft' | 'sent' | 'viewed' | 'accepted' | 'rejected' | 'expired';
 
-export type PaymentStatus = 'pending' | 'authorized' | 'captured' | 'failed' | 'refunded' | 'partially_refunded';
+export type PaymentStatus =
+  | 'pending'
+  | 'authorized'
+  | 'captured'
+  | 'failed'
+  | 'refunded'
+  | 'partially_refunded';
 
 export type PaymentMethod = 'card' | 'bank_transfer' | 'invoice' | 'financing';
 

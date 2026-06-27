@@ -1,8 +1,7 @@
 # KitchenXpert — Performance, Accessibility & SEO
 
-Reference for Lighthouse 95+ on the 8 public pages (`/`, `/login`,
-`/register`, `/pricing`, `/catalog`, `/catalog/IKEA`, `/legal/privacy`,
-`/legal/cgv`).
+Reference for Lighthouse 95+ on the 8 public pages (`/`, `/login`, `/register`,
+`/pricing`, `/catalog`, `/catalog/IKEA`, `/legal/privacy`, `/legal/cgv`).
 
 ---
 
@@ -25,10 +24,10 @@ pnpm --filter frontend build:analyze && open packages/frontend/dist/stats.html
 pnpm --filter frontend exec playwright test e2e-critical/accessibility.spec.ts --headed
 ```
 
-> **Heads up:** I cannot give you before/after Lighthouse numbers in
-> this PR — Lighthouse needs Chrome + a running dev server. Run the
-> commands above to capture the baseline yourself; the CI workflow
-> turns the baseline into a hard gate from then on.
+> **Heads up:** I cannot give you before/after Lighthouse numbers in this PR —
+> Lighthouse needs Chrome + a running dev server. Run the commands above to
+> capture the baseline yourself; the CI workflow turns the baseline into a hard
+> gate from then on.
 
 ---
 
@@ -36,45 +35,45 @@ pnpm --filter frontend exec playwright test e2e-critical/accessibility.spec.ts -
 
 ### Performance
 
-| Change | File | Why |
-|---|---|---|
-| Manual chunks: `three`, `3d-engine`, `framer`, `stripe`, `i18n`, `react-vendor`, `vendor` | [vite.config.ts](packages/frontend/vite.config.ts) | Home/login/legal stop downloading Three.js (~150 KB gz) and Framer Motion (~30 KB gz) they never use |
-| Hashed filenames + tighter chunkSizeWarningLimit (500 KB) + assetsInlineLimit 4 KB | [vite.config.ts](packages/frontend/vite.config.ts) | Long-Cache-Control header in [security-headers.ts](packages/backend/src/api/middleware/security-headers.ts) becomes safe; small assets inlined save round-trips |
-| Sourcemap off in prod (opt-in via `VITE_SOURCEMAP=1`) | [vite.config.ts](packages/frontend/vite.config.ts) | Cuts ~30 % of the upload size; prevents source disclosure |
-| Optional gzip + brotli pre-compression | [vite.config.ts](packages/frontend/vite.config.ts) | Reverse proxy serves `index.html.br` directly — saves CPU on every request |
-| Optional bundle visualizer | `pnpm build:analyze` | Treemap with gz + br sizes |
-| Self-hosted Inter (variable, latin subset) + preload | [index.html](packages/frontend/index.html), [index.css](packages/frontend/src/index.css) | Replaces 6+ Google Font requests with one preloaded woff2; FOIT eliminated via `font-display: swap` |
-| Page-level `React.lazy()` (already in place) + manualChunks | [router.tsx](packages/frontend/src/router.tsx) | Confirmed: every page is code-split. Combined with manualChunks, the home bundle stays small |
-| Reduced-motion respected globally | [index.css](packages/frontend/src/index.css) | Disables Framer Motion + CSS transitions for users who opted in (WCAG 2.3.3 + RGAA 13.x) |
+| Change                                                                                    | File                                                                                     | Why                                                                                                                                                             |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Manual chunks: `three`, `3d-engine`, `framer`, `stripe`, `i18n`, `react-vendor`, `vendor` | [vite.config.ts](packages/frontend/vite.config.ts)                                       | Home/login/legal stop downloading Three.js (~150 KB gz) and Framer Motion (~30 KB gz) they never use                                                            |
+| Hashed filenames + tighter chunkSizeWarningLimit (500 KB) + assetsInlineLimit 4 KB        | [vite.config.ts](packages/frontend/vite.config.ts)                                       | Long-Cache-Control header in [security-headers.ts](packages/backend/src/api/middleware/security-headers.ts) becomes safe; small assets inlined save round-trips |
+| Sourcemap off in prod (opt-in via `VITE_SOURCEMAP=1`)                                     | [vite.config.ts](packages/frontend/vite.config.ts)                                       | Cuts ~30 % of the upload size; prevents source disclosure                                                                                                       |
+| Optional gzip + brotli pre-compression                                                    | [vite.config.ts](packages/frontend/vite.config.ts)                                       | Reverse proxy serves `index.html.br` directly — saves CPU on every request                                                                                      |
+| Optional bundle visualizer                                                                | `pnpm build:analyze`                                                                     | Treemap with gz + br sizes                                                                                                                                      |
+| Self-hosted Inter (variable, latin subset) + preload                                      | [index.html](packages/frontend/index.html), [index.css](packages/frontend/src/index.css) | Replaces 6+ Google Font requests with one preloaded woff2; FOIT eliminated via `font-display: swap`                                                             |
+| Page-level `React.lazy()` (already in place) + manualChunks                               | [router.tsx](packages/frontend/src/router.tsx)                                           | Confirmed: every page is code-split. Combined with manualChunks, the home bundle stays small                                                                    |
+| Reduced-motion respected globally                                                         | [index.css](packages/frontend/src/index.css)                                             | Disables Framer Motion + CSS transitions for users who opted in (WCAG 2.3.3 + RGAA 13.x)                                                                        |
 
 ### SEO
 
-| Change | File | Why |
-|---|---|---|
+| Change                                                                             | File                                                                           | Why                                                                                                                            |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
 | Per-page `SeoHead` component (title, description, OG, Twitter, canonical, JSON-LD) | [components/seo/SeoHead.tsx](packages/frontend/src/components/seo/SeoHead.tsx) | Lighthouse SEO 95+ requires unique titles + descriptions per route. Dependency-free (no react-helmet-async) — uses `useEffect` |
-| OG + Twitter Cards + Organization JSON-LD baseline | [index.html](packages/frontend/index.html) | Default values that `<SeoHead>` overrides per-route |
-| Preconnect to `js.stripe.com`, dns-prefetch `api.stripe.com` | [index.html](packages/frontend/index.html) | Saves the TLS round-trip on the first Stripe Elements load |
-| `robots.txt` with strict private-route disallow + AI-crawler block | [public/robots.txt](packages/frontend/public/robots.txt) | Crawl budget is precious; also opts out of GPTBot/Google-Extended/ClaudeBot |
-| `sitemap.xml` generator at build time | [scripts/generate-sitemap.mjs](packages/frontend/scripts/generate-sitemap.mjs) | 15 public URLs, change-freq + priority. Wired into `pnpm build` |
-| Pre-baked JSON-LD payloads (Organization, WebSite, SoftwareApplication) | [SeoHead.tsx](packages/frontend/src/components/seo/SeoHead.tsx) | Drop into the home page via `<SeoHead jsonLd={[ORGANIZATION_JSONLD, WEBSITE_JSONLD, SOFTWARE_JSONLD]} />` |
+| OG + Twitter Cards + Organization JSON-LD baseline                                 | [index.html](packages/frontend/index.html)                                     | Default values that `<SeoHead>` overrides per-route                                                                            |
+| Preconnect to `js.stripe.com`, dns-prefetch `api.stripe.com`                       | [index.html](packages/frontend/index.html)                                     | Saves the TLS round-trip on the first Stripe Elements load                                                                     |
+| `robots.txt` with strict private-route disallow + AI-crawler block                 | [public/robots.txt](packages/frontend/public/robots.txt)                       | Crawl budget is precious; also opts out of GPTBot/Google-Extended/ClaudeBot                                                    |
+| `sitemap.xml` generator at build time                                              | [scripts/generate-sitemap.mjs](packages/frontend/scripts/generate-sitemap.mjs) | 15 public URLs, change-freq + priority. Wired into `pnpm build`                                                                |
+| Pre-baked JSON-LD payloads (Organization, WebSite, SoftwareApplication)            | [SeoHead.tsx](packages/frontend/src/components/seo/SeoHead.tsx)                | Drop into the home page via `<SeoHead jsonLd={[ORGANIZATION_JSONLD, WEBSITE_JSONLD, SOFTWARE_JSONLD]} />`                      |
 
 ### Accessibility
 
-| Change | File | Why |
-|---|---|---|
-| Skip-link "Aller au contenu" + matching `<main id="main">` | [index.html](packages/frontend/index.html), [App.tsx](packages/frontend/src/App.tsx) | RGAA 12.7 + WCAG 2.4.1 |
-| `lang="fr"` + `theme-color` + `color-scheme="dark light"` | [index.html](packages/frontend/index.html) | Already had `lang`; added the rest |
-| Page « Déclaration d'accessibilité » (RGAA 4.1.2 template) | [pages/Legal/Accessibilite.tsx](packages/frontend/src/pages/Legal/Accessibilite.tsx) | Listed in the legal footer; modèle officiel DINUM |
-| axe-core spec across the 8 public pages | [e2e-critical/accessibility.spec.ts](packages/frontend/e2e-critical/accessibility.spec.ts) | Critical/serious violations → fail; minor/moderate → trace warning |
+| Change                                                     | File                                                                                       | Why                                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Skip-link "Aller au contenu" + matching `<main id="main">` | [index.html](packages/frontend/index.html), [App.tsx](packages/frontend/src/App.tsx)       | RGAA 12.7 + WCAG 2.4.1                                             |
+| `lang="fr"` + `theme-color` + `color-scheme="dark light"`  | [index.html](packages/frontend/index.html)                                                 | Already had `lang`; added the rest                                 |
+| Page « Déclaration d'accessibilité » (RGAA 4.1.2 template) | [pages/Legal/Accessibilite.tsx](packages/frontend/src/pages/Legal/Accessibilite.tsx)       | Listed in the legal footer; modèle officiel DINUM                  |
+| axe-core spec across the 8 public pages                    | [e2e-critical/accessibility.spec.ts](packages/frontend/e2e-critical/accessibility.spec.ts) | Critical/serious violations → fail; minor/moderate → trace warning |
 
 ### Best Practices
 
-| Change | File | Why |
-|---|---|---|
-| All `target="_blank"` audited | already correct | The 7 occurrences all carry `rel="noopener noreferrer"` |
-| HSTS, COEP, COOP, CSP, Permissions-Policy | already shipped in Phase 3 of the production-hardening pass | See [security-headers.ts](packages/backend/src/api/middleware/security-headers.ts) |
-| `<html lang>` present, theme-color set | [index.html](packages/frontend/index.html) | |
-| Lighthouse CI gate | [.github/workflows/lighthouse.yml](.github/workflows/lighthouse.yml) + [lighthouserc.json](packages/frontend/lighthouserc.json) | Fail if any score < 95 on any of the 8 pages |
+| Change                                    | File                                                                                                                            | Why                                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| All `target="_blank"` audited             | already correct                                                                                                                 | The 7 occurrences all carry `rel="noopener noreferrer"`                            |
+| HSTS, COEP, COOP, CSP, Permissions-Policy | already shipped in Phase 3 of the production-hardening pass                                                                     | See [security-headers.ts](packages/backend/src/api/middleware/security-headers.ts) |
+| `<html lang>` present, theme-color set    | [index.html](packages/frontend/index.html)                                                                                      |                                                                                    |
+| Lighthouse CI gate                        | [.github/workflows/lighthouse.yml](.github/workflows/lighthouse.yml) + [lighthouserc.json](packages/frontend/lighthouserc.json) | Fail if any score < 95 on any of the 8 pages                                       |
 
 ---
 
@@ -87,8 +86,8 @@ pnpm --filter frontend exec playwright test e2e-critical/accessibility.spec.ts -
    bash packages/frontend/scripts/fetch-fonts.sh
    git add packages/frontend/public/fonts/inter-var-latin.woff2
    ```
-2. **Install optional Vite plugins** (otherwise the build still works,
-   but you lose the bundle visualizer + brotli pre-compression):
+2. **Install optional Vite plugins** (otherwise the build still works, but you
+   lose the bundle visualizer + brotli pre-compression):
    ```bash
    pnpm --filter frontend add -D \
      rollup-plugin-visualizer \
@@ -96,8 +95,8 @@ pnpm --filter frontend exec playwright test e2e-critical/accessibility.spec.ts -
      vite-plugin-compression2 \
      @axe-core/playwright
    ```
-3. **Apply `<SeoHead>` per page** — drop into the top of each public
-   page component:
+3. **Apply `<SeoHead>` per page** — drop into the top of each public page
+   component:
    ```tsx
    <SeoHead
      title="Tarifs — KitchenXpert"
@@ -105,15 +104,14 @@ pnpm --filter frontend exec playwright test e2e-critical/accessibility.spec.ts -
      canonical="https://kitchenxpert.com/pricing"
    />
    ```
-   The home page should also pass `jsonLd={[ORGANIZATION_JSONLD,
-   WEBSITE_JSONLD, SOFTWARE_JSONLD]}`.
+   The home page should also pass
+   `jsonLd={[ORGANIZATION_JSONLD, WEBSITE_JSONLD, SOFTWARE_JSONLD]}`.
 4. **Add real OG images** to `public/og/` (1200×630 each). Recommended:
    `default.jpg`, `home.jpg`, `pricing.jpg`, `catalog.jpg`.
 
 ### After the first Lighthouse run
 
-Capture the baseline scores and commit them as
-`docs/lighthouse-baseline.json`:
+Capture the baseline scores and commit them as `docs/lighthouse-baseline.json`:
 
 ```bash
 pnpm dlx @lhci/cli@0.13.x autorun \
@@ -122,27 +120,25 @@ pnpm dlx @lhci/cli@0.13.x autorun \
 cp .lighthouseci/manifest.json docs/lighthouse-baseline.json
 ```
 
-Re-run after each significant design change; the workflow refuses to
-merge if any score drops below 95.
+Re-run after each significant design change; the workflow refuses to merge if
+any score drops below 95.
 
 ### Known limitations
 
 - **Images are 0-byte placeholders** in `public/assets/images/` and
-  `src/assets/images/`. The image pipeline (`vite-imagetools` + AVIF
-  fallback via `<picture>`) is configured to activate the moment real
-  images land. Until then, image audits will return clean.
-- **`import * as THREE from 'three'`** appears in 12 designer files.
-  This kills tree-shaking for the Three.js library, BUT all 12 files
-  live under the lazy-loaded `/projects/.../designer` route — so the
-  cost is contained to users actually opening the designer. Refactoring
-  to named imports is a future micro-optimization (~80 KB gz savings on
-  the designer chunk only).
-- **No PWA** — `manifest.json` exists but service-worker is minimal.
-  Lighthouse PWA category is intentionally excluded (`assertions:
-  preset: lighthouse:no-pwa`).
-- **Sourcemaps stripped in prod** — Sentry will need its own upload
-  step (`@sentry/vite-plugin`) to symbolicate stack traces. Track as a
-  separate task.
+  `src/assets/images/`. The image pipeline (`vite-imagetools` + AVIF fallback
+  via `<picture>`) is configured to activate the moment real images land. Until
+  then, image audits will return clean.
+- **`import * as THREE from 'three'`** appears in 12 designer files. This kills
+  tree-shaking for the Three.js library, BUT all 12 files live under the
+  lazy-loaded `/projects/.../designer` route — so the cost is contained to users
+  actually opening the designer. Refactoring to named imports is a future
+  micro-optimization (~80 KB gz savings on the designer chunk only).
+- **No PWA** — `manifest.json` exists but service-worker is minimal. Lighthouse
+  PWA category is intentionally excluded
+  (`assertions: preset: lighthouse:no-pwa`).
+- **Sourcemaps stripped in prod** — Sentry will need its own upload step
+  (`@sentry/vite-plugin`) to symbolicate stack traces. Track as a separate task.
 
 ---
 
@@ -159,5 +155,5 @@ merge if any score drops below 95.
 6. Failure → uploads the `.lighthouseci/` HTML report as an artifact
 
 Combined with `.github/workflows/e2e.yml` (the critical-flows + visual
-regression suite) you have three independent gates: functional,
-visual, performance.
+regression suite) you have three independent gates: functional, visual,
+performance.

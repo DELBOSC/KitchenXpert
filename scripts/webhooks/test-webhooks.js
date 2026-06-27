@@ -49,10 +49,7 @@ const results = {
 function generateSignature(payload, secret, timestamp = null) {
   const ts = timestamp || Math.floor(Date.now() / 1000);
   const signedPayload = `${ts}.${JSON.stringify(payload)}`;
-  const signature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
+  const signature = crypto.createHmac('sha256', secret).update(signedPayload).digest('hex');
 
   return {
     timestamp: ts,
@@ -121,7 +118,7 @@ async function testEndpointReachability() {
     const response = await sendRequest(config.targetUrl, {
       method: 'OPTIONS',
       headers: {
-        'Origin': 'http://localhost',
+        Origin: 'http://localhost',
       },
     });
 
@@ -281,8 +278,11 @@ async function testExpiredTimestamp() {
     // Should return 401 or 400 for expired timestamp
     // Note: Some implementations might accept this, so we just report
     const isRejected = [401, 400, 403].includes(response.statusCode);
-    recordTest('Expired timestamp handling', true,
-      isRejected ? 'Correctly rejected' : `Accepted (Status: ${response.statusCode})`);
+    recordTest(
+      'Expired timestamp handling',
+      true,
+      isRejected ? 'Correctly rejected' : `Accepted (Status: ${response.statusCode})`
+    );
     return true;
   } catch (error) {
     recordTest('Expired timestamp handling', false, error.message);
@@ -426,10 +426,15 @@ async function testIdempotency() {
     const response2 = await sendRequest(config.targetUrl, { method: 'POST', headers, body });
 
     // Both should succeed (or second should return 200/409 for duplicate)
-    const passed = response1.statusCode >= 200 && response1.statusCode < 300 &&
-                   (response2.statusCode >= 200 && response2.statusCode < 300 || response2.statusCode === 409);
-    recordTest('Idempotency handling', passed,
-      `First: ${response1.statusCode}, Second: ${response2.statusCode}`);
+    const passed =
+      response1.statusCode >= 200 &&
+      response1.statusCode < 300 &&
+      ((response2.statusCode >= 200 && response2.statusCode < 300) || response2.statusCode === 409);
+    recordTest(
+      'Idempotency handling',
+      passed,
+      `First: ${response1.statusCode}, Second: ${response2.statusCode}`
+    );
     return passed;
   } catch (error) {
     recordTest('Idempotency handling', false, error.message);
@@ -456,17 +461,29 @@ async function runAllTests() {
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}        KitchenXpert - Webhook Test Suite                   ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}        KitchenXpert - Webhook Test Suite                   ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
 
   await runAllTests();
 
   console.log('');
   const statusColor = results.failed === 0 ? colors.green : colors.red;
-  console.log(`${statusColor}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${statusColor}║${colors.reset}        Test Results                                        ${statusColor}║${colors.reset}`);
-  console.log(`${statusColor}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${statusColor}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${statusColor}║${colors.reset}        Test Results                                        ${statusColor}║${colors.reset}`
+  );
+  console.log(
+    `${statusColor}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  Passed: ${results.passed}`);
   console.log(`  Failed: ${results.failed}`);

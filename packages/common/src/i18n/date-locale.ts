@@ -134,11 +134,7 @@ export function formatDateTime(
  * @param locale - Optional locale override
  * @returns The formatted relative time string
  */
-export function formatRelativeTime(
-  value: number,
-  unit: RelativeTimeUnit,
-  locale?: string
-): string {
+export function formatRelativeTime(value: number, unit: RelativeTimeUnit, locale?: string): string {
   const targetLocale = locale ?? defaultLocale;
   const formatter = new Intl.RelativeTimeFormat(targetLocale, { numeric: 'auto' });
   return formatter.format(value, unit);
@@ -185,7 +181,10 @@ export function getRelativeTimeFromNow(date: Date | number | string, locale?: st
  * @param locale - Optional locale override
  * @returns Array of month names
  */
-export function getMonthNames(format: 'long' | 'short' | 'narrow' = 'long', locale?: string): string[] {
+export function getMonthNames(
+  format: 'long' | 'short' | 'narrow' = 'long',
+  locale?: string
+): string[] {
   const targetLocale = locale ?? defaultLocale;
   const formatter = new Intl.DateTimeFormat(targetLocale, { month: format });
   const months: string[] = [];
@@ -204,7 +203,10 @@ export function getMonthNames(format: 'long' | 'short' | 'narrow' = 'long', loca
  * @param locale - Optional locale override
  * @returns Array of weekday names (starting from Sunday)
  */
-export function getWeekdayNames(format: 'long' | 'short' | 'narrow' = 'long', locale?: string): string[] {
+export function getWeekdayNames(
+  format: 'long' | 'short' | 'narrow' = 'long',
+  locale?: string
+): string[] {
   const targetLocale = locale ?? defaultLocale;
   const formatter = new Intl.DateTimeFormat(targetLocale, { weekday: format });
   const weekdays: string[] = [];
@@ -228,13 +230,31 @@ export function getFirstDayOfWeek(locale?: string): number {
 
   // Common locales that start week on Monday
   const mondayStartLocales = [
-    'en-GB', 'de', 'de-DE', 'fr', 'fr-FR', 'es', 'es-ES', 'it', 'it-IT',
-    'pt', 'pt-PT', 'nl', 'nl-NL', 'pl', 'pl-PL', 'ru', 'ru-RU'
+    'en-GB',
+    'de',
+    'de-DE',
+    'fr',
+    'fr-FR',
+    'es',
+    'es-ES',
+    'it',
+    'it-IT',
+    'pt',
+    'pt-PT',
+    'nl',
+    'nl-NL',
+    'pl',
+    'pl-PL',
+    'ru',
+    'ru-RU',
   ];
 
   const baseLocale = targetLocale.split('-')[0] ?? '';
 
-  if (mondayStartLocales.includes(targetLocale) || (baseLocale && mondayStartLocales.includes(baseLocale))) {
+  if (
+    mondayStartLocales.includes(targetLocale) ||
+    (baseLocale && mondayStartLocales.includes(baseLocale))
+  ) {
     return 1; // Monday
   }
 

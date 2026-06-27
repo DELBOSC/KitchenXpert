@@ -38,12 +38,7 @@ const BASE_CABINET_TYPES = new Set<string>([
 ]);
 
 /** Types de meubles hauts */
-const WALL_CABINET_TYPES = new Set<string>([
-  'wall_cabinet',
-  'wall',
-  'upper',
-  'upper_cabinet',
-]);
+const WALL_CABINET_TYPES = new Set<string>(['wall_cabinet', 'wall', 'upper', 'upper_cabinet']);
 
 /** Tolerance de gap entre deux meubles pour les considerer adjacents (2cm) */
 const ADJACENCY_GAP = 0.02;
@@ -216,10 +211,7 @@ export class AccessoriesGenerator {
   /**
    * Extrait les meubles d'un type donne
    */
-  private extractCabinets(
-    objects: Map<string, THREE.Object3D>,
-    types: Set<string>
-  ): CabinetInfo[] {
+  private extractCabinets(objects: Map<string, THREE.Object3D>, types: Set<string>): CabinetInfo[] {
     const cabinets: CabinetInfo[] = [];
 
     for (const [id, obj] of objects) {

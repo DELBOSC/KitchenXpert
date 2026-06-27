@@ -69,7 +69,9 @@ export async function maybeScheduleReviewRequest(args: {
         where: { id: userId },
         select: { createdAt: true },
       });
-      if (!user) {return { scheduled: false, reason: 'user-missing' };}
+      if (!user) {
+        return { scheduled: false, reason: 'user-missing' };
+      }
       const ageDays = (Date.now() - user.createdAt.getTime()) / (24 * 60 * 60 * 1000);
       if (ageDays < ACTIVE_THRESHOLD_DAYS) {
         return { scheduled: false, reason: 'too-young' };
@@ -124,11 +126,11 @@ export async function markReviewRequestSent(requestId: string): Promise<void> {
 export type ReviewPlatform = 'g2' | 'capterra' | 'trustpilot' | 'avis_verifies' | 'google_business';
 
 const PLATFORM_URLS: Record<ReviewPlatform, string> = {
-  g2:               'https://www.g2.com/products/kitchenxpert/reviews',
-  capterra:         'https://www.capterra.com/p/000000/KitchenXpert/',  // ID TBD post-submission
-  trustpilot:       'https://www.trustpilot.com/evaluate/kitchenxpert.com',
-  avis_verifies:    'https://www.avis-verifies.com/avis-clients/kitchenxpert.com',
-  google_business:  'https://g.page/r/CXxxxxxxxx/review', // TBD when GMB is set up
+  g2: 'https://www.g2.com/products/kitchenxpert/reviews',
+  capterra: 'https://www.capterra.com/p/000000/KitchenXpert/', // ID TBD post-submission
+  trustpilot: 'https://www.trustpilot.com/evaluate/kitchenxpert.com',
+  avis_verifies: 'https://www.avis-verifies.com/avis-clients/kitchenxpert.com',
+  google_business: 'https://g.page/r/CXxxxxxxxx/review', // TBD when GMB is set up
 };
 
 /** Round-robin platform picker so traffic is spread across G2/Capterra/Trustpilot. */
@@ -138,17 +140,19 @@ function pickRoundRobinPlatform(requestId: string): ReviewPlatform {
   // because they're optional secondary channels.
   const pool: ReviewPlatform[] = ['g2', 'capterra', 'trustpilot'];
   let hash = 0;
-  for (let i = 0; i < requestId.length; i++) {hash = (hash * 31 + requestId.charCodeAt(i)) | 0;}
+  for (let i = 0; i < requestId.length; i++) {
+    hash = (hash * 31 + requestId.charCodeAt(i)) | 0;
+  }
   // Array length is fixed at 3 so the index is always defined.
   return pool[Math.abs(hash) % pool.length]!;
 }
 
 export interface RecordResponseArgs {
-  requestId?: string;          // optional — modal can fire without a server-side request row
+  requestId?: string; // optional — modal can fire without a server-side request row
   userId: string;
-  rating: number;              // 1–5
+  rating: number; // 1–5
   message?: string;
-  context?: string;            // route or screen where modal was shown
+  context?: string; // route or screen where modal was shown
   preferredPlatform?: ReviewPlatform;
 }
 
@@ -160,7 +164,7 @@ export interface RecordResponseResult {
 }
 
 export async function recordReviewResponse(
-  args: RecordResponseArgs,
+  args: RecordResponseArgs
 ): Promise<RecordResponseResult> {
   const { requestId, userId, rating, message, context, preferredPlatform } = args;
   const now = new Date();
@@ -209,7 +213,9 @@ export async function recordReviewResponse(
 
 /** Convenience: fetch the open (sent, not-responded) request for a user. */
 export async function getPendingRequestForUser(userId: string): Promise<{
-  id: string; trigger: string; projectId: string | null;
+  id: string;
+  trigger: string;
+  projectId: string | null;
 } | null> {
   const row = await prisma.reviewRequest.findFirst({
     where: { userId, sentAt: { not: null }, respondedAt: null },

@@ -58,14 +58,21 @@ const StockAdmin: React.FC = () => {
             credentials: 'include',
             signal: controller.signal,
           }),
-          fetch(`${API_BASE_URL}/stock/results?page=${currentPage}&limit=20${statusParam}${brandParam}`, {
-            credentials: 'include',
-            signal: controller.signal,
-          }),
+          fetch(
+            `${API_BASE_URL}/stock/results?page=${currentPage}&limit=20${statusParam}${brandParam}`,
+            {
+              credentials: 'include',
+              signal: controller.signal,
+            }
+          ),
         ]);
 
-        if (!statsRes.ok) {throw new Error(t('admin.stock.errors.fetchStats', 'Failed to load stock stats'));}
-        if (!resultsRes.ok) {throw new Error(t('admin.stock.errors.fetchResults', 'Failed to load stock results'));}
+        if (!statsRes.ok) {
+          throw new Error(t('admin.stock.errors.fetchStats', 'Failed to load stock stats'));
+        }
+        if (!resultsRes.ok) {
+          throw new Error(t('admin.stock.errors.fetchResults', 'Failed to load stock results'));
+        }
 
         const statsData = (await statsRes.json()) as StockStats | { data: StockStats };
         const resultsData = (await resultsRes.json()) as StockResult[] | { data: StockResult[] };
@@ -83,7 +90,9 @@ const StockAdmin: React.FC = () => {
           return merged.sort();
         });
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         setError(getErrorMessage(err, t('admin.stock.errors.load', 'Failed to load stock data')));
       } finally {
         setIsLoading(false);
@@ -96,7 +105,9 @@ const StockAdmin: React.FC = () => {
 
   // Auto-dismiss messages after 5 seconds
   useEffect(() => {
-    if (!message) {return;}
+    if (!message) {
+      return;
+    }
     const timer = setTimeout(() => setMessage(null), 5000);
     return () => clearTimeout(timer);
   }, [message]);
@@ -121,10 +132,19 @@ const StockAdmin: React.FC = () => {
         const body = (await res.json().catch(() => null)) as { message?: string } | null;
         throw new Error(body?.message ?? t('admin.stock.errors.checkFailed', 'Stock check failed'));
       }
-      setMessage({ type: 'success', text: t('admin.stock.success.checkAll', 'Stock check launched successfully') });
+      setMessage({
+        type: 'success',
+        text: t('admin.stock.success.checkAll', 'Stock check launched successfully'),
+      });
       setRetryCount((c) => c + 1);
     } catch (err) {
-      setMessage({ type: 'error', text: getErrorMessage(err, t('admin.stock.errors.checkUnknown', 'Unknown error during stock check')) });
+      setMessage({
+        type: 'error',
+        text: getErrorMessage(
+          err,
+          t('admin.stock.errors.checkUnknown', 'Unknown error during stock check')
+        ),
+      });
     } finally {
       setIsChecking(false);
     }
@@ -151,7 +171,9 @@ const StockAdmin: React.FC = () => {
   };
 
   const formatDate = (iso: string | null) => {
-    if (!iso) {return t('common.never', 'Never');}
+    if (!iso) {
+      return t('common.never', 'Never');
+    }
     return new Date(iso).toLocaleString(i18n.language, {
       day: '2-digit',
       month: 'short',
@@ -203,7 +225,6 @@ const StockAdmin: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* ---------- Header ---------- */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -261,7 +282,12 @@ const StockAdmin: React.FC = () => {
               className="ml-4 hover:opacity-70"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -309,7 +335,9 @@ const StockAdmin: React.FC = () => {
             >
               <option value="all">{t('admin.stock.filter.allBrands', 'All Brands')}</option>
               {brands.map((b) => (
-                <option key={b} value={b}>{b}</option>
+                <option key={b} value={b}>
+                  {b}
+                </option>
               ))}
             </select>
           </div>
@@ -330,13 +358,18 @@ const StockAdmin: React.FC = () => {
               <option value="all">{t('admin.stock.filter.all', 'All')}</option>
               <option value="in_stock">{t('admin.stock.status.inStock', 'In Stock')}</option>
               <option value="low_stock">{t('admin.stock.status.lowStock', 'Low Stock')}</option>
-              <option value="out_of_stock">{t('admin.stock.status.outOfStock', 'Out of Stock')}</option>
+              <option value="out_of_stock">
+                {t('admin.stock.status.outOfStock', 'Out of Stock')}
+              </option>
             </select>
           </div>
 
           {(filterStatus !== 'all' || filterBrand !== 'all') && (
             <button
-              onClick={() => { setFilterStatus('all'); setFilterBrand('all'); }}
+              onClick={() => {
+                setFilterStatus('all');
+                setFilterBrand('all');
+              }}
               className="px-3 py-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors font-medium"
             >
               {t('admin.stock.filter.clear', 'Clear filters')}
@@ -383,7 +416,10 @@ const StockAdmin: React.FC = () => {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {stockResults.length === 0 && !isLoading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                    <td
+                      colSpan={6}
+                      className="px-6 py-12 text-center text-gray-500 dark:text-gray-400"
+                    >
                       {t('admin.stock.table.empty', 'No stock results found.')}
                     </td>
                   </tr>
@@ -403,7 +439,9 @@ const StockAdmin: React.FC = () => {
                         {result.quantity.toLocaleString(i18n.language)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <span className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded-full ${statusBadge(result.status)}`}>
+                        <span
+                          className={`inline-block px-2.5 py-0.5 text-xs font-medium rounded-full ${statusBadge(result.status)}`}
+                        >
                           {statusLabel(result.status)}
                         </span>
                       </td>

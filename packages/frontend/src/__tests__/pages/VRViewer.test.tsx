@@ -349,9 +349,7 @@ describe('VRViewer', () => {
         expect(screen.getAllByText(/quality/i).length).toBeGreaterThan(0);
         // Quality select defaults to "high".
         const selects = screen.getAllByRole('combobox');
-        const qualitySelect = selects.find(
-          (s) => (s as HTMLSelectElement).value === 'high',
-        );
+        const qualitySelect = selects.find((s) => (s as HTMLSelectElement).value === 'high');
         expect(qualitySelect).toBeDefined();
       });
     });

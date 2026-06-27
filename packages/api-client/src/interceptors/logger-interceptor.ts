@@ -89,7 +89,10 @@ export class LoggerInterceptor {
     const sanitizedRequest = {
       ...request,
       headers: this.redactSensitiveData(request.headers || {}, this.config.redactHeaders),
-      body: this.redactSensitiveData(request.body as Record<string, unknown>, this.config.redactBody),
+      body: this.redactSensitiveData(
+        request.body as Record<string, unknown>,
+        this.config.redactBody
+      ),
     };
 
     this.log('info', `[API Request] ${request.method} ${request.url}`, sanitizedRequest);

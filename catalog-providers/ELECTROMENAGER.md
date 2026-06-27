@@ -1,12 +1,14 @@
 # 🔌 Import de Catalogues Électroménager
 
-Guide complet pour importer des catalogues d'électroménager encastrable dans KitchenXpert.
+Guide complet pour importer des catalogues d'électroménager encastrable dans
+KitchenXpert.
 
 ## 📋 Fabricants Supportés
 
 ### 🟢 Niveau 1 - Support Complet (APIs Officielles)
 
 **Bosch / Siemens** (BSH Home Appliances)
+
 - **API**: Home Connect API
 - **Gammes**: Série 2/4/6/8 (Bosch), iQ100/300/500/700 (Siemens)
 - **Connectivité**: HomeConnect WiFi
@@ -15,6 +17,7 @@ Guide complet pour importer des catalogues d'électroménager encastrable dans K
 - **Provider ID**: `bosch-api`
 
 **Miele**
+
 - **API**: Miele Professional API
 - **Points forts**: Qualité premium, garantie longue durée (jusqu'à 20 ans)
 - **Connectivité**: Miele@home, Con@ctivity
@@ -23,6 +26,7 @@ Guide complet pour importer des catalogues d'électroménager encastrable dans K
 - **Provider ID**: `miele-api`
 
 **Samsung**
+
 - **API**: SmartThings API
 - **Technologies**: Dual Cook Flex, Virtual Flame, AutoRelease
 - **Connectivité**: SmartThings WiFi
@@ -33,6 +37,7 @@ Guide complet pour importer des catalogues d'électroménager encastrable dans K
 ### 🟡 Niveau 2 - Support Expérimental
 
 **LG**
+
 - **API**: ThinQ API
 - **Technologies**: NeoChef, QuadWash, TrueSteam, Inverter Direct Drive
 - **Connectivité**: ThinQ WiFi
@@ -40,6 +45,7 @@ Guide complet pour importer des catalogues d'électroménager encastrable dans K
 - **Provider ID**: `lg-thinq`
 
 **Whirlpool** (incluant Bauknecht, KitchenAid)
+
 - **API**: Whirlpool Product API
 - **Technologies**: 6ème Sens, Supreme Clean, PowerClean Pro
 - **Produits**: Large gamme encastrable
@@ -47,6 +53,7 @@ Guide complet pour importer des catalogues d'électroménager encastrable dans K
 - **Provider ID**: `whirlpool-api`
 
 **Electrolux Group** (incluant AEG, Zanussi, Frigidaire)
+
 - **API**: Electrolux Group API
 - **Technologies AEG**: SteamBake, SoftWater, MaxiSense, Hob²Hood
 - **Technologies Electrolux**: SteamBoost, UltraFan Plus, AirDry
@@ -56,11 +63,13 @@ Guide complet pour importer des catalogues d'électroménager encastrable dans K
 ### 🔵 Niveau 3 - Import Manuel
 
 **Neff**
+
 - **Particularité**: Filiale de BSH, utiliser Home Connect API
 - **Technologies**: Slide&Hide, CircoTherm, TwistPad
 - **Template**: `appliances`
 
 **Autres fabricants**: Candy, Hotpoint, Indesit, Beko, etc.
+
 - **Import**: Via fichiers CSV/Excel fournis par le fabricant
 - **Template**: `appliances` ou `generic`
 
@@ -112,12 +121,14 @@ pnpm catalog:bulk-import --category=appliance --limit=1000
 Le template `appliances` supporte les champs spécifiques à l'électroménager:
 
 ### Champs Standards
+
 - **Identification**: model_number, ean, brand
 - **Base**: product_name, category, price
 - **Dimensions**: width, height, depth (dimensions d'encastrement/niche)
 - **Finition**: color, finish
 
 ### Champs Spécifiques Électroménager
+
 - **energyClass**: Classe énergétique (A+++, A++, A+, A-G)
 - **capacity**: Capacité (71L pour four, 14 couverts pour lave-vaisselle)
 - **power**: Puissance électrique (3650W)
@@ -125,7 +136,8 @@ Le template `appliances` supporte les champs spécifiques à l'électroménager:
 - **features**: Fonctionnalités (Pyrolyse, HomeConnect, etc.)
 - **programs**: Programmes disponibles
 - **connectivity**: WiFi, Bluetooth, HomeConnect, SmartThings, etc.
-- **installationType**: built_in (encastrable), fully_integrated (intégrable), freestanding
+- **installationType**: built_in (encastrable), fully_integrated (intégrable),
+  freestanding
 
 ### Catégories Supportées
 
@@ -154,6 +166,7 @@ HBG6764S1,Bosch,Four encastrable pyrolyse Série 8,oven,899.00,A+,59.4,59.5,54.8
 ```
 
 **Import**:
+
 ```bash
 pnpm catalog:import ./bosch-serie8.csv --template=appliances --provider-id=bosch
 ```
@@ -166,6 +179,7 @@ G7310SCIAUTODOS,Miele,Lave-vaisselle AutoDos,dishwasher,1599.00,A+++,42dB,"AutoD
 ```
 
 **Import**:
+
 ```bash
 pnpm catalog:import ./miele-autodos.csv --template=appliances
 ```
@@ -180,7 +194,7 @@ pnpm catalog:import ./miele-autodos.csv --template=appliances
       "brand": "Samsung",
       "name": "Four Dual Cook Flex",
       "category": "oven",
-      "price": 699.00,
+      "price": 699.0,
       "energy_class": "A+",
       "features": ["Dual Cook Flex", "Pyrolyse", "Vapeur"],
       "connectivity": "SmartThings WiFi"
@@ -190,6 +204,7 @@ pnpm catalog:import ./miele-autodos.csv --template=appliances
 ```
 
 **Import**:
+
 ```bash
 pnpm catalog:import ./samsung-dual-cook.json --template=appliances
 ```
@@ -199,22 +214,26 @@ pnpm catalog:import ./samsung-dual-cook.json --template=appliances
 ### 1. Créer les Comptes Développeur
 
 **Bosch/Siemens Home Connect**:
+
 1. Aller sur https://developer.home-connect.com
 2. Créer un compte développeur
 3. Créer une application
 4. Obtenir le token Bearer
 
 **Miele Professional**:
+
 1. Contacter Miele Professional
 2. Demander accès API catalogue
 3. Recevoir les credentials
 
 **Samsung SmartThings**:
+
 1. https://smartthings.developer.samsung.com
 2. Créer une application
 3. Obtenir le Personal Access Token
 
 **LG ThinQ**:
+
 1. https://www.lge.com/global/business/partnership/lg-thinq
 2. Demander accès API
 3. Configuration OAuth2
@@ -276,6 +295,7 @@ energyRating       → energy_class
 ### Colonnes Standards (si fichier fabricant)
 
 Le template `appliances` reconnaît automatiquement:
+
 - `model`, `model_number`, `reference` → model_number
 - `energy_class`, `energy_rating`, `classe_energetique` → energyClass
 - `capacity`, `volume`, `capacite` → capacity
@@ -287,6 +307,7 @@ Le template `appliances` reconnaît automatiquement:
 ### Détecter les Produits Connectés
 
 Le système détecte automatiquement les mots-clés:
+
 - WiFi, HomeConnect, SmartThings, ThinQ, Miele@home
 - App, Alexa, Google Home
 - Ces produits sont flaggés avec `connectivity` rempli
@@ -294,6 +315,7 @@ Le système détecte automatiquement les mots-clés:
 ### Classes Énergétiques
 
 Valeurs acceptées:
+
 - Anciennes: A+++, A++, A+, A, B, C, D, E, F, G
 - Nouvelles (2021+): A, B, C, D, E, F, G
 - Le système normalise automatiquement
@@ -301,6 +323,7 @@ Valeurs acceptées:
 ### Dimensions d'Encastrement
 
 Les dimensions sont les **dimensions de la niche** (espace nécessaire):
+
 - **Width**: Largeur de la niche (ex: 59.4 cm)
 - **Height**: Hauteur de la niche (ex: 59.5 cm)
 - **Depth**: Profondeur de la niche (ex: 54.8 cm)
@@ -310,6 +333,7 @@ Le système peut ajouter automatiquement des marges si configuré.
 ### Capacités
 
 Format attendu:
+
 - Fours: `71L`, `73 litres`
 - Lave-vaisselle: `14 couverts`, `14 place settings`
 - Le système extrait le nombre automatiquement
@@ -317,12 +341,14 @@ Format attendu:
 ### Puissance
 
 Format attendu:
+
 - `3650W`, `3.65kW`, `3650 Watts`
 - Le système normalise en Watts
 
 ### Niveau Sonore
 
 Format attendu:
+
 - `42dB`, `42 dB(A)`, `42 décibels`
 - Le système extrait le nombre
 
@@ -342,17 +368,20 @@ Format attendu:
 ### Produits par Gamme de Prix
 
 **Entrée de gamme** (< 500€):
+
 - Bosch Série 2
 - Electrolux Essential
 - Whirlpool Standard
 
 **Milieu de gamme** (500-1000€):
+
 - Bosch Série 4/6
 - Siemens iQ300/500
 - AEG 6000/7000
 - Samsung standard
 
 **Haut de gamme** (1000-2000€):
+
 - Bosch Série 8
 - Siemens iQ700
 - AEG 9000 Series
@@ -360,6 +389,7 @@ Format attendu:
 - Neff
 
 **Premium** (> 2000€):
+
 - Miele
 - Gaggenau
 - V-Zug
@@ -404,16 +434,19 @@ Format attendu:
 Après import de vos catalogues électroménager:
 
 1. **Vérifier les produits importés**:
+
    ```bash
    cat catalog-providers/imported-catalogs/import-*.json | jq '.metadata'
    ```
 
 2. **Synchroniser avec la base de données**:
+
    ```bash
    pnpm db:seed --source=catalog-providers/imported-catalogs/
    ```
 
 3. **Visualiser dans l'app**:
+
    ```bash
    pnpm frontend:dev
    # Naviguer vers /catalogue/electromenager
@@ -428,13 +461,14 @@ Après import de vos catalogues électroménager:
 ## 📞 Support
 
 - 📚 **Guide général**: [QUICK_START.md](QUICK_START.md)
-- 🔧 **Template**: [appliances-template.json](universal-importer/catalog-templates/appliances-template.json)
+- 🔧 **Template**:
+  [appliances-template.json](universal-importer/catalog-templates/appliances-template.json)
 - 📦 **Sample**: [appliances-sample.csv](sample-catalogs/appliances-sample.csv)
 - 💬 **Questions**: GitHub Issues
 - 📧 **Email**: dev@kitchenxpert.com
 
 ---
 
-**Mis à jour**: 2026-01-10
-**Fabricants couverts**: 10+ (Bosch, Siemens, Miele, Samsung, LG, Whirlpool, AEG, Electrolux, Neff, et plus)
-**Produits samples**: 50+ produits réels
+**Mis à jour**: 2026-01-10 **Fabricants couverts**: 10+ (Bosch, Siemens, Miele,
+Samsung, LG, Whirlpool, AEG, Electrolux, Neff, et plus) **Produits samples**:
+50+ produits réels

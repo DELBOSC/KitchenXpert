@@ -4,12 +4,7 @@
  */
 
 // Input
-export {
-  Input,
-  type InputProps,
-  type InputSize,
-  type InputState,
-} from './Input';
+export { Input, type InputProps, type InputSize, type InputState } from './Input';
 
 // Select
 export {
@@ -21,12 +16,7 @@ export {
 } from './Select';
 
 // Checkbox
-export {
-  Checkbox,
-  type CheckboxProps,
-  type CheckboxSize,
-  type CheckboxState,
-} from './Checkbox';
+export { Checkbox, type CheckboxProps, type CheckboxSize, type CheckboxState } from './Checkbox';
 
 // RadioButton
 export {

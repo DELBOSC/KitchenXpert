@@ -103,9 +103,14 @@ vi.mock('three', () => {
 });
 
 vi.mock('@kitchenxpert/3d-engine', () => ({
-  BRAND_PROFILES: { ikea_metod: { name: 'IKEA METOD', worktop: { availableThicknesses: [28, 38] } } },
+  BRAND_PROFILES: {
+    ikea_metod: { name: 'IKEA METOD', worktop: { availableThicknesses: [28, 38] } },
+  },
   getAllBrandIds: () => ['ikea_metod'],
-  getBrandProfile: () => ({ name: 'IKEA METOD', worktop: { availableThicknesses: [28, 38], surfaceY: 0.87 } }),
+  getBrandProfile: () => ({
+    name: 'IKEA METOD',
+    worktop: { availableThicknesses: [28, 38], surfaceY: 0.87 },
+  }),
   recomputeWithThickness: vi.fn((profile: unknown) => profile),
   mmToM: (mm: number) => mm / 1000,
 }));
@@ -149,29 +154,75 @@ vi.mock('../../hooks/useCollaboration', () => ({
 }));
 
 // Mock all designer sub-components to avoid complex render trees
-vi.mock('../../components/designer/Toolbar', () => ({ default: () => <div data-testid="toolbar">Toolbar</div> }));
-vi.mock('../../components/designer/CatalogPanel', () => ({ default: () => <div data-testid="catalog-panel">CatalogPanel</div> }));
-vi.mock('../../components/designer/PropertiesPanel', () => ({ default: () => <div data-testid="properties-panel">PropertiesPanel</div> }));
-vi.mock('../../components/designer/AIAssistantPanel', () => ({ default: () => <div data-testid="ai-panel">AIAssistantPanel</div> }));
-vi.mock('../../components/designer/ChatPanel', () => ({ default: () => <div data-testid="chat-panel">ChatPanel</div> }));
-vi.mock('../../components/designer/ExportPanel', () => ({ default: () => <div data-testid="export-panel">ExportPanel</div> }));
-vi.mock('../../components/designer/PricingPanel', () => ({ default: () => <div data-testid="pricing-panel">PricingPanel</div> }));
-vi.mock('../../components/designer/PlanView2DOverlay', () => ({ default: () => <div data-testid="planview-overlay">PlanView</div> }));
-vi.mock('../../components/designer/CollaboratorCursors', () => ({ default: () => <div data-testid="cursors">Cursors</div> }));
-vi.mock('../../components/designer/PresenceBar', () => ({ default: () => <div data-testid="presence-bar">PresenceBar</div> }));
-vi.mock('../../components/designer/VersionHistoryPanel', () => ({ default: () => <div data-testid="version-panel">VersionHistory</div> }));
-vi.mock('../../components/designer/KeyboardShortcutsModal', () => ({ default: () => <div data-testid="shortcuts-modal">Shortcuts</div> }));
-vi.mock('../../components/designer/ShoppingListPanel', () => ({ default: () => <div data-testid="shopping-list">ShoppingList</div> }));
-vi.mock('../../components/designer/BudgetBar', () => ({ default: () => <div data-testid="budget-bar">BudgetBar</div> }));
-vi.mock('../../components/designer/EcoScorePanel', () => ({ default: () => <div data-testid="eco-panel">EcoScore</div> }));
-vi.mock('../../components/designer/ProductPairingsPanel', () => ({ default: () => <div data-testid="pairings-panel">Pairings</div> }));
-vi.mock('../../components/designer/StockIndicator', () => ({ default: () => <div data-testid="stock-indicator">Stock</div> }));
-vi.mock('../../components/designer/DimensionWizard', () => ({ default: () => <div data-testid="dimension-wizard">DimensionWizard</div> }));
-vi.mock('../../components/designer/DesignDiffOverlay', () => ({ default: () => <div data-testid="design-diff">DesignDiff</div> }));
-vi.mock('../../components/designer/DisplacementCostOverlay', () => ({ default: () => <div data-testid="displacement-cost">DisplacementCost</div> }));
-vi.mock('../../components/designer/QuoteToPartnerModal', () => ({ default: () => <div data-testid="quote-modal">QuoteModal</div> }));
-vi.mock('../../components/designer/StyleTransferModal', () => ({ default: () => <div data-testid="style-transfer">StyleTransfer</div> }));
-vi.mock('../../components/scanner/LiDARScanner', () => ({ default: () => <div data-testid="lidar-scanner">LiDAR</div> }));
+vi.mock('../../components/designer/Toolbar', () => ({
+  default: () => <div data-testid="toolbar">Toolbar</div>,
+}));
+vi.mock('../../components/designer/CatalogPanel', () => ({
+  default: () => <div data-testid="catalog-panel">CatalogPanel</div>,
+}));
+vi.mock('../../components/designer/PropertiesPanel', () => ({
+  default: () => <div data-testid="properties-panel">PropertiesPanel</div>,
+}));
+vi.mock('../../components/designer/AIAssistantPanel', () => ({
+  default: () => <div data-testid="ai-panel">AIAssistantPanel</div>,
+}));
+vi.mock('../../components/designer/ChatPanel', () => ({
+  default: () => <div data-testid="chat-panel">ChatPanel</div>,
+}));
+vi.mock('../../components/designer/ExportPanel', () => ({
+  default: () => <div data-testid="export-panel">ExportPanel</div>,
+}));
+vi.mock('../../components/designer/PricingPanel', () => ({
+  default: () => <div data-testid="pricing-panel">PricingPanel</div>,
+}));
+vi.mock('../../components/designer/PlanView2DOverlay', () => ({
+  default: () => <div data-testid="planview-overlay">PlanView</div>,
+}));
+vi.mock('../../components/designer/CollaboratorCursors', () => ({
+  default: () => <div data-testid="cursors">Cursors</div>,
+}));
+vi.mock('../../components/designer/PresenceBar', () => ({
+  default: () => <div data-testid="presence-bar">PresenceBar</div>,
+}));
+vi.mock('../../components/designer/VersionHistoryPanel', () => ({
+  default: () => <div data-testid="version-panel">VersionHistory</div>,
+}));
+vi.mock('../../components/designer/KeyboardShortcutsModal', () => ({
+  default: () => <div data-testid="shortcuts-modal">Shortcuts</div>,
+}));
+vi.mock('../../components/designer/ShoppingListPanel', () => ({
+  default: () => <div data-testid="shopping-list">ShoppingList</div>,
+}));
+vi.mock('../../components/designer/BudgetBar', () => ({
+  default: () => <div data-testid="budget-bar">BudgetBar</div>,
+}));
+vi.mock('../../components/designer/EcoScorePanel', () => ({
+  default: () => <div data-testid="eco-panel">EcoScore</div>,
+}));
+vi.mock('../../components/designer/ProductPairingsPanel', () => ({
+  default: () => <div data-testid="pairings-panel">Pairings</div>,
+}));
+vi.mock('../../components/designer/StockIndicator', () => ({
+  default: () => <div data-testid="stock-indicator">Stock</div>,
+}));
+vi.mock('../../components/designer/DimensionWizard', () => ({
+  default: () => <div data-testid="dimension-wizard">DimensionWizard</div>,
+}));
+vi.mock('../../components/designer/DesignDiffOverlay', () => ({
+  default: () => <div data-testid="design-diff">DesignDiff</div>,
+}));
+vi.mock('../../components/designer/DisplacementCostOverlay', () => ({
+  default: () => <div data-testid="displacement-cost">DisplacementCost</div>,
+}));
+vi.mock('../../components/designer/QuoteToPartnerModal', () => ({
+  default: () => <div data-testid="quote-modal">QuoteModal</div>,
+}));
+vi.mock('../../components/designer/StyleTransferModal', () => ({
+  default: () => <div data-testid="style-transfer">StyleTransfer</div>,
+}));
+vi.mock('../../components/scanner/LiDARScanner', () => ({
+  default: () => <div data-testid="lidar-scanner">LiDAR</div>,
+}));
 
 // ---- Helpers ----
 
@@ -392,10 +443,15 @@ describe('KitchenDesignerPage - Creation Form', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)).toBeInTheDocument();
+        expect(
+          screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)
+        ).toBeInTheDocument();
       });
 
-      await user.type(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i), 'My New Kitchen');
+      await user.type(
+        screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i),
+        'My New Kitchen'
+      );
       await user.click(screen.getByText(/designer\.createAndOpen/i));
 
       await waitFor(() => {
@@ -410,10 +466,15 @@ describe('KitchenDesignerPage - Creation Form', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)).toBeInTheDocument();
+        expect(
+          screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)
+        ).toBeInTheDocument();
       });
 
-      await user.type(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i), 'My Kitchen');
+      await user.type(
+        screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i),
+        'My Kitchen'
+      );
       await user.click(screen.getByText(/designer\.createAndOpen/i));
 
       await waitFor(() => {
@@ -431,10 +492,15 @@ describe('KitchenDesignerPage - Creation Form', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)).toBeInTheDocument();
+        expect(
+          screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)
+        ).toBeInTheDocument();
       });
 
-      await user.type(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i), 'My Kitchen');
+      await user.type(
+        screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i),
+        'My Kitchen'
+      );
       await user.click(screen.getByText(/designer\.createAndOpen/i));
 
       await waitFor(() => {
@@ -452,7 +518,9 @@ describe('KitchenDesignerPage - Creation Form', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)).toBeInTheDocument();
+        expect(
+          screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)
+        ).toBeInTheDocument();
       });
 
       await user.type(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i), 'Kitchen');
@@ -473,7 +541,9 @@ describe('KitchenDesignerPage - Creation Form', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)).toBeInTheDocument();
+        expect(
+          screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i)
+        ).toBeInTheDocument();
       });
 
       await user.type(screen.getByPlaceholderText(/designer\.kitchenNamePlaceholder/i), 'Kitchen');

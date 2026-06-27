@@ -15,7 +15,12 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, ScrapedProduct, ScraperOptions } from './base-scraper.js';
 import type { BrandScrapingConfig } from '../config/brands.config.js';
 import type { CreateCabinetInput, CabinetType, CabinetCategory } from '../models/cabinet.js';
-import type { CreateFacadeInput, FacadeStyle, FacadeMaterial, FacadeFinish } from '../models/facade.js';
+import type {
+  CreateFacadeInput,
+  FacadeStyle,
+  FacadeMaterial,
+  FacadeFinish,
+} from '../models/facade.js';
 import type { CreateWorktopInput, WorktopMaterial, WorktopFinish } from '../models/worktop.js';
 import type { CreateCollectionInput } from '../models/collection.js';
 
@@ -61,7 +66,8 @@ const SELECTORS = {
   worktopDecor: '.worktop-decor, .decor-name',
 
   // Cookie banner (German/EU compliance)
-  cookieAccept: '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll, .cookie-accept, [data-accept-all], #accept-cookies',
+  cookieAccept:
+    '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll, .cookie-accept, [data-accept-all], #accept-cookies',
 
   // Pagination
   pagination: '.pagination, .pager',
@@ -72,113 +78,113 @@ const SELECTORS = {
 // Nobilia product lines and programs
 const NOBILIA_PROGRAMS = {
   // Front programs (facades)
-  'TOUCH': { style: 'flat', material: 'lacquer_matte', segment: 'premium' },
-  'RIVA': { style: 'flat', material: 'melamine', segment: 'mid' },
-  'FOCUS': { style: 'flat', material: 'lacquer_matte', segment: 'mid_premium' },
-  'FASHION': { style: 'flat', material: 'lacquer_gloss', segment: 'mid' },
-  'ARTIS': { style: 'flat', material: 'lacquer_matte', segment: 'premium' },
-  'FLASH': { style: 'handleless', material: 'lacquer_gloss', segment: 'mid_premium' },
-  'INLINE': { style: 'handleless', material: 'lacquer_matte', segment: 'premium' },
-  'FEEL': { style: 'flat', material: 'fenix', segment: 'premium' },
-  'CASCADA': { style: 'shaker', material: 'lacquer_matte', segment: 'mid_premium' },
-  'CHALET': { style: 'classic', material: 'veneer', segment: 'premium' },
-  'COTTAGE': { style: 'rustic', material: 'veneer', segment: 'mid_premium' },
-  'SPEED': { style: 'flat', material: 'melamine', segment: 'entry_mid' },
-  'STRUCTURA': { style: 'flat', material: 'melamine', segment: 'mid' },
-  'LASER': { style: 'flat', material: 'lacquer_matte', segment: 'mid_premium' },
-  'LINA': { style: 'handleless', material: 'lacquer_matte', segment: 'mid_premium' },
-  'SENSO': { style: 'handleless', material: 'lacquer_matte', segment: 'premium' },
-  'EASYTOUCH': { style: 'flat', material: 'lacquer_matte', segment: 'mid' },
-  'PURA': { style: 'handleless', material: 'lacquer_matte', segment: 'premium' },
-  'NATURA': { style: 'classic', material: 'veneer', segment: 'premium' },
-  'STONE': { style: 'flat', material: 'ceramic', segment: 'luxury' },
+  TOUCH: { style: 'flat', material: 'lacquer_matte', segment: 'premium' },
+  RIVA: { style: 'flat', material: 'melamine', segment: 'mid' },
+  FOCUS: { style: 'flat', material: 'lacquer_matte', segment: 'mid_premium' },
+  FASHION: { style: 'flat', material: 'lacquer_gloss', segment: 'mid' },
+  ARTIS: { style: 'flat', material: 'lacquer_matte', segment: 'premium' },
+  FLASH: { style: 'handleless', material: 'lacquer_gloss', segment: 'mid_premium' },
+  INLINE: { style: 'handleless', material: 'lacquer_matte', segment: 'premium' },
+  FEEL: { style: 'flat', material: 'fenix', segment: 'premium' },
+  CASCADA: { style: 'shaker', material: 'lacquer_matte', segment: 'mid_premium' },
+  CHALET: { style: 'classic', material: 'veneer', segment: 'premium' },
+  COTTAGE: { style: 'rustic', material: 'veneer', segment: 'mid_premium' },
+  SPEED: { style: 'flat', material: 'melamine', segment: 'entry_mid' },
+  STRUCTURA: { style: 'flat', material: 'melamine', segment: 'mid' },
+  LASER: { style: 'flat', material: 'lacquer_matte', segment: 'mid_premium' },
+  LINA: { style: 'handleless', material: 'lacquer_matte', segment: 'mid_premium' },
+  SENSO: { style: 'handleless', material: 'lacquer_matte', segment: 'premium' },
+  EASYTOUCH: { style: 'flat', material: 'lacquer_matte', segment: 'mid' },
+  PURA: { style: 'handleless', material: 'lacquer_matte', segment: 'premium' },
+  NATURA: { style: 'classic', material: 'veneer', segment: 'premium' },
+  STONE: { style: 'flat', material: 'ceramic', segment: 'luxury' },
 };
 
 // Cabinet type mappings (German/French)
 const CABINET_TYPE_KEYWORDS: Record<string, CabinetType> = {
   // German terms
-  'unterschrank': 'base_standard',
-  'spülenschrank': 'base_sink',
-  'kochfeldunterschrank': 'base_hob',
-  'schubkastenschrank': 'base_drawer',
-  'eckunterschrank': 'base_corner',
-  'auszugsschrank': 'base_pull_out',
-  'abfallschrank': 'base_trash',
-  'oberschrank': 'wall_standard',
-  'glashängeschrank': 'wall_glass',
-  'klappenschrank': 'wall_lift_up',
-  'dunstabzugsschrank': 'wall_extractor',
-  'hochschrank': 'tall_pantry',
-  'gerätehochschrank': 'tall_oven',
-  'kühlschrank': 'tall_fridge',
+  unterschrank: 'base_standard',
+  spülenschrank: 'base_sink',
+  kochfeldunterschrank: 'base_hob',
+  schubkastenschrank: 'base_drawer',
+  eckunterschrank: 'base_corner',
+  auszugsschrank: 'base_pull_out',
+  abfallschrank: 'base_trash',
+  oberschrank: 'wall_standard',
+  glashängeschrank: 'wall_glass',
+  klappenschrank: 'wall_lift_up',
+  dunstabzugsschrank: 'wall_extractor',
+  hochschrank: 'tall_pantry',
+  gerätehochschrank: 'tall_oven',
+  kühlschrank: 'tall_fridge',
 
   // French terms
   'meuble bas': 'base_standard',
   'sous-évier': 'base_sink',
   'sous-plaque': 'base_hob',
-  'tiroirs': 'base_drawer',
+  tiroirs: 'base_drawer',
   'angle bas': 'base_corner',
-  'coulissant': 'base_pull_out',
+  coulissant: 'base_pull_out',
   'meuble haut': 'wall_standard',
-  'vitré': 'wall_glass',
-  'relevable': 'wall_lift_up',
-  'hotte': 'wall_extractor',
-  'colonne': 'tall_pantry',
-  'four': 'tall_oven',
-  'réfrigérateur': 'tall_fridge',
+  vitré: 'wall_glass',
+  relevable: 'wall_lift_up',
+  hotte: 'wall_extractor',
+  colonne: 'tall_pantry',
+  four: 'tall_oven',
+  réfrigérateur: 'tall_fridge',
 };
 
 const FACADE_MATERIAL_KEYWORDS: Record<string, FacadeMaterial> = {
   // German
-  'lack': 'lacquer_matte',
-  'hochglanz': 'lacquer_gloss',
-  'matt': 'lacquer_matte',
-  'melamin': 'melamine',
-  'schichtstoff': 'laminate',
-  'echtholz': 'solid_wood',
-  'furnier': 'veneer',
-  'glas': 'glass',
-  'keramik': 'ceramic',
-  'fenix': 'fenix',
-  'acryl': 'acrylic',
+  lack: 'lacquer_matte',
+  hochglanz: 'lacquer_gloss',
+  matt: 'lacquer_matte',
+  melamin: 'melamine',
+  schichtstoff: 'laminate',
+  echtholz: 'solid_wood',
+  furnier: 'veneer',
+  glas: 'glass',
+  keramik: 'ceramic',
+  fenix: 'fenix',
+  acryl: 'acrylic',
 
   // French
-  'laqué': 'lacquer_matte',
-  'brillant': 'lacquer_gloss',
-  'mélaminé': 'melamine',
-  'stratifié': 'laminate',
+  laqué: 'lacquer_matte',
+  brillant: 'lacquer_gloss',
+  mélaminé: 'melamine',
+  stratifié: 'laminate',
   'bois massif': 'solid_wood',
-  'placage': 'veneer',
-  'verre': 'glass',
-  'céramique': 'ceramic',
+  placage: 'veneer',
+  verre: 'glass',
+  céramique: 'ceramic',
 };
 
 const WORKTOP_MATERIAL_KEYWORDS: Record<string, WorktopMaterial> = {
   // German
-  'laminat': 'laminate',
-  'schichtstoff': 'laminate',
-  'massivholz': 'wood_solid',
-  'eiche': 'wood_solid',
-  'quarz': 'quartz',
-  'silestone': 'quartz',
-  'granit': 'granite',
-  'marmor': 'marble',
-  'keramik': 'ceramic',
-  'dekton': 'compact',
-  'edelstahl': 'stainless',
-  'beton': 'concrete',
+  laminat: 'laminate',
+  schichtstoff: 'laminate',
+  massivholz: 'wood_solid',
+  eiche: 'wood_solid',
+  quarz: 'quartz',
+  silestone: 'quartz',
+  granit: 'granite',
+  marmor: 'marble',
+  keramik: 'ceramic',
+  dekton: 'compact',
+  edelstahl: 'stainless',
+  beton: 'concrete',
 
   // French
-  'stratifié': 'laminate',
+  stratifié: 'laminate',
   'bois massif': 'wood_solid',
-  'chêne': 'wood_solid',
-  'quartz': 'quartz',
-  'granite': 'granite',
-  'marbre': 'marble',
-  'céramique': 'ceramic',
-  'compact': 'compact',
-  'inox': 'stainless',
-  'béton': 'concrete',
+  chêne: 'wood_solid',
+  quartz: 'quartz',
+  granite: 'granite',
+  marbre: 'marble',
+  céramique: 'ceramic',
+  compact: 'compact',
+  inox: 'stainless',
+  béton: 'concrete',
 };
 
 export class NobiliaScraper extends BaseScraper {
@@ -222,7 +228,9 @@ export class NobiliaScraper extends BaseScraper {
           });
 
           // Look for kitchen model links
-          $('a[href*="/cuisines/"], a[href*="/kuechen/"], a[href*="/fronts/"], a[href*="/fronten/"]').each((_: number, el: cheerio.Element) => {
+          $(
+            'a[href*="/cuisines/"], a[href*="/kuechen/"], a[href*="/fronts/"], a[href*="/fronten/"]'
+          ).each((_: number, el: cheerio.Element) => {
             const href = $(el).attr('href');
             if (href && !href.includes('#') && !href.includes('javascript')) {
               const fullUrl = this.resolveUrl(href);
@@ -277,15 +285,17 @@ export class NobiliaScraper extends BaseScraper {
       });
 
       // Look for specific product patterns
-      $('a[href*="/detail/"], a[href*="/produkt/"], a[href*="/product/"]').each((_: number, el: cheerio.Element) => {
-        const href = $(el).attr('href');
-        if (href) {
-          const fullUrl = this.resolveUrl(href);
-          if (!urls.includes(fullUrl)) {
-            urls.push(fullUrl);
+      $('a[href*="/detail/"], a[href*="/produkt/"], a[href*="/product/"]').each(
+        (_: number, el: cheerio.Element) => {
+          const href = $(el).attr('href');
+          if (href) {
+            const fullUrl = this.resolveUrl(href);
+            if (!urls.includes(fullUrl)) {
+              urls.push(fullUrl);
+            }
           }
         }
-      });
+      );
 
       // Handle pagination
       if (!this.options.testMode) {
@@ -336,13 +346,15 @@ export class NobiliaScraper extends BaseScraper {
       const html = await this.getPageContent();
       const $ = this.parseHtml(html);
 
-      const name = this.extractText($(SELECTORS.collectionTitle)) ||
-                   this.extractProgramFromUrl(url) ||
-                   'Nobilia Kitchen';
+      const name =
+        this.extractText($(SELECTORS.collectionTitle)) ||
+        this.extractProgramFromUrl(url) ||
+        'Nobilia Kitchen';
       const slug = this.slugify(name);
 
-      const description = this.extractText($(SELECTORS.collectionDescription)) ||
-                         $('meta[name="description"]').attr('content');
+      const description =
+        this.extractText($(SELECTORS.collectionDescription)) ||
+        $('meta[name="description"]').attr('content');
 
       const images: string[] = [];
       $(SELECTORS.collectionImage).each((_: number, el: cheerio.Element) => {
@@ -354,7 +366,9 @@ export class NobiliaScraper extends BaseScraper {
 
       // Detect style from program name
       const program = this.extractProgramFromUrl(url);
-      const programInfo = program ? NOBILIA_PROGRAMS[program.toUpperCase() as keyof typeof NOBILIA_PROGRAMS] : undefined;
+      const programInfo = program
+        ? NOBILIA_PROGRAMS[program.toUpperCase() as keyof typeof NOBILIA_PROGRAMS]
+        : undefined;
 
       return {
         brandId: this.brandId,
@@ -418,16 +432,21 @@ export class NobiliaScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) ||
-                     this.generateReference(url, 'NOB');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'NOB');
     const description = this.extractText($(SELECTORS.productDetailDescription));
 
     // Try to identify Nobilia program
     const program = this.extractProgramFromUrl(url) || this.detectProgramFromName(name);
-    const programInfo = program ? NOBILIA_PROGRAMS[program.toUpperCase() as keyof typeof NOBILIA_PROGRAMS] : undefined;
+    const programInfo = program
+      ? NOBILIA_PROGRAMS[program.toUpperCase() as keyof typeof NOBILIA_PROGRAMS]
+      : undefined;
 
-    const style = programInfo?.style as FacadeStyle || this.detectFacadeStyle(name + ' ' + description);
-    const material = programInfo?.material as FacadeMaterial || this.detectFacadeMaterial(name + ' ' + description);
+    const style =
+      (programInfo?.style as FacadeStyle) || this.detectFacadeStyle(name + ' ' + description);
+    const material =
+      (programInfo?.material as FacadeMaterial) ||
+      this.detectFacadeMaterial(name + ' ' + description);
 
     // Extract images
     const images: string[] = [];
@@ -440,27 +459,31 @@ export class NobiliaScraper extends BaseScraper {
 
     // Extract colors/decors
     const colors: Array<{ name: string; code?: string; image?: string }> = [];
-    $(SELECTORS.frontColors).find('.color-item, .decor-item').each((_: number, el: cheerio.Element) => {
-      const colorName = $(el).attr('title') || $(el).find('.name').text().trim();
-      const colorCode = $(el).attr('data-code') || $(el).find('.code').text().trim();
-      const colorImage = $(el).find('img').attr('src');
-      if (colorName) {
-        colors.push({
-          name: colorName,
-          code: colorCode || undefined,
-          image: colorImage ? this.resolveUrl(colorImage) : undefined,
-        });
-      }
-    });
+    $(SELECTORS.frontColors)
+      .find('.color-item, .decor-item')
+      .each((_: number, el: cheerio.Element) => {
+        const colorName = $(el).attr('title') || $(el).find('.name').text().trim();
+        const colorCode = $(el).attr('data-code') || $(el).find('.code').text().trim();
+        const colorImage = $(el).find('img').attr('src');
+        if (colorName) {
+          colors.push({
+            name: colorName,
+            code: colorCode || undefined,
+            image: colorImage ? this.resolveUrl(colorImage) : undefined,
+          });
+        }
+      });
 
     // Extract features
     const features: string[] = [];
-    $(SELECTORS.productDetailFeatures).find('li, .feature').each((_: number, el: cheerio.Element) => {
-      const feature = $(el).text().trim();
-      if (feature) {
-        features.push(feature);
-      }
-    });
+    $(SELECTORS.productDetailFeatures)
+      .find('li, .feature')
+      .each((_: number, el: cheerio.Element) => {
+        const feature = $(el).text().trim();
+        if (feature) {
+          features.push(feature);
+        }
+      });
 
     const facade: CreateFacadeInput = {
       brandId: this.brandId,
@@ -488,8 +511,8 @@ export class NobiliaScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) ||
-                     this.generateReference(url, 'NOB-C');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'NOB-C');
     const description = this.extractText($(SELECTORS.productDetailDescription));
     const dimensionsStr = this.extractText($(SELECTORS.productDetailDimensions));
 
@@ -540,8 +563,8 @@ export class NobiliaScraper extends BaseScraper {
     url: string,
     name: string
   ): ScrapedProduct {
-    const reference = this.extractText($(SELECTORS.productDetailRef)) ||
-                     this.generateReference(url, 'NOB-W');
+    const reference =
+      this.extractText($(SELECTORS.productDetailRef)) || this.generateReference(url, 'NOB-W');
     const description = this.extractText($(SELECTORS.productDetailDescription));
 
     const material = this.detectWorktopMaterial(name + ' ' + description);
@@ -620,16 +643,28 @@ export class NobiliaScraper extends BaseScraper {
   private detectProductType(url: string, name: string, html: string): string {
     const combined = (url + ' ' + name + ' ' + html).toLowerCase();
 
-    if (combined.includes('arbeitsplat') || combined.includes('worktop') ||
-        combined.includes('plan-de-travail') || combined.includes('plan de travail')) {
+    if (
+      combined.includes('arbeitsplat') ||
+      combined.includes('worktop') ||
+      combined.includes('plan-de-travail') ||
+      combined.includes('plan de travail')
+    ) {
       return 'worktop';
     }
-    if (combined.includes('front') || combined.includes('facade') ||
-        combined.includes('tür') || combined.includes('porte')) {
+    if (
+      combined.includes('front') ||
+      combined.includes('facade') ||
+      combined.includes('tür') ||
+      combined.includes('porte')
+    ) {
       return 'facade';
     }
-    if (combined.includes('schrank') || combined.includes('meuble') ||
-        combined.includes('caisson') || combined.includes('cabinet')) {
+    if (
+      combined.includes('schrank') ||
+      combined.includes('meuble') ||
+      combined.includes('caisson') ||
+      combined.includes('cabinet')
+    ) {
       return 'cabinet';
     }
 
@@ -661,11 +696,20 @@ export class NobiliaScraper extends BaseScraper {
   private detectFacadeStyle(text: string): FacadeStyle {
     const lower = text.toLowerCase();
 
-    if (lower.includes('grifflos') || lower.includes('handleless') || lower.includes('sans poignée')) return 'handleless';
-    if (lower.includes('modern') || lower.includes('glatt') || lower.includes('lisse')) return 'flat';
-    if (lower.includes('rahmen') || lower.includes('shaker') || lower.includes('cadre')) return 'shaker';
-    if (lower.includes('klassisch') || lower.includes('classic') || lower.includes('traditionnel')) return 'classic';
-    if (lower.includes('landhaus') || lower.includes('rustic') || lower.includes('campagne')) return 'rustic';
+    if (
+      lower.includes('grifflos') ||
+      lower.includes('handleless') ||
+      lower.includes('sans poignée')
+    )
+      return 'handleless';
+    if (lower.includes('modern') || lower.includes('glatt') || lower.includes('lisse'))
+      return 'flat';
+    if (lower.includes('rahmen') || lower.includes('shaker') || lower.includes('cadre'))
+      return 'shaker';
+    if (lower.includes('klassisch') || lower.includes('classic') || lower.includes('traditionnel'))
+      return 'classic';
+    if (lower.includes('landhaus') || lower.includes('rustic') || lower.includes('campagne'))
+      return 'rustic';
 
     return 'flat';
   }
@@ -687,7 +731,8 @@ export class NobiliaScraper extends BaseScraper {
     const lower = text.toLowerCase();
 
     if (lower.includes('matt') || lower.includes('mat')) finishes.push('matte');
-    if (lower.includes('hochglanz') || lower.includes('brillant') || lower.includes('gloss')) finishes.push('gloss');
+    if (lower.includes('hochglanz') || lower.includes('brillant') || lower.includes('gloss'))
+      finishes.push('gloss');
     if (lower.includes('satin') || lower.includes('satiné')) finishes.push('satin');
     if (lower.includes('struktur') || lower.includes('texture')) finishes.push('textured');
     if (lower.includes('soft') || lower.includes('velvet')) finishes.push('soft_touch');
@@ -711,9 +756,11 @@ export class NobiliaScraper extends BaseScraper {
     const lower = text.toLowerCase();
 
     if (lower.includes('matt') || lower.includes('mat')) return 'matte';
-    if (lower.includes('glanz') || lower.includes('brillant') || lower.includes('poliert')) return 'polished';
+    if (lower.includes('glanz') || lower.includes('brillant') || lower.includes('poliert'))
+      return 'polished';
     if (lower.includes('satin') || lower.includes('satiné')) return 'satin';
-    if (lower.includes('struktur') || lower.includes('gebürstet') || lower.includes('brossé')) return 'brushed';
+    if (lower.includes('struktur') || lower.includes('gebürstet') || lower.includes('brossé'))
+      return 'brushed';
     if (lower.includes('pore') || lower.includes('texture')) return 'textured';
 
     return 'matte';
@@ -722,12 +769,29 @@ export class NobiliaScraper extends BaseScraper {
   private detectStyle(text: string): string | undefined {
     const lower = text.toLowerCase();
 
-    if (lower.includes('modern') || lower.includes('contemporain') || lower.includes('zeitgenössisch')) return 'modern';
-    if (lower.includes('classic') || lower.includes('classique') || lower.includes('klassisch')) return 'classic';
-    if (lower.includes('rustic') || lower.includes('rustique') || lower.includes('landhaus')) return 'rustic';
-    if (lower.includes('minimalist') || lower.includes('minimaliste') || lower.includes('puristisch')) return 'minimalist';
+    if (
+      lower.includes('modern') ||
+      lower.includes('contemporain') ||
+      lower.includes('zeitgenössisch')
+    )
+      return 'modern';
+    if (lower.includes('classic') || lower.includes('classique') || lower.includes('klassisch'))
+      return 'classic';
+    if (lower.includes('rustic') || lower.includes('rustique') || lower.includes('landhaus'))
+      return 'rustic';
+    if (
+      lower.includes('minimalist') ||
+      lower.includes('minimaliste') ||
+      lower.includes('puristisch')
+    )
+      return 'minimalist';
     if (lower.includes('industrial') || lower.includes('industriel')) return 'industrial';
-    if (lower.includes('scandinavian') || lower.includes('scandinave') || lower.includes('skandinavisch')) return 'scandinavian';
+    if (
+      lower.includes('scandinavian') ||
+      lower.includes('scandinave') ||
+      lower.includes('skandinavisch')
+    )
+      return 'scandinavian';
 
     return 'modern'; // Default for Nobilia
   }
@@ -735,28 +799,46 @@ export class NobiliaScraper extends BaseScraper {
   private parseSpecifications($: ReturnType<typeof this.parseHtml>): Record<string, any> {
     const specs: Record<string, any> = {};
 
-    $(SELECTORS.productDetailSpecs).find('tr, .spec-row, .spec-item').each((_: number, row: cheerio.Element) => {
-      const $row = $(row);
-      const label = $row.find('th, .label, dt').text().toLowerCase().trim();
-      const value = $row.find('td, .value, dd').text().trim();
+    $(SELECTORS.productDetailSpecs)
+      .find('tr, .spec-row, .spec-item')
+      .each((_: number, row: cheerio.Element) => {
+        const $row = $(row);
+        const label = $row.find('th, .label, dt').text().toLowerCase().trim();
+        const value = $row.find('td, .value, dd').text().trim();
 
-      if (label && value) {
-        // German terms
-        if (label.includes('breite') || label.includes('largeur') || label.includes('width')) {
-          specs.width = this.parseNumber(value);
-        } else if (label.includes('höhe') || label.includes('hauteur') || label.includes('height')) {
-          specs.height = this.parseNumber(value);
-        } else if (label.includes('tiefe') || label.includes('profondeur') || label.includes('depth')) {
-          specs.depth = this.parseNumber(value);
-        } else if (label.includes('tür') || label.includes('porte') || label.includes('door')) {
-          specs.doors = this.parseNumber(value);
-        } else if (label.includes('schub') || label.includes('tiroir') || label.includes('drawer')) {
-          specs.drawers = this.parseNumber(value);
-        } else if (label.includes('boden') || label.includes('étagère') || label.includes('shelf')) {
-          specs.shelves = this.parseNumber(value);
+        if (label && value) {
+          // German terms
+          if (label.includes('breite') || label.includes('largeur') || label.includes('width')) {
+            specs.width = this.parseNumber(value);
+          } else if (
+            label.includes('höhe') ||
+            label.includes('hauteur') ||
+            label.includes('height')
+          ) {
+            specs.height = this.parseNumber(value);
+          } else if (
+            label.includes('tiefe') ||
+            label.includes('profondeur') ||
+            label.includes('depth')
+          ) {
+            specs.depth = this.parseNumber(value);
+          } else if (label.includes('tür') || label.includes('porte') || label.includes('door')) {
+            specs.doors = this.parseNumber(value);
+          } else if (
+            label.includes('schub') ||
+            label.includes('tiroir') ||
+            label.includes('drawer')
+          ) {
+            specs.drawers = this.parseNumber(value);
+          } else if (
+            label.includes('boden') ||
+            label.includes('étagère') ||
+            label.includes('shelf')
+          ) {
+            specs.shelves = this.parseNumber(value);
+          }
         }
-      }
-    });
+      });
 
     return specs;
   }
@@ -773,11 +855,16 @@ export class NobiliaScraper extends BaseScraper {
     const tags: string[] = [category, type.replace('_', ' '), 'nobilia', 'german', 'premium'];
 
     const lower = name.toLowerCase();
-    if (lower.includes('weiß') || lower.includes('blanc') || lower.includes('white')) tags.push('white');
-    if (lower.includes('schwarz') || lower.includes('noir') || lower.includes('black')) tags.push('black');
-    if (lower.includes('grau') || lower.includes('gris') || lower.includes('grey')) tags.push('grey');
-    if (lower.includes('holz') || lower.includes('bois') || lower.includes('wood')) tags.push('wood');
-    if (lower.includes('eiche') || lower.includes('chêne') || lower.includes('oak')) tags.push('oak');
+    if (lower.includes('weiß') || lower.includes('blanc') || lower.includes('white'))
+      tags.push('white');
+    if (lower.includes('schwarz') || lower.includes('noir') || lower.includes('black'))
+      tags.push('black');
+    if (lower.includes('grau') || lower.includes('gris') || lower.includes('grey'))
+      tags.push('grey');
+    if (lower.includes('holz') || lower.includes('bois') || lower.includes('wood'))
+      tags.push('wood');
+    if (lower.includes('eiche') || lower.includes('chêne') || lower.includes('oak'))
+      tags.push('oak');
 
     return [...new Set(tags)];
   }

@@ -24,7 +24,10 @@ export type IngestionFetcher = JsonFetcher & HtmlFetcher;
 /** Options par run, transmises à la Strategy (superset des options par marque). */
 export type IngestionOptions = EprelStrategyOptions & CastoramaStrategyOptions;
 
-const FACTORIES: Record<BrandId, (fetcher: IngestionFetcher, opts: IngestionOptions) => IngestionStrategy> = {
+const FACTORIES: Record<
+  BrandId,
+  (fetcher: IngestionFetcher, opts: IngestionOptions) => IngestionStrategy
+> = {
   ikea: (f) => new IkeaStrategy(f),
   lapeyre: (f) => new LapeyreStrategy(f),
   eprel: (f, o) => new EprelApplianceStrategy(f, o),
@@ -52,7 +55,7 @@ export class IngestionOrchestrator {
   strategyFor(brand: string, options: IngestionOptions = {}): IngestionStrategy {
     if (!isSupportedBrand(brand)) {
       throw new Error(
-        `Unknown ingestion brand: "${brand}". Supported: ${SUPPORTED_BRANDS.join(', ')}`,
+        `Unknown ingestion brand: "${brand}". Supported: ${SUPPORTED_BRANDS.join(', ')}`
       );
     }
     return FACTORIES[brand](this.fetcher, options);

@@ -28,7 +28,13 @@ interface PageHeaderProps {
   className?: string;
 }
 
-export function PageHeader({ title, description, actions, breadcrumb, className }: PageHeaderProps): React.ReactElement {
+export function PageHeader({
+  title,
+  description,
+  actions,
+  breadcrumb,
+  className,
+}: PageHeaderProps): React.ReactElement {
   return (
     <header className={cn('mb-10', className)}>
       {breadcrumb && <div className="mb-3 text-sm text-white/50">{breadcrumb}</div>}

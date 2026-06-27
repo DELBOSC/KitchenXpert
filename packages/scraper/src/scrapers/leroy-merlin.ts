@@ -115,14 +115,7 @@ const KITCHEN_CATEGORIES = {
 };
 
 // Leroy Merlin kitchen collections/brands
-const LM_KITCHEN_BRANDS = [
-  'DELINIA',
-  'DELINIA ID',
-  'GOODHOME',
-  'CARAWAY',
-  'PELIPAL',
-  'PRAGMA',
-];
+const LM_KITCHEN_BRANDS = ['DELINIA', 'DELINIA ID', 'GOODHOME', 'CARAWAY', 'PELIPAL', 'PRAGMA'];
 
 // Product selectors
 const SELECTORS = {
@@ -324,8 +317,8 @@ export class LeroyMerlinScraper extends BaseScraper {
       const pathMatch = url.match(/\/c\/([^\/\?]+)/);
       const slug = pathMatch?.[1] ?? this.slugify(name);
 
-      const bannerImage = $('.category-banner img').attr('src') ||
-                         $('header img').first().attr('src');
+      const bannerImage =
+        $('.category-banner img').attr('src') || $('header img').first().attr('src');
 
       return {
         brandId: this.config.id,
@@ -366,15 +359,15 @@ export class LeroyMerlinScraper extends BaseScraper {
     });
 
     // Extract from page
-    const name = (jsonData?.name as string) ||
-                 $(SELECTORS.title).text().trim() ||
-                 $('h1').first().text().trim();
+    const name =
+      (jsonData?.name as string) ||
+      $(SELECTORS.title).text().trim() ||
+      $('h1').first().text().trim();
 
-    const reference = $(SELECTORS.reference).text().trim().replace(/[^\d]/g, '') ||
-                     (jsonData?.sku as string);
+    const reference =
+      $(SELECTORS.reference).text().trim().replace(/[^\d]/g, '') || (jsonData?.sku as string);
 
-    const description = $(SELECTORS.description).text().trim() ||
-                       (jsonData?.description as string);
+    const description = $(SELECTORS.description).text().trim() || (jsonData?.description as string);
 
     // Price extraction
     const priceText = $(SELECTORS.price).text().trim();
@@ -453,7 +446,13 @@ export class LeroyMerlinScraper extends BaseScraper {
     const url = (data.url || '').toLowerCase();
     for (const [pattern, type] of Object.entries(KITCHEN_CATEGORIES)) {
       if (url.includes(pattern)) {
-        if (type === 'base' || type === 'wall' || type === 'tall' || type === 'corner' || type === 'sink') {
+        if (
+          type === 'base' ||
+          type === 'wall' ||
+          type === 'tall' ||
+          type === 'corner' ||
+          type === 'sink'
+        ) {
           return 'cabinet';
         }
         return type;
@@ -465,25 +464,39 @@ export class LeroyMerlinScraper extends BaseScraper {
       return 'worktop';
     }
 
-    if (combined.includes('façade') || combined.includes('porte de cuisine') ||
-        combined.includes('facade')) {
+    if (
+      combined.includes('façade') ||
+      combined.includes('porte de cuisine') ||
+      combined.includes('facade')
+    ) {
       return 'facade';
     }
 
-    if (combined.includes('four') || combined.includes('hotte') ||
-        combined.includes('plaque') || combined.includes('réfrigérateur') ||
-        combined.includes('lave-vaisselle') || combined.includes('évier') ||
-        combined.includes('robinet')) {
+    if (
+      combined.includes('four') ||
+      combined.includes('hotte') ||
+      combined.includes('plaque') ||
+      combined.includes('réfrigérateur') ||
+      combined.includes('lave-vaisselle') ||
+      combined.includes('évier') ||
+      combined.includes('robinet')
+    ) {
       return 'appliance';
     }
 
-    if (combined.includes('meuble') || combined.includes('colonne') ||
-        combined.includes('caisson')) {
+    if (
+      combined.includes('meuble') ||
+      combined.includes('colonne') ||
+      combined.includes('caisson')
+    ) {
       return 'cabinet';
     }
 
-    if (combined.includes('accessoire') || combined.includes('rangement') ||
-        combined.includes('éclairage')) {
+    if (
+      combined.includes('accessoire') ||
+      combined.includes('rangement') ||
+      combined.includes('éclairage')
+    ) {
       return 'accessory';
     }
 
@@ -508,9 +521,12 @@ export class LeroyMerlinScraper extends BaseScraper {
       width: (data.dimensions as Record<string, number> | undefined)?.width || 600,
       height: (data.dimensions as Record<string, number> | undefined)?.height || 720,
       depth: (data.dimensions as Record<string, number> | undefined)?.depth || 560,
-      doors: this.extractNumber((data.attributes as Record<string, string>)?.['nombre_portes']) || 0,
-      drawers: this.extractNumber((data.attributes as Record<string, string>)?.['nombre_tiroirs']) || 0,
-      shelves: this.extractNumber((data.attributes as Record<string, string>)?.['nombre_etageres']) || 1,
+      doors:
+        this.extractNumber((data.attributes as Record<string, string>)?.['nombre_portes']) || 0,
+      drawers:
+        this.extractNumber((data.attributes as Record<string, string>)?.['nombre_tiroirs']) || 0,
+      shelves:
+        this.extractNumber((data.attributes as Record<string, string>)?.['nombre_etageres']) || 1,
       priceTTC: data.price as number | undefined,
       url,
     };
@@ -576,10 +592,21 @@ export class LeroyMerlinScraper extends BaseScraper {
       width: dimensions?.width || 600,
       height: dimensions?.height || 600,
       depth: dimensions?.depth || 600,
-      energyClass: attributes?.['classe_energetique'] as 'A+++' | 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | undefined,
+      energyClass: attributes?.['classe_energetique'] as
+        | 'A+++'
+        | 'A++'
+        | 'A+'
+        | 'A'
+        | 'B'
+        | 'C'
+        | 'D'
+        | 'E'
+        | 'F'
+        | 'G'
+        | undefined,
       power: this.extractNumber(attributes?.['puissance']),
-      capacity: this.extractNumber(attributes?.['volume']) ||
-                   this.extractNumber(attributes?.['capacite']),
+      capacity:
+        this.extractNumber(attributes?.['volume']) || this.extractNumber(attributes?.['capacite']),
       noiseLevel: this.extractNumber(attributes?.['niveau_sonore']),
       priceTTC: data.price as number | undefined,
       url,
@@ -629,7 +656,11 @@ export class LeroyMerlinScraper extends BaseScraper {
     const lowerUrl = url.toLowerCase();
 
     // Tall cabinets
-    if (lower.includes('colonne') || lower.includes('armoire haute') || lowerUrl.includes('colonne')) {
+    if (
+      lower.includes('colonne') ||
+      lower.includes('armoire haute') ||
+      lowerUrl.includes('colonne')
+    ) {
       if (lower.includes('four')) return 'tall_oven';
       if (lower.includes('frigo') || lower.includes('réfrigérateur')) return 'tall_fridge';
       if (lower.includes('balai') || lower.includes('ménager')) return 'tall_broom';
@@ -673,7 +704,12 @@ export class LeroyMerlinScraper extends BaseScraper {
     const combined = `${name} ${attributes['materiau'] || ''}`.toLowerCase();
 
     if (combined.includes('stratifié')) return 'laminate';
-    if (combined.includes('chêne') || combined.includes('bois massif') || combined.includes('hêtre')) return 'wood_solid';
+    if (
+      combined.includes('chêne') ||
+      combined.includes('bois massif') ||
+      combined.includes('hêtre')
+    )
+      return 'wood_solid';
     if (combined.includes('placage') || combined.includes('plaqué')) return 'wood_veneer';
     if (combined.includes('quartz')) return 'quartz';
     if (combined.includes('granit')) return 'granite';
@@ -744,7 +780,8 @@ export class LeroyMerlinScraper extends BaseScraper {
     if (combined.includes('four')) return 'oven_single';
 
     // Microwaves
-    if (combined.includes('micro-ondes combiné') || combined.includes('combi')) return 'microwave_combi';
+    if (combined.includes('micro-ondes combiné') || combined.includes('combi'))
+      return 'microwave_combi';
     if (combined.includes('micro-ondes')) return 'microwave';
 
     // Hobs
@@ -756,8 +793,10 @@ export class LeroyMerlinScraper extends BaseScraper {
 
     // Refrigeration
     if (combined.includes('américain')) return 'fridge_american';
-    if (combined.includes('réfrigérateur') && combined.includes('congélateur')) return 'fridge_freezer';
-    if (combined.includes('réfrigérateur') || combined.includes('frigo')) return 'fridge_integrated';
+    if (combined.includes('réfrigérateur') && combined.includes('congélateur'))
+      return 'fridge_freezer';
+    if (combined.includes('réfrigérateur') || combined.includes('frigo'))
+      return 'fridge_integrated';
     if (combined.includes('congélateur')) return 'freezer';
     if (combined.includes('cave')) return 'wine_cooler';
 
@@ -768,8 +807,10 @@ export class LeroyMerlinScraper extends BaseScraper {
     // Hoods
     if (combined.includes('hotte îlot') || combined.includes('hotte ilot')) return 'hood_island';
     if (combined.includes('hotte plafond')) return 'hood_ceiling';
-    if (combined.includes('hotte escamotable') || combined.includes('downdraft')) return 'hood_downdraft';
-    if (combined.includes('hotte intégrée') || combined.includes('groupe')) return 'hood_integrated';
+    if (combined.includes('hotte escamotable') || combined.includes('downdraft'))
+      return 'hood_downdraft';
+    if (combined.includes('hotte intégrée') || combined.includes('groupe'))
+      return 'hood_integrated';
     if (combined.includes('hotte')) return 'hood_wall';
 
     // Sinks
@@ -791,7 +832,9 @@ export class LeroyMerlinScraper extends BaseScraper {
     return 'oven_single';
   }
 
-  private detectInstallationType(name: string): 'built_in' | 'freestanding' | 'integrated' | undefined {
+  private detectInstallationType(
+    name: string
+  ): 'built_in' | 'freestanding' | 'integrated' | undefined {
     const lower = name.toLowerCase();
 
     if (lower.includes('encastrable') || lower.includes('intégr')) return 'built_in';
@@ -804,7 +847,8 @@ export class LeroyMerlinScraper extends BaseScraper {
     const lower = name.toLowerCase();
 
     // Lighting
-    if (lower.includes('éclairage sous') || lower.includes('sous meuble')) return 'under_cabinet_lighting';
+    if (lower.includes('éclairage sous') || lower.includes('sous meuble'))
+      return 'under_cabinet_lighting';
     if (lower.includes('éclairage') || lower.includes('led')) return 'led_lighting';
     if (lower.includes('capteur') || lower.includes('détecteur')) return 'motion_sensor';
 
@@ -815,17 +859,20 @@ export class LeroyMerlinScraper extends BaseScraper {
     if (lower.includes('assiettes')) return 'plate_holder';
     if (lower.includes('casseroles')) return 'pot_organizer';
     if (lower.includes('couvercles')) return 'lid_holder';
-    if (lower.includes('insert tiroir') || lower.includes('organisateur tiroir')) return 'drawer_insert';
+    if (lower.includes('insert tiroir') || lower.includes('organisateur tiroir'))
+      return 'drawer_insert';
     if (lower.includes('séparateur') || lower.includes('diviseur')) return 'divider';
 
     // Storage
     if (lower.includes('étagère')) return 'shelf';
-    if (lower.includes('panier coulissant') || lower.includes('tiroir coulissant')) return 'pull_out_basket';
+    if (lower.includes('panier coulissant') || lower.includes('tiroir coulissant'))
+      return 'pull_out_basket';
     if (lower.includes('panier')) return 'basket';
     if (lower.includes('barre') || lower.includes('rail')) return 'rail';
     if (lower.includes('carousel') || lower.includes('tournant')) return 'corner_carousel';
     if (lower.includes('magic corner')) return 'magic_corner';
-    if (lower.includes('colonne coulissante') || lower.includes('tall pull')) return 'tall_pull_out';
+    if (lower.includes('colonne coulissante') || lower.includes('tall pull'))
+      return 'tall_pull_out';
     if (lower.includes('bouteille')) return 'bottle_rack';
 
     // Waste
@@ -851,12 +898,9 @@ export class LeroyMerlinScraper extends BaseScraper {
     depth?: number;
   } {
     return {
-      width: this.extractNumber(attributes['largeur']) ||
-             this.extractNumber(attributes['l']),
-      height: this.extractNumber(attributes['hauteur']) ||
-              this.extractNumber(attributes['h']),
-      depth: this.extractNumber(attributes['profondeur']) ||
-             this.extractNumber(attributes['p']),
+      width: this.extractNumber(attributes['largeur']) || this.extractNumber(attributes['l']),
+      height: this.extractNumber(attributes['hauteur']) || this.extractNumber(attributes['h']),
+      depth: this.extractNumber(attributes['profondeur']) || this.extractNumber(attributes['p']),
     };
   }
 

@@ -117,21 +117,21 @@ export async function seedDatabase() {
         email: 'admin@test.com',
         name: 'Test Admin',
         hashedPassword,
-        role: 'admin'
+        role: 'admin',
       },
       {
         email: 'user@test.com',
         name: 'Test User',
         hashedPassword,
-        role: 'user'
+        role: 'user',
       },
       {
         email: 'partner@test.com',
         name: 'Test Partner',
         hashedPassword,
-        role: 'partner'
-      }
-    ]
+        role: 'partner',
+      },
+    ],
   });
 
   // Create test products
@@ -142,16 +142,16 @@ export async function seedDatabase() {
         name: 'Test Refrigerator',
         price: 999.99,
         category: 'refrigerators',
-        manufacturer: 'Test Brand'
+        manufacturer: 'Test Brand',
       },
       {
         sku: 'DW-001',
         name: 'Test Dishwasher',
         price: 599.99,
         category: 'dishwashers',
-        manufacturer: 'Test Brand'
-      }
-    ]
+        manufacturer: 'Test Brand',
+      },
+    ],
   });
 }
 
@@ -173,7 +173,7 @@ export async function cleanDatabase() {
 export const mockEmailService = {
   sendEmail: jest.fn().mockResolvedValue(true),
   sendVerificationEmail: jest.fn().mockResolvedValue(true),
-  sendPasswordResetEmail: jest.fn().mockResolvedValue(true)
+  sendPasswordResetEmail: jest.fn().mockResolvedValue(true),
 };
 
 jest.mock('@/services/email.service', () => mockEmailService);
@@ -187,13 +187,13 @@ export const mockPaymentService = {
   processPayment: jest.fn().mockResolvedValue({
     success: true,
     transactionId: 'test_txn_123',
-    amount: 1000
+    amount: 1000,
   }),
 
   refund: jest.fn().mockResolvedValue({
     success: true,
-    refundId: 'test_ref_123'
-  })
+    refundId: 'test_ref_123',
+  }),
 };
 
 jest.mock('@/services/payment.service', () => mockPaymentService);
@@ -206,14 +206,14 @@ jest.mock('@/services/payment.service', () => mockPaymentService);
 export const mockS3Service = {
   upload: jest.fn().mockResolvedValue({
     url: 'https://test-bucket.s3.amazonaws.com/test-file.jpg',
-    key: 'test-file.jpg'
+    key: 'test-file.jpg',
   }),
 
   delete: jest.fn().mockResolvedValue(true),
 
-  getSignedUrl: jest.fn().mockReturnValue(
-    'https://test-bucket.s3.amazonaws.com/signed-url'
-  )
+  getSignedUrl: jest
+    .fn()
+    .mockReturnValue('https://test-bucket.s3.amazonaws.com/signed-url'),
 };
 
 jest.mock('@/services/s3.service', () => mockS3Service);
@@ -238,8 +238,8 @@ export async function createUser(overrides = {}) {
       name: faker.person.fullName(),
       hashedPassword,
       role: 'user',
-      ...overrides
-    }
+      ...overrides,
+    },
   });
 }
 
@@ -268,8 +268,8 @@ export async function createProduct(overrides = {}) {
       category: 'refrigerators',
       manufacturer: faker.company.name(),
       description: faker.commerce.productDescription(),
-      ...overrides
-    }
+      ...overrides,
+    },
   });
 }
 
@@ -294,10 +294,10 @@ export async function createDesign(userId: string, overrides = {}) {
       userId,
       data: {
         layout: 'L-shaped',
-        dimensions: { width: 12, height: 10 }
+        dimensions: { width: 12, height: 10 },
       },
-      ...overrides
-    }
+      ...overrides,
+    },
   });
 }
 ```
@@ -421,7 +421,7 @@ export async function waitFor(
     if (Date.now() - start > timeout) {
       throw new Error('Timeout waiting for condition');
     }
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 }
 

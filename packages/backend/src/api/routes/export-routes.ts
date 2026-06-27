@@ -16,13 +16,7 @@ const router: RouterType = Router();
 router.use(authenticate);
 router.use(requireRole('admin'));
 
-const VALID_ENTITIES: ExportEntity[] = [
-  'users',
-  'orders',
-  'projects',
-  'kitchens',
-  'products',
-];
+const VALID_ENTITIES: ExportEntity[] = ['users', 'orders', 'projects', 'kitchens', 'products'];
 
 /**
  * @swagger
@@ -88,10 +82,7 @@ router.get('/:entity', async (req: Request, res: Response) => {
     const result = await ExportService.exportData(entity, format);
 
     res.setHeader('Content-Type', result.contentType);
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="${result.filename}"`
-    );
+    res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
     res.send(result.data);
   } catch (error) {
     logger.error('[Export] Error:', error);

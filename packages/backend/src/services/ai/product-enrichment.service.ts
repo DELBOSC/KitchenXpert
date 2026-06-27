@@ -7,7 +7,9 @@ import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -65,41 +67,128 @@ interface ProductToEnrich {
 }
 
 const EnrichedSpecsSchema = z.object({
-  installationDepth: z.number().optional().nullable().transform(v => v ?? undefined),
-  ventilationGapBack: z.number().optional().nullable().transform(v => v ?? undefined),
-  ventilationGapSide: z.number().optional().nullable().transform(v => v ?? undefined),
-  electricalRequirement: z.string().optional().nullable().transform(v => v ?? undefined),
-  waterConnection: z.boolean().optional().nullable().transform(v => v ?? undefined),
-  gasConnection: z.boolean().optional().nullable().transform(v => v ?? undefined),
-  assemblyComplexity: z.enum(['easy', 'medium', 'hard']).optional().nullable().transform(v => v ?? undefined),
-  weightCapacity: z.number().optional().nullable().transform(v => v ?? undefined),
-  hingeType: z.string().optional().nullable().transform(v => v ?? undefined),
-  drawerSlideType: z.string().optional().nullable().transform(v => v ?? undefined),
-  mountingType: z.string().optional().nullable().transform(v => v ?? undefined),
-  loadCapacityShelf: z.number().optional().nullable().transform(v => v ?? undefined),
+  installationDepth: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  ventilationGapBack: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  ventilationGapSide: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  electricalRequirement: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  waterConnection: z
+    .boolean()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  gasConnection: z
+    .boolean()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  assemblyComplexity: z
+    .enum(['easy', 'medium', 'hard'])
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  weightCapacity: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  hingeType: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  drawerSlideType: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  mountingType: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  loadCapacityShelf: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
 });
 
 const WarrantySchema = z.object({
-  duration: z.string().optional().nullable().transform(v => v ?? undefined),
-  coverage: z.string().optional().nullable().transform(v => v ?? undefined),
-  conditions: z.string().optional().nullable().transform(v => v ?? undefined),
+  duration: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  coverage: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  conditions: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
 });
 
-const EnergyDetailsSchema = z.object({
-  annualConsumption: z.number().optional().nullable().transform(v => v ?? undefined),
-  waterPerCycle: z.number().optional().nullable().transform(v => v ?? undefined),
-  noiseLevel: z.number().optional().nullable().transform(v => v ?? undefined),
-  noiseMethod: z.string().optional().nullable().transform(v => v ?? undefined),
-  energyLabel: z.string().optional().nullable().transform(v => v ?? undefined),
-  standbyPower: z.number().optional().nullable().transform(v => v ?? undefined),
-}).optional().nullable();
+const EnergyDetailsSchema = z
+  .object({
+    annualConsumption: z
+      .number()
+      .optional()
+      .nullable()
+      .transform((v) => v ?? undefined),
+    waterPerCycle: z
+      .number()
+      .optional()
+      .nullable()
+      .transform((v) => v ?? undefined),
+    noiseLevel: z
+      .number()
+      .optional()
+      .nullable()
+      .transform((v) => v ?? undefined),
+    noiseMethod: z
+      .string()
+      .optional()
+      .nullable()
+      .transform((v) => v ?? undefined),
+    energyLabel: z
+      .string()
+      .optional()
+      .nullable()
+      .transform((v) => v ?? undefined),
+    standbyPower: z
+      .number()
+      .optional()
+      .nullable()
+      .transform((v) => v ?? undefined),
+  })
+  .optional()
+  .nullable();
 
 const EnrichmentResultSchema = z.object({
   productId: z.string(),
   specifications: EnrichedSpecsSchema,
   warranty: WarrantySchema,
   certifications: z.array(z.string()),
-  energyDetails: EnergyDetailsSchema.transform(v => v ?? null),
+  energyDetails: EnergyDetailsSchema.transform((v) => v ?? null),
   confidence: z.number().min(0).max(1),
 });
 
@@ -125,21 +214,29 @@ export class ProductEnrichmentService {
    * Products should be of the same type for better prompt efficiency.
    */
   async enrichBatch(products: ProductToEnrich[]): Promise<EnrichmentResult[]> {
-    if (products.length === 0) {return [];}
+    if (products.length === 0) {
+      return [];
+    }
 
     const batchSize = Math.min(products.length, 10);
     const batch = products.slice(0, batchSize);
 
     // Build the product descriptions for the prompt with sanitized inputs
-    const productDescriptions = batch.map((p, i) => {
-      const desc = sanitizeInput(p.description);
-      const html = p.rawHtml ? `\nExtrait HTML: ${sanitizeInput(p.rawHtml.substring(0, 2000))}` : '';
-      const specs = p.currentSpecs ? `\nSpecs existantes: ${sanitizeInput(JSON.stringify(p.currentSpecs))}` : '';
-      return `--- Produit ${i + 1} (ID: ${p.id}, Type: ${sanitizeInput(p.type)}) ---
+    const productDescriptions = batch
+      .map((p, i) => {
+        const desc = sanitizeInput(p.description);
+        const html = p.rawHtml
+          ? `\nExtrait HTML: ${sanitizeInput(p.rawHtml.substring(0, 2000))}`
+          : '';
+        const specs = p.currentSpecs
+          ? `\nSpecs existantes: ${sanitizeInput(JSON.stringify(p.currentSpecs))}`
+          : '';
+        return `--- Produit ${i + 1} (ID: ${p.id}, Type: ${sanitizeInput(p.type)}) ---
 Nom: ${sanitizeInput(p.name)}
 Marque: ${sanitizeInput(p.brand) || 'inconnue'}
 Description: ${desc}${html}${specs}`;
-    }).join('\n\n');
+      })
+      .join('\n\n');
 
     const userPrompt = `Analyse ces ${batch.length} produits de cuisine et extrais les specifications techniques detaillees pour chacun.
 
@@ -171,7 +268,9 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
     const startTime = Date.now();
 
     try {
-      const { data, inputTokens, outputTokens } = await this.anthropic.generateJSON<EnrichmentResult[]>({
+      const { data, inputTokens, outputTokens } = await this.anthropic.generateJSON<
+        EnrichmentResult[]
+      >({
         system: SYSTEM_PROMPTS.PRODUCT_ENRICHMENT,
         messages: [{ role: 'user', content: userPrompt }],
         maxTokens: Math.min(4096, 4096),
@@ -193,7 +292,7 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
         'claude-sonnet-4-5-20250929',
         inputTokens,
         outputTokens,
-        durationMs,
+        durationMs
       );
 
       logger.info('[ProductEnrichment] Batch enriched', {
@@ -209,7 +308,7 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
         productCount: batch.length,
       });
       // Return empty results with failed status - caller should handle
-      return batch.map(p => ({
+      return batch.map((p) => ({
         productId: p.id,
         specifications: {},
         warranty: {},
@@ -225,14 +324,16 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
    */
   async enrichSingle(product: ProductToEnrich): Promise<EnrichmentResult> {
     const results = await this.enrichBatch([product]);
-    return results[0] || {
-      productId: product.id,
-      specifications: {},
-      warranty: {},
-      certifications: [],
-      energyDetails: null,
-      confidence: 0,
-    };
+    return (
+      results[0] || {
+        productId: product.id,
+        specifications: {},
+        warranty: {},
+        certifications: [],
+        energyDetails: null,
+        confidence: 0,
+      }
+    );
   }
 
   /**
@@ -247,10 +348,12 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
       orderBy: { createdAt: 'asc' },
     });
 
-    if (pending.length === 0) {return 0;}
+    if (pending.length === 0) {
+      return 0;
+    }
 
     // Convert to ProductToEnrich format
-    const products: ProductToEnrich[] = pending.map(p => ({
+    const products: ProductToEnrich[] = pending.map((p) => ({
       id: p.productId,
       type: p.productType,
       name: p.productId, // Will be overridden if we can load from product tables
@@ -266,10 +369,14 @@ Reponds avec un tableau JSON de ${batch.length} objets, un par produit, dans l'o
     let enrichedCount = 0;
     for (let i = 0; i < pending.length; i++) {
       const record = pending[i];
-      if (!record) {continue;}
-      const result = results.find(r => r.productId === record.productId) || results[i];
+      if (!record) {
+        continue;
+      }
+      const result = results.find((r) => r.productId === record.productId) || results[i];
 
-      if (!result) {continue;}
+      if (!result) {
+        continue;
+      }
 
       try {
         if (result.confidence > 0) {

@@ -59,7 +59,9 @@ describe('LoginPage', () => {
       renderLoginPage();
 
       // AuthLayout heading is now "Bon retour parmi nous"
-      expect(screen.getByRole('heading', { name: /bon retour|connexion|bienvenue/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /bon retour|connexion|bienvenue/i })
+      ).toBeInTheDocument();
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/mot de passe/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /se connecter/i })).toBeInTheDocument();

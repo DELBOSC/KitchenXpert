@@ -3,7 +3,12 @@ import { z } from 'zod';
 
 import { webhookController } from '../controllers/webhook-controller';
 import { authenticate, authorize } from '../middleware/auth-middleware';
-import { validateBody, validateParams, validateQuery, commonSchemas } from '../middleware/validation-middleware';
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+  commonSchemas,
+} from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 
@@ -99,7 +104,12 @@ router.get('/failed', validateQuery(failedEventsQuerySchema), webhookController.
  *       403:
  *         description: Forbidden - admin only
  */
-router.delete('/events/cleanup', authorize(['admin']), validateBody(cleanupSchema), webhookController.cleanupEvents);
+router.delete(
+  '/events/cleanup',
+  authorize(['admin']),
+  validateBody(cleanupSchema),
+  webhookController.cleanupEvents
+);
 
 // Webhook CRUD
 
@@ -229,7 +239,12 @@ router.post('/', validateBody(createWebhookSchema), webhookController.create);
  *       404:
  *         description: Webhook not found
  */
-router.put('/:id', validateParams(commonSchemas.idParam), validateBody(updateWebhookSchema), webhookController.update);
+router.put(
+  '/:id',
+  validateParams(commonSchemas.idParam),
+  validateBody(updateWebhookSchema),
+  webhookController.update
+);
 
 /**
  * @swagger
@@ -327,7 +342,11 @@ router.post('/:id/test', validateParams(commonSchemas.idParam), webhookControlle
  *       404:
  *         description: Webhook not found
  */
-router.post('/:id/regenerate-secret', validateParams(commonSchemas.idParam), webhookController.regenerateSecret);
+router.post(
+  '/:id/regenerate-secret',
+  validateParams(commonSchemas.idParam),
+  webhookController.regenerateSecret
+);
 
 // Webhook events and stats
 
@@ -358,7 +377,12 @@ router.post('/:id/regenerate-secret', validateParams(commonSchemas.idParam), web
  *       404:
  *         description: Webhook not found
  */
-router.get('/:id/events', validateParams(commonSchemas.idParam), validateQuery(eventsQuerySchema), webhookController.getEvents);
+router.get(
+  '/:id/events',
+  validateParams(commonSchemas.idParam),
+  validateQuery(eventsQuerySchema),
+  webhookController.getEvents
+);
 
 /**
  * @swagger
@@ -387,7 +411,12 @@ router.get('/:id/events', validateParams(commonSchemas.idParam), validateQuery(e
  *       404:
  *         description: Webhook not found
  */
-router.get('/:id/stats', validateParams(commonSchemas.idParam), validateQuery(statsQuerySchema), webhookController.getStats);
+router.get(
+  '/:id/stats',
+  validateParams(commonSchemas.idParam),
+  validateQuery(statsQuerySchema),
+  webhookController.getStats
+);
 
 /**
  * @swagger
@@ -411,6 +440,10 @@ router.get('/:id/stats', validateParams(commonSchemas.idParam), validateQuery(st
  *       404:
  *         description: Webhook not found
  */
-router.get('/:id/delivery-rate', validateParams(commonSchemas.idParam), webhookController.getDeliveryRate);
+router.get(
+  '/:id/delivery-rate',
+  validateParams(commonSchemas.idParam),
+  webhookController.getDeliveryRate
+);
 
 export default router;

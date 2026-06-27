@@ -15,22 +15,24 @@
 import { test, expect, loginUI, API_BASE, captureCookies } from './_fixtures';
 
 test.describe('@critical Flow 8 — RGPD', () => {
-  test('export returns a JSON with the user payload', async ({
-    page, request, freshUser,
-  }) => {
+  test('export returns a JSON with the user payload', async ({ page, request, freshUser }) => {
     await loginUI(page, freshUser);
     const cookies = await captureCookies(page);
 
     // Navigate to /profil → "Mes données" tab → "Exporter mes données"
     await page.goto('/fr/profile');
-    await page.getByRole('tab', { name: /données|data|rgpd/i })
+    await page
+      .getByRole('tab', { name: /données|data|rgpd/i })
       .or(page.getByRole('link', { name: /données|data|rgpd/i }))
       .first()
       .click();
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 30_000 }),
-      page.getByRole('button', { name: /export|télécharg/i }).first().click(),
+      page
+        .getByRole('button', { name: /export|télécharg/i })
+        .first()
+        .click(),
     ]);
 
     const path = await download.path();
@@ -54,18 +56,22 @@ test.describe('@critical Flow 8 — RGPD', () => {
   });
 
   test('delete-account anonymises and blocks future login', async ({
-    page, request, freshUser,
+    page,
+    request,
+    freshUser,
   }) => {
     await loginUI(page, freshUser);
     const cookies = await captureCookies(page);
 
     await page.goto('/fr/profile');
-    await page.getByRole('tab', { name: /données|data|rgpd/i })
+    await page
+      .getByRole('tab', { name: /données|data|rgpd/i })
       .or(page.getByRole('link', { name: /données|data|rgpd/i }))
       .first()
       .click();
 
-    await page.getByRole('button', { name: /supprimer.*compte|delete.*account/i })
+    await page
+      .getByRole('button', { name: /supprimer.*compte|delete.*account/i })
       .first()
       .click();
 
@@ -73,7 +79,8 @@ test.describe('@critical Flow 8 — RGPD', () => {
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
     await dialog.getByRole('checkbox', { name: /confirme|understand/i }).check();
-    await dialog.getByRole('button', { name: /supprimer|delete|confirm/i })
+    await dialog
+      .getByRole('button', { name: /supprimer|delete|confirm/i })
       .first()
       .click();
 
@@ -92,8 +99,9 @@ test.describe('@critical Flow 8 — RGPD', () => {
     await page.getByLabel(/mot de passe|password/i).fill(freshUser.password);
     await page.getByRole('button', { name: /se connecter|sign in/i }).click();
 
-    await expect(page.getByText(/invalid|incorrect|introuvable/i).first())
-      .toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/invalid|incorrect|introuvable/i).first()).toBeVisible({
+      timeout: 10_000,
+    });
 
     // Bypass the fixture afterEach cleanup since the user is already gone
     await page.context().clearCookies();

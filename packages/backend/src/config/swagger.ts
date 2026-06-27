@@ -11,9 +11,7 @@ const swaggerDefinition = {
     description: 'API pour la plateforme de conception de cuisines KitchenXpert',
     contact: { name: 'KitchenXpert Team' },
   },
-  servers: [
-    { url: '/api/v1', description: 'API v1' },
-  ],
+  servers: [{ url: '/api/v1', description: 'API v1' }],
   components: {
     securitySchemes: {
       cookieAuth: {
@@ -75,8 +73,12 @@ const options: swaggerJSDoc.Options = {
 const swaggerSpec = swaggerJSDoc(options);
 
 export function setupSwagger(app: Express): void {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'KitchenXpert API Documentation',
-  }));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'KitchenXpert API Documentation',
+    })
+  );
 }

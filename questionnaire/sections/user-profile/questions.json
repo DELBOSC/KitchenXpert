@@ -69,43 +69,79 @@
       "options": [
         {
           "value": "single-professional",
-          "label": { "en": "Single professional", "fr": "Professionnel célibataire" },
-          "description": { "en": "Career-focused, often dining out", "fr": "Axé sur la carrière, mange souvent à l'extérieur" },
+          "label": {
+            "en": "Single professional",
+            "fr": "Professionnel célibataire"
+          },
+          "description": {
+            "en": "Career-focused, often dining out",
+            "fr": "Axé sur la carrière, mange souvent à l'extérieur"
+          },
           "score": 1,
           "tags": ["quick-meals", "low-maintenance"]
         },
         {
           "value": "couple-no-kids",
-          "label": { "en": "Couple without children", "fr": "Couple sans enfants" },
-          "description": { "en": "Enjoying cooking together", "fr": "Aime cuisiner ensemble" },
+          "label": {
+            "en": "Couple without children",
+            "fr": "Couple sans enfants"
+          },
+          "description": {
+            "en": "Enjoying cooking together",
+            "fr": "Aime cuisiner ensemble"
+          },
           "score": 2,
           "tags": ["social-cooking", "moderate-use"]
         },
         {
           "value": "family-young-kids",
-          "label": { "en": "Family with young children", "fr": "Famille avec jeunes enfants" },
-          "description": { "en": "Safety and practicality are key", "fr": "Sécurité et praticité sont essentielles" },
+          "label": {
+            "en": "Family with young children",
+            "fr": "Famille avec jeunes enfants"
+          },
+          "description": {
+            "en": "Safety and practicality are key",
+            "fr": "Sécurité et praticité sont essentielles"
+          },
           "score": 3,
           "tags": ["safety-focus", "durable", "easy-clean"]
         },
         {
           "value": "family-teens",
-          "label": { "en": "Family with teenagers", "fr": "Famille avec adolescents" },
-          "description": { "en": "High traffic, multiple cooks", "fr": "Beaucoup de passage, plusieurs cuisiniers" },
+          "label": {
+            "en": "Family with teenagers",
+            "fr": "Famille avec adolescents"
+          },
+          "description": {
+            "en": "High traffic, multiple cooks",
+            "fr": "Beaucoup de passage, plusieurs cuisiniers"
+          },
           "score": 4,
           "tags": ["high-capacity", "multi-user"]
         },
         {
           "value": "multi-generational",
-          "label": { "en": "Multi-generational household", "fr": "Foyer multigénérationnel" },
-          "description": { "en": "Accessibility and varied needs", "fr": "Accessibilité et besoins variés" },
+          "label": {
+            "en": "Multi-generational household",
+            "fr": "Foyer multigénérationnel"
+          },
+          "description": {
+            "en": "Accessibility and varied needs",
+            "fr": "Accessibilité et besoins variés"
+          },
           "score": 5,
           "tags": ["accessible", "universal-design"]
         },
         {
           "value": "retired",
-          "label": { "en": "Retired/Empty nesters", "fr": "Retraités/Nid vide" },
-          "description": { "en": "Comfort and ease of use", "fr": "Confort et facilité d'utilisation" },
+          "label": {
+            "en": "Retired/Empty nesters",
+            "fr": "Retraités/Nid vide"
+          },
+          "description": {
+            "en": "Comfort and ease of use",
+            "fr": "Confort et facilité d'utilisation"
+          },
           "score": 2,
           "tags": ["ergonomic", "quality-focused"]
         }
@@ -127,25 +163,37 @@
       "options": [
         {
           "value": "one-person",
-          "label": { "en": "One person does most cooking", "fr": "Une personne fait la plupart de la cuisine" },
+          "label": {
+            "en": "One person does most cooking",
+            "fr": "Une personne fait la plupart de la cuisine"
+          },
           "score": 1,
           "tags": ["single-workflow"]
         },
         {
           "value": "shared-equally",
-          "label": { "en": "Cooking is shared equally", "fr": "La cuisine est partagée équitablement" },
+          "label": {
+            "en": "Cooking is shared equally",
+            "fr": "La cuisine est partagée équitablement"
+          },
           "score": 2,
           "tags": ["dual-workflow", "flexible-layout"]
         },
         {
           "value": "everyone-cooks",
-          "label": { "en": "Everyone cooks independently", "fr": "Chacun cuisine indépendamment" },
+          "label": {
+            "en": "Everyone cooks independently",
+            "fr": "Chacun cuisine indépendamment"
+          },
           "score": 3,
           "tags": ["multi-zone", "high-capacity"]
         },
         {
           "value": "rarely-cook",
-          "label": { "en": "We rarely cook at home", "fr": "Nous cuisinons rarement à la maison" },
+          "label": {
+            "en": "We rarely cook at home",
+            "fr": "Nous cuisinons rarement à la maison"
+          },
           "score": 0,
           "tags": ["minimal-kitchen", "style-focused"]
         }
@@ -202,7 +250,10 @@
       "options": [
         {
           "value": "wheelchair-access",
-          "label": { "en": "Wheelchair accessibility", "fr": "Accessibilité fauteuil roulant" },
+          "label": {
+            "en": "Wheelchair accessibility",
+            "fr": "Accessibilité fauteuil roulant"
+          },
           "icon": "accessibility",
           "tags": ["ada-compliant", "lowered-counters"]
         },
@@ -220,19 +271,28 @@
         },
         {
           "value": "height-considerations",
-          "label": { "en": "Very tall/short users", "fr": "Utilisateurs très grands/petits" },
+          "label": {
+            "en": "Very tall/short users",
+            "fr": "Utilisateurs très grands/petits"
+          },
           "icon": "ruler",
           "tags": ["adjustable-height", "multi-level"]
         },
         {
           "value": "child-safety",
-          "label": { "en": "Child safety required", "fr": "Sécurité enfants requise" },
+          "label": {
+            "en": "Child safety required",
+            "fr": "Sécurité enfants requise"
+          },
           "icon": "shield",
           "tags": ["safety-locks", "rounded-corners"]
         },
         {
           "value": "none",
-          "label": { "en": "No special requirements", "fr": "Pas de besoins spéciaux" },
+          "label": {
+            "en": "No special requirements",
+            "fr": "Pas de besoins spéciaux"
+          },
           "icon": "check",
           "tags": []
         }
@@ -255,21 +315,36 @@
         {
           "value": "owner",
           "label": { "en": "Owner", "fr": "Propriétaire" },
-          "description": { "en": "Full freedom for renovations", "fr": "Liberté totale pour les rénovations" },
+          "description": {
+            "en": "Full freedom for renovations",
+            "fr": "Liberté totale pour les rénovations"
+          },
           "score": 3,
           "tags": ["permanent-changes", "full-renovation"]
         },
         {
           "value": "renter-allowed",
-          "label": { "en": "Renter with renovation rights", "fr": "Locataire avec droits de rénovation" },
-          "description": { "en": "Landlord allows modifications", "fr": "Le propriétaire autorise les modifications" },
+          "label": {
+            "en": "Renter with renovation rights",
+            "fr": "Locataire avec droits de rénovation"
+          },
+          "description": {
+            "en": "Landlord allows modifications",
+            "fr": "Le propriétaire autorise les modifications"
+          },
           "score": 2,
           "tags": ["limited-changes", "reversible-preferred"]
         },
         {
           "value": "renter-limited",
-          "label": { "en": "Renter with restrictions", "fr": "Locataire avec restrictions" },
-          "description": { "en": "Limited or no permanent changes", "fr": "Changements permanents limités ou non autorisés" },
+          "label": {
+            "en": "Renter with restrictions",
+            "fr": "Locataire avec restrictions"
+          },
+          "description": {
+            "en": "Limited or no permanent changes",
+            "fr": "Changements permanents limités ou non autorisés"
+          },
           "score": 1,
           "tags": ["no-structural", "removable-only"]
         }
@@ -315,7 +390,10 @@
         },
         {
           "value": "just-exploring",
-          "label": { "en": "Just exploring options", "fr": "Je me renseigne simplement" },
+          "label": {
+            "en": "Just exploring options",
+            "fr": "Je me renseigne simplement"
+          },
           "icon": "search",
           "score": 0
         }

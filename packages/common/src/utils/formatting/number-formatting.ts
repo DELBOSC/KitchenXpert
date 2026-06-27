@@ -7,10 +7,7 @@ const DEFAULT_LOCALE = 'fr-FR';
 /**
  * Formate un nombre avec séparateurs et décimales
  */
-export function formatNumber(
-  value: number,
-  options?: NumberFormatOptions
-): string {
+export function formatNumber(value: number, options?: NumberFormatOptions): string {
   const {
     locale = DEFAULT_LOCALE,
     minimumFractionDigits = 0,
@@ -35,10 +32,7 @@ export interface NumberFormatOptions {
 /**
  * Formate un nombre de manière compacte (1K, 1M, etc.)
  */
-export function formatCompact(
-  value: number,
-  locale = DEFAULT_LOCALE
-): string {
+export function formatCompact(value: number, locale = DEFAULT_LOCALE): string {
   return new Intl.NumberFormat(locale, {
     notation: 'compact',
     compactDisplay: 'short',
@@ -68,10 +62,7 @@ export function formatOrdinal(value: number, locale = DEFAULT_LOCALE): string {
 /**
  * Formate une taille de fichier en bytes
  */
-export function formatFileSize(
-  bytes: number,
-  options?: FileSizeFormatOptions
-): string {
+export function formatFileSize(bytes: number, options?: FileSizeFormatOptions): string {
   const { locale = DEFAULT_LOCALE, binary = false, decimals = 1 } = options || {};
 
   if (bytes === 0) return '0 B';
@@ -102,11 +93,7 @@ export function formatWithUnit(
   unit: string,
   options?: WithUnitFormatOptions
 ): string {
-  const {
-    locale = DEFAULT_LOCALE,
-    decimals = 2,
-    spaceBeforeUnit = true,
-  } = options || {};
+  const { locale = DEFAULT_LOCALE, decimals = 2, spaceBeforeUnit = true } = options || {};
 
   const formattedValue = formatNumber(value, {
     locale,
@@ -125,15 +112,8 @@ export interface WithUnitFormatOptions {
 /**
  * Formate un nombre en pourcentage
  */
-export function formatPercent(
-  value: number,
-  options?: PercentFormatOptions
-): string {
-  const {
-    locale = DEFAULT_LOCALE,
-    decimals = 0,
-    alreadyPercent = false,
-  } = options || {};
+export function formatPercent(value: number, options?: PercentFormatOptions): string {
+  const { locale = DEFAULT_LOCALE, decimals = 0, alreadyPercent = false } = options || {};
 
   const percentValue = alreadyPercent ? value / 100 : value;
 
@@ -168,10 +148,7 @@ function greatestCommonDivisor(a: number, b: number): number {
 /**
  * Formate un numéro de téléphone
  */
-export function formatPhoneNumber(
-  phone: string,
-  countryCode = 'FR'
-): string {
+export function formatPhoneNumber(phone: string, countryCode = 'FR'): string {
   const cleaned = phone.replace(/\D/g, '');
 
   const formats: Record<string, (n: string) => string> = {
@@ -215,14 +192,7 @@ export function formatCoordinate(
   const minutes = Math.floor(minutesFloat);
   const seconds = ((minutesFloat - minutes) * 60).toFixed(1);
 
-  const direction =
-    type === 'latitude'
-      ? value >= 0
-        ? 'N'
-        : 'S'
-      : value >= 0
-        ? 'E'
-        : 'O';
+  const direction = type === 'latitude' ? (value >= 0 ? 'N' : 'S') : value >= 0 ? 'E' : 'O';
 
   return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
 }
@@ -230,11 +200,7 @@ export function formatCoordinate(
 /**
  * Formate une plage de nombres
  */
-export function formatRange(
-  min: number,
-  max: number,
-  options?: NumberFormatOptions
-): string {
+export function formatRange(min: number, max: number, options?: NumberFormatOptions): string {
   if (min === max) {
     return formatNumber(min, options);
   }

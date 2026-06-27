@@ -50,7 +50,12 @@ const mockPermissions = [
   { id: 'perm-1', name: 'View Projects', description: 'Can view projects', category: 'Projects' },
   { id: 'perm-2', name: 'Edit Projects', description: 'Can edit projects', category: 'Projects' },
   { id: 'perm-3', name: 'Manage Users', description: 'Can manage users', category: 'Admin' },
-  { id: 'perm-4', name: 'Create Designs', description: 'Can create kitchen designs', category: 'Design' },
+  {
+    id: 'perm-4',
+    name: 'Create Designs',
+    description: 'Can create kitchen designs',
+    category: 'Design',
+  },
   { id: 'perm-5', name: 'Export Data', description: 'Can export data', category: 'Admin' },
 ];
 
@@ -97,7 +102,7 @@ describe('RoleManagement', () => {
       // i18n: fr.json maps common.loading to "Chargement...".
       expect(screen.getByRole('status')).toHaveAttribute(
         'aria-label',
-        expect.stringMatching(/loading|chargement/i),
+        expect.stringMatching(/loading|chargement/i)
       );
     });
   });
@@ -107,7 +112,9 @@ describe('RoleManagement', () => {
       renderRoleManagement();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /role management/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /role management/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -385,10 +392,17 @@ describe('RoleManagement', () => {
     it('should close create modal after successful creation', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          id: 'role-new', name: 'Tester', description: '', permissions: [],
-          userCount: 0, isSystem: false, createdAt: '2025-03-15T00:00:00Z', updatedAt: '2025-03-15T00:00:00Z',
-        }),
+        json: () =>
+          Promise.resolve({
+            id: 'role-new',
+            name: 'Tester',
+            description: '',
+            permissions: [],
+            userCount: 0,
+            isSystem: false,
+            createdAt: '2025-03-15T00:00:00Z',
+            updatedAt: '2025-03-15T00:00:00Z',
+          }),
       });
 
       renderRoleManagement();
@@ -606,8 +620,8 @@ describe('RoleManagement', () => {
       // The dialog renders both Annuler + Supprimer; pick the one inside
       // the dialog.
       const dialog = screen.getByRole('dialog');
-      const confirmBtn = Array.from(dialog.querySelectorAll('button')).find(
-        (b) => /^(delete|supprimer)$/i.test(b.textContent || ''),
+      const confirmBtn = Array.from(dialog.querySelectorAll('button')).find((b) =>
+        /^(delete|supprimer)$/i.test(b.textContent || '')
       )!;
       await user.click(confirmBtn);
 
@@ -635,8 +649,8 @@ describe('RoleManagement', () => {
 
       // Cancel button lives inside the dialog.
       const dialog = screen.getByRole('dialog');
-      const cancelBtn = Array.from(dialog.querySelectorAll('button')).find(
-        (b) => /annuler|cancel/i.test(b.textContent || ''),
+      const cancelBtn = Array.from(dialog.querySelectorAll('button')).find((b) =>
+        /annuler|cancel/i.test(b.textContent || '')
       )!;
       await user.click(cancelBtn);
 
@@ -674,9 +688,9 @@ describe('RoleManagement', () => {
       });
 
       const dismissButtons = document.querySelectorAll('button svg');
-      const dismissButton = Array.from(dismissButtons).find(
-        (svg) => svg.closest('button')?.closest('.bg-red-50, [class*="bg-red-50"]')
-      )?.closest('button');
+      const dismissButton = Array.from(dismissButtons)
+        .find((svg) => svg.closest('button')?.closest('.bg-red-50, [class*="bg-red-50"]'))
+        ?.closest('button');
 
       if (dismissButton) {
         await user.click(dismissButton);

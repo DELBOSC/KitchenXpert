@@ -15,7 +15,8 @@
 
 ## Overview
 
-Effective debugging is crucial for development productivity. This guide covers debugging techniques and tools for all components of KitchenXpert.
+Effective debugging is crucial for development productivity. This guide covers
+debugging techniques and tools for all components of KitchenXpert.
 
 ## Backend Debugging
 
@@ -46,6 +47,7 @@ Create `.vscode/launch.json`:
 ```
 
 **Usage:**
+
 1. Set breakpoints in VS Code
 2. Press F5 or click "Run and Debug"
 3. Execution pauses at breakpoints
@@ -78,7 +80,7 @@ logger.info('User action', {
   userId: user.id,
   action: 'design_created',
   timestamp: new Date(),
-  metadata: { designId, designName }
+  metadata: { designId, designName },
 });
 ```
 
@@ -91,15 +93,15 @@ const prisma = new PrismaClient({
     { level: 'query', emit: 'event' },
     { level: 'error', emit: 'stdout' },
     { level: 'info', emit: 'stdout' },
-    { level: 'warn', emit: 'stdout' }
-  ]
+    { level: 'warn', emit: 'stdout' },
+  ],
 });
 
 prisma.$on('query', (e) => {
   logger.debug('Query executed', {
     query: e.query,
     params: e.params,
-    duration: `${e.duration}ms`
+    duration: `${e.duration}ms`,
   });
 });
 
@@ -108,7 +110,7 @@ prisma.$on('query', (e) => {
   if (e.duration > 100) {
     logger.warn('Slow query detected', {
       query: e.query,
-      duration: `${e.duration}ms`
+      duration: `${e.duration}ms`,
     });
   }
 });
@@ -128,7 +130,7 @@ app.use((req, res, next) => {
       path: req.path,
       status: res.statusCode,
       duration: `${duration}ms`,
-      userAgent: req.get('user-agent')
+      userAgent: req.get('user-agent'),
     });
   });
 
@@ -139,7 +141,7 @@ app.use((req, res, next) => {
 router.post('/users', (req, res, next) => {
   logger.debug('Create user request', {
     body: req.body,
-    headers: req.headers
+    headers: req.headers,
   });
   next();
 });
@@ -150,18 +152,21 @@ router.post('/users', (req, res, next) => {
 ### React DevTools
 
 **Installation:**
+
 ```bash
 # Chrome Extension
 # https://chrome.google.com/webstore/detail/react-developer-tools
 ```
 
 **Features:**
+
 - Inspect component hierarchy
 - View props and state
 - Track component updates
 - Profile performance
 
 **Usage:**
+
 1. Open Chrome DevTools (F12)
 2. Click "Components" or "Profiler" tab
 3. Select component to inspect
@@ -198,6 +203,7 @@ console.groupEnd();
 #### Network Tab
 
 **Debugging API calls:**
+
 1. Open Network tab
 2. Filter by "XHR" or "Fetch"
 3. Click request to see:
@@ -207,6 +213,7 @@ console.groupEnd();
    - Response time
 
 **Common issues:**
+
 - **404 errors** - Check endpoint URL
 - **401/403 errors** - Check authentication
 - **500 errors** - Check server logs
@@ -220,12 +227,13 @@ Ensure source maps are enabled:
 // vite.config.ts
 export default defineConfig({
   build: {
-    sourcemap: true // Enable source maps
-  }
+    sourcemap: true, // Enable source maps
+  },
 });
 ```
 
 **Usage:**
+
 1. Open Sources tab
 2. Navigate to webpack:// sources
 3. Set breakpoints in TypeScript files
@@ -248,6 +256,7 @@ function App() {
 ```
 
 **Features:**
+
 - View all queries and mutations
 - See cached data
 - Inspect query state
@@ -260,11 +269,12 @@ import { configureStore } from '@reduxjs/toolkit';
 
 const store = configureStore({
   reducer: rootReducer,
-  devTools: process.env.NODE_ENV !== 'production'
+  devTools: process.env.NODE_ENV !== 'production',
 });
 ```
 
 **Features:**
+
 - Time travel debugging
 - Action history
 - State snapshots
@@ -325,7 +335,7 @@ export class PerformanceMonitor {
     if (performance.memory) {
       console.log('Memory:', {
         used: `${(performance.memory.usedJSHeapSize / 1048576).toFixed(2)} MB`,
-        total: `${(performance.memory.totalJSHeapSize / 1048576).toFixed(2)} MB`
+        total: `${(performance.memory.totalJSHeapSize / 1048576).toFixed(2)} MB`,
       });
     }
   }
@@ -371,6 +381,7 @@ async def generate_design(params: DesignParams) -> Design:
 ```
 
 **Commands:**
+
 - `n` - Next line
 - `s` - Step into function
 - `c` - Continue execution
@@ -488,12 +499,15 @@ LIMIT 10;
 db.setProfilingLevel(2); // Profile all queries
 
 // View slow queries
-db.system.profile.find({
-  millis: { $gt: 100 }
-}).sort({ ts: -1 }).limit(10);
+db.system.profile
+  .find({
+    millis: { $gt: 100 },
+  })
+  .sort({ ts: -1 })
+  .limit(10);
 
 // Explain query
-db.designs.find({ userId: "123" }).explain("executionStats");
+db.designs.find({ userId: '123' }).explain('executionStats');
 ```
 
 ### Redis Debugging
@@ -518,10 +532,14 @@ redis-cli --scan --pattern 'user:*'
 
 ```typescript
 // Add authentication debugging
-export async function authenticate(req: Request, res: Response, next: NextFunction) {
+export async function authenticate(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   logger.debug('Authentication attempt', {
     path: req.path,
-    hasAuthHeader: !!req.headers.authorization
+    hasAuthHeader: !!req.headers.authorization,
   });
 
   try {
@@ -590,15 +608,15 @@ async function fetchDesigns(userId: string): Promise<Design[]> {
   try {
     const response = await fetch(`${API_URL}/users/${userId}/designs`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
     });
 
     console.log('Response received', {
       status: response.status,
       statusText: response.statusText,
-      headers: Object.fromEntries(response.headers.entries())
+      headers: Object.fromEntries(response.headers.entries()),
     });
 
     if (!response.ok) {
@@ -640,7 +658,7 @@ if (process.env.NODE_ENV === 'development') {
     if (performance.memory) {
       console.log('Memory usage:', {
         used: `${(performance.memory.usedJSHeapSize / 1048576).toFixed(2)} MB`,
-        limit: `${(performance.memory.jsHeapSizeLimit / 1048576).toFixed(2)} MB`
+        limit: `${(performance.memory.jsHeapSizeLimit / 1048576).toFixed(2)} MB`,
       });
     }
   }, 5000);
@@ -727,4 +745,5 @@ ssh -L 9229:localhost:9229 user@production-server
 - [Development Setup](./setup.md) - Development environment
 - [Testing Guide](./testing.md) - Testing practices
 - [Performance Optimization](./performance-optimization.md) - Performance tuning
-- [Logging Best Practices](./coding-standards.md#logging-best-practices) - Logging standards
+- [Logging Best Practices](./coding-standards.md#logging-best-practices) -
+  Logging standards

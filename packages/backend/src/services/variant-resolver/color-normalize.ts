@@ -34,11 +34,45 @@ export interface NormalizedColor {
  * ("effet", "aspect", "panneau", "en"…), and a few leaked non-color words.
  */
 const STOPWORDS = new Set<string>([
-  'effet', 'aspect', 'panneau', 'en', 'de', 'des', 'du', 'la', 'le', 'et',
-  'mat', 'brillant', 'brillante', 'brillance', 'haute', 'sombre', 'clair',
-  'claire', 'fonce', 'raye', 'rayee', 'grain', 'bandeau', 'ultra', 'noble',
-  'nuage', 'etain', 'tourterelle', 'pierre', 'grise', 'campagne', 'force',
-  'tout', 'non', 'applicable', 'integrable', 'livre', 'oxyde', 'oxydee',
+  'effet',
+  'aspect',
+  'panneau',
+  'en',
+  'de',
+  'des',
+  'du',
+  'la',
+  'le',
+  'et',
+  'mat',
+  'brillant',
+  'brillante',
+  'brillance',
+  'haute',
+  'sombre',
+  'clair',
+  'claire',
+  'fonce',
+  'raye',
+  'rayee',
+  'grain',
+  'bandeau',
+  'ultra',
+  'noble',
+  'nuage',
+  'etain',
+  'tourterelle',
+  'pierre',
+  'grise',
+  'campagne',
+  'force',
+  'tout',
+  'non',
+  'applicable',
+  'integrable',
+  'livre',
+  'oxyde',
+  'oxydee',
 ]);
 
 interface Family {
@@ -93,7 +127,7 @@ const FAMILIES: Family[] = [
 
 /** Flat token -> Family map (aliases are unique across families). */
 const ALIAS_MAP: Map<string, Family> = new Map(
-  FAMILIES.flatMap((f) => f.aliases.map((a) => [a, f] as const)),
+  FAMILIES.flatMap((f) => f.aliases.map((a) => [a, f] as const))
 );
 
 /**
@@ -113,7 +147,9 @@ const UNKNOWN: NormalizedColor = { key: 'unknown', label: '', kind: 'unknown', s
  * null/empty or values with no recognizable color/material token.
  */
 export function normalizeColor(raw: string | null | undefined): NormalizedColor {
-  if (raw == null || !String(raw).trim()) {return UNKNOWN;}
+  if (raw == null || !String(raw).trim()) {
+    return UNKNOWN;
+  }
   const norm = baseNorm(splitCamel(String(raw)));
   const tokens = norm.split(/[^a-z0-9]+/).filter((t) => t.length > 0 && !STOPWORDS.has(t));
 

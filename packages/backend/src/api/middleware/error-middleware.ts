@@ -7,11 +7,7 @@ export { errorHandler } from '../../middleware/error-handler';
 /**
  * Middleware pour gérer les routes non trouvées (404)
  */
-export const notFoundHandler = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-): void => {
+export const notFoundHandler = (req: Request, res: Response, _next: NextFunction): void => {
   res.status(404).json({
     success: false,
     error: {

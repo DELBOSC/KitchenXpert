@@ -97,8 +97,17 @@ describe('EprelApplianceStrategy', () => {
   it('groupe en mm (frigos) : passe les cotes telles quelles', async () => {
     const fridge = {
       size: 54446,
-      hits: [{ eprelRegistrationNumber: 9, modelIdentifier: 'KIL82ADE0', supplierOrTrademark: 'Bosch',
-        energyClass: 'E', dimensionWidth: 558, dimensionHeight: 1772, dimensionDepth: 545 }],
+      hits: [
+        {
+          eprelRegistrationNumber: 9,
+          modelIdentifier: 'KIL82ADE0',
+          supplierOrTrademark: 'Bosch',
+          energyClass: 'E',
+          dimensionWidth: 558,
+          dimensionHeight: 1772,
+          dimensionDepth: 545,
+        },
+      ],
     };
     const s = new EprelApplianceStrategy(mockFetcher(fridge));
     const [p] = await s.fetchProductsByCategory('refrigeratingappliances2019');
@@ -111,8 +120,16 @@ describe('EprelApplianceStrategy', () => {
   it('groupe d unité inconnue : heuristique (<300 => cm) + flag + confidence réduite', async () => {
     const unknown = {
       size: 1,
-      hits: [{ eprelRegistrationNumber: 7, modelIdentifier: 'HOB-X', supplierOrTrademark: 'AEG',
-        dimensionWidth: 60, dimensionHeight: 520, dimensionDepth: 52 }],
+      hits: [
+        {
+          eprelRegistrationNumber: 7,
+          modelIdentifier: 'HOB-X',
+          supplierOrTrademark: 'AEG',
+          dimensionWidth: 60,
+          dimensionHeight: 520,
+          dimensionDepth: 52,
+        },
+      ],
     };
     const s = new EprelApplianceStrategy(mockFetcher(unknown));
     const [p] = await s.fetchProductsByCategory('cookinghobs');
@@ -125,7 +142,9 @@ describe('EprelApplianceStrategy', () => {
 
   it('fetchProductByUrl extrait {group, regNo} et retrouve le produit', async () => {
     const s = new EprelApplianceStrategy(mockFetcher(dishwashers));
-    const r = await s.fetchProductByUrl('https://eprel.ec.europa.eu/screen/product/dishwashers2019/123456');
+    const r = await s.fetchProductByUrl(
+      'https://eprel.ec.europa.eu/screen/product/dishwashers2019/123456'
+    );
     expect(r.success).toBe(true);
     expect(r.product!.sku).toBe('DFN38532X-7609003477');
   });
@@ -142,7 +161,7 @@ describe('EprelApplianceStrategy', () => {
     expect(r).toHaveLength(5); // 2 + 2 + 1
     expect(r.map((x) => x.product!.sku)).toEqual(['M0', 'M1', 'M2', 'M3', 'M4']);
     // 3 requêtes : pages 1,2 (limit 2) + page 3 (limit 1, reste du plafond)
-    expect((fetcher.fetchJson as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(3);
+    expect(fetcher.fetchJson as ReturnType<typeof vi.fn>).toHaveBeenCalledTimes(3);
   });
 
   it('s arrête quand le groupe est épuisé (size), sans dépasser', async () => {
@@ -150,7 +169,7 @@ describe('EprelApplianceStrategy', () => {
     const s = new EprelApplianceStrategy(fetcher, { pageSize: 2, maxProducts: 1000 });
     const r = await s.fetchProductsByCategory('ovens');
     expect(r).toHaveLength(3); // page 1 (2) + page 2 (1 < limit -> stop)
-    expect((fetcher.fetchJson as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(2);
+    expect(fetcher.fetchJson as ReturnType<typeof vi.fn>).toHaveBeenCalledTimes(2);
   });
 
   it('par défaut : 1 page (pas de pagination involontaire)', async () => {
@@ -158,6 +177,6 @@ describe('EprelApplianceStrategy', () => {
     const s = new EprelApplianceStrategy(fetcher); // défaut maxProducts = pageSize = 100
     const r = await s.fetchProductsByCategory('dishwashers2019');
     expect(r).toHaveLength(100);
-    expect((fetcher.fetchJson as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(1);
+    expect(fetcher.fetchJson as ReturnType<typeof vi.fn>).toHaveBeenCalledTimes(1);
   });
 });

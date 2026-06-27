@@ -44,8 +44,8 @@ const KITCHEN_PAGES = {
   'meubles-cuisine': 'cabinet',
   'facades-cuisine': 'facade',
   'plans-de-travail': 'worktop',
-  'electromenager': 'appliance',
-  'poignees': 'handle',
+  electromenager: 'appliance',
+  poignees: 'handle',
   'accessoires-rangement': 'accessory',
 };
 
@@ -101,15 +101,17 @@ export class MobalpaScraper extends BaseScraper {
       const $ = this.parseHtml(html);
 
       // Extract collection links
-      $(SELECTORS.collectionItems + ' a, a[href*="/cuisine/"]').each((_: number, el: cheerio.Element) => {
-        const href = $(el).attr('href');
-        if (href) {
-          const fullUrl = this.resolveUrl(href);
-          if (!urls.includes(fullUrl) && this.isKitchenUrl(fullUrl)) {
-            urls.push(fullUrl);
+      $(SELECTORS.collectionItems + ' a, a[href*="/cuisine/"]').each(
+        (_: number, el: cheerio.Element) => {
+          const href = $(el).attr('href');
+          if (href) {
+            const fullUrl = this.resolveUrl(href);
+            if (!urls.includes(fullUrl) && this.isKitchenUrl(fullUrl)) {
+              urls.push(fullUrl);
+            }
           }
         }
-      });
+      );
 
       // Add known collection URLs if not found
       for (const collection of MOBALPA_COLLECTIONS) {
@@ -272,12 +274,14 @@ export class MobalpaScraper extends BaseScraper {
       const html = await this.getPageContent();
       const $ = this.parseHtml(html);
 
-      const name = $('h1').first().text().trim() ||
-                   $('.collection-title').text().trim() ||
-                   'Mobalpa Collection';
+      const name =
+        $('h1').first().text().trim() ||
+        $('.collection-title').text().trim() ||
+        'Mobalpa Collection';
 
-      const description = $('.collection-description, .intro-text').text().trim() ||
-                         $('meta[name="description"]').attr('content');
+      const description =
+        $('.collection-description, .intro-text').text().trim() ||
+        $('meta[name="description"]').attr('content');
 
       // Extract collection slug
       const slugMatch = url.match(/\/cuisine\/([^\/\?]+)/);
@@ -287,8 +291,9 @@ export class MobalpaScraper extends BaseScraper {
       const collectionInfo = MOBALPA_COLLECTIONS.find((c) => c.slug === slug);
 
       // Get hero/banner image
-      const imageUrl = $('.collection-hero img, .hero-image img').attr('src') ||
-                      $('.banner img').first().attr('src');
+      const imageUrl =
+        $('.collection-hero img, .hero-image img').attr('src') ||
+        $('.banner img').first().attr('src');
 
       // Extract available colors
       const colors: string[] = [];
@@ -301,15 +306,17 @@ export class MobalpaScraper extends BaseScraper {
 
       // Map collection style to valid FacadeStyle
       const styleMap: Record<string, FacadeStyle> = {
-        'modern': 'flat',
-        'minimalist': 'flat',
-        'traditional': 'classic',
-        'shaker': 'shaker',
-        'handleless': 'handleless',
-        'rustic': 'rustic',
-        'industrial': 'flat',
+        modern: 'flat',
+        minimalist: 'flat',
+        traditional: 'classic',
+        shaker: 'shaker',
+        handleless: 'handleless',
+        rustic: 'rustic',
+        industrial: 'flat',
       };
-      const collectionStyle = collectionInfo?.style ? styleMap[collectionInfo.style] || 'flat' : undefined;
+      const collectionStyle = collectionInfo?.style
+        ? styleMap[collectionInfo.style] || 'flat'
+        : undefined;
 
       return {
         brandId: this.config.id,
@@ -351,15 +358,18 @@ export class MobalpaScraper extends BaseScraper {
     });
 
     // Extract main data
-    const name = (jsonData?.name as string) ||
-                 $(SELECTORS.title).text().trim() ||
-                 $('h1').first().text().trim();
+    const name =
+      (jsonData?.name as string) ||
+      $(SELECTORS.title).text().trim() ||
+      $('h1').first().text().trim();
 
-    const reference = $(SELECTORS.reference).text().trim().replace(/[^\w-]/g, '') ||
-                     (jsonData?.sku as string);
+    const reference =
+      $(SELECTORS.reference)
+        .text()
+        .trim()
+        .replace(/[^\w-]/g, '') || (jsonData?.sku as string);
 
-    const description = $(SELECTORS.description).text().trim() ||
-                       (jsonData?.description as string);
+    const description = $(SELECTORS.description).text().trim() || (jsonData?.description as string);
 
     // Price (Mobalpa often doesn't show prices online)
     const priceText = $(SELECTORS.price).text().trim();
@@ -416,16 +426,15 @@ export class MobalpaScraper extends BaseScraper {
     const colors: Array<{ name: string; hex?: string }> = [];
     $(SELECTORS.colors).each((_: number, el: cheerio.Element) => {
       const colorName = $(el).attr('title') || $(el).attr('data-color') || $(el).text().trim();
-      const colorHex = $(el).attr('data-hex') ||
-                      this.extractColorFromStyle($(el).attr('style'));
+      const colorHex = $(el).attr('data-hex') || this.extractColorFromStyle($(el).attr('style'));
       if (colorName) {
         colors.push({ name: colorName, hex: colorHex });
       }
     });
 
     // Material
-    const material = specs['materiau'] || specs['matiere'] ||
-                    this.extractMaterial(name + ' ' + description);
+    const material =
+      specs['materiau'] || specs['matiere'] || this.extractMaterial(name + ' ' + description);
 
     // Categories from breadcrumb
     const categories: string[] = [];
@@ -487,14 +496,23 @@ export class MobalpaScraper extends BaseScraper {
       return 'handle';
     }
 
-    if (combined.includes('four') || combined.includes('hotte') ||
-        combined.includes('réfrigérateur') || combined.includes('lave-vaisselle') ||
-        combined.includes('plaque') || combined.includes('évier')) {
+    if (
+      combined.includes('four') ||
+      combined.includes('hotte') ||
+      combined.includes('réfrigérateur') ||
+      combined.includes('lave-vaisselle') ||
+      combined.includes('plaque') ||
+      combined.includes('évier')
+    ) {
       return 'appliance';
     }
 
-    if (combined.includes('meuble') || combined.includes('caisson') ||
-        combined.includes('colonne') || combined.includes('élément')) {
+    if (
+      combined.includes('meuble') ||
+      combined.includes('caisson') ||
+      combined.includes('colonne') ||
+      combined.includes('élément')
+    ) {
       return 'cabinet';
     }
 
@@ -508,7 +526,9 @@ export class MobalpaScraper extends BaseScraper {
   private createCabinet(data: Record<string, unknown>, url: string): ScrapedProduct | null {
     const name = data.name as string;
     const specs = data.specs as Record<string, string> | undefined;
-    const dimensions = data.dimensions as { width?: number; height?: number; depth?: number } | undefined;
+    const dimensions = data.dimensions as
+      | { width?: number; height?: number; depth?: number }
+      | undefined;
     const cabinetType = this.detectCabinetType(name);
     const cabinetCategory = this.detectCabinetCategory(name);
 
@@ -548,7 +568,7 @@ export class MobalpaScraper extends BaseScraper {
       thicknesses: [this.extractNumber(specs?.['epaisseur']) || 38],
       depths: [600, 650, 900],
       maxLength: this.extractNumber(specs?.['longueur_max']) || 4100,
-      colors: colors?.map(c => ({ name: c.name })),
+      colors: colors?.map((c) => ({ name: c.name })),
       pricePerSquareMeter: data.price as number | undefined,
       url,
     };
@@ -565,13 +585,13 @@ export class MobalpaScraper extends BaseScraper {
 
     // Map collection style to valid FacadeStyle
     const styleMap: Record<string, FacadeStyle> = {
-      'modern': 'flat',
-      'minimalist': 'flat',
-      'traditional': 'classic',
-      'shaker': 'shaker',
-      'handleless': 'handleless',
-      'rustic': 'rustic',
-      'industrial': 'flat',
+      modern: 'flat',
+      minimalist: 'flat',
+      traditional: 'classic',
+      shaker: 'shaker',
+      handleless: 'handleless',
+      rustic: 'rustic',
+      industrial: 'flat',
     };
 
     const facade: CreateFacadeInput = {
@@ -581,10 +601,12 @@ export class MobalpaScraper extends BaseScraper {
       name,
       description: data.description as string | undefined,
       type: 'door',
-      style: collectionInfo?.style ? styleMap[collectionInfo.style] || 'flat' : this.detectFacadeStyle(name),
+      style: collectionInfo?.style
+        ? styleMap[collectionInfo.style] || 'flat'
+        : this.detectFacadeStyle(name),
       material: this.detectFacadeMaterial((data.material as string) || specs?.['materiau'] || ''),
       thickness: this.extractNumber(specs?.['epaisseur']) || 18,
-      colors: colors?.map(c => ({ name: c.name })),
+      colors: colors?.map((c) => ({ name: c.name })),
       url,
     };
 
@@ -604,7 +626,16 @@ export class MobalpaScraper extends BaseScraper {
       type: this.detectHandleType(name),
       style: this.detectHandleStyle(name),
       material: this.detectHandleMaterial((data.material as string) || specs?.['materiau'] || ''),
-      finish: specs?.['finition'] as 'brushed' | 'polished' | 'matte' | 'painted' | 'antique' | 'chrome' | 'black' | 'gold' | undefined,
+      finish: specs?.['finition'] as
+        | 'brushed'
+        | 'polished'
+        | 'matte'
+        | 'painted'
+        | 'antique'
+        | 'chrome'
+        | 'black'
+        | 'gold'
+        | undefined,
       length: dimensions?.width || this.extractNumber(specs?.['longueur']),
       priceUnit: data.price as number | undefined,
       url,
@@ -616,7 +647,9 @@ export class MobalpaScraper extends BaseScraper {
   private createAppliance(data: Record<string, unknown>, url: string): ScrapedProduct | null {
     const name = data.name as string;
     const specs = data.specs as Record<string, string> | undefined;
-    const dimensions = data.dimensions as { width?: number; height?: number; depth?: number } | undefined;
+    const dimensions = data.dimensions as
+      | { width?: number; height?: number; depth?: number }
+      | undefined;
 
     const appliance: CreateApplianceInput = {
       brandId: this.config.id,
@@ -628,7 +661,18 @@ export class MobalpaScraper extends BaseScraper {
       width: dimensions?.width || 600,
       height: dimensions?.height || 600,
       depth: dimensions?.depth || 600,
-      energyClass: specs?.['classe_energetique'] as 'A+++' | 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | undefined,
+      energyClass: specs?.['classe_energetique'] as
+        | 'A+++'
+        | 'A++'
+        | 'A+'
+        | 'A'
+        | 'B'
+        | 'C'
+        | 'D'
+        | 'E'
+        | 'F'
+        | 'G'
+        | undefined,
       power: this.extractNumber(specs?.['puissance']),
       capacity: this.extractNumber(specs?.['capacite']),
       noiseLevel: this.extractNumber(specs?.['niveau_sonore']),
@@ -645,16 +689,20 @@ export class MobalpaScraper extends BaseScraper {
 
   private isKitchenUrl(url: string): boolean {
     const lower = url.toLowerCase();
-    return lower.includes('cuisine') ||
-           lower.includes('meuble') ||
-           lower.includes('plan-de-travail') ||
-           lower.includes('electromenager');
+    return (
+      lower.includes('cuisine') ||
+      lower.includes('meuble') ||
+      lower.includes('plan-de-travail') ||
+      lower.includes('electromenager')
+    );
   }
 
   private isProductUrl(url: string): boolean {
     const lower = url.toLowerCase();
-    return lower.includes('/produit/') ||
-           (lower.includes('/cuisine/') && Boolean(lower.match(/\/[^\/]+\/[^\/]+$/)));
+    return (
+      lower.includes('/produit/') ||
+      (lower.includes('/cuisine/') && Boolean(lower.match(/\/[^\/]+\/[^\/]+$/)))
+    );
   }
 
   private extractCollectionFromUrl(url: string): string {
@@ -743,7 +791,8 @@ export class MobalpaScraper extends BaseScraper {
     if (lower.includes('quartz')) return 'quartz';
     if (lower.includes('granit')) return 'granite';
     if (lower.includes('marbre')) return 'marble';
-    if (lower.includes('bois') || lower.includes('chêne') || lower.includes('noyer')) return 'wood_solid';
+    if (lower.includes('bois') || lower.includes('chêne') || lower.includes('noyer'))
+      return 'wood_solid';
     if (lower.includes('placage') || lower.includes('plaqué')) return 'wood_veneer';
     if (lower.includes('céramique')) return 'ceramic';
     if (lower.includes('compact') || lower.includes('dekton')) return 'compact';
@@ -814,7 +863,9 @@ export class MobalpaScraper extends BaseScraper {
     return 'stainless';
   }
 
-  private detectHandleType(name: string): 'bar' | 'knob' | 'profile' | 'integrated' | 'recessed' | 'cup' | 'edge_pull' {
+  private detectHandleType(
+    name: string
+  ): 'bar' | 'knob' | 'profile' | 'integrated' | 'recessed' | 'cup' | 'edge_pull' {
     const lower = name.toLowerCase();
 
     if (lower.includes('bouton')) return 'knob';

@@ -56,7 +56,10 @@ jest.mock('../services/ai/anthropic.service', () => ({
   },
 }));
 
-import { ComplianceService, ComplianceServiceError } from '../services/compliance/compliance.service';
+import {
+  ComplianceService,
+  ComplianceServiceError,
+} from '../services/compliance/compliance.service';
 
 describe('ComplianceService', () => {
   let service: ComplianceService;
@@ -76,14 +79,22 @@ describe('ComplianceService', () => {
         position: { x: 100, y: 100 },
         rotation: 0,
         metadata: {},
-        product: { name: 'Plaque induction', category: 'hob', dimensions: { width: 60, depth: 50, height: 5 } },
+        product: {
+          name: 'Plaque induction',
+          category: 'hob',
+          dimensions: { width: 60, depth: 50, height: 5 },
+        },
       },
       {
         id: 'item-2',
         position: { x: 200, y: 100 },
         rotation: 0,
         metadata: {},
-        product: { name: 'Evier standard', category: 'sink', dimensions: { width: 80, depth: 50, height: 20 } },
+        product: {
+          name: 'Evier standard',
+          category: 'sink',
+          dimensions: { width: 80, depth: 50, height: 20 },
+        },
       },
     ],
   };
@@ -103,8 +114,8 @@ describe('ComplianceService', () => {
       id: 'rule-2',
       code: 'NF_EN_1116',
       category: 'safety',
-      name: 'Distance min plaque — point d\'eau (60 cm)',
-      description: 'La plaque de cuisson doit être à au moins 60 cm de tout point d\'eau.',
+      name: "Distance min plaque — point d'eau (60 cm)",
+      description: "La plaque de cuisson doit être à au moins 60 cm de tout point d'eau.",
       condition: { type: 'min_distance', source: 'hob', target: 'sink', minCm: 60 },
       severity: 'error',
       isActive: true,
@@ -134,7 +145,10 @@ describe('ComplianceService', () => {
         checkedAt: new Date(),
       });
 
-      const result = await service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId);
+      const result = await service.checkKitchenCompliance(
+        '550e8400-e29b-41d4-a716-446655440000',
+        mockUser.userId
+      );
 
       expect(result.kitchenId).toBe('550e8400-e29b-41d4-a716-446655440000');
       expect(result.userId).toBe(mockUser.userId);
@@ -149,13 +163,13 @@ describe('ComplianceService', () => {
     it('should throw KITCHEN_NOT_FOUND when kitchen does not exist', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.checkKitchenCompliance('non-existent', mockUser.userId),
-      ).rejects.toThrow(ComplianceServiceError);
+      await expect(service.checkKitchenCompliance('non-existent', mockUser.userId)).rejects.toThrow(
+        ComplianceServiceError
+      );
 
-      await expect(
-        service.checkKitchenCompliance('non-existent', mockUser.userId),
-      ).rejects.toThrow('Kitchen non-existent not found');
+      await expect(service.checkKitchenCompliance('non-existent', mockUser.userId)).rejects.toThrow(
+        'Kitchen non-existent not found'
+      );
     });
 
     it('should throw NO_RULES when no active rules exist', async () => {
@@ -163,7 +177,7 @@ describe('ComplianceService', () => {
       mockPrisma.complianceRule.findMany.mockResolvedValue([]);
 
       await expect(
-        service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId),
+        service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId)
       ).rejects.toThrow('No active compliance rules found');
     });
 
@@ -199,9 +213,12 @@ describe('ComplianceService', () => {
         checkedAt: new Date(),
       });
 
-      const result = await service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId);
+      const result = await service.checkKitchenCompliance(
+        '550e8400-e29b-41d4-a716-446655440000',
+        mockUser.userId
+      );
 
-      const failedResult = result.results.find(r => r.status === 'failed');
+      const failedResult = result.results.find((r) => r.status === 'failed');
       expect(failedResult).toBeDefined();
       expect(failedResult!.message).toContain('< 60 cm');
     });
@@ -237,7 +254,10 @@ describe('ComplianceService', () => {
         checkedAt: new Date(),
       });
 
-      const result = await service.checkKitchenCompliance('550e8400-e29b-41d4-a716-446655440000', mockUser.userId);
+      const result = await service.checkKitchenCompliance(
+        '550e8400-e29b-41d4-a716-446655440000',
+        mockUser.userId
+      );
 
       expect(result.results[0].status).toBe('passed');
     });
@@ -313,8 +333,18 @@ describe('ComplianceService', () => {
   describe('getCheckHistory', () => {
     it('should return check history for a kitchen ordered by date desc', async () => {
       const mockHistory = [
-        { id: 'check-2', kitchenId: '550e8400-e29b-41d4-a716-446655440000', status: 'passed', checkedAt: new Date() },
-        { id: 'check-1', kitchenId: '550e8400-e29b-41d4-a716-446655440000', status: 'failed', checkedAt: new Date() },
+        {
+          id: 'check-2',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
+          status: 'passed',
+          checkedAt: new Date(),
+        },
+        {
+          id: 'check-1',
+          kitchenId: '550e8400-e29b-41d4-a716-446655440000',
+          status: 'failed',
+          checkedAt: new Date(),
+        },
       ];
       mockPrisma.complianceCheck.findMany.mockResolvedValue(mockHistory);
 

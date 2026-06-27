@@ -5,7 +5,6 @@ import * as THREE from 'three';
 
 import { logger } from '../../../services/logger';
 
-
 interface VRScene {
   id: string;
   name: string;
@@ -33,8 +32,12 @@ interface CameraPosition {
 }
 
 function addPlaceholderKitchen(scene: THREE.Scene): void {
-  const cabinetMat = new THREE.MeshStandardMaterial({ color: 0xD4A574, roughness: 0.7 });
-  const counterMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.1 });
+  const cabinetMat = new THREE.MeshStandardMaterial({ color: 0xd4a574, roughness: 0.7 });
+  const counterMat = new THREE.MeshStandardMaterial({
+    color: 0x555555,
+    roughness: 0.3,
+    metalness: 0.1,
+  });
   const wallMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.9 });
 
   // Back wall
@@ -147,7 +150,10 @@ const VRViewer: React.FC = () => {
           endpoint += `?${params.toString()}`;
         }
 
-        const response = await fetch(endpoint, { credentials: 'include', signal: controller.signal });
+        const response = await fetch(endpoint, {
+          credentials: 'include',
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           if (response.status === 404) {
@@ -159,7 +165,9 @@ const VRViewer: React.FC = () => {
         const data = (await response.json()) as VRScene;
         setScene(data);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
         setError(errorMessage);
       } finally {
@@ -173,7 +181,9 @@ const VRViewer: React.FC = () => {
 
   // Initialize Three.js renderer when scene is loaded
   useEffect(() => {
-    if (!canvasRef.current || !scene) {return;}
+    if (!canvasRef.current || !scene) {
+      return;
+    }
 
     const canvas = canvasRef.current;
     const width = canvas.clientWidth || window.innerWidth;
@@ -190,7 +200,11 @@ const VRViewer: React.FC = () => {
     cameraRef.current = camera;
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: settings.antiAliasing, alpha: true });
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: settings.antiAliasing,
+      alpha: true,
+    });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = settings.shadows;
@@ -222,21 +236,23 @@ const VRViewer: React.FC = () => {
 
     // If scene has a model URL, try to load it
     if (scene.modelUrl) {
-      import('three/examples/jsm/loaders/GLTFLoader.js').then(({ GLTFLoader }) => {
-        const loader = new GLTFLoader();
-        loader.load(scene.modelUrl!, (gltf) => {
-          gltf.scene.traverse((child) => {
-            if ((child as THREE.Mesh).isMesh) {
-              (child as THREE.Mesh).castShadow = true;
-              (child as THREE.Mesh).receiveShadow = true;
-            }
+      import('three/examples/jsm/loaders/GLTFLoader.js')
+        .then(({ GLTFLoader }) => {
+          const loader = new GLTFLoader();
+          loader.load(scene.modelUrl!, (gltf) => {
+            gltf.scene.traverse((child) => {
+              if ((child as THREE.Mesh).isMesh) {
+                (child as THREE.Mesh).castShadow = true;
+                (child as THREE.Mesh).receiveShadow = true;
+              }
+            });
+            threeScene.add(gltf.scene);
           });
-          threeScene.add(gltf.scene);
+        })
+        .catch(() => {
+          // GLTFLoader not available, add placeholder cubes
+          addPlaceholderKitchen(threeScene);
         });
-      }).catch(() => {
-        // GLTFLoader not available, add placeholder cubes
-        addPlaceholderKitchen(threeScene);
-      });
     } else {
       // No model URL, render a basic kitchen preview
       addPlaceholderKitchen(threeScene);
@@ -267,7 +283,10 @@ const VRViewer: React.FC = () => {
     };
   }, [scene]);
 
-  const handleSettingChange = (key: keyof VRSettings, value: VRSettings[keyof VRSettings]): void => {
+  const handleSettingChange = (
+    key: keyof VRSettings,
+    value: VRSettings[keyof VRSettings]
+  ): void => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -349,7 +368,9 @@ const VRViewer: React.FC = () => {
   };
 
   const handleExportUSDZ = async (): Promise<void> => {
-    if (!sceneRef.current || usdzExporting) {return;}
+    if (!sceneRef.current || usdzExporting) {
+      return;
+    }
 
     setUsdzExporting(true);
     try {
@@ -372,7 +393,12 @@ const VRViewer: React.FC = () => {
       setTimeout(() => URL.revokeObjectURL(url), 5000);
     } catch (err) {
       logger.error('USDZ export failed', err instanceof Error ? err : { error: err });
-      setError(t('vrViewer.usdzExportFailed', 'Failed to export USDZ model. This feature requires a compatible browser.'));
+      setError(
+        t(
+          'vrViewer.usdzExportFailed',
+          'Failed to export USDZ model. This feature requires a compatible browser.'
+        )
+      );
     } finally {
       setUsdzExporting(false);
     }
@@ -438,10 +464,22 @@ const VRViewer: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md w-full text-center">
-          <svg className="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <svg
+            className="w-16 h-16 text-red-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
           </svg>
-          <h2 className="text-white text-xl font-semibold mb-2">{t('vrViewer.unableToLoad', 'Unable to Load VR Scene')}</h2>
+          <h2 className="text-white text-xl font-semibold mb-2">
+            {t('vrViewer.unableToLoad', 'Unable to Load VR Scene')}
+          </h2>
           <p className="text-gray-400 mb-6">{error}</p>
           <div className="flex gap-4 justify-center">
             <button
@@ -451,7 +489,10 @@ const VRViewer: React.FC = () => {
               {t('common.goBack', 'Go Back')}
             </button>
             <button
-              onClick={() => { setError(null); setRetryCount((c) => c + 1); }}
+              onClick={() => {
+                setError(null);
+                setRetryCount((c) => c + 1);
+              }}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               {t('common.tryAgain', 'Try Again')}
@@ -472,10 +513,17 @@ const VRViewer: React.FC = () => {
             className="text-gray-400 hover:text-white transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
           </Link>
-          <h1 className="text-white font-semibold">{scene?.name || t('vrViewer.title', 'VR Kitchen Viewer')}</h1>
+          <h1 className="text-white font-semibold">
+            {scene?.name || t('vrViewer.title', 'VR Kitchen Viewer')}
+          </h1>
         </div>
 
         <div className="flex items-center gap-2">
@@ -484,7 +532,9 @@ const VRViewer: React.FC = () => {
             <button
               onClick={() => handleSettingChange('viewMode', '3d')}
               className={`px-3 py-1 rounded text-sm transition-colors ${
-                settings.viewMode === '3d' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+                settings.viewMode === '3d'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
               3D
@@ -493,7 +543,9 @@ const VRViewer: React.FC = () => {
               onClick={handleEnterVR}
               disabled={!isVRSupported}
               className={`px-3 py-1 rounded text-sm transition-colors ${
-                settings.viewMode === 'vr' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white disabled:opacity-50'
+                settings.viewMode === 'vr'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white disabled:opacity-50'
               }`}
             >
               VR
@@ -502,7 +554,9 @@ const VRViewer: React.FC = () => {
               onClick={handleEnterAR}
               disabled={!isARSupported}
               className={`px-3 py-1 rounded text-sm transition-colors ${
-                settings.viewMode === 'ar' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white disabled:opacity-50'
+                settings.viewMode === 'ar'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white disabled:opacity-50'
               }`}
             >
               AR
@@ -516,9 +570,19 @@ const VRViewer: React.FC = () => {
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isFullscreen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                />
               )}
             </svg>
           </button>
@@ -529,8 +593,18 @@ const VRViewer: React.FC = () => {
             title="Settings"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
           </button>
 
@@ -540,7 +614,12 @@ const VRViewer: React.FC = () => {
             title="Help"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </button>
         </div>
@@ -559,12 +638,29 @@ const VRViewer: React.FC = () => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-6 bg-gray-700 rounded-lg flex items-center justify-center">
-                <svg className="w-16 h-16 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                <svg
+                  className="w-16 h-16 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
                 </svg>
               </div>
-              <h2 className="text-white text-2xl font-semibold mb-2">{t('vrViewer.title', 'VR Kitchen Viewer')}</h2>
+              <h2 className="text-white text-2xl font-semibold mb-2">
+                {t('vrViewer.title', 'VR Kitchen Viewer')}
+              </h2>
               <p className="text-gray-400 max-w-md mx-auto">
                 {t('vrViewer.noScene', 'Select a kitchen design to start the 3D/VR experience.')}
               </p>
@@ -574,8 +670,13 @@ const VRViewer: React.FC = () => {
 
         {/* Camera Info */}
         <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white text-xs px-3 py-2 rounded">
-          <p>Position: ({cameraPosition.x.toFixed(1)}, {cameraPosition.y.toFixed(1)}, {cameraPosition.z.toFixed(1)})</p>
-          <p>Rotation: ({cameraPosition.rotationX.toFixed(1)}, {cameraPosition.rotationY.toFixed(1)})</p>
+          <p>
+            Position: ({cameraPosition.x.toFixed(1)}, {cameraPosition.y.toFixed(1)},{' '}
+            {cameraPosition.z.toFixed(1)})
+          </p>
+          <p>
+            Rotation: ({cameraPosition.rotationX.toFixed(1)}, {cameraPosition.rotationY.toFixed(1)})
+          </p>
         </div>
 
         {/* AR Controls Overlay */}
@@ -584,7 +685,10 @@ const VRViewer: React.FC = () => {
             <div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-auto">
               <div className="bg-black bg-opacity-60 text-white px-4 py-2 rounded-lg text-sm text-center">
                 {arPlacementReady
-                  ? t('vrViewer.arPointToFloor', 'Point your device at the floor to place the kitchen')
+                  ? t(
+                      'vrViewer.arPointToFloor',
+                      'Point your device at the floor to place the kitchen'
+                    )
                   : t('vrViewer.arInitializing', 'Initializing AR...')}
               </div>
             </div>
@@ -611,7 +715,12 @@ const VRViewer: React.FC = () => {
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
               </svg>
               {t('vrViewer.viewInAR', 'View in AR')}
             </button>
@@ -621,7 +730,12 @@ const VRViewer: React.FC = () => {
               className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium disabled:opacity-50"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
               </svg>
               {usdzExporting
                 ? t('vrViewer.exporting', 'Exporting...')
@@ -638,7 +752,12 @@ const VRViewer: React.FC = () => {
             title="Reset Camera"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
             </svg>
           </button>
           <button
@@ -647,8 +766,18 @@ const VRViewer: React.FC = () => {
             title="Take Screenshot"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
           </button>
         </div>
@@ -656,14 +785,20 @@ const VRViewer: React.FC = () => {
         {/* Settings Panel */}
         {showSettings && (
           <div className="absolute top-4 right-4 w-72 bg-gray-800 rounded-lg shadow-xl p-4">
-            <h3 className="text-white font-semibold mb-4">{t('vrViewer.displaySettings', 'Display Settings')}</h3>
+            <h3 className="text-white font-semibold mb-4">
+              {t('vrViewer.displaySettings', 'Display Settings')}
+            </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-400 text-sm mb-2">{t('vrViewer.quality', 'Quality')}</label>
+                <label className="block text-gray-400 text-sm mb-2">
+                  {t('vrViewer.quality', 'Quality')}
+                </label>
                 <select
                   value={settings.quality}
-                  onChange={(e) => handleSettingChange('quality', e.target.value as VRSettings['quality'])}
+                  onChange={(e) =>
+                    handleSettingChange('quality', e.target.value as VRSettings['quality'])
+                  }
                   className="w-full bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-blue-500 outline-none"
                 >
                   <option value="low">Low</option>
@@ -683,7 +818,12 @@ const VRViewer: React.FC = () => {
                 <label key={key} className="flex items-center justify-between cursor-pointer">
                   <span className="text-gray-400 text-sm">{label}</span>
                   <div
-                    onClick={() => handleSettingChange(key as keyof VRSettings, !settings[key as keyof VRSettings])}
+                    onClick={() =>
+                      handleSettingChange(
+                        key as keyof VRSettings,
+                        !settings[key as keyof VRSettings]
+                      )
+                    }
                     className={`w-10 h-6 rounded-full transition-colors cursor-pointer ${
                       settings[key as keyof VRSettings] ? 'bg-blue-600' : 'bg-gray-600'
                     }`}
@@ -741,17 +881,32 @@ const VRViewer: React.FC = () => {
       {/* VR/AR Status Bar */}
       <div className="bg-gray-800 border-t border-gray-700 px-4 py-2 flex items-center justify-between text-sm">
         <div className="flex items-center gap-4 text-gray-400">
-          <span className={`flex items-center gap-1 ${isVRSupported ? 'text-green-400' : 'text-gray-500'}`}>
-            <span className={`w-2 h-2 rounded-full ${isVRSupported ? 'bg-green-400' : 'bg-gray-500'}`} />
-            VR {isVRSupported ? t('vrViewer.ready', 'Ready') : t('vrViewer.notAvailable', 'Not Available')}
+          <span
+            className={`flex items-center gap-1 ${isVRSupported ? 'text-green-400' : 'text-gray-500'}`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${isVRSupported ? 'bg-green-400' : 'bg-gray-500'}`}
+            />
+            VR{' '}
+            {isVRSupported
+              ? t('vrViewer.ready', 'Ready')
+              : t('vrViewer.notAvailable', 'Not Available')}
           </span>
-          <span className={`flex items-center gap-1 ${isARSupported ? 'text-green-400' : 'text-gray-500'}`}>
-            <span className={`w-2 h-2 rounded-full ${isARSupported ? 'bg-green-400' : 'bg-gray-500'}`} />
-            AR {isARSupported ? t('vrViewer.ready', 'Ready') : t('vrViewer.notAvailable', 'Not Available')}
+          <span
+            className={`flex items-center gap-1 ${isARSupported ? 'text-green-400' : 'text-gray-500'}`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${isARSupported ? 'bg-green-400' : 'bg-gray-500'}`}
+            />
+            AR{' '}
+            {isARSupported
+              ? t('vrViewer.ready', 'Ready')
+              : t('vrViewer.notAvailable', 'Not Available')}
           </span>
         </div>
         <div className="text-gray-500">
-          Quality: {settings.quality.charAt(0).toUpperCase() + settings.quality.slice(1)} | Mode: {settings.viewMode.toUpperCase()}
+          Quality: {settings.quality.charAt(0).toUpperCase() + settings.quality.slice(1)} | Mode:{' '}
+          {settings.viewMode.toUpperCase()}
         </div>
       </div>
     </div>

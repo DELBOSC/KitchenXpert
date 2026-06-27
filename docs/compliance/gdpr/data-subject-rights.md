@@ -21,13 +21,15 @@
 
 ## Introduction
 
-Under GDPR, individuals have specific rights regarding their personal data. KitchenXpert facilitates these rights efficiently within required timeframes.
+Under GDPR, individuals have specific rights regarding their personal data.
+KitchenXpert facilitates these rights efficiently within required timeframes.
 
 ### Contact Information
 
 - **Email**: rights@kitchenxpert.com
 - **Online Form**: https://kitchenxpert.com/privacy/rights-request
-- **Mail**: KitchenXpert Inc., Attn: Privacy Team, 123 Design Plaza, San Francisco, CA 94105
+- **Mail**: KitchenXpert Inc., Attn: Privacy Team, 123 Design Plaza, San
+  Francisco, CA 94105
 
 ---
 
@@ -35,7 +37,9 @@ Under GDPR, individuals have specific rights regarding their personal data. Kitc
 
 ### What This Right Means
 
-Data subjects can confirm processing, access their data, and receive information about processing purposes, recipients, retention, rights, sources, and automated decisions.
+Data subjects can confirm processing, access their data, and receive information
+about processing purposes, recipients, retention, rights, sources, and automated
+decisions.
 
 ### How to Exercise
 
@@ -57,11 +61,13 @@ Correct inaccurate data and complete incomplete data.
 
 ### Self-Service
 
-Editable in Account Settings: name, email (verification required), phone, address, preferences
+Editable in Account Settings: name, email (verification required), phone,
+address, preferences
 
 ### Formal Request
 
-For data that cannot be self-edited, submit request with supporting documentation.
+For data that cannot be self-edited, submit request with supporting
+documentation.
 
 ---
 
@@ -77,15 +83,18 @@ For data that cannot be self-edited, submit request with supporting documentatio
 
 ### Exceptions
 
-Legal obligation (tax records 7 years), legal claims, public interest, archiving (anonymized)
+Legal obligation (tax records 7 years), legal claims, public interest, archiving
+(anonymized)
 
 ### What Happens
 
-**Deleted**: Account info, profile, designs, personal analytics, marketing preferences, support tickets
+**Deleted**: Account info, profile, designs, personal analytics, marketing
+preferences, support tickets
 
 **Anonymized**: Order history, usage analytics, error logs
 
-**Retained**: Legal compliance records, fraud prevention data, anonymized statistics
+**Retained**: Legal compliance records, fraud prevention data, anonymized
+statistics
 
 ### Self-Service Deletion
 
@@ -93,7 +102,8 @@ Account Settings > Privacy > Delete Account (30-day grace period)
 
 ### Timeline
 
-Soft delete immediate, grace period 30 days, hard delete day 31, backup purge 90 days
+Soft delete immediate, grace period 30 days, hard delete day 31, backup purge 90
+days
 
 ---
 
@@ -101,7 +111,8 @@ Soft delete immediate, grace period 30 days, hard delete day 31, backup purge 90
 
 ### When Restriction Applies
 
-Accuracy contested, unlawful processing (user prefers restriction), user needs data for legal claims, objection pending
+Accuracy contested, unlawful processing (user prefers restriction), user needs
+data for legal claims, objection pending
 
 ### How It Works
 
@@ -115,7 +126,8 @@ Accuracy contested, unlawful processing (user prefers restriction), user needs d
 
 ### Portable Data
 
-Account data, design data (JSON + images), preferences, order history, saved products
+Account data, design data (JSON + images), preferences, order history, saved
+products
 
 ### Not Portable
 
@@ -145,12 +157,12 @@ Account Settings > Privacy > Personalization > Disable recommendations/analytics
 
 ### Automated Decisions at KitchenXpert
 
-| Feature | Automated? | Significant Effect? | Safeguards |
-|---------|------------|---------------------|------------|
-| AI Design Suggestions | Yes | No | User chooses final |
-| Product Recommendations | Yes | No | User decides |
-| Fraud Detection | Yes | Potentially | Human review |
-| Account Suspension | Partial | Yes | Human review required |
+| Feature                 | Automated? | Significant Effect? | Safeguards            |
+| ----------------------- | ---------- | ------------------- | --------------------- |
+| AI Design Suggestions   | Yes        | No                  | User chooses final    |
+| Product Recommendations | Yes        | No                  | User decides          |
+| Fraud Detection         | Yes        | Potentially         | Human review          |
+| Account Suspension      | Partial    | Yes                 | Human review required |
 
 ### Human Review
 
@@ -162,36 +174,36 @@ Request via rights@kitchenxpert.com, response within 14 days
 
 ### Submission Methods
 
-| Method | Response Time | Verification |
-|--------|---------------|--------------|
-| Self-Service Portal | Immediate | Account login |
-| Email | 5 business days | Identity verification |
-| Online Form | 3 business days | Identity verification |
-| Mail | 10 business days | Identity verification |
+| Method              | Response Time    | Verification          |
+| ------------------- | ---------------- | --------------------- |
+| Self-Service Portal | Immediate        | Account login         |
+| Email               | 5 business days  | Identity verification |
+| Online Form         | 3 business days  | Identity verification |
+| Mail                | 10 business days | Identity verification |
 
 ### Identity Verification Levels
 
-**Level 1**: Confirmation from registered email
-**Level 2**: Email + security questions
-**Level 3**: Email + government ID (erasure, export)
+**Level 1**: Confirmation from registered email **Level 2**: Email + security
+questions **Level 3**: Email + government ID (erasure, export)
 
 ---
 
 ## Response Timelines
 
-| Request Type | Initial Response | Full Response | Extension |
-|--------------|------------------|---------------|-----------|
-| Access | 3 days | 30 days | +60 days |
-| Rectification | 3 days | 30 days | +60 days |
-| Erasure | 3 days | 30 days | +60 days |
-| Restriction | 3 days | 30 days | +60 days |
-| Portability | 3 days | 30 days | +60 days |
-| Objection | 3 days | 30 days | +60 days |
-| Automated Decision Review | 3 days | 14 days | +14 days |
+| Request Type              | Initial Response | Full Response | Extension |
+| ------------------------- | ---------------- | ------------- | --------- |
+| Access                    | 3 days           | 30 days       | +60 days  |
+| Rectification             | 3 days           | 30 days       | +60 days  |
+| Erasure                   | 3 days           | 30 days       | +60 days  |
+| Restriction               | 3 days           | 30 days       | +60 days  |
+| Portability               | 3 days           | 30 days       | +60 days  |
+| Objection                 | 3 days           | 30 days       | +60 days  |
+| Automated Decision Review | 3 days           | 14 days       | +14 days  |
 
 ### Fee Policy
 
-First request free, additional copies reasonable fee, manifestly unfounded may charge/refuse
+First request free, additional copies reasonable fee, manifestly unfounded may
+charge/refuse
 
 ---
 
@@ -201,19 +213,19 @@ First request free, additional copies reasonable fee, manifestly unfounded may c
 
 Subject: Data Subject Access Request - [Your Email]
 
-I exercise my right of access under Article 15 GDPR. Please provide confirmation of processing, copy of my data, and processing information.
+I exercise my right of access under Article 15 GDPR. Please provide confirmation
+of processing, copy of my data, and processing information.
 
-Account Email: [your-email]
-Account Name: [Your Name]
+Account Email: [your-email] Account Name: [Your Name]
 
 ### Erasure Request
 
 Subject: Right to Erasure Request - [Your Email]
 
-I exercise my right to erasure under Article 17 GDPR. Please delete my personal data because: [reason]
+I exercise my right to erasure under Article 17 GDPR. Please delete my personal
+data because: [reason]
 
-Account Email: [your-email]
-Account Name: [Your Name]
+Account Email: [your-email] Account Name: [Your Name]
 
 ---
 
@@ -231,14 +243,14 @@ Account Name: [Your Name]
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
-| Document Owner | Data Protection Officer |
-| Review Frequency | Quarterly |
-| Last Reviewed | 2026-01-10 |
-| Next Review | 2026-04-10 |
-| Version | 2.1 |
+| Property         | Value                   |
+| ---------------- | ----------------------- |
+| Document Owner   | Data Protection Officer |
+| Review Frequency | Quarterly               |
+| Last Reviewed    | 2026-01-10              |
+| Next Review      | 2026-04-10              |
+| Version          | 2.1                     |
 
 ---
 
-*For questions, contact rights@kitchenxpert.com.*
+_For questions, contact rights@kitchenxpert.com._

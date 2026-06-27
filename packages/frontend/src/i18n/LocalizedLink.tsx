@@ -20,19 +20,23 @@ function shouldSkipPrefix(to: string): boolean {
 }
 
 function applyPrefix(to: string, withPrefix: (path: string) => string): string {
-  if (shouldSkipPrefix(to)) {return to;}
+  if (shouldSkipPrefix(to)) {
+    return to;
+  }
   return withPrefix(to);
 }
 
 export function LocalizedLink({
-  to, ...rest
+  to,
+  ...rest
 }: Omit<LinkProps, 'to'> & { to: string }): React.ReactElement {
   const { withPrefix } = useLanguage();
   return <Link to={applyPrefix(to, withPrefix)} {...rest} />;
 }
 
 export function LocalizedNavLink({
-  to, ...rest
+  to,
+  ...rest
 }: Omit<NavLinkProps, 'to'> & { to: string }): React.ReactElement {
   const { withPrefix } = useLanguage();
   return <NavLink to={applyPrefix(to, withPrefix)} {...rest} />;

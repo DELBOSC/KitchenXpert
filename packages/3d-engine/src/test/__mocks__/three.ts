@@ -382,11 +382,7 @@ export class MeshStandardMaterial extends Material {
   emissive: Color;
   emissiveIntensity: number;
 
-  constructor(params?: {
-    color?: number;
-    roughness?: number;
-    metalness?: number;
-  }) {
+  constructor(params?: { color?: number; roughness?: number; metalness?: number }) {
     super();
     this.color = new Color(params?.color);
     this.roughness = params?.roughness ?? 1;
@@ -580,7 +576,10 @@ export class Raycaster {
     // No-op for mock
   }
 
-  intersectObjects(_objects: Object3D[], _recursive?: boolean): { object: Object3D; point: Vector3 }[] {
+  intersectObjects(
+    _objects: Object3D[],
+    _recursive?: boolean
+  ): { object: Object3D; point: Vector3 }[] {
     return [];
   }
 }

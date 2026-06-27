@@ -328,7 +328,11 @@ describe('KitchenRepository', () => {
       };
 
       mockPrismaClient.kitchen.findUnique.mockResolvedValue(originalKitchen);
-      mockPrismaClient.kitchen.create.mockResolvedValue({ ...originalKitchen, id: 'k2', name: 'Original Kitchen (Copy)' });
+      mockPrismaClient.kitchen.create.mockResolvedValue({
+        ...originalKitchen,
+        id: 'k2',
+        name: 'Original Kitchen (Copy)',
+      });
       mockPrismaClient.kitchenConfiguration.create.mockResolvedValue({});
       mockPrismaClient.kitchenItem.createMany.mockResolvedValue({ count: 1 });
 
@@ -341,7 +345,9 @@ describe('KitchenRepository', () => {
     it('should throw error if kitchen not found', async () => {
       mockPrismaClient.kitchen.findUnique.mockResolvedValue(null);
 
-      await expect(repository.duplicate('00000000-0000-0000-0000-000000000000')).rejects.toThrow('Kitchen not found');
+      await expect(repository.duplicate('00000000-0000-0000-0000-000000000000')).rejects.toThrow(
+        'Kitchen not found'
+      );
     });
   });
 });

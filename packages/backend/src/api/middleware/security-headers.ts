@@ -175,11 +175,13 @@ export function createSecurityHeaders() {
 
     // Strict-Transport-Security (HSTS)
     // Only in production to avoid issues with local development
-    hsts: isProduction ? {
-      maxAge: 31536000, // 1 year in seconds
-      includeSubDomains: true,
-      preload: true,
-    } : false,
+    hsts: isProduction
+      ? {
+          maxAge: 31536000, // 1 year in seconds
+          includeSubDomains: true,
+          preload: true,
+        }
+      : false,
 
     // X-XSS-Protection: 0 (modern approach — rely on CSP instead of legacy XSS filter)
     // Setting to false disables helmet's default; we set the header manually below
@@ -224,30 +226,30 @@ function buildPermissionsPolicy(reqPath: string): string {
   const isArVr = AR_VR_PATH_PREFIXES.some((p) => reqPath.startsWith(p));
 
   const directives: Array<[string, string]> = [
-    ['accelerometer',     isArVr ? '(self)' : '()'],
+    ['accelerometer', isArVr ? '(self)' : '()'],
     ['ambient-light-sensor', '()'],
-    ['autoplay',          '(self)'],   // <video autoplay> for product demos
-    ['battery',           '()'],
-    ['camera',            isArVr ? '(self)' : '()'],
-    ['display-capture',   '()'],
-    ['document-domain',   '()'],
-    ['encrypted-media',   '()'],
-    ['fullscreen',        '(self)'],   // 3D designer fullscreen mode
-    ['geolocation',       '(self)'],   // store finder
-    ['gyroscope',         isArVr ? '(self)' : '()'],
-    ['hid',               '()'],
-    ['idle-detection',    '()'],
-    ['interest-cohort',   '()'],       // FLoC opt-out (RGPD)
-    ['magnetometer',      '()'],
-    ['microphone',        isArVr ? '(self)' : '()'],
-    ['midi',              '()'],
-    ['payment',           '(self "https://js.stripe.com")'],
-    ['picture-in-picture','()'],
+    ['autoplay', '(self)'], // <video autoplay> for product demos
+    ['battery', '()'],
+    ['camera', isArVr ? '(self)' : '()'],
+    ['display-capture', '()'],
+    ['document-domain', '()'],
+    ['encrypted-media', '()'],
+    ['fullscreen', '(self)'], // 3D designer fullscreen mode
+    ['geolocation', '(self)'], // store finder
+    ['gyroscope', isArVr ? '(self)' : '()'],
+    ['hid', '()'],
+    ['idle-detection', '()'],
+    ['interest-cohort', '()'], // FLoC opt-out (RGPD)
+    ['magnetometer', '()'],
+    ['microphone', isArVr ? '(self)' : '()'],
+    ['midi', '()'],
+    ['payment', '(self "https://js.stripe.com")'],
+    ['picture-in-picture', '()'],
     ['publickey-credentials-get', '(self)'], // future WebAuthn
-    ['screen-wake-lock',  isArVr ? '(self)' : '()'],
-    ['serial',            '()'],
-    ['sync-xhr',          '()'],
-    ['usb',               '()'],
+    ['screen-wake-lock', isArVr ? '(self)' : '()'],
+    ['serial', '()'],
+    ['sync-xhr', '()'],
+    ['usb', '()'],
     ['xr-spatial-tracking', isArVr ? '(self)' : '()'],
   ];
 
@@ -257,11 +259,7 @@ function buildPermissionsPolicy(reqPath: string): string {
 /**
  * Additional security headers not covered by helmet.
  */
-export function additionalSecurityHeaders(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function additionalSecurityHeaders(req: Request, res: Response, next: NextFunction): void {
   // X-XSS-Protection: 0 — modern approach, rely on CSP instead of legacy XSS filter
   res.setHeader('X-XSS-Protection', '0');
 
@@ -295,11 +293,7 @@ export function additionalSecurityHeaders(
  * Combined security middleware
  * Applies both helmet and additional headers
  */
-export function securityHeaders(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function securityHeaders(req: Request, res: Response, next: NextFunction): void {
   // Apply helmet
   createSecurityHeaders()(req, res, (err) => {
     if (err) {

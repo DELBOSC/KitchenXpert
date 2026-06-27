@@ -7,27 +7,69 @@ jest.mock('three', () => {
   const actual = jest.requireActual('../test/__mocks__/three');
   return {
     ...actual,
-    Sprite: class extends actual.Object3D { constructor() { super(); } },
-    SpriteMaterial: class { constructor(_p?: any) {} dispose = jest.fn(); },
-    CanvasTexture: class { constructor(_c?: any) {} dispose = jest.fn(); },
-    CircleGeometry: class extends actual.BufferGeometry { constructor() { super(); } },
-    LineBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
+    Sprite: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    SpriteMaterial: class {
+      constructor(_p?: any) {}
+      dispose = jest.fn();
+    },
+    CanvasTexture: class {
+      constructor(_c?: any) {}
+      dispose = jest.fn();
+    },
+    CircleGeometry: class extends actual.BufferGeometry {
+      constructor() {
+        super();
+      }
+    },
+    LineBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
     LineDashedMaterial: class extends actual.Material {
-      constructor(_p?: any) { super(); }
+      constructor(_p?: any) {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
     LineLoop: class extends actual.Object3D {
-      constructor() { super(); }
+      constructor() {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
-    MeshBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
-    Group: class extends actual.Object3D { constructor() { super(); } },
-    PointLight: class extends actual.Light { constructor() { super(); } },
-    RectAreaLight: class extends actual.Light { constructor() { super(); } },
+    MeshBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
+    Group: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    PointLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
+    RectAreaLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
   };
 });
 
-import { LayoutGenerator, type GenerationConstraints, type LayoutProposal } from '../ai/layout-generator';
+import {
+  LayoutGenerator,
+  type GenerationConstraints,
+  type LayoutProposal,
+} from '../ai/layout-generator';
 import { getBrandProfile } from '../config/brand-profiles';
 import type { RoomConfig } from '../ai/ai-assistant';
 
@@ -172,9 +214,9 @@ describe('LayoutGenerator', () => {
         expect(proposal.strategy).toHaveProperty('name');
         expect(proposal.strategy).toHaveProperty('walls');
         expect(proposal.strategy).toHaveProperty('description');
-        expect(
-          ['linear', 'l_shape', 'u_shape', 'galley', 'island']
-        ).toContain(proposal.strategy.type);
+        expect(['linear', 'l_shape', 'u_shape', 'galley', 'island']).toContain(
+          proposal.strategy.type
+        );
         expect(proposal.strategy.walls.length).toBeGreaterThan(0);
       }
     });

@@ -19,7 +19,8 @@ export const KitchensSeed: Seed = {
   async run(tx: Transaction): Promise<void> {
     const now = new Date().toISOString();
 
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Kitchen" (id, "projectId", "userId", name, style, layout, width, length, height, "isGenerated", score, metadata, "createdAt", "updatedAt")
       VALUES
         ('k1000000-0000-0000-0000-000000000001',
@@ -58,7 +59,9 @@ export const KitchensSeed: Seed = {
          '{"island": {"width": 180, "depth": 90}}',
          $1, $1)
       ON CONFLICT DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     logger.info('[Seed] Created 4 sample kitchens');
   },

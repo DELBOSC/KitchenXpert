@@ -3,11 +3,13 @@
 All notable changes to the KitchenXpert project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Planned
+
 - Enhanced AI design recommendations with style matching
 - Mobile application (iOS and Android)
 - AR visualization for mobile devices
@@ -18,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2026-01-10
 
 ### Added
+
 - **Core Features**
   - User authentication and authorization (JWT + OAuth2)
   - Kitchen design builder with 3D visualization
@@ -124,18 +127,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Custom alerts
 
 ### Changed
+
 - N/A (Initial release)
 
 ### Deprecated
+
 - N/A (Initial release)
 
 ### Removed
+
 - N/A (Initial release)
 
 ### Fixed
+
 - N/A (Initial release)
 
 ### Security
+
 - Implemented comprehensive security measures (see Security section above)
 - Regular dependency updates and vulnerability scanning
 - Security headers configuration
@@ -144,21 +152,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Release Types
 
 ### Major Version (X.0.0)
+
 Breaking changes that require migration:
+
 - Major API changes
 - Database schema breaking changes
 - Removed deprecated features
 - Significant architecture changes
 
 ### Minor Version (0.X.0)
+
 New features and improvements (backward compatible):
+
 - New API endpoints
 - New features
 - Performance improvements
 - Enhanced functionality
 
 ### Patch Version (0.0.X)
+
 Bug fixes and minor updates:
+
 - Bug fixes
 - Security patches
 - Documentation updates
@@ -167,27 +181,33 @@ Bug fixes and minor updates:
 ## Upgrade Notes
 
 ### Upgrading to 1.0.0
-This is the initial release. Follow the [INSTALLATION.md](./INSTALLATION.md) guide for setup instructions.
+
+This is the initial release. Follow the [INSTALLATION.md](./INSTALLATION.md)
+guide for setup instructions.
 
 ## Breaking Changes
 
 ### Version 1.0.0
+
 - Initial release, no breaking changes
 
 ## Migration Guides
 
 ### Migrating to 1.0.0
+
 This is the initial release. No migration required.
 
 ## Known Issues
 
 ### Version 1.0.0
+
 - AI design generation may take 15-30 seconds for complex designs
 - 3D rendering performance may vary on lower-end devices
 - Export to PDF may have formatting issues with very large designs
 - Mobile web experience is functional but not optimized (native apps planned)
 
-See the [GitHub Issues](https://github.com/kitchenxpert/kitchenxpert/issues) page for a complete list of known issues and their status.
+See the [GitHub Issues](https://github.com/kitchenxpert/kitchenxpert/issues)
+page for a complete list of known issues and their status.
 
 ## Support
 
@@ -200,7 +220,9 @@ See the [GitHub Issues](https://github.com/kitchenxpert/kitchenxpert/issues) pag
 
 Special thanks to all contributors who made version 1.0.0 possible!
 
-See the [Contributors](https://github.com/kitchenxpert/kitchenxpert/graphs/contributors) page for a complete list.
+See the
+[Contributors](https://github.com/kitchenxpert/kitchenxpert/graphs/contributors)
+page for a complete list.
 
 ---
 

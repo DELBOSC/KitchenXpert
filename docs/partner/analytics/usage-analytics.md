@@ -7,6 +7,7 @@ Track product performance, user engagement, and conversion metrics.
 ## Dashboard Overview
 
 **Key Metrics Panel**:
+
 - Product impressions (views in catalog)
 - Click-through rate (CTR)
 - Add-to-design rate
@@ -16,9 +17,11 @@ Track product performance, user engagement, and conversion metrics.
 ## Key Metrics
 
 ### Product Impressions
+
 **Definition**: Number of times products appear in search/browse results
 
 **Benchmarks**:
+
 - Basic tier: 5,000+/month for 100 products
 - Pro tier: 50,000+/month
 - Enterprise: 200,000+/month
@@ -26,9 +29,11 @@ Track product performance, user engagement, and conversion metrics.
 **How to Improve**: Optimize product data, better images, more products
 
 ### Click-Through Rate (CTR)
+
 **Definition**: % of impressions that lead to product page views
 
 **Benchmarks**:
+
 - Good: 8-12%
 - Average: 5-7%
 - Poor: <3%
@@ -36,9 +41,11 @@ Track product performance, user engagement, and conversion metrics.
 **How to Improve**: Better main images, competitive pricing, clear product names
 
 ### Add-to-Design Rate
+
 **Definition**: % of product views that result in adding to kitchen design
 
 **Benchmarks**:
+
 - Good: 20-30%
 - Average: 15-20%
 - Poor: <10%
@@ -46,9 +53,11 @@ Track product performance, user engagement, and conversion metrics.
 **How to Improve**: Complete specifications, 3D models, lifestyle images
 
 ### Design Completion Rate
+
 **Definition**: % of designs with your products that users save/complete
 
 **Benchmarks**:
+
 - Good: 70-80%
 - Average: 60-70%
 - Poor: <50%
@@ -56,9 +65,11 @@ Track product performance, user engagement, and conversion metrics.
 **How to Improve**: Compatible products, accurate dimensions, good variety
 
 ### Conversion Rate
+
 **Definition**: % of completed designs that convert to quotes/orders
 
 **Benchmarks**:
+
 - Platform average: 24%
 - Goal: >20%
 
@@ -79,12 +90,14 @@ Track product performance, user engagement, and conversion metrics.
 ## Product Comparison
 
 **Top Performing Products**:
+
 - Highest impressions
 - Best CTR
 - Most added to designs
 - Highest revenue
 
 **Underperforming Products**:
+
 - Low engagement (<3% CTR)
 - Rarely added to designs
 - No recent sales
@@ -98,6 +111,7 @@ Track product performance, user engagement, and conversion metrics.
 **By Region**: City/regional preferences
 
 **Insights**:
+
 - Regional style preferences
 - Price sensitivity by market
 - Seasonal trends by geography
@@ -105,6 +119,7 @@ Track product performance, user engagement, and conversion metrics.
 ## Device Analytics
 
 **Desktop vs. Mobile vs. VR**:
+
 - Traffic sources
 - Conversion rates by device
 - Design tool usage
@@ -117,4 +132,4 @@ Track product performance, user engagement, and conversion metrics.
 
 **Auto-Delivery**: Email reports scheduled
 
-*Last Updated: 2026-01-10*
+_Last Updated: 2026-01-10_

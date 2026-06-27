@@ -9,6 +9,7 @@ assignees: ''
 ## 📚 Type de Mise à Jour
 
 <!-- Cocher le type de mise à jour nécessaire -->
+
 - [ ] 🐛 Correction - Information incorrecte ou obsolète
 - [ ] ✨ Amélioration - Ajouter du contenu manquant
 - [ ] 🔄 Mise à jour - Synchroniser avec nouvelles features
@@ -20,12 +21,15 @@ assignees: ''
 ## 📍 Emplacement
 
 ### Fichier Concerné
+
 <!-- Indiquer le chemin du fichier ou la section -->
+
 - **Fichier:** `path/to/file.md`
-- **Section:** _____
-- **Ligne(s):** _____
+- **Section:** **\_**
+- **Ligne(s):** **\_**
 
 ### URL (si documentation en ligne)
+
 - **URL:** https://docs.kitchenxpert.com/...
 
 ## ❌ Problème Actuel
@@ -33,6 +37,7 @@ assignees: ''
 <!-- Décrire ce qui est incorrect, manquant ou à améliorer -->
 
 ### Contenu Actuel
+
 <!-- Copier le contenu actuel si applicable -->
 
 ```markdown
@@ -40,6 +45,7 @@ Contenu actuel problématique...
 ```
 
 ### Pourquoi c'est Problématique
+
 <!-- Expliquer pourquoi le contenu actuel est insuffisant -->
 
 ## ✅ Amélioration Proposée
@@ -47,6 +53,7 @@ Contenu actuel problématique...
 <!-- Décrire ou fournir le nouveau contenu -->
 
 ### Nouveau Contenu Proposé
+
 <!-- Fournir le contenu corrigé/amélioré -->
 
 ```markdown
@@ -54,11 +61,13 @@ Nouveau contenu proposé...
 ```
 
 ### Justification
+
 <!-- Pourquoi cette amélioration est-elle nécessaire ? -->
 
 ## 📝 Sections de Documentation Affectées
 
 <!-- Cocher les types de documentation impactés -->
+
 - [ ] README.md (racine du projet)
 - [ ] Documentation API
 - [ ] Guide utilisateur
@@ -71,11 +80,12 @@ Nouveau contenu proposé...
 - [ ] Changelog
 - [ ] Contributing guide
 - [ ] Code comments / JSDoc
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ## 🎯 Module Concerné
 
 <!-- Cocher le(s) module(s) documenté(s) -->
+
 - [ ] 3D Engine
 - [ ] Catalog Providers
 - [ ] Backend API
@@ -90,11 +100,12 @@ Nouveau contenu proposé...
 - [ ] Security
 - [ ] i18n
 - [ ] Général
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ## 👥 Audience Cible
 
 <!-- Qui va lire cette documentation ? -->
+
 - [ ] Utilisateurs finaux (designers de cuisine)
 - [ ] Développeurs frontend
 - [ ] Développeurs backend
@@ -107,6 +118,7 @@ Nouveau contenu proposé...
 ## 📊 Priorité
 
 <!-- Quelle est l'urgence de cette mise à jour ? -->
+
 - [ ] 🔥 Critique - Bloque les utilisateurs ou développeurs
 - [ ] ⚠️ Élevée - Information importante manquante
 - [ ] 📝 Moyenne - Amélioration souhaitable
@@ -127,11 +139,13 @@ Nouveau contenu proposé...
 <!-- Si la doc nécessite des exemples de code -->
 
 ### Exemple Actuel (problématique)
+
 ```typescript
 // Code obsolète ou incorrect
 ```
 
 ### Exemple Proposé (correct)
+
 ```typescript
 // Code à jour et fonctionnel
 ```
@@ -146,19 +160,20 @@ Nouveau contenu proposé...
 - [ ] Schéma de base de données
 - [ ] Wireframes / Maquettes
 - [ ] Capture d'écran
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ## 🌍 Traductions
 
 <!-- Si concerné par les traductions -->
 
 ### Langues à Mettre à Jour
+
 - [ ] 🇫🇷 Français
 - [ ] 🇬🇧 English
 - [ ] 🇩🇪 Deutsch
 - [ ] 🇪🇸 Español
 - [ ] 🇮🇹 Italiano
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ## 💬 Informations Supplémentaires
 
@@ -190,6 +205,8 @@ Nouveau contenu proposé...
 ---
 
 **Note pour les contributeurs:**
-- La documentation suit le style [Microsoft Writing Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
+
+- La documentation suit le style
+  [Microsoft Writing Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
 - Utilisez un langage clair, actif et inclusif
 - Privilégiez les exemples concrets aux descriptions abstraites

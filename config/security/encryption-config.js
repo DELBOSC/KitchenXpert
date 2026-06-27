@@ -36,7 +36,9 @@ const getEncryptionKey = () => {
 
   // Convert hex string to buffer
   if (key.length !== KEY_LENGTH * 2) {
-    throw new Error(`ENCRYPTION_KEY must be ${KEY_LENGTH * 2} hex characters (${KEY_LENGTH} bytes)`);
+    throw new Error(
+      `ENCRYPTION_KEY must be ${KEY_LENGTH * 2} hex characters (${KEY_LENGTH} bytes)`
+    );
   }
 
   return Buffer.from(key, 'hex');
@@ -51,7 +53,7 @@ const ENCRYPTION_KEY = getEncryptionKey();
 const keyRotationConfig = {
   enabled: process.env.KEY_ROTATION_ENABLED === 'true',
   currentKeyId: process.env.CURRENT_KEY_ID || 'key_1',
-  keys: {}
+  keys: {},
 };
 
 // Load encryption keys (current and old keys for rotation)
@@ -106,7 +108,7 @@ const encrypt = (data, keyId = null) => {
       keyId: activeKeyId,
       iv: iv.toString('base64'),
       authTag: authTag.toString('base64'),
-      data: encrypted
+      data: encrypted,
     };
 
     return Buffer.from(JSON.stringify(result)).toString('base64');
@@ -202,7 +204,7 @@ const deriveKey = (password, salt = null, iterations = 100000) => {
 
   return {
     key: key.toString('hex'),
-    salt: saltBuffer.toString('hex')
+    salt: saltBuffer.toString('hex'),
   };
 };
 
@@ -236,7 +238,7 @@ const fieldEncryption = {
    */
   encryptFields: (obj, fields) => {
     const result = { ...obj };
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (result[field] !== undefined && result[field] !== null) {
         result[field] = encrypt(result[field]);
       }
@@ -252,7 +254,7 @@ const fieldEncryption = {
    */
   decryptFields: (obj, fields) => {
     const result = { ...obj };
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (result[field] !== undefined && result[field] !== null) {
         try {
           result[field] = decrypt(result[field]);
@@ -273,9 +275,9 @@ const fieldEncryption = {
   encryptAndHash: (value) => {
     return {
       encrypted: encrypt(value),
-      hash: hmac(value.toLowerCase()) // Case-insensitive search
+      hash: hmac(value.toLowerCase()), // Case-insensitive search
     };
-  }
+  },
 };
 
 /**
@@ -286,7 +288,7 @@ const sensitiveFields = {
   user: ['ssn', 'taxId', 'creditCard', 'bankAccount'],
   payment: ['cardNumber', 'cvv', 'accountNumber'],
   medical: ['diagnosis', 'prescription', 'medicalHistory'],
-  personal: ['address', 'phone', 'dateOfBirth']
+  personal: ['address', 'phone', 'dateOfBirth'],
 };
 
 /**
@@ -298,8 +300,8 @@ const encryptionPlugin = (schema, options = {}) => {
   const encryptedFields = options.fields || [];
 
   // Pre-save hook to encrypt fields
-  schema.pre('save', function(next) {
-    encryptedFields.forEach(field => {
+  schema.pre('save', function (next) {
+    encryptedFields.forEach((field) => {
       if (this[field] && this.isModified(field)) {
         this[field] = encrypt(this[field]);
       }
@@ -308,9 +310,9 @@ const encryptionPlugin = (schema, options = {}) => {
   });
 
   // Post-find hook to decrypt fields
-  schema.post('find', function(docs) {
-    docs.forEach(doc => {
-      encryptedFields.forEach(field => {
+  schema.post('find', function (docs) {
+    docs.forEach((doc) => {
+      encryptedFields.forEach((field) => {
         if (doc[field]) {
           try {
             doc[field] = decrypt(doc[field]);
@@ -323,9 +325,9 @@ const encryptionPlugin = (schema, options = {}) => {
   });
 
   // Post-findOne hook
-  schema.post('findOne', function(doc) {
+  schema.post('findOne', function (doc) {
     if (doc) {
-      encryptedFields.forEach(field => {
+      encryptedFields.forEach((field) => {
         if (doc[field]) {
           try {
             doc[field] = decrypt(doc[field]);
@@ -379,5 +381,5 @@ module.exports = {
   ALGORITHM,
   KEY_LENGTH,
   IV_LENGTH,
-  AUTH_TAG_LENGTH
+  AUTH_TAG_LENGTH,
 };

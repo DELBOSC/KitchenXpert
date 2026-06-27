@@ -32,9 +32,7 @@ export interface SandboxCanvasProps {
 
 const SCALE = 0.01; // store is in cm; THREE units are metres
 
-export function SandboxCanvas({
-  selectedId, onSelect,
-}: SandboxCanvasProps): React.ReactElement {
+export function SandboxCanvas({ selectedId, onSelect }: SandboxCanvasProps): React.ReactElement {
   const mountRef = useRef<HTMLDivElement>(null);
   const items = useSandboxStore((s) => s.project?.kitchen.items ?? []);
   const room = useSandboxStore((s) => s.project?.kitchen ?? null);
@@ -44,7 +42,9 @@ export function SandboxCanvas({
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount) {return;}
+    if (!mount) {
+      return;
+    }
 
     // ---- Scene + camera ------------------------------------------------
     const scene = new THREE.Scene();
@@ -55,7 +55,10 @@ export function SandboxCanvas({
     camera.position.set(4, 4, 5);
     camera.lookAt(0, 0.5, 0);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: 'high-performance',
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.appendChild(renderer.domElement);
@@ -78,7 +81,7 @@ export function SandboxCanvas({
       const h = room.heightCm * SCALE;
       const wall = new THREE.LineSegments(
         new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)),
-        new THREE.LineBasicMaterial({ color: 0x4040ff, transparent: true, opacity: 0.35 }),
+        new THREE.LineBasicMaterial({ color: 0x4040ff, transparent: true, opacity: 0.35 })
       );
       wall.position.set(w / 2, h / 2, d / 2);
       scene.add(wall);
@@ -89,33 +92,34 @@ export function SandboxCanvas({
     scene.add(itemGroup);
 
     const itemMat = new THREE.MeshStandardMaterial({
-      color: 0xe8e8e8, roughness: 0.6, metalness: 0.05,
+      color: 0xe8e8e8,
+      roughness: 0.6,
+      metalness: 0.05,
     });
     const itemSelectedMat = new THREE.MeshStandardMaterial({
-      color: 0xa78bfa, emissive: 0x4c1d95, roughness: 0.4,
+      color: 0xa78bfa,
+      emissive: 0x4c1d95,
+      roughness: 0.4,
     });
 
     function rebuildItems(list: SandboxItem[]): void {
       while (itemGroup.children.length > 0) {
         const c = itemGroup.children[0];
-        if (!c) {break;}
+        if (!c) {
+          break;
+        }
         itemGroup.remove(c);
         if (c instanceof THREE.Mesh) {
           (c.geometry as THREE.BufferGeometry).dispose();
         }
       }
       for (const it of list) {
-        const geo = new THREE.BoxGeometry(
-          it.size.w * SCALE, it.size.h * SCALE, it.size.d * SCALE,
-        );
-        const mesh = new THREE.Mesh(
-          geo,
-          it.id === selectedRef.current ? itemSelectedMat : itemMat,
-        );
+        const geo = new THREE.BoxGeometry(it.size.w * SCALE, it.size.h * SCALE, it.size.d * SCALE);
+        const mesh = new THREE.Mesh(geo, it.id === selectedRef.current ? itemSelectedMat : itemMat);
         mesh.position.set(
           it.position.x * SCALE + (it.size.w * SCALE) / 2,
           it.position.z * SCALE + (it.size.h * SCALE) / 2,
-          it.position.y * SCALE + (it.size.d * SCALE) / 2,
+          it.position.y * SCALE + (it.size.d * SCALE) / 2
         );
         mesh.rotation.y = (it.rotation * Math.PI) / 180;
         mesh.userData.itemId = it.id;
@@ -142,14 +146,21 @@ export function SandboxCanvas({
     updateCamera();
 
     const onPointerDown = (e: PointerEvent): void => {
-      dragging = true; lastX = e.clientX; lastY = e.clientY;
+      dragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
     };
-    const onPointerUp = (): void => { dragging = false; };
+    const onPointerUp = (): void => {
+      dragging = false;
+    };
     const onPointerMove = (e: PointerEvent): void => {
-      if (!dragging) {return;}
+      if (!dragging) {
+        return;
+      }
       azimuth -= (e.clientX - lastX) * 0.005;
       polar = Math.max(0.1, Math.min(Math.PI / 2 - 0.05, polar + (e.clientY - lastY) * 0.005));
-      lastX = e.clientX; lastY = e.clientY;
+      lastX = e.clientX;
+      lastY = e.clientY;
       updateCamera();
     };
     const onWheel = (e: WheelEvent): void => {
@@ -167,8 +178,8 @@ export function SandboxCanvas({
     const ndc = new THREE.Vector2();
     const onClick = (e: MouseEvent): void => {
       const rect = renderer.domElement.getBoundingClientRect();
-      ndc.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
-      ndc.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+      ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(ndc, camera);
       const hits = raycaster.intersectObjects(itemGroup.children, false);
       const first = hits[0];
@@ -234,7 +245,9 @@ export function SandboxCanvas({
     // and re-applies the selected material. Cheaper than threading the
     // selection state into the effect dependencies.
     const current = useSandboxStore.getState().project;
-    if (current) {useSandboxStore.setState({ project: { ...current } });}
+    if (current) {
+      useSandboxStore.setState({ project: { ...current } });
+    }
   }, [selectedId]);
 
   return (

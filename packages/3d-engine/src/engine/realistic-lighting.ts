@@ -18,18 +18,18 @@ export interface SolarLocation {
   latitude: number;
   longitude: number;
   timezone: number;
-  month: number;  // 1-12
-  day: number;    // 1-31
+  month: number; // 1-12
+  day: number; // 1-31
 }
 
 /**
  * Window position description for shadow analysis
  */
 export interface ShadowWindowPosition {
-  wall: string;    // 'back', 'left', 'right', 'front'
+  wall: string; // 'back', 'left', 'right', 'front'
   position: number; // offset along the wall in meters from left corner
-  width: number;    // window width in meters
-  height: number;   // window height in meters
+  width: number; // window width in meters
+  height: number; // window height in meters
 }
 
 /**
@@ -59,8 +59,8 @@ export interface ShadowAnalysis {
 
 export interface RealisticLightingConfig {
   location: GeoLocation;
-  month: number;    // 1-12
-  day: number;      // 1-31
+  month: number; // 1-12
+  day: number; // 1-31
   time: TimeOfDay;
   roomOrientation: number; // degrees — where "back wall" faces
   windows: WindowDefinition[];
@@ -71,22 +71,26 @@ export type LightingPresetId = 'matin_ete' | 'midi_hiver' | 'soir_automne' | 'au
 
 const PRESETS: Record<LightingPresetId, Partial<RealisticLightingConfig>> = {
   matin_ete: {
-    month: 7, day: 15,
+    month: 7,
+    day: 15,
     time: { hour: 8, minute: 0 },
     location: CITY_LOCATIONS['paris']!,
   },
   midi_hiver: {
-    month: 1, day: 15,
+    month: 1,
+    day: 15,
     time: { hour: 12, minute: 30 },
     location: CITY_LOCATIONS['paris']!,
   },
   soir_automne: {
-    month: 10, day: 15,
+    month: 10,
+    day: 15,
     time: { hour: 18, minute: 0 },
     location: CITY_LOCATIONS['paris']!,
   },
   aube_printemps: {
-    month: 4, day: 15,
+    month: 4,
+    day: 15,
     time: { hour: 6, minute: 30 },
     location: CITY_LOCATIONS['paris']!,
   },
@@ -134,7 +138,7 @@ export class RealisticLighting {
     this.lightGroup.add(this.ambientLight);
 
     // Hemisphere (sky/ground)
-    this.hemisphereLight = new THREE.HemisphereLight(0x87CEEB, 0x444444, 0.4);
+    this.hemisphereLight = new THREE.HemisphereLight(0x87ceeb, 0x444444, 0.4);
     this.lightGroup.add(this.hemisphereLight);
 
     // Window lights
@@ -281,12 +285,10 @@ export class RealisticLighting {
         timezone: location.timezone,
       };
 
-      const solar = SolarCalculator.calculateSunPosition(
-        geoLoc,
-        location.month,
-        location.day,
-        { hour, minute: 0 }
-      );
+      const solar = SolarCalculator.calculateSunPosition(geoLoc, location.month, location.day, {
+        hour,
+        minute: 0,
+      });
 
       // Skip if sun is below horizon
       if (solar.altitude <= 0) continue;
@@ -303,19 +305,14 @@ export class RealisticLighting {
 
             // Calculate light at this point from this window
             const dist = Math.sqrt(
-              Math.pow(cellX - win.center.x, 2) +
-              Math.pow(cellZ - win.center.z, 2)
+              Math.pow(cellX - win.center.x, 2) + Math.pow(cellZ - win.center.z, 2)
             );
 
             // Distance-based falloff (inverse square, but capped for indoor)
             const distFactor = 1 / Math.max(1, dist * dist);
 
             // Check if tall items block the light path from window to cell
-            const isBlocked = this.isPathBlocked(
-              win.center,
-              { x: cellX, z: cellZ },
-              tallItems
-            );
+            const isBlocked = this.isPathBlocked(win.center, { x: cellX, z: cellZ }, tallItems);
 
             if (!isBlocked) {
               luxGrid[gx]![gz]! += windowLux * distFactor;
@@ -364,14 +361,19 @@ export class RealisticLighting {
     }
 
     // Determine task lighting needs
-    const taskLightingNeeded = this.determineTaskLighting(items, luxGrid, gridStep, gridWidth, gridDepth);
+    const taskLightingNeeded = this.determineTaskLighting(
+      items,
+      luxGrid,
+      gridStep,
+      gridWidth,
+      gridDepth
+    );
 
     // Calculate natural light score
     const totalCells = gridWidth * gridDepth;
     const wellLitCells = wellLitZones.length;
-    const naturalLightScore = totalCells > 0
-      ? Math.round(Math.min(100, (wellLitCells / totalCells) * 150))
-      : 0;
+    const naturalLightScore =
+      totalCells > 0 ? Math.round(Math.min(100, (wellLitCells / totalCells) * 150)) : 0;
 
     // Generate recommendations
     const recommendations = this.generateShadowRecommendations(
@@ -466,11 +468,16 @@ export class RealisticLighting {
     // Using the room orientation from config, but simplified here:
     // back wall faces South (180), front faces North (0), left faces East (90), right faces West (270)
     switch (wall) {
-      case 'back': return 180;
-      case 'front': return 0;
-      case 'left': return 90;
-      case 'right': return 270;
-      default: return 180;
+      case 'back':
+        return 180;
+      case 'front':
+        return 0;
+      case 'left':
+        return 90;
+      case 'right':
+        return 270;
+      default:
+        return 180;
     }
   }
 
@@ -585,9 +592,10 @@ export class RealisticLighting {
       const luxAtCooktop = getAvgLux(cooktop.position.x, cooktop.position.z);
       taskLighting.push({
         area: 'cooktop',
-        reason: luxAtCooktop < taskLightThreshold
-          ? `Cooktop area requires dedicated task lighting (current ${Math.round(luxAtCooktop)} lux, cooking requires ${taskLightThreshold}+ lux)`
-          : 'Cooktop area always requires dedicated task lighting for safety regardless of natural light level',
+        reason:
+          luxAtCooktop < taskLightThreshold
+            ? `Cooktop area requires dedicated task lighting (current ${Math.round(luxAtCooktop)} lux, cooking requires ${taskLightThreshold}+ lux)`
+            : 'Cooktop area always requires dedicated task lighting for safety regardless of natural light level',
         type: 'recessed',
         suggestedLumens: 1000,
       });
@@ -721,7 +729,7 @@ export class RealisticLighting {
     // Hemisphere — sky color varies
     const skyColor = new THREE.Color().lerpColors(
       new THREE.Color(0x1a1a2e), // night
-      new THREE.Color(0x87CEEB), // day
+      new THREE.Color(0x87ceeb), // day
       solar.intensity
     );
     this.hemisphereLight.color.copy(skyColor);

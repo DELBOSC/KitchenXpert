@@ -14,7 +14,7 @@ export class ClipboardManager {
   private pasteOffset: number = 0.2; // offset each paste by 200mm
 
   copy(objects: THREE.Object3D[]): void {
-    this.clipboard = objects.map(obj => ({
+    this.clipboard = objects.map((obj) => ({
       type: obj.userData.type || 'unknown',
       userData: { ...obj.userData },
       position: { x: obj.position.x, y: obj.position.y, z: obj.position.z },
@@ -28,7 +28,7 @@ export class ClipboardManager {
     if (this.clipboard.length === 0) return null;
 
     // Return copies with offset position
-    return this.clipboard.map(item => ({
+    return this.clipboard.map((item) => ({
       ...item,
       userData: { ...item.userData, id: undefined }, // clear ID so new one is generated
       position: {

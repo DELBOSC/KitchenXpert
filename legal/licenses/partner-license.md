@@ -10,15 +10,17 @@
 
 ## INTRODUCTION
 
-This Partner License Agreement ("Partner License") supplements the KitchenXpert Partner Agreement and governs the specific licenses granted to manufacturers, retailers, distributors, and other partners ("Partner") participating in the KitchenXpert Partner Program.
+This Partner License Agreement ("Partner License") supplements the KitchenXpert
+Partner Agreement and governs the specific licenses granted to manufacturers,
+retailers, distributors, and other partners ("Partner") participating in the
+KitchenXpert Partner Program.
 
-**Licensor:**
-KitchenXpert SAS
-42 Rue de la Cuisine
-75008 Paris, France
-Email: partners@kitchenxpert.com
+**Licensor:** KitchenXpert SAS 42 Rue de la Cuisine 75008 Paris, France Email:
+partners@kitchenxpert.com
 
-This Partner License is incorporated into and forms part of the Partner Agreement. Capitalized terms not defined herein have the meanings ascribed to them in the Partner Agreement.
+This Partner License is incorporated into and forms part of the Partner
+Agreement. Capitalized terms not defined herein have the meanings ascribed to
+them in the Partner Agreement.
 
 ---
 
@@ -26,15 +28,20 @@ This Partner License is incorporated into and forms part of the Partner Agreemen
 
 ### 1.1 Platform Integration License
 
-Subject to the terms of this Partner License and the Partner Agreement, KitchenXpert grants Partner a non-exclusive, non-transferable, limited license to:
+Subject to the terms of this Partner License and the Partner Agreement,
+KitchenXpert grants Partner a non-exclusive, non-transferable, limited license
+to:
 
-a) Integrate Partner's systems with the KitchenXpert Platform through provided APIs and data exchange mechanisms;
+a) Integrate Partner's systems with the KitchenXpert Platform through provided
+APIs and data exchange mechanisms;
 
-b) Display Partner's products, pricing, and availability information within the KitchenXpert product catalog;
+b) Display Partner's products, pricing, and availability information within the
+KitchenXpert product catalog;
 
 c) Receive and process order notifications generated through the Platform;
 
-d) Access the Partner Dashboard to manage catalog, view analytics, and administer Partner's account;
+d) Access the Partner Dashboard to manage catalog, view analytics, and
+administer Partner's account;
 
 e) Use KitchenXpert's partner branding assets in accordance with Section 4; and
 
@@ -51,7 +58,8 @@ This license is limited to:
 
 ### 1.3 Reservation of Rights
 
-All rights not expressly granted in this Partner License are reserved by KitchenXpert. No implied licenses are granted.
+All rights not expressly granted in this Partner License are reserved by
+KitchenXpert. No implied licenses are granted.
 
 ---
 
@@ -59,9 +67,11 @@ All rights not expressly granted in this Partner License are reserved by Kitchen
 
 ### 2.1 API Access Grant
 
-KitchenXpert grants Partner access to the KitchenXpert Partner API ("API") for the following purposes:
+KitchenXpert grants Partner access to the KitchenXpert Partner API ("API") for
+the following purposes:
 
 **Catalog Management:**
+
 - Create, update, and delete product listings
 - Manage product categories and attributes
 - Upload and manage product images
@@ -69,12 +79,14 @@ KitchenXpert grants Partner access to the KitchenXpert Partner API ("API") for t
 - Manage inventory and availability status
 
 **Order Management:**
+
 - Receive order notifications via webhooks
 - Retrieve order details and customer information
 - Update order status and fulfillment information
 - Process cancellations and modifications
 
 **Analytics Access:**
+
 - Retrieve product performance metrics
 - Access sales and conversion data
 - Download reports and analytics exports
@@ -84,12 +96,13 @@ KitchenXpert grants Partner access to the KitchenXpert Partner API ("API") for t
 API access is subject to rate limits based on Partner tier:
 
 | Partner Tier | Requests per Hour | Requests per Day |
-|--------------|-------------------|------------------|
-| Basic | 500 | 5,000 |
-| Pro | 5,000 | 50,000 |
-| Enterprise | 20,000 | Unlimited |
+| ------------ | ----------------- | ---------------- |
+| Basic        | 500               | 5,000            |
+| Pro          | 5,000             | 50,000           |
+| Enterprise   | 20,000            | Unlimited        |
 
-Exceeding rate limits may result in temporary throttling or suspension of API access.
+Exceeding rate limits may result in temporary throttling or suspension of API
+access.
 
 ### 2.3 Webhook Integration
 
@@ -102,7 +115,9 @@ Partner may configure webhooks to receive real-time notifications for:
 - Catalog approval notifications
 - Inventory alerts
 
-Webhooks must be configured through the Partner Dashboard or API. Partner is responsible for maintaining endpoint availability and processing webhook payloads.
+Webhooks must be configured through the Partner Dashboard or API. Partner is
+responsible for maintaining endpoint availability and processing webhook
+payloads.
 
 ### 2.4 API Documentation Access
 
@@ -131,27 +146,32 @@ Partner agrees to:
 
 ### 3.1 License to Receive Data
 
-KitchenXpert grants Partner a limited license to receive and use the following data:
+KitchenXpert grants Partner a limited license to receive and use the following
+data:
 
 **Anonymized User Data:**
+
 - Aggregated user behavior and preferences
 - Search trends and popular categories
 - Geographic distribution of interest
 - Device and platform usage statistics
 
 **Product Performance Data:**
+
 - Views, clicks, and impressions per product
 - Conversion rates and add-to-cart metrics
 - Comparison with category benchmarks
 - Time-based performance trends
 
 **Order Data:**
+
 - Individual order details for Partner's products
 - Customer contact information for fulfillment purposes
 - Delivery addresses and shipping preferences
 - Order history and repeat purchase patterns
 
 **Market Insights (Pro and Enterprise tiers):**
+
 - Category trends and market sizing
 - Competitive positioning (anonymized)
 - Pricing analysis and recommendations
@@ -188,8 +208,10 @@ Partner SHALL:
 
 Partner acknowledges that:
 
-- Personal data received is processed under KitchenXpert's Data Processing Agreement
-- Partner acts as a data processor or independent controller depending on use case
+- Personal data received is processed under KitchenXpert's Data Processing
+  Agreement
+- Partner acts as a data processor or independent controller depending on use
+  case
 - Customer consent has been obtained for data sharing where required
 - Partner must maintain its own GDPR compliance for data it controls
 
@@ -199,7 +221,8 @@ Partner acknowledges that:
 
 ### 4.1 "Available on KitchenXpert" Badge
 
-KitchenXpert grants Partner a limited license to use the "Available on KitchenXpert" badge and associated branding assets on:
+KitchenXpert grants Partner a limited license to use the "Available on
+KitchenXpert" badge and associated branding assets on:
 
 - Partner's website and product pages
 - Marketing materials and brochures
@@ -222,6 +245,7 @@ Pro and Enterprise Partners may access co-marketing materials including:
 Partner agrees to the following brand usage requirements:
 
 **DO:**
+
 - Use official badge artwork provided by KitchenXpert
 - Maintain minimum clear space around badges
 - Use approved color variations only
@@ -229,6 +253,7 @@ Partner agrees to the following brand usage requirements:
 - Submit materials for approval when required
 
 **DO NOT:**
+
 - Modify badge colors, proportions, or elements
 - Place badges on conflicting backgrounds
 - Use badges to imply endorsement beyond the partnership
@@ -245,8 +270,8 @@ Prior written approval is required for:
 - Product packaging with KitchenXpert branding
 - Trade show materials prominently featuring KitchenXpert
 
-Submit approval requests to: partners@kitchenxpert.com
-Response time: Five (5) business days
+Submit approval requests to: partners@kitchenxpert.com Response time: Five (5)
+business days
 
 ---
 
@@ -257,24 +282,28 @@ Response time: Five (5) business days
 Partner grants KitchenXpert a non-exclusive, worldwide, royalty-free license to:
 
 **Display Product Information:**
+
 - Show product names, descriptions, and specifications on the Platform
 - Display pricing, availability, and delivery information
 - Feature products in search results and category pages
 - Include products in AI-generated recommendations
 
 **Include in 3D Designs:**
+
 - Incorporate products into user-created kitchen designs
 - Generate 3D visualizations featuring Partner products
 - Display products in virtual reality and augmented reality experiences
 - Create animations and walkthroughs including products
 
 **Use in Marketing Materials:**
+
 - Feature products in Platform marketing and advertising
 - Include products in case studies and success stories
 - Display products in partner directories and catalogs
 - Use product images in promotional communications
 
 **Create 3D Models:**
+
 - Generate 3D models from product specifications and images
 - Optimize models for Platform rendering
 - Create multiple quality levels for different use cases
@@ -289,7 +318,8 @@ Partner retains all intellectual property rights in:
 - Brand names, trademarks, and trade dress
 - Proprietary technical information
 
-The license granted does not transfer ownership of any Partner intellectual property to KitchenXpert.
+The license granted does not transfer ownership of any Partner intellectual
+property to KitchenXpert.
 
 ### 5.3 3D Model Rights
 
@@ -318,24 +348,28 @@ The license granted to KitchenXpert continues for:
 Partner SHALL NOT:
 
 **Misuse User Data:**
+
 - Contact users for purposes other than order fulfillment
 - Sell or share user personal data with third parties
 - Use data to create competing user profiles or databases
 - Engage in unsolicited marketing to Platform users
 
 **Competitive Activities:**
+
 - Use Platform access to develop a competing product
 - Reverse engineer Platform technology or algorithms
 - Scrape or systematically extract Platform data
 - Recruit KitchenXpert employees or contractors
 
 **Unauthorized API Use:**
+
 - Exceed rate limits or circumvent access controls
 - Access endpoints not authorized for Partner's tier
 - Share API credentials with unauthorized parties
 - Use automated tools to manipulate Platform features
 
 **Brand Misuse:**
+
 - Misrepresent the nature of the partnership
 - Imply endorsement beyond actual relationship
 - Use branding in unauthorized contexts
@@ -357,24 +391,29 @@ Partner must comply with:
 
 ### 7.1 Term Alignment
 
-This Partner License is effective for the duration of the Partner Agreement. Termination of the Partner Agreement automatically terminates this Partner License.
+This Partner License is effective for the duration of the Partner Agreement.
+Termination of the Partner Agreement automatically terminates this Partner
+License.
 
 ### 7.2 Termination Effects
 
 Upon termination:
 
 **Immediate:**
+
 - API access revoked
 - Dashboard access terminated
 - Data feeds discontinued
 - Brand license terminated
 
 **Within Ten (10) Business Days:**
+
 - Product listings removed from Platform
 - Partner profile removed from directory
 - Co-marketing materials recalled
 
 **Within Thirty (30) Days:**
+
 - Final data exports provided upon request
 - Outstanding payments settled
 - Confidential information returned or destroyed
@@ -425,7 +464,9 @@ Partner retains all rights in:
 
 ### 8.3 No Transfer
 
-Nothing in this Partner License transfers ownership of intellectual property from one party to the other. All licenses granted are limited to the purposes expressly stated.
+Nothing in this Partner License transfers ownership of intellectual property
+from one party to the other. All licenses granted are limited to the purposes
+expressly stated.
 
 ---
 
@@ -450,7 +491,8 @@ KitchenXpert warrants that:
 
 ### 9.3 Disclaimer
 
-EXCEPT AS EXPRESSLY PROVIDED, ALL LICENSES AND SERVICES ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+EXCEPT AS EXPRESSLY PROVIDED, ALL LICENSES AND SERVICES ARE PROVIDED "AS IS"
+WITHOUT WARRANTY OF ANY KIND.
 
 ---
 
@@ -458,38 +500,37 @@ EXCEPT AS EXPRESSLY PROVIDED, ALL LICENSES AND SERVICES ARE PROVIDED "AS IS" WIT
 
 ### 10.1 Liability Cap
 
-LIABILITY UNDER THIS PARTNER LICENSE IS SUBJECT TO THE LIMITATIONS IN THE PARTNER AGREEMENT.
+LIABILITY UNDER THIS PARTNER LICENSE IS SUBJECT TO THE LIMITATIONS IN THE
+PARTNER AGREEMENT.
 
 ### 10.2 Exclusions
 
-NEITHER PARTY SHALL BE LIABLE FOR INDIRECT, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM THIS PARTNER LICENSE.
+NEITHER PARTY SHALL BE LIABLE FOR INDIRECT, CONSEQUENTIAL, OR PUNITIVE DAMAGES
+ARISING FROM THIS PARTNER LICENSE.
 
 ---
 
 ## 11. CONTACT INFORMATION
 
-**Partner Support:**
-partners@kitchenxpert.com
+**Partner Support:** partners@kitchenxpert.com
 
-**Technical Support:**
-api-support@kitchenxpert.com
+**Technical Support:** api-support@kitchenxpert.com
 
-**Legal Inquiries:**
-legal@kitchenxpert.com
+**Legal Inquiries:** legal@kitchenxpert.com
 
-**Mailing Address:**
-KitchenXpert SAS
-42 Rue de la Cuisine
-75008 Paris, France
+**Mailing Address:** KitchenXpert SAS 42 Rue de la Cuisine 75008 Paris, France
 
 ---
 
 ## 12. AMENDMENTS
 
-KitchenXpert may update this Partner License with thirty (30) days notice. Material changes will be communicated via email and the Partner Dashboard. Continued participation in the Partner Program constitutes acceptance of updated terms.
+KitchenXpert may update this Partner License with thirty (30) days notice.
+Material changes will be communicated via email and the Partner Dashboard.
+Continued participation in the Partner Program constitutes acceptance of updated
+terms.
 
 ---
 
-*This Partner License is subject to the KitchenXpert Partner Agreement.*
+_This Partner License is subject to the KitchenXpert Partner Agreement._
 
-*Document Version: 1.0 | Last Updated: January 2026*
+_Document Version: 1.0 | Last Updated: January 2026_

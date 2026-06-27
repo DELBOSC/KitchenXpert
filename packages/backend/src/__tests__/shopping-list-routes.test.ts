@@ -111,16 +111,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -146,14 +148,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -279,9 +277,7 @@ describe('Shopping List Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /shopping-list/:kitchenId', async () => {
-      const response = await request(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(401);
+      const response = await request(app).get('/shopping-list/kitchen-1').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -294,9 +290,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue(mockKitchenItems);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.items).toBeDefined();
@@ -309,9 +303,7 @@ describe('Shopping List Routes', () => {
     it('should return 404 when kitchen does not exist', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/shopping-list/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Kitchen not found');
@@ -320,9 +312,7 @@ describe('Shopping List Routes', () => {
     it('should return 403 when non-owner tries to access (IDOR prevention)', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(otherUserKitchen);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-2')
-        .expect(403);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-2').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Access denied');
@@ -333,9 +323,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(otherUserKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue([]);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-2')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-2').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -344,9 +332,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue([]);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.items).toEqual([]);
@@ -359,9 +345,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue(duplicateKitchenItems);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       expect(response.body.success).toBe(true);
       // Two identical items should be grouped into one with quantity 2
@@ -374,9 +358,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue(mockKitchenItems);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       const items = response.body.data.items;
       const categories = items.map((item: any) => item.category);
@@ -390,9 +372,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue(mockKitchenItems);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       const { subtotal, tax, total } = response.body.data;
       // TVA = 20%
@@ -404,9 +384,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue([mockKitchenItems[0]]);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       const item = response.body.data.items[0];
       expect(item.name).toBe('METOD Base Cabinet');
@@ -419,9 +397,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue([mockKitchenItems[2]]);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       const item = response.body.data.items[0];
       expect(item.name).toBe('Bosch Serie 6 Oven');
@@ -434,9 +410,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue([mockKitchenItems[3]]);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       const item = response.body.data.items[0];
       expect(item.name).toBe('Granite Countertop');
@@ -448,9 +422,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue([mockKitchenItems[0]]);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       expect(response.body.data.items[0].sku).toBe('MET-001');
     });
@@ -504,9 +476,7 @@ describe('Shopping List Routes', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
       mockPrisma.kitchenItem.findMany.mockResolvedValue([zeroItem]);
 
-      const response = await authedRequest(app)
-        .get('/shopping-list/kitchen-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/shopping-list/kitchen-1').expect(200);
 
       expect(response.body.data.items[0].unitPrice).toBe(0);
       expect(response.body.data.total).toBe(0);

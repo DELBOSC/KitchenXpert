@@ -25,9 +25,13 @@ const logger = createModuleLogger('scraper-bridge');
 export class ScraperBridgeSyncSource implements SyncSource {
   // The constructor accepts a Prisma client purely for parity with the
   // mock source; the bridge itself only reads from the scraper package.
-  constructor(_prisma: PrismaClient) { void _prisma; }
+  constructor(_prisma: PrismaClient) {
+    void _prisma;
+  }
 
-  async fetchUpdates(providerCode: string): Promise<{ products: ProductUpdate[]; appliances: ApplianceUpdate[] }> {
+  async fetchUpdates(
+    providerCode: string
+  ): Promise<{ products: ProductUpdate[]; appliances: ApplianceUpdate[] }> {
     if (process.env.SCRAPER_BRIDGE_ENABLED !== '1') {
       return { products: [], appliances: [] };
     }
@@ -35,7 +39,7 @@ export class ScraperBridgeSyncSource implements SyncSource {
     type ScraperModule = { getDbQueryService?: () => unknown };
     let scraperModule: ScraperModule;
     try {
-      scraperModule = await import('@kitchenxpert/scraper' as string) as ScraperModule;
+      scraperModule = (await import('@kitchenxpert/scraper' as string)) as ScraperModule;
     } catch {
       logger.warn('[scraper-bridge] @kitchenxpert/scraper not installed — bridge inactive');
       return { products: [], appliances: [] };
@@ -47,8 +51,19 @@ export class ScraperBridgeSyncSource implements SyncSource {
     }
 
     type DbQuery = {
-      getCabinetsByBrand(brand: string): Promise<Array<{ reference: string; price?: number; availability?: string; name?: string }>>;
-      getAppliancesByBrand(brand: string): Promise<Array<{ reference: string; manufacturerBrand: string; price?: number; availability?: string }>>;
+      getCabinetsByBrand(
+        brand: string
+      ): Promise<
+        Array<{ reference: string; price?: number; availability?: string; name?: string }>
+      >;
+      getAppliancesByBrand(brand: string): Promise<
+        Array<{
+          reference: string;
+          manufacturerBrand: string;
+          price?: number;
+          availability?: string;
+        }>
+      >;
     };
 
     const dbQuery = scraperModule.getDbQueryService() as DbQuery;
@@ -77,10 +92,18 @@ export class ScraperBridgeSyncSource implements SyncSource {
 }
 
 function normalize(raw: string | undefined): ProductUpdate['availability'] | undefined {
-  if (!raw) {return undefined;}
+  if (!raw) {
+    return undefined;
+  }
   const v = raw.toLowerCase();
-  if (v.includes('out')) {return 'out_of_stock';}
-  if (v.includes('low') || v.includes('limited')) {return 'low_stock';}
-  if (v.includes('order') || v.includes('on demand')) {return 'on_order';}
+  if (v.includes('out')) {
+    return 'out_of_stock';
+  }
+  if (v.includes('low') || v.includes('limited')) {
+    return 'low_stock';
+  }
+  if (v.includes('order') || v.includes('on demand')) {
+    return 'on_order';
+  }
   return 'in_stock';
 }
