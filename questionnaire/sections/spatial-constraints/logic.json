@@ -4,10 +4,17 @@
   "rules": [
     {
       "id": "small-kitchen-layout-warning",
-      "condition": { "questionId": "kitchen-size", "operator": "equals", "value": "small" },
+      "condition": {
+        "questionId": "kitchen-size",
+        "operator": "equals",
+        "value": "small"
+      },
       "action": {
         "type": "show-message",
-        "message": { "en": "For smaller kitchens, one-wall or galley layouts work best.", "fr": "Pour les petites cuisines, les dispositions linéaires ou couloir fonctionnent mieux." },
+        "message": {
+          "en": "For smaller kitchens, one-wall or galley layouts work best.",
+          "fr": "Pour les petites cuisines, les dispositions linéaires ou couloir fonctionnent mieux."
+        },
         "severity": "info"
       }
     },
@@ -16,25 +23,57 @@
       "condition": {
         "operator": "and",
         "conditions": [
-          { "questionId": "kitchen-size", "operator": "in", "value": ["small", "medium"] },
-          { "questionId": "island-preference", "operator": "in", "value": ["yes-large", "yes-small"] }
+          {
+            "questionId": "kitchen-size",
+            "operator": "in",
+            "value": ["small", "medium"]
+          },
+          {
+            "questionId": "island-preference",
+            "operator": "in",
+            "value": ["yes-large", "yes-small"]
+          }
         ]
       },
       "action": {
         "type": "show-message",
-        "message": { "en": "Your kitchen may be too small for an island. Consider a peninsula.", "fr": "Votre cuisine peut être trop petite pour un îlot. Considérez une péninsule." },
+        "message": {
+          "en": "Your kitchen may be too small for an island. Consider a peninsula.",
+          "fr": "Votre cuisine peut être trop petite pour un îlot. Considérez une péninsule."
+        },
         "severity": "warning"
       }
     }
   ],
   "sectionFlow": {
-    "defaultOrder": ["kitchen-size", "exact-dimensions", "ceiling-height", "current-layout", "desired-layout", "island-preference", "structural-constraints", "open-concept", "storage-needs", "pantry-preference"],
+    "defaultOrder": [
+      "kitchen-size",
+      "exact-dimensions",
+      "ceiling-height",
+      "current-layout",
+      "desired-layout",
+      "island-preference",
+      "structural-constraints",
+      "open-concept",
+      "storage-needs",
+      "pantry-preference"
+    ],
     "adaptiveFlow": true,
     "allowSkip": false,
     "allowBack": true
   },
   "completion": {
-    "requiredQuestions": ["kitchen-size", "ceiling-height", "current-layout", "desired-layout", "island-preference", "structural-constraints", "open-concept", "storage-needs", "pantry-preference"],
+    "requiredQuestions": [
+      "kitchen-size",
+      "ceiling-height",
+      "current-layout",
+      "desired-layout",
+      "island-preference",
+      "structural-constraints",
+      "open-concept",
+      "storage-needs",
+      "pantry-preference"
+    ],
     "minimumAnswered": 9
   }
 }

@@ -194,10 +194,7 @@ export class UserModel implements User {
    */
   static validateCredentials(credentials: UserCredentials): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return (
-      emailRegex.test(credentials.email) &&
-      credentials.password.length >= 8
-    );
+    return emailRegex.test(credentials.email) && credentials.password.length >= 8;
   }
 }
 

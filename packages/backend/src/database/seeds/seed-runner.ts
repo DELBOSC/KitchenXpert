@@ -53,7 +53,7 @@ export class SeedRunner {
    * Register multiple seeds
    */
   registerAll(seeds: Seed[]): void {
-    seeds.forEach(s => this.register(s));
+    seeds.forEach((s) => this.register(s));
   }
 
   /**
@@ -65,7 +65,7 @@ export class SeedRunner {
     const executed = await this.getExecutedSeeds();
     const executedIds = new Set(executed);
 
-    const pending = this.seeds.filter(s => !executedIds.has(s.id));
+    const pending = this.seeds.filter((s) => !executedIds.has(s.id));
 
     if (pending.length === 0) {
       logger.info('[Seed] No pending seeds');
@@ -108,7 +108,7 @@ export class SeedRunner {
    * Run a specific seed
    */
   async runSeed(seedId: string): Promise<void> {
-    const seed = this.seeds.find(s => s.id === seedId);
+    const seed = this.seeds.find((s) => s.id === seedId);
     if (!seed) {
       throw new SeedError('SEED_NOT_FOUND', `Seed ${seedId} not found`);
     }
@@ -123,9 +123,7 @@ export class SeedRunner {
    */
   async cleanup(): Promise<SeedResult> {
     const executed = await this.getExecutedSeeds();
-    const toCleanup = this.seeds
-      .filter(s => executed.includes(s.id) && s.cleanup)
-      .reverse();
+    const toCleanup = this.seeds.filter((s) => executed.includes(s.id) && s.cleanup).reverse();
 
     if (toCleanup.length === 0) {
       logger.info('[Seed] No seeds to cleanup');
@@ -180,13 +178,13 @@ export class SeedRunner {
 
     const executed = await this.getExecutedSeeds();
     const executedSet = new Set(executed);
-    const pending = this.seeds.filter(s => !executedSet.has(s.id));
+    const pending = this.seeds.filter((s) => !executedSet.has(s.id));
 
     return {
       total: this.seeds.length,
       executed: executed.length,
       pending: pending.length,
-      seeds: this.seeds.map(s => ({
+      seeds: this.seeds.map((s) => ({
         id: s.id,
         name: s.name,
         order: s.order,
@@ -211,21 +209,18 @@ export class SeedRunner {
     const result = await this.connection.query<{ id: string }>(
       `SELECT id FROM ${this.options.tableName} ORDER BY executed_at ASC`
     );
-    return result.rows.map(r => r.id);
+    return result.rows.map((r) => r.id);
   }
 
   private async recordSeed(tx: Transaction, seed: Seed): Promise<void> {
-    await tx.execute(
-      `INSERT INTO ${this.options.tableName} (id, name) VALUES ($1, $2)`,
-      [seed.id, seed.name]
-    );
+    await tx.execute(`INSERT INTO ${this.options.tableName} (id, name) VALUES ($1, $2)`, [
+      seed.id,
+      seed.name,
+    ]);
   }
 
   private async removeSeedRecord(tx: Transaction, seedId: string): Promise<void> {
-    await tx.execute(
-      `DELETE FROM ${this.options.tableName} WHERE id = $1`,
-      [seedId]
-    );
+    await tx.execute(`DELETE FROM ${this.options.tableName} WHERE id = $1`, [seedId]);
   }
 }
 
@@ -256,10 +251,7 @@ export class SeedError extends Error {
   }
 }
 
-export function createSeedRunner(
-  connection: Connection,
-  options?: SeedOptions
-): SeedRunner {
+export function createSeedRunner(connection: Connection, options?: SeedOptions): SeedRunner {
   return new SeedRunner(connection, options);
 }
 

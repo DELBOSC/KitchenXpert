@@ -92,7 +92,7 @@ export class BulkImporter {
     console.log('🚀 Bulk Import - KitchenXpert Catalog\n');
 
     // Filtrer les providers selon les options
-    const providers = this.providersConfig.filter(p => {
+    const providers = this.providersConfig.filter((p) => {
       if (options.providers && !options.providers.includes(p.id)) {
         return false;
       }
@@ -163,7 +163,7 @@ export class BulkImporter {
       console.log(`\n✅ ${products.length} produits récupérés`);
 
       if (options.dryRun) {
-        console.log('🔍 Mode dry-run: pas d\'import réel');
+        console.log("🔍 Mode dry-run: pas d'import réel");
         return;
       }
 
@@ -186,7 +186,6 @@ export class BulkImporter {
 
       // Nettoyer le fichier temporaire
       fs.unlinkSync(tempFile);
-
     } catch (error) {
       console.error(`❌ Erreur lors de l'import:`, error.message);
       progress.failed = progress.total;
@@ -266,7 +265,6 @@ export class BulkImporter {
 
         // Respecter le rate limit
         await this.sleep(1000 / provider.rateLimit.requestsPerSecond);
-
       } catch (error) {
         if (error.response?.status === 429) {
           console.log('\n⏳ Rate limit atteint, pause de 60s...');
@@ -305,8 +303,8 @@ export class BulkImporter {
 
     // Intercepteur pour retry automatique
     client.interceptors.response.use(
-      response => response,
-      async error => {
+      (response) => response,
+      async (error) => {
         const config = error.config;
 
         if (!config || !config.retry) {
@@ -355,12 +353,16 @@ export class BulkImporter {
     const cacheFile = this.getCacheFilePath(providerId);
     fs.writeFileSync(
       cacheFile,
-      JSON.stringify({
-        provider: providerId,
-        timestamp: new Date().toISOString(),
-        count: products.length,
-        products,
-      }, null, 2),
+      JSON.stringify(
+        {
+          provider: providerId,
+          timestamp: new Date().toISOString(),
+          count: products.length,
+          products,
+        },
+        null,
+        2
+      ),
       'utf-8'
     );
   }
@@ -427,7 +429,7 @@ export class BulkImporter {
    * Sleep helper
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -465,9 +467,15 @@ Providers disponibles:
   }
 
   // Parser les arguments
-  const providers = args.find(arg => arg.startsWith('--provider='))?.split('=')[1]?.split(',');
-  const categories = args.find(arg => arg.startsWith('--category='))?.split('=')[1]?.split(',');
-  const limitStr = args.find(arg => arg.startsWith('--limit='))?.split('=')[1];
+  const providers = args
+    .find((arg) => arg.startsWith('--provider='))
+    ?.split('=')[1]
+    ?.split(',');
+  const categories = args
+    .find((arg) => arg.startsWith('--category='))
+    ?.split('=')[1]
+    ?.split(',');
+  const limitStr = args.find((arg) => arg.startsWith('--limit='))?.split('=')[1];
   const limit = limitStr ? parseInt(limitStr, 10) : undefined;
   const skipCache = args.includes('--skip-cache');
   const dryRun = args.includes('--dry-run');

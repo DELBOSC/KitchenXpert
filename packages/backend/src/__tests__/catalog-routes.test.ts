@@ -241,7 +241,7 @@ describe('CatalogController', () => {
 
       expect(mockCatalogRepository.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ providerId: 'p1' }),
-        expect.objectContaining({ page: 3, limit: 10 }),
+        expect.objectContaining({ page: 3, limit: 10 })
       );
     });
 
@@ -255,7 +255,7 @@ describe('CatalogController', () => {
 
       expect(mockCatalogRepository.findAll).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ limit: 100 }),
+        expect.objectContaining({ limit: 100 })
       );
     });
 
@@ -269,7 +269,7 @@ describe('CatalogController', () => {
 
       expect(mockCatalogRepository.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ isActive: true }),
-        expect.anything(),
+        expect.anything()
       );
     });
   });
@@ -347,7 +347,7 @@ describe('CatalogController', () => {
           success: true,
           data: providers,
           meta: expect.objectContaining({ total: 2 }),
-        }),
+        })
       );
     });
 
@@ -361,7 +361,7 @@ describe('CatalogController', () => {
       await controller.getProviders(req as Request, res as Response);
 
       expect(mockPrisma.catalogProvider.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { isActive: true } }),
+        expect.objectContaining({ where: { isActive: true } })
       );
     });
 
@@ -375,12 +375,12 @@ describe('CatalogController', () => {
       await controller.getProviders(req as Request, res as Response);
 
       expect(mockPrisma.catalogProvider.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({ skip: 10, take: 10 }),
+        expect.objectContaining({ skip: 10, take: 10 })
       );
       expect(jsonMock).toHaveBeenCalledWith(
         expect.objectContaining({
           meta: expect.objectContaining({ page: 2, limit: 10, total: 100, totalPages: 10 }),
-        }),
+        })
       );
     });
 
@@ -394,7 +394,7 @@ describe('CatalogController', () => {
       await controller.getProviders(req as Request, res as Response);
 
       expect(mockPrisma.catalogProvider.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({ take: 100 }),
+        expect.objectContaining({ take: 100 })
       );
     });
   });
@@ -454,12 +454,17 @@ describe('CatalogController', () => {
           success: true,
           data: mockResult.data,
           meta: expect.objectContaining({ total: 2 }),
-        }),
+        })
       );
     });
 
     it('should pass all filter parameters to repository', async () => {
-      mockProductRepository.findAll.mockResolvedValue({ data: [], total: 0, page: 1, totalPages: 0 });
+      mockProductRepository.findAll.mockResolvedValue({
+        data: [],
+        total: 0,
+        page: 1,
+        totalPages: 0,
+      });
 
       const req = createMockReq({
         query: {
@@ -488,12 +493,17 @@ describe('CatalogController', () => {
           maxPrice: 5000,
           search: 'base cabinet',
         }),
-        expect.objectContaining({ page: 2, limit: 10 }),
+        expect.objectContaining({ page: 2, limit: 10 })
       );
     });
 
     it('should cap limit to 100', async () => {
-      mockProductRepository.findAll.mockResolvedValue({ data: [], total: 0, page: 1, totalPages: 0 });
+      mockProductRepository.findAll.mockResolvedValue({
+        data: [],
+        total: 0,
+        page: 1,
+        totalPages: 0,
+      });
 
       const req = createMockReq({ query: { limit: '200' } });
       const { res } = createMockRes();
@@ -502,14 +512,20 @@ describe('CatalogController', () => {
 
       expect(mockProductRepository.findAll).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ limit: 100 }),
+        expect.objectContaining({ limit: 100 })
       );
     });
   });
 
   describe('getProductById', () => {
     it('should return a product by ID', async () => {
-      const mockProduct = { id: 'p1', name: 'Base Cabinet', price: 500, categoryId: 'cabinets', brand: 'IKEA' };
+      const mockProduct = {
+        id: 'p1',
+        name: 'Base Cabinet',
+        price: 500,
+        categoryId: 'cabinets',
+        brand: 'IKEA',
+      };
       mockProductRepository.findById.mockResolvedValue(mockProduct);
 
       const req = createMockReq({ params: { id: 'p1' } });
@@ -576,7 +592,9 @@ describe('CatalogController', () => {
     it('(b) returns 200 with [] when the SKU exists but offers no recognizable color', async () => {
       mockProductRepository.findBySku.mockResolvedValue({ sku: 'CASTORAMA-CANON0' });
       // A canonical whose only color is data noise -> resolver yields [].
-      mockPrisma.product.findMany.mockResolvedValue([prow('CASTORAMA-CANON0', 'Transparent', true)]);
+      mockPrisma.product.findMany.mockResolvedValue([
+        prow('CASTORAMA-CANON0', 'Transparent', true),
+      ]);
 
       const req = createMockReq({ params: { sku: 'CASTORAMA-CANON0' } });
       const { res, statusMock, jsonMock } = createMockRes();
@@ -734,7 +752,7 @@ describe('CatalogController', () => {
       expect(CacheService.set).toHaveBeenCalledWith(
         'catalog:filters',
         expect.objectContaining({ brands: ['IKEA', 'Bosch'] }),
-        3600,
+        3600
       );
     });
 
@@ -754,7 +772,7 @@ describe('CatalogController', () => {
       expect(CacheService.set).toHaveBeenCalledWith(
         'catalog:filters:cabinets',
         expect.anything(),
-        3600,
+        3600
       );
     });
   });
@@ -850,12 +868,17 @@ describe('CatalogController', () => {
           success: true,
           data: mockResult.data,
           meta: expect.objectContaining({ total: 2 }),
-        }),
+        })
       );
     });
 
     it('should pass all appliance filters to repository', async () => {
-      mockApplianceRepository.findAll.mockResolvedValue({ data: [], total: 0, page: 1, totalPages: 0 });
+      mockApplianceRepository.findAll.mockResolvedValue({
+        data: [],
+        total: 0,
+        page: 1,
+        totalPages: 0,
+      });
 
       const req = createMockReq({
         query: {
@@ -884,7 +907,7 @@ describe('CatalogController', () => {
           hasSmart: true,
           search: 'silent',
         }),
-        expect.objectContaining({ page: 1, limit: 10 }),
+        expect.objectContaining({ page: 1, limit: 10 })
       );
     });
   });
@@ -992,12 +1015,17 @@ describe('CatalogController', () => {
           success: true,
           data: mockResult.data,
           meta: expect.objectContaining({ total: 2 }),
-        }),
+        })
       );
     });
 
     it('should pass all material filters to repository', async () => {
-      mockMaterialRepository.findAll.mockResolvedValue({ data: [], total: 0, page: 1, totalPages: 0 });
+      mockMaterialRepository.findAll.mockResolvedValue({
+        data: [],
+        total: 0,
+        page: 1,
+        totalPages: 0,
+      });
 
       const req = createMockReq({
         query: {
@@ -1026,7 +1054,7 @@ describe('CatalogController', () => {
           maxPrice: 100,
           search: 'oak',
         }),
-        expect.objectContaining({ page: 1, limit: 15 }),
+        expect.objectContaining({ page: 1, limit: 15 })
       );
     });
   });

@@ -1,6 +1,7 @@
 # Contributing to KitchenXpert
 
-First off, thank you for considering contributing to KitchenXpert! It's people like you that make KitchenXpert such a great tool.
+First off, thank you for considering contributing to KitchenXpert! It's people
+like you that make KitchenXpert such a great tool.
 
 Last Updated: 2026-01-10
 
@@ -19,13 +20,18 @@ Last Updated: 2026-01-10
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [KitchenXpert Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to conduct@kitchenxpert.com.
+This project and everyone participating in it is governed by the
+[KitchenXpert Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are
+expected to uphold this code. Please report unacceptable behavior to
+conduct@kitchenxpert.com.
 
 ## How Can I Contribute?
 
 ### Reporting Bugs
 
-Before creating bug reports, please check the [existing issues](https://github.com/kitchenxpert/kitchenxpert/issues) to avoid duplicates.
+Before creating bug reports, please check the
+[existing issues](https://github.com/kitchenxpert/kitchenxpert/issues) to avoid
+duplicates.
 
 **When submitting a bug report, include:**
 
@@ -44,35 +50,35 @@ Before creating bug reports, please check the [existing issues](https://github.c
 **Use this template:**
 
 ```markdown
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Describe the bug** A clear and concise description of what the bug is.
 
-**To Reproduce**
-Steps to reproduce the behavior:
+**To Reproduce** Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Expected behavior** A clear and concise description of what you expected to
+happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Screenshots** If applicable, add screenshots to help explain your problem.
 
 **Environment:**
- - OS: [e.g. Windows 11, macOS 13, Ubuntu 22.04]
- - Node.js: [e.g. v20.10.0]
- - Browser: [e.g. Chrome 120, Firefox 121]
- - Version: [e.g. 1.0.0]
 
-**Additional context**
-Add any other context about the problem here.
+- OS: [e.g. Windows 11, macOS 13, Ubuntu 22.04]
+- Node.js: [e.g. v20.10.0]
+- Browser: [e.g. Chrome 120, Firefox 121]
+- Version: [e.g. 1.0.0]
+
+**Additional context** Add any other context about the problem here.
 ```
 
 ### Suggesting Enhancements
 
-We love to receive enhancement suggestions! Before creating enhancement suggestions, please check the [existing feature requests](https://github.com/kitchenxpert/kitchenxpert/issues?q=is%3Aissue+label%3Aenhancement).
+We love to receive enhancement suggestions! Before creating enhancement
+suggestions, please check the
+[existing feature requests](https://github.com/kitchenxpert/kitchenxpert/issues?q=is%3Aissue+label%3Aenhancement).
 
 **When suggesting an enhancement, include:**
 
@@ -92,7 +98,8 @@ Unsure where to begin? Look for issues labeled:
 
 ### Pull Requests
 
-We actively welcome your pull requests! See the [Pull Request Process](#pull-request-process) section below.
+We actively welcome your pull requests! See the
+[Pull Request Process](#pull-request-process) section below.
 
 ## Development Setup
 
@@ -180,11 +187,13 @@ npm run lint
 We use **ESLint** and **Prettier** for code quality and formatting.
 
 **Configuration:**
+
 - ESLint: `.eslintrc.json`
 - Prettier: `.prettierrc.json`
 - TypeScript: `tsconfig.json`
 
 **Key rules:**
+
 - Use TypeScript for all new code
 - Follow Airbnb style guide
 - Use explicit types (avoid `any`)
@@ -197,6 +206,7 @@ We use **ESLint** and **Prettier** for code quality and formatting.
 - Trailing commas: ES5 style
 
 **Run linting:**
+
 ```bash
 # Check for issues
 npm run lint
@@ -213,17 +223,20 @@ npm run format
 We use **Black**, **isort**, and **flake8** for Python code.
 
 **Configuration:**
+
 - Black: `pyproject.toml`
 - isort: `pyproject.toml`
 - flake8: `.flake8`
 
 **Key rules:**
+
 - Maximum line length: 100 characters
 - Type hints required
 - Docstrings required (Google style)
 - PEP 8 compliance
 
 **Run linting:**
+
 ```bash
 cd services/ai-service
 
@@ -280,9 +293,11 @@ test/e2e-kitchen-designer
 
 ### Conventional Commits
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/) specification.
+We follow [Conventional Commits](https://www.conventionalcommits.org/)
+specification.
 
 **Format:**
+
 ```
 <type>(<scope>): <subject>
 
@@ -292,6 +307,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/) specifica
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -305,6 +321,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/) specifica
 - `revert`: Revert previous commit
 
 **Examples:**
+
 ```bash
 feat(api): add kitchen design export endpoint
 
@@ -320,11 +337,13 @@ test(catalog): add unit tests for product search
 ### Workflow Steps
 
 1. **Create a branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. **Make changes**
+
    ```bash
    # Make your changes
    git add .
@@ -332,12 +351,14 @@ test(catalog): add unit tests for product search
    ```
 
 3. **Keep your branch updated**
+
    ```bash
    git fetch upstream
    git rebase upstream/main
    ```
 
 4. **Push changes**
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -364,32 +385,40 @@ test(catalog): add unit tests for product search
 
 ```markdown
 ## Description
+
 Brief description of the changes
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality to
+      not work as expected)
 - [ ] Documentation update
 
 ## Related Issue
+
 Fixes #(issue number)
 
 ## Changes Made
+
 - Change 1
 - Change 2
 - Change 3
 
 ## Screenshots (if applicable)
+
 Add screenshots here
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] E2E tests pass
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] My code follows the style guidelines
 - [ ] I have performed a self-review
 - [ ] I have commented my code where needed
@@ -400,6 +429,7 @@ Add screenshots here
 - [ ] Any dependent changes have been merged
 
 ## Additional Notes
+
 Any additional information
 ```
 
@@ -455,6 +485,7 @@ All contributions must include appropriate tests.
 ### Test Types
 
 **Unit Tests** (required for all functions)
+
 ```typescript
 // Example Jest test
 describe('calculateKitchenArea', () => {
@@ -471,6 +502,7 @@ describe('calculateKitchenArea', () => {
 ```
 
 **Integration Tests** (for API endpoints)
+
 ```typescript
 describe('POST /api/v1/kitchen/designs', () => {
   it('should create a new design', async () => {
@@ -486,6 +518,7 @@ describe('POST /api/v1/kitchen/designs', () => {
 ```
 
 **E2E Tests** (for critical user flows)
+
 ```typescript
 // Example Cypress test
 describe('Kitchen Design Flow', () => {
@@ -566,7 +599,8 @@ npm run test:e2e
 ### Getting Help
 
 - **Discord**: https://discord.gg/kitchenxpert
-- **GitHub Discussions**: https://github.com/kitchenxpert/kitchenxpert/discussions
+- **GitHub Discussions**:
+  https://github.com/kitchenxpert/kitchenxpert/discussions
 - **Stack Overflow**: Tag questions with `kitchenxpert`
 - **Email**: dev@kitchenxpert.com
 
@@ -580,6 +614,7 @@ npm run test:e2e
 ### Recognition
 
 Contributors are recognized in:
+
 - README.md
 - Release notes
 - Contributors page
@@ -587,12 +622,15 @@ Contributors are recognized in:
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the
+MIT License.
 
 ## Questions?
 
 Don't hesitate to ask! We're here to help:
-- Open a [GitHub Discussion](https://github.com/kitchenxpert/kitchenxpert/discussions)
+
+- Open a
+  [GitHub Discussion](https://github.com/kitchenxpert/kitchenxpert/discussions)
 - Join our [Discord](https://discord.gg/kitchenxpert)
 - Email us at dev@kitchenxpert.com
 

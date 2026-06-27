@@ -87,7 +87,9 @@ export const mockPrismaClient: MockPrismaClient = {
     delete: jest.fn(),
     count: jest.fn(),
   },
-  $transaction: jest.fn((callback: (client: MockPrismaClient) => unknown) => callback(mockPrismaClient)),
+  $transaction: jest.fn((callback: (client: MockPrismaClient) => unknown) =>
+    callback(mockPrismaClient)
+  ),
   $disconnect: jest.fn(),
 };
 

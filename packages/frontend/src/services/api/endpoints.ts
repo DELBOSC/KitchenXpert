@@ -241,7 +241,8 @@ export const API_ENDPOINTS = {
   DESIGN_VERSIONS: {
     BASE: (kitchenId: string) => `/design-versions/${kitchenId}`,
     VERSION: (kitchenId: string, version: number) => `/design-versions/${kitchenId}/${version}`,
-    RESTORE: (kitchenId: string, version: number) => `/design-versions/${kitchenId}/${version}/restore`,
+    RESTORE: (kitchenId: string, version: number) =>
+      `/design-versions/${kitchenId}/${version}/restore`,
   },
 
   // Enrichment (AI-powered catalog enrichment)

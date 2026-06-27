@@ -102,7 +102,17 @@ export class CatalogController {
    * Get all products with filters
    */
   getProducts = asyncHandler(async (req: Request, res: Response) => {
-    const { page = 1, limit = 20, categoryId, brand, material, color, minPrice, maxPrice, search } = req.query;
+    const {
+      page = 1,
+      limit = 20,
+      categoryId,
+      brand,
+      material,
+      color,
+      minPrice,
+      maxPrice,
+      search,
+    } = req.query;
 
     const result = await productRepository.findAll(
       {
@@ -120,7 +130,12 @@ export class CatalogController {
     res.status(200).json({
       success: true,
       data: result.data,
-      meta: { page: result.page, limit: Math.min(Number(limit), 100), total: result.total, totalPages: result.totalPages },
+      meta: {
+        page: result.page,
+        limit: Math.min(Number(limit), 100),
+        total: result.total,
+        totalPages: result.totalPages,
+      },
     });
   });
 
@@ -188,7 +203,12 @@ export class CatalogController {
     const { categoryId } = req.query;
     const cacheKey = categoryId ? `catalog:filters:${categoryId}` : 'catalog:filters';
 
-    const cached = await CacheService.get<{ brands: unknown; materials: unknown; colors: unknown; priceRange: unknown }>(cacheKey);
+    const cached = await CacheService.get<{
+      brands: unknown;
+      materials: unknown;
+      colors: unknown;
+      priceRange: unknown;
+    }>(cacheKey);
     if (cached) {
       res.status(200).json({ success: true, data: cached });
       return;
@@ -249,7 +269,17 @@ export class CatalogController {
    * Get all appliances with filters
    */
   getAppliances = asyncHandler(async (req: Request, res: Response) => {
-    const { page = 1, limit = 20, type, brand, energyRating, minPrice, maxPrice, hasSmart, search } = req.query;
+    const {
+      page = 1,
+      limit = 20,
+      type,
+      brand,
+      energyRating,
+      minPrice,
+      maxPrice,
+      hasSmart,
+      search,
+    } = req.query;
 
     const result = await applianceRepository.findAll(
       {
@@ -267,7 +297,12 @@ export class CatalogController {
     res.status(200).json({
       success: true,
       data: result.data,
-      meta: { page: result.page, limit: Math.min(Number(limit), 100), total: result.total, totalPages: result.totalPages },
+      meta: {
+        page: result.page,
+        limit: Math.min(Number(limit), 100),
+        total: result.total,
+        totalPages: result.totalPages,
+      },
     });
   });
 
@@ -320,7 +355,17 @@ export class CatalogController {
    * Get all materials with filters
    */
   getMaterials = asyncHandler(async (req: Request, res: Response) => {
-    const { page = 1, limit = 20, type, category, maintenanceLevel, ecoRating, minPrice, maxPrice, search } = req.query;
+    const {
+      page = 1,
+      limit = 20,
+      type,
+      category,
+      maintenanceLevel,
+      ecoRating,
+      minPrice,
+      maxPrice,
+      search,
+    } = req.query;
 
     const result = await materialRepository.findAll(
       {
@@ -338,7 +383,12 @@ export class CatalogController {
     res.status(200).json({
       success: true,
       data: result.data,
-      meta: { page: result.page, limit: Math.min(Number(limit), 100), total: result.total, totalPages: result.totalPages },
+      meta: {
+        page: result.page,
+        limit: Math.min(Number(limit), 100),
+        total: result.total,
+        totalPages: result.totalPages,
+      },
     });
   });
 

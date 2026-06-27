@@ -129,8 +129,7 @@ const StyledSidebar = styled.aside<{
 const SidebarHeader = styled.div<{ $isCollapsed: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: ${({ $isCollapsed }) =>
-    $isCollapsed ? 'center' : 'space-between'};
+  justify-content: ${({ $isCollapsed }) => ($isCollapsed ? 'center' : 'space-between')};
   padding: var(--spacing-md, 16px);
   border-bottom: 1px solid var(--color-border, #e5e7eb);
   min-height: 64px;
@@ -241,8 +240,7 @@ const SectionCollapseIcon = styled.span<{ $isExpanded: boolean }>`
   justify-content: center;
   width: 16px;
   height: 16px;
-  transform: ${({ $isExpanded }) =>
-    $isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'};
+  transform: ${({ $isExpanded }) => ($isExpanded ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.2s ease;
 `;
 
@@ -271,8 +269,7 @@ const StyledItem = styled.a<{
   align-items: center;
   gap: var(--spacing-sm, 8px);
   padding: var(--spacing-sm, 8px)
-    ${({ $isCollapsed }) =>
-      $isCollapsed ? 'var(--spacing-sm, 8px)' : 'var(--spacing-md, 16px)'};
+    ${({ $isCollapsed }) => ($isCollapsed ? 'var(--spacing-sm, 8px)' : 'var(--spacing-md, 16px)')};
   padding-left: ${({ $depth, $isCollapsed }) =>
     $isCollapsed ? 'var(--spacing-sm, 8px)' : `${16 + $depth * 16}px`};
   font-size: 14px;
@@ -282,8 +279,7 @@ const StyledItem = styled.a<{
   border-radius: var(--radius-md, 8px);
   cursor: pointer;
   transition: all 0.2s ease;
-  justify-content: ${({ $isCollapsed }) =>
-    $isCollapsed ? 'center' : 'flex-start'};
+  justify-content: ${({ $isCollapsed }) => ($isCollapsed ? 'center' : 'flex-start')};
 
   ${({ $isActive }) =>
     $isActive &&
@@ -342,8 +338,7 @@ const ItemExpandIcon = styled.span<{
   justify-content: center;
   width: 16px;
   height: 16px;
-  transform: ${({ $isExpanded }) =>
-    $isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'};
+  transform: ${({ $isExpanded }) => ($isExpanded ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.2s ease;
 `;
 
@@ -398,10 +393,7 @@ interface SidebarItemComponentProps {
   depth?: number;
 }
 
-const SidebarItemComponent: React.FC<SidebarItemComponentProps> = ({
-  item,
-  depth = 0,
-}) => {
+const SidebarItemComponent: React.FC<SidebarItemComponentProps> = ({ item, depth = 0 }) => {
   const { isCollapsed, variant } = useSidebarContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -466,9 +458,7 @@ const SidebarItemComponent: React.FC<SidebarItemComponentProps> = ({
         >
           {item.icon && <ItemIcon>{item.icon}</ItemIcon>}
           <ItemLabel $isCollapsed={isCollapsed}>{item.label}</ItemLabel>
-          {item.badge && (
-            <ItemBadge $isCollapsed={isCollapsed}>{item.badge}</ItemBadge>
-          )}
+          {item.badge && <ItemBadge $isCollapsed={isCollapsed}>{item.badge}</ItemBadge>}
           {hasChildren && (
             <ItemExpandIcon $isExpanded={isExpanded} $isCollapsed={isCollapsed}>
               <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor">
@@ -497,51 +487,42 @@ interface SidebarSectionComponentProps {
   section: SidebarSection;
 }
 
-const SidebarSectionComponent: React.FC<SidebarSectionComponentProps> = ({
-  section,
-}) => {
+const SidebarSectionComponent: React.FC<SidebarSectionComponentProps> = ({ section }) => {
   const { isCollapsed } = useSidebarContext();
   const [isExpanded, setIsExpanded] = useState(!section.defaultCollapsed);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLUListElement>) => {
-      const focusableItems = listRef.current?.querySelectorAll(
-        'a:not([aria-disabled="true"])'
-      );
-      if (!focusableItems || focusableItems.length === 0) return;
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLUListElement>) => {
+    const focusableItems = listRef.current?.querySelectorAll('a:not([aria-disabled="true"])');
+    if (!focusableItems || focusableItems.length === 0) return;
 
-      const currentIndex = Array.from(focusableItems).findIndex(
-        (el) => el === document.activeElement
-      );
+    const currentIndex = Array.from(focusableItems).findIndex(
+      (el) => el === document.activeElement
+    );
 
-      let nextIndex: number;
+    let nextIndex: number;
 
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          nextIndex =
-            currentIndex < focusableItems.length - 1 ? currentIndex + 1 : 0;
-          (focusableItems[nextIndex] as HTMLElement).focus();
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          nextIndex =
-            currentIndex > 0 ? currentIndex - 1 : focusableItems.length - 1;
-          (focusableItems[nextIndex] as HTMLElement).focus();
-          break;
-        case 'Home':
-          e.preventDefault();
-          (focusableItems[0] as HTMLElement).focus();
-          break;
-        case 'End':
-          e.preventDefault();
-          (focusableItems[focusableItems.length - 1] as HTMLElement).focus();
-          break;
-      }
-    },
-    []
-  );
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        nextIndex = currentIndex < focusableItems.length - 1 ? currentIndex + 1 : 0;
+        (focusableItems[nextIndex] as HTMLElement).focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : focusableItems.length - 1;
+        (focusableItems[nextIndex] as HTMLElement).focus();
+        break;
+      case 'Home':
+        e.preventDefault();
+        (focusableItems[0] as HTMLElement).focus();
+        break;
+      case 'End':
+        e.preventDefault();
+        (focusableItems[focusableItems.length - 1] as HTMLElement).focus();
+        break;
+    }
+  }, []);
 
   return (
     <SectionContainer>

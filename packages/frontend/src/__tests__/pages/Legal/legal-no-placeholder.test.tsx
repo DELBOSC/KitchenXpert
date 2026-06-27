@@ -32,7 +32,7 @@ const wrap = (Component: React.ComponentType): HTMLElement => {
   const { container } = render(
     <MemoryRouter>
       <Component />
-    </MemoryRouter>,
+    </MemoryRouter>
   );
   return container;
 };
@@ -56,9 +56,9 @@ const FORBIDDEN: Array<{ name: string; pattern: RegExp }> = [
 
 const PAGES = [
   { name: 'MentionsLegales', Component: MentionsLegales },
-  { name: 'CGV',             Component: CGV },
-  { name: 'Privacy',         Component: Privacy },
-  { name: 'Cookies',         Component: Cookies },
+  { name: 'CGV', Component: CGV },
+  { name: 'Privacy', Component: Privacy },
+  { name: 'Cookies', Component: Cookies },
 ];
 
 describe('Legal pages — placeholder gate', () => {
@@ -74,9 +74,7 @@ describe('Legal pages — placeholder gate', () => {
             // Surface a helpful preview so the failure points at the line.
             const idx = match.index ?? 0;
             const preview = text.slice(Math.max(0, idx - 40), idx + 80);
-            throw new Error(
-              `${name} still renders "${match[0]}" — context: …${preview}…`,
-            );
+            throw new Error(`${name} still renders "${match[0]}" — context: …${preview}…`);
           }
           expect(match).toBeNull();
         });
@@ -99,8 +97,8 @@ describe('Legal pages — placeholder gate', () => {
     if (stillTodo.length > 0) {
       throw new Error(
         `Legal config has unfilled fields:\n  - ${stillTodo.join('\n  - ')}\n` +
-        `Edit packages/frontend/src/config/legal.ts to provide real values ` +
-        `before deploying to production.`,
+          `Edit packages/frontend/src/config/legal.ts to provide real values ` +
+          `before deploying to production.`
       );
     }
     expect(isLegalConfigComplete()).toBe(true);

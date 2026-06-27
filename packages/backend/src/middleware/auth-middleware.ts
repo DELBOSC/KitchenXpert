@@ -14,11 +14,7 @@ declare global {
   }
 }
 
-export function authenticateToken(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function authenticateToken(req: Request, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
   const token = authHeader?.split(' ')[1]; // Bearer TOKEN
 
@@ -48,11 +44,7 @@ export function authenticateToken(
   }
 }
 
-export function optionalAuth(
-  req: Request,
-  _res: Response,
-  next: NextFunction
-): void {
+export function optionalAuth(req: Request, _res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
   const token = authHeader?.split(' ')[1];
 

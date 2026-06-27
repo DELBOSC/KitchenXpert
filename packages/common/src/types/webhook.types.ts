@@ -174,9 +174,12 @@ export interface WebhookMetrics {
   deliveryRate: number;
   successRate: number;
   averageLatency: number;
-  eventBreakdown: Record<WebhookEvent, {
-    total: number;
-    success: number;
-    failed: number;
-  }>;
+  eventBreakdown: Record<
+    WebhookEvent,
+    {
+      total: number;
+      success: number;
+      failed: number;
+    }
+  >;
 }

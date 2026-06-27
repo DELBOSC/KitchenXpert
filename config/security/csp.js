@@ -50,9 +50,7 @@ function generateCspHeader() {
 
 function cspMiddleware(req, res, next) {
   const reportOnly = isDevelopment;
-  const headerName = reportOnly
-    ? 'Content-Security-Policy-Report-Only'
-    : 'Content-Security-Policy';
+  const headerName = reportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
 
   res.setHeader(headerName, generateCspHeader());
   next();

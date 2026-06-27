@@ -94,7 +94,9 @@ export default function InstallationTracker(): React.ReactElement {
 
   const fetchProject = useCallback(
     async (controller: AbortController) => {
-      if (!id) {return;}
+      if (!id) {
+        return;
+      }
       setIsLoading(true);
       setError(null);
 
@@ -106,7 +108,7 @@ export default function InstallationTracker(): React.ReactElement {
 
         if (!response.ok) {
           if (response.status === 404) {
-            setError(t('tracker.projectNotFound', 'Projet d\'installation introuvable'));
+            setError(t('tracker.projectNotFound', "Projet d'installation introuvable"));
           } else if (response.status === 403) {
             setError(t('tracker.accessDenied', 'Acces refuse'));
           } else {
@@ -128,7 +130,9 @@ export default function InstallationTracker(): React.ReactElement {
         // returning installer.userId. If it matches something, we mark installer view.
         setIsInstallerView(proj.installer.userId !== undefined && proj.installer.userId !== null);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const message =
           err instanceof Error ? err.message : t('tracker.loadError', 'Erreur lors du chargement');
         setError(message);
@@ -136,7 +140,7 @@ export default function InstallationTracker(): React.ReactElement {
         setIsLoading(false);
       }
     },
-    [id, t],
+    [id, t]
   );
 
   useEffect(() => {
@@ -148,7 +152,9 @@ export default function InstallationTracker(): React.ReactElement {
   // ─── Update Project Status ─────────────────────────────────────────────────
 
   const handleStatusUpdate = async (newStatus: string): Promise<void> => {
-    if (!id) {return;}
+    if (!id) {
+      return;
+    }
     setIsUpdating(true);
     setUpdateError(null);
 
@@ -168,7 +174,9 @@ export default function InstallationTracker(): React.ReactElement {
       setRetryCount((c) => c + 1); // Refresh
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : t('tracker.updateError', 'Erreur lors de la mise a jour');
+        err instanceof Error
+          ? err.message
+          : t('tracker.updateError', 'Erreur lors de la mise a jour');
       setUpdateError(message);
     } finally {
       setIsUpdating(false);
@@ -179,7 +187,9 @@ export default function InstallationTracker(): React.ReactElement {
 
   const handleAddMilestone = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    if (!id || !milestoneName.trim()) {return;}
+    if (!id || !milestoneName.trim()) {
+      return;
+    }
 
     setIsAddingMilestone(true);
     setMilestoneError(null);
@@ -201,7 +211,7 @@ export default function InstallationTracker(): React.ReactElement {
 
       if (!response.ok) {
         const result = (await response.json()) as { error?: string };
-        throw new Error(result.error || t('tracker.milestoneError', 'Erreur lors de l\'ajout'));
+        throw new Error(result.error || t('tracker.milestoneError', "Erreur lors de l'ajout"));
       }
 
       setMilestoneName('');
@@ -210,7 +220,7 @@ export default function InstallationTracker(): React.ReactElement {
       setRetryCount((c) => c + 1); // Refresh
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : t('tracker.milestoneError', 'Erreur lors de l\'ajout');
+        err instanceof Error ? err.message : t('tracker.milestoneError', "Erreur lors de l'ajout");
       setMilestoneError(message);
     } finally {
       setIsAddingMilestone(false);
@@ -240,7 +250,13 @@ export default function InstallationTracker(): React.ReactElement {
                   } ${isCurrent ? 'ring-4 ring-blue-200 dark:ring-blue-900' : ''}`}
                 >
                   {isActive ? (
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   ) : (
@@ -310,7 +326,7 @@ export default function InstallationTracker(): React.ReactElement {
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-12 text-center">
             <p className="text-red-600 dark:text-red-400 mb-4">
-              {error || t('tracker.projectNotFound', 'Projet d\'installation introuvable')}
+              {error || t('tracker.projectNotFound', "Projet d'installation introuvable")}
             </p>
             <div className="flex justify-center gap-4">
               <button
@@ -332,7 +348,7 @@ export default function InstallationTracker(): React.ReactElement {
     );
   }
 
-  const milestones = (project.milestones || []);
+  const milestones = project.milestones || [];
 
   // ─── Render ────────────────────────────────────────────────────────────────
 
@@ -344,7 +360,13 @@ export default function InstallationTracker(): React.ReactElement {
           onClick={() => navigate('/marketplace')}
           className="mb-6 inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
           {t('common.back', 'Retour')}
@@ -355,7 +377,7 @@ export default function InstallationTracker(): React.ReactElement {
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {t('tracker.title', 'Suivi d\'installation')}
+                {t('tracker.title', "Suivi d'installation")}
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
                 {t('tracker.installer', 'Installateur')}:{' '}
@@ -375,7 +397,10 @@ export default function InstallationTracker(): React.ReactElement {
                 STATUS_COLORS[project.status] || STATUS_COLORS.pending
               }`}
             >
-              {t(`tracker.status.${project.status}`, STATUS_LABELS[project.status] || project.status)}
+              {t(
+                `tracker.status.${project.status}`,
+                STATUS_LABELS[project.status] || project.status
+              )}
             </span>
           </div>
 
@@ -440,23 +465,31 @@ export default function InstallationTracker(): React.ReactElement {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
               {t('tracker.milestones', 'Jalons du projet')}
             </h2>
-            {isInstallerView && project.status !== 'completed' && project.status !== 'cancelled' && (
-              <button
-                onClick={() => setShowMilestoneForm(!showMilestoneForm)}
-                className="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                {showMilestoneForm
-                  ? t('common.cancel', 'Annuler')
-                  : t('tracker.addMilestone', 'Ajouter un jalon')}
-              </button>
-            )}
+            {isInstallerView &&
+              project.status !== 'completed' &&
+              project.status !== 'cancelled' && (
+                <button
+                  onClick={() => setShowMilestoneForm(!showMilestoneForm)}
+                  className="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  {showMilestoneForm
+                    ? t('common.cancel', 'Annuler')
+                    : t('tracker.addMilestone', 'Ajouter un jalon')}
+                </button>
+              )}
           </div>
 
           {/* Milestone Form */}
           {showMilestoneForm && (
-            <form onSubmit={handleAddMilestone} className="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <form
+              onSubmit={handleAddMilestone}
+              className="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+            >
               <div className="mb-3">
-                <label htmlFor="milestoneName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="milestoneName"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   {t('tracker.milestoneName', 'Nom du jalon')} *
                 </label>
                 <input
@@ -466,12 +499,18 @@ export default function InstallationTracker(): React.ReactElement {
                   onChange={(e) => setMilestoneName(e.target.value)}
                   required
                   maxLength={200}
-                  placeholder={t('tracker.milestoneNamePlaceholder', 'Ex: Demontage des anciens meubles')}
+                  placeholder={t(
+                    'tracker.milestoneNamePlaceholder',
+                    'Ex: Demontage des anciens meubles'
+                  )}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white"
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="milestoneDesc" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="milestoneDesc"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   {t('tracker.milestoneDescription', 'Description (optionnel)')}
                 </label>
                 <textarea
@@ -609,8 +648,18 @@ export default function InstallationTracker(): React.ReactElement {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                    />
                   </svg>
                   {t('tracker.downloadDxf', 'Telecharger DXF')}
                 </a>
@@ -622,8 +671,18 @@ export default function InstallationTracker(): React.ReactElement {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                    />
                   </svg>
                   {t('tracker.downloadBom', 'Telecharger BOM')}
                 </a>

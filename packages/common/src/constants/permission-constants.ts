@@ -13,7 +13,7 @@ export const PERMISSION_ACTIONS = {
   IMPORT: 'import',
 } as const;
 
-export type PermissionActionType = typeof PERMISSION_ACTIONS[keyof typeof PERMISSION_ACTIONS];
+export type PermissionActionType = (typeof PERMISSION_ACTIONS)[keyof typeof PERMISSION_ACTIONS];
 
 export const RESOURCE_TYPES = {
   USER: 'user',
@@ -29,7 +29,7 @@ export const RESOURCE_TYPES = {
   SYSTEM: 'system',
 } as const;
 
-export type ResourceTypeValue = typeof RESOURCE_TYPES[keyof typeof RESOURCE_TYPES];
+export type ResourceTypeValue = (typeof RESOURCE_TYPES)[keyof typeof RESOURCE_TYPES];
 
 export const PERMISSION_SCOPES = {
   OWN: 'own',
@@ -38,7 +38,7 @@ export const PERMISSION_SCOPES = {
   ALL: 'all',
 } as const;
 
-export type PermissionScope = typeof PERMISSION_SCOPES[keyof typeof PERMISSION_SCOPES];
+export type PermissionScope = (typeof PERMISSION_SCOPES)[keyof typeof PERMISSION_SCOPES];
 
 export const SYSTEM_PERMISSIONS = {
   // Users
@@ -51,7 +51,11 @@ export const SYSTEM_PERMISSIONS = {
   'kitchen:create': { resource: 'kitchen', action: 'create', description: 'Créer des cuisines' },
   'kitchen:read': { resource: 'kitchen', action: 'read', description: 'Voir les cuisines' },
   'kitchen:update': { resource: 'kitchen', action: 'update', description: 'Modifier les cuisines' },
-  'kitchen:delete': { resource: 'kitchen', action: 'delete', description: 'Supprimer les cuisines' },
+  'kitchen:delete': {
+    resource: 'kitchen',
+    action: 'delete',
+    description: 'Supprimer les cuisines',
+  },
   'kitchen:share': { resource: 'kitchen', action: 'share', description: 'Partager les cuisines' },
 
   // Projects

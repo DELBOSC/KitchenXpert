@@ -8,7 +8,6 @@ import type { CategoryIdResolver } from './catalog-ingestion.service';
 import type { CategorySlug } from '@kitchenxpert/common';
 import type { PrismaClient } from '@prisma/client';
 
-
 export class PrismaCategoryResolver implements CategoryIdResolver {
   private cache: Map<string, string> | null = null;
 

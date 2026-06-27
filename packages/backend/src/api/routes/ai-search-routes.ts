@@ -1,4 +1,4 @@
-import { Router, type Router as RouterType , type Request, type Response } from 'express';
+import { Router, type Router as RouterType, type Request, type Response } from 'express';
 import { z } from 'zod';
 
 import { AICatalogSearchService } from '../../services/ai/catalog-search.service';
@@ -46,21 +46,27 @@ const catalogSearchSchema = z.object({
  *       429:
  *         description: Rate limit exceeded
  */
-router.post('/catalog', authenticate, aiRateLimiter, validateBody(catalogSearchSchema), asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = req.user?.userId;
-  if (!userId) {
-    res.status(401).json({ success: false, error: 'Not authenticated' });
-    return;
-  }
+router.post(
+  '/catalog',
+  authenticate,
+  aiRateLimiter,
+  validateBody(catalogSearchSchema),
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
-  const { query } = req.body;
-  if (!query || typeof query !== 'string') {
-    res.status(400).json({ success: false, error: 'query is required' });
-    return;
-  }
+    const { query } = req.body;
+    if (!query || typeof query !== 'string') {
+      res.status(400).json({ success: false, error: 'query is required' });
+      return;
+    }
 
-  const result = await searchService.search({ query, userId });
-  res.status(200).json({ success: true, data: result });
-}));
+    const result = await searchService.search({ query, userId });
+    res.status(200).json({ success: true, data: result });
+  })
+);
 
 export default router;

@@ -19,9 +19,7 @@ interface ImportSandboxResponse {
   error?: { message: string };
 }
 
-export async function migrateSandboxToAccount(
-  sandbox: SandboxProject,
-): Promise<string> {
+export async function migrateSandboxToAccount(sandbox: SandboxProject): Promise<string> {
   // Cookies (httpOnly access + refresh) are sent automatically by
   // the browser when the request is same-origin OR when CORS is set
   // up with credentials. The backend's CORS middleware allows it.

@@ -80,7 +80,7 @@ export class ARLiveOverlay {
       70,
       container.clientWidth / container.clientHeight,
       0.01,
-      100,
+      100
     );
 
     // Create renderer with alpha for AR pass-through
@@ -140,9 +140,7 @@ export class ARLiveOverlay {
     }
 
     const overlayRoot =
-      config?.overlayRoot ??
-      document.getElementById('ar-overlay') ??
-      document.body;
+      config?.overlayRoot ?? document.getElementById('ar-overlay') ?? document.body;
 
     const requiredFeatures: string[] = ['hit-test', 'dom-overlay'];
     const optionalFeatures: string[] = [];
@@ -406,7 +404,7 @@ export class ARLiveOverlay {
           }
         },
         'image/png',
-        1.0,
+        1.0
       );
     });
   }
@@ -502,7 +500,7 @@ export class ARLiveOverlay {
         this.reticle.matrix.decompose(
           this.reticle.position,
           this.reticle.quaternion,
-          this.reticle.scale,
+          this.reticle.scale
         );
       }
     } else {

@@ -36,7 +36,7 @@ const SENSITIVE_PATTERNS = [
 const redactSensitiveData = winston.format((info) => {
   let message = typeof info.message === 'string' ? info.message : JSON.stringify(info.message);
 
-  SENSITIVE_PATTERNS.forEach(pattern => {
+  SENSITIVE_PATTERNS.forEach((pattern) => {
     message = message.replace(pattern, (match, group) => {
       return match.replace(group, '***REDACTED***');
     });
@@ -49,7 +49,10 @@ const redactSensitiveData = winston.format((info) => {
   // Redact from metadata objects
   if (info.metadata) {
     info.metadata = JSON.parse(
-      JSON.stringify(info.metadata).replace(/("password"|"token"|"secret"):"[^"]*"/g, '$1:"***REDACTED***"')
+      JSON.stringify(info.metadata).replace(
+        /("password"|"token"|"secret"):"[^"]*"/g,
+        '$1:"***REDACTED***"'
+      )
     );
   }
 
@@ -64,21 +67,23 @@ const consoleFormat = winston.format.combine(
   winston.format.colorize(),
   winston.format.errors({ stack: true }),
   redactSensitiveData(),
-  winston.format.printf(({ timestamp, level, message, service, requestId, userId, ...metadata }) => {
-    let log = `${timestamp} [${level}]`;
+  winston.format.printf(
+    ({ timestamp, level, message, service, requestId, userId, ...metadata }) => {
+      let log = `${timestamp} [${level}]`;
 
-    if (service) log += ` [${service}]`;
-    if (requestId) log += ` [req:${requestId}]`;
-    if (userId) log += ` [user:${userId}]`;
+      if (service) log += ` [${service}]`;
+      if (requestId) log += ` [req:${requestId}]`;
+      if (userId) log += ` [user:${userId}]`;
 
-    log += `: ${message}`;
+      log += `: ${message}`;
 
-    if (Object.keys(metadata).length > 0) {
-      log += ` ${JSON.stringify(metadata)}`;
+      if (Object.keys(metadata).length > 0) {
+        log += ` ${JSON.stringify(metadata)}`;
+      }
+
+      return log;
     }
-
-    return log;
-  })
+  )
 );
 
 /**

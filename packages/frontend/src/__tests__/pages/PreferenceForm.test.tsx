@@ -29,7 +29,8 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, fallbackOrOpts?: string | Record<string, unknown>) => {
       if (typeof fallbackOrOpts === 'string') return fallbackOrOpts;
-      if (fallbackOrOpts && typeof fallbackOrOpts === 'object' && 'defaultValue' in fallbackOrOpts) return fallbackOrOpts.defaultValue as string;
+      if (fallbackOrOpts && typeof fallbackOrOpts === 'object' && 'defaultValue' in fallbackOrOpts)
+        return fallbackOrOpts.defaultValue as string;
       return key;
     },
     i18n: { language: 'fr' },
@@ -109,7 +110,9 @@ describe('PreferenceForm', () => {
       renderPreferenceForm();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /ai kitchen generator/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /ai kitchen generator/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -117,7 +120,11 @@ describe('PreferenceForm', () => {
       renderPreferenceForm();
 
       await waitFor(() => {
-        expect(screen.getByText(/configure your preferences and let our ai create stunning kitchen designs/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(
+            /configure your preferences and let our ai create stunning kitchen designs/i
+          )
+        ).toBeInTheDocument();
       });
     });
 
@@ -146,7 +153,9 @@ describe('PreferenceForm', () => {
       renderPreferenceForm();
 
       await waitFor(() => {
-        expect(screen.getByText(/vos reponses au questionnaire seront utilisees/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/vos reponses au questionnaire seront utilisees/i)
+        ).toBeInTheDocument();
       });
     });
 
@@ -167,7 +176,9 @@ describe('PreferenceForm', () => {
       renderPreferenceForm();
 
       await waitFor(() => {
-        expect(screen.getByText(/completez le questionnaire pour des designs plus personnalises/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/completez le questionnaire pour des designs plus personnalises/i)
+        ).toBeInTheDocument();
       });
     });
 
@@ -354,8 +365,14 @@ describe('PreferenceForm', () => {
       await user.click(screen.getByText('Galley').closest('button')!);
 
       await waitFor(() => {
-        expect(screen.getByText('Galley').closest('button')).toHaveAttribute('aria-pressed', 'true');
-        expect(screen.getByText('Open Plan').closest('button')).toHaveAttribute('aria-pressed', 'false');
+        expect(screen.getByText('Galley').closest('button')).toHaveAttribute(
+          'aria-pressed',
+          'true'
+        );
+        expect(screen.getByText('Open Plan').closest('button')).toHaveAttribute(
+          'aria-pressed',
+          'false'
+        );
       });
     });
   });
@@ -475,10 +492,14 @@ describe('PreferenceForm', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(document.querySelector('textarea[name="additionalRequirements"]')).toBeInTheDocument();
+        expect(
+          document.querySelector('textarea[name="additionalRequirements"]')
+        ).toBeInTheDocument();
       });
 
-      const textarea = document.querySelector('textarea[name="additionalRequirements"]') as HTMLTextAreaElement;
+      const textarea = document.querySelector(
+        'textarea[name="additionalRequirements"]'
+      ) as HTMLTextAreaElement;
       await user.type(textarea, 'I need extra lighting');
 
       expect(textarea.value).toBe('I need extra lighting');
@@ -532,7 +553,11 @@ describe('PreferenceForm', () => {
 
       // Mock the generate API response
       mockFetch.mockImplementation((url: string, options?: RequestInit) => {
-        if (typeof url === 'string' && url.includes('/ai-generator/generate') && options?.method === 'POST') {
+        if (
+          typeof url === 'string' &&
+          url.includes('/ai-generator/generate') &&
+          options?.method === 'POST'
+        ) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve({ data: { generationId: 'gen-new-123' } }),
@@ -568,7 +593,11 @@ describe('PreferenceForm', () => {
       await user.click(screen.getByLabelText('Gray'));
 
       mockFetch.mockImplementation((url: string, options?: RequestInit) => {
-        if (typeof url === 'string' && url.includes('/ai-generator/generate') && options?.method === 'POST') {
+        if (
+          typeof url === 'string' &&
+          url.includes('/ai-generator/generate') &&
+          options?.method === 'POST'
+        ) {
           return Promise.resolve({
             ok: false,
             json: () => Promise.resolve({ message: 'Server overloaded' }),
@@ -612,7 +641,9 @@ describe('PreferenceForm', () => {
       await user.click(screen.getByLabelText('Fermer'));
 
       await waitFor(() => {
-        expect(screen.queryByText(/veuillez selectionner au moins une couleur/i)).not.toBeInTheDocument();
+        expect(
+          screen.queryByText(/veuillez selectionner au moins une couleur/i)
+        ).not.toBeInTheDocument();
       });
     });
   });

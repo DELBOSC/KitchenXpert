@@ -99,11 +99,7 @@ export const loadTranslationFile = async (locale, namespace) => {
  * @param {boolean} forceReload - Force reload from server
  * @returns {Promise<Object>} Translation object
  */
-export const loadTranslations = async (
-  locale,
-  namespace,
-  forceReload = false
-) => {
+export const loadTranslations = async (locale, namespace, forceReload = false) => {
   // Generate cache key
   const cacheKey = `${locale}:${namespace}`;
 
@@ -135,9 +131,7 @@ export const loadTranslations = async (
   } catch (error) {
     // Try fallback locale if not already using it
     if (locale !== FALLBACK_LOCALE) {
-      console.warn(
-        `Falling back to ${FALLBACK_LOCALE} for namespace: ${namespace}`
-      );
+      console.warn(`Falling back to ${FALLBACK_LOCALE} for namespace: ${namespace}`);
       return loadTranslations(FALLBACK_LOCALE, namespace, forceReload);
     }
 
@@ -157,9 +151,7 @@ export const preloadTranslations = async (locale) => {
   console.log(`Preloading translations for: ${locale}`);
 
   const namespaceKeys = Object.values(NAMESPACES);
-  const loadPromises = namespaceKeys.map((namespace) =>
-    loadTranslations(locale, namespace)
-  );
+  const loadPromises = namespaceKeys.map((namespace) => loadTranslations(locale, namespace));
 
   try {
     const results = await Promise.allSettled(loadPromises);
@@ -170,10 +162,7 @@ export const preloadTranslations = async (locale) => {
       if (result.status === 'fulfilled') {
         translations[namespace] = result.value;
       } else {
-        console.error(
-          `Failed to preload namespace: ${namespace}`,
-          result.reason
-        );
+        console.error(`Failed to preload namespace: ${namespace}`, result.reason);
         translations[namespace] = {};
       }
     });
@@ -194,15 +183,9 @@ export const preloadTranslations = async (locale) => {
 export const preloadCriticalTranslations = async (locale) => {
   console.log(`Preloading critical translations for: ${locale}`);
 
-  const criticalNamespaces = [
-    NAMESPACES.common,
-    NAMESPACES.auth,
-    NAMESPACES.errors,
-  ];
+  const criticalNamespaces = [NAMESPACES.common, NAMESPACES.auth, NAMESPACES.errors];
 
-  const loadPromises = criticalNamespaces.map((namespace) =>
-    loadTranslations(locale, namespace)
-  );
+  const loadPromises = criticalNamespaces.map((namespace) => loadTranslations(locale, namespace));
 
   try {
     const results = await Promise.allSettled(loadPromises);
@@ -213,20 +196,14 @@ export const preloadCriticalTranslations = async (locale) => {
       if (result.status === 'fulfilled') {
         translations[namespace] = result.value;
       } else {
-        console.error(
-          `Failed to preload critical namespace: ${namespace}`,
-          result.reason
-        );
+        console.error(`Failed to preload critical namespace: ${namespace}`, result.reason);
         translations[namespace] = {};
       }
     });
 
     return translations;
   } catch (error) {
-    console.error(
-      `Failed to preload critical translations for ${locale}`,
-      error
-    );
+    console.error(`Failed to preload critical translations for ${locale}`, error);
     return {};
   }
 };
@@ -353,9 +330,7 @@ export const getTranslationFromCache = (locale, namespace) => {
  * @returns {Promise<Object>} Object with all translations
  */
 export const loadMultipleNamespaces = async (locale, namespaces) => {
-  const loadPromises = namespaces.map((namespace) =>
-    loadTranslations(locale, namespace)
-  );
+  const loadPromises = namespaces.map((namespace) => loadTranslations(locale, namespace));
 
   const results = await Promise.allSettled(loadPromises);
 
@@ -383,20 +358,13 @@ export const loadMultipleNamespaces = async (locale, namespaces) => {
 export const validateTranslation = async (locale, namespace) => {
   try {
     const translations = await loadTranslations(locale, namespace);
-    const referenceTranslations = await loadTranslations(
-      DEFAULT_LOCALE,
-      namespace
-    );
+    const referenceTranslations = await loadTranslations(DEFAULT_LOCALE, namespace);
 
     const referenceKeys = getAllKeys(referenceTranslations);
     const translationKeys = getAllKeys(translations);
 
-    const missingKeys = referenceKeys.filter(
-      (key) => !translationKeys.includes(key)
-    );
-    const extraKeys = translationKeys.filter(
-      (key) => !referenceKeys.includes(key)
-    );
+    const missingKeys = referenceKeys.filter((key) => !translationKeys.includes(key));
+    const extraKeys = translationKeys.filter((key) => !referenceKeys.includes(key));
 
     return {
       isComplete: missingKeys.length === 0,

@@ -23,10 +23,7 @@ const DEFAULT_CURRENCY = 'EUR';
 /**
  * Formate un montant en devise
  */
-export function formatCurrency(
-  amount: number,
-  options?: CurrencyFormatOptions
-): string {
+export function formatCurrency(amount: number, options?: CurrencyFormatOptions): string {
   const {
     locale = DEFAULT_LOCALE,
     currency = DEFAULT_CURRENCY,
@@ -54,10 +51,7 @@ export function formatCurrency(
 /**
  * Formate un montant de manière compacte (1K, 1M, etc.)
  */
-export function formatCurrencyCompact(
-  amount: number,
-  options?: CurrencyFormatOptions
-): string {
+export function formatCurrencyCompact(amount: number, options?: CurrencyFormatOptions): string {
   const {
     locale = DEFAULT_LOCALE,
     currency = DEFAULT_CURRENCY,
@@ -97,10 +91,7 @@ function formatCompactNumber(num: number): string {
 /**
  * Formate une plage de prix
  */
-export function formatPriceRange(
-  range: PriceRange,
-  options?: CurrencyFormatOptions
-): string {
+export function formatPriceRange(range: PriceRange, options?: CurrencyFormatOptions): string {
   const { min, max, currency } = range;
   const opts = { ...options, currency };
 
@@ -154,10 +145,7 @@ export function convertCurrency(
 /**
  * Parse un montant depuis une chaîne formatée
  */
-export function parseCurrency(
-  formattedAmount: string,
-  locale = DEFAULT_LOCALE
-): number | null {
+export function parseCurrency(formattedAmount: string, locale = DEFAULT_LOCALE): number | null {
   // Supprimer les symboles de devise courants
   const cleanedAmount = formattedAmount
     .replace(/[€$£¥₹]/g, '')
@@ -165,13 +153,13 @@ export function parseCurrency(
     .trim();
 
   // Gérer les différents séparateurs selon la locale
-  const decimalSeparator = new Intl.NumberFormat(locale)
-    .formatToParts(1.1)
-    .find(part => part.type === 'decimal')?.value || '.';
+  const decimalSeparator =
+    new Intl.NumberFormat(locale).formatToParts(1.1).find((part) => part.type === 'decimal')
+      ?.value || '.';
 
-  const thousandsSeparator = new Intl.NumberFormat(locale)
-    .formatToParts(1000)
-    .find(part => part.type === 'group')?.value || ',';
+  const thousandsSeparator =
+    new Intl.NumberFormat(locale).formatToParts(1000).find((part) => part.type === 'group')
+      ?.value || ',';
 
   // Normaliser vers le format numérique standard
   const normalized = cleanedAmount
@@ -192,30 +180,21 @@ export function roundToCents(amount: number): number {
 /**
  * Calcule le prix TTC à partir du prix HT
  */
-export function calculatePriceWithTax(
-  priceWithoutTax: number,
-  taxRate: number
-): number {
+export function calculatePriceWithTax(priceWithoutTax: number, taxRate: number): number {
   return roundToCents(priceWithoutTax * (1 + taxRate / 100));
 }
 
 /**
  * Calcule le prix HT à partir du prix TTC
  */
-export function calculatePriceWithoutTax(
-  priceWithTax: number,
-  taxRate: number
-): number {
+export function calculatePriceWithoutTax(priceWithTax: number, taxRate: number): number {
   return roundToCents(priceWithTax / (1 + taxRate / 100));
 }
 
 /**
  * Calcule le montant de la remise
  */
-export function calculateDiscount(
-  originalPrice: number,
-  discountPercentage: number
-): number {
+export function calculateDiscount(originalPrice: number, discountPercentage: number): number {
   return roundToCents(originalPrice * (discountPercentage / 100));
 }
 
@@ -246,10 +225,7 @@ export function formatPercentage(
 /**
  * Obtient le symbole d'une devise
  */
-export function getCurrencySymbol(
-  currency: string,
-  locale = DEFAULT_LOCALE
-): string {
+export function getCurrencySymbol(currency: string, locale = DEFAULT_LOCALE): string {
   const symbols: Record<string, string> = {
     EUR: '€',
     USD: '$',
@@ -271,7 +247,7 @@ export function getCurrencySymbol(
       currencyDisplay: 'narrowSymbol',
     }).formatToParts(0);
 
-    return parts.find(part => part.type === 'currency')?.value || currency;
+    return parts.find((part) => part.type === 'currency')?.value || currency;
   } catch {
     return currency;
   }
@@ -282,9 +258,33 @@ export function getCurrencySymbol(
  */
 export function isValidCurrencyCode(code: string): boolean {
   const validCodes = new Set([
-    'EUR', 'USD', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'CNY', 'INR',
-    'SEK', 'NOK', 'DKK', 'PLN', 'CZK', 'HUF', 'RON', 'BGN', 'HRK',
-    'RUB', 'TRY', 'BRL', 'MXN', 'ZAR', 'KRW', 'SGD', 'HKD', 'NZD',
+    'EUR',
+    'USD',
+    'GBP',
+    'JPY',
+    'CHF',
+    'CAD',
+    'AUD',
+    'CNY',
+    'INR',
+    'SEK',
+    'NOK',
+    'DKK',
+    'PLN',
+    'CZK',
+    'HUF',
+    'RON',
+    'BGN',
+    'HRK',
+    'RUB',
+    'TRY',
+    'BRL',
+    'MXN',
+    'ZAR',
+    'KRW',
+    'SGD',
+    'HKD',
+    'NZD',
   ]);
 
   return validCodes.has(code.toUpperCase());

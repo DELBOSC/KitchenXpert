@@ -1,16 +1,19 @@
 # GitHub Templates & Workflows - KitchenXpert
 
-Ce dossier contient tous les templates et configurations GitHub pour le projet KitchenXpert.
+Ce dossier contient tous les templates et configurations GitHub pour le projet
+KitchenXpert.
 
 ## 📋 Issue Templates
 
-Le projet dispose de **5 templates d'issues** spécialisés pour faciliter le reporting et les demandes:
+Le projet dispose de **5 templates d'issues** spécialisés pour faciliter le
+reporting et les demandes:
 
 ### 1. 🐛 [Bug Report](./ISSUE_TEMPLATE/bug-report.md)
 
 **Quand l'utiliser:** Signaler un bug, une erreur ou un comportement inattendu
 
 **Contenu:**
+
 - Description détaillée du bug
 - Étapes pour reproduire
 - Comportement attendu vs actuel
@@ -28,6 +31,7 @@ Le projet dispose de **5 templates d'issues** spécialisés pour faciliter le re
 **Quand l'utiliser:** Proposer une nouvelle fonctionnalité ou amélioration
 
 **Contenu:**
+
 - Résumé de la fonctionnalité
 - Motivation et contexte (pourquoi?)
 - Cas d'usage (user stories)
@@ -46,6 +50,7 @@ Le projet dispose de **5 templates d'issues** spécialisés pour faciliter le re
 **Quand l'utiliser:** Demander l'intégration d'un nouveau catalogue fournisseur
 
 **Contenu spécialisé:**
+
 - Informations fournisseur (nom, pays, contact)
 - Taille du catalogue (nombre de produits)
 - Type de source (API, CSV, Excel, JSON, XML)
@@ -57,15 +62,18 @@ Le projet dispose de **5 templates d'issues** spécialisés pour faciliter le re
 
 **Labels auto:** `catalog-provider`, `integration`, `needs-review`
 
-**Note:** Ce template est unique à KitchenXpert et facilite énormément l'onboarding de nouveaux fournisseurs.
+**Note:** Ce template est unique à KitchenXpert et facilite énormément
+l'onboarding de nouveaux fournisseurs.
 
 ---
 
 ### 4. 📚 [Documentation Update](./ISSUE_TEMPLATE/documentation-update.md)
 
-**Quand l'utiliser:** Signaler un problème de documentation ou proposer une amélioration
+**Quand l'utiliser:** Signaler un problème de documentation ou proposer une
+amélioration
 
 **Contenu:**
+
 - Type de mise à jour (correction, amélioration, traduction)
 - Fichier/section concerné
 - Problème actuel
@@ -79,9 +87,11 @@ Le projet dispose de **5 templates d'issues** spécialisés pour faciliter le re
 
 ### 5. ⚡ [Performance Issue](./ISSUE_TEMPLATE/performance-issue.md)
 
-**Quand l'utiliser:** Signaler un problème de performance (lenteur, mémoire, etc.)
+**Quand l'utiliser:** Signaler un problème de performance (lenteur, mémoire,
+etc.)
 
 **Contenu:**
+
 - Module affecté
 - Métriques actuelles vs attendues
 - Profiling data (screenshots DevTools)
@@ -149,8 +159,8 @@ Template complet pour les Pull Requests avec:
 Configure le comportement des issues:
 
 ```yaml
-blank_issues_enabled: false  # Désactive les issues blanches
-contact_links:               # Liens externes
+blank_issues_enabled: false # Désactive les issues blanches
+contact_links: # Liens externes
   - Discussions
   - Rapports de sécurité
   - Documentation
@@ -159,6 +169,7 @@ contact_links:               # Liens externes
 ```
 
 **Avantages:**
+
 - Dirige les utilisateurs vers les bons canaux
 - Évite les issues hors sujet
 - Centralise les ressources
@@ -259,20 +270,21 @@ contact_links:               # Liens externes
 
 ## ❓ FAQ
 
-**Q: Puis-je créer une issue sans template?**
-R: Non, `blank_issues_enabled: false` désactive cette option. Utilisez les discussions pour les questions générales.
+**Q: Puis-je créer une issue sans template?** R: Non,
+`blank_issues_enabled: false` désactive cette option. Utilisez les discussions
+pour les questions générales.
 
-**Q: Que faire si aucun template ne convient?**
-R: Utilisez le template le plus proche et adaptez-le, ou créez une discussion.
+**Q: Que faire si aucun template ne convient?** R: Utilisez le template le plus
+proche et adaptez-le, ou créez une discussion.
 
-**Q: Comment proposer un nouveau template?**
-R: Créer une Feature Request en décrivant le besoin et les cas d'usage.
+**Q: Comment proposer un nouveau template?** R: Créer une Feature Request en
+décrivant le besoin et les cas d'usage.
 
-**Q: Les templates sont-ils obligatoires?**
-R: Oui pour les issues. Fortement recommandés pour les PR.
+**Q: Les templates sont-ils obligatoires?** R: Oui pour les issues. Fortement
+recommandés pour les PR.
 
-**Q: Puis-je modifier un template après création de l'issue?**
-R: Oui, éditez l'issue pour ajouter les informations manquantes.
+**Q: Puis-je modifier un template après création de l'issue?** R: Oui, éditez
+l'issue pour ajouter les informations manquantes.
 
 ---
 
@@ -292,15 +304,16 @@ Idées pour enrichir les templates:
 
 ## 📊 Métriques
 
-| Métrique | Avant | Après | Amélioration |
-|----------|-------|-------|--------------|
-| Issues bien formatées | 40% | 95% | **+137%** |
-| Temps de triage/issue | 30min | 5min | **-83%** |
-| Aller-retours | 3 | 0.5 | **-83%** |
-| Informations complètes | 20% | 90% | **+350%** |
-| Satisfaction reviewers | 6/10 | 9/10 | **+50%** |
+| Métrique               | Avant | Après | Amélioration |
+| ---------------------- | ----- | ----- | ------------ |
+| Issues bien formatées  | 40%   | 95%   | **+137%**    |
+| Temps de triage/issue  | 30min | 5min  | **-83%**     |
+| Aller-retours          | 3     | 0.5   | **-83%**     |
+| Informations complètes | 20%   | 90%   | **+350%**    |
+| Satisfaction reviewers | 6/10  | 9/10  | **+50%**     |
 
-**ROI:** ~10h économisées par semaine pour une équipe de 5 développeurs = **40€/h × 10h × 4 semaines = 1,600€/mois**
+**ROI:** ~10h économisées par semaine pour une équipe de 5 développeurs =
+**40€/h × 10h × 4 semaines = 1,600€/mois**
 
 ---
 
@@ -314,4 +327,6 @@ Les templates GitHub de KitchenXpert sont:
 - ✅ **Maintenables** - Faciles à faire évoluer
 - ✅ **Professionnels** - Image de marque cohérente
 
-Ils constituent un **standard d'excellence** pour la gestion de projet open-source et garantissent une **collaboration fluide** entre tous les contributeurs.
+Ils constituent un **standard d'excellence** pour la gestion de projet
+open-source et garantissent une **collaboration fluide** entre tous les
+contributeurs.

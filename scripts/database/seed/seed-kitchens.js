@@ -70,8 +70,20 @@ const kitchens = [
       { type: 'base', sku: 'MB-80-2T', quantity: 2, position: { x: 240, y: 0 }, color: 'blanc' },
       { type: 'base', sku: 'MB-EVIER-80', quantity: 1, position: { x: 400, y: 0 }, color: 'blanc' },
       { type: 'wall', sku: 'MH-60-1P', quantity: 4, position: { x: 0, y: 140 }, color: 'blanc' },
-      { type: 'wall', sku: 'MH-VITRINE-40', quantity: 1, position: { x: 240, y: 140 }, color: 'blanc' },
-      { type: 'tall', sku: 'COL-60-FRIGO', quantity: 1, position: { x: 480, y: 0 }, color: 'blanc' },
+      {
+        type: 'wall',
+        sku: 'MH-VITRINE-40',
+        quantity: 1,
+        position: { x: 240, y: 140 },
+        color: 'blanc',
+      },
+      {
+        type: 'tall',
+        sku: 'COL-60-FRIGO',
+        quantity: 1,
+        position: { x: 480, y: 0 },
+        color: 'blanc',
+      },
     ],
     appliances: [
       { sku: 'FOUR-PYRO-60', brand: 'Bosch', position: { x: 60, y: 0, z: 50 } },
@@ -80,9 +92,7 @@ const kitchens = [
       { sku: 'LV-ENCASTRABLE-60', brand: 'Miele', position: { x: 320, y: 0, z: 0 } },
     ],
     sink: { sku: 'EVIER-INOX-2BACS', position: { x: 400, y: 0 } },
-    lighting: [
-      { sku: 'REGLETTE-LED-60', quantity: 4, position: 'under-cabinet' },
-    ],
+    lighting: [{ sku: 'REGLETTE-LED-60', quantity: 4, position: 'under-cabinet' }],
     pricing: {
       cabinets: 2450,
       appliances: 2396,
@@ -95,9 +105,9 @@ const kitchens = [
       discount: 0,
       discountCode: null,
     },
-    notes: "Client souhaite une cuisine épurée avec rangements optimisés.",
+    notes: 'Client souhaite une cuisine épurée avec rangements optimisés.',
     rating: 5,
-    review: "Excellent travail, cuisine parfaitement réalisée selon nos attentes.",
+    review: 'Excellent travail, cuisine parfaitement réalisée selon nos attentes.',
   },
   {
     id: generateId(),
@@ -153,7 +163,7 @@ const kitchens = [
       currency: 'EUR',
     },
     rating: 4,
-    review: "Très satisfaits du résultat, quelques délais mais qualité au rendez-vous.",
+    review: 'Très satisfaits du résultat, quelques délais mais qualité au rendez-vous.',
   },
   {
     id: generateId(),
@@ -188,9 +198,7 @@ const kitchens = [
       { type: 'base', sku: 'MB-EVIER-80', quantity: 1, color: 'blanc' },
       { type: 'wall', sku: 'MH-60-1P', quantity: 3, color: 'blanc' },
     ],
-    appliances: [
-      { sku: 'PLAQUE-INDUCTION-60', brand: 'Generic' },
-    ],
+    appliances: [{ sku: 'PLAQUE-INDUCTION-60', brand: 'Generic' }],
     pricing: {
       cabinets: 650,
       appliances: 299,
@@ -202,7 +210,7 @@ const kitchens = [
       currency: 'EUR',
     },
     rating: 5,
-    review: "Parfait pour mon petit espace, très fonctionnel!",
+    review: 'Parfait pour mon petit espace, très fonctionnel!',
   },
   {
     id: generateId(),
@@ -269,7 +277,7 @@ const kitchens = [
       total: 27700,
       currency: 'EUR',
     },
-    notes: "Cuisine haut de gamme avec îlot central. Installation prévue mi-mai.",
+    notes: 'Cuisine haut de gamme avec îlot central. Installation prévue mi-mai.',
   },
   {
     id: generateId(),
@@ -302,7 +310,7 @@ const kitchens = [
       estimated: 8000,
       currency: 'EUR',
     },
-    notes: "Projet en cours de conception. Client souhaite un style nordique épuré.",
+    notes: 'Projet en cours de conception. Client souhaite un style nordique épuré.',
   },
 ];
 
@@ -330,7 +338,12 @@ const templates = [
     style: 'traditional',
     minRoomSize: { width: 300, length: 350 },
     suggestedCabinets: ['MB-60-1P', 'MB-80-2T', 'MB-EVIER-80', 'MH-60-1P', 'COL-60-FRIGO'],
-    suggestedAppliances: ['FOUR-PYRO-60', 'PLAQUE-INDUCTION-60', 'FRIGO-COMBI-178', 'LV-ENCASTRABLE-60'],
+    suggestedAppliances: [
+      'FOUR-PYRO-60',
+      'PLAQUE-INDUCTION-60',
+      'FRIGO-COMBI-178',
+      'LV-ENCASTRABLE-60',
+    ],
     priceRange: { min: 6000, max: 12000 },
     popular: true,
   },
@@ -342,8 +355,20 @@ const templates = [
     layout: 'island',
     style: 'modern',
     minRoomSize: { width: 450, length: 500 },
-    suggestedCabinets: ['MB-60-1P', 'MB-80-2T', 'MB-EVIER-80', 'MH-60-1P', 'MH-VITRINE-40', 'COL-60-FRIGO'],
-    suggestedAppliances: ['FOUR-PYRO-60', 'PLAQUE-INDUCTION-60', 'FRIGO-COMBI-178', 'LV-ENCASTRABLE-60'],
+    suggestedCabinets: [
+      'MB-60-1P',
+      'MB-80-2T',
+      'MB-EVIER-80',
+      'MH-60-1P',
+      'MH-VITRINE-40',
+      'COL-60-FRIGO',
+    ],
+    suggestedAppliances: [
+      'FOUR-PYRO-60',
+      'PLAQUE-INDUCTION-60',
+      'FRIGO-COMBI-178',
+      'LV-ENCASTRABLE-60',
+    ],
     priceRange: { min: 15000, max: 35000 },
     popular: false,
   },
@@ -416,7 +441,10 @@ function seedAsJson() {
   }
 
   fs.writeFileSync(path.join(outputDir, 'kitchens.json'), JSON.stringify(kitchens, null, 2));
-  fs.writeFileSync(path.join(outputDir, 'kitchen-templates.json'), JSON.stringify(templates, null, 2));
+  fs.writeFileSync(
+    path.join(outputDir, 'kitchen-templates.json'),
+    JSON.stringify(templates, null, 2)
+  );
 
   log.success(`Seed data written to: ${outputDir}`);
   log.info(`Kitchens: ${kitchens.length}`);

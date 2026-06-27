@@ -91,37 +91,53 @@ const RoomScanResultSchema = z.object({
     heightM: z.number().min(1.5).max(6),
     confidence: z.number().min(0).max(1),
   }),
-  walls: z.array(z.object({
-    id: z.string().max(50),
-    lengthM: z.number().min(0.3).max(20),
-    angle: z.number().min(0).max(360),
-    hasWindow: z.boolean(),
-    hasDoor: z.boolean(),
-  })).max(8),
-  openings: z.array(z.object({
-    type: z.enum(['door', 'window']),
-    wallId: z.string().max(50),
-    positionM: z.number().min(0).max(20),
-    widthM: z.number().min(0.3).max(5),
-    heightM: z.number().min(0.3).max(4).optional(),
-  })).max(10),
-  technicalPoints: z.array(z.object({
-    type: z.enum(['outlet', 'switch', 'water_inlet', 'water_drain', 'gas']),
-    position: z.object({
-      x: z.number(),
-      y: z.number(),
-      z: z.number(),
-    }),
-  })).max(30),
-  obstacles: z.array(z.object({
-    type: z.string().max(100),
-    position: z.object({
-      x: z.number(),
-      y: z.number(),
-    }),
-    widthM: z.number().min(0).max(10),
-    depthM: z.number().min(0).max(10),
-  })).max(10),
+  walls: z
+    .array(
+      z.object({
+        id: z.string().max(50),
+        lengthM: z.number().min(0.3).max(20),
+        angle: z.number().min(0).max(360),
+        hasWindow: z.boolean(),
+        hasDoor: z.boolean(),
+      })
+    )
+    .max(8),
+  openings: z
+    .array(
+      z.object({
+        type: z.enum(['door', 'window']),
+        wallId: z.string().max(50),
+        positionM: z.number().min(0).max(20),
+        widthM: z.number().min(0.3).max(5),
+        heightM: z.number().min(0.3).max(4).optional(),
+      })
+    )
+    .max(10),
+  technicalPoints: z
+    .array(
+      z.object({
+        type: z.enum(['outlet', 'switch', 'water_inlet', 'water_drain', 'gas']),
+        position: z.object({
+          x: z.number(),
+          y: z.number(),
+          z: z.number(),
+        }),
+      })
+    )
+    .max(30),
+  obstacles: z
+    .array(
+      z.object({
+        type: z.string().max(100),
+        position: z.object({
+          x: z.number(),
+          y: z.number(),
+        }),
+        widthM: z.number().min(0).max(10),
+        depthM: z.number().min(0).max(10),
+      })
+    )
+    .max(10),
   orientation: z.string().max(100).optional(),
 });
 
@@ -146,7 +162,7 @@ export class PhotoRoomScannerService {
   async analyzeRoom(
     photos: Buffer[],
     userId: string,
-    mediaTypes: Array<'image/jpeg' | 'image/png' | 'image/webp'>,
+    mediaTypes: Array<'image/jpeg' | 'image/png' | 'image/webp'>
   ): Promise<RoomScanResult> {
     if (photos.length === 0 || photos.length > 3) {
       throw new Error('Between 1 and 3 photos are required for room analysis.');
@@ -206,7 +222,7 @@ export class PhotoRoomScannerService {
         result.inputTokens,
         result.outputTokens,
         durationMs,
-        { feature: 'photo-room-scanner', promptVersion: '1.0.0' },
+        { feature: 'photo-room-scanner', promptVersion: '1.0.0' }
       );
 
       logger.info('[PhotoRoomScanner] Analysis complete', {
@@ -239,11 +255,7 @@ export class PhotoRoomScannerService {
 
     // Generate wall coordinates from the detected walls.
     // Simple rectangular room assumption when angle data is limited.
-    const wallCoords = this.computeWallCoordinates(
-      walls,
-      dimensions.widthM,
-      dimensions.depthM,
-    );
+    const wallCoords = this.computeWallCoordinates(walls, dimensions.widthM, dimensions.depthM);
 
     // Map technical points to 2D (project z away)
     const techPoints2D = technicalPoints.map((tp) => ({
@@ -347,7 +359,7 @@ Si tu ne peux pas determiner une dimension, fais une estimation raisonnable et b
   private computeWallCoordinates(
     walls: RoomScanResult['walls'],
     widthM: number,
-    depthM: number,
+    depthM: number
   ): FloorPlanData['walls'] {
     // If we have 4 walls with reasonable data, build from angles.
     // Otherwise fallback to simple rectangle.

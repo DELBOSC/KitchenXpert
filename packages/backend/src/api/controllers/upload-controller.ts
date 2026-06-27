@@ -27,7 +27,9 @@ const MAX_FILE_SIZE = 100 * 1024 * 1024;
  * Returns a safe folder string or the default 'user-uploads'.
  */
 function sanitizeFolder(folder: unknown): string {
-  if (typeof folder !== 'string') {return 'user-uploads';}
+  if (typeof folder !== 'string') {
+    return 'user-uploads';
+  }
   // Reject if it contains path traversal characters
   if (folder.includes('..') || folder.includes('/') || folder.includes('\\')) {
     return 'user-uploads';
@@ -120,8 +122,8 @@ export class UploadController {
       });
     } catch (error) {
       if (error instanceof StorageServiceError) {
-        const statusCode = error.code === 'INVALID_FILE_TYPE' ? 400 :
-                          error.code === 'FILE_TOO_LARGE' ? 413 : 500;
+        const statusCode =
+          error.code === 'INVALID_FILE_TYPE' ? 400 : error.code === 'FILE_TOO_LARGE' ? 413 : 500;
         res.status(statusCode).json({
           success: false,
           error: error.message,
@@ -334,10 +336,14 @@ export class UploadController {
     const { filename, contentType, folder = 'uploads', expiresIn = 3600 } = req.body;
 
     // Validate folder to prevent path traversal
-    if (typeof folder === 'string' && (/\.\./.test(folder) || /^[/\\]/.test(folder) || /[^a-zA-Z0-9_\-/]/.test(folder))) {
+    if (
+      typeof folder === 'string' &&
+      (/\.\./.test(folder) || /^[/\\]/.test(folder) || /[^a-zA-Z0-9_\-/]/.test(folder))
+    ) {
       res.status(400).json({
         success: false,
-        error: 'Invalid folder name. Only alphanumeric characters, hyphens, underscores, and slashes are allowed.',
+        error:
+          'Invalid folder name. Only alphanumeric characters, hyphens, underscores, and slashes are allowed.',
         code: 'INVALID_REQUEST',
       });
       return;
@@ -375,11 +381,7 @@ export class UploadController {
       // Generate unique key
       const key = storageService.generateUniqueKey(filename, folder);
 
-      const result = await storageService.getSignedUploadUrl(
-        key,
-        contentType,
-        expiresIn
-      );
+      const result = await storageService.getSignedUploadUrl(key, contentType, expiresIn);
 
       logger.info(`[UploadController] Signed upload URL generated for: ${key}`, {
         userId: req.user?.userId,

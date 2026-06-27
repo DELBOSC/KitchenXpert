@@ -74,10 +74,17 @@ async function main(): Promise<void> {
   const total = rows.length;
   const withPrice = rows.filter((r) => (r.price ?? 0) > 0).length;
   const usePriceTiers = total > 0 && withPrice / total > 0.8;
-  const { canonicals, variants, excludedShortGamme, clusters, priceTierStats } = clusterAndSelect(rows, usePriceTiers);
+  const { canonicals, variants, excludedShortGamme, clusters, priceTierStats } = clusterAndSelect(
+    rows,
+    usePriceTiers
+  );
 
-  console.log(`[Phase 1] Castorama actifs: ${total} (prix>0: ${withPrice}, tiers prix ${usePriceTiers ? 'ON' : 'OFF'})`);
-  console.log(`  clusters: ${clusters} | canonicals: ${canonicals.length} | variants: ${variants.length} | gamme<3 exclus: ${excludedShortGamme}`);
+  console.log(
+    `[Phase 1] Castorama actifs: ${total} (prix>0: ${withPrice}, tiers prix ${usePriceTiers ? 'ON' : 'OFF'})`
+  );
+  console.log(
+    `  clusters: ${clusters} | canonicals: ${canonicals.length} | variants: ${variants.length} | gamme<3 exclus: ${excludedShortGamme}`
+  );
   console.log(`  tiers prix canoniques: ${JSON.stringify(priceTierStats)}`);
 
   // EPREL appliances (sourceLevel=1) = naturally canonical (1 / model).
@@ -93,26 +100,48 @@ async function main(): Promise<void> {
 
   const conservationOk = canonicals.length + variants.length === total - excludedShortGamme;
   if (!conservationOk) {
-    issues.push(`conservation: ${canonicals.length}+${variants.length} != ${total - excludedShortGamme}`);
+    issues.push(
+      `conservation: ${canonicals.length}+${variants.length} != ${total - excludedShortGamme}`
+    );
   }
   const overlap = [...varSet].filter((s) => canonSet.has(s));
-  if (overlap.length) {issues.push(`${overlap.length} sku a la fois canonical ET variant (ex: ${overlap.slice(0, 3).join(', ')})`);}
+  if (overlap.length) {
+    issues.push(
+      `${overlap.length} sku a la fois canonical ET variant (ex: ${overlap.slice(0, 3).join(', ')})`
+    );
+  }
   const orphans = variants.filter((v) => !canonSet.has(v.parentSku));
-  if (orphans.length) {issues.push(`${orphans.length} variants orphelins (parentSku non-canonical)`);}
+  if (orphans.length) {
+    issues.push(`${orphans.length} variants orphelins (parentSku non-canonical)`);
+  }
   const selfloop = variants.filter((v) => v.sku === v.parentSku);
-  if (selfloop.length) {issues.push(`${selfloop.length} self-loop (sku == parentSku)`);}
-  if (canonSet.size !== canonicals.length) {issues.push(`canonicals sku dupliques: ${canonicals.length - canonSet.size}`);}
-  if (varSet.size !== variants.length) {issues.push(`variants sku dupliques: ${variants.length - varSet.size}`);}
+  if (selfloop.length) {
+    issues.push(`${selfloop.length} self-loop (sku == parentSku)`);
+  }
+  if (canonSet.size !== canonicals.length) {
+    issues.push(`canonicals sku dupliques: ${canonicals.length - canonSet.size}`);
+  }
+  if (varSet.size !== variants.length) {
+    issues.push(`variants sku dupliques: ${variants.length - varSet.size}`);
+  }
 
-  console.log(`  conservation ${canonicals.length}+${variants.length}=${canonicals.length + variants.length} (attendu ${total - excludedShortGamme}) : ${conservationOk ? 'OK' : 'KO'}`);
-  console.log(`  variants->canonical: ${orphans.length === 0 ? 'OK (0 orphelin)' : `KO (${orphans.length})`} | overlap canonical/variant: ${overlap.length} | self-loop: ${selfloop.length}`);
+  console.log(
+    `  conservation ${canonicals.length}+${variants.length}=${canonicals.length + variants.length} (attendu ${total - excludedShortGamme}) : ${conservationOk ? 'OK' : 'KO'}`
+  );
+  console.log(
+    `  variants->canonical: ${orphans.length === 0 ? 'OK (0 orphelin)' : `KO (${orphans.length})`} | overlap canonical/variant: ${overlap.length} | self-loop: ${selfloop.length}`
+  );
   console.log(`  depth-1 (canonicals ont parentSku=null par construction) : OK`);
-  console.log(issues.length ? `  >> ISSUES: ${issues.join(' ; ')}` : `  >> graphe coherent (0 issue)`);
+  console.log(
+    issues.length ? `  >> ISSUES: ${issues.join(' ; ')}` : `  >> graphe coherent (0 issue)`
+  );
 
   // ---- Oracle vs POC ----
   const dCanon = canonicals.length - POC_CANON;
   const dVar = variants.length - POC_VAR;
-  console.log(`\n[Oracle vs POC] canon ${canonicals.length} (${dCanon >= 0 ? '+' : ''}${dCanon} vs ${POC_CANON}) | var ${variants.length} (${dVar >= 0 ? '+' : ''}${dVar} vs ${POC_VAR}) -> ${dCanon === 0 && dVar === 0 ? 'MATCH EXACT' : 'ECART (a expliquer)'}`);
+  console.log(
+    `\n[Oracle vs POC] canon ${canonicals.length} (${dCanon >= 0 ? '+' : ''}${dCanon} vs ${POC_CANON}) | var ${variants.length} (${dVar >= 0 ? '+' : ''}${dVar} vs ${POC_VAR}) -> ${dCanon === 0 && dVar === 0 ? 'MATCH EXACT' : 'ECART (a expliquer)'}`
+  );
 
   // ---- Phase 3: write (ONLY --apply) ----
   const byParent = new Map<string, string[]>();
@@ -124,8 +153,12 @@ async function main(): Promise<void> {
 
   console.log(`\n[Phase 3] ${APPLY ? 'ECRITURE (prisma.$transaction)' : 'DRY-RUN — RIEN ecrit'}`);
   console.log(`  WOULD WRITE:`);
-  console.log(`    Castorama canonicals -> isCanonical=true, parentSku=null : ${canonicals.length}`);
-  console.log(`    Castorama variants   -> isCanonical=false, parentSku set : ${variants.length} (${byParent.size} groupes parent)`);
+  console.log(
+    `    Castorama canonicals -> isCanonical=true, parentSku=null : ${canonicals.length}`
+  );
+  console.log(
+    `    Castorama variants   -> isCanonical=false, parentSku set : ${variants.length} (${byParent.size} groupes parent)`
+  );
   console.log(`    EPREL appliances     -> isCanonical=true, parentSku=null : ${eprel.length}`);
   console.log(`    TOTAL lignes touchees : ${canonicals.length + variants.length + eprel.length}`);
 
@@ -157,7 +190,7 @@ async function main(): Promise<void> {
           data: { isCanonical: true, parentSku: null },
         });
       },
-      { timeout: 120_000, maxWait: 10_000 },
+      { timeout: 120_000, maxWait: 10_000 }
     );
     console.log(`  >> ECRIT.`);
   }
@@ -167,7 +200,9 @@ async function main(): Promise<void> {
     SELECT COUNT(*) FILTER (WHERE "isCanonical")::int       AS canon,
            COUNT(*) FILTER (WHERE "parentSku" IS NOT NULL)::int AS withparent
       FROM "Product"`;
-  console.log(`\n[Phase 4] Etat DB: isCanonical(true)=${post[0]?.canon ?? '?'} | parentSku non-null=${post[0]?.withparent ?? '?'}`);
+  console.log(
+    `\n[Phase 4] Etat DB: isCanonical(true)=${post[0]?.canon ?? '?'} | parentSku non-null=${post[0]?.withparent ?? '?'}`
+  );
 }
 
 main()

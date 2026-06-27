@@ -24,7 +24,7 @@ async function mockAuthenticated(page: Page): Promise<void> {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ success: true, data: TEST_USER }),
-    }),
+    })
   );
 }
 
@@ -75,7 +75,7 @@ function mockProjectsList(page: Page, projects = SAMPLE_PROJECTS): Promise<void>
           itemsPerPage: 10,
         },
       }),
-    }),
+    })
   );
 }
 
@@ -139,7 +139,7 @@ test.describe('Project list', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(FULL_PROJECT),
-      }),
+      })
     );
 
     await page.goto('/projects');
@@ -174,7 +174,7 @@ test.describe('Project list', () => {
         status: 500,
         contentType: 'application/json',
         body: JSON.stringify({ message: 'Internal server error' }),
-      }),
+      })
     );
 
     await page.goto('/projects');
@@ -200,7 +200,7 @@ test.describe('Create project', () => {
           data: [],
           pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
         }),
-      }),
+      })
     );
   });
 
@@ -249,7 +249,7 @@ test.describe('Create project', () => {
             updatedAt: new Date().toISOString(),
           },
         }),
-      }),
+      })
     );
 
     await page.goto('/projects/new');
@@ -342,7 +342,7 @@ test.describe('Project detail', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(FULL_PROJECT),
-      }),
+      })
     );
 
     await page.goto('/projects/proj-1');
@@ -359,7 +359,7 @@ test.describe('Project detail', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(FULL_PROJECT),
-      }),
+      })
     );
 
     await page.goto('/projects/proj-1');
@@ -374,7 +374,7 @@ test.describe('Project detail', () => {
 
   test('should show 404 when project does not exist', async ({ page }) => {
     await page.route('**/api/v1/projects/nonexistent', (route) =>
-      route.fulfill({ status: 404, contentType: 'application/json', body: '{}' }),
+      route.fulfill({ status: 404, contentType: 'application/json', body: '{}' })
     );
 
     await page.goto('/projects/nonexistent');
@@ -426,7 +426,7 @@ test.describe('Project detail', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(FULL_PROJECT),
-      }),
+      })
     );
 
     await page.goto('/projects/proj-1');
@@ -485,7 +485,9 @@ test.describe('Edit project', () => {
     await page.goto('/projects/proj-1/edit');
 
     // Wait for form to load with data
-    await expect(page.locator('input[name="name"]')).toHaveValue('Cuisine Moderne Paris', { timeout: 10_000 });
+    await expect(page.locator('input[name="name"]')).toHaveValue('Cuisine Moderne Paris', {
+      timeout: 10_000,
+    });
   });
 
   test('should save updated project name and redirect', async ({ page }) => {
@@ -519,7 +521,9 @@ test.describe('Edit project', () => {
     await page.goto('/projects/proj-1/edit');
 
     // Wait for form to be populated
-    await expect(page.locator('input[name="name"]')).toHaveValue('Cuisine Moderne Paris', { timeout: 10_000 });
+    await expect(page.locator('input[name="name"]')).toHaveValue('Cuisine Moderne Paris', {
+      timeout: 10_000,
+    });
 
     // Clear and type new name
     await page.locator('input[name="name"]').fill('Cuisine Moderne Paris Renovee');
@@ -554,7 +558,9 @@ test.describe('Edit project', () => {
 
     await page.goto('/projects/proj-1/edit');
 
-    await expect(page.locator('input[name="name"]')).toHaveValue('Cuisine Moderne Paris', { timeout: 10_000 });
+    await expect(page.locator('input[name="name"]')).toHaveValue('Cuisine Moderne Paris', {
+      timeout: 10_000,
+    });
 
     // Clear the name field
     await page.locator('input[name="name"]').fill('');
@@ -584,7 +590,7 @@ test.describe('Dashboard to project navigation', () => {
           data: [],
           pagination: { page: 1, limit: 5, total: 0, totalPages: 0 },
         }),
-      }),
+      })
     );
 
     await page.goto('/dashboard');
@@ -610,7 +616,7 @@ test.describe('Dashboard to project navigation', () => {
           data: [],
           pagination: { page: 1, limit: 5, total: 0, totalPages: 0 },
         }),
-      }),
+      })
     );
 
     await page.goto('/dashboard');

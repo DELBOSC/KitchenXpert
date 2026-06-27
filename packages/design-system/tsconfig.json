@@ -13,8 +13,13 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "storybook-static", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"],
-  "references": [
-    { "path": "../common" }
-  ]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "storybook-static",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.stories.tsx"
+  ],
+  "references": [{ "path": "../common" }]
 }

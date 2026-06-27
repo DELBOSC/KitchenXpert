@@ -80,8 +80,12 @@ const ZONE_LABELS: Record<string, string> = {
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 function getDistanceStrokeColor(distanceM: number): string {
-  if (distanceM <= 1.5) {return '#22c55e';} // green
-  if (distanceM <= 3.0) {return '#eab308';} // yellow
+  if (distanceM <= 1.5) {
+    return '#22c55e';
+  } // green
+  if (distanceM <= 3.0) {
+    return '#eab308';
+  } // yellow
   return '#ef4444'; // red
 }
 
@@ -127,18 +131,22 @@ export default function WorkflowOverlay({
 
   const toScreenX = useCallback(
     (worldX: number): number => {
-      if (kitchenWidth <= 0) {return PADDING;}
+      if (kitchenWidth <= 0) {
+        return PADDING;
+      }
       return PADDING + (worldX / kitchenWidth) * (containerWidth - 2 * PADDING);
     },
-    [kitchenWidth, containerWidth],
+    [kitchenWidth, containerWidth]
   );
 
   const toScreenZ = useCallback(
     (worldZ: number): number => {
-      if (kitchenDepth <= 0) {return PADDING;}
+      if (kitchenDepth <= 0) {
+        return PADDING;
+      }
       return PADDING + (worldZ / kitchenDepth) * (containerHeight - 2 * PADDING);
     },
-    [kitchenDepth, containerHeight],
+    [kitchenDepth, containerHeight]
   );
 
   // ─── Animation loop ───────────────────────────────────────────────────────
@@ -153,7 +161,9 @@ export default function WorkflowOverlay({
     const ANIM_DURATION = 5000; // 5 seconds for full animation
 
     const animate = (timestamp: number): void => {
-      if (!startTime) {startTime = timestamp;}
+      if (!startTime) {
+        startTime = timestamp;
+      }
       const elapsed = timestamp - startTime;
       const progress = Math.min(elapsed / ANIM_DURATION, 1);
 
@@ -177,10 +187,14 @@ export default function WorkflowOverlay({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !simulation || !visible) {return;}
+    if (!canvas || !simulation || !visible) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) {return;}
+    if (!ctx) {
+      return;
+    }
 
     // Clear the canvas
     ctx.clearRect(0, 0, containerWidth, containerHeight);
@@ -217,12 +231,12 @@ export default function WorkflowOverlay({
       ctx.moveTo(toX, toZ);
       ctx.lineTo(
         toX - arrowLen * Math.cos(angle - Math.PI / 6),
-        toZ - arrowLen * Math.sin(angle - Math.PI / 6),
+        toZ - arrowLen * Math.sin(angle - Math.PI / 6)
       );
       ctx.moveTo(toX, toZ);
       ctx.lineTo(
         toX - arrowLen * Math.cos(angle + Math.PI / 6),
-        toZ - arrowLen * Math.sin(angle + Math.PI / 6),
+        toZ - arrowLen * Math.sin(angle + Math.PI / 6)
       );
       ctx.strokeStyle = strokeColor;
       ctx.lineWidth = 2;
@@ -341,7 +355,9 @@ export default function WorkflowOverlay({
 
   // ─── Render ──────────────────────────────────────────────────────────────
 
-  if (!simulation) {return null;}
+  if (!simulation) {
+    return null;
+  }
 
   return (
     <>
@@ -405,7 +421,7 @@ export default function WorkflowOverlay({
                 <span className="text-red-500 text-[8px] font-bold">!</span>
               </div>
               <span className="text-gray-600 dark:text-gray-400">
-                {t('workflow.bottleneck', 'Goulot d\'etranglement')}
+                {t('workflow.bottleneck', "Goulot d'etranglement")}
               </span>
             </div>
           </div>

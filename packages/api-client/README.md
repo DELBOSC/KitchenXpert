@@ -1,6 +1,7 @@
 # @kitchenxpert/api-client
 
-Client TypeScript pour l'API KitchenXpert. Fournit une interface typée pour communiquer avec le backend.
+Client TypeScript pour l'API KitchenXpert. Fournit une interface typée pour
+communiquer avec le backend.
 
 ## Installation
 
@@ -60,9 +61,9 @@ try {
   await api.auth.login({ email, password });
 } catch (error) {
   if (error instanceof ApiError) {
-    console.error(error.code);    // 'UNAUTHORIZED'
+    console.error(error.code); // 'UNAUTHORIZED'
     console.error(error.message); // 'Invalid credentials'
-    console.error(error.status);  // 401
+    console.error(error.status); // 401
   }
 }
 ```

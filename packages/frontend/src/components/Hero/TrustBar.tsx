@@ -31,7 +31,9 @@ interface ClaimProps {
 function Claim({ emoji, label, detail, href }: ClaimProps): React.ReactElement {
   const content = (
     <>
-      <span aria-hidden className="text-base">{emoji}</span>
+      <span aria-hidden className="text-base">
+        {emoji}
+      </span>
       <span>{label}</span>
     </>
   );
@@ -80,20 +82,29 @@ export function TrustBar(): React.ReactElement {
           label="Made in France"
           detail="Équipe basée à Toulouse. Conception, code et support en France."
         />
-        <span aria-hidden className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block" />
+        <span
+          aria-hidden
+          className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block"
+        />
         <Claim
           emoji={<Globe2 className="w-4 h-4" aria-hidden="true" />}
           label="Hébergé en Union Européenne"
           detail="Toutes vos données restent en UE : Postgres OVH (Gravelines), Redis Scaleway (Paris), Object Storage Scaleway. Les APIs IA tierces (Anthropic, Gemini) ne sont sollicitées qu'avec votre consentement explicite."
         />
-        <span aria-hidden className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block" />
+        <span
+          aria-hidden
+          className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block"
+        />
         <Claim
           emoji={<ShieldCheck className="w-4 h-4" aria-hidden="true" />}
           label="Conforme RGPD · DSP2 · LCEN"
           detail="Mentions légales, politique cookies CNIL, droits d'accès (Art. 15) et d'effacement (Art. 17) accessibles en 2 clics. Paiements DSP2/SCA via Stripe Irlande."
           href="/legal/privacy"
         />
-        <span aria-hidden className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block" />
+        <span
+          aria-hidden
+          className="hidden h-1 w-1 self-center rounded-full bg-white/15 sm:inline-block"
+        />
         <Claim
           emoji={<Zap className="w-4 h-4" aria-hidden="true" />}
           label="Sans inscription · Essai illimité"

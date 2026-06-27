@@ -1,4 +1,3 @@
-
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
@@ -60,18 +59,21 @@ interface ChatMessage {
 const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   {
     name: 'add_cabinet',
-    description: 'Ajouter un meuble de cuisine (meuble bas, meuble haut, colonne). Dimensions en mm.',
+    description:
+      'Ajouter un meuble de cuisine (meuble bas, meuble haut, colonne). Dimensions en mm.',
     input_schema: {
       type: 'object' as const,
       properties: {
         type: {
           type: 'string',
           enum: ['base_cabinet', 'wall_cabinet', 'tall_cabinet'],
-          description: 'Type de meuble: base_cabinet (bas), wall_cabinet (haut), tall_cabinet (colonne)',
+          description:
+            'Type de meuble: base_cabinet (bas), wall_cabinet (haut), tall_cabinet (colonne)',
         },
         width: {
           type: 'number',
-          description: 'Largeur du meuble en mm (standard: 300, 400, 450, 500, 600, 800, 900, 1000, 1200)',
+          description:
+            'Largeur du meuble en mm (standard: 300, 400, 450, 500, 600, 800, 900, 1000, 1200)',
         },
         position: {
           type: 'object',
@@ -92,11 +94,12 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'move_object',
-    description: 'Deplacer un objet existant dans la scene vers une nouvelle position. Coordonnees en mm.',
+    description:
+      'Deplacer un objet existant dans la scene vers une nouvelle position. Coordonnees en mm.',
     input_schema: {
       type: 'object' as const,
       properties: {
-        objectId: { type: 'string', description: 'ID de l\'objet a deplacer' },
+        objectId: { type: 'string', description: "ID de l'objet a deplacer" },
         newPosition: {
           type: 'object',
           properties: {
@@ -116,21 +119,22 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
     input_schema: {
       type: 'object' as const,
       properties: {
-        objectId: { type: 'string', description: 'ID de l\'objet a supprimer' },
+        objectId: { type: 'string', description: "ID de l'objet a supprimer" },
       },
       required: ['objectId'],
     },
   },
   {
     name: 'change_material',
-    description: 'Changer le materiau d\'un seul objet (plan de travail, facade, credence).',
+    description: "Changer le materiau d'un seul objet (plan de travail, facade, credence).",
     input_schema: {
       type: 'object' as const,
       properties: {
-        objectId: { type: 'string', description: 'ID de l\'objet' },
+        objectId: { type: 'string', description: "ID de l'objet" },
         materialId: {
           type: 'string',
-          description: 'ID du materiau: oak, walnut, white_lacquer, grey_matt, black_granite, white_marble, quartz, stainless_steel, etc.',
+          description:
+            'ID du materiau: oak, walnut, white_lacquer, grey_matt, black_granite, white_marble, quartz, stainless_steel, etc.',
         },
       },
       required: ['objectId', 'materialId'],
@@ -138,13 +142,14 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'change_all_materials',
-    description: 'Changer le materiau de TOUS les objets d\'un meme type (ex: tous les plans de travail en granit noir).',
+    description:
+      "Changer le materiau de TOUS les objets d'un meme type (ex: tous les plans de travail en granit noir).",
     input_schema: {
       type: 'object' as const,
       properties: {
         targetType: {
           type: 'string',
-          description: 'Type d\'objets a modifier: countertop, cabinet_door, backsplash, handle',
+          description: "Type d'objets a modifier: countertop, cabinet_door, backsplash, handle",
         },
         materialId: {
           type: 'string',
@@ -162,8 +167,17 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
       properties: {
         type: {
           type: 'string',
-          enum: ['oven', 'cooktop', 'hood', 'dishwasher', 'refrigerator', 'sink', 'microwave', 'washer'],
-          description: 'Type d\'electromenager',
+          enum: [
+            'oven',
+            'cooktop',
+            'hood',
+            'dishwasher',
+            'refrigerator',
+            'sink',
+            'microwave',
+            'washer',
+          ],
+          description: "Type d'electromenager",
         },
         position: {
           type: 'object',
@@ -180,7 +194,8 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'optimize_work_triangle',
-    description: 'Optimiser automatiquement le triangle de travail (evier-plaque-frigo) selon les normes ergonomiques. Perimetre optimal: 360-660cm.',
+    description:
+      'Optimiser automatiquement le triangle de travail (evier-plaque-frigo) selon les normes ergonomiques. Perimetre optimal: 360-660cm.',
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -195,7 +210,15 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
       properties: {
         styleName: {
           type: 'string',
-          enum: ['modern', 'classic', 'scandinavian', 'industrial', 'rustic', 'minimalist', 'provencal'],
+          enum: [
+            'modern',
+            'classic',
+            'scandinavian',
+            'industrial',
+            'rustic',
+            'minimalist',
+            'provencal',
+          ],
           description: 'Nom du style a appliquer',
         },
       },
@@ -204,7 +227,7 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'auto_fill_wall',
-    description: 'Remplir automatiquement un mur avec des meubles adaptes (optimise l\'espace).',
+    description: "Remplir automatiquement un mur avec des meubles adaptes (optimise l'espace).",
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -224,7 +247,8 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'generate_countertop',
-    description: 'Regenerer automatiquement les plans de travail pour couvrir tous les meubles bas.',
+    description:
+      'Regenerer automatiquement les plans de travail pour couvrir tous les meubles bas.',
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -239,11 +263,11 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
       properties: {
         width: {
           type: 'number',
-          description: 'Largeur de l\'ilot en mm (typiquement 900-2000mm)',
+          description: "Largeur de l'ilot en mm (typiquement 900-2000mm)",
         },
         depth: {
           type: 'number',
-          description: 'Profondeur de l\'ilot en mm (typiquement 600-1200mm)',
+          description: "Profondeur de l'ilot en mm (typiquement 600-1200mm)",
         },
         position: {
           type: 'object',
@@ -260,12 +284,15 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'rotate_object',
-    description: 'Tourner un objet d\'un certain angle en degres.',
+    description: "Tourner un objet d'un certain angle en degres.",
     input_schema: {
       type: 'object' as const,
       properties: {
-        objectId: { type: 'string', description: 'ID de l\'objet a tourner' },
-        angleDeg: { type: 'number', description: 'Angle de rotation en degres (positif = sens anti-horaire)' },
+        objectId: { type: 'string', description: "ID de l'objet a tourner" },
+        angleDeg: {
+          type: 'number',
+          description: 'Angle de rotation en degres (positif = sens anti-horaire)',
+        },
       },
       required: ['objectId', 'angleDeg'],
     },
@@ -285,7 +312,8 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'run_compliance_check',
-    description: 'Verifier la conformite de la cuisine aux normes francaises (NF C 15-100, distances de securite, accessibilite).',
+    description:
+      'Verifier la conformite de la cuisine aux normes francaises (NF C 15-100, distances de securite, accessibilite).',
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -294,7 +322,7 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'undo',
-    description: 'Annuler la derniere action effectuee dans l\'editeur 3D.',
+    description: "Annuler la derniere action effectuee dans l'editeur 3D.",
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -303,7 +331,7 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'redo',
-    description: 'Refaire la derniere action annulee dans l\'editeur 3D.',
+    description: "Refaire la derniere action annulee dans l'editeur 3D.",
     input_schema: {
       type: 'object' as const,
       properties: {},
@@ -313,7 +341,7 @@ const TOOL_USE_3D_TOOLS: Anthropic.Messages.Tool[] = [
 ];
 
 // Valid tool names for quick lookup
-const VALID_TOOL_NAMES = new Set(TOOL_USE_3D_TOOLS.map(t => t.name));
+const VALID_TOOL_NAMES = new Set(TOOL_USE_3D_TOOLS.map((t) => t.name));
 
 // ─── Service ─────────────────────────────────────────────────────────
 
@@ -328,9 +356,12 @@ export class ToolUse3DService {
    * Build a textual description of the current 3D scene for the AI system prompt.
    */
   private buildSceneDescription(context: SceneContext): string {
-    const items = context.items.map(i =>
-      `- [${i.id}] ${i.type}${i.name ? ` (${i.name})` : ''} @ (${i.position.x.toFixed(0)}, ${i.position.y.toFixed(0)}, ${i.position.z.toFixed(0)})${i.dimensions ? ` [${i.dimensions.width}x${i.dimensions.height}x${i.dimensions.depth}mm]` : ''}`
-    ).join('\n');
+    const items = context.items
+      .map(
+        (i) =>
+          `- [${i.id}] ${i.type}${i.name ? ` (${i.name})` : ''} @ (${i.position.x.toFixed(0)}, ${i.position.y.toFixed(0)}, ${i.position.z.toFixed(0)})${i.dimensions ? ` [${i.dimensions.width}x${i.dimensions.height}x${i.dimensions.depth}mm]` : ''}`
+      )
+      .join('\n');
 
     let desc = `ETAT ACTUEL DE LA CUISINE:
 Dimensions piece: ${context.roomWidth}mm x ${context.roomDepth}mm, hauteur ${context.roomHeight}mm
@@ -352,7 +383,7 @@ ${items || '(aucun element place)'}`;
     }
 
     if (context.suggestions && context.suggestions.length > 0) {
-      desc += `\n\nSUGGESTIONS SYSTEME:\n${context.suggestions.map(s => `- ${s}`).join('\n')}`;
+      desc += `\n\nSUGGESTIONS SYSTEME:\n${context.suggestions.map((s) => `- ${s}`).join('\n')}`;
     }
 
     return desc;
@@ -373,7 +404,7 @@ ${items || '(aucun element place)'}`;
     const systemPrompt = `${SYSTEM_PROMPTS.AI_TOOL_USE_3D}\n\n${sceneDescription}`;
 
     const messages: Anthropic.Messages.MessageParam[] = [
-      ...(options.conversationHistory || []).slice(-10).map(m => ({
+      ...(options.conversationHistory || []).slice(-10).map((m) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
@@ -422,13 +453,13 @@ ${items || '(aucun element place)'}`;
         result.inputTokens,
         result.outputTokens,
         durationMs,
-        { feature: 'tool-use-3d', toolCallCount: toolCalls.length },
+        { feature: 'tool-use-3d', toolCallCount: toolCalls.length }
       );
 
       logger.info('[AI:tool-use-3d] Processed message', {
         userId: options.userId,
         toolCallCount: toolCalls.length,
-        toolNames: toolCalls.map(t => t.name),
+        toolNames: toolCalls.map((t) => t.name),
         durationMs,
       });
 
@@ -456,8 +487,10 @@ ${items || '(aucun element place)'}`;
     }
 
     // Find the tool definition
-    const toolDef = TOOL_USE_3D_TOOLS.find(t => t.name === toolName);
-    if (!toolDef) {return false;}
+    const toolDef = TOOL_USE_3D_TOOLS.find((t) => t.name === toolName);
+    if (!toolDef) {
+      return false;
+    }
 
     const schema = toolDef.input_schema as {
       properties: Record<string, unknown>;

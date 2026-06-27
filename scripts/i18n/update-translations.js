@@ -156,8 +156,7 @@ class TranslationUpdater {
       output: process.stdout,
     });
 
-    const question = (prompt) =>
-      new Promise((resolve) => rl.question(prompt, resolve));
+    const question = (prompt) => new Promise((resolve) => rl.question(prompt, resolve));
 
     log.info(`Interactive update mode`);
     log.info(`Locale: ${locale}, Namespace: ${namespace}`);

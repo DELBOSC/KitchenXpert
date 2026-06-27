@@ -105,13 +105,10 @@ const BreadcrumbLink = styled.a<{
   gap: 6px;
   text-decoration: none;
   color: ${({ $isCurrent }) =>
-    $isCurrent
-      ? 'var(--color-text, #1f2937)'
-      : 'var(--color-text-secondary, #6b7280)'};
+    $isCurrent ? 'var(--color-text, #1f2937)' : 'var(--color-text-secondary, #6b7280)'};
   font-weight: ${({ $isCurrent }) => ($isCurrent ? '500' : '400')};
   border-radius: var(--radius-sm, 4px);
-  cursor: ${({ $disabled, $isCurrent }) =>
-    $disabled || $isCurrent ? 'default' : 'pointer'};
+  cursor: ${({ $disabled, $isCurrent }) => ($disabled || $isCurrent ? 'default' : 'pointer')};
   transition: all 0.2s ease;
 
   ${({ $disabled }) =>
@@ -263,8 +260,7 @@ export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(
   ) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
 
-    const shouldCollapse =
-      maxItems !== undefined && items.length > maxItems && !isExpanded;
+    const shouldCollapse = maxItems !== undefined && items.length > maxItems && !isExpanded;
 
     const getVisibleItems = (): (BreadcrumbItem | 'expand')[] => {
       if (!shouldCollapse) {
@@ -345,9 +341,7 @@ export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(
                   >
                     {expandButtonContent}
                   </ExpandButton>
-                  {!isLast && (
-                    <Separator aria-hidden="true">{separatorContent}</Separator>
-                  )}
+                  {!isLast && <Separator aria-hidden="true">{separatorContent}</Separator>}
                 </BreadcrumbListItem>
               );
             }
@@ -370,15 +364,11 @@ export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(
                   data-breadcrumb-link
                 >
                   {(showHome || item.icon) && (
-                    <BreadcrumbIcon>
-                      {showHome ? <HomeIcon /> : item.icon}
-                    </BreadcrumbIcon>
+                    <BreadcrumbIcon>{showHome ? <HomeIcon /> : item.icon}</BreadcrumbIcon>
                   )}
                   {item.label}
                 </BreadcrumbLink>
-                {!isLast && (
-                  <Separator aria-hidden="true">{separatorContent}</Separator>
-                )}
+                {!isLast && <Separator aria-hidden="true">{separatorContent}</Separator>}
               </BreadcrumbListItem>
             );
           })}

@@ -79,7 +79,7 @@ export interface PDFQuoteOptions {
 // ---------------------------------------------------------------------------
 
 const DEFAULT_CURRENCY = 'EUR';
-const DEFAULT_TVA_RATE = 0.20;
+const DEFAULT_TVA_RATE = 0.2;
 
 /**
  * Format a number as a currency string using the French locale.
@@ -364,10 +364,8 @@ function buildItemsTableBody(items: PDFQuoteItem[], currency: string): string {
 
   return items
     .map((item) => {
-      const unitPrice =
-        typeof item.price === 'number' && isFinite(item.price) ? item.price : 0;
-      const qty =
-        typeof item.quantity === 'number' && isFinite(item.quantity) ? item.quantity : 0;
+      const unitPrice = typeof item.price === 'number' && isFinite(item.price) ? item.price : 0;
+      const qty = typeof item.quantity === 'number' && isFinite(item.quantity) ? item.quantity : 0;
       const lineTotal = unitPrice * qty;
 
       return `
@@ -578,7 +576,10 @@ export function generatePDFQuote(options: PDFQuoteOptions): void {
 
   if (!printWindow) {
     throw new Error(
-      i18next.t('pdfExport.popupBlocked', 'generatePDFQuote: impossible d\'ouvrir la fenetre d\'impression. Veuillez autoriser les popups pour ce site.')
+      i18next.t(
+        'pdfExport.popupBlocked',
+        "generatePDFQuote: impossible d'ouvrir la fenetre d'impression. Veuillez autoriser les popups pour ce site."
+      )
     );
   }
 

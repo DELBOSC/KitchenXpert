@@ -77,7 +77,11 @@ const InputWrapper = styled.div<{ $fullWidth: boolean }>`
   display: inline-flex;
   flex-direction: column;
   gap: 4px;
-  ${({ $fullWidth }) => $fullWidth && css`width: 100%;`}
+  ${({ $fullWidth }) =>
+    $fullWidth &&
+    css`
+      width: 100%;
+    `}
 `;
 
 const Label = styled.label`
@@ -110,8 +114,16 @@ const StyledInput = styled.input<{
   ${({ $size }) => sizeStyles[$size]}
   ${({ $state }) => stateStyles[$state]}
 
-  ${({ $hasLeftIcon }) => $hasLeftIcon && css`padding-left: 40px;`}
-  ${({ $hasRightIcon }) => $hasRightIcon && css`padding-right: 40px;`}
+  ${({ $hasLeftIcon }) =>
+    $hasLeftIcon &&
+    css`
+      padding-left: 40px;
+    `}
+  ${({ $hasRightIcon }) =>
+    $hasRightIcon &&
+    css`
+      padding-right: 40px;
+    `}
 
   &::placeholder {
     color: var(--color-gray-400, #9ca3af);
@@ -135,8 +147,12 @@ const IconWrapper = styled.span<{ $position: 'left' | 'right' }>`
 
   ${({ $position }) =>
     $position === 'left'
-      ? css`left: 12px;`
-      : css`right: 12px;`}
+      ? css`
+          left: 12px;
+        `
+      : css`
+          right: 12px;
+        `}
 `;
 
 const HelperText = styled.span<{ $state: InputState }>`
@@ -192,9 +208,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
           {rightIcon && <IconWrapper $position="right">{rightIcon}</IconWrapper>}
         </InputContainer>
-        {displayHelperText && (
-          <HelperText $state={displayState}>{displayHelperText}</HelperText>
-        )}
+        {displayHelperText && <HelperText $state={displayState}>{displayHelperText}</HelperText>}
       </InputWrapper>
     );
   }

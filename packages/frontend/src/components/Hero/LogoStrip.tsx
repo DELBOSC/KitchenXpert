@@ -28,16 +28,16 @@ import React from 'react';
 
 interface Brand {
   name: string;
-  logoUrl?: string;     // optionnel — fallback texte sinon
-  href?: string;        // lien vers la page guide cuisiniste
+  logoUrl?: string; // optionnel — fallback texte sinon
+  href?: string; // lien vers la page guide cuisiniste
 }
 
 const BRANDS: Brand[] = [
-  { name: 'IKEA',         href: '/cuisinistes/ikea' },
-  { name: 'Schmidt',      href: '/cuisinistes/schmidt' },
-  { name: 'Bosch',        href: '/cuisinistes/bosch' },
+  { name: 'IKEA', href: '/cuisinistes/ikea' },
+  { name: 'Schmidt', href: '/cuisinistes/schmidt' },
+  { name: 'Bosch', href: '/cuisinistes/bosch' },
   { name: 'Leroy Merlin', href: '/cuisinistes/leroy-merlin' },
-  { name: 'Castorama',    href: '/cuisinistes/castorama' },
+  { name: 'Castorama', href: '/cuisinistes/castorama' },
 ];
 
 export function LogoStrip(): React.ReactElement {
@@ -84,9 +84,9 @@ export function LogoStrip(): React.ReactElement {
       </ul>
 
       <p className="mt-6 text-center text-[11px] text-white/35">
-        Les marques citées sont la propriété de leurs détenteurs respectifs. KitchenXpert
-        est un éditeur logiciel indépendant ; les liens vers les fournisseurs sont
-        informatifs et ne constituent pas un partenariat commercial.
+        Les marques citées sont la propriété de leurs détenteurs respectifs. KitchenXpert est un
+        éditeur logiciel indépendant ; les liens vers les fournisseurs sont informatifs et ne
+        constituent pas un partenariat commercial.
       </p>
     </section>
   );

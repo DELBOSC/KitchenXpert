@@ -18,7 +18,10 @@ import { connectDatabase } from './database/connection';
 import { getRedisClient, closeRedisConnection } from './database/redis-client';
 import { startGdprPurgeScheduler, stopGdprPurgeScheduler } from './jobs/gdpr-scheduler';
 import { jobQueue } from './jobs/job-queue';
-import { startProviderSyncScheduler, stopProviderSyncScheduler } from './jobs/provider-sync-scheduler';
+import {
+  startProviderSyncScheduler,
+  stopProviderSyncScheduler,
+} from './jobs/provider-sync-scheduler';
 import { PrismaUserRepository } from './repositories';
 import { createServer } from './server';
 import { createEmailTokenService } from './services/email-token.service';
@@ -85,37 +88,53 @@ async function bootstrap(): Promise<void> {
 
       // Start background job processing now that Redis is available
       // Register job handlers before starting the queue
-      jobQueue.register('send-email', async (data: { to: string; subject: string; template: string; templateData: Record<string, unknown> }) => {
-        const { EmailService } = await import('./services/email.service.js');
-        await EmailService.send({
-          to: data.to,
-          subject: data.subject,
-          template: data.template as any,
-          data: data.templateData,
-        });
-      });
-
-      jobQueue.register('webhook-delivery', async (data: { webhookId: string; url: string; payload: Record<string, unknown>; secret?: string }) => {
-        const body = JSON.stringify(data.payload);
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-
-        if (data.secret) {
-          const crypto = await import('crypto');
-          const signature = crypto.createHmac('sha256', data.secret).update(body).digest('hex');
-          headers['X-Webhook-Signature'] = `sha256=${signature}`;
+      jobQueue.register(
+        'send-email',
+        async (data: {
+          to: string;
+          subject: string;
+          template: string;
+          templateData: Record<string, unknown>;
+        }) => {
+          const { EmailService } = await import('./services/email.service.js');
+          await EmailService.send({
+            to: data.to,
+            subject: data.subject,
+            template: data.template as any,
+            data: data.templateData,
+          });
         }
+      );
 
-        const response = await fetch(data.url, {
-          method: 'POST',
-          headers,
-          body,
-          signal: AbortSignal.timeout(10000),
-        });
+      jobQueue.register(
+        'webhook-delivery',
+        async (data: {
+          webhookId: string;
+          url: string;
+          payload: Record<string, unknown>;
+          secret?: string;
+        }) => {
+          const body = JSON.stringify(data.payload);
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 
-        if (!response.ok) {
-          throw new Error(`Webhook delivery failed: ${response.status}`);
+          if (data.secret) {
+            const crypto = await import('crypto');
+            const signature = crypto.createHmac('sha256', data.secret).update(body).digest('hex');
+            headers['X-Webhook-Signature'] = `sha256=${signature}`;
+          }
+
+          const response = await fetch(data.url, {
+            method: 'POST',
+            headers,
+            body,
+            signal: AbortSignal.timeout(10000),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Webhook delivery failed: ${response.status}`);
+          }
         }
-      });
+      );
 
       jobQueue.register('catalog-sync', async (data: { providerId: string }) => {
         logger.info(`[Job] Catalog sync for provider ${data.providerId}`);
@@ -130,9 +149,12 @@ async function bootstrap(): Promise<void> {
       // 6-hourly provider catalog sync — no-op unless PROVIDER_SYNC_ENABLED=1.
       startProviderSyncScheduler();
     } catch (error) {
-      logger.warn('[REDIS] Not available — token blacklisting, caching, and job queue will be degraded', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      logger.warn(
+        '[REDIS] Not available — token blacklisting, caching, and job queue will be degraded',
+        {
+          error: error instanceof Error ? error.message : String(error),
+        }
+      );
     }
 
     // Create and start server
@@ -184,7 +206,6 @@ async function bootstrap(): Promise<void> {
 
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
-
   } catch (error) {
     logger.error('[SERVER] Failed to start:', error);
     process.exit(1);
@@ -195,7 +216,8 @@ async function bootstrap(): Promise<void> {
 
 process.on('unhandledRejection', (reason: unknown) => {
   logger.error('[PROCESS] Unhandled promise rejection', {
-    reason: reason instanceof Error ? { message: reason.message, stack: reason.stack } : String(reason),
+    reason:
+      reason instanceof Error ? { message: reason.message, stack: reason.stack } : String(reason),
   });
 });
 

@@ -55,7 +55,10 @@ interface PendingInvite {
 
 const ROLES: CollaborationRole[] = ['viewer', 'designer', 'installer', 'supplier'];
 
-const ROLE_COLORS: Record<CollaborationRole, { bg: string; text: string; darkBg: string; darkText: string }> = {
+const ROLE_COLORS: Record<
+  CollaborationRole,
+  { bg: string; text: string; darkBg: string; darkText: string }
+> = {
   viewer: {
     bg: 'bg-gray-100',
     text: 'text-gray-700',
@@ -83,10 +86,34 @@ const ROLE_COLORS: Record<CollaborationRole, { bg: string; text: string; darkBg:
 };
 
 const PERMISSION_MATRIX: Record<CollaborationRole, CollaborationPermissions> = {
-  viewer: { canEdit: false, canComment: true, canExport: false, canViewSpecs: false, canViewBOM: false },
-  designer: { canEdit: true, canComment: true, canExport: true, canViewSpecs: true, canViewBOM: true },
-  installer: { canEdit: false, canComment: true, canExport: true, canViewSpecs: true, canViewBOM: true },
-  supplier: { canEdit: false, canComment: false, canExport: false, canViewSpecs: false, canViewBOM: true },
+  viewer: {
+    canEdit: false,
+    canComment: true,
+    canExport: false,
+    canViewSpecs: false,
+    canViewBOM: false,
+  },
+  designer: {
+    canEdit: true,
+    canComment: true,
+    canExport: true,
+    canViewSpecs: true,
+    canViewBOM: true,
+  },
+  installer: {
+    canEdit: false,
+    canComment: true,
+    canExport: true,
+    canViewSpecs: true,
+    canViewBOM: true,
+  },
+  supplier: {
+    canEdit: false,
+    canComment: false,
+    canExport: false,
+    canViewSpecs: false,
+    canViewBOM: true,
+  },
 };
 
 // ─── Permission Labels ──────────────────────────────────────────────────────
@@ -123,7 +150,9 @@ function StatusBadge({ status }: { status: string }): React.ReactElement {
   };
 
   return (
-    <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${styles[status] || styles.pending}`}>
+    <span
+      className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${styles[status] || styles.pending}`}
+    >
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );
@@ -167,7 +196,9 @@ export default function CollaborationPanel({
   // ─── Load members ──────────────────────────────────────────────────────
 
   useEffect(() => {
-    if (!isOpen || !kitchenId) {return;}
+    if (!isOpen || !kitchenId) {
+      return;
+    }
 
     const controller = new AbortController();
     let cancelled = false;
@@ -177,15 +208,19 @@ export default function CollaborationPanel({
       try {
         const response = await api.get<CollaborationMember[]>(
           API_ENDPOINTS.COLLABORATION_ROLES.MEMBERS(kitchenId),
-          { signal: controller.signal },
+          { signal: controller.signal }
         );
         if (!cancelled && response.success && response.data) {
           setMembers(response.data);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
       } finally {
-        if (!cancelled) {setIsLoadingMembers(false);}
+        if (!cancelled) {
+          setIsLoadingMembers(false);
+        }
       }
     };
 
@@ -200,7 +235,9 @@ export default function CollaborationPanel({
   // ─── Load my invites ───────────────────────────────────────────────────
 
   useEffect(() => {
-    if (!isOpen) {return;}
+    if (!isOpen) {
+      return;
+    }
 
     const controller = new AbortController();
     let cancelled = false;
@@ -209,13 +246,15 @@ export default function CollaborationPanel({
       try {
         const response = await api.get<PendingInvite[]>(
           API_ENDPOINTS.COLLABORATION_ROLES.MY_INVITES,
-          { signal: controller.signal },
+          { signal: controller.signal }
         );
         if (!cancelled && response.success && response.data) {
           setMyInvites(response.data);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
       }
     };
 
@@ -261,7 +300,7 @@ export default function CollaborationPanel({
         setIsInviting(false);
       }
     },
-    [kitchenId, inviteEmail, inviteRole, t],
+    [kitchenId, inviteEmail, inviteRole, t]
   );
 
   // ─── Update member role ───────────────────────────────────────────────
@@ -269,10 +308,9 @@ export default function CollaborationPanel({
   const handleUpdateRole = useCallback(
     async (inviteId: string, newRole: CollaborationRole): Promise<void> => {
       try {
-        const response = await api.put(
-          API_ENDPOINTS.COLLABORATION_ROLES.UPDATE_ROLE(inviteId),
-          { role: newRole },
-        );
+        const response = await api.put(API_ENDPOINTS.COLLABORATION_ROLES.UPDATE_ROLE(inviteId), {
+          role: newRole,
+        });
         if (response.success) {
           setRetryCount((c) => c + 1);
         }
@@ -280,56 +318,47 @@ export default function CollaborationPanel({
         // Silently fail
       }
     },
-    [],
+    []
   );
 
   // ─── Remove member ────────────────────────────────────────────────────
 
-  const handleRemoveMember = useCallback(
-    async (inviteId: string): Promise<void> => {
-      try {
-        const response = await api.delete(
-          API_ENDPOINTS.COLLABORATION_ROLES.REMOVE(inviteId),
-        );
-        if (response.success) {
-          setMembers((prev) => prev.filter((m) => m.id !== inviteId));
-        }
-      } catch {
-        // Silently fail
+  const handleRemoveMember = useCallback(async (inviteId: string): Promise<void> => {
+    try {
+      const response = await api.delete(API_ENDPOINTS.COLLABORATION_ROLES.REMOVE(inviteId));
+      if (response.success) {
+        setMembers((prev) => prev.filter((m) => m.id !== inviteId));
       }
-    },
-    [],
-  );
+    } catch {
+      // Silently fail
+    }
+  }, []);
 
   // ─── Accept / Decline invites ─────────────────────────────────────────
 
-  const handleAcceptInvite = useCallback(
-    async (token: string): Promise<void> => {
-      try {
-        await api.post(API_ENDPOINTS.COLLABORATION_ROLES.ACCEPT(token));
-        setRetryCount((c) => c + 1);
-      } catch {
-        // Silently fail
-      }
-    },
-    [],
-  );
+  const handleAcceptInvite = useCallback(async (token: string): Promise<void> => {
+    try {
+      await api.post(API_ENDPOINTS.COLLABORATION_ROLES.ACCEPT(token));
+      setRetryCount((c) => c + 1);
+    } catch {
+      // Silently fail
+    }
+  }, []);
 
-  const handleDeclineInvite = useCallback(
-    async (token: string): Promise<void> => {
-      try {
-        await api.post(API_ENDPOINTS.COLLABORATION_ROLES.DECLINE(token));
-        setRetryCount((c) => c + 1);
-      } catch {
-        // Silently fail
-      }
-    },
-    [],
-  );
+  const handleDeclineInvite = useCallback(async (token: string): Promise<void> => {
+    try {
+      await api.post(API_ENDPOINTS.COLLABORATION_ROLES.DECLINE(token));
+      setRetryCount((c) => c + 1);
+    } catch {
+      // Silently fail
+    }
+  }, []);
 
   // ─── Don't render if closed ───────────────────────────────────────────
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   // Partition members by status
   const acceptedMembers = members.filter((m) => m.status === 'accepted');
@@ -347,7 +376,12 @@ export default function CollaborationPanel({
           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -383,15 +417,11 @@ export default function CollaborationPanel({
               disabled={isInviting}
               className="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isInviting
-                ? t('common.sending', 'Sending...')
-                : t('collaboration.invite', 'Invite')}
+              {isInviting ? t('common.sending', 'Sending...') : t('collaboration.invite', 'Invite')}
             </button>
           </div>
 
-          {inviteError && (
-            <p className="text-xs text-red-600 dark:text-red-400">{inviteError}</p>
-          )}
+          {inviteError && <p className="text-xs text-red-600 dark:text-red-400">{inviteError}</p>}
           {inviteSuccess && (
             <p className="text-xs text-green-600 dark:text-green-400">{inviteSuccess}</p>
           )}
@@ -429,7 +459,9 @@ export default function CollaborationPanel({
                 <div className="flex items-center gap-2 mt-1">
                   <select
                     value={member.role}
-                    onChange={(e) => handleUpdateRole(member.id, e.target.value as CollaborationRole)}
+                    onChange={(e) =>
+                      handleUpdateRole(member.id, e.target.value as CollaborationRole)
+                    }
                     className="text-xs px-1.5 py-0.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                   >
                     {ROLES.map((role) => (
@@ -447,7 +479,12 @@ export default function CollaborationPanel({
                 title={t('collaboration.remove', 'Remove member')}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -482,7 +519,12 @@ export default function CollaborationPanel({
                   title={t('collaboration.cancelInvite', 'Cancel invite')}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -499,22 +541,28 @@ export default function CollaborationPanel({
           </h3>
           <div className="space-y-2">
             {myInvites.map((invite) => (
-              <div
-                key={invite.id}
-                className="p-2 rounded-md bg-blue-50 dark:bg-blue-900/20"
-              >
+              <div key={invite.id} className="p-2 rounded-md bg-blue-50 dark:bg-blue-900/20">
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                  {t('collaboration.invitedAs', 'Invited as')} <RoleBadge role={invite.role as CollaborationRole} />
+                  {t('collaboration.invitedAs', 'Invited as')}{' '}
+                  <RoleBadge role={invite.role as CollaborationRole} />
                 </p>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleAcceptInvite((invite as unknown as { token: string }).token || invite.id)}
+                    onClick={() =>
+                      handleAcceptInvite(
+                        (invite as unknown as { token: string }).token || invite.id
+                      )
+                    }
                     className="flex-1 px-2 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition-colors"
                   >
                     {t('collaboration.accept', 'Accept')}
                   </button>
                   <button
-                    onClick={() => handleDeclineInvite((invite as unknown as { token: string }).token || invite.id)}
+                    onClick={() =>
+                      handleDeclineInvite(
+                        (invite as unknown as { token: string }).token || invite.id
+                      )
+                    }
                     className="flex-1 px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                   >
                     {t('collaboration.decline', 'Decline')}

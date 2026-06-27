@@ -19,9 +19,9 @@ const SCORE_WEIGHTS = {
   countertopMaterial: 0.15,
   hardwareStyle: 0.05,
   hardwareFinish: 0.05,
-  backsplashPreference: 0.10,
+  backsplashPreference: 0.1,
   flooringPreference: 0.05,
-  lightingStyle: 0.05
+  lightingStyle: 0.05,
 };
 
 /**
@@ -32,66 +32,66 @@ const DESIGN_PERSONAS = {
   'modern-minimalist': {
     description: {
       en: 'Clean lines and uncluttered spaces with a focus on function',
-      fr: 'Lignes épurées et espaces dégagés avec un accent sur la fonction'
+      fr: 'Lignes épurées et espaces dégagés avec un accent sur la fonction',
     },
     characteristics: ['flat-panel', 'handleless', 'neutral-light', 'quartz', 'simple'],
     priorities: ['simplicity', 'clean-lines', 'minimal-ornamentation'],
-    styleMatches: ['modern', 'contemporary', 'scandinavian']
+    styleMatches: ['modern', 'contemporary', 'scandinavian'],
   },
   'classic-traditional': {
     description: {
       en: 'Timeless elegance with ornate details and rich materials',
-      fr: 'Élégance intemporelle avec des détails ornés et des matériaux riches'
+      fr: 'Élégance intemporelle avec des détails ornés et des matériaux riches',
     },
     characteristics: ['raised-panel', 'knobs', 'neutral-warm', 'granite', 'ornate'],
     priorities: ['traditional-details', 'warmth', 'craftsmanship'],
-    styleMatches: ['traditional', 'victorian', 'colonial']
+    styleMatches: ['traditional', 'victorian', 'colonial'],
   },
   'rustic-farmhouse': {
     description: {
       en: 'Cozy, lived-in charm with natural materials and vintage touches',
-      fr: 'Charme chaleureux et vécu avec des matériaux naturels et des touches vintage'
+      fr: 'Charme chaleureux et vécu avec des matériaux naturels et des touches vintage',
     },
     characteristics: ['shaker', 'beadboard', 'natural', 'butcher-block', 'cup-pulls'],
     priorities: ['natural-materials', 'texture', 'authenticity'],
-    styleMatches: ['farmhouse', 'country', 'cottage']
+    styleMatches: ['farmhouse', 'country', 'cottage'],
   },
   'industrial-urban': {
     description: {
       en: 'Raw materials and exposed elements with an edgy aesthetic',
-      fr: 'Matériaux bruts et éléments exposés avec une esthétique audacieuse'
+      fr: 'Matériaux bruts et éléments exposés avec une esthétique audacieuse',
     },
     characteristics: ['flat-panel', 'neutral-dark', 'concrete', 'bar-pulls', 'metal'],
     priorities: ['raw-materials', 'bold-contrasts', 'urban-edge'],
-    styleMatches: ['industrial', 'loft', 'urban']
+    styleMatches: ['industrial', 'loft', 'urban'],
   },
   'transitional-blend': {
     description: {
       en: 'Perfect balance between traditional warmth and contemporary style',
-      fr: 'Équilibre parfait entre chaleur traditionnelle et style contemporain'
+      fr: 'Équilibre parfait entre chaleur traditionnelle et style contemporain',
     },
     characteristics: ['shaker', 'two-tone', 'quartz', 'bar-pulls', 'mixed'],
     priorities: ['balance', 'versatility', 'timeless-appeal'],
-    styleMatches: ['transitional', 'contemporary-classic']
+    styleMatches: ['transitional', 'contemporary-classic'],
   },
   'coastal-casual': {
     description: {
       en: 'Breezy, relaxed aesthetic with light colors and natural textures',
-      fr: 'Esthétique décontractée et aérée avec des couleurs claires et des textures naturelles'
+      fr: 'Esthétique décontractée et aérée avec des couleurs claires et des textures naturelles',
     },
     characteristics: ['shaker', 'neutral-light', 'natural', 'glass-front', 'white'],
     priorities: ['light-and-airy', 'relaxed', 'natural-light'],
-    styleMatches: ['coastal', 'beach', 'mediterranean']
+    styleMatches: ['coastal', 'beach', 'mediterranean'],
   },
   'eclectic-creative': {
     description: {
       en: 'Bold mix of styles, colors, and patterns with personality',
-      fr: 'Mélange audacieux de styles, couleurs et motifs avec personnalité'
+      fr: 'Mélange audacieux de styles, couleurs et motifs avec personnalité',
     },
     characteristics: ['colorful', 'mixed', 'varied', 'unique', 'personality'],
     priorities: ['self-expression', 'uniqueness', 'creative-freedom'],
-    styleMatches: ['eclectic', 'bohemian', 'artistic']
-  }
+    styleMatches: ['eclectic', 'bohemian', 'artistic'],
+  },
 };
 
 /**
@@ -102,75 +102,75 @@ const STYLE_COMPATIBILITY_SCORES = {
   modern: {
     cabinets: {
       'flat-panel': 100,
-      'slab': 100,
-      'shaker': 70,
+      slab: 100,
+      shaker: 70,
       'raised-panel': 30,
       'glass-front': 80,
-      'beadboard': 20
+      beadboard: 20,
     },
     colors: {
       'neutral-light': 95,
       'neutral-dark': 90,
       'two-tone': 85,
       'neutral-warm': 60,
-      'colorful': 50,
-      'natural': 40
+      colorful: 50,
+      natural: 40,
     },
     hardware: {
-      'handleless': 100,
+      handleless: 100,
       'bar-pulls': 90,
       'finger-pulls': 85,
-      'knobs': 40,
-      'cup-pulls': 20
-    }
+      knobs: 40,
+      'cup-pulls': 20,
+    },
   },
   traditional: {
     cabinets: {
       'raised-panel': 100,
-      'shaker': 85,
-      'beadboard': 75,
+      shaker: 85,
+      beadboard: 75,
       'glass-front': 90,
       'flat-panel': 30,
-      'slab': 20
+      slab: 20,
     },
     colors: {
       'neutral-warm': 100,
-      'natural': 85,
+      natural: 85,
       'neutral-light': 70,
       'two-tone': 60,
       'neutral-dark': 50,
-      'colorful': 40
+      colorful: 40,
     },
     hardware: {
-      'knobs': 100,
+      knobs: 100,
       'cup-pulls': 95,
       'bar-pulls': 60,
-      'handleless': 20
-    }
+      handleless: 20,
+    },
   },
   farmhouse: {
     cabinets: {
-      'shaker': 100,
-      'beadboard': 95,
+      shaker: 100,
+      beadboard: 95,
       'raised-panel': 70,
       'glass-front': 85,
-      'flat-panel': 40
+      'flat-panel': 40,
     },
     colors: {
-      'natural': 100,
+      natural: 100,
       'neutral-warm': 90,
       'two-tone': 85,
       'neutral-light': 80,
-      'colorful': 60
+      colorful: 60,
     },
     hardware: {
       'cup-pulls': 100,
-      'knobs': 90,
+      knobs: 90,
       'bar-pulls': 70,
-      'mixed': 80,
-      'handleless': 20
-    }
-  }
+      mixed: 80,
+      handleless: 20,
+    },
+  },
 };
 
 /**
@@ -190,7 +190,7 @@ function calculateSectionScore(answers) {
     tags: new Set(),
     warnings: [],
     conflicts: [],
-    materialProfile: {}
+    materialProfile: {},
   };
 
   // Determine primary style
@@ -207,12 +207,18 @@ function calculateSectionScore(answers) {
     kitchenStyle: scoreKitchenStyle(answers['kitchen-style']),
     colorPreference: scoreColorPreference(answers['color-preference'], answers['kitchen-style']),
     cabinetStyle: scoreCabinetStyle(answers['cabinet-style'], answers['kitchen-style']),
-    countertopMaterial: scoreCountertopMaterial(answers['countertop-material'], answers['kitchen-style']),
+    countertopMaterial: scoreCountertopMaterial(
+      answers['countertop-material'],
+      answers['kitchen-style']
+    ),
     hardwareStyle: scoreHardwareStyle(answers['hardware-style'], answers['kitchen-style']),
     hardwareFinish: scoreHardwareFinish(answers['hardware-finish'], answers['kitchen-style']),
-    backsplashPreference: scoreBacksplash(answers['backsplash-preference'], answers['kitchen-style']),
+    backsplashPreference: scoreBacksplash(
+      answers['backsplash-preference'],
+      answers['kitchen-style']
+    ),
     flooringPreference: scoreFlooring(answers['flooring-preference'], answers['kitchen-style']),
-    lightingStyle: scoreLighting(answers['lighting-style'])
+    lightingStyle: scoreLighting(answers['lighting-style']),
   };
 
   // Calculate weighted overall score
@@ -223,7 +229,7 @@ function calculateSectionScore(answers) {
       totalWeight += weight;
 
       if (elementScores[key].tags) {
-        elementScores[key].tags.forEach(tag => scores.tags.add(tag));
+        elementScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
 
       if (elementScores[key].warning) {
@@ -252,8 +258,8 @@ function calculateSectionScore(answers) {
       severity: 'medium',
       message: {
         en: 'Your selections mix different styles. Consider a more cohesive approach for best results.',
-        fr: 'Vos sélections mélangent différents styles. Envisagez une approche plus cohérente pour de meilleurs résultats.'
-      }
+        fr: 'Vos sélections mélangent différents styles. Envisagez une approche plus cohérente pour de meilleurs résultats.',
+      },
     });
   } else if (scores.styleCoherence < 40) {
     scores.warnings.push({
@@ -261,8 +267,8 @@ function calculateSectionScore(answers) {
       severity: 'high',
       message: {
         en: 'Your selections have significant style conflicts. We recommend consulting with a designer.',
-        fr: 'Vos sélections présentent des conflits de style importants. Nous recommandons de consulter un designer.'
-      }
+        fr: 'Vos sélections présentent des conflits de style importants. Nous recommandons de consulter un designer.',
+      },
     });
   }
 
@@ -278,14 +284,14 @@ function calculateSectionScore(answers) {
     styleCoherence: {
       score: scores.styleCoherence,
       label: getCoherenceLabel(scores.styleCoherence),
-      description: getCoherenceDescription(scores.styleCoherence)
+      description: getCoherenceDescription(scores.styleCoherence),
     },
     materialQuality: calculateMaterialQualityScore(answers),
     maintenanceLevel: calculateMaintenanceScore(answers),
     budgetTier: determineBudgetTier(answers),
     designComplexity: calculateDesignComplexity(answers),
     visualWeight: calculateVisualWeight(answers),
-    colorHarmony: calculateColorHarmony(answers)
+    colorHarmony: calculateColorHarmony(answers),
   };
 
   // Generate comprehensive recommendations
@@ -326,7 +332,8 @@ function identifyDesignPersona(answers) {
       totalCharacteristics += 2;
     }
 
-    personaScores[personaKey] = totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
+    personaScores[personaKey] =
+      totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
   }
 
   // Find best matching persona
@@ -339,11 +346,13 @@ function identifyDesignPersona(answers) {
     }
   }
 
-  return bestPersona && bestScore >= 30 ? {
-    key: bestPersona,
-    score: bestScore,
-    ...DESIGN_PERSONAS[bestPersona]
-  } : null;
+  return bestPersona && bestScore >= 30
+    ? {
+        key: bestPersona,
+        score: bestScore,
+        ...DESIGN_PERSONAS[bestPersona],
+      }
+    : null;
 }
 
 /**
@@ -361,7 +370,9 @@ function calculateStyleCoherence(answers) {
 
   // Check color compatibility
   if (answers['color-preference']) {
-    const colorScore = styleMatrix.compatibilityMatrix.colorToStyle[answers['color-preference']]?.[primaryStyle] || 50;
+    const colorScore =
+      styleMatrix.compatibilityMatrix.colorToStyle[answers['color-preference']]?.[primaryStyle] ||
+      50;
     coherenceScore += colorScore;
     factors++;
   }
@@ -375,7 +386,9 @@ function calculateStyleCoherence(answers) {
 
   // Check countertop compatibility
   if (answers['countertop-material']) {
-    const isRecommended = styleConfig.recommendedCountertops.includes(answers['countertop-material']);
+    const isRecommended = styleConfig.recommendedCountertops.includes(
+      answers['countertop-material']
+    );
     coherenceScore += isRecommended ? 100 : 60;
     factors++;
   }
@@ -396,7 +409,9 @@ function calculateStyleCoherence(answers) {
 
   // Check backsplash compatibility
   if (answers['backsplash-preference']) {
-    const isRecommended = styleConfig.recommendedBacksplash.includes(answers['backsplash-preference']);
+    const isRecommended = styleConfig.recommendedBacksplash.includes(
+      answers['backsplash-preference']
+    );
     coherenceScore += isRecommended ? 100 : 65;
     factors++;
   }
@@ -427,8 +442,8 @@ function detectStyleConflicts(answers, elementScores) {
         elements: ['kitchen-style', 'cabinet-style'],
         message: {
           en: 'Raised panel cabinets typically clash with modern aesthetics',
-          fr: 'Les armoires à panneaux surélevés entrent généralement en conflit avec l\'esthétique moderne'
-        }
+          fr: "Les armoires à panneaux surélevés entrent généralement en conflit avec l'esthétique moderne",
+        },
       });
     }
     if (answers['hardware-style'] === 'ornate' || answers['hardware-style'] === 'cup-pulls') {
@@ -438,8 +453,8 @@ function detectStyleConflicts(answers, elementScores) {
         elements: ['kitchen-style', 'hardware-style'],
         message: {
           en: 'Ornate hardware may feel out of place in a modern kitchen',
-          fr: 'Les ferrures ornées peuvent sembler déplacées dans une cuisine moderne'
-        }
+          fr: 'Les ferrures ornées peuvent sembler déplacées dans une cuisine moderne',
+        },
       });
     }
   }
@@ -453,8 +468,8 @@ function detectStyleConflicts(answers, elementScores) {
         elements: ['kitchen-style', 'cabinet-style'],
         message: {
           en: 'Flat panel cabinets may feel too contemporary for a traditional kitchen',
-          fr: 'Les armoires à panneaux plats peuvent sembler trop contemporaines pour une cuisine traditionnelle'
-        }
+          fr: 'Les armoires à panneaux plats peuvent sembler trop contemporaines pour une cuisine traditionnelle',
+        },
       });
     }
     if (answers['hardware-style'] === 'handleless') {
@@ -464,8 +479,8 @@ function detectStyleConflicts(answers, elementScores) {
         elements: ['kitchen-style', 'hardware-style'],
         message: {
           en: 'Handleless cabinets strongly conflict with traditional aesthetics',
-          fr: 'Les armoires sans poignées entrent fortement en conflit avec l\'esthétique traditionnelle'
-        }
+          fr: "Les armoires sans poignées entrent fortement en conflit avec l'esthétique traditionnelle",
+        },
       });
     }
   }
@@ -478,21 +493,24 @@ function detectStyleConflicts(answers, elementScores) {
       elements: ['color-preference', 'kitchen-style'],
       message: {
         en: 'Dark colors typically contrast with bright, airy coastal aesthetics',
-        fr: 'Les couleurs sombres contrastent généralement avec l\'esthétique côtière lumineuse et aérée'
-      }
+        fr: "Les couleurs sombres contrastent généralement avec l'esthétique côtière lumineuse et aérée",
+      },
     });
   }
 
   // Check material appropriateness
-  if (answers['countertop-material'] === 'laminate' && elementScores.materialQuality?.label === 'premium') {
+  if (
+    answers['countertop-material'] === 'laminate' &&
+    elementScores.materialQuality?.label === 'premium'
+  ) {
     conflicts.push({
       code: 'LAMINATE_PREMIUM_CONFLICT',
       severity: 'low',
       elements: ['countertop-material', 'overall-quality'],
       message: {
         en: 'Laminate countertops may not align with premium material selections elsewhere',
-        fr: 'Les comptoirs en stratifié peuvent ne pas s\'aligner avec les sélections de matériaux haut de gamme ailleurs'
-      }
+        fr: "Les comptoirs en stratifié peuvent ne pas s'aligner avec les sélections de matériaux haut de gamme ailleurs",
+      },
     });
   }
 
@@ -507,27 +525,27 @@ function buildMaterialProfile(answers, elementScores) {
     countertop: {
       material: answers['countertop-material'],
       costTier: elementScores.countertopMaterial?.costTier,
-      maintenanceLevel: elementScores.countertopMaterial?.maintenanceLevel
+      maintenanceLevel: elementScores.countertopMaterial?.maintenanceLevel,
     },
     cabinets: {
       style: answers['cabinet-style'],
-      tags: elementScores.cabinetStyle?.tags || []
+      tags: elementScores.cabinetStyle?.tags || [],
     },
     flooring: {
       type: answers['flooring-preference'],
-      maintenanceLevel: elementScores.flooringPreference?.maintenanceLevel
+      maintenanceLevel: elementScores.flooringPreference?.maintenanceLevel,
     },
     hardware: {
       style: answers['hardware-style'],
-      finish: answers['hardware-finish']
+      finish: answers['hardware-finish'],
     },
     backsplash: {
-      type: answers['backsplash-preference']
+      type: answers['backsplash-preference'],
     },
     overall: {
       qualityTier: elementScores.materialQuality?.label,
-      maintenanceLevel: elementScores.maintenanceLevel?.level
-    }
+      maintenanceLevel: elementScores.maintenanceLevel?.level,
+    },
   };
 }
 
@@ -559,9 +577,19 @@ function calculateDesignComplexity(answers) {
     score,
     level: score >= 70 ? 'high' : score >= 40 ? 'moderate' : 'low',
     description: {
-      en: score >= 70 ? 'Complex, layered design' : score >= 40 ? 'Moderate visual interest' : 'Simple, clean aesthetic',
-      fr: score >= 70 ? 'Design complexe et stratifié' : score >= 40 ? 'Intérêt visuel modéré' : 'Esthétique simple et épurée'
-    }
+      en:
+        score >= 70
+          ? 'Complex, layered design'
+          : score >= 40
+            ? 'Moderate visual interest'
+            : 'Simple, clean aesthetic',
+      fr:
+        score >= 70
+          ? 'Design complexe et stratifié'
+          : score >= 40
+            ? 'Intérêt visuel modéré'
+            : 'Esthétique simple et épurée',
+    },
   };
 }
 
@@ -592,9 +620,19 @@ function calculateVisualWeight(answers) {
     score,
     level: score >= 70 ? 'heavy' : score >= 40 ? 'medium' : 'light',
     description: {
-      en: score >= 70 ? 'Bold, substantial presence' : score >= 40 ? 'Balanced visual weight' : 'Light, airy feel',
-      fr: score >= 70 ? 'Présence audacieuse et substantielle' : score >= 40 ? 'Poids visuel équilibré' : 'Sensation légère et aérée'
-    }
+      en:
+        score >= 70
+          ? 'Bold, substantial presence'
+          : score >= 40
+            ? 'Balanced visual weight'
+            : 'Light, airy feel',
+      fr:
+        score >= 70
+          ? 'Présence audacieuse et substantielle'
+          : score >= 40
+            ? 'Poids visuel équilibré'
+            : 'Sensation légère et aérée',
+    },
   };
 }
 
@@ -621,8 +659,10 @@ function calculateColorHarmony(answers) {
 
   // Natural materials work well with warm tones
   if (colorScheme === 'neutral-warm' || colorScheme === 'natural') {
-    if (['butcher-block', 'natural-stone', 'hardwood'].includes(countertop) ||
-        ['hardwood', 'natural-stone'].includes(flooring)) {
+    if (
+      ['butcher-block', 'natural-stone', 'hardwood'].includes(countertop) ||
+      ['hardwood', 'natural-stone'].includes(flooring)
+    ) {
       harmonyScore += 10;
     }
   }
@@ -638,9 +678,19 @@ function calculateColorHarmony(answers) {
     score: Math.min(100, harmonyScore),
     level: harmonyScore >= 80 ? 'excellent' : harmonyScore >= 60 ? 'good' : 'challenging',
     description: {
-      en: harmonyScore >= 80 ? 'Colors flow naturally together' : harmonyScore >= 60 ? 'Good color coordination' : 'Requires careful color balancing',
-      fr: harmonyScore >= 80 ? 'Les couleurs s\'harmonisent naturellement' : harmonyScore >= 60 ? 'Bonne coordination des couleurs' : 'Nécessite un équilibrage attentif des couleurs'
-    }
+      en:
+        harmonyScore >= 80
+          ? 'Colors flow naturally together'
+          : harmonyScore >= 60
+            ? 'Good color coordination'
+            : 'Requires careful color balancing',
+      fr:
+        harmonyScore >= 80
+          ? "Les couleurs s'harmonisent naturellement"
+          : harmonyScore >= 60
+            ? 'Bonne coordination des couleurs'
+            : 'Nécessite un équilibrage attentif des couleurs',
+    },
   };
 }
 
@@ -655,7 +705,7 @@ function scoreKitchenStyle(value) {
     score: 100,
     style: value,
     characteristics: styleConfig?.characteristics || [],
-    tags: styleConfig?.characteristics || []
+    tags: styleConfig?.characteristics || [],
   };
 }
 
@@ -674,10 +724,13 @@ function scoreColorPreference(value, primaryStyle) {
     score: compatibilityScore,
     colorScheme: value,
     tags: getColorTags(value),
-    warning: compatibilityScore < 50 ? {
-      code: 'COLOR_STYLE_MISMATCH',
-      message: 'This color scheme is unconventional for your chosen style'
-    } : null
+    warning:
+      compatibilityScore < 50
+        ? {
+            code: 'COLOR_STYLE_MISMATCH',
+            message: 'This color scheme is unconventional for your chosen style',
+          }
+        : null,
   };
 }
 
@@ -694,7 +747,7 @@ function scoreCabinetStyle(value, primaryStyle) {
     score: isRecommended ? 95 : 70,
     cabinetType: value,
     recommended: isRecommended,
-    tags: getCabinetTags(value)
+    tags: getCabinetTags(value),
   };
 }
 
@@ -731,7 +784,7 @@ function scoreCountertopMaterial(value, primaryStyle) {
     recommended: isRecommended,
     costTier,
     maintenanceLevel,
-    tags: [value, costTier + '-cost', maintenanceLevel + '-maintenance']
+    tags: [value, costTier + '-cost', maintenanceLevel + '-maintenance'],
   };
 }
 
@@ -748,7 +801,7 @@ function scoreHardwareStyle(value, primaryStyle) {
     score: isRecommended ? 90 : 75,
     hardwareType: value,
     recommended: isRecommended,
-    tags: getHardwareTags(value)
+    tags: getHardwareTags(value),
   };
 }
 
@@ -765,7 +818,7 @@ function scoreHardwareFinish(value, primaryStyle) {
     score: isRecommended ? 90 : 75,
     finish: value,
     recommended: isRecommended,
-    tags: [value]
+    tags: [value],
   };
 }
 
@@ -782,7 +835,7 @@ function scoreBacksplash(value, primaryStyle) {
     score: isRecommended ? 90 : 70,
     backsplashType: value,
     recommended: isRecommended,
-    tags: [value]
+    tags: [value],
   };
 }
 
@@ -809,7 +862,7 @@ function scoreFlooring(value, primaryStyle) {
     flooringType: value,
     recommended: isRecommended,
     maintenanceLevel,
-    tags: [value, maintenanceLevel + '-maintenance']
+    tags: [value, maintenanceLevel + '-maintenance'],
   };
 }
 
@@ -822,19 +875,26 @@ function scoreLighting(values) {
   }
 
   const tags = [];
-  values.forEach(v => {
+  values.forEach((v) => {
     switch (v) {
-      case 'pendant-lights': tags.push('decorative-lighting'); break;
-      case 'under-cabinet': tags.push('task-lighting'); break;
-      case 'smart-lighting': tags.push('smart-home'); break;
-      default: tags.push(v);
+      case 'pendant-lights':
+        tags.push('decorative-lighting');
+        break;
+      case 'under-cabinet':
+        tags.push('task-lighting');
+        break;
+      case 'smart-lighting':
+        tags.push('smart-home');
+        break;
+      default:
+        tags.push(v);
     }
   });
 
   return {
-    score: 70 + (values.length * 5),
+    score: 70 + values.length * 5,
     features: values,
-    tags
+    tags,
   };
 }
 
@@ -865,8 +925,8 @@ function calculateMaterialQualityScore(answers) {
   }
 
   return {
-    score: factors > 0 ? Math.min(Math.round(score / factors * 2), 100) : 50,
-    label: score > 70 ? 'premium' : score > 40 ? 'mid-range' : 'budget'
+    score: factors > 0 ? Math.min(Math.round((score / factors) * 2), 100) : 50,
+    label: score > 70 ? 'premium' : score > 40 ? 'mid-range' : 'budget',
   };
 }
 
@@ -895,9 +955,14 @@ function calculateMaintenanceScore(answers) {
   const avgMaintenance = factors > 0 ? maintenancePoints / factors : 2;
 
   return {
-    score: Math.round((3 - avgMaintenance) / 2 * 100),
+    score: Math.round(((3 - avgMaintenance) / 2) * 100),
     level: avgMaintenance > 2.5 ? 'high' : avgMaintenance > 1.5 ? 'medium' : 'low',
-    label: avgMaintenance > 2.5 ? 'High maintenance' : avgMaintenance > 1.5 ? 'Moderate maintenance' : 'Low maintenance'
+    label:
+      avgMaintenance > 2.5
+        ? 'High maintenance'
+        : avgMaintenance > 1.5
+          ? 'Moderate maintenance'
+          : 'Low maintenance',
   };
 }
 
@@ -945,13 +1010,16 @@ function generateRecommendations(answers, elementScores, scores) {
       type: 'style',
       priority: 'info',
       title: {
-        en: `${scores.designPersona.key.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Aesthetic`,
-        fr: `Esthétique ${scores.designPersona.key.split('-').join(' ')}`
+        en: `${scores.designPersona.key
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')} Aesthetic`,
+        fr: `Esthétique ${scores.designPersona.key.split('-').join(' ')}`,
       },
       description: {
         en: `Your selections align with a ${scores.designPersona.description.en.toLowerCase()}.`,
-        fr: `Vos sélections correspondent à ${scores.designPersona.description.fr.toLowerCase()}.`
-      }
+        fr: `Vos sélections correspondent à ${scores.designPersona.description.fr.toLowerCase()}.`,
+      },
     });
   }
 
@@ -964,8 +1032,8 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Improve Style Coherence', fr: 'Améliorer la cohérence du style' },
       description: {
         en: `Consider elements that better match your ${primaryStyle} style for a more unified look. Current coherence: ${Math.round(scores.styleCoherence)}%`,
-        fr: `Envisagez des éléments qui correspondent mieux à votre style ${primaryStyle} pour un look plus unifié. Cohérence actuelle: ${Math.round(scores.styleCoherence)}%`
-      }
+        fr: `Envisagez des éléments qui correspondent mieux à votre style ${primaryStyle} pour un look plus unifié. Cohérence actuelle: ${Math.round(scores.styleCoherence)}%`,
+      },
     });
   } else if (scores.styleCoherence >= 85) {
     recommendations.push({
@@ -975,8 +1043,8 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Excellent Style Coherence', fr: 'Excellente cohérence de style' },
       description: {
         en: 'Your selections create a highly cohesive and professionally designed aesthetic.',
-        fr: 'Vos sélections créent une esthétique très cohérente et professionnellement conçue.'
-      }
+        fr: 'Vos sélections créent une esthétique très cohérente et professionnellement conçue.',
+      },
     });
   }
 
@@ -987,11 +1055,11 @@ function generateRecommendations(answers, elementScores, scores) {
       id: 'cabinet-suggestion',
       type: 'style',
       priority: 'optional',
-      title: { en: 'Alternative Cabinet Style', fr: 'Style d\'armoire alternatif' },
+      title: { en: 'Alternative Cabinet Style', fr: "Style d'armoire alternatif" },
       description: {
         en: `For ${primaryStyle} kitchens, ${recommendedCabinet} cabinets are typically recommended for better style alignment.`,
-        fr: `Pour les cuisines ${primaryStyle}, les armoires ${recommendedCabinet} sont généralement recommandées pour un meilleur alignement de style.`
-      }
+        fr: `Pour les cuisines ${primaryStyle}, les armoires ${recommendedCabinet} sont généralement recommandées pour un meilleur alignement de style.`,
+      },
     });
   }
 
@@ -1005,8 +1073,8 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Hardware Finish Alternative', fr: 'Alternative de finition de quincaillerie' },
       description: {
         en: `${recommendedFinish} finishes typically complement ${primaryStyle} styles better.`,
-        fr: `Les finitions ${recommendedFinish} complètent généralement mieux les styles ${primaryStyle}.`
-      }
+        fr: `Les finitions ${recommendedFinish} complètent généralement mieux les styles ${primaryStyle}.`,
+      },
     });
   }
 
@@ -1016,11 +1084,11 @@ function generateRecommendations(answers, elementScores, scores) {
       id: 'maintenance-consideration',
       type: 'maintenance',
       priority: 'recommended',
-      title: { en: 'High Maintenance Material', fr: 'Matériau d\'entretien élevé' },
+      title: { en: 'High Maintenance Material', fr: "Matériau d'entretien élevé" },
       description: {
         en: `${answers['countertop-material']} requires regular sealing and careful maintenance. Consider quartz or solid surface if you prefer low-maintenance options.`,
-        fr: `${answers['countertop-material']} nécessite un scellement régulier et un entretien attentif. Envisagez le quartz ou la surface solide si vous préférez des options à faible entretien.`
-      }
+        fr: `${answers['countertop-material']} nécessite un scellement régulier et un entretien attentif. Envisagez le quartz ou la surface solide si vous préférez des options à faible entretien.`,
+      },
     });
   }
 
@@ -1033,8 +1101,8 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Premium Material Selections', fr: 'Sélections de matériaux haut de gamme' },
       description: {
         en: 'Your material selections are in the premium tier. Budget accordingly for installation and long-term value.',
-        fr: 'Vos sélections de matériaux sont dans la gamme premium. Budgétisez en conséquence pour l\'installation et la valeur à long terme.'
-      }
+        fr: "Vos sélections de matériaux sont dans la gamme premium. Budgétisez en conséquence pour l'installation et la valeur à long terme.",
+      },
     });
   } else if (scores.categories.budgetTier?.tier === 'budget') {
     recommendations.push({
@@ -1044,8 +1112,8 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Budget-Conscious Selections', fr: 'Sélections économiques' },
       description: {
         en: 'Your selections prioritize value. Consider investing in one or two premium elements for maximum impact.',
-        fr: 'Vos sélections privilégient la valeur. Envisagez d\'investir dans un ou deux éléments premium pour un impact maximal.'
-      }
+        fr: "Vos sélections privilégient la valeur. Envisagez d'investir dans un ou deux éléments premium pour un impact maximal.",
+      },
     });
   }
 
@@ -1056,11 +1124,11 @@ function generateRecommendations(answers, elementScores, scores) {
       id: 'lighting-layers',
       type: 'lighting',
       priority: 'recommended',
-      title: { en: 'Add Lighting Layers', fr: 'Ajouter des couches d\'éclairage' },
+      title: { en: 'Add Lighting Layers', fr: "Ajouter des couches d'éclairage" },
       description: {
         en: 'Consider multiple lighting types (task, ambient, accent) for a well-lit and functional kitchen.',
-        fr: 'Envisagez plusieurs types d\'éclairage (tâche, ambiant, accent) pour une cuisine bien éclairée et fonctionnelle.'
-      }
+        fr: "Envisagez plusieurs types d'éclairage (tâche, ambiant, accent) pour une cuisine bien éclairée et fonctionnelle.",
+      },
     });
   }
 
@@ -1073,14 +1141,14 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Balance Color Scheme', fr: 'Équilibrer la palette de couleurs' },
       description: {
         en: 'Your color scheme is ambitious. Work with a designer to ensure proper balance and proportion.',
-        fr: 'Votre palette de couleurs est ambitieuse. Travaillez avec un designer pour assurer un bon équilibre et proportion.'
-      }
+        fr: 'Votre palette de couleurs est ambitieuse. Travaillez avec un designer pour assurer un bon équilibre et proportion.',
+      },
     });
   }
 
   // Conflict-based recommendations
   if (scores.conflicts && scores.conflicts.length > 0) {
-    const highSeverityConflicts = scores.conflicts.filter(c => c.severity === 'high');
+    const highSeverityConflicts = scores.conflicts.filter((c) => c.severity === 'high');
     if (highSeverityConflicts.length > 0) {
       recommendations.push({
         id: 'resolve-conflicts',
@@ -1089,8 +1157,8 @@ function generateRecommendations(answers, elementScores, scores) {
         title: { en: 'Resolve Style Conflicts', fr: 'Résoudre les conflits de style' },
         description: {
           en: 'Some of your selections have significant style conflicts. Consider adjusting for better harmony.',
-          fr: 'Certaines de vos sélections présentent des conflits de style importants. Envisagez d\'ajuster pour une meilleure harmonie.'
-        }
+          fr: "Certaines de vos sélections présentent des conflits de style importants. Envisagez d'ajuster pour une meilleure harmonie.",
+        },
       });
     }
   }
@@ -1104,8 +1172,8 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Complex Design Approach', fr: 'Approche de conception complexe' },
       description: {
         en: 'Your design is visually complex. Professional installation and design consultation recommended.',
-        fr: 'Votre conception est visuellement complexe. Installation professionnelle et consultation de conception recommandées.'
-      }
+        fr: 'Votre conception est visuellement complexe. Installation professionnelle et consultation de conception recommandées.',
+      },
     });
   }
 
@@ -1120,9 +1188,9 @@ function generateRecommendations(answers, elementScores, scores) {
       priority: 'optional',
       title: { en: 'Mixed Quality Tiers', fr: 'Niveaux de qualité mixtes' },
       description: {
-        en: 'You\'ve mixed premium and budget selections. This can work well if done intentionally for strategic investments.',
-        fr: 'Vous avez mélangé des sélections premium et économiques. Cela peut bien fonctionner si fait intentionnellement pour des investissements stratégiques.'
-      }
+        en: "You've mixed premium and budget selections. This can work well if done intentionally for strategic investments.",
+        fr: 'Vous avez mélangé des sélections premium et économiques. Cela peut bien fonctionner si fait intentionnellement pour des investissements stratégiques.',
+      },
     });
   }
 
@@ -1135,8 +1203,8 @@ function generateRecommendations(answers, elementScores, scores) {
       title: { en: 'Consider a Backsplash', fr: 'Envisagez un dosseret' },
       description: {
         en: 'A backsplash protects your walls and can be a focal point that ties your design together.',
-        fr: 'Un dosseret protège vos murs et peut être un point focal qui unit votre conception.'
-      }
+        fr: 'Un dosseret protège vos murs et peut être un point focal qui unit votre conception.',
+      },
     });
   }
 
@@ -1155,30 +1223,30 @@ function getCoherenceDescription(score) {
   if (score >= 90) {
     return {
       en: 'Your design selections work together beautifully with professional-level coherence.',
-      fr: 'Vos sélections de design fonctionnent ensemble magnifiquement avec une cohérence de niveau professionnel.'
+      fr: 'Vos sélections de design fonctionnent ensemble magnifiquement avec une cohérence de niveau professionnel.',
     };
   }
   if (score >= 75) {
     return {
       en: 'Your selections create a cohesive design with good style alignment.',
-      fr: 'Vos sélections créent un design cohérent avec un bon alignement de style.'
+      fr: 'Vos sélections créent un design cohérent avec un bon alignement de style.',
     };
   }
   if (score >= 60) {
     return {
       en: 'Your design has reasonable coherence with room for refinement.',
-      fr: 'Votre design a une cohérence raisonnable avec place pour l\'amélioration.'
+      fr: "Votre design a une cohérence raisonnable avec place pour l'amélioration.",
     };
   }
   if (score >= 40) {
     return {
       en: 'Some elements conflict. Consider adjusting for better harmony.',
-      fr: 'Certains éléments sont en conflit. Envisagez d\'ajuster pour une meilleure harmonie.'
+      fr: "Certains éléments sont en conflit. Envisagez d'ajuster pour une meilleure harmonie.",
     };
   }
   return {
     en: 'Significant style conflicts detected. Professional design consultation recommended.',
-    fr: 'Conflits de style importants détectés. Consultation de conception professionnelle recommandée.'
+    fr: 'Conflits de style importants détectés. Consultation de conception professionnelle recommandée.',
   };
 }
 
@@ -1188,8 +1256,8 @@ function getColorTags(color) {
     'neutral-warm': ['cozy', 'inviting', 'classic'],
     'neutral-dark': ['dramatic', 'sophisticated', 'bold'],
     'two-tone': ['modern', 'dynamic', 'layered'],
-    'colorful': ['personality', 'unique', 'expressive'],
-    'natural': ['organic', 'warm', 'textured']
+    colorful: ['personality', 'unique', 'expressive'],
+    natural: ['organic', 'warm', 'textured'],
   };
   return tags[color] || [];
 }
@@ -1197,22 +1265,22 @@ function getColorTags(color) {
 function getCabinetTags(cabinet) {
   const tags = {
     'flat-panel': ['modern', 'minimalist', 'sleek'],
-    'shaker': ['versatile', 'classic', 'transitional'],
+    shaker: ['versatile', 'classic', 'transitional'],
     'raised-panel': ['traditional', 'elegant', 'formal'],
-    'beadboard': ['cottage', 'farmhouse', 'charming'],
+    beadboard: ['cottage', 'farmhouse', 'charming'],
     'glass-front': ['display', 'airy', 'elegant'],
-    'louvered': ['tropical', 'unique', 'ventilated']
+    louvered: ['tropical', 'unique', 'ventilated'],
   };
   return tags[cabinet] || [];
 }
 
 function getHardwareTags(hardware) {
   const tags = {
-    'handleless': ['modern', 'sleek', 'minimalist'],
+    handleless: ['modern', 'sleek', 'minimalist'],
     'bar-pulls': ['contemporary', 'versatile', 'ergonomic'],
-    'knobs': ['traditional', 'classic', 'charming'],
+    knobs: ['traditional', 'classic', 'charming'],
     'cup-pulls': ['vintage', 'farmhouse', 'character'],
-    'mixed': ['eclectic', 'personalized', 'layered']
+    mixed: ['eclectic', 'personalized', 'layered'],
   };
   return tags[hardware] || [];
 }
@@ -1241,5 +1309,5 @@ module.exports = {
   generateRecommendations,
   SCORE_WEIGHTS,
   DESIGN_PERSONAS,
-  STYLE_COMPATIBILITY_SCORES
+  STYLE_COMPATIBILITY_SCORES,
 };

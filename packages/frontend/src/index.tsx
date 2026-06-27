@@ -6,7 +6,9 @@ import App from './App';
 const container = document.getElementById('root');
 
 if (!container) {
-  throw new Error('Root element not found. Make sure there is a <div id="root"></div> in your HTML.');
+  throw new Error(
+    'Root element not found. Make sure there is a <div id="root"></div> in your HTML.'
+  );
 }
 
 const root = createRoot(container);

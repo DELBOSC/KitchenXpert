@@ -45,7 +45,9 @@ export class PermissionController {
   create = asyncHandler(async (req: Request, res: Response) => {
     const { name, resource, action, description } = req.body;
     const permission = await permissionRepository.create({ name, resource, action, description });
-    res.status(201).json({ success: true, data: permission, message: 'Permission created successfully' });
+    res
+      .status(201)
+      .json({ success: true, data: permission, message: 'Permission created successfully' });
   });
 
   /**
@@ -56,7 +58,9 @@ export class PermissionController {
     const id = req.params.id as string;
     const { name, description } = req.body;
     const permission = await permissionRepository.update(id, { name, description });
-    res.status(200).json({ success: true, data: permission, message: 'Permission updated successfully' });
+    res
+      .status(200)
+      .json({ success: true, data: permission, message: 'Permission updated successfully' });
   });
 
   /**
@@ -113,7 +117,9 @@ export class PermissionController {
     const resource = req.params.resource as string;
     const { actions } = req.body;
     const result = await permissionRepository.seedResourcePermissions(resource, actions);
-    res.status(200).json({ success: true, data: result, message: 'Resource permissions seeded successfully' });
+    res
+      .status(200)
+      .json({ success: true, data: result, message: 'Resource permissions seeded successfully' });
   });
 
   /**

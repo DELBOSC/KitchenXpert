@@ -33,13 +33,21 @@ export async function initTelemetry(): Promise<void> {
   try {
     // Dynamic import so the backend still boots if deps are missing.
     const sdkMod = await import('@opentelemetry/sdk-node' as string).catch(() => null);
-    const autoMod = await import('@opentelemetry/auto-instrumentations-node' as string).catch(() => null);
-    const exporterMod = await import('@opentelemetry/exporter-trace-otlp-http' as string).catch(() => null);
+    const autoMod = await import('@opentelemetry/auto-instrumentations-node' as string).catch(
+      () => null
+    );
+    const exporterMod = await import('@opentelemetry/exporter-trace-otlp-http' as string).catch(
+      () => null
+    );
     const resourcesMod = await import('@opentelemetry/resources' as string).catch(() => null);
-    const semconvMod = await import('@opentelemetry/semantic-conventions' as string).catch(() => null);
+    const semconvMod = await import('@opentelemetry/semantic-conventions' as string).catch(
+      () => null
+    );
 
     if (!sdkMod || !autoMod || !exporterMod || !resourcesMod || !semconvMod) {
-      logger.warn('OTEL packages not installed — skipping tracing. See telemetry.ts for install instructions.');
+      logger.warn(
+        'OTEL packages not installed — skipping tracing. See telemetry.ts for install instructions.'
+      );
       return;
     }
 
@@ -51,17 +59,24 @@ export async function initTelemetry(): Promise<void> {
           process.env.NODE_ENV || 'development',
       }),
       traceExporter: new exporterMod.OTLPTraceExporter({ url: `${endpoint}/v1/traces` }),
-      instrumentations: [autoMod.getNodeAutoInstrumentations({
-        // HTTP + Express + PG + Redis auto-covered; disable fs noise.
-        '@opentelemetry/instrumentation-fs': { enabled: false },
-      })],
+      instrumentations: [
+        autoMod.getNodeAutoInstrumentations({
+          // HTTP + Express + PG + Redis auto-covered; disable fs noise.
+          '@opentelemetry/instrumentation-fs': { enabled: false },
+        }),
+      ],
     });
 
     await sdk.start();
     logger.info('OTEL tracing started', { endpoint });
 
     const shutdown = async (): Promise<void> => {
-      try { await sdk.shutdown(); logger.info('OTEL shutdown clean'); } catch (e) { logger.warn('OTEL shutdown failed', { e }); }
+      try {
+        await sdk.shutdown();
+        logger.info('OTEL shutdown clean');
+      } catch (e) {
+        logger.warn('OTEL shutdown failed', { e });
+      }
     };
     process.on('SIGTERM', () => void shutdown());
     process.on('SIGINT', () => void shutdown());

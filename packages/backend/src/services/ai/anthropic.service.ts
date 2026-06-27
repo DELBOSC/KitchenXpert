@@ -78,10 +78,7 @@ export class AnthropicService {
     });
 
     for await (const event of stream) {
-      if (
-        event.type === 'content_block_delta' &&
-        event.delta.type === 'text_delta'
-      ) {
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
         yield { type: 'text_delta', text: event.delta.text };
       }
     }
@@ -130,7 +127,7 @@ export class AnthropicService {
         });
         // Wait before retrying with exponential backoff
         if (attempt < 1) {
-          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+          await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
         }
       }
     }
@@ -235,7 +232,7 @@ export class AnthropicService {
     inputTokens: number,
     outputTokens: number,
     durationMs?: number,
-    metadata?: Record<string, unknown>,
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     try {
       await prisma.aIUsageLog.create({

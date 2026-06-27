@@ -166,13 +166,7 @@ export interface Report {
   lastRunAt?: Date;
 }
 
-export type ReportType =
-  | 'sales'
-  | 'users'
-  | 'projects'
-  | 'partners'
-  | 'performance'
-  | 'custom';
+export type ReportType = 'sales' | 'users' | 'projects' | 'partners' | 'performance' | 'custom';
 
 export interface ReportParameters {
   dateRange: DateRange;
@@ -594,9 +588,7 @@ export class AnalyticsService {
   /**
    * Create a report
    */
-  async createReport(
-    data: Omit<Report, 'id' | 'createdAt' | 'lastRunAt'>
-  ): Promise<Report> {
+  async createReport(data: Omit<Report, 'id' | 'createdAt' | 'lastRunAt'>): Promise<Report> {
     return this.repository.saveReport(data);
   }
 
@@ -624,8 +616,8 @@ export class AnalyticsService {
       limit: 1000,
     });
 
-    const activeUsers = new Set(events.map(e => e.sessionId)).size;
-    const pageViews = events.filter(e => e.type === 'page_view').length;
+    const activeUsers = new Set(events.map((e) => e.sessionId)).size;
+    const pageViews = events.filter((e) => e.type === 'page_view').length;
 
     const topPages: Record<string, number> = {};
     for (const event of events) {
@@ -649,13 +641,17 @@ export class AnalyticsService {
    * Flush buffered events
    */
   async flushEvents(): Promise<void> {
-    if (this.eventBuffer.length === 0) {return;}
+    if (this.eventBuffer.length === 0) {
+      return;
+    }
 
     const events = [...this.eventBuffer];
     this.eventBuffer = [];
 
-    const results = await Promise.allSettled(events.map(event => this.repository.trackEvent(event)));
-    const failures = results.filter(r => r.status === 'rejected');
+    const results = await Promise.allSettled(
+      events.map((event) => this.repository.trackEvent(event))
+    );
+    const failures = results.filter((r) => r.status === 'rejected');
     if (failures.length > 0) {
       logger.warn(`[Analytics] Failed to flush ${failures.length}/${events.length} events`);
     }
@@ -675,7 +671,7 @@ export class AnalyticsService {
 
   private startEventFlushing(): void {
     this.flushInterval = setInterval(() => {
-      this.flushEvents().catch(err => {
+      this.flushEvents().catch((err) => {
         logger.warn('[Analytics] Failed to flush events', {
           error: err instanceof Error ? err.message : String(err),
         });

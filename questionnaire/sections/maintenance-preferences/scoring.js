@@ -7,11 +7,11 @@
  */
 
 const SCORE_WEIGHTS = {
-  maintenanceTime: 0.30,
-  cleaningFrequency: 0.20,
-  materialCare: 0.20,
+  maintenanceTime: 0.3,
+  cleaningFrequency: 0.2,
+  materialCare: 0.2,
   durabilityPriority: 0.15,
-  stainConcern: 0.15
+  stainConcern: 0.15,
 };
 
 /**
@@ -22,59 +22,59 @@ const MAINTENANCE_PERSONAS = {
   'high-maintenance-willing': {
     description: {
       en: 'Appreciates natural materials and willing to invest time in proper care',
-      fr: 'Apprécie les matériaux naturels et prêt à investir du temps dans les soins appropriés'
+      fr: 'Apprécie les matériaux naturels et prêt à investir du temps dans les soins appropriés',
     },
     characteristics: ['willing-maintenance', 'weekly-cleaning', 'natural-materials', 'patina-ok'],
     recommendedMaterials: {
       countertops: ['marble', 'butcher-block', 'natural-stone', 'granite'],
       cabinets: ['solid-wood', 'painted-wood'],
-      flooring: ['hardwood', 'natural-stone']
+      flooring: ['hardwood', 'natural-stone'],
     },
     maintenanceLevel: 'high',
-    timeCommitment: 'significant'
+    timeCommitment: 'significant',
   },
   'low-maintenance-required': {
     description: {
       en: 'Prefers durable, easy-care materials that require minimal upkeep',
-      fr: 'Préfère les matériaux durables et faciles d\'entretien qui nécessitent un minimum d\'entretien'
+      fr: "Préfère les matériaux durables et faciles d'entretien qui nécessitent un minimum d'entretien",
     },
     characteristics: ['minimal-maintenance', 'easy-clean', 'no-special-care', 'stain-resistant'],
     recommendedMaterials: {
       countertops: ['quartz', 'solid-surface', 'laminate'],
       cabinets: ['thermofoil', 'laminate', 'acrylic'],
-      flooring: ['luxury-vinyl', 'porcelain-tile', 'laminate']
+      flooring: ['luxury-vinyl', 'porcelain-tile', 'laminate'],
     },
     maintenanceLevel: 'low',
-    timeCommitment: 'minimal'
+    timeCommitment: 'minimal',
   },
   'balanced-approach': {
     description: {
       en: 'Balances material quality with practical maintenance requirements',
-      fr: 'Équilibre la qualité des matériaux avec des exigences d\'entretien pratiques'
+      fr: "Équilibre la qualité des matériaux avec des exigences d'entretien pratiques",
     },
     characteristics: ['moderate-maintenance', 'weekly-cleaning', 'some-care-ok'],
     recommendedMaterials: {
       countertops: ['quartz', 'granite', 'engineered-stone'],
       cabinets: ['engineered-wood', 'painted-mdf', 'wood-veneer'],
-      flooring: ['engineered-hardwood', 'porcelain-tile', 'lvp']
+      flooring: ['engineered-hardwood', 'porcelain-tile', 'lvp'],
     },
     maintenanceLevel: 'moderate',
-    timeCommitment: 'reasonable'
+    timeCommitment: 'reasonable',
   },
   'durability-focused': {
     description: {
       en: 'Prioritizes long-lasting materials over aesthetic appeal',
-      fr: 'Privilégie les matériaux durables plutôt que l\'attrait esthétique'
+      fr: "Privilégie les matériaux durables plutôt que l'attrait esthétique",
     },
     characteristics: ['durability-first', 'stain-resistant', 'heavy-use'],
     recommendedMaterials: {
       countertops: ['quartz', 'granite', 'concrete'],
       cabinets: ['solid-wood', 'plywood-construction'],
-      flooring: ['porcelain-tile', 'luxury-vinyl', 'concrete']
+      flooring: ['porcelain-tile', 'luxury-vinyl', 'concrete'],
     },
     maintenanceLevel: 'low-to-moderate',
-    timeCommitment: 'minimal-regular'
-  }
+    timeCommitment: 'minimal-regular',
+  },
 };
 
 function calculateSectionScore(answers) {
@@ -87,7 +87,7 @@ function calculateSectionScore(answers) {
     tags: new Set(),
     materialFilters: [],
     avoidMaterials: [],
-    preferredMaterials: []
+    preferredMaterials: [],
   };
 
   // Identify maintenance persona
@@ -98,7 +98,7 @@ function calculateSectionScore(answers) {
     cleaningFrequency: scoreCleaningFrequency(answers['cleaning-frequency']),
     materialCare: scoreMaterialCare(answers['material-care']),
     durabilityPriority: scoreDurabilityPriority(answers['durability-priority']),
-    stainConcern: scoreStainConcern(answers['stain-concern'])
+    stainConcern: scoreStainConcern(answers['stain-concern']),
   };
 
   let totalWeight = 0;
@@ -108,7 +108,7 @@ function calculateSectionScore(answers) {
       totalWeight += weight;
 
       if (componentScores[key]?.tags) {
-        componentScores[key].tags.forEach(tag => scores.tags.add(tag));
+        componentScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
 
       if (componentScores[key]?.materialFilters) {
@@ -133,17 +133,17 @@ function calculateSectionScore(answers) {
       score: componentScores.maintenanceTime?.score || 50,
       level: componentScores.maintenanceTime?.level || 'moderate',
       hoursPerWeek: estimateMaintenanceHours(componentScores.maintenanceTime?.level),
-      description: getTimeCommitmentDescription(componentScores.maintenanceTime?.level)
+      description: getTimeCommitmentDescription(componentScores.maintenanceTime?.level),
     },
     cleaningRoutine: {
       score: componentScores.cleaningFrequency?.score || 50,
       frequency: componentScores.cleaningFrequency?.frequency || 'weekly',
-      description: getCleaningDescription(componentScores.cleaningFrequency?.frequency)
+      description: getCleaningDescription(componentScores.cleaningFrequency?.frequency),
     },
     materialPreference: calculateMaterialPreference(answers),
     durabilityFocus: calculateDurabilityFocus(answers),
     careComplexity: calculateCareComplexity(answers),
-    longevityExpectation: calculateLongevityExpectation(answers)
+    longevityExpectation: calculateLongevityExpectation(answers),
   };
 
   scores.recommendations = generateRecommendations(answers, componentScores, scores);
@@ -205,7 +205,8 @@ function identifyMaintenancePersona(answers) {
       }
     }
 
-    personaScores[personaKey] = totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
+    personaScores[personaKey] =
+      totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
   }
 
   // Find best match
@@ -218,11 +219,13 @@ function identifyMaintenancePersona(answers) {
     }
   }
 
-  return bestPersona && bestScore >= 40 ? {
-    key: bestPersona,
-    matchScore: bestScore,
-    ...MAINTENANCE_PERSONAS[bestPersona]
-  } : null;
+  return bestPersona && bestScore >= 40
+    ? {
+        key: bestPersona,
+        matchScore: bestScore,
+        ...MAINTENANCE_PERSONAS[bestPersona],
+      }
+    : null;
 }
 
 /**
@@ -234,7 +237,13 @@ function buildMaterialRecommendations(answers, maintenanceLevel) {
 
   if (maintenanceLevel === 'low-maintenance-required') {
     // Avoid high-maintenance materials
-    avoid.push('marble', 'butcher-block', 'natural-stone-unsealed', 'solid-wood-unstained', 'concrete-unsealed');
+    avoid.push(
+      'marble',
+      'butcher-block',
+      'natural-stone-unsealed',
+      'solid-wood-unstained',
+      'concrete-unsealed'
+    );
 
     // Prefer low-maintenance
     preferred.push('quartz', 'porcelain', 'thermofoil', 'luxury-vinyl', 'solid-surface');
@@ -261,9 +270,9 @@ function buildMaterialRecommendations(answers, maintenanceLevel) {
  */
 function estimateMaintenanceHours(level) {
   const hours = {
-    'low': 0.5,
-    'moderate': 1.5,
-    'high': 3
+    low: 0.5,
+    moderate: 1.5,
+    high: 3,
   };
   return hours[level] || 1;
 }
@@ -273,18 +282,18 @@ function estimateMaintenanceHours(level) {
  */
 function getTimeCommitmentDescription(level) {
   const descriptions = {
-    'low': {
+    low: {
       en: 'Quick wipe-downs are sufficient for daily care',
-      fr: 'Un essuyage rapide suffit pour l\'entretien quotidien'
+      fr: "Un essuyage rapide suffit pour l'entretien quotidien",
     },
-    'moderate': {
+    moderate: {
       en: 'Regular cleaning with occasional deep maintenance',
-      fr: 'Nettoyage régulier avec entretien approfondi occasionnel'
+      fr: 'Nettoyage régulier avec entretien approfondi occasionnel',
     },
-    'high': {
+    high: {
       en: 'Consistent care and periodic professional maintenance required',
-      fr: 'Soins constants et entretien professionnel périodique requis'
-    }
+      fr: 'Soins constants et entretien professionnel périodique requis',
+    },
   };
   return descriptions[level] || descriptions['moderate'];
 }
@@ -294,22 +303,22 @@ function getTimeCommitmentDescription(level) {
  */
 function getCleaningDescription(frequency) {
   const descriptions = {
-    'daily': {
+    daily: {
       en: 'Daily cleaning routine with deep cleaning weekly',
-      fr: 'Routine de nettoyage quotidienne avec nettoyage en profondeur hebdomadaire'
+      fr: 'Routine de nettoyage quotidienne avec nettoyage en profondeur hebdomadaire',
     },
-    'weekly': {
+    weekly: {
       en: 'Weekly cleaning with spot cleaning as needed',
-      fr: 'Nettoyage hebdomadaire avec nettoyage ponctuel au besoin'
+      fr: 'Nettoyage hebdomadaire avec nettoyage ponctuel au besoin',
     },
-    'monthly': {
+    monthly: {
       en: 'Monthly deep cleaning with basic upkeep',
-      fr: 'Nettoyage en profondeur mensuel avec entretien de base'
+      fr: 'Nettoyage en profondeur mensuel avec entretien de base',
     },
     'as-needed': {
       en: 'Minimal cleaning only when necessary',
-      fr: 'Nettoyage minimal seulement quand nécessaire'
-    }
+      fr: 'Nettoyage minimal seulement quand nécessaire',
+    },
   };
   return descriptions[frequency] || descriptions['weekly'];
 }
@@ -333,13 +342,19 @@ function calculateCareComplexity(answers) {
     score,
     level: score >= 70 ? 'high' : score >= 40 ? 'moderate' : 'low',
     description: {
-      en: score >= 70 ? 'Comfortable with complex care routines' :
-          score >= 40 ? 'Can handle moderate care requirements' :
-          'Prefers simple, straightforward care',
-      fr: score >= 70 ? 'À l\'aise avec les routines de soins complexes' :
-          score >= 40 ? 'Peut gérer des exigences de soins modérées' :
-          'Préfère des soins simples et directs'
-    }
+      en:
+        score >= 70
+          ? 'Comfortable with complex care routines'
+          : score >= 40
+            ? 'Can handle moderate care requirements'
+            : 'Prefers simple, straightforward care',
+      fr:
+        score >= 70
+          ? "À l'aise avec les routines de soins complexes"
+          : score >= 40
+            ? 'Peut gérer des exigences de soins modérées'
+            : 'Préfère des soins simples et directs',
+    },
   };
 }
 
@@ -366,13 +381,19 @@ function calculateLongevityExpectation(answers) {
     score: longevityScore,
     years: longevityScore >= 85 ? '20-30+' : longevityScore >= 65 ? '15-20' : '10-15',
     description: {
-      en: longevityScore >= 85 ? 'Expecting decades of use with proper care' :
-          longevityScore >= 65 ? 'Planning for long-term durability' :
-          'Standard lifespan expectations',
-      fr: longevityScore >= 85 ? 'S\'attend à des décennies d\'utilisation avec des soins appropriés' :
-          longevityScore >= 65 ? 'Planification de la durabilité à long terme' :
-          'Attentes de durée de vie standard'
-    }
+      en:
+        longevityScore >= 85
+          ? 'Expecting decades of use with proper care'
+          : longevityScore >= 65
+            ? 'Planning for long-term durability'
+            : 'Standard lifespan expectations',
+      fr:
+        longevityScore >= 85
+          ? "S'attend à des décennies d'utilisation avec des soins appropriés"
+          : longevityScore >= 65
+            ? 'Planification de la durabilité à long terme'
+            : 'Attentes de durée de vie standard',
+    },
   };
 }
 
@@ -380,24 +401,24 @@ function scoreMaintenanceTime(value) {
   if (!value) return null;
 
   const scores = {
-    'minimal': {
+    minimal: {
       score: 30,
       level: 'low',
       tags: ['low-maintenance', 'easy-care'],
-      materialFilters: ['avoid-marble', 'avoid-wood-counters']
+      materialFilters: ['avoid-marble', 'avoid-wood-counters'],
     },
-    'moderate': {
+    moderate: {
       score: 60,
       level: 'moderate',
       tags: [],
-      materialFilters: []
+      materialFilters: [],
     },
-    'willing': {
+    willing: {
       score: 90,
       level: 'high',
       tags: ['maintenance-flexible', 'natural-materials-ok'],
-      materialFilters: []
-    }
+      materialFilters: [],
+    },
   };
 
   return scores[value] || { score: 50, level: 'moderate', tags: [], materialFilters: [] };
@@ -407,10 +428,10 @@ function scoreCleaningFrequency(value) {
   if (!value) return null;
 
   const scores = {
-    'daily': { score: 100, frequency: 'daily', tags: ['meticulous'] },
-    'weekly': { score: 70, frequency: 'weekly', tags: [] },
-    'monthly': { score: 40, frequency: 'monthly', tags: [] },
-    'rarely': { score: 20, frequency: 'as-needed', tags: ['easy-clean-priority'] }
+    daily: { score: 100, frequency: 'daily', tags: ['meticulous'] },
+    weekly: { score: 70, frequency: 'weekly', tags: [] },
+    monthly: { score: 40, frequency: 'monthly', tags: [] },
+    rarely: { score: 20, frequency: 'as-needed', tags: ['easy-clean-priority'] },
   };
 
   return scores[value] || { score: 50, frequency: 'weekly', tags: [] };
@@ -424,20 +445,20 @@ function scoreMaterialCare(value) {
       score: 30,
       willingness: 'none',
       tags: ['easy-care-only'],
-      materialFilters: ['avoid-natural-stone', 'avoid-real-wood']
+      materialFilters: ['avoid-natural-stone', 'avoid-real-wood'],
     },
     'some-ok': {
       score: 60,
       willingness: 'moderate',
       tags: [],
-      materialFilters: []
+      materialFilters: [],
     },
-    'willing': {
+    willing: {
       score: 90,
       willingness: 'full',
       tags: ['premium-materials-ok'],
-      materialFilters: []
-    }
+      materialFilters: [],
+    },
   };
 
   return scores[value] || { score: 50, willingness: 'moderate', tags: [], materialFilters: [] };
@@ -448,8 +469,8 @@ function scoreDurabilityPriority(value) {
 
   const scores = {
     'durability-first': { score: 90, focus: 'durability', tags: ['durability-focused'] },
-    'balanced': { score: 60, focus: 'balanced', tags: [] },
-    'aesthetics-first': { score: 30, focus: 'aesthetics', tags: ['aesthetics-over-durability'] }
+    balanced: { score: 60, focus: 'balanced', tags: [] },
+    'aesthetics-first': { score: 30, focus: 'aesthetics', tags: ['aesthetics-over-durability'] },
   };
 
   return scores[value] || { score: 50, focus: 'balanced', tags: [] };
@@ -463,10 +484,10 @@ function scoreStainConcern(value) {
       score: 90,
       level: 'high',
       tags: ['stain-resistant-priority'],
-      materialFilters: ['prefer-quartz', 'prefer-sealed-surfaces']
+      materialFilters: ['prefer-quartz', 'prefer-sealed-surfaces'],
     },
-    'somewhat': { score: 60, level: 'moderate', tags: [], materialFilters: [] },
-    'not-worried': { score: 30, level: 'low', tags: ['patina-ok'], materialFilters: [] }
+    somewhat: { score: 60, level: 'moderate', tags: [], materialFilters: [] },
+    'not-worried': { score: 30, level: 'low', tags: ['patina-ok'], materialFilters: [] },
   };
 
   return scores[value] || { score: 50, level: 'moderate', tags: [], materialFilters: [] };
@@ -490,8 +511,8 @@ function determineMaintenanceLevel(answers) {
 }
 
 function calculateMaterialPreference(answers) {
-  const wantsEasyCare = answers['maintenance-time'] === 'minimal' ||
-                        answers['material-care'] === 'no-special';
+  const wantsEasyCare =
+    answers['maintenance-time'] === 'minimal' || answers['material-care'] === 'no-special';
 
   const recommended = wantsEasyCare
     ? ['quartz', 'laminate', 'thermofoil', 'vinyl']
@@ -499,7 +520,7 @@ function calculateMaterialPreference(answers) {
 
   return {
     easyCare: wantsEasyCare,
-    recommendedMaterials: recommended
+    recommendedMaterials: recommended,
   };
 }
 
@@ -509,7 +530,7 @@ function calculateDurabilityFocus(answers) {
 
   return {
     score: (prioritizeDurability ? 40 : 0) + (concernedAboutStains ? 30 : 0) + 30,
-    highPriority: prioritizeDurability || concernedAboutStains
+    highPriority: prioritizeDurability || concernedAboutStains,
   };
 }
 
@@ -523,13 +544,16 @@ function generateRecommendations(answers, componentScores, scores) {
       type: 'profile',
       priority: 'info',
       title: {
-        en: `${scores.maintenancePersona.key.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Profile`,
-        fr: `Profil ${scores.maintenancePersona.key.split('-').join(' ')}`
+        en: `${scores.maintenancePersona.key
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')} Profile`,
+        fr: `Profil ${scores.maintenancePersona.key.split('-').join(' ')}`,
       },
       description: {
         en: scores.maintenancePersona.description.en,
-        fr: scores.maintenancePersona.description.fr
-      }
+        fr: scores.maintenancePersona.description.fr,
+      },
     });
   }
 
@@ -539,11 +563,14 @@ function generateRecommendations(answers, componentScores, scores) {
       id: 'low-maintenance-materials',
       type: 'material',
       priority: 'essential',
-      title: { en: 'Low-Maintenance Material Package', fr: 'Ensemble de matériaux à faible entretien' },
+      title: {
+        en: 'Low-Maintenance Material Package',
+        fr: 'Ensemble de matériaux à faible entretien',
+      },
       description: {
         en: 'Recommended: Quartz countertops (no sealing), thermofoil or acrylic cabinets (wipe-clean), and luxury vinyl flooring (waterproof, scratch-resistant). Total maintenance: ~30 minutes/week.',
-        fr: 'Recommandé: Comptoirs en quartz (sans scellement), armoires en thermofoil ou acrylique (nettoyage facile), et sol en vinyle de luxe (imperméable, résistant aux rayures). Entretien total: ~30 minutes/semaine.'
-      }
+        fr: 'Recommandé: Comptoirs en quartz (sans scellement), armoires en thermofoil ou acrylique (nettoyage facile), et sol en vinyle de luxe (imperméable, résistant aux rayures). Entretien total: ~30 minutes/semaine.',
+      },
     });
 
     recommendations.push({
@@ -553,8 +580,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Materials to Avoid', fr: 'Matériaux à éviter' },
       description: {
         en: `Based on your preferences, avoid: ${scores.avoidMaterials.join(', ')}. These require regular sealing, special cleaners, or careful maintenance.`,
-        fr: `Selon vos préférences, évitez: ${scores.avoidMaterials.join(', ')}. Ceux-ci nécessitent un scellement régulier, des nettoyants spéciaux ou un entretien attentif.`
-      }
+        fr: `Selon vos préférences, évitez: ${scores.avoidMaterials.join(', ')}. Ceux-ci nécessitent un scellement régulier, des nettoyants spéciaux ou un entretien attentif.`,
+      },
     });
   }
 
@@ -567,8 +594,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Maximum Stain Resistance', fr: 'Résistance maximale aux taches' },
       description: {
         en: 'Quartz (non-porous), solid surface, and porcelain offer the best stain resistance. Avoid marble, limestone, and butcher block which stain easily.',
-        fr: 'Le quartz (non poreux), la surface solide et la porcelaine offrent la meilleure résistance aux taches. Évitez le marbre, le calcaire et le bloc de boucher qui se tachent facilement.'
-      }
+        fr: 'Le quartz (non poreux), la surface solide et la porcelaine offrent la meilleure résistance aux taches. Évitez le marbre, le calcaire et le bloc de boucher qui se tachent facilement.',
+      },
     });
 
     recommendations.push({
@@ -578,8 +605,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Protective Treatments', fr: 'Traitements protecteurs' },
       description: {
         en: 'For cabinets, choose factory-finished or catalyzed finishes that resist staining better than standard paints.',
-        fr: 'Pour les armoires, choisissez des finitions d\'usine ou catalysées qui résistent mieux aux taches que les peintures standard.'
-      }
+        fr: "Pour les armoires, choisissez des finitions d'usine ou catalysées qui résistent mieux aux taches que les peintures standard.",
+      },
     });
   }
 
@@ -592,19 +619,19 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Natural Material Options', fr: 'Options de matériaux naturels' },
       description: {
         en: 'Your willingness to maintain opens premium options: marble countertops (seal 2x/year), butcher block (oil monthly), solid hardwood floors (refinish every 10 years). These develop beautiful patina over time.',
-        fr: 'Votre volonté d\'entretenir ouvre des options premium: comptoirs en marbre (sceller 2x/an), bloc de boucher (huiler mensuellement), planchers en bois massif (refinir tous les 10 ans). Ceux-ci développent une belle patine avec le temps.'
-      }
+        fr: "Votre volonté d'entretenir ouvre des options premium: comptoirs en marbre (sceller 2x/an), bloc de boucher (huiler mensuellement), planchers en bois massif (refinir tous les 10 ans). Ceux-ci développent une belle patine avec le temps.",
+      },
     });
 
     recommendations.push({
       id: 'maintenance-schedule',
       type: 'maintenance',
       priority: 'recommended',
-      title: { en: 'Maintenance Schedule', fr: 'Calendrier d\'entretien' },
+      title: { en: 'Maintenance Schedule', fr: "Calendrier d'entretien" },
       description: {
         en: 'Create a maintenance calendar: Daily wipe-downs, weekly deep clean, monthly treatments (oil, polish), annual/biannual sealing.',
-        fr: 'Créez un calendrier d\'entretien: Essuyage quotidien, nettoyage en profondeur hebdomadaire, traitements mensuels (huile, polissage), scellement annuel/semestriel.'
-      }
+        fr: "Créez un calendrier d'entretien: Essuyage quotidien, nettoyage en profondeur hebdomadaire, traitements mensuels (huile, polissage), scellement annuel/semestriel.",
+      },
     });
   }
 
@@ -617,8 +644,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Maximum Durability Materials', fr: 'Matériaux de durabilité maximale' },
       description: {
         en: 'For longevity: Quartz or granite countertops (lifetime warranty), solid wood or plywood cabinets (avoid particleboard), porcelain tile or luxury vinyl flooring (20+ year lifespan).',
-        fr: 'Pour la longévité: Comptoirs en quartz ou granit (garantie à vie), armoires en bois massif ou contreplaqué (éviter les panneaux de particules), carrelage en porcelaine ou sol en vinyle de luxe (durée de vie 20+ ans).'
-      }
+        fr: 'Pour la longévité: Comptoirs en quartz ou granit (garantie à vie), armoires en bois massif ou contreplaqué (éviter les panneaux de particules), carrelage en porcelaine ou sol en vinyle de luxe (durée de vie 20+ ans).',
+      },
     });
 
     recommendations.push({
@@ -628,8 +655,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Quality Construction Details', fr: 'Détails de construction de qualité' },
       description: {
         en: 'Invest in: Dovetail drawer joints, soft-close hinges, full-extension drawer glides, plywood box construction. These add 10-15 years to cabinet life.',
-        fr: 'Investissez dans: Assemblages à queue d\'aronde, charnières à fermeture douce, glissières de tiroir à extension complète, construction de boîte en contreplaqué. Ceux-ci ajoutent 10-15 ans à la vie des armoires.'
-      }
+        fr: "Investissez dans: Assemblages à queue d'aronde, charnières à fermeture douce, glissières de tiroir à extension complète, construction de boîte en contreplaqué. Ceux-ci ajoutent 10-15 ans à la vie des armoires.",
+      },
     });
   }
 
@@ -642,8 +669,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Materials for Frequent Cleaning', fr: 'Matériaux pour nettoyage fréquent' },
       description: {
         en: 'Choose materials that withstand frequent cleaning: sealed surfaces, commercial-grade finishes, non-porous materials. Avoid unsealed wood or porous stone.',
-        fr: 'Choisissez des matériaux qui résistent au nettoyage fréquent: surfaces scellées, finitions de qualité commerciale, matériaux non poreux. Évitez le bois non scellé ou la pierre poreuse.'
-      }
+        fr: 'Choisissez des matériaux qui résistent au nettoyage fréquent: surfaces scellées, finitions de qualité commerciale, matériaux non poreux. Évitez le bois non scellé ou la pierre poreuse.',
+      },
     });
   } else if (answers['cleaning-frequency'] === 'rarely') {
     recommendations.push({
@@ -653,8 +680,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Forgiving Material Choices', fr: 'Choix de matériaux tolérants' },
       description: {
         en: 'Choose materials that hide dirt: medium-toned colors, matte finishes, textured surfaces. Avoid high-gloss black or white which show every fingerprint.',
-        fr: 'Choisissez des matériaux qui cachent la saleté: couleurs moyennes, finitions mates, surfaces texturées. Évitez le noir ou blanc brillant qui montrent chaque empreinte.'
-      }
+        fr: 'Choisissez des matériaux qui cachent la saleté: couleurs moyennes, finitions mates, surfaces texturées. Évitez le noir ou blanc brillant qui montrent chaque empreinte.',
+      },
     });
   }
 
@@ -665,11 +692,11 @@ function generateRecommendations(answers, componentScores, scores) {
       id: 'time-investment',
       type: 'maintenance',
       priority: 'info',
-      title: { en: 'Maintenance Time Investment', fr: 'Investissement en temps d\'entretien' },
+      title: { en: 'Maintenance Time Investment', fr: "Investissement en temps d'entretien" },
       description: {
         en: `Your material choices require approximately ${estimatedHours} hours/week of maintenance. Consider if this fits your lifestyle long-term.`,
-        fr: `Vos choix de matériaux nécessitent environ ${estimatedHours} heures/semaine d\'entretien. Considérez si cela convient à votre style de vie à long terme.`
-      }
+        fr: `Vos choix de matériaux nécessitent environ ${estimatedHours} heures/semaine d\'entretien. Considérez si cela convient à votre style de vie à long terme.`,
+      },
     });
   } else if (estimatedHours < 1) {
     recommendations.push({
@@ -679,22 +706,26 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Minimal Time Investment', fr: 'Investissement minimal en temps' },
       description: {
         en: `Your selections require less than 1 hour/week of maintenance - perfect for busy lifestyles.`,
-        fr: `Vos sélections nécessitent moins d'1 heure/semaine d'entretien - parfait pour les modes de vie occupés.`
-      }
+        fr: `Vos sélections nécessitent moins d'1 heure/semaine d'entretien - parfait pour les modes de vie occupés.`,
+      },
     });
   }
 
   // Professional maintenance recommendation
-  if (answers['material-care'] === 'willing' && (scores.preferredMaterials.includes('marble') || scores.preferredMaterials.includes('butcher-block'))) {
+  if (
+    answers['material-care'] === 'willing' &&
+    (scores.preferredMaterials.includes('marble') ||
+      scores.preferredMaterials.includes('butcher-block'))
+  ) {
     recommendations.push({
       id: 'professional-maintenance',
       type: 'service',
       priority: 'optional',
-      title: { en: 'Professional Maintenance Services', fr: 'Services d\'entretien professionnels' },
+      title: { en: 'Professional Maintenance Services', fr: "Services d'entretien professionnels" },
       description: {
         en: 'Consider annual professional services: stone sealing ($200-400), wood refinishing ($300-600), deep cleaning. These extend material life significantly.',
-        fr: 'Envisagez des services professionnels annuels: scellement de pierre (200-400$), refinition de bois (300-600$), nettoyage en profondeur. Ceux-ci prolongent considérablement la vie des matériaux.'
-      }
+        fr: 'Envisagez des services professionnels annuels: scellement de pierre (200-400$), refinition de bois (300-600$), nettoyage en profondeur. Ceux-ci prolongent considérablement la vie des matériaux.',
+      },
     });
   }
 
@@ -707,8 +738,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Recommended Cleaning Products', fr: 'Produits de nettoyage recommandés' },
       description: {
         en: 'Stock simple cleaners: pH-neutral cleaner for daily use, microfiber cloths, magic erasers for scuffs. Avoid harsh chemicals that can damage finishes.',
-        fr: 'Stockez des nettoyants simples: nettoyant pH neutre pour usage quotidien, chiffons en microfibre, gommes magiques pour les éraflures. Évitez les produits chimiques agressifs qui peuvent endommager les finitions.'
-      }
+        fr: 'Stockez des nettoyants simples: nettoyant pH neutre pour usage quotidien, chiffons en microfibre, gommes magiques pour les éraflures. Évitez les produits chimiques agressifs qui peuvent endommager les finitions.',
+      },
     });
   }
 
@@ -721,8 +752,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Long-Term Planning', fr: 'Planification à long terme' },
       description: {
         en: `Your choices are designed for ${scores.categories.longevityExpectation.years} of use. This approach maximizes value through reduced replacement costs.`,
-        fr: `Vos choix sont conçus pour ${scores.categories.longevityExpectation.years} d'utilisation. Cette approche maximise la valeur grâce à des coûts de remplacement réduits.`
-      }
+        fr: `Vos choix sont conçus pour ${scores.categories.longevityExpectation.years} d'utilisation. Cette approche maximise la valeur grâce à des coûts de remplacement réduits.`,
+      },
     });
   }
 
@@ -745,5 +776,5 @@ module.exports = {
   calculateLongevityExpectation,
   generateRecommendations,
   SCORE_WEIGHTS,
-  MAINTENANCE_PERSONAS
+  MAINTENANCE_PERSONAS,
 };

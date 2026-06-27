@@ -248,11 +248,7 @@ export class SmartCache {
   /**
    * Get or compute a value
    */
-  async getOrSet<T>(
-    key: string,
-    compute: () => Promise<T>,
-    options?: CacheOptions
-  ): Promise<T> {
+  async getOrSet<T>(key: string, compute: () => Promise<T>, options?: CacheOptions): Promise<T> {
     const cached = await this.get<T>(key);
 
     if (cached !== null) {
@@ -293,7 +289,9 @@ export class SmartCache {
       value,
       createdAt: now,
       expiresAt: now + ttl * 1000,
-      staleAt: this.config.staleWhileRevalidate ? now + (ttl + this.config.staleTTL) * 1000 : undefined,
+      staleAt: this.config.staleWhileRevalidate
+        ? now + (ttl + this.config.staleTTL) * 1000
+        : undefined,
       tags,
       size,
       hits: 0,
@@ -506,11 +504,7 @@ export class SmartCache {
   /**
    * Prefetch and cache a URL
    */
-  async prefetch(
-    key: string,
-    fetchFn: () => Promise<any>,
-    options?: CacheOptions
-  ): Promise<void> {
+  async prefetch(key: string, fetchFn: () => Promise<any>, options?: CacheOptions): Promise<void> {
     // Only prefetch if not already cached
     const existing = await this.get(key);
     if (existing === null) {
@@ -553,7 +547,10 @@ export class SmartCache {
         }
 
         // Then lowest hit count
-        if (entry.hits < lowestHits || (entry.hits === lowestHits && entry.createdAt < lowestTime)) {
+        if (
+          entry.hits < lowestHits ||
+          (entry.hits === lowestHits && entry.createdAt < lowestTime)
+        ) {
           lowestKey = key;
           lowestHits = entry.hits;
           lowestTime = entry.createdAt;
@@ -644,15 +641,9 @@ export class SmartCache {
     version?: string;
   }): string {
     const { type, brandId, identifier, version } = parts;
-    const hash = crypto
-      .createHash('md5')
-      .update(identifier)
-      .digest('hex')
-      .substring(0, 12);
+    const hash = crypto.createHash('md5').update(identifier).digest('hex').substring(0, 12);
 
-    return version
-      ? `${type}:${brandId}:${hash}:${version}`
-      : `${type}:${brandId}:${hash}`;
+    return version ? `${type}:${brandId}:${hash}:${version}` : `${type}:${brandId}:${hash}`;
   }
 
   /**

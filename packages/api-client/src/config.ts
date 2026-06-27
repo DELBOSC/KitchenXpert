@@ -22,7 +22,7 @@ export const DEFAULT_CONFIG: Partial<ApiClientConfig> = {
   debug: false,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    Accept: 'application/json',
   },
 };
 
@@ -34,7 +34,11 @@ export function createConfig(config: ApiClientConfig): Required<ApiClientConfig>
     retryAttempts: config.retryAttempts ?? DEFAULT_CONFIG.retryAttempts!,
     retryDelay: config.retryDelay ?? DEFAULT_CONFIG.retryDelay!,
     withCredentials: config.withCredentials ?? DEFAULT_CONFIG.withCredentials!,
-    onTokenRefresh: config.onTokenRefresh ?? (async () => { throw new Error('Token refresh not configured'); }),
+    onTokenRefresh:
+      config.onTokenRefresh ??
+      (async () => {
+        throw new Error('Token refresh not configured');
+      }),
     onUnauthorized: config.onUnauthorized ?? (() => {}),
     debug: config.debug ?? DEFAULT_CONFIG.debug!,
   };

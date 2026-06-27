@@ -145,9 +145,8 @@ export class AcousticPlanner {
     return {
       noiseMap,
       overallNoiseLevel: Math.round(overallNoiseLevel * 10) / 10,
-      adjacentRoomNoise: adjacentRoomNoise !== undefined
-        ? Math.round(adjacentRoomNoise * 10) / 10
-        : undefined,
+      adjacentRoomNoise:
+        adjacentRoomNoise !== undefined ? Math.round(adjacentRoomNoise * 10) / 10 : undefined,
       noiseSources: noiseSources.map((s) => ({
         item: s.item,
         dbRating: s.dbRating,
@@ -165,7 +164,8 @@ export class AcousticPlanner {
   private identifyNoiseSources(
     items: PlacedItem3D[]
   ): Array<{ item: string; dbRating: number; position: { x: number; z: number } }> {
-    const sources: Array<{ item: string; dbRating: number; position: { x: number; z: number } }> = [];
+    const sources: Array<{ item: string; dbRating: number; position: { x: number; z: number } }> =
+      [];
 
     for (const item of items) {
       const profile = APPLIANCE_NOISE_PROFILES.find((p) =>
@@ -277,9 +277,8 @@ export class AcousticPlanner {
     const noiseAtCenter = this.calculateCombinedNoise(sources, kitchenCenter);
 
     // Apply distance attenuation to adjacent room
-    const distanceAttenuation = 20 * Math.log10(
-      Math.max(config.adjacentRoomDistance, 1) / REFERENCE_DISTANCE
-    );
+    const distanceAttenuation =
+      20 * Math.log10(Math.max(config.adjacentRoomDistance, 1) / REFERENCE_DISTANCE);
 
     let wallAttenuation = 0;
 
@@ -322,8 +321,8 @@ export class AcousticPlanner {
     }
 
     // Check range hood noise
-    const hood = sources.find((s) =>
-      s.item === 'hood' || s.item === 'range_hood' || s.item === 'extractor'
+    const hood = sources.find(
+      (s) => s.item === 'hood' || s.item === 'range_hood' || s.item === 'extractor'
     );
     if (hood && hood.dbRating > 60) {
       recommendations.push({
@@ -334,20 +333,21 @@ export class AcousticPlanner {
     }
 
     // Check fridge placement near open-plan seating
-    const fridge = sources.find((s) =>
-      s.item === 'refrigerator' || s.item === 'fridge' || s.item === 'fridge_freezer'
+    const fridge = sources.find(
+      (s) => s.item === 'refrigerator' || s.item === 'fridge' || s.item === 'fridge_freezer'
     );
     if (fridge && openPlanConfig && !openPlanConfig.hasWall) {
       recommendations.push({
-        suggestion: 'Move the refrigerator away from the open-plan seating area to reduce compressor noise',
+        suggestion:
+          'Move the refrigerator away from the open-plan seating area to reduce compressor noise',
         impact: `Fridge compressor noise (${fridge.dbRating} dB) propagates directly to the living area in open-plan layouts`,
         priority: 'medium',
       });
     }
 
     // Check garbage disposal
-    const disposal = sources.find((s) =>
-      s.item === 'garbage_disposal' || s.item === 'waste_disposal'
+    const disposal = sources.find(
+      (s) => s.item === 'garbage_disposal' || s.item === 'waste_disposal'
     );
     if (disposal) {
       recommendations.push({
@@ -360,14 +360,20 @@ export class AcousticPlanner {
     // Overall noise level recommendations
     if (overallLevel > 60) {
       recommendations.push({
-        suggestion: 'Consider sound-absorbing materials on kitchen ceiling or walls (acoustic panels)',
+        suggestion:
+          'Consider sound-absorbing materials on kitchen ceiling or walls (acoustic panels)',
         impact: 'Acoustic panels can reduce overall reflected noise by 3-6 dB',
         priority: 'medium',
       });
     }
 
     // Open plan specific
-    if (openPlanConfig && !openPlanConfig.hasWall && adjacentRoomNoise !== undefined && adjacentRoomNoise > 45) {
+    if (
+      openPlanConfig &&
+      !openPlanConfig.hasWall &&
+      adjacentRoomNoise !== undefined &&
+      adjacentRoomNoise > 45
+    ) {
       recommendations.push({
         suggestion: 'Consider a partial wall or glass partition between kitchen and living area',
         impact: `Adjacent room noise is ${Math.round(adjacentRoomNoise)} dB — a partial barrier would reduce by 10-15 dB`,
@@ -378,7 +384,8 @@ export class AcousticPlanner {
     // Quiet kitchen bonus
     if (overallLevel < 45 && sources.length > 0) {
       recommendations.push({
-        suggestion: 'Your kitchen has excellent noise characteristics — no significant improvements needed',
+        suggestion:
+          'Your kitchen has excellent noise characteristics — no significant improvements needed',
         impact: 'Overall noise level is below 45 dB, which is considered quiet for a kitchen',
         priority: 'low',
       });

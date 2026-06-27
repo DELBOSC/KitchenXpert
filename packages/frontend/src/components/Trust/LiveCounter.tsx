@@ -36,7 +36,9 @@ function fmt(n: number): string {
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = React.useState(false);
   React.useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) {return;}
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return;
+    }
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReduced(mq.matches);
     const listener = (e: MediaQueryListEvent): void => setReduced(e.matches);
@@ -51,7 +53,13 @@ function useReducedMotion(): boolean {
  * d'easeOutCubic. Au repos, affiche `to`. SSR-safe (rend la valeur
  * cible directement avant hydratation).
  */
-function RollingNumber({ value, reduced }: { value: number; reduced: boolean }): React.ReactElement {
+function RollingNumber({
+  value,
+  reduced,
+}: {
+  value: number;
+  reduced: boolean;
+}): React.ReactElement {
   const [display, setDisplay] = React.useState(value);
   const previousRef = React.useRef(value);
 
@@ -71,8 +79,11 @@ function RollingNumber({ value, reduced }: { value: number; reduced: boolean }):
       const elapsed = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - elapsed, 3); // easeOutCubic
       setDisplay(Math.round(from + (to - from) * eased));
-      if (elapsed < 1) {frame = requestAnimationFrame(tick);}
-      else {previousRef.current = to;}
+      if (elapsed < 1) {
+        frame = requestAnimationFrame(tick);
+      } else {
+        previousRef.current = to;
+      }
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
@@ -88,7 +99,8 @@ export interface LiveCounterProps {
 }
 
 export function LiveCounter({
-  initialStats, className = '',
+  initialStats,
+  className = '',
 }: LiveCounterProps): React.ReactElement {
   const reduced = useReducedMotion();
   const [stats, setStats] = React.useState<Stats>({
@@ -108,7 +120,9 @@ export function LiveCounter({
           credentials: 'omit',
           headers: { Accept: 'application/json' },
         });
-        if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
         const json = (await res.json()) as { data: Stats };
         if (mounted && json.data) {
           setStats(json.data);
@@ -117,14 +131,20 @@ export function LiveCounter({
       } catch {
         // Silent — pas de toast pour un compteur marketing.
       } finally {
-        if (mounted) {timer = setTimeout(() => { void fetchStats(); }, POLL_MS);}
+        if (mounted) {
+          timer = setTimeout(() => {
+            void fetchStats();
+          }, POLL_MS);
+        }
       }
     };
 
     void fetchStats();
     return () => {
       mounted = false;
-      if (timer) {clearTimeout(timer);}
+      if (timer) {
+        clearTimeout(timer);
+      }
     };
   }, []);
 
@@ -133,20 +153,47 @@ export function LiveCounter({
       aria-label="Activité KitchenXpert en temps réel"
       className={`grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur ${className}`}
     >
-      <Stat label="Cuisines conçues" value={stats.kitchensDesigned} hasData={hasData} reduced={reduced} />
-      <Stat label="Devis ce mois"      value={stats.quotesGeneratedThisMonth} hasData={hasData} reduced={reduced} />
-      <Stat label="Installateurs vérifiés" value={stats.verifiedInstallers} hasData={hasData} reduced={reduced} />
+      <Stat
+        label="Cuisines conçues"
+        value={stats.kitchensDesigned}
+        hasData={hasData}
+        reduced={reduced}
+      />
+      <Stat
+        label="Devis ce mois"
+        value={stats.quotesGeneratedThisMonth}
+        hasData={hasData}
+        reduced={reduced}
+      />
+      <Stat
+        label="Installateurs vérifiés"
+        value={stats.verifiedInstallers}
+        hasData={hasData}
+        reduced={reduced}
+      />
     </div>
   );
 }
 
 function Stat({
-  label, value, hasData, reduced,
-}: { label: string; value: number; hasData: boolean; reduced: boolean }): React.ReactElement {
+  label,
+  value,
+  hasData,
+  reduced,
+}: {
+  label: string;
+  value: number;
+  hasData: boolean;
+  reduced: boolean;
+}): React.ReactElement {
   return (
     <div className="bg-[#0a0a0f] px-5 py-4 text-center">
       <div className="text-2xl font-semibold text-white sm:text-3xl">
-        {hasData ? <RollingNumber value={value} reduced={reduced} /> : <span className="text-white/30">—</span>}
+        {hasData ? (
+          <RollingNumber value={value} reduced={reduced} />
+        ) : (
+          <span className="text-white/30">—</span>
+        )}
       </div>
       <div className="mt-1 text-xs uppercase tracking-widest text-white/55">{label}</div>
     </div>

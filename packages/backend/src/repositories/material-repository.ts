@@ -55,7 +55,7 @@ export class MaterialRepository {
   async findById(id: string): Promise<Material | null> {
     return this.prisma.material.findUnique({
       where: { id },
-      include: { provider: true }
+      include: { provider: true },
     });
   }
 
@@ -77,19 +77,19 @@ export class MaterialRepository {
         pricePerUnit: {
           ...(filters.minPrice && { gte: filters.minPrice }),
           ...(filters.maxPrice && { lte: filters.maxPrice }),
-        }
+        },
       }),
       ...(filters.search && {
         OR: [
           { name: { contains: filters.search, mode: 'insensitive' as const } },
-          { description: { contains: filters.search, mode: 'insensitive' as const } }
-        ]
+          { description: { contains: filters.search, mode: 'insensitive' as const } },
+        ],
       }),
     };
 
     const [data, total] = await Promise.all([
       this.prisma.material.findMany({ where, skip, take: limit, orderBy: { name: 'asc' } }),
-      this.prisma.material.count({ where })
+      this.prisma.material.count({ where }),
     ]);
 
     return { data, total, page, totalPages: Math.ceil(total / limit) };
@@ -98,14 +98,14 @@ export class MaterialRepository {
   async findByType(type: string): Promise<Material[]> {
     return this.prisma.material.findMany({
       where: { type, isActive: true },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
   }
 
   async findByCategory(category: string): Promise<Material[]> {
     return this.prisma.material.findMany({
       where: { category, isActive: true },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -117,20 +117,20 @@ export class MaterialRepository {
         currency: data.currency || 'EUR',
         specifications: data.specifications as any,
         images: data.images as any,
-      }
+      },
     });
   }
 
   async createMany(materials: CreateMaterialDto[]): Promise<{ count: number }> {
     return this.prisma.material.createMany({
-      data: materials.map(m => ({
+      data: materials.map((m) => ({
         ...m,
         unit: m.unit || 'sqm',
         currency: m.currency || 'EUR',
         specifications: m.specifications as any,
         images: m.images as any,
       })),
-      skipDuplicates: true
+      skipDuplicates: true,
     });
   }
 
@@ -141,14 +141,14 @@ export class MaterialRepository {
         ...data,
         specifications: data.specifications as any,
         images: data.images as any,
-      }
+      },
     });
   }
 
   async delete(id: string): Promise<Material> {
     return this.prisma.material.update({
       where: { id },
-      data: { isActive: false }
+      data: { isActive: false },
     });
   }
 
@@ -158,7 +158,7 @@ export class MaterialRepository {
         ...(filters.type && { type: filters.type }),
         ...(filters.category && { category: filters.category }),
         ...(filters.isActive !== undefined && { isActive: filters.isActive }),
-      }
+      },
     });
   }
 
@@ -166,27 +166,27 @@ export class MaterialRepository {
     const types = await this.prisma.material.findMany({
       where: { isActive: true },
       select: { type: true },
-      distinct: ['type']
+      distinct: ['type'],
     });
-    return types.map(t => t.type);
+    return types.map((t) => t.type);
   }
 
   async getCategories(): Promise<string[]> {
     const categories = await this.prisma.material.findMany({
       where: { isActive: true },
       select: { category: true },
-      distinct: ['category']
+      distinct: ['category'],
     });
-    return categories.map(c => c.category);
+    return categories.map((c) => c.category);
   }
 
   async getMaintenanceLevels(): Promise<string[]> {
     const levels = await this.prisma.material.findMany({
       where: { isActive: true, maintenanceLevel: { not: null } },
       select: { maintenanceLevel: true },
-      distinct: ['maintenanceLevel']
+      distinct: ['maintenanceLevel'],
     });
-    return levels.map(l => l.maintenanceLevel).filter(Boolean) as string[];
+    return levels.map((l) => l.maintenanceLevel).filter(Boolean) as string[];
   }
 
   async search(query: string, limit = 20): Promise<Material[]> {
@@ -196,17 +196,17 @@ export class MaterialRepository {
         OR: [
           { name: { contains: query, mode: 'insensitive' } },
           { type: { contains: query, mode: 'insensitive' } },
-          { category: { contains: query, mode: 'insensitive' } }
-        ]
+          { category: { contains: query, mode: 'insensitive' } },
+        ],
       },
-      take: limit
+      take: limit,
     });
   }
 
   async getByMaintenanceLevel(level: string): Promise<Material[]> {
     return this.prisma.material.findMany({
       where: { maintenanceLevel: level, isActive: true },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -214,9 +214,9 @@ export class MaterialRepository {
     return this.prisma.material.findMany({
       where: {
         isActive: true,
-        ecoRating: { in: ['A', 'A+', 'A++', 'A+++'] }
+        ecoRating: { in: ['A', 'A+', 'A++', 'A+++'] },
       },
-      orderBy: { ecoRating: 'asc' }
+      orderBy: { ecoRating: 'asc' },
     });
   }
 }

@@ -170,7 +170,11 @@ export class CollaborationRoleController {
     }
 
     // Verify the user has access to this kitchen (owner or collaborator)
-    const hasAccess = await collaborationRoleService.checkPermission(userId, kitchenId, 'canComment');
+    const hasAccess = await collaborationRoleService.checkPermission(
+      userId,
+      kitchenId,
+      'canComment'
+    );
     const kitchen = await prisma.kitchen.findUnique({ where: { id: kitchenId } });
 
     if (!kitchen) {

@@ -14,15 +14,17 @@
 
 ## What is Integration Testing
 
-Integration testing verifies that different modules or services work together correctly. Unlike unit tests that test individual components in isolation, integration tests validate the interactions between components.
+Integration testing verifies that different modules or services work together
+correctly. Unlike unit tests that test individual components in isolation,
+integration tests validate the interactions between components.
 
 ### Integration vs Unit vs E2E
 
-| Type | Scope | Speed | Coverage |
-|------|-------|-------|----------|
-| Unit | Single function/class | Fast | High |
-| Integration | Multiple components | Medium | Medium |
-| E2E | Entire application | Slow | Low |
+| Type        | Scope                 | Speed  | Coverage |
+| ----------- | --------------------- | ------ | -------- |
+| Unit        | Single function/class | Fast   | High     |
+| Integration | Multiple components   | Medium | Medium   |
+| E2E         | Entire application    | Slow   | Low      |
 
 ## Scope
 
@@ -89,9 +91,11 @@ import { PrismaClient } from '@prisma/client';
 export const testDb = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.TEST_DATABASE_URL || 'postgresql://localhost/kitchenxpert_test'
-    }
-  }
+      url:
+        process.env.TEST_DATABASE_URL ||
+        'postgresql://localhost/kitchenxpert_test',
+    },
+  },
 });
 
 export async function cleanDatabase() {
@@ -131,7 +135,7 @@ module.exports = {
   testMatch: ['**/*.integration.test.ts'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.integration.ts'],
   globalSetup: '<rootDir>/tests/global-setup.ts',
-  globalTeardown: '<rootDir>/tests/global-teardown.ts'
+  globalTeardown: '<rootDir>/tests/global-teardown.ts',
 };
 ```
 
@@ -165,7 +169,7 @@ describe('User API Integration', () => {
         .send({
           email: 'test@example.com',
           password: 'password123',
-          name: 'Test User'
+          name: 'Test User',
         })
         .expect(201);
 
@@ -174,7 +178,7 @@ describe('User API Integration', () => {
 
       // Verify in database
       const user = await testDb.user.findUnique({
-        where: { email: 'test@example.com' }
+        where: { email: 'test@example.com' },
       });
       expect(user).toBeTruthy();
     });
@@ -199,15 +203,15 @@ describe('Design Repository Integration', () => {
     const user = await testDb.user.create({
       data: {
         email: 'test@example.com',
-        name: 'Test User'
-      }
+        name: 'Test User',
+      },
     });
 
     // Create design
     const design = await DesignRepository.create({
       name: 'Test Kitchen',
       userId: user.id,
-      data: { layout: 'L-shaped' }
+      data: { layout: 'L-shaped' },
     });
 
     expect(design.id).toBeDefined();
@@ -216,7 +220,7 @@ describe('Design Repository Integration', () => {
     // Verify relationships
     const designWithUser = await testDb.design.findUnique({
       where: { id: design.id },
-      include: { user: true }
+      include: { user: true },
     });
 
     expect(designWithUser.user.email).toBe('test@example.com');
@@ -239,7 +243,7 @@ describe('Order Service Integration', () => {
   it('should create order with products', async () => {
     // Setup test data
     const user = await testDb.user.create({
-      data: { email: 'test@example.com', name: 'Test' }
+      data: { email: 'test@example.com', name: 'Test' },
     });
 
     const product = await testDb.product.create({
@@ -247,8 +251,8 @@ describe('Order Service Integration', () => {
         sku: 'TEST-001',
         name: 'Test Product',
         price: 99.99,
-        category: 'refrigerators'
-      }
+        category: 'refrigerators',
+      },
     });
 
     // Create order
@@ -258,9 +262,9 @@ describe('Order Service Integration', () => {
         {
           productId: product.id,
           quantity: 2,
-          price: product.price
-        }
-      ]
+          price: product.price,
+        },
+      ],
     });
 
     expect(order.total).toBe(199.98);
@@ -269,7 +273,7 @@ describe('Order Service Integration', () => {
     // Verify in database
     const dbOrder = await testDb.order.findUnique({
       where: { id: order.id },
-      include: { items: true }
+      include: { items: true },
     });
 
     expect(dbOrder.items[0].productId).toBe(product.id);
@@ -284,9 +288,10 @@ describe('Order Service Integration', () => {
 Always use a separate test database:
 
 ```typescript
-const DATABASE_URL = process.env.NODE_ENV === 'test'
-  ? process.env.TEST_DATABASE_URL
-  : process.env.DATABASE_URL;
+const DATABASE_URL =
+  process.env.NODE_ENV === 'test'
+    ? process.env.TEST_DATABASE_URL
+    : process.env.DATABASE_URL;
 ```
 
 ### 2. Clean Database Between Tests
@@ -335,15 +340,15 @@ it('should complete user registration flow', async () => {
 ```typescript
 // Mock email service
 jest.mock('@/services/email.service', () => ({
-  sendEmail: jest.fn().mockResolvedValue(true)
+  sendEmail: jest.fn().mockResolvedValue(true),
 }));
 
 // Mock payment gateway
 jest.mock('@/services/payment.service', () => ({
   processPayment: jest.fn().mockResolvedValue({
     success: true,
-    transactionId: 'test-123'
-  })
+    transactionId: 'test-123',
+  }),
 }));
 ```
 
@@ -352,9 +357,9 @@ jest.mock('@/services/payment.service', () => ({
 ```typescript
 it('should handle database connection error', async () => {
   // Simulate database error
-  jest.spyOn(testDb.user, 'create').mockRejectedValue(
-    new Error('Connection failed')
-  );
+  jest
+    .spyOn(testDb.user, 'create')
+    .mockRejectedValue(new Error('Connection failed'));
 
   await expect(
     UserService.create({ email: 'test@example.com' })
@@ -373,7 +378,7 @@ it('should create order', async () => {
 
   const order = await OrderService.create({
     userId: user.id,
-    items: [{ productId: product.id, quantity: 1 }]
+    items: [{ productId: product.id, quantity: 1 }],
   });
 
   expect(order).toBeDefined();

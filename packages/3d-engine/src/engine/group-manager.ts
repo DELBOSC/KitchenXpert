@@ -83,10 +83,10 @@ export class GroupManager {
    */
   private resolveSelectedObjectIds(): string[] {
     const resolved = new Set<string>();
-    this.selectedIds.forEach(id => {
+    this.selectedIds.forEach((id) => {
       const group = this.groups.get(id);
       if (group) {
-        group.objectIds.forEach(childId => resolved.add(childId));
+        group.objectIds.forEach((childId) => resolved.add(childId));
       } else {
         resolved.add(id);
       }
@@ -157,7 +157,7 @@ export class GroupManager {
     }
     if (positions.length === 0) return null;
     const center = new THREE.Vector3();
-    positions.forEach(p => center.add(p));
+    positions.forEach((p) => center.add(p));
     center.divideScalar(positions.length);
     return center;
   }
@@ -187,7 +187,7 @@ export class GroupManager {
 
   fromJSON(data: { groups?: SelectionGroup[] }): void {
     this.groups.clear();
-    data.groups?.forEach(g => this.groups.set(g.id, g));
+    data.groups?.forEach((g) => this.groups.set(g.id, g));
   }
 
   dispose(): void {

@@ -30,9 +30,21 @@ export interface AxiosResponse<T = unknown> {
 export interface AxiosInstance {
   request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>>;
   get<T>(url: string, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>>;
-  post<T>(url: string, data?: unknown, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>>;
-  put<T>(url: string, data?: unknown, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>>;
-  patch<T>(url: string, data?: unknown, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>>;
+  post<T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<AxiosRequestConfig>
+  ): Promise<AxiosResponse<T>>;
+  put<T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<AxiosRequestConfig>
+  ): Promise<AxiosResponse<T>>;
+  patch<T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<AxiosRequestConfig>
+  ): Promise<AxiosResponse<T>>;
   delete<T>(url: string, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>>;
 }
 
@@ -65,15 +77,13 @@ export class AxiosAdapter {
         timeout: this.config.timeout,
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
           ...this.config.defaultHeaders,
         },
         withCredentials: this.config.withCredentials,
       });
     } catch {
-      throw new Error(
-        'Axios is not installed. Please install axios: npm install axios'
-      );
+      throw new Error('Axios is not installed. Please install axios: npm install axios');
     }
   }
 
@@ -93,17 +103,29 @@ export class AxiosAdapter {
     return this.axiosInstance!.get<T>(url, config);
   }
 
-  async post<T>(url: string, data?: unknown, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>> {
+  async post<T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<AxiosRequestConfig>
+  ): Promise<AxiosResponse<T>> {
     this.ensureInitialized();
     return this.axiosInstance!.post<T>(url, data, config);
   }
 
-  async put<T>(url: string, data?: unknown, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>> {
+  async put<T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<AxiosRequestConfig>
+  ): Promise<AxiosResponse<T>> {
     this.ensureInitialized();
     return this.axiosInstance!.put<T>(url, data, config);
   }
 
-  async patch<T>(url: string, data?: unknown, config?: Partial<AxiosRequestConfig>): Promise<AxiosResponse<T>> {
+  async patch<T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<AxiosRequestConfig>
+  ): Promise<AxiosResponse<T>> {
     this.ensureInitialized();
     return this.axiosInstance!.patch<T>(url, data, config);
   }

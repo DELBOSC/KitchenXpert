@@ -23,17 +23,8 @@ export class InstallerController {
       return;
     }
 
-    const {
-      postalCode,
-      city,
-      latitude,
-      longitude,
-      radiusKm,
-      specialties,
-      minRating,
-      page,
-      limit,
-    } = req.query;
+    const { postalCode, city, latitude, longitude, radiusKm, specialties, minRating, page, limit } =
+      req.query;
 
     const result = await installerService.search({
       postalCode: postalCode as string | undefined,

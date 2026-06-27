@@ -145,7 +145,12 @@ export class KitchenEndpoints {
   // Components management (aligned with backend /kitchens/:id/components)
   async addComponent(
     kitchenId: string,
-    component: { componentType: 'appliance' | 'furniture'; catalogId: string; position?: [number, number, number]; quantity?: number }
+    component: {
+      componentType: 'appliance' | 'furniture';
+      catalogId: string;
+      position?: [number, number, number];
+      quantity?: number;
+    }
   ): Promise<ProjectItem> {
     const response = await this.client.post<ProjectItem>(
       `/kitchens/${kitchenId}/components`,
@@ -176,18 +181,18 @@ export class KitchenEndpoints {
   }
 
   async getModel(kitchenId: string): Promise<Record<string, unknown>> {
-    const response = await this.client.get<Record<string, unknown>>(
-      `/kitchens/${kitchenId}/model`
-    );
+    const response = await this.client.get<Record<string, unknown>>(`/kitchens/${kitchenId}/model`);
     return response.data;
   }
 
   // Export
-  async exportProject(kitchenId: string, format: 'pdf' | 'png' | 'jpg' | 'svg' | 'dwg' | 'obj' | 'gltf'): Promise<ProjectExport> {
-    const response = await this.client.post<ProjectExport>(
-      `/kitchens/${kitchenId}/export`,
-      { format }
-    );
+  async exportProject(
+    kitchenId: string,
+    format: 'pdf' | 'png' | 'jpg' | 'svg' | 'dwg' | 'obj' | 'gltf'
+  ): Promise<ProjectExport> {
+    const response = await this.client.post<ProjectExport>(`/kitchens/${kitchenId}/export`, {
+      format,
+    });
     return response.data;
   }
 
@@ -196,10 +201,7 @@ export class KitchenEndpoints {
     kitchenId: string,
     options?: { expiresIn?: number; password?: string }
   ): Promise<ProjectShare> {
-    const response = await this.client.post<ProjectShare>(
-      `/kitchens/${kitchenId}/share`,
-      options
-    );
+    const response = await this.client.post<ProjectShare>(`/kitchens/${kitchenId}/share`, options);
     return response.data;
   }
 

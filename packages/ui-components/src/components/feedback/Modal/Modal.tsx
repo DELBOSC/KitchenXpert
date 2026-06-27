@@ -117,7 +117,9 @@ const ModalContainer = styled.div<{
 }>`
   background: var(--color-white, #ffffff);
   border-radius: 12px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -157,7 +159,9 @@ const CloseButton = styled.button`
   border-radius: 6px;
   cursor: pointer;
   color: var(--color-gray-500, #6b7280);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 
   &:hover {
     background: var(--color-gray-100, #f3f4f6);
@@ -195,7 +199,11 @@ const Footer = styled.div`
 
 const CloseIcon = (
   <svg viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+    <path
+      fillRule="evenodd"
+      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+      clipRule="evenodd"
+    />
   </svg>
 );
 
@@ -299,11 +307,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
     const OverlayComponent = centered ? OverlayCentered : Overlay;
 
     return (
-      <OverlayComponent
-        $isClosing={isClosing}
-        onClick={handleOverlayClick}
-        role="presentation"
-      >
+      <OverlayComponent $isClosing={isClosing} onClick={handleOverlayClick} role="presentation">
         <ModalContainer
           ref={(node) => {
             (modalRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
@@ -325,11 +329,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
             <Header>
               {title && <Title id="modal-title">{title}</Title>}
               {showCloseButton && (
-                <CloseButton
-                  type="button"
-                  onClick={handleClose}
-                  aria-label="Close modal"
-                >
+                <CloseButton type="button" onClick={handleClose} aria-label="Close modal">
                   {CloseIcon}
                 </CloseButton>
               )}

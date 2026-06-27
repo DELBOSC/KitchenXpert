@@ -172,7 +172,7 @@ describe('MonitoringController', () => {
           success: true,
           status: 'healthy',
           timestamp: expect.any(String),
-        }),
+        })
       );
     });
 
@@ -206,7 +206,7 @@ describe('MonitoringController', () => {
           status: 'healthy',
           checks: { database: 'healthy' },
           responseTime: expect.any(String),
-        }),
+        })
       );
     });
 
@@ -224,7 +224,7 @@ describe('MonitoringController', () => {
           success: false,
           status: 'degraded',
           checks: { database: 'unhealthy' },
-        }),
+        })
       );
     });
 
@@ -369,7 +369,7 @@ describe('MonitoringController', () => {
           startDate: expect.any(Date),
           endDate: expect.any(Date),
         }),
-        expect.objectContaining({ page: 2, limit: 50 }),
+        expect.objectContaining({ page: 2, limit: 50 })
       );
     });
 
@@ -386,7 +386,7 @@ describe('MonitoringController', () => {
 
       expect(mockMetricRepository.findAll).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ limit: 100 }),
+        expect.objectContaining({ limit: 100 })
       );
     });
   });
@@ -526,7 +526,7 @@ describe('MonitoringController', () => {
       expect(mockMetricRepository.aggregate).toHaveBeenCalledWith(
         'http_requests',
         expect.any(Date),
-        expect.any(Date),
+        expect.any(Date)
       );
       expect(statusMock).toHaveBeenCalledWith(200);
       expect(jsonMock).toHaveBeenCalledWith({ success: true, data: aggregation });
@@ -581,7 +581,7 @@ describe('MonitoringController', () => {
         'http_requests',
         expect.any(Date),
         expect.any(Date),
-        3600,
+        3600
       );
       expect(statusMock).toHaveBeenCalledWith(200);
       expect(jsonMock).toHaveBeenCalledWith({ success: true, data: timeSeriesData });
@@ -637,7 +637,7 @@ describe('MonitoringController', () => {
         'http_requests',
         expect.any(Date),
         expect.any(Date),
-        60,
+        60
       );
     });
   });
@@ -670,7 +670,7 @@ describe('MonitoringController', () => {
             uptime: expect.any(Number),
             timestamp: expect.any(String),
           }),
-        }),
+        })
       );
     });
 
@@ -710,7 +710,7 @@ describe('MonitoringController', () => {
           success: true,
           data: { count: 100 },
           message: 'Deleted 100 old metrics',
-        }),
+        })
       );
     });
   });
@@ -745,7 +745,10 @@ describe('MonitoringController', () => {
 
       await controller.trackError(req as Request, res as Response);
 
-      expect(mockMetricRepository.recordError).toHaveBeenCalledWith('TypeError', 'Cannot read property');
+      expect(mockMetricRepository.recordError).toHaveBeenCalledWith(
+        'TypeError',
+        'Cannot read property'
+      );
       expect(statusMock).toHaveBeenCalledWith(201);
       expect(jsonMock).toHaveBeenCalledWith({ success: true, message: 'Error recorded' });
     });

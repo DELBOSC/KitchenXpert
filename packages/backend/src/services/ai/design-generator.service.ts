@@ -8,17 +8,19 @@ import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '') // Remove special chars
-    .replace(/\n/g, ' ')       // Flatten newlines
-    .slice(0, 200);            // Limit length
+    .replace(/\n/g, ' ') // Flatten newlines
+    .slice(0, 200); // Limit length
 }
 
 /** Safely stringify objects with length limit */
 function safeStringify(obj: unknown, maxLen = 500): string {
   const str = JSON.stringify(obj);
-  return str.length > maxLen ? `${str.slice(0, maxLen)  }...` : str;
+  return str.length > maxLen ? `${str.slice(0, maxLen)}...` : str;
 }
 
 const CostRangeSchema = z.object({
@@ -178,7 +180,7 @@ export class DesignGeneratorService {
   async generateDesigns(
     preferences: FormPreferences,
     count: number,
-    questionnaireData?: QuestionnaireData | null,
+    questionnaireData?: QuestionnaireData | null
   ): Promise<AIGeneratedDesign[]> {
     const prompt = this.buildPrompt(preferences, count, questionnaireData);
 
@@ -194,9 +196,7 @@ export class DesignGeneratorService {
       maxTokens: 8192,
       parse: (text: string) => {
         const parsed = JSON.parse(text);
-        const rawDesigns = Array.isArray(parsed)
-          ? parsed
-          : parsed.designs || [parsed];
+        const rawDesigns = Array.isArray(parsed) ? parsed : parsed.designs || [parsed];
 
         // Validate structure with Zod schema
         const designs: RawAIDesign[] = RawAIDesignArraySchema.parse(rawDesigns);
@@ -249,13 +249,11 @@ export class DesignGeneratorService {
   private buildPrompt(
     preferences: FormPreferences,
     count: number,
-    questionnaireData?: QuestionnaireData | null,
+    questionnaireData?: QuestionnaireData | null
   ): string {
     const sections: string[] = [];
 
-    sections.push(
-      `Genere exactement ${count} concepts de cuisine uniques en JSON.`,
-    );
+    sections.push(`Genere exactement ${count} concepts de cuisine uniques en JSON.`);
     sections.push('');
 
     // --- Form preferences ---
@@ -264,41 +262,44 @@ export class DesignGeneratorService {
       sections.push(`- Style souhaite: ${preferences.kitchenStyle}`);
     }
     if (preferences.colorPalette?.length) {
-      sections.push(
-        `- Palette de couleurs: ${preferences.colorPalette.join(', ')}`,
-      );
+      sections.push(`- Palette de couleurs: ${preferences.colorPalette.join(', ')}`);
     }
     if (preferences.layoutPreference) {
       sections.push(`- Disposition preferee: ${preferences.layoutPreference}`);
     }
     if (preferences.applianceGrade) {
-      sections.push(
-        `- Gamme electromenager: ${preferences.applianceGrade}`,
-      );
+      sections.push(`- Gamme electromenager: ${preferences.applianceGrade}`);
     }
     if (preferences.storageEmphasis) {
-      sections.push(
-        `- Importance rangement: ${preferences.storageEmphasis}`,
-      );
+      sections.push(`- Importance rangement: ${preferences.storageEmphasis}`);
     }
     if (preferences.lightingMood) {
       sections.push(`- Ambiance lumineuse: ${preferences.lightingMood}`);
     }
 
     const features: string[] = [];
-    if (preferences.includeIsland) {features.push('ilot central');}
-    if (preferences.includeBreakfastNook)
-      {features.push('coin petit-dejeuner');}
-    if (preferences.includePantry) {features.push('cellier/garde-manger');}
-    if (preferences.sustainableOptions) {features.push('materiaux eco-responsables');}
-    if (preferences.smartHomeIntegration) {features.push('domotique');}
+    if (preferences.includeIsland) {
+      features.push('ilot central');
+    }
+    if (preferences.includeBreakfastNook) {
+      features.push('coin petit-dejeuner');
+    }
+    if (preferences.includePantry) {
+      features.push('cellier/garde-manger');
+    }
+    if (preferences.sustainableOptions) {
+      features.push('materiaux eco-responsables');
+    }
+    if (preferences.smartHomeIntegration) {
+      features.push('domotique');
+    }
     if (features.length > 0) {
       sections.push(`- Fonctionnalites souhaitees: ${features.join(', ')}`);
     }
 
     if (preferences.additionalRequirements) {
       sections.push(
-        `- Exigences supplementaires: ${sanitizeInput(preferences.additionalRequirements)}`,
+        `- Exigences supplementaires: ${sanitizeInput(preferences.additionalRequirements)}`
       );
     }
 
@@ -309,24 +310,41 @@ export class DesignGeneratorService {
 
       if (questionnaireData.spatialData) {
         const spatial = questionnaireData.spatialData;
-        sections.push(`- Dimensions piece: ${spatial.width || '?'}mm x ${spatial.depth || '?'}mm, hauteur ${spatial.height || '?'}mm`);
-        if (spatial.shape) {sections.push(`- Forme: ${spatial.shape}`);}
+        sections.push(
+          `- Dimensions piece: ${spatial.width || '?'}mm x ${spatial.depth || '?'}mm, hauteur ${spatial.height || '?'}mm`
+        );
+        if (spatial.shape) {
+          sections.push(`- Forme: ${spatial.shape}`);
+        }
       }
       if (questionnaireData.budgetData) {
         const budget = questionnaireData.budgetData;
-        sections.push(`- Budget: ${budget.min || '?'} - ${budget.max || '?'} ${budget.currency || 'EUR'}`);
+        sections.push(
+          `- Budget: ${budget.min || '?'} - ${budget.max || '?'} ${budget.currency || 'EUR'}`
+        );
       }
       if (questionnaireData.cookingHabits) {
         const habits = questionnaireData.cookingHabits;
-        if (habits.frequency) {sections.push(`- Frequence cuisine: ${habits.frequency}`);}
-        if (habits.mealTypes) {sections.push(`- Types repas: ${habits.mealTypes}`);}
+        if (habits.frequency) {
+          sections.push(`- Frequence cuisine: ${habits.frequency}`);
+        }
+        if (habits.mealTypes) {
+          sections.push(`- Types repas: ${habits.mealTypes}`);
+        }
       }
       if (questionnaireData.aestheticPrefs) {
-        sections.push(`- Preferences esthetiques: ${safeStringify(questionnaireData.aestheticPrefs, 300)}`);
+        sections.push(
+          `- Preferences esthetiques: ${safeStringify(questionnaireData.aestheticPrefs, 300)}`
+        );
       }
       // Keep other sections but with length limits
       for (const [key, value] of Object.entries(questionnaireData)) {
-        if (!['spatialData', 'budgetData', 'cookingHabits', 'aestheticPrefs', 'userProfile'].includes(key) && value) {
+        if (
+          !['spatialData', 'budgetData', 'cookingHabits', 'aestheticPrefs', 'userProfile'].includes(
+            key
+          ) &&
+          value
+        ) {
           sections.push(`- ${key}: ${safeStringify(value, 200)}`);
         }
       }
@@ -336,7 +354,7 @@ export class DesignGeneratorService {
     sections.push('');
     sections.push('=== FORMAT DE SORTIE ===');
     sections.push(
-      `Reponds avec un tableau JSON de ${count} objets. Chaque concept doit avoir une philosophie distincte (ex: budget-friendly, ergonomique, premium, ecologique, technologique).`,
+      `Reponds avec un tableau JSON de ${count} objets. Chaque concept doit avoir une philosophie distincte (ex: budget-friendly, ergonomique, premium, ecologique, technologique).`
     );
     sections.push('');
     sections.push('Chaque objet doit avoir EXACTEMENT cette structure:');
@@ -365,15 +383,11 @@ export class DesignGeneratorService {
   "tradeoffs": "Compromis et points d'attention de ce concept"
 }`);
     sections.push('');
+    sections.push('Les prix doivent etre en euros, realistes pour le marche francais 2024-2026.');
     sections.push(
-      'Les prix doivent etre en euros, realistes pour le marche francais 2024-2026.',
+      'Le score doit refleter la pertinence du concept par rapport aux preferences exprimees.'
     );
-    sections.push(
-      'Le score doit refleter la pertinence du concept par rapport aux preferences exprimees.',
-    );
-    sections.push(
-      'Chaque concept doit etre UNIQUE dans sa philosophie et son approche.',
-    );
+    sections.push('Chaque concept doit etre UNIQUE dans sa philosophie et son approche.');
     sections.push('Reponds UNIQUEMENT avec le JSON, sans texte avant ou apres.');
 
     return sections.join('\n');

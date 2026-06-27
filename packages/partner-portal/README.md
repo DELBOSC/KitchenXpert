@@ -1,6 +1,7 @@
 # @kitchenxpert/partner-portal
 
-Portail partenaires KitchenXpert - Interface de gestion pour les fabricants et distributeurs.
+Portail partenaires KitchenXpert - Interface de gestion pour les fabricants et
+distributeurs.
 
 ## Technologies
 
@@ -31,18 +32,21 @@ pnpm --filter @kitchenxpert/partner-portal start
 ## Fonctionnalités
 
 ### Gestion du catalogue
+
 - Upload de produits (CSV, Excel, API)
 - Gestion des images et médias
 - Configuration des prix et stocks
 - Catégorisation des produits
 
 ### Analytics
+
 - Vues et clics sur les produits
 - Taux de conversion
 - Performances par catégorie
 - Export des rapports
 
 ### Gestion du compte
+
 - Informations de l'entreprise
 - Utilisateurs et permissions
 - Paramètres de facturation

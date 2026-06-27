@@ -12,7 +12,14 @@ const router = createProviderRoutes({
   displayName: 'Leroy Merlin',
   type: 'furniture',
   rateLimit: 30,
-  categories: ['meubles-cuisine', 'plans-travail', 'eviers', 'robinetterie', 'credences', 'eclairage'],
+  categories: [
+    'meubles-cuisine',
+    'plans-travail',
+    'eviers',
+    'robinetterie',
+    'credences',
+    'eclairage',
+  ],
 });
 
 export default router;

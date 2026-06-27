@@ -56,7 +56,9 @@ const redisUrlSchema = z
   .optional()
   .refine(
     (url) => {
-      if (!url) {return true;} // Optional in development
+      if (!url) {
+        return true;
+      } // Optional in development
       try {
         const parsed = new URL(url);
         return parsed.protocol === 'redis:' || parsed.protocol === 'rediss:';
@@ -227,10 +229,7 @@ function checkRecommendedVars(env: Record<string, string | undefined>): void {
     {
       key: 'SMTP_HOST',
       message: "SMTP is not configured - set MAIL_PROVIDER to 'smtp' and configure SMTP settings",
-      condition:
-        env.MAIL_PROVIDER === 'smtp' &&
-        !env.SMTP_HOST &&
-        env.NODE_ENV !== 'test',
+      condition: env.MAIL_PROVIDER === 'smtp' && !env.SMTP_HOST && env.NODE_ENV !== 'test',
     },
     {
       key: 'BCRYPT_ROUNDS',
@@ -241,7 +240,8 @@ function checkRecommendedVars(env: Record<string, string | undefined>): void {
     },
     {
       key: 'DATA_ENCRYPTION_KEY',
-      message: 'DATA_ENCRYPTION_KEY is required for encrypting API keys and secrets in the database',
+      message:
+        'DATA_ENCRYPTION_KEY is required for encrypting API keys and secrets in the database',
       condition: !env.DATA_ENCRYPTION_KEY,
     },
   ];
@@ -296,7 +296,9 @@ export function validateEnv(): ValidatedEnv {
   checkRecommendedVars(process.env as Record<string, string | undefined>);
 
   if (!process.env.ANTHROPIC_API_KEY) {
-    console.warn('⚠️  ANTHROPIC_API_KEY not set — AI generation features will use fallback algorithm');
+    console.warn(
+      '⚠️  ANTHROPIC_API_KEY not set — AI generation features will use fallback algorithm'
+    );
   }
 
   // Cache the validated environment

@@ -47,7 +47,7 @@ export class LightingPresets {
   static apply(
     lighting: KitchenLighting,
     renderer: KitchenRenderer,
-    preset: LightingPresetName,
+    preset: LightingPresetName
   ): void {
     const config = PRESETS[preset];
 

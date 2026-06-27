@@ -22,8 +22,12 @@ export function createWorktopsRouter(): Router {
     try {
       const params: WorktopSearchParams = {
         brandIds: req.query.brand ? String(req.query.brand).split(',') : undefined,
-        materials: req.query.material ? String(req.query.material).split(',') as WorktopMaterial[] : undefined,
-        finishes: req.query.finish ? String(req.query.finish).split(',') as WorktopFinish[] : undefined,
+        materials: req.query.material
+          ? (String(req.query.material).split(',') as WorktopMaterial[])
+          : undefined,
+        finishes: req.query.finish
+          ? (String(req.query.finish).split(',') as WorktopFinish[])
+          : undefined,
         thickness: req.query.thickness ? parseInt(String(req.query.thickness), 10) : undefined,
         priceMin: req.query.price_min ? parseFloat(String(req.query.price_min)) : undefined,
         priceMax: req.query.price_max ? parseFloat(String(req.query.price_max)) : undefined,

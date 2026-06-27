@@ -259,12 +259,7 @@ describe('PriceTrackerService', () => {
         isTriggered: false,
       });
 
-      const result = await service.createAlert(
-        mockUser.userId,
-        'prod-1',
-        400,
-        'below',
-      );
+      const result = await service.createAlert(mockUser.userId, 'prod-1', 400, 'below');
 
       expect(result.targetPrice).toBe(400);
       expect(result.direction).toBe('below');
@@ -318,9 +313,9 @@ describe('PriceTrackerService', () => {
     it('should throw when alert does not exist', async () => {
       mockPrisma.priceAlert.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.deleteAlert('non-existent', mockUser.userId),
-      ).rejects.toThrow('Alert not found');
+      await expect(service.deleteAlert('non-existent', mockUser.userId)).rejects.toThrow(
+        'Alert not found'
+      );
     });
 
     it('should throw Forbidden when user does not own the alert', async () => {
@@ -329,9 +324,9 @@ describe('PriceTrackerService', () => {
         userId: 'other-user-id',
       });
 
-      await expect(
-        service.deleteAlert('alert-1', mockUser.userId),
-      ).rejects.toThrow('Forbidden: you do not own this alert');
+      await expect(service.deleteAlert('alert-1', mockUser.userId)).rejects.toThrow(
+        'Forbidden: you do not own this alert'
+      );
     });
   });
 

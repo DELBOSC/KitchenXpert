@@ -10,30 +10,88 @@ import logger from '../../utils/logger';
 function sanitizeSearchQuery(query: string): string {
   return query
     .replace(/[<>{}[\]]/g, '') // Strip special chars that could be injection vectors
-    .replace(/\n/g, ' ')       // Flatten newlines
+    .replace(/\n/g, ' ') // Flatten newlines
     .trim()
-    .slice(0, 500);            // Limit length
+    .slice(0, 500); // Limit length
 }
 
 /** Valid category values for the catalog */
 export const VALID_CATEGORIES = [
-  'cabinet', 'countertop', 'appliance', 'sink',
-  'faucet', 'lighting', 'hardware', 'accessory',
-  'base_cabinet', 'wall_cabinet', 'tall_cabinet',
-  'cooktop', 'oven', 'refrigerator', 'dishwasher', 'microwave', 'hood',
+  'cabinet',
+  'countertop',
+  'appliance',
+  'sink',
+  'faucet',
+  'lighting',
+  'hardware',
+  'accessory',
+  'base_cabinet',
+  'wall_cabinet',
+  'tall_cabinet',
+  'cooktop',
+  'oven',
+  'refrigerator',
+  'dishwasher',
+  'microwave',
+  'hood',
 ] as const;
 
 /** Zod schema for AI-extracted search filters */
 const searchFiltersSchema = z.object({
-  type: z.string().max(100).nullable().optional().transform(v => v ?? undefined),
-  brand: z.string().max(100).nullable().optional().transform(v => v ?? undefined),
-  minPrice: z.number().nonnegative().nullable().optional().transform(v => v ?? undefined),
-  maxPrice: z.number().nonnegative().nullable().optional().transform(v => v ?? undefined),
-  minWidth: z.number().nonnegative().nullable().optional().transform(v => v ?? undefined),
-  maxWidth: z.number().nonnegative().nullable().optional().transform(v => v ?? undefined),
-  material: z.string().max(100).nullable().optional().transform(v => v ?? undefined),
-  color: z.string().max(100).nullable().optional().transform(v => v ?? undefined),
-  query: z.string().max(200).nullable().optional().transform(v => v ?? undefined),
+  type: z
+    .string()
+    .max(100)
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  brand: z
+    .string()
+    .max(100)
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  minPrice: z
+    .number()
+    .nonnegative()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  maxPrice: z
+    .number()
+    .nonnegative()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  minWidth: z
+    .number()
+    .nonnegative()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  maxWidth: z
+    .number()
+    .nonnegative()
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  material: z
+    .string()
+    .max(100)
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  color: z
+    .string()
+    .max(100)
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
+  query: z
+    .string()
+    .max(200)
+    .nullable()
+    .optional()
+    .transform((v) => v ?? undefined),
 });
 
 const searchResultSchema = z.object({
@@ -52,11 +110,12 @@ export class AICatalogSearchService {
     this.anthropic = AnthropicService.getInstance();
   }
 
-  async search(options: {
-    query: string;
-    userId: string;
-    locale?: string;
-  }): Promise<{ filters: SearchFilters; results: unknown[]; explanation: string; suggestions: string[] }> {
+  async search(options: { query: string; userId: string; locale?: string }): Promise<{
+    filters: SearchFilters;
+    results: unknown[];
+    explanation: string;
+    suggestions: string[];
+  }> {
     // Sanitize user query before processing
     const sanitizedQuery = sanitizeSearchQuery(options.query);
 
@@ -78,13 +137,21 @@ export class AICatalogSearchService {
     }
     if (extracted.filters.minPrice || extracted.filters.maxPrice) {
       where.price = {} as Record<string, unknown>;
-      if (extracted.filters.minPrice) {(where.price as Record<string, unknown>).gte = extracted.filters.minPrice;}
-      if (extracted.filters.maxPrice) {(where.price as Record<string, unknown>).lte = extracted.filters.maxPrice;}
+      if (extracted.filters.minPrice) {
+        (where.price as Record<string, unknown>).gte = extracted.filters.minPrice;
+      }
+      if (extracted.filters.maxPrice) {
+        (where.price as Record<string, unknown>).lte = extracted.filters.maxPrice;
+      }
     }
     if (extracted.filters.minWidth || extracted.filters.maxWidth) {
       where.width = {} as Record<string, unknown>;
-      if (extracted.filters.minWidth) {(where.width as Record<string, unknown>).gte = extracted.filters.minWidth;}
-      if (extracted.filters.maxWidth) {(where.width as Record<string, unknown>).lte = extracted.filters.maxWidth;}
+      if (extracted.filters.minWidth) {
+        (where.width as Record<string, unknown>).gte = extracted.filters.minWidth;
+      }
+      if (extracted.filters.maxWidth) {
+        (where.width as Record<string, unknown>).lte = extracted.filters.maxWidth;
+      }
     }
     if (extracted.filters.material) {
       where.material = { contains: extracted.filters.material, mode: 'insensitive' };

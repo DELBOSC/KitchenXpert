@@ -54,8 +54,13 @@ const BOUNDS: Record<string, Partial<Record<DimTarget, [number, number]>>> = {
 };
 
 const EMPTY: SpecTableResult = {
-  widthMm: null, heightMm: null, depthMm: null,
-  dimCount: 0, confidence: 0, rawMeasureText: null, qualityFlags: [],
+  widthMm: null,
+  heightMm: null,
+  depthMm: null,
+  dimCount: 0,
+  confidence: 0,
+  rawMeasureText: null,
+  qualityFlags: [],
 };
 
 /** Décode les entités HTML usuelles + supprime les balises. */
@@ -64,7 +69,9 @@ function clean(html: string): string {
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
-    .replace(/&eacute;/gi, 'é').replace(/&egrave;/gi, 'è').replace(/&agrave;/gi, 'à')
+    .replace(/&eacute;/gi, 'é')
+    .replace(/&egrave;/gi, 'è')
+    .replace(/&agrave;/gi, 'à')
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
     .replace(/\s+/g, ' ')
     .trim();
@@ -73,22 +80,38 @@ function clean(html: string): string {
 /** Valeur "90cm" | "3,8 cm" | "24 mm" | "1.2m" -> cm (float) ; null si illisible. */
 function valueToCm(raw: string): number | null {
   const m = raw.match(/(-?\d+(?:[.,]\d+)?)\s*(cm|mm|m)?/i);
-  if (!m) {return null;}
+  if (!m) {
+    return null;
+  }
   const n = parseFloat((m[1] ?? '').replace(',', '.'));
-  if (!Number.isFinite(n)) {return null;}
+  if (!Number.isFinite(n)) {
+    return null;
+  }
   const unit = (m[2] ?? 'cm').toLowerCase();
-  if (unit === 'mm') {return n / 10;}
-  if (unit === 'm') {return n * 100;}
+  if (unit === 'mm') {
+    return n / 10;
+  }
+  if (unit === 'm') {
+    return n * 100;
+  }
   return n; // cm par défaut
 }
 
 /** Libellé brut -> clé dimension normalisée (ou null). */
 function labelKey(label: string): LabelKey | null {
   const l = label.toLowerCase();
-  if (/profondeur/.test(l)) {return 'profondeur';}
-  if (/longueur/.test(l)) {return 'longueur';}
-  if (/hauteur/.test(l)) {return 'hauteur';}
-  if (/largeur/.test(l)) {return 'largeur';}
+  if (/profondeur/.test(l)) {
+    return 'profondeur';
+  }
+  if (/longueur/.test(l)) {
+    return 'longueur';
+  }
+  if (/hauteur/.test(l)) {
+    return 'hauteur';
+  }
+  if (/largeur/.test(l)) {
+    return 'largeur';
+  }
   return null;
 }
 
@@ -101,7 +124,13 @@ function mapTarget(type: ProductType, key: LabelKey, cm: number): DimTarget | 'a
   switch (type) {
     case 'appliance': // four/plaque/hotte/LV : sémantique H/L/P identique au caisson
     case 'cabinet':
-      return key === 'hauteur' ? 'height' : key === 'largeur' ? 'width' : key === 'profondeur' ? 'depth' : null;
+      return key === 'hauteur'
+        ? 'height'
+        : key === 'largeur'
+          ? 'width'
+          : key === 'profondeur'
+            ? 'depth'
+            : null;
     case 'facade':
       return key === 'hauteur' ? 'height' : key === 'largeur' ? 'width' : null;
     case 'sink':
@@ -109,8 +138,12 @@ function mapTarget(type: ProductType, key: LabelKey, cm: number): DimTarget | 'a
     case 'tap':
       return key === 'hauteur' ? 'height' : null;
     case 'worktop':
-      if (key === 'longueur') {return 'width';}
-      if (key === 'profondeur') {return cm < 80 ? 'depth' : cm > 150 ? 'width' : 'ambiguous';}
+      if (key === 'longueur') {
+        return 'width';
+      }
+      if (key === 'profondeur') {
+        return cm < 80 ? 'depth' : cm > 150 ? 'width' : 'ambiguous';
+      }
       return null; // largeur/hauteur worktop : ignorés (épaisseur non modélisée)
     default:
       return null; // appliance & autres : pas de mapping table (name-parse garde la main)
@@ -119,15 +152,21 @@ function mapTarget(type: ProductType, key: LabelKey, cm: number): DimTarget | 'a
 
 /** Extrait toutes les lignes th/td de la table specifications. */
 function specRows(html: string): Array<{ label: string; value: string }> {
-  const table = html.match(/<table[^>]*aria-labelledby=["']specifications["'][^>]*>([\s\S]*?)<\/table>/i);
-  if (!table) {return [];}
+  const table = html.match(
+    /<table[^>]*aria-labelledby=["']specifications["'][^>]*>([\s\S]*?)<\/table>/i
+  );
+  if (!table) {
+    return [];
+  }
   const rows: Array<{ label: string; value: string }> = [];
   const re = /<tr[^>]*>\s*<th[^>]*>([\s\S]*?)<\/th>\s*<td[^>]*>([\s\S]*?)<\/td>\s*<\/tr>/gi;
   let m: RegExpExecArray | null;
   while ((m = re.exec(table[1] ?? '')) !== null) {
     const label = clean(m[1] ?? '');
     const value = clean(m[2] ?? '');
-    if (label) {rows.push({ label, value });}
+    if (label) {
+      rows.push({ label, value });
+    }
   }
   return rows;
 }
@@ -139,7 +178,9 @@ function specRows(html: string): Array<{ label: string; value: string }> {
  */
 export function parseSpecTable(html: string, type: ProductType): SpecTableResult {
   const rows = specRows(html);
-  if (rows.length === 0) {return { ...EMPTY };}
+  if (rows.length === 0) {
+    return { ...EMPTY };
+  }
 
   const dims: Record<DimTarget, number | null> = { width: null, height: null, depth: null };
   const flags: string[] = [];
@@ -155,31 +196,67 @@ export function parseSpecTable(html: string, type: ProductType): SpecTableResult
   for (const { label, value } of rows) {
     const ll = label.toLowerCase();
     if (/marque/.test(ll)) {
-      if (value && value.toLowerCase() !== 'castorama') {brand = value;}
+      if (value && value.toLowerCase() !== 'castorama') {
+        brand = value;
+      }
       continue;
     }
-    if (/mati[eè]re/.test(ll)) { if (value) {material = value;} continue; }
-    if (/couleur/.test(ll)) { if (value) {color = value;} continue; }
-    if (/finition/.test(ll)) { if (value) {finish = value;} continue; }
+    if (/mati[eè]re/.test(ll)) {
+      if (value) {
+        material = value;
+      }
+      continue;
+    }
+    if (/couleur/.test(ll)) {
+      if (value) {
+        color = value;
+      }
+      continue;
+    }
+    if (/finition/.test(ll)) {
+      if (value) {
+        finish = value;
+      }
+      continue;
+    }
 
     const key = labelKey(label);
-    if (!key) {continue;}
+    if (!key) {
+      continue;
+    }
     const cm = valueToCm(value);
-    if (cm == null) {continue;}
+    if (cm == null) {
+      continue;
+    }
     dimPairs.push(`${label}:${value}`);
 
     const target = mapTarget(type, key, cm);
-    if (target == null) {continue;}
-    if (target === 'ambiguous') { flags.push('ambiguous_profondeur'); continue; }
+    if (target == null) {
+      continue;
+    }
+    if (target === 'ambiguous') {
+      flags.push('ambiguous_profondeur');
+      continue;
+    }
 
     const range = bounds[target];
-    if (!range) {continue;}
-    if (cm < range[0] || cm > range[1]) { flags.push(`out_of_bounds_${target}`); continue; }
-    if (dims[target] != null) { flags.push(`conflict_${target}`); continue; }
+    if (!range) {
+      continue;
+    }
+    if (cm < range[0] || cm > range[1]) {
+      flags.push(`out_of_bounds_${target}`);
+      continue;
+    }
+    if (dims[target] != null) {
+      flags.push(`conflict_${target}`);
+      continue;
+    }
     dims[target] = Math.round(cm * 10); // cm -> mm entier
   }
 
-  const dimCount = (['width', 'height', 'depth'] as DimTarget[]).filter((t) => dims[t] != null).length;
+  const dimCount = (['width', 'height', 'depth'] as DimTarget[]).filter(
+    (t) => dims[t] != null
+  ).length;
   const confidence = dimCount === 3 ? 1.0 : dimCount === 2 ? 0.7 : dimCount === 1 ? 0.4 : 0;
 
   return {

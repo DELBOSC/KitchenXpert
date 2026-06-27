@@ -16,20 +16,21 @@
 
 ## Prerequisites
 
-Before setting up KitchenXpert for development, ensure you have the following installed:
+Before setting up KitchenXpert for development, ensure you have the following
+installed:
 
 ### Required Software
 
-| Software | Minimum Version | Recommended Version | Purpose |
-|----------|----------------|---------------------|---------|
-| Node.js | 20.0.0 | 20.11.0+ | Runtime for backend and build tools |
-| pnpm | 8.0.0 | 8.15.0+ | Package manager (workspace support) |
-| PostgreSQL | 15.0 | 15.6+ | Primary relational database |
-| MongoDB | 7.0 | 7.0.5+ | Document storage for designs |
-| Redis | 7.0 | 7.2.0+ | Caching and session storage |
-| Python | 3.11.0 | 3.11.7+ | AI modules runtime |
-| Docker | 24.0 | 24.0.7+ | Containerization (optional but recommended) |
-| Git | 2.40.0 | Latest | Version control |
+| Software   | Minimum Version | Recommended Version | Purpose                                     |
+| ---------- | --------------- | ------------------- | ------------------------------------------- |
+| Node.js    | 20.0.0          | 20.11.0+            | Runtime for backend and build tools         |
+| pnpm       | 8.0.0           | 8.15.0+             | Package manager (workspace support)         |
+| PostgreSQL | 15.0            | 15.6+               | Primary relational database                 |
+| MongoDB    | 7.0             | 7.0.5+              | Document storage for designs                |
+| Redis      | 7.0             | 7.2.0+              | Caching and session storage                 |
+| Python     | 3.11.0          | 3.11.7+             | AI modules runtime                          |
+| Docker     | 24.0            | 24.0.7+             | Containerization (optional but recommended) |
+| Git        | 2.40.0          | Latest              | Version control                             |
 
 ### System Requirements
 
@@ -160,6 +161,7 @@ pnpm install
 ```
 
 **Expected output:**
+
 ```
 Progress: resolved 2847, reused 2654, downloaded 193, added 2847, done
 Done in 45.3s
@@ -213,7 +215,8 @@ redis-cli --version  # Redis 7.x.x
 
 ### Visual Studio Code (Recommended)
 
-VS Code is the recommended IDE for KitchenXpert development due to excellent TypeScript, React, and Python support.
+VS Code is the recommended IDE for KitchenXpert development due to excellent
+TypeScript, React, and Python support.
 
 #### Required Extensions
 
@@ -235,18 +238,18 @@ code --install-extension ms-azuretools.vscode-docker
 
 #### Extension Details
 
-| Extension | Purpose |
-|-----------|---------|
-| ESLint | JavaScript/TypeScript linting |
-| Prettier | Code formatting |
-| TypeScript | Enhanced TypeScript support |
-| REST Client | API testing from .http files |
-| Python | Python language support |
-| Pylance | Python type checking |
-| Tailwind CSS IntelliSense | CSS class autocompletion |
-| Prisma | Database schema support |
-| MongoDB | MongoDB query support |
-| Docker | Container management |
+| Extension                 | Purpose                       |
+| ------------------------- | ----------------------------- |
+| ESLint                    | JavaScript/TypeScript linting |
+| Prettier                  | Code formatting               |
+| TypeScript                | Enhanced TypeScript support   |
+| REST Client               | API testing from .http files  |
+| Python                    | Python language support       |
+| Pylance                   | Python type checking          |
+| Tailwind CSS IntelliSense | CSS class autocompletion      |
+| Prisma                    | Database schema support       |
+| MongoDB                   | MongoDB query support         |
+| Docker                    | Container management          |
 
 #### Workspace Settings
 
@@ -330,7 +333,8 @@ code --install-extension wayou.vscode-todo-highlight
 If using WebStorm/IntelliJ IDEA:
 
 1. Enable TypeScript support in Settings → Languages & Frameworks → TypeScript
-2. Set up ESLint: Settings → Languages & Frameworks → JavaScript → Code Quality Tools → ESLint
+2. Set up ESLint: Settings → Languages & Frameworks → JavaScript → Code Quality
+   Tools → ESLint
 3. Configure Prettier: Settings → Languages & Frameworks → JavaScript → Prettier
 4. Enable Node.js coding assistance
 
@@ -652,6 +656,7 @@ redis-cli info
 ```
 
 Redis is used for:
+
 - Session storage
 - API response caching
 - Rate limiting counters
@@ -787,13 +792,13 @@ export default defineConfig({
   server: {
     port: 5173,
     hmr: {
-      overlay: true
+      overlay: true,
     },
     watch: {
-      usePolling: false
-    }
-  }
-})
+      usePolling: false,
+    },
+  },
+});
 ```
 
 ### AI Modules Hot Reload
@@ -1063,7 +1068,8 @@ export NODE_OPTIONS="--max-old-space-size=4096"
 
 If you encounter issues not covered here:
 
-1. Check existing [GitHub Issues](https://github.com/your-org/kitchenxpert/issues)
+1. Check existing
+   [GitHub Issues](https://github.com/your-org/kitchenxpert/issues)
 2. Search [Discussions](https://github.com/your-org/kitchenxpert/discussions)
 3. Ask in team Slack channel: #kitchenxpert-dev
 4. Create a new issue with:

@@ -17,7 +17,10 @@
 
 ## Overview
 
-The KitchenXpert AI modules are built as a separate FastAPI microservice, providing intelligent design generation, appliance recommendations, and compatibility checking. The system employs state-of-the-art machine learning models with production-grade serving infrastructure.
+The KitchenXpert AI modules are built as a separate FastAPI microservice,
+providing intelligent design generation, appliance recommendations, and
+compatibility checking. The system employs state-of-the-art machine learning
+models with production-grade serving infrastructure.
 
 ```mermaid
 graph TB

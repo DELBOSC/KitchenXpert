@@ -127,7 +127,7 @@ function generateQuoteHTML(quote: {
   const formatDate = (d: Date) =>
     new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(d));
 
-  const itemRows = (quote.items)
+  const itemRows = quote.items
     .map(
       (item) => `
       <tr>
@@ -377,10 +377,7 @@ export class CertifiedQuoteService {
       signedAt: new Date().toISOString(),
     });
 
-    const signatureHash = crypto
-      .createHash('sha256')
-      .update(contentToSign)
-      .digest('hex');
+    const signatureHash = crypto.createHash('sha256').update(contentToSign).digest('hex');
 
     const signedAt = new Date();
 
@@ -397,7 +394,7 @@ export class CertifiedQuoteService {
     logger.info('Certified quote signed', {
       quoteNumber: quote.quoteNumber,
       userId,
-      signatureHash: `${signatureHash.substring(0, 16)  }...`,
+      signatureHash: `${signatureHash.substring(0, 16)}...`,
     });
 
     return updated;

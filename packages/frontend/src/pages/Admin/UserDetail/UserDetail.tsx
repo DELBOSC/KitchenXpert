@@ -59,18 +59,29 @@ const UserDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState<boolean>(false);
   const [retryCount, setRetryCount] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'orders' | 'activity'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'orders' | 'activity'>(
+    'overview'
+  );
   const [showActionModal, setShowActionModal] = useState<{ type: string } | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<string>('');
   const mountedRef = useRef(true);
-  useEffect(() => () => { mountedRef.current = false; }, []);
+  useEffect(
+    () => () => {
+      mountedRef.current = false;
+    },
+    []
+  );
 
   // Close the action modal on Escape (document-level to keep the dialog container non-interactive)
   useEffect(() => {
-    if (!showActionModal) {return;}
+    if (!showActionModal) {
+      return;
+    }
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && !isProcessing) { setShowActionModal(null); }
+      if (e.key === 'Escape' && !isProcessing) {
+        setShowActionModal(null);
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -107,13 +118,20 @@ const UserDetailPage: React.FC = () => {
         const data = (await response.json()) as { data?: UserDetail } & Partial<UserDetail>;
         const userData = (data.data ?? data) as UserDetail;
 
-        if (!mountedRef.current) {return;}
+        if (!mountedRef.current) {
+          return;
+        }
 
         setUser(userData);
         setSelectedRole(userData.role);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
-        const errorMessage = err instanceof Error ? err.message : t('admin.fetchUserError', 'Failed to load user details');
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : t('admin.fetchUserError', 'Failed to load user details');
         setError(errorMessage);
       } finally {
         setIsLoading(false);
@@ -125,7 +143,9 @@ const UserDetailPage: React.FC = () => {
   }, [id, retryCount, t]);
 
   const handleUserAction = async (action: string): Promise<void> => {
-    if (!user) {return;}
+    if (!user) {
+      return;
+    }
 
     setIsProcessing(true);
 
@@ -138,7 +158,9 @@ const UserDetailPage: React.FC = () => {
         credentials: 'include',
       });
 
-      if (!mountedRef.current) {return;}
+      if (!mountedRef.current) {
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(t('admin.userActionFailed', 'Failed to {{action}} user', { action }));
@@ -146,7 +168,9 @@ const UserDetailPage: React.FC = () => {
 
       // Update local state
       setUser((prev) => {
-        if (!prev) {return prev;}
+        if (!prev) {
+          return prev;
+        }
         switch (action) {
           case 'activate':
             return { ...prev, status: 'active' as const };
@@ -162,7 +186,8 @@ const UserDetailPage: React.FC = () => {
       toast.success(t('admin.actionSuccess', `User ${action}d successfully`));
       setShowActionModal(null);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('admin.actionFailed', 'Action failed');
+      const errorMessage =
+        err instanceof Error ? err.message : t('admin.actionFailed', 'Action failed');
       toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -187,17 +212,20 @@ const UserDetailPage: React.FC = () => {
         body: JSON.stringify({ role: selectedRole }),
       });
 
-      if (!mountedRef.current) {return;}
+      if (!mountedRef.current) {
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(t('admin.roleChangeFailed', 'Failed to change user role'));
       }
 
-      setUser((prev) => prev ? { ...prev, role: selectedRole as UserDetail['role'] } : prev);
+      setUser((prev) => (prev ? { ...prev, role: selectedRole as UserDetail['role'] } : prev));
       toast.success(t('admin.roleChanged', 'User role updated successfully'));
       setShowActionModal(null);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('admin.actionFailed', 'Action failed');
+      const errorMessage =
+        err instanceof Error ? err.message : t('admin.actionFailed', 'Action failed');
       toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -262,7 +290,11 @@ const UserDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" role="status" aria-label={t('common.loading', 'Loading')} />
+        <div
+          className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
+          role="status"
+          aria-label={t('common.loading', 'Loading')}
+        />
       </div>
     );
   }
@@ -272,8 +304,12 @@ const UserDetailPage: React.FC = () => {
       <div className="flex items-center justify-center min-h-[400px] p-8 dark:bg-gray-900">
         <div className="text-center">
           <div className="text-6xl font-bold text-gray-300 dark:text-gray-600 mb-4">404</div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{t('common.resourceNotFound', 'Ressource introuvable')}</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">{t('common.resourceNotFoundDesc', "L'element demande n'existe pas ou a ete supprime.")}</p>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            {t('common.resourceNotFound', 'Ressource introuvable')}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            {t('common.resourceNotFoundDesc', "L'element demande n'existe pas ou a ete supprime.")}
+          </p>
           <button
             onClick={() => navigate('/admin/users')}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -289,7 +325,9 @@ const UserDetailPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-900 p-4">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md w-full">
-          <h2 className="text-red-800 dark:text-red-300 text-lg font-semibold mb-2">{t('common.error', 'Error')}</h2>
+          <h2 className="text-red-800 dark:text-red-300 text-lg font-semibold mb-2">
+            {t('common.error', 'Error')}
+          </h2>
           <p className="text-red-600 dark:text-red-400">{error}</p>
           <div className="mt-4 flex gap-4">
             <button
@@ -299,7 +337,10 @@ const UserDetailPage: React.FC = () => {
               {t('admin.backToUsers', 'Back to Users')}
             </button>
             <button
-              onClick={() => { setError(null); setRetryCount((c) => c + 1); }}
+              onClick={() => {
+                setError(null);
+                setRetryCount((c) => c + 1);
+              }}
               className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             >
               {t('common.tryAgain', 'Try Again')}
@@ -316,8 +357,14 @@ const UserDetailPage: React.FC = () => {
 
   const tabs = [
     { id: 'overview' as const, label: t('admin.overview', 'Overview') },
-    { id: 'projects' as const, label: `${t('admin.projects', 'Projects')  } (${user.projects?.length || 0})` },
-    { id: 'orders' as const, label: `${t('admin.orders', 'Orders')  } (${user.orders?.length || 0})` },
+    {
+      id: 'projects' as const,
+      label: `${t('admin.projects', 'Projects')} (${user.projects?.length || 0})`,
+    },
+    {
+      id: 'orders' as const,
+      label: `${t('admin.orders', 'Orders')} (${user.orders?.length || 0})`,
+    },
     { id: 'activity' as const, label: t('admin.activity', 'Activity') },
   ];
 
@@ -333,7 +380,9 @@ const UserDetailPage: React.FC = () => {
               </Link>
             </li>
             <li>/</li>
-            <li className="text-gray-900 dark:text-white font-medium">{user.firstName} {user.lastName}</li>
+            <li className="text-gray-900 dark:text-white font-medium">
+              {user.firstName} {user.lastName}
+            </li>
           </ol>
         </nav>
 
@@ -352,7 +401,8 @@ const UserDetailPage: React.FC = () => {
                 ) : (
                   <div className="h-20 w-20 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
                     <span className="text-2xl text-gray-500 dark:text-gray-400 font-medium">
-                      {user.firstName[0]}{user.lastName[0]}
+                      {user.firstName[0]}
+                      {user.lastName[0]}
                     </span>
                   </div>
                 )}
@@ -360,19 +410,33 @@ const UserDetailPage: React.FC = () => {
 
               {/* User Info */}
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{user.firstName} {user.lastName}</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {user.firstName} {user.lastName}
+                </h1>
                 <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className={`px-3 py-1 text-sm font-medium rounded-full ${getRoleColor(user.role)}`}>
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full ${getRoleColor(user.role)}`}
+                  >
                     {t(`admin.roles.${user.role}`, user.role)}
                   </span>
-                  <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(user.status)}`}>
+                  <span
+                    className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(user.status)}`}
+                  >
                     {t(`admin.statuses.${user.status}`, user.status)}
                   </span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
-                  {user.phone && <span>{t('admin.phone', 'Phone')}: {user.phone}</span>}
-                  {user.company && <span>{t('admin.company', 'Company')}: {user.company}</span>}
+                  {user.phone && (
+                    <span>
+                      {t('admin.phone', 'Phone')}: {user.phone}
+                    </span>
+                  )}
+                  {user.company && (
+                    <span>
+                      {t('admin.company', 'Company')}: {user.company}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -409,22 +473,36 @@ const UserDetailPage: React.FC = () => {
           {/* Stats Row */}
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.registered', 'Registered')}</p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">{formatDate(user.createdAt)}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('admin.registered', 'Registered')}
+              </p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {formatDate(user.createdAt)}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.lastLogin', 'Last Login')}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('admin.lastLogin', 'Last Login')}
+              </p>
               <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {user.lastLoginAt ? formatDate(user.lastLoginAt) : t('common.never', 'Never')}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.totalProjects', 'Total Projects')}</p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">{user.projectCount}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('admin.totalProjects', 'Total Projects')}
+              </p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {user.projectCount}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.lastUpdated', 'Last Updated')}</p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">{formatDate(user.updatedAt)}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('admin.lastUpdated', 'Last Updated')}
+              </p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {formatDate(user.updatedAt)}
+              </p>
             </div>
           </div>
         </div>
@@ -456,37 +534,67 @@ const UserDetailPage: React.FC = () => {
             {activeTab === 'overview' && (
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('admin.accountInfo', 'Account Information')}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {t('admin.accountInfo', 'Account Information')}
+                  </h3>
                   <dl className="space-y-3">
                     <div className="flex justify-between">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">{t('admin.userId', 'User ID')}</dt>
+                      <dt className="text-sm text-gray-500 dark:text-gray-400">
+                        {t('admin.userId', 'User ID')}
+                      </dt>
                       <dd className="text-sm text-gray-900 dark:text-white font-mono">{user.id}</dd>
                     </div>
                     <div className="flex justify-between">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">{t('admin.email', 'Email')}</dt>
+                      <dt className="text-sm text-gray-500 dark:text-gray-400">
+                        {t('admin.email', 'Email')}
+                      </dt>
                       <dd className="text-sm text-gray-900 dark:text-white">{user.email}</dd>
                     </div>
                     <div className="flex justify-between">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">{t('admin.fullName', 'Full Name')}</dt>
-                      <dd className="text-sm text-gray-900 dark:text-white">{user.firstName} {user.lastName}</dd>
+                      <dt className="text-sm text-gray-500 dark:text-gray-400">
+                        {t('admin.fullName', 'Full Name')}
+                      </dt>
+                      <dd className="text-sm text-gray-900 dark:text-white">
+                        {user.firstName} {user.lastName}
+                      </dd>
                     </div>
                     <div className="flex justify-between">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">{t('admin.role', 'Role')}</dt>
-                      <dd><span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(user.role)}`}>{t(`admin.roles.${user.role}`, user.role)}</span></dd>
+                      <dt className="text-sm text-gray-500 dark:text-gray-400">
+                        {t('admin.role', 'Role')}
+                      </dt>
+                      <dd>
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(user.role)}`}
+                        >
+                          {t(`admin.roles.${user.role}`, user.role)}
+                        </span>
+                      </dd>
                     </div>
                     <div className="flex justify-between">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">{t('admin.status', 'Status')}</dt>
-                      <dd><span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(user.status)}`}>{t(`admin.statuses.${user.status}`, user.status)}</span></dd>
+                      <dt className="text-sm text-gray-500 dark:text-gray-400">
+                        {t('admin.status', 'Status')}
+                      </dt>
+                      <dd>
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(user.status)}`}
+                        >
+                          {t(`admin.statuses.${user.status}`, user.status)}
+                        </span>
+                      </dd>
                     </div>
                     {user.phone && (
                       <div className="flex justify-between">
-                        <dt className="text-sm text-gray-500 dark:text-gray-400">{t('admin.phone', 'Phone')}</dt>
+                        <dt className="text-sm text-gray-500 dark:text-gray-400">
+                          {t('admin.phone', 'Phone')}
+                        </dt>
                         <dd className="text-sm text-gray-900 dark:text-white">{user.phone}</dd>
                       </div>
                     )}
                     {user.company && (
                       <div className="flex justify-between">
-                        <dt className="text-sm text-gray-500 dark:text-gray-400">{t('admin.company', 'Company')}</dt>
+                        <dt className="text-sm text-gray-500 dark:text-gray-400">
+                          {t('admin.company', 'Company')}
+                        </dt>
                         <dd className="text-sm text-gray-900 dark:text-white">{user.company}</dd>
                       </div>
                     )}
@@ -494,22 +602,33 @@ const UserDetailPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('admin.recentActivity', 'Recent Activity')}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {t('admin.recentActivity', 'Recent Activity')}
+                  </h3>
                   {user.activity && user.activity.length > 0 ? (
                     <div className="space-y-3">
                       {user.activity.slice(0, 5).map((entry) => (
-                        <div key={entry.id} className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div
+                          key={entry.id}
+                          className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                        >
                           <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0" />
                           <div>
                             <p className="text-sm text-gray-900 dark:text-white">{entry.action}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{entry.details}</p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{formatDate(entry.createdAt)}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {entry.details}
+                            </p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                              {formatDate(entry.createdAt)}
+                            </p>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.noRecentActivity', 'No recent activity')}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {t('admin.noRecentActivity', 'No recent activity')}
+                    </p>
                   )}
                 </div>
               </div>
@@ -523,26 +642,47 @@ const UserDetailPage: React.FC = () => {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.projectName', 'Project Name')}</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.status', 'Status')}</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.kitchens', 'Kitchens')}</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.created', 'Created')}</th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.actions', 'Actions')}</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.projectName', 'Project Name')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.status', 'Status')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.kitchens', 'Kitchens')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.created', 'Created')}
+                          </th>
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.actions', 'Actions')}
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {user.projects.map((project) => (
                           <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{project.name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                              {project.name}
+                            </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getProjectStatusColor(project.status)}`}>
+                              <span
+                                className={`px-2 py-1 text-xs font-medium rounded-full ${getProjectStatusColor(project.status)}`}
+                              >
                                 {project.status}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{project.kitchenCount}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{formatShortDate(project.createdAt)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                              {project.kitchenCount}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                              {formatShortDate(project.createdAt)}
+                            </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                              <Link to={`/projects/${project.id}`} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
+                              <Link
+                                to={`/projects/${project.id}`}
+                                className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                              >
                                 {t('common.view', 'View')}
                               </Link>
                             </td>
@@ -553,7 +693,9 @@ const UserDetailPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400">{t('admin.noProjects', 'This user has no projects')}</p>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {t('admin.noProjects', 'This user has no projects')}
+                    </p>
                   </div>
                 )}
               </div>
@@ -567,16 +709,26 @@ const UserDetailPage: React.FC = () => {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.orderNumber', 'Order #')}</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.status', 'Status')}</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.amount', 'Amount')}</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.date', 'Date')}</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.orderNumber', 'Order #')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.status', 'Status')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.amount', 'Amount')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {t('admin.date', 'Date')}
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {user.orders.map((order) => (
                           <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{order.orderNumber}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                              {order.orderNumber}
+                            </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                                 {order.status}
@@ -585,7 +737,9 @@ const UserDetailPage: React.FC = () => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                               {formatCurrency(order.totalAmount, order.currency)}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{formatShortDate(order.createdAt)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                              {formatShortDate(order.createdAt)}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -593,7 +747,9 @@ const UserDetailPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400">{t('admin.noOrders', 'This user has no orders')}</p>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {t('admin.noOrders', 'This user has no orders')}
+                    </p>
                   </div>
                 )}
               </div>
@@ -605,18 +761,29 @@ const UserDetailPage: React.FC = () => {
                 {user.activity && user.activity.length > 0 ? (
                   <div className="space-y-4">
                     {user.activity.map((entry) => (
-                      <div key={entry.id} className="flex items-start gap-4 p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <div
+                        key={entry.id}
+                        className="flex items-start gap-4 p-4 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                      >
                         <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0" />
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">{entry.action}</p>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">{entry.details}</p>
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                {entry.action}
+                              </p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {entry.details}
+                              </p>
                             </div>
-                            <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap ml-4">{formatDate(entry.createdAt)}</span>
+                            <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap ml-4">
+                              {formatDate(entry.createdAt)}
+                            </span>
                           </div>
                           {entry.ipAddress && (
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">IP: {entry.ipAddress}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                              IP: {entry.ipAddress}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -624,7 +791,9 @@ const UserDetailPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400">{t('admin.noActivity', 'No activity recorded for this user')}</p>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {t('admin.noActivity', 'No activity recorded for this user')}
+                    </p>
                   </div>
                 )}
               </div>
@@ -634,50 +803,68 @@ const UserDetailPage: React.FC = () => {
       </div>
 
       {/* Action Modal - Suspend/Activate */}
-      {showActionModal && (showActionModal.type === 'suspend' || showActionModal.type === 'activate') && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="action-modal-heading"
-        >
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
-            <h2 id="action-modal-heading" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              {showActionModal.type === 'suspend'
-                ? t('admin.suspendUser', 'Suspend User')
-                : t('admin.activateUser', 'Activate User')}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {showActionModal.type === 'suspend'
-                ? t('admin.suspendConfirm', `Are you sure you want to suspend ${user.firstName} ${user.lastName}? They will lose access to their account.`)
-                : t('admin.activateConfirm', `Are you sure you want to activate ${user.firstName} ${user.lastName}?`)}
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowActionModal(null)}
-                disabled={isProcessing}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+      {showActionModal &&
+        (showActionModal.type === 'suspend' || showActionModal.type === 'activate') && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="action-modal-heading"
+          >
+            <div
+              className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full"
+              ref={(el) => {
+                if (el) {
+                  const btn = el.querySelector<HTMLElement>('button');
+                  btn?.focus();
+                }
+              }}
+            >
+              <h2
+                id="action-modal-heading"
+                className="text-xl font-semibold text-gray-900 dark:text-white mb-4"
               >
-                {t('common.cancel', 'Cancel')}
-              </button>
-              <button
-                onClick={() => handleUserAction(showActionModal.type)}
-                disabled={isProcessing}
-                className={`px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${
-                  showActionModal.type === 'suspend'
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-green-600 hover:bg-green-700'
-                }`}
-              >
-                {isProcessing && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                )}
-                {t('common.confirm', 'Confirm')}
-              </button>
+                {showActionModal.type === 'suspend'
+                  ? t('admin.suspendUser', 'Suspend User')
+                  : t('admin.activateUser', 'Activate User')}
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {showActionModal.type === 'suspend'
+                  ? t(
+                      'admin.suspendConfirm',
+                      `Are you sure you want to suspend ${user.firstName} ${user.lastName}? They will lose access to their account.`
+                    )
+                  : t(
+                      'admin.activateConfirm',
+                      `Are you sure you want to activate ${user.firstName} ${user.lastName}?`
+                    )}
+              </p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setShowActionModal(null)}
+                  disabled={isProcessing}
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                >
+                  {t('common.cancel', 'Cancel')}
+                </button>
+                <button
+                  onClick={() => handleUserAction(showActionModal.type)}
+                  disabled={isProcessing}
+                  className={`px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2 ${
+                    showActionModal.type === 'suspend'
+                      ? 'bg-red-600 hover:bg-red-700'
+                      : 'bg-green-600 hover:bg-green-700'
+                  }`}
+                >
+                  {isProcessing && (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                  )}
+                  {t('common.confirm', 'Confirm')}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Change Role Modal */}
       {showActionModal && showActionModal.type === 'changeRole' && (
@@ -687,12 +874,26 @@ const UserDetailPage: React.FC = () => {
           aria-modal="true"
           aria-labelledby="role-modal-heading"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
-            <h2 id="role-modal-heading" className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full"
+            ref={(el) => {
+              if (el) {
+                const btn = el.querySelector<HTMLElement>('button');
+                btn?.focus();
+              }
+            }}
+          >
+            <h2
+              id="role-modal-heading"
+              className="text-xl font-semibold text-gray-900 dark:text-white mb-4"
+            >
               {t('admin.changeRole', 'Change Role')}
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              {t('admin.changeRoleDesc', `Select a new role for ${user.firstName} ${user.lastName}.`)}
+              {t(
+                'admin.changeRoleDesc',
+                `Select a new role for ${user.firstName} ${user.lastName}.`
+              )}
             </p>
             <select
               value={selectedRole}

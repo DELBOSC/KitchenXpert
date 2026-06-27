@@ -119,10 +119,7 @@ export function isSameDay(date1: DateInput, date2: DateInput): boolean {
 export function isSameMonth(date1: DateInput, date2: DateInput): boolean {
   const d1 = normalizeDate(date1);
   const d2 = normalizeDate(date2);
-  return (
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth()
-  );
+  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
 }
 
 /**

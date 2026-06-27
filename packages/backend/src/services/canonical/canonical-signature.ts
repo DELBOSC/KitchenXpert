@@ -13,17 +13,75 @@
 
 // ---- Colour dictionary (tunable). Score = 2026 trend desirability. ----
 const COLOR_TIERS: Array<{ tier: number; score: number; colors: string[] }> = [
-  { tier: 1, score: 100, colors: ['blanc casse', 'blanc casse', 'creme', 'magnolia', 'ivoire', 'gris perle', 'gris taupe', 'chene naturel', 'blanc'] },
-  { tier: 2, score: 85, colors: ['vert sauge', 'beige sable', 'gris anthracite', 'bois clair', 'chene fume', 'sauge', 'sable', 'anthracite', 'lin', 'grege'] },
-  { tier: 3, score: 70, colors: ['terre cuite', 'terracotta', 'bleu petrole', 'noir mat', 'vert olive', 'olive', 'noir'] },
-  { tier: 4, score: 50, colors: ['bleu nuit', 'bleu marine', 'aubergine', 'bordeaux', 'macchiato', 'cafe'] },
-  { tier: 5, score: 30, colors: ['gris fonce', 'gris moyen', 'gris clair', 'bois moyen', 'beige', 'brun', 'marron', 'gris'] },
+  {
+    tier: 1,
+    score: 100,
+    colors: [
+      'blanc casse',
+      'blanc casse',
+      'creme',
+      'magnolia',
+      'ivoire',
+      'gris perle',
+      'gris taupe',
+      'chene naturel',
+      'blanc',
+    ],
+  },
+  {
+    tier: 2,
+    score: 85,
+    colors: [
+      'vert sauge',
+      'beige sable',
+      'gris anthracite',
+      'bois clair',
+      'chene fume',
+      'sauge',
+      'sable',
+      'anthracite',
+      'lin',
+      'grege',
+    ],
+  },
+  {
+    tier: 3,
+    score: 70,
+    colors: [
+      'terre cuite',
+      'terracotta',
+      'bleu petrole',
+      'noir mat',
+      'vert olive',
+      'olive',
+      'noir',
+    ],
+  },
+  {
+    tier: 4,
+    score: 50,
+    colors: ['bleu nuit', 'bleu marine', 'aubergine', 'bordeaux', 'macchiato', 'cafe'],
+  },
+  {
+    tier: 5,
+    score: 30,
+    colors: [
+      'gris fonce',
+      'gris moyen',
+      'gris clair',
+      'bois moyen',
+      'beige',
+      'brun',
+      'marron',
+      'gris',
+    ],
+  },
   { tier: 6, score: 10, colors: ['jaune', 'rouge', 'rose', 'magenta', 'orange', 'fuchsia'] },
 ];
 // Flat list sorted by colour length desc (longest / most specific match first).
-const COLOR_LOOKUP: Array<{ color: string; tier: number; score: number }> = COLOR_TIERS
-  .flatMap((t) => t.colors.map((c) => ({ color: c, tier: t.tier, score: t.score })))
-  .sort((a, b) => b.color.length - a.color.length);
+const COLOR_LOOKUP: Array<{ color: string; tier: number; score: number }> = COLOR_TIERS.flatMap(
+  (t) => t.colors.map((c) => ({ color: c, tier: t.tier, score: t.score }))
+).sort((a, b) => b.color.length - a.color.length);
 
 // ---- Text normalisation (accent-stripped, lowercase) ----
 const deaccent = (s: string): string => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -32,10 +90,14 @@ export function baseNorm(s: string | null | undefined): string {
 }
 
 /** Extract the first dictionary colour found in the name (longest match wins). */
-export function extractColor(nameNorm: string): { color: string; tier: number; score: number } | null {
+export function extractColor(
+  nameNorm: string
+): { color: string; tier: number; score: number } | null {
   for (const c of COLOR_LOOKUP) {
     const re = new RegExp(`(^|[^a-z])${c.color.replace(/ /g, '\\s+')}([^a-z]|$)`, 'i');
-    if (re.test(nameNorm)) {return c;}
+    if (re.test(nameNorm)) {
+      return c;
+    }
   }
   return null;
 }
@@ -43,12 +105,17 @@ export function extractColor(nameNorm: string): { color: string; tier: number; s
 /** Gamme signature: strip colour, dimensions, Nouveau/Lot/articles, compact. */
 export function gammeName(nameNorm: string, color: string | null): string {
   let s = nameNorm;
-  if (color) {s = s.replace(new RegExp(color.replace(/ /g, '\\s+'), 'gi'), ' ');}
+  if (color) {
+    s = s.replace(new RegExp(color.replace(/ /g, '\\s+'), 'gi'), ' ');
+  }
   s = s
     .replace(/\bnouveau\b/gi, ' ')
     .replace(/\blot\s+de\s+\d+\b/gi, ' ')
     // dimensions: L/H/P/Ep labels + number + unit, and NxNxN triplets
-    .replace(/\b(l|h|p|ep|prof|haut|larg|long|diam)\.?\s*-?\s*\d+(?:[.,]\d+)?\s*(?:mm|cm|m)?/gi, ' ')
+    .replace(
+      /\b(l|h|p|ep|prof|haut|larg|long|diam)\.?\s*-?\s*\d+(?:[.,]\d+)?\s*(?:mm|cm|m)?/gi,
+      ' '
+    )
     .replace(/\d+(?:[.,]\d+)?\s*[x×]\s*\d+(?:[.,]\d+)?(?:\s*[x×]\s*\d+(?:[.,]\d+)?)?/gi, ' ')
     .replace(/\d+(?:[.,]\d+)?\s*(?:mm|cm|m)\b/gi, ' ')
     // punctuation -> space
@@ -71,11 +138,21 @@ export function extractSizeKey(nameNorm: string): string {
   const nums = new Set<number>();
   const add = (raw: string, unit?: string): void => {
     let v = parseFloat(raw.replace(',', '.'));
-    if ((unit ?? '').toLowerCase() === 'mm') {v = v / 10;}
-    if (v > 0 && v < 1000) {nums.add(Math.round(v));}
+    if ((unit ?? '').toLowerCase() === 'mm') {
+      v = v / 10;
+    }
+    if (v > 0 && v < 1000) {
+      nums.add(Math.round(v));
+    }
   };
-  for (const m of nameNorm.matchAll(/(\d+(?:[.,]\d+)?)\s*(cm|mm)\b/gi)) {add(m[1] ?? '', m[2]);}
-  for (const m of nameNorm.matchAll(/\b(?:l|h|p|ep|larg|haut|prof|long|diam)\.?\s*-?\s*(\d+(?:[.,]\d+)?)\s*(cm|mm)?/gi)) {add(m[1] ?? '', m[2]);}
+  for (const m of nameNorm.matchAll(/(\d+(?:[.,]\d+)?)\s*(cm|mm)\b/gi)) {
+    add(m[1] ?? '', m[2]);
+  }
+  for (const m of nameNorm.matchAll(
+    /\b(?:l|h|p|ep|larg|haut|prof|long|diam)\.?\s*-?\s*(\d+(?:[.,]\d+)?)\s*(cm|mm)?/gi
+  )) {
+    add(m[1] ?? '', m[2]);
+  }
   return [...nums].sort((a, b) => a - b).join('x');
 }
 
@@ -155,10 +232,14 @@ export interface ClusterResult {
  */
 export function buildItem(row: CanonicalRow): SignatureItem | null {
   const nameNorm = baseNorm(row.name);
-  const col = extractColor(nameNorm) ?? (row.specColor ? extractColor(baseNorm(row.specColor)) : null);
+  const col =
+    extractColor(nameNorm) ?? (row.specColor ? extractColor(baseNorm(row.specColor)) : null);
   const gamme = gammeName(nameNorm, col?.color ?? null);
-  if (gamme.length < 3) {return null;}
-  const brand = (row.realBrand && row.realBrand.trim()) || (row.brand && row.brand.trim()) || 'unknown_brand';
+  if (gamme.length < 3) {
+    return null;
+  }
+  const brand =
+    (row.realBrand && row.realBrand.trim()) || (row.brand && row.brand.trim()) || 'unknown_brand';
   const w = Math.round(row.width ?? 0);
   const h = Math.round(row.height ?? 0);
   const d = Math.round(row.depth ?? 0);
@@ -176,7 +257,11 @@ export function buildItem(row: CanonicalRow): SignatureItem | null {
     tier: col?.tier ?? 0,
     score: col?.score ?? 0,
     price: row.price ?? 0,
-    w, h, d, brand, pt,
+    w,
+    h,
+    d,
+    brand,
+    pt,
     name: row.name,
   };
 }
@@ -200,7 +285,10 @@ export function clusterAndSelect(rows: CanonicalRow[], usePriceTiers: boolean): 
   let excludedShortGamme = 0;
   for (const row of rows) {
     const it = buildItem(row);
-    if (!it) { excludedShortGamme++; continue; }
+    if (!it) {
+      excludedShortGamme++;
+      continue;
+    }
     items.push(it);
   }
 
@@ -215,20 +303,36 @@ export function clusterAndSelect(rows: CanonicalRow[], usePriceTiers: boolean): 
   const variants: VariantLink[] = [];
   const priceTierStats: Record<PriceTier, number> = { BAS: 0, MOYEN: 0, HAUT: 0, NA: 0 };
   const colorTierStats: Record<string, number> = {};
-  for (let t = 0; t <= 6; t++) {colorTierStats[String(t)] = 0;}
+  for (let t = 0; t <= 6; t++) {
+    colorTierStats[String(t)] = 0;
+  }
 
   for (const [sig, vs] of clusters) {
-    for (const v of vs) {colorTierStats[String(v.tier)] = (colorTierStats[String(v.tier)] ?? 0) + 1;}
+    for (const v of vs) {
+      colorTierStats[String(v.tier)] = (colorTierStats[String(v.tier)] ?? 0) + 1;
+    }
     const pick = (group: SignatureItem[], priceTier: PriceTier): void => {
       const best = [...group].sort((a, b) => b.score - a.score || a.price - b.price)[0]!;
       canonicals.push({
-        sku: best.sku, sig, category: best.pt, brand: best.brand, gamme: best.gamme,
-        w: best.w, h: best.h, d: best.d, color: best.color, colorScore: best.score,
-        price: best.price, priceTier, variantCount: group.length,
+        sku: best.sku,
+        sig,
+        category: best.pt,
+        brand: best.brand,
+        gamme: best.gamme,
+        w: best.w,
+        h: best.h,
+        d: best.d,
+        color: best.color,
+        colorScore: best.score,
+        price: best.price,
+        priceTier,
+        variantCount: group.length,
       });
       priceTierStats[priceTier]++;
       for (const v of group) {
-        if (v.sku !== best.sku) {variants.push({ sku: v.sku, parentSku: best.sku, color: v.color, price: v.price });}
+        if (v.sku !== best.sku) {
+          variants.push({ sku: v.sku, parentSku: best.sku, color: v.color, price: v.price });
+        }
       }
     };
 
@@ -239,15 +343,30 @@ export function clusterAndSelect(rows: CanonicalRow[], usePriceTiers: boolean): 
       const range = mx - mn;
       const t1 = mn + range * 0.33;
       const t2 = mn + range * 0.66;
-      const groups: Record<'BAS' | 'MOYEN' | 'HAUT', SignatureItem[]> = { BAS: [], MOYEN: [], HAUT: [] };
-      for (const v of vs) {groups[v.price <= t1 ? 'BAS' : v.price <= t2 ? 'MOYEN' : 'HAUT'].push(v);}
+      const groups: Record<'BAS' | 'MOYEN' | 'HAUT', SignatureItem[]> = {
+        BAS: [],
+        MOYEN: [],
+        HAUT: [],
+      };
+      for (const v of vs) {
+        groups[v.price <= t1 ? 'BAS' : v.price <= t2 ? 'MOYEN' : 'HAUT'].push(v);
+      }
       for (const tn of ['BAS', 'MOYEN', 'HAUT'] as const) {
-        if (groups[tn].length) {pick(groups[tn], tn);}
+        if (groups[tn].length) {
+          pick(groups[tn], tn);
+        }
       }
     } else {
       pick(vs, 'NA');
     }
   }
 
-  return { canonicals, variants, excludedShortGamme, clusters: clusters.size, colorTierStats, priceTierStats };
+  return {
+    canonicals,
+    variants,
+    excludedShortGamme,
+    clusters: clusters.size,
+    colorTierStats,
+    priceTierStats,
+  };
 }

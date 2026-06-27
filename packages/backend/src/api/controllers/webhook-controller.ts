@@ -22,11 +22,19 @@ function stripSecret<T extends Record<string, unknown>>(webhook: T): Omit<T, 'se
  */
 function assertWebhookAccess(req: Request, webhook: { partnerId?: string | null }): boolean {
   const user = req.user;
-  if (!user) {return false;}
-  if (user.role === 'admin') {return true;}
+  if (!user) {
+    return false;
+  }
+  if (user.role === 'admin') {
+    return true;
+  }
   // Partner users can only access their own webhooks
-  if (webhook.partnerId && req.partnerId === webhook.partnerId) {return true;}
-  if (webhook.partnerId && user.userId === webhook.partnerId) {return true;}
+  if (webhook.partnerId && req.partnerId === webhook.partnerId) {
+    return true;
+  }
+  if (webhook.partnerId && user.userId === webhook.partnerId) {
+    return true;
+  }
   return false;
 }
 
@@ -39,22 +47,29 @@ function validateWebhookUrl(url: string): string | null {
     const hostname = parsed.hostname.toLowerCase();
 
     const blockedExact = new Set([
-      'localhost', '127.0.0.1', '0.0.0.0', '::1',
-      '169.254.169.254', 'metadata.google.internal',
+      'localhost',
+      '127.0.0.1',
+      '0.0.0.0',
+      '::1',
+      '169.254.169.254',
+      'metadata.google.internal',
     ]);
 
     const blockedPrefixes = [
-      '10.', '192.168.',
+      '10.',
+      '192.168.',
       // 172.16.0.0 – 172.31.255.255
       ...Array.from({ length: 16 }, (_, i) => `172.${16 + i}.`),
       // IPv4-mapped IPv6
-      '::ffff:10.', '::ffff:192.168.', '::ffff:127.',
+      '::ffff:10.',
+      '::ffff:192.168.',
+      '::ffff:127.',
     ];
 
     if (blockedExact.has(hostname)) {
       return 'Invalid webhook URL: private/internal addresses are not allowed';
     }
-    if (blockedPrefixes.some(p => hostname.startsWith(p))) {
+    if (blockedPrefixes.some((p) => hostname.startsWith(p))) {
       return 'Invalid webhook URL: private/internal addresses are not allowed';
     }
     if (!['http:', 'https:'].includes(parsed.protocol)) {
@@ -79,9 +94,10 @@ export class WebhookController {
     const { partnerId, isActive, eventType } = req.query;
 
     // Partners can only see their own webhooks
-    const effectivePartnerId = req.user?.role === 'admin'
-      ? partnerId as string | undefined
-      : req.partnerId || req.user?.userId;
+    const effectivePartnerId =
+      req.user?.role === 'admin'
+        ? (partnerId as string | undefined)
+        : req.partnerId || req.user?.userId;
 
     const webhooks = await webhookRepository.findAll({
       partnerId: effectivePartnerId,
@@ -108,7 +124,9 @@ export class WebhookController {
       return;
     }
 
-    res.status(200).json({ success: true, data: stripSecret(webhook as unknown as Record<string, unknown>) });
+    res
+      .status(200)
+      .json({ success: true, data: stripSecret(webhook as unknown as Record<string, unknown>) });
   });
 
   /**
@@ -142,7 +160,9 @@ export class WebhookController {
     });
 
     const { secret: _secret, ...safeWebhook } = webhook as any;
-    res.status(201).json({ success: true, data: safeWebhook, message: 'Webhook created successfully' });
+    res
+      .status(201)
+      .json({ success: true, data: safeWebhook, message: 'Webhook created successfully' });
   });
 
   /**
@@ -185,7 +205,11 @@ export class WebhookController {
       timeout,
     });
 
-    res.status(200).json({ success: true, data: stripSecret(webhook as Record<string, unknown>), message: 'Webhook updated successfully' });
+    res.status(200).json({
+      success: true,
+      data: stripSecret(webhook as Record<string, unknown>),
+      message: 'Webhook updated successfully',
+    });
   });
 
   /**
@@ -346,7 +370,7 @@ export class WebhookController {
           'X-Webhook-ID': id,
           'X-Webhook-Event': 'test',
           'User-Agent': 'KitchenXpert-Webhooks/1.0',
-          ...(webhook.headers as Record<string, string> || {}),
+          ...((webhook.headers as Record<string, string>) || {}),
         },
         body: JSON.stringify(testPayload),
         signal: controller.signal,
@@ -362,7 +386,7 @@ export class WebhookController {
         eventType: 'test' as any,
         payload: testPayload,
         statusCode: response.status,
-        response: responseBody ? { body: responseBody.substring(0, 2000) } as any : undefined,
+        response: responseBody ? ({ body: responseBody.substring(0, 2000) } as any) : undefined,
       });
 
       res.status(200).json({
@@ -423,7 +447,8 @@ export class WebhookController {
     res.status(200).json({
       success: true,
       data: { secret: newSecret },
-      message: 'Webhook secret regenerated successfully. Store it securely — it will not be shown again.',
+      message:
+        'Webhook secret regenerated successfully. Store it securely — it will not be shown again.',
     });
   });
 
@@ -447,7 +472,9 @@ export class WebhookController {
     date.setDate(date.getDate() - Number(olderThanDays));
 
     const result = await webhookRepository.deleteOldEvents(date);
-    res.status(200).json({ success: true, data: result, message: `Deleted ${result.count} old events` });
+    res
+      .status(200)
+      .json({ success: true, data: result, message: `Deleted ${result.count} old events` });
   });
 }
 

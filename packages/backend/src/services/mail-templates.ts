@@ -188,7 +188,9 @@ function baseLayout(content: string, footerText?: string): string {
         ${content}
       </div>
       <div class="footer">
-        ${footerText || `
+        ${
+          footerText ||
+          `
           <p>KitchenXpert - Configurateur de cuisines intelligentes</p>
           <p>
             <a href="https://kitchenxpert.com">Site web</a> |
@@ -199,7 +201,8 @@ function baseLayout(content: string, footerText?: string): string {
             Vous recevez cet email car vous avez un compte KitchenXpert.<br>
             Si vous n'avez pas demande cet email, veuillez l'ignorer.
           </p>
-        `}
+        `
+        }
       </div>
     </div>
   </div>
@@ -321,7 +324,9 @@ export function passwordResetEmail(userName: string, resetLink: string): string 
  * Sent when an order is placed
  */
 export function orderConfirmationEmail(orderDetails: OrderDetails): string {
-  const itemsHtml = orderDetails.items.map(item => `
+  const itemsHtml = orderDetails.items
+    .map(
+      (item) => `
     <tr>
       <td>
         ${item.imageUrl ? `<img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.name)}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; margin-right: 10px; vertical-align: middle;">` : ''}
@@ -334,7 +339,9 @@ export function orderConfirmationEmail(orderDetails: OrderDetails): string {
       <td class="text-right">${formatCurrency(item.unitPrice, orderDetails.currency)}</td>
       <td class="text-right"><strong>${formatCurrency(item.totalPrice, orderDetails.currency)}</strong></td>
     </tr>
-  `).join('');
+  `
+    )
+    .join('');
 
   const formatAddress = (addr: Address) => `
     ${escapeHtml(addr.name)}<br>
@@ -356,12 +363,16 @@ export function orderConfirmationEmail(orderDetails: OrderDetails): string {
           <td><strong>Numero de commande</strong></td>
           <td class="text-right text-large"><strong>#${escapeHtml(orderDetails.orderNumber)}</strong></td>
         </tr>
-        ${orderDetails.estimatedDelivery ? `
+        ${
+          orderDetails.estimatedDelivery
+            ? `
         <tr>
           <td><strong>Livraison estimee</strong></td>
           <td class="text-right">${escapeHtml(orderDetails.estimatedDelivery)}</td>
         </tr>
-        ` : ''}
+        `
+            : ''
+        }
       </table>
     </div>
 
@@ -406,21 +417,29 @@ export function orderConfirmationEmail(orderDetails: OrderDetails): string {
         <h4 style="margin-top: 0;">Adresse de livraison</h4>
         <p>${formatAddress(orderDetails.shippingAddress)}</p>
       </div>
-      ${orderDetails.billingAddress ? `
+      ${
+        orderDetails.billingAddress
+          ? `
       <div style="flex: 1;">
         <h4 style="margin-top: 0;">Adresse de facturation</h4>
         <p>${formatAddress(orderDetails.billingAddress)}</p>
       </div>
-      ` : ''}
+      `
+          : ''
+      }
     </div>
 
-    ${orderDetails.orderUrl ? `
+    ${
+      orderDetails.orderUrl
+        ? `
     <div class="text-center mt-20">
       <a href="${escapeHtml(orderDetails.orderUrl)}" class="btn btn-primary">
         Suivre ma commande
       </a>
     </div>
-    ` : ''}
+    `
+        : ''
+    }
 
     <div class="divider"></div>
 
@@ -499,12 +518,16 @@ export function quoteReadyEmail(
           <td><strong>Montant total estime</strong></td>
           <td class="text-right text-large text-success"><strong>${formatCurrency(totalAmount, currency)}</strong></td>
         </tr>
-        ${validUntil ? `
+        ${
+          validUntil
+            ? `
         <tr>
           <td><strong>Valide jusqu'au</strong></td>
           <td class="text-right">${escapeHtml(validUntil)}</td>
         </tr>
-        ` : ''}
+        `
+            : ''
+        }
       </table>
     </div>
 
@@ -555,7 +578,8 @@ function formatCurrency(amount: number, currency: string): string {
  * Plain text versions of emails for fallback
  */
 export const plainTextTemplates = {
-  welcome: (userName: string): string => `
+  welcome: (userName: string): string =>
+    `
 Bienvenue sur KitchenXpert, ${userName} !
 
 Nous sommes ravis de vous compter parmi nous. KitchenXpert est votre partenaire ideal pour concevoir la cuisine de vos reves.
@@ -576,7 +600,8 @@ KitchenXpert - Votre cuisine de reve
 https://kitchenxpert.com
   `.trim(),
 
-  verification: (userName: string, verificationLink: string): string => `
+  verification: (userName: string, verificationLink: string): string =>
+    `
 Verifiez votre adresse email
 
 Bonjour ${userName},
@@ -594,7 +619,8 @@ KitchenXpert - Votre cuisine de reve
 https://kitchenxpert.com
   `.trim(),
 
-  passwordReset: (userName: string, resetLink: string): string => `
+  passwordReset: (userName: string, resetLink: string): string =>
+    `
 Reinitialisation de votre mot de passe
 
 Bonjour ${userName},
@@ -615,7 +641,9 @@ https://kitchenxpert.com
 
   orderConfirmation: (orderDetails: OrderDetails): string => {
     const items = orderDetails.items
-      .map(item => `  - ${item.name} x${item.quantity}: ${item.totalPrice} ${orderDetails.currency}`)
+      .map(
+        (item) => `  - ${item.name} x${item.quantity}: ${item.totalPrice} ${orderDetails.currency}`
+      )
       .join('\n');
 
     return `

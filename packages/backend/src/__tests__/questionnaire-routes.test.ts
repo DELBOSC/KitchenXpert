@@ -18,7 +18,12 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  })),
 }));
 
 jest.mock('../database/client', () => ({
@@ -73,7 +78,10 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'user@test.com', role: 'user' };
     next();
@@ -106,9 +114,7 @@ describe('Questionnaire Routes', () => {
 
   describe('GET /questionnaire/progress', () => {
     it('should return questionnaire progress for authenticated user', async () => {
-      const response = await request(app)
-        .get('/questionnaire/progress')
-        .expect(200);
+      const response = await request(app).get('/questionnaire/progress').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('progress');
@@ -117,9 +123,7 @@ describe('Questionnaire Routes', () => {
 
     it('should return 401 when not authenticated', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .get('/questionnaire/progress')
-        .expect(401);
+      const response = await request(app).get('/questionnaire/progress').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -127,18 +131,14 @@ describe('Questionnaire Routes', () => {
 
   describe('GET /questionnaire/:section', () => {
     it('should return section data for valid section', async () => {
-      const response = await request(app)
-        .get('/questionnaire/spatial-constraints')
-        .expect(200);
+      const response = await request(app).get('/questionnaire/spatial-constraints').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockQuestionnaireController.getSection).toHaveBeenCalled();
     });
 
     it('should return 400 for invalid section name', async () => {
-      const response = await request(app)
-        .get('/questionnaire/invalid-section')
-        .expect(400);
+      const response = await request(app).get('/questionnaire/invalid-section').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Invalid section');

@@ -143,16 +143,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -178,14 +180,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -254,9 +252,7 @@ describe('Partner Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /partners', async () => {
-      const response = await request(app)
-        .get('/partners')
-        .expect(401);
+      const response = await request(app).get('/partners').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -273,9 +269,7 @@ describe('Partner Routes', () => {
     it('should return 403 for non-admin user on GET /partners', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .get('/partners')
-        .expect(403);
+      const response = await authedRequest(app).get('/partners').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -298,9 +292,7 @@ describe('Partner Routes', () => {
     it('should return all partners', async () => {
       mockPartnerRepository.findAll.mockResolvedValue([mockPartner, mockPartner2]);
 
-      const response = await authedRequest(app)
-        .get('/partners')
-        .expect(200);
+      const response = await authedRequest(app).get('/partners').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
@@ -309,9 +301,7 @@ describe('Partner Routes', () => {
     it('should filter by isActive', async () => {
       mockPartnerRepository.findAll.mockResolvedValue([mockPartner]);
 
-      const response = await authedRequest(app)
-        .get('/partners?isActive=true')
-        .expect(200);
+      const response = await authedRequest(app).get('/partners?isActive=true').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockPartnerRepository.findAll).toHaveBeenCalledWith(true);
@@ -324,9 +314,7 @@ describe('Partner Routes', () => {
     it('should return partner count', async () => {
       mockPartnerRepository.count.mockResolvedValue(5);
 
-      const response = await authedRequest(app)
-        .get('/partners/count')
-        .expect(200);
+      const response = await authedRequest(app).get('/partners/count').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.count).toBe(5);
@@ -335,9 +323,7 @@ describe('Partner Routes', () => {
     it('should return active partner count when filtered', async () => {
       mockPartnerRepository.count.mockResolvedValue(3);
 
-      const response = await authedRequest(app)
-        .get('/partners/count?isActive=true')
-        .expect(200);
+      const response = await authedRequest(app).get('/partners/count?isActive=true').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockPartnerRepository.count).toHaveBeenCalledWith(true);
@@ -350,9 +336,7 @@ describe('Partner Routes', () => {
     it('should return partner by ID', async () => {
       mockPartnerRepository.findById.mockResolvedValue(mockPartner);
 
-      const response = await authedRequest(app)
-        .get('/partners/partner-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/partners/partner-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.name).toBe('Kitchen Pro');
@@ -361,9 +345,7 @@ describe('Partner Routes', () => {
     it('should return 404 for non-existent partner', async () => {
       mockPartnerRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/partners/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/partners/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -375,9 +357,7 @@ describe('Partner Routes', () => {
     it('should return partner by code', async () => {
       mockPartnerRepository.findByCode.mockResolvedValue(mockPartner);
 
-      const response = await authedRequest(app)
-        .get('/partners/code/KPRO')
-        .expect(200);
+      const response = await authedRequest(app).get('/partners/code/KPRO').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.code).toBe('KPRO');
@@ -386,9 +366,7 @@ describe('Partner Routes', () => {
     it('should return 404 for unknown code', async () => {
       mockPartnerRepository.findByCode.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/partners/code/UNKNOWN')
-        .expect(404);
+      const response = await authedRequest(app).get('/partners/code/UNKNOWN').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -478,9 +456,7 @@ describe('Partner Routes', () => {
     it('should delete a partner successfully', async () => {
       mockPartnerRepository.delete.mockResolvedValue(undefined);
 
-      const response = await authedRequest(app)
-        .delete('/partners/partner-1')
-        .expect(200);
+      const response = await authedRequest(app).delete('/partners/partner-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');
@@ -493,9 +469,7 @@ describe('Partner Routes', () => {
     it('should toggle partner active status to inactive', async () => {
       mockPartnerRepository.toggle.mockResolvedValue({ ...mockPartner, isActive: false });
 
-      const response = await authedRequest(app)
-        .post('/partners/partner-1/toggle')
-        .expect(200);
+      const response = await authedRequest(app).post('/partners/partner-1/toggle').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deactivated');
@@ -504,9 +478,7 @@ describe('Partner Routes', () => {
     it('should toggle partner active status to active', async () => {
       mockPartnerRepository.toggle.mockResolvedValue({ ...mockPartner2, isActive: true });
 
-      const response = await authedRequest(app)
-        .post('/partners/partner-2/toggle')
-        .expect(200);
+      const response = await authedRequest(app).post('/partners/partner-2/toggle').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('activated');
@@ -558,10 +530,7 @@ describe('Partner Routes', () => {
     });
 
     it('should return 400 for missing credentials in body', async () => {
-      const response = await authedRequest(app)
-        .post('/partners/validate')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).post('/partners/validate').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -573,9 +542,7 @@ describe('Partner Routes', () => {
     it('should return integrations for a partner', async () => {
       mockPartnerRepository.getIntegrations.mockResolvedValue([mockIntegration]);
 
-      const response = await authedRequest(app)
-        .get('/partners/partner-1/integrations')
-        .expect(200);
+      const response = await authedRequest(app).get('/partners/partner-1/integrations').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -647,7 +614,10 @@ describe('Partner Routes', () => {
     it('should update an integration', async () => {
       mockPartnerRepository.findById.mockResolvedValue(mockPartner);
       mockPartnerRepository.findIntegrationByIdAndPartner.mockResolvedValue(mockIntegration);
-      mockPartnerRepository.updateIntegration.mockResolvedValue({ ...mockIntegration, isActive: false });
+      mockPartnerRepository.updateIntegration.mockResolvedValue({
+        ...mockIntegration,
+        isActive: false,
+      });
 
       const response = await authedRequest(app)
         .put('/partners/partner-1/integrations/integration-1')

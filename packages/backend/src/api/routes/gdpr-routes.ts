@@ -9,7 +9,9 @@ const router: RouterType = Router();
 
 const erasureSchema = z.object({
   reason: z.string().max(500).optional(),
-  confirm: z.literal(true, { errorMap: () => ({ message: 'Vous devez confirmer explicitement (confirm: true)' }) }),
+  confirm: z.literal(true, {
+    errorMap: () => ({ message: 'Vous devez confirmer explicitement (confirm: true)' }),
+  }),
 });
 
 router.get('/summary', authenticate, gdprController.getSummary);

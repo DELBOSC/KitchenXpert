@@ -113,16 +113,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -149,14 +151,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -240,10 +238,7 @@ describe('AI Search Routes', () => {
     });
 
     it('should return 400 when query is missing', async () => {
-      const response = await authedRequest(app)
-        .post('/ai-search/catalog')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).post('/ai-search/catalog').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
       // Validation error message format changed: zod-style errors array
@@ -281,7 +276,11 @@ describe('AI Search Routes', () => {
     });
 
     it('should handle search service returning empty results', async () => {
-      mockSearch.mockResolvedValue({ results: [], totalCount: 0, query: '00000000-0000-0000-0000-000000000000' });
+      mockSearch.mockResolvedValue({
+        results: [],
+        totalCount: 0,
+        query: '00000000-0000-0000-0000-000000000000',
+      });
 
       const response = await authedRequest(app)
         .post('/ai-search/catalog')

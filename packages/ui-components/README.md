@@ -26,6 +26,7 @@ function MyComponent() {
 ## Composants disponibles
 
 ### Formulaires
+
 - `Button` - Boutons avec variantes (primary, secondary, outline, ghost)
 - `Input` - Champ de saisie texte
 - `Select` - Liste déroulante
@@ -35,6 +36,7 @@ function MyComponent() {
 - `Textarea` - Zone de texte multiligne
 
 ### Layout
+
 - `Card` - Carte avec ombre
 - `Container` - Conteneur responsive
 - `Grid` - Grille CSS
@@ -42,6 +44,7 @@ function MyComponent() {
 - `Divider` - Séparateur
 
 ### Feedback
+
 - `Alert` - Message d'alerte
 - `Toast` - Notification toast
 - `Spinner` - Indicateur de chargement
@@ -49,12 +52,14 @@ function MyComponent() {
 - `Skeleton` - Placeholder de chargement
 
 ### Navigation
+
 - `Tabs` - Onglets
 - `Breadcrumb` - Fil d'Ariane
 - `Pagination` - Pagination
 - `Menu` - Menu déroulant
 
 ### Overlay
+
 - `Modal` - Fenêtre modale
 - `Drawer` - Panneau latéral
 - `Tooltip` - Info-bulle
@@ -76,11 +81,7 @@ const customTheme = createTheme({
 });
 
 function App() {
-  return (
-    <ThemeProvider theme={customTheme}>
-      {/* ... */}
-    </ThemeProvider>
-  );
+  return <ThemeProvider theme={customTheme}>{/* ... */}</ThemeProvider>;
 }
 ```
 

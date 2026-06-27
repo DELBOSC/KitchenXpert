@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-
 import { ModelLoader, mmToM } from '@kitchenxpert/3d-engine';
 
 import { api } from '../../services/api/api';
@@ -19,9 +18,9 @@ interface CatalogItem {
   id: string;
   type: string;
   name: string;
-  width: number;   // mm
-  height: number;   // mm
-  depth: number;    // mm
+  width: number; // mm
+  height: number; // mm
+  depth: number; // mm
   color: number;
   category: CatalogCategory;
   price: number;
@@ -48,12 +47,21 @@ interface CatalogProduct {
   price?: number;
 }
 
-const CATEGORY_CONFIG: Record<CatalogCategory, { labelKey: string; defaultLabel: string; icon: React.ReactNode }> = {
+const CATEGORY_CONFIG: Record<
+  CatalogCategory,
+  { labelKey: string; defaultLabel: string; icon: React.ReactNode }
+> = {
   base_cabinets: {
     labelKey: 'designer.catalog.base_cabinets',
     defaultLabel: 'Meubles bas',
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
         <rect x="3" y="10" width="18" height="10" rx="1" />
         <line x1="12" y1="10" x2="12" y2="20" />
         <line x1="3" y1="10" x2="21" y2="10" />
@@ -64,7 +72,13 @@ const CATEGORY_CONFIG: Record<CatalogCategory, { labelKey: string; defaultLabel:
     labelKey: 'designer.catalog.wall_cabinets',
     defaultLabel: 'Meubles hauts',
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
         <rect x="3" y="3" width="18" height="10" rx="1" />
         <line x1="12" y1="3" x2="12" y2="13" />
       </svg>
@@ -74,7 +88,13 @@ const CATEGORY_CONFIG: Record<CatalogCategory, { labelKey: string; defaultLabel:
     labelKey: 'designer.catalog.tall_cabinets',
     defaultLabel: 'Colonnes',
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
         <rect x="6" y="2" width="12" height="20" rx="1" />
         <line x1="6" y1="12" x2="18" y2="12" />
       </svg>
@@ -84,7 +104,13 @@ const CATEGORY_CONFIG: Record<CatalogCategory, { labelKey: string; defaultLabel:
     labelKey: 'designer.catalog.appliances',
     defaultLabel: 'Electromenager',
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
         <rect x="4" y="2" width="16" height="20" rx="2" />
         <circle cx="12" cy="8" r="3" />
         <line x1="8" y1="16" x2="16" y2="16" />
@@ -95,7 +121,13 @@ const CATEGORY_CONFIG: Record<CatalogCategory, { labelKey: string; defaultLabel:
     labelKey: 'designer.catalog.worktops',
     defaultLabel: 'Plans de travail',
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
         <rect x="2" y="10" width="20" height="4" rx="1" />
       </svg>
     ),
@@ -104,7 +136,13 @@ const CATEGORY_CONFIG: Record<CatalogCategory, { labelKey: string; defaultLabel:
     labelKey: 'designer.catalog.sinks',
     defaultLabel: 'Eviers',
     icon: (
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
         <path d="M4 14h16v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4z" />
         <path d="M12 4v6" />
         <path d="M12 10c-2 0-4 2-4 4" />
@@ -143,7 +181,10 @@ function mapCategory(cat: string): CatalogCategory {
   return mapping[cat] ?? 'base_cabinets';
 }
 
-export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelProps): React.ReactElement {
+export default function CatalogPanel({
+  addObject,
+  brandProfile,
+}: CatalogPanelProps): React.ReactElement {
   const { t } = useTranslation();
   const [expandedCategory, setExpandedCategory] = useState<CatalogCategory | null>('base_cabinets');
   const [searchQuery, setSearchQuery] = useState('');
@@ -157,11 +198,14 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
       items.push({
         id: `base-${w}`,
         type: 'base_cabinet',
-        name: t('designer.catalog.baseCabinetName', { width: w, defaultValue: `Meuble bas ${w} mm` }),
+        name: t('designer.catalog.baseCabinetName', {
+          width: w,
+          defaultValue: `Meuble bas ${w} mm`,
+        }),
         width: w,
         height: brandProfile.base.totalHeight,
         depth: brandProfile.base.defaultDepth,
-        color: 0xD4A574,
+        color: 0xd4a574,
         category: 'base_cabinets',
         price: Math.round(150 + w * 0.3),
       });
@@ -179,16 +223,22 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
 
       for (const w of widthsForThisHeight) {
         // For non-default heights, only use the common wall widths that exist in available widths
-        if (!isDefaultHeight && !commonWallWidths.includes(w)) {continue;}
+        if (!isDefaultHeight && !commonWallWidths.includes(w)) {
+          continue;
+        }
 
         items.push({
           id: `wall-${w}-${h}`,
           type: 'wall_cabinet',
-          name: t('designer.catalog.wallCabinetName', { width: w, height: h, defaultValue: `Meuble haut ${w}x${h} mm` }),
+          name: t('designer.catalog.wallCabinetName', {
+            width: w,
+            height: h,
+            defaultValue: `Meuble haut ${w}x${h} mm`,
+          }),
           width: w,
           height: h,
           depth: brandProfile.wall.defaultDepth,
-          color: 0xD4A574,
+          color: 0xd4a574,
           category: 'wall_cabinets',
           price: Math.round(120 + w * 0.2 + h * 0.1),
         });
@@ -204,7 +254,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
         width: 600,
         height: h,
         depth: brandProfile.tall.defaultDepth,
-        color: 0xD4A574,
+        color: 0xd4a574,
         category: 'tall_cabinets',
         price: Math.round(300 + h * 0.15),
       });
@@ -212,18 +262,71 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
 
     // --- Appliances (fixed dimensions in mm) ---
     items.push(
-      { id: 'refrigerator', type: 'refrigerator', name: t('designer.catalog.refrigerator', 'Refrigerateur'), width: 600, height: 1800, depth: 650, color: 0xdddddd, category: 'appliances', price: 600 },
-      { id: 'dishwasher', type: 'dishwasher', name: t('designer.catalog.dishwasher', 'Lave-vaisselle'), width: 600, height: 850, depth: 600, color: 0xcccccc, category: 'appliances', price: 450 },
-      { id: 'oven', type: 'base_cabinet', name: t('designer.catalog.oven', 'Four'), width: 600, height: 600, depth: 550, color: 0x333333, category: 'appliances', price: 400 },
-      { id: 'cooktop', type: 'cooktop', name: t('designer.catalog.cooktop', 'Plaque de cuisson'), width: 600, height: 50, depth: 520, color: 0x333333, category: 'appliances', price: 350 },
-      { id: 'hood', type: 'hood', name: t('designer.catalog.hood', 'Hotte aspirante'), width: 600, height: 500, depth: 500, color: 0xbbbbbb, category: 'appliances', price: 280 },
+      {
+        id: 'refrigerator',
+        type: 'refrigerator',
+        name: t('designer.catalog.refrigerator', 'Refrigerateur'),
+        width: 600,
+        height: 1800,
+        depth: 650,
+        color: 0xdddddd,
+        category: 'appliances',
+        price: 600,
+      },
+      {
+        id: 'dishwasher',
+        type: 'dishwasher',
+        name: t('designer.catalog.dishwasher', 'Lave-vaisselle'),
+        width: 600,
+        height: 850,
+        depth: 600,
+        color: 0xcccccc,
+        category: 'appliances',
+        price: 450,
+      },
+      {
+        id: 'oven',
+        type: 'base_cabinet',
+        name: t('designer.catalog.oven', 'Four'),
+        width: 600,
+        height: 600,
+        depth: 550,
+        color: 0x333333,
+        category: 'appliances',
+        price: 400,
+      },
+      {
+        id: 'cooktop',
+        type: 'cooktop',
+        name: t('designer.catalog.cooktop', 'Plaque de cuisson'),
+        width: 600,
+        height: 50,
+        depth: 520,
+        color: 0x333333,
+        category: 'appliances',
+        price: 350,
+      },
+      {
+        id: 'hood',
+        type: 'hood',
+        name: t('designer.catalog.hood', 'Hotte aspirante'),
+        width: 600,
+        height: 500,
+        depth: 500,
+        color: 0xbbbbbb,
+        category: 'appliances',
+        price: 280,
+      }
     );
 
     // --- Worktops ---
     items.push({
       id: 'worktop-600',
       type: 'base_cabinet',
-      name: t('designer.catalog.worktopName', { width: 600, defaultValue: 'Plan de travail 600 mm' }),
+      name: t('designer.catalog.worktopName', {
+        width: 600,
+        defaultValue: 'Plan de travail 600 mm',
+      }),
       width: 600,
       height: brandProfile.worktop.defaultThickness,
       depth: brandProfile.base.defaultDepth + brandProfile.worktop.overhangFront,
@@ -255,7 +358,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
         color: 0x999999,
         category: 'sinks',
         price: 400,
-      },
+      }
     );
 
     return items;
@@ -271,9 +374,12 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
     const fetchCatalog = async () => {
       setIsLoadingCatalog(true);
       try {
-        const res = await api.get<{ data: CatalogProduct[] }>(API_ENDPOINTS.PRODUCTS?.BASE || '/products', {
-          signal: controller.signal,
-        });
+        const res = await api.get<{ data: CatalogProduct[] }>(
+          API_ENDPOINTS.PRODUCTS?.BASE || '/products',
+          {
+            signal: controller.signal,
+          }
+        );
         if (res.success && res.data?.data && res.data.data.length > 0) {
           const mapped: CatalogItem[] = res.data.data.map((p) => ({
             id: p.id,
@@ -282,38 +388,51 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
             width: p.width || 600,
             height: p.height || 720,
             depth: p.depth || 560,
-            color: p.color || 0xD4A574,
+            color: p.color || 0xd4a574,
             category: mapCategory(p.category || p.type || ''),
             price: p.price ?? 0,
           }));
-          if (mounted) {setCatalogItems(mapped);}
+          if (mounted) {
+            setCatalogItems(mapped);
+          }
           return;
         }
       } catch {
         // API not available, use local fallback
       } finally {
-        if (mounted) {setIsLoadingCatalog(false);}
+        if (mounted) {
+          setIsLoadingCatalog(false);
+        }
       }
-      if (mounted) {setCatalogItems(localCatalogItems);}
+      if (mounted) {
+        setCatalogItems(localCatalogItems);
+      }
     };
 
     void fetchCatalog();
-    return () => { mounted = false; controller.abort(); };
+    return () => {
+      mounted = false;
+      controller.abort();
+    };
   }, [localCatalogItems]);
 
   const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) {return catalogItems;}
+    if (!searchQuery.trim()) {
+      return catalogItems;
+    }
     const query = searchQuery.toLowerCase();
-    return catalogItems.filter((item) =>
-      item.name.toLowerCase().includes(query) ||
-      item.type.toLowerCase().includes(query)
+    return catalogItems.filter(
+      (item) => item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query)
     );
   }, [searchQuery, catalogItems]);
 
   const itemsByCategory = useMemo(() => {
     const map = new Map<CatalogCategory, CatalogItem[]>();
     for (const cat of CATEGORIES) {
-      map.set(cat, filteredItems.filter((item) => item.category === cat));
+      map.set(
+        cat,
+        filteredItems.filter((item) => item.category === cat)
+      );
     }
     return map;
   }, [filteredItems]);
@@ -391,7 +510,13 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               aria-label={t('designer.catalog.clearSearch', 'Effacer')}
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-3.5 h-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -404,7 +529,9 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
         {isLoadingCatalog && (
           <div className="flex items-center justify-center py-4">
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600" />
-            <span className="ml-2 text-xs text-gray-500">{t('designer.catalog.loading', 'Chargement...')}</span>
+            <span className="ml-2 text-xs text-gray-500">
+              {t('designer.catalog.loading', 'Chargement...')}
+            </span>
           </div>
         )}
         {CATEGORIES.map((category) => {
@@ -412,7 +539,9 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
           const items = itemsByCategory.get(category) ?? [];
           const isExpanded = expandedCategory === category;
 
-          if (searchQuery && items.length === 0) {return null;}
+          if (searchQuery && items.length === 0) {
+            return null;
+          }
 
           return (
             <div key={category} className="border-b border-gray-100 dark:border-gray-700">
@@ -422,9 +551,7 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
                 className="w-full flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
               >
                 <span className="text-gray-500 dark:text-gray-400">{config.icon}</span>
-                <span className="flex-1 text-left">
-                  {t(config.labelKey, config.defaultLabel)}
-                </span>
+                <span className="flex-1 text-left">{t(config.labelKey, config.defaultLabel)}</span>
                 <span className="text-xs text-gray-400">{items.length}</span>
                 <svg
                   className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
@@ -446,20 +573,24 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
                       onClick={() => handleAddItem(item)}
                       draggable
                       onDragStart={(e) => {
-                        e.dataTransfer.setData('application/json', JSON.stringify({
-                          id: item.id,
-                          type: item.type,
-                          name: item.name,
-                          width: item.width,
-                          height: item.height,
-                          depth: item.depth,
-                          color: item.color,
-                          price: item.price,
-                        }));
+                        e.dataTransfer.setData(
+                          'application/json',
+                          JSON.stringify({
+                            id: item.id,
+                            type: item.type,
+                            name: item.name,
+                            width: item.width,
+                            height: item.height,
+                            depth: item.depth,
+                            color: item.color,
+                            price: item.price,
+                          })
+                        );
                         e.dataTransfer.effectAllowed = 'copy';
                         // Create drag preview
                         const ghost = document.createElement('div');
-                        ghost.className = 'bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-lg';
+                        ghost.className =
+                          'bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-lg';
                         ghost.textContent = item.name;
                         ghost.style.position = 'absolute';
                         ghost.style.top = '-1000px';
@@ -504,7 +635,13 @@ export default function CatalogPanel({ addObject, brandProfile }: CatalogPanelPr
 
         {searchQuery && filteredItems.length === 0 && (
           <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-            <svg className="w-10 h-10 text-gray-300 dark:text-gray-600 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+            <svg
+              className="w-10 h-10 text-gray-300 dark:text-gray-600 mb-3"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
               <circle cx="11" cy="11" r="8" />
               <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
               <path strokeLinecap="round" d="M8 11h6" />

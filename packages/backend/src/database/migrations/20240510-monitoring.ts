@@ -175,28 +175,52 @@ export const MonitoringMigration: Migration = {
     `);
 
     // Create indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_health_check_results_check ON health_check_results(check_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_health_check_results_status ON health_check_results(status)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_health_check_results_time ON health_check_results(checked_at)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_health_check_results_check ON health_check_results(check_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_health_check_results_status ON health_check_results(status)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_health_check_results_time ON health_check_results(checked_at)`
+    );
 
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_system_metrics_name ON system_metrics(metric_name)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_system_metrics_time ON system_metrics(recorded_at)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_system_metrics_tags ON system_metrics USING GIN(tags)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_system_metrics_name ON system_metrics(metric_name)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_system_metrics_time ON system_metrics(recorded_at)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_system_metrics_tags ON system_metrics USING GIN(tags)`
+    );
 
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_performance_metrics_endpoint ON performance_metrics(endpoint)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_performance_metrics_time ON performance_metrics(recorded_at)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_performance_metrics_status ON performance_metrics(status_code)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_performance_metrics_endpoint ON performance_metrics(endpoint)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_performance_metrics_time ON performance_metrics(recorded_at)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_performance_metrics_status ON performance_metrics(status_code)`
+    );
 
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_alerts_severity ON alerts(severity)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_alerts_triggered ON alerts(triggered_at)`);
 
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_error_logs_type ON error_logs(error_type)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_error_logs_fingerprint ON error_logs(fingerprint)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_error_logs_last_seen ON error_logs(last_seen_at)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_error_logs_fingerprint ON error_logs(fingerprint)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_error_logs_last_seen ON error_logs(last_seen_at)`
+    );
 
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_ai_metrics_user ON ai_metrics(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_ai_metrics_operation ON ai_metrics(operation_type)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_ai_metrics_operation ON ai_metrics(operation_type)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_ai_metrics_time ON ai_metrics(recorded_at)`);
 
     // Insert default health checks

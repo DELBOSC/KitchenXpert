@@ -138,7 +138,7 @@ class RenovationController {
       const analysis = await renovationService.analyzeExistingKitchen(
         file.buffer,
         userId,
-        mediaType,
+        mediaType
       );
 
       // If a projectId is provided in the body, update the project
@@ -226,7 +226,8 @@ class RenovationController {
           success: false,
           error: {
             code: 'NO_ANALYSIS',
-            message: 'Existing kitchen analysis is required before comparison. Upload and analyze a photo first.',
+            message:
+              'Existing kitchen analysis is required before comparison. Upload and analyze a photo first.',
           },
         });
         return;
@@ -246,7 +247,7 @@ class RenovationController {
       // Generate comparison
       const comparison = await renovationService.generateComparison(
         projectData.detectedLayout,
-        projectData.afterDesignId,
+        projectData.afterDesignId
       );
 
       // Save comparison data

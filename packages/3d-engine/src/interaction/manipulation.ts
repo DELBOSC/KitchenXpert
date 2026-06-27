@@ -6,8 +6,8 @@ import { CollisionSystem } from '../physics/collision';
  */
 export enum ManipulationMode {
   TRANSLATE = 'translate', // Déplacement
-  ROTATE = 'rotate',       // Rotation
-  SCALE = 'scale',         // Échelle
+  ROTATE = 'rotate', // Rotation
+  SCALE = 'scale', // Échelle
 }
 
 /**
@@ -41,11 +41,7 @@ export class ObjectManipulator {
   // Callbacks
   private onManipulationCallback?: (event: ManipulationEvent) => void;
 
-  constructor(
-    scene: THREE.Scene,
-    camera: THREE.Camera,
-    collisionSystem: CollisionSystem
-  ) {
+  constructor(scene: THREE.Scene, camera: THREE.Camera, collisionSystem: CollisionSystem) {
     this.scene = scene;
     this._camera = camera;
     this.collisionSystem = collisionSystem;

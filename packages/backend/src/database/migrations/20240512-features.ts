@@ -306,54 +306,100 @@ export const FeaturesMigration: Migration = {
     // ===== Indexes =====
 
     // Compliance checks indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_compliance_checks_kitchen ON compliance_checks(kitchen_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_compliance_checks_user ON compliance_checks(user_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_compliance_checks_kitchen ON compliance_checks(kitchen_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_compliance_checks_user ON compliance_checks(user_id)`
+    );
 
     // Installer reviews indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_installer_reviews_installer ON installer_reviews(installer_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_installer_reviews_installer ON installer_reviews(installer_id)`
+    );
 
     // Installation projects indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_installation_projects_installer ON installation_projects(installer_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_installation_projects_user ON installation_projects(user_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_installation_projects_installer ON installation_projects(installer_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_installation_projects_user ON installation_projects(user_id)`
+    );
 
     // Renovation projects indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_renovation_projects_user ON renovation_projects(user_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_renovation_projects_user ON renovation_projects(user_id)`
+    );
 
     // Financing simulations indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_financing_simulations_user ON financing_simulations(user_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_financing_simulations_user ON financing_simulations(user_id)`
+    );
 
     // Price history indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_price_history_product_recorded ON price_history(product_id, recorded_at)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_price_history_product_recorded ON price_history(product_id, recorded_at)`
+    );
 
     // Price alerts indexes
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_price_alerts_user ON price_alerts(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_price_alerts_product ON price_alerts(product_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_price_alerts_product ON price_alerts(product_id)`
+    );
 
     // Collaboration invites indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_collaboration_invites_kitchen ON collaboration_invites(kitchen_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_collaboration_invites_email ON collaboration_invites(invitee_email)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_collaboration_invites_token ON collaboration_invites(token)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_collaboration_invites_kitchen ON collaboration_invites(kitchen_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_collaboration_invites_email ON collaboration_invites(invitee_email)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_collaboration_invites_token ON collaboration_invites(token)`
+    );
 
     // Certified quotes indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_certified_quotes_user ON certified_quotes(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_certified_quotes_kitchen ON certified_quotes(kitchen_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_certified_quotes_user ON certified_quotes(user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_certified_quotes_kitchen ON certified_quotes(kitchen_id)`
+    );
 
     // Workflow simulations indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_workflow_simulations_kitchen ON workflow_simulations(kitchen_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_workflow_simulations_kitchen ON workflow_simulations(kitchen_id)`
+    );
 
     // Product enrichments indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_product_enrichments_status ON product_enrichments(status)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_product_enrichments_brand ON product_enrichments(brand_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_product_enrichments_type ON product_enrichments(product_type)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_product_enrichments_status ON product_enrichments(status)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_product_enrichments_brand ON product_enrichments(brand_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_product_enrichments_type ON product_enrichments(product_type)`
+    );
 
     // Compatibility rules catalog indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_compatibility_rules_catalog_cabinet ON compatibility_rules_catalog(cabinet_type)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_compatibility_rules_catalog_appliance ON compatibility_rules_catalog(appliance_type)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_compatibility_rules_catalog_cabinet ON compatibility_rules_catalog(cabinet_type)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_compatibility_rules_catalog_appliance ON compatibility_rules_catalog(appliance_type)`
+    );
 
     // Product matches indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_product_matches_product_a ON product_matches(product_id_a)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_product_matches_product_b ON product_matches(product_id_b)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_product_matches_score ON product_matches(match_score)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_product_matches_product_a ON product_matches(product_id_a)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_product_matches_product_b ON product_matches(product_id_b)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_product_matches_score ON product_matches(match_score)`
+    );
 
     // ===== Triggers for updated_at =====
 
@@ -424,14 +470,28 @@ export const FeaturesMigration: Migration = {
 
   async down(tx: Transaction): Promise<void> {
     // Drop triggers first
-    await tx.execute(`DROP TRIGGER IF EXISTS update_compatibility_rules_catalog_updated_at ON compatibility_rules_catalog`);
-    await tx.execute(`DROP TRIGGER IF EXISTS update_product_enrichments_updated_at ON product_enrichments`);
-    await tx.execute(`DROP TRIGGER IF EXISTS update_certified_quotes_updated_at ON certified_quotes`);
-    await tx.execute(`DROP TRIGGER IF EXISTS update_smart_home_plans_updated_at ON smart_home_plans`);
-    await tx.execute(`DROP TRIGGER IF EXISTS update_renovation_projects_updated_at ON renovation_projects`);
-    await tx.execute(`DROP TRIGGER IF EXISTS update_installation_projects_updated_at ON installation_projects`);
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_compatibility_rules_catalog_updated_at ON compatibility_rules_catalog`
+    );
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_product_enrichments_updated_at ON product_enrichments`
+    );
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_certified_quotes_updated_at ON certified_quotes`
+    );
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_smart_home_plans_updated_at ON smart_home_plans`
+    );
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_renovation_projects_updated_at ON renovation_projects`
+    );
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_installation_projects_updated_at ON installation_projects`
+    );
     await tx.execute(`DROP TRIGGER IF EXISTS update_installers_updated_at ON installers`);
-    await tx.execute(`DROP TRIGGER IF EXISTS update_compliance_rules_updated_at ON compliance_rules`);
+    await tx.execute(
+      `DROP TRIGGER IF EXISTS update_compliance_rules_updated_at ON compliance_rules`
+    );
 
     // Drop tables in reverse order (respecting foreign key dependencies)
     await tx.execute(`DROP TABLE IF EXISTS product_matches CASCADE`);

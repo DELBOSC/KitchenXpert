@@ -153,8 +153,7 @@ const TooltipContent = styled.div<{
   border-radius: 6px;
   white-space: normal;
   word-wrap: break-word;
-  max-width: ${({ $maxWidth }) =>
-    typeof $maxWidth === 'number' ? `${$maxWidth}px` : $maxWidth};
+  max-width: ${({ $maxWidth }) => (typeof $maxWidth === 'number' ? `${$maxWidth}px` : $maxWidth)};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   pointer-events: none;
 
@@ -294,10 +293,7 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
       if (!triggers.includes('click') || !isOpen) return;
 
       const handleClickOutside = (event: MouseEvent) => {
-        if (
-          triggerRef.current &&
-          !triggerRef.current.contains(event.target as Node)
-        ) {
+        if (triggerRef.current && !triggerRef.current.contains(event.target as Node)) {
           hideTooltip();
         }
       };
@@ -351,9 +347,7 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
 
     return (
       <TooltipWrapper ref={ref} {...props}>
-        <TooltipTriggerElement ref={triggerRef}>
-          {childWithProps}
-        </TooltipTriggerElement>
+        <TooltipTriggerElement ref={triggerRef}>{childWithProps}</TooltipTriggerElement>
         <TooltipContent
           id={tooltipId}
           role="tooltip"

@@ -1,4 +1,9 @@
-import { type PrismaClient, type Project, type ProjectCollaborator, type Prisma } from '@prisma/client';
+import {
+  type PrismaClient,
+  type Project,
+  type ProjectCollaborator,
+  type Prisma,
+} from '@prisma/client';
 
 /**
  * Project Repository
@@ -54,14 +59,16 @@ export class ProjectRepository {
   async findById(id: string, includeRelations = false): Promise<ProjectWithRelations | null> {
     return this.prisma.project.findUnique({
       where: { id, deletedAt: null },
-      include: includeRelations ? {
-        kitchens: { where: { deletedAt: null }, select: { id: true, name: true, style: true } },
-        collaborators: true,
-        orders: { select: { id: true, status: true, total: true } },
-        questionnaireResponse: { include: { scoringResult: true } },
-        user: { select: { id: true, email: true, firstName: true, lastName: true } },
-        _count: { select: { kitchens: true, orders: true } }
-      } : undefined
+      include: includeRelations
+        ? {
+            kitchens: { where: { deletedAt: null }, select: { id: true, name: true, style: true } },
+            collaborators: true,
+            orders: { select: { id: true, status: true, total: true } },
+            questionnaireResponse: { include: { scoringResult: true } },
+            user: { select: { id: true, email: true, firstName: true, lastName: true } },
+            _count: { select: { kitchens: true, orders: true } },
+          }
+        : undefined,
     });
   }
 
@@ -82,8 +89,8 @@ export class ProjectRepository {
       ...(filters.search && {
         OR: [
           { name: { contains: filters.search, mode: 'insensitive' } },
-          { description: { contains: filters.search, mode: 'insensitive' } }
-        ]
+          { description: { contains: filters.search, mode: 'insensitive' } },
+        ],
       }),
     };
 
@@ -94,17 +101,17 @@ export class ProjectRepository {
         take: limit,
         orderBy: { [sortBy]: sortOrder },
         include: {
-          _count: { select: { kitchens: true, orders: true } }
-        }
+          _count: { select: { kitchens: true, orders: true } },
+        },
       }),
-      this.prisma.project.count({ where })
+      this.prisma.project.count({ where }),
     ]);
 
     return {
       data,
       total,
       page,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
     };
   }
 
@@ -115,9 +122,9 @@ export class ProjectRepository {
     return this.prisma.project.findMany({
       where: { userId, deletedAt: null },
       include: {
-        _count: { select: { kitchens: true } }
+        _count: { select: { kitchens: true } },
       },
-      orderBy: { updatedAt: 'desc' }
+      orderBy: { updatedAt: 'desc' },
     });
   }
 
@@ -135,7 +142,7 @@ export class ProjectRepository {
         deadline: data.deadline,
         status: 'draft',
         metadata: data.metadata as any,
-      }
+      },
     });
   }
 
@@ -153,7 +160,7 @@ export class ProjectRepository {
         ...(data.currency && { currency: data.currency }),
         ...(data.deadline !== undefined && { deadline: data.deadline }),
         ...(data.metadata && { metadata: data.metadata as any }),
-      }
+      },
     });
   }
 
@@ -163,7 +170,7 @@ export class ProjectRepository {
   async delete(id: string): Promise<Project> {
     return this.prisma.project.update({
       where: { id },
-      data: { deletedAt: new Date() }
+      data: { deletedAt: new Date() },
     });
   }
 
@@ -176,7 +183,7 @@ export class ProjectRepository {
         deletedAt: null,
         ...(filters.userId && { userId: filters.userId }),
         ...(filters.status && { status: filters.status as any }),
-      }
+      },
     });
   }
 
@@ -185,9 +192,13 @@ export class ProjectRepository {
   /**
    * Add a collaborator to a project
    */
-  async addCollaborator(projectId: string, email: string, role = 'viewer'): Promise<ProjectCollaborator> {
+  async addCollaborator(
+    projectId: string,
+    email: string,
+    role = 'viewer'
+  ): Promise<ProjectCollaborator> {
     return this.prisma.projectCollaborator.create({
-      data: { projectId, email: email.toLowerCase(), role }
+      data: { projectId, email: email.toLowerCase(), role },
     });
   }
 
@@ -196,7 +207,7 @@ export class ProjectRepository {
    */
   async removeCollaborator(projectId: string, email: string): Promise<ProjectCollaborator> {
     return this.prisma.projectCollaborator.delete({
-      where: { projectId_email: { projectId, email: email.toLowerCase() } }
+      where: { projectId_email: { projectId, email: email.toLowerCase() } },
     });
   }
 
@@ -205,7 +216,7 @@ export class ProjectRepository {
    */
   async getCollaborators(projectId: string): Promise<ProjectCollaborator[]> {
     return this.prisma.projectCollaborator.findMany({
-      where: { projectId }
+      where: { projectId },
     });
   }
 
@@ -215,7 +226,7 @@ export class ProjectRepository {
   async acceptInvite(projectId: string, email: string): Promise<ProjectCollaborator> {
     return this.prisma.projectCollaborator.update({
       where: { projectId_email: { projectId, email: email.toLowerCase() } },
-      data: { acceptedAt: new Date() }
+      data: { acceptedAt: new Date() },
     });
   }
 
@@ -225,9 +236,9 @@ export class ProjectRepository {
   async findByCollaborator(email: string): Promise<Project[]> {
     const collaborations = await this.prisma.projectCollaborator.findMany({
       where: { email: email.toLowerCase(), acceptedAt: { not: null } },
-      include: { project: true }
+      include: { project: true },
     });
-    return collaborations.map(c => c.project);
+    return collaborations.map((c) => c.project);
   }
 
   // ==================== STATUS TRANSITIONS ====================
@@ -241,7 +252,9 @@ export class ProjectRepository {
       where: { id, deletedAt: null },
       select: { status: true },
     });
-    if (!project) {throw new Error('Project not found');}
+    if (!project) {
+      throw new Error('Project not found');
+    }
 
     const validTransitions: Record<string, string[]> = {
       draft: ['in_progress', 'archived'],
@@ -249,7 +262,7 @@ export class ProjectRepository {
       review: ['approved', 'in_progress'],
       approved: ['completed', 'in_progress'],
       completed: ['archived'],
-      archived: ['draft']
+      archived: ['draft'],
     };
 
     const currentStatus = project.status;
@@ -277,17 +290,17 @@ export class ProjectRepository {
       this.prisma.project.groupBy({
         by: ['status'],
         where: { userId, deletedAt: null },
-        _count: { _all: true }
+        _count: { _all: true },
       }),
       this.prisma.project.aggregate({
         where: { userId, deletedAt: null, budget: { not: null } },
-        _avg: { budget: true }
-      })
+        _avg: { budget: true },
+      }),
     ]);
 
     let total = 0;
     const byStatus: Record<string, number> = {};
-    statusStats.forEach(stat => {
+    statusStats.forEach((stat) => {
       byStatus[stat.status] = stat._count._all;
       total += stat._count._all;
     });
@@ -295,7 +308,7 @@ export class ProjectRepository {
     return {
       total,
       byStatus,
-      avgBudget: avgBudget._avg.budget ? Number(avgBudget._avg.budget) : null
+      avgBudget: avgBudget._avg.budget ? Number(avgBudget._avg.budget) : null,
     };
   }
 
@@ -319,7 +332,9 @@ export class ProjectRepository {
         metadata: true,
       },
     });
-    if (!original) {throw new Error('Project not found');}
+    if (!original) {
+      throw new Error('Project not found');
+    }
 
     return this.prisma.project.create({
       data: {
@@ -330,7 +345,7 @@ export class ProjectRepository {
         currency: original.currency,
         status: 'draft',
         metadata: original.metadata as any,
-      }
+      },
     });
   }
 }

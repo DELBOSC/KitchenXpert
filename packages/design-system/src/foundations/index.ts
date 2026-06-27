@@ -57,14 +57,7 @@ export type {
 } from './typography';
 
 // Spacing
-export {
-  spacingFoundation,
-  spacing,
-  negativeSpacing,
-  gaps,
-  radii,
-  SPACING_UNIT,
-} from './spacing';
+export { spacingFoundation, spacing, negativeSpacing, gaps, radii, SPACING_UNIT } from './spacing';
 export type {
   SpacingFoundation,
   Spacing,
@@ -103,13 +96,7 @@ export type {
 } from './breakpoints';
 
 // Elevation
-export {
-  elevation,
-  shadows,
-  coloredShadows,
-  focusRings,
-  zIndices,
-} from './elevation';
+export { elevation, shadows, coloredShadows, focusRings, zIndices } from './elevation';
 export type {
   Elevation,
   Shadows,
@@ -131,14 +118,7 @@ export {
   transitions,
   createTransition,
 } from './motion';
-export type {
-  Motion,
-  Duration,
-  DurationValue,
-  Easing,
-  Animation,
-  Transition,
-} from './motion';
+export type { Motion, Duration, DurationValue, Easing, Animation, Transition } from './motion';
 
 /**
  * Combined foundations object for convenience

@@ -179,7 +179,10 @@ class ApiClient {
   private handleError(error: AxiosError): ApiError {
     const response = error.response;
     return {
-      message: (response?.data as { message?: string })?.message || error.message || 'An unexpected error occurred',
+      message:
+        (response?.data as { message?: string })?.message ||
+        error.message ||
+        'An unexpected error occurred',
       code: (response?.data as { code?: string })?.code || 'UNKNOWN_ERROR',
       status: response?.status || 500,
     };
@@ -230,7 +233,9 @@ class ApiClient {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }): Promise<PaginatedResponse<Product>> {
-    const response = await this.client.get<PaginatedResponse<Product>>('/partner/products', { params });
+    const response = await this.client.get<PaginatedResponse<Product>>('/partner/products', {
+      params,
+    });
     return response.data;
   }
 

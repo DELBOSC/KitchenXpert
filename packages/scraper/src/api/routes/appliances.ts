@@ -3,8 +3,17 @@
  */
 
 import { Router, Request, Response } from 'express';
-import type { ApplianceType, ApplianceCategory, ApplianceSearchParams, EnergyClass } from '../../models/appliance.js';
-import { getApplianceCategory, APPLIANCE_TYPE_LABELS, APPLIANCE_MANUFACTURERS } from '../../models/appliance.js';
+import type {
+  ApplianceType,
+  ApplianceCategory,
+  ApplianceSearchParams,
+  EnergyClass,
+} from '../../models/appliance.js';
+import {
+  getApplianceCategory,
+  APPLIANCE_TYPE_LABELS,
+  APPLIANCE_MANUFACTURERS,
+} from '../../models/appliance.js';
 import {
   queryAppliances,
   getApplianceById,
@@ -23,10 +32,16 @@ export function createAppliancesRouter(): Router {
     try {
       const params: ApplianceSearchParams = {
         brandIds: req.query.brand ? String(req.query.brand).split(',') : undefined,
-        manufacturerBrands: req.query.manufacturer ? String(req.query.manufacturer).split(',') : undefined,
-        types: req.query.type ? String(req.query.type).split(',') as ApplianceType[] : undefined,
-        categories: req.query.category ? String(req.query.category).split(',') as ApplianceCategory[] : undefined,
-        energyClasses: req.query.energy_class ? String(req.query.energy_class).split(',') as EnergyClass[] : undefined,
+        manufacturerBrands: req.query.manufacturer
+          ? String(req.query.manufacturer).split(',')
+          : undefined,
+        types: req.query.type ? (String(req.query.type).split(',') as ApplianceType[]) : undefined,
+        categories: req.query.category
+          ? (String(req.query.category).split(',') as ApplianceCategory[])
+          : undefined,
+        energyClasses: req.query.energy_class
+          ? (String(req.query.energy_class).split(',') as EnergyClass[])
+          : undefined,
         widthMin: req.query.width_min ? parseInt(String(req.query.width_min), 10) : undefined,
         widthMax: req.query.width_max ? parseInt(String(req.query.width_max), 10) : undefined,
         priceMin: req.query.price_min ? parseFloat(String(req.query.price_min)) : undefined,

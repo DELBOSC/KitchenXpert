@@ -11,10 +11,18 @@
 
 class StubBase {
   constructor() {}
-  setSize() { return this; }
-  render() { return this; }
-  addPass() { return this; }
-  removePass() { return this; }
+  setSize() {
+    return this;
+  }
+  render() {
+    return this;
+  }
+  addPass() {
+    return this;
+  }
+  removePass() {
+    return this;
+  }
   dispose() {}
   load(_url, onLoad) {
     if (typeof onLoad === 'function') onLoad({});
@@ -23,14 +31,30 @@ class StubBase {
   parse(_data, onLoad) {
     if (typeof onLoad === 'function') onLoad({});
   }
-  setPath() { return this; }
-  setResourcePath() { return this; }
-  setCrossOrigin() { return this; }
-  setRequestHeader() { return this; }
-  setWithCredentials() { return this; }
-  setDRACOLoader() { return this; }
-  setKTX2Loader() { return this; }
-  setMeshoptDecoder() { return this; }
+  setPath() {
+    return this;
+  }
+  setResourcePath() {
+    return this;
+  }
+  setCrossOrigin() {
+    return this;
+  }
+  setRequestHeader() {
+    return this;
+  }
+  setWithCredentials() {
+    return this;
+  }
+  setDRACOLoader() {
+    return this;
+  }
+  setKTX2Loader() {
+    return this;
+  }
+  setMeshoptDecoder() {
+    return this;
+  }
 }
 
 const wrap = (name) => {
@@ -40,11 +64,14 @@ const wrap = (name) => {
 };
 
 // Add new exports here as more `examples/jsm` paths are imported.
-module.exports = new Proxy({}, {
-  get(_target, prop) {
-    if (typeof prop !== 'string') return undefined;
-    if (prop === 'default') return wrap('default');
-    if (prop === '__esModule') return true;
-    return wrap(prop);
-  },
-});
+module.exports = new Proxy(
+  {},
+  {
+    get(_target, prop) {
+      if (typeof prop !== 'string') return undefined;
+      if (prop === 'default') return wrap('default');
+      if (prop === '__esModule') return true;
+      return wrap(prop);
+    },
+  }
+);

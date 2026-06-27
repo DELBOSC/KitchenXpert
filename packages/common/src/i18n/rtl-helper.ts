@@ -11,26 +11,26 @@ export type TextDirection = 'ltr' | 'rtl';
  * List of RTL language codes
  */
 export const RTL_LANGUAGES: ReadonlySet<string> = new Set([
-  'ar',    // Arabic
-  'arc',   // Aramaic
-  'arz',   // Egyptian Arabic
-  'az',    // Azerbaijani (when written in Arabic script)
-  'ckb',   // Central Kurdish (Sorani)
-  'dv',    // Divehi/Maldivian
-  'fa',    // Persian/Farsi
-  'he',    // Hebrew
-  'iw',    // Hebrew (old code)
-  'khw',   // Khowar
-  'ks',    // Kashmiri
-  'ku',    // Kurdish
-  'mzn',   // Mazanderani
-  'nqo',   // N'Ko
-  'pnb',   // Western Punjabi
-  'ps',    // Pashto
-  'sd',    // Sindhi
-  'ug',    // Uyghur
-  'ur',    // Urdu
-  'yi',    // Yiddish
+  'ar', // Arabic
+  'arc', // Aramaic
+  'arz', // Egyptian Arabic
+  'az', // Azerbaijani (when written in Arabic script)
+  'ckb', // Central Kurdish (Sorani)
+  'dv', // Divehi/Maldivian
+  'fa', // Persian/Farsi
+  'he', // Hebrew
+  'iw', // Hebrew (old code)
+  'khw', // Khowar
+  'ks', // Kashmiri
+  'ku', // Kurdish
+  'mzn', // Mazanderani
+  'nqo', // N'Ko
+  'pnb', // Western Punjabi
+  'ps', // Pashto
+  'sd', // Sindhi
+  'ug', // Uyghur
+  'ur', // Urdu
+  'yi', // Yiddish
 ]);
 
 /**
@@ -110,11 +110,7 @@ export function getOppositeDirection(direction: TextDirection): TextDirection {
  * @param locale - Optional locale override
  * @returns Object with left and right values
  */
-export function logicalToPhysical<T>(
-  start: T,
-  end: T,
-  locale?: string
-): { left: T; right: T } {
+export function logicalToPhysical<T>(start: T, end: T, locale?: string): { left: T; right: T } {
   if (isRtl(locale)) {
     return { left: end, right: start };
   }

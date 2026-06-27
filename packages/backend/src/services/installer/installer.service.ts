@@ -134,15 +134,19 @@ export class InstallerService {
                   latitude,
                   longitude,
                   installer.latitude,
-                  installer.longitude,
+                  installer.longitude
                 )
               : null;
           return { ...installer, distance: dist };
         })
         .filter((inst) => inst.distance === null || inst.distance <= radiusKm)
         .sort((a, b) => {
-          if (a.distance === null) {return 1;}
-          if (b.distance === null) {return -1;}
+          if (a.distance === null) {
+            return 1;
+          }
+          if (b.distance === null) {
+            return -1;
+          }
           return a.distance - b.distance;
         });
 
@@ -187,10 +191,7 @@ export class InstallerService {
   /**
    * Register the current user as an installer.
    */
-  async register(
-    userId: string,
-    data: RegisterInstallerDto,
-  ): Promise<any> {
+  async register(userId: string, data: RegisterInstallerDto): Promise<any> {
     // Check if user already has an installer profile
     const existing = await prisma.installer.findFirst({
       where: { userId },
@@ -199,7 +200,7 @@ export class InstallerService {
     if (existing) {
       throw new InstallerServiceError(
         'ALREADY_REGISTERED',
-        'You already have an installer profile',
+        'You already have an installer profile'
       );
     }
 
@@ -211,7 +212,7 @@ export class InstallerService {
     if (existingEmail) {
       throw new InstallerServiceError(
         'EMAIL_TAKEN',
-        'An installer profile with this email already exists',
+        'An installer profile with this email already exists'
       );
     }
 
@@ -255,11 +256,7 @@ export class InstallerService {
    * Add a review for an installer.
    * The user must have a completed project with the installer.
    */
-  async addReview(
-    installerId: string,
-    userId: string,
-    data: AddReviewDto,
-  ): Promise<any> {
+  async addReview(installerId: string, userId: string, data: AddReviewDto): Promise<any> {
     // Verify installer exists
     const installer = await prisma.installer.findUnique({
       where: { id: installerId },
@@ -271,7 +268,10 @@ export class InstallerService {
 
     // Prevent self-review
     if (installer.userId === userId) {
-      throw new InstallerServiceError('SELF_REVIEW', 'You cannot review your own installer profile');
+      throw new InstallerServiceError(
+        'SELF_REVIEW',
+        'You cannot review your own installer profile'
+      );
     }
 
     // Check for existing review
@@ -284,7 +284,7 @@ export class InstallerService {
     if (existingReview) {
       throw new InstallerServiceError(
         'ALREADY_REVIEWED',
-        'You have already reviewed this installer',
+        'You have already reviewed this installer'
       );
     }
 
@@ -300,7 +300,7 @@ export class InstallerService {
     if (!completedProject) {
       throw new InstallerServiceError(
         'NO_COMPLETED_PROJECT',
-        'You can only review an installer after a completed project',
+        'You can only review an installer after a completed project'
       );
     }
 
@@ -324,8 +324,7 @@ export class InstallerService {
       select: { rating: true },
     });
 
-    const avgRating =
-      reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
 
     await prisma.installer.update({
       where: { id: installerId },
@@ -347,9 +346,7 @@ export class InstallerService {
   /**
    * Create an installation project request.
    */
-  async requestInstallation(
-    params: RequestInstallationParams,
-  ): Promise<any> {
+  async requestInstallation(params: RequestInstallationParams): Promise<any> {
     const { installerId, userId, kitchenId, projectId, notes } = params;
 
     // Verify installer exists and is active
@@ -364,7 +361,7 @@ export class InstallerService {
     if (!installer.isActive) {
       throw new InstallerServiceError(
         'INSTALLER_INACTIVE',
-        'This installer is not currently accepting requests',
+        'This installer is not currently accepting requests'
       );
     }
 
@@ -380,10 +377,7 @@ export class InstallerService {
       }
 
       if (kitchen.userId !== userId) {
-        throw new InstallerServiceError(
-          'ACCESS_DENIED',
-          'You do not own this kitchen',
-        );
+        throw new InstallerServiceError('ACCESS_DENIED', 'You do not own this kitchen');
       }
     }
 
@@ -400,7 +394,7 @@ export class InstallerService {
     if (existingRequest) {
       throw new InstallerServiceError(
         'DUPLICATE_REQUEST',
-        'You already have an active request with this installer',
+        'You already have an active request with this installer'
       );
     }
 
@@ -429,11 +423,7 @@ export class InstallerService {
    * Update an installation project status or details.
    * Only the installer owner or the project requester can update.
    */
-  async updateProject(
-    projectId: string,
-    userId: string,
-    data: UpdateProjectDto,
-  ): Promise<any> {
+  async updateProject(projectId: string, userId: string, data: UpdateProjectDto): Promise<any> {
     const project = await prisma.installationProject.findUnique({
       where: { id: projectId },
       include: {
@@ -452,7 +442,7 @@ export class InstallerService {
     if (!isInstaller && !isRequester) {
       throw new InstallerServiceError(
         'ACCESS_DENIED',
-        'You do not have permission to update this project',
+        'You do not have permission to update this project'
       );
     }
 
@@ -462,21 +452,37 @@ export class InstallerService {
       if (data.status !== 'cancelled') {
         throw new InstallerServiceError(
           'ACCESS_DENIED',
-          'Only the installer can change project status',
+          'Only the installer can change project status'
         );
       }
     }
 
     const updateData: Record<string, unknown> = {};
 
-    if (data.status !== undefined) {updateData.status = data.status;}
-    if (data.estimatedCost !== undefined) {updateData.estimatedCost = data.estimatedCost;}
-    if (data.finalCost !== undefined) {updateData.finalCost = data.finalCost;}
-    if (data.startDate !== undefined) {updateData.startDate = new Date(data.startDate);}
-    if (data.endDate !== undefined) {updateData.endDate = new Date(data.endDate);}
-    if (data.notes !== undefined) {updateData.notes = data.notes;}
-    if (data.dxfFileUrl !== undefined) {updateData.dxfFileUrl = data.dxfFileUrl;}
-    if (data.bomFileUrl !== undefined) {updateData.bomFileUrl = data.bomFileUrl;}
+    if (data.status !== undefined) {
+      updateData.status = data.status;
+    }
+    if (data.estimatedCost !== undefined) {
+      updateData.estimatedCost = data.estimatedCost;
+    }
+    if (data.finalCost !== undefined) {
+      updateData.finalCost = data.finalCost;
+    }
+    if (data.startDate !== undefined) {
+      updateData.startDate = new Date(data.startDate);
+    }
+    if (data.endDate !== undefined) {
+      updateData.endDate = new Date(data.endDate);
+    }
+    if (data.notes !== undefined) {
+      updateData.notes = data.notes;
+    }
+    if (data.dxfFileUrl !== undefined) {
+      updateData.dxfFileUrl = data.dxfFileUrl;
+    }
+    if (data.bomFileUrl !== undefined) {
+      updateData.bomFileUrl = data.bomFileUrl;
+    }
 
     const updated = await prisma.installationProject.update({
       where: { id: projectId },
@@ -496,11 +502,7 @@ export class InstallerService {
    * Add a milestone to an installation project.
    * Only the installer owner can add milestones.
    */
-  async addMilestone(
-    projectId: string,
-    userId: string,
-    milestone: AddMilestoneDto,
-  ): Promise<any> {
+  async addMilestone(projectId: string, userId: string, milestone: AddMilestoneDto): Promise<any> {
     const project = await prisma.installationProject.findUnique({
       where: { id: projectId },
       include: {
@@ -514,10 +516,7 @@ export class InstallerService {
 
     // Only installer owner can add milestones
     if (project.installer.userId !== userId) {
-      throw new InstallerServiceError(
-        'ACCESS_DENIED',
-        'Only the installer can add milestones',
-      );
+      throw new InstallerServiceError('ACCESS_DENIED', 'Only the installer can add milestones');
     }
 
     const currentMilestones = (project.milestones as any[]) || [];
@@ -588,10 +587,7 @@ export class InstallerService {
   /**
    * Get a single installation project by ID with access check.
    */
-  async getProjectById(
-    projectId: string,
-    userId: string,
-  ): Promise<any> {
+  async getProjectById(projectId: string, userId: string): Promise<any> {
     const project = await prisma.installationProject.findUnique({
       where: { id: projectId },
       include: {
@@ -621,7 +617,7 @@ export class InstallerService {
     if (!isRequester && !isInstaller) {
       throw new InstallerServiceError(
         'ACCESS_DENIED',
-        'You do not have permission to view this project',
+        'You do not have permission to view this project'
       );
     }
 
@@ -632,12 +628,7 @@ export class InstallerService {
    * Calculate the distance in kilometers between two geographic points
    * using the Haversine formula.
    */
-  private calculateDistanceKm(
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number,
-  ): number {
+  private calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
     const R = 6371; // Earth's radius in km
     const dLat = this.degToRad(lat2 - lat1);
     const dLon = this.degToRad(lon2 - lon1);
@@ -663,7 +654,7 @@ export class InstallerService {
 export class InstallerServiceError extends Error {
   constructor(
     public readonly code: string,
-    message: string,
+    message: string
   ) {
     super(message);
     this.name = 'InstallerServiceError';

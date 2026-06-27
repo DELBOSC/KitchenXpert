@@ -11,12 +11,15 @@ import type { ScrapeSummary, ScrapeProgress } from '../../models/scrape-result.j
 import { getScrapingLogsByBrand } from '../../services/db-query.service.js';
 
 // Active scraping jobs
-const activeJobs = new Map<string, {
-  brandId: string;
-  startedAt: Date;
-  scraper: ReturnType<typeof createScraper>;
-  promise: Promise<ScrapeSummary>;
-}>();
+const activeJobs = new Map<
+  string,
+  {
+    brandId: string;
+    startedAt: Date;
+    scraper: ReturnType<typeof createScraper>;
+    promise: Promise<ScrapeSummary>;
+  }
+>();
 
 export function createScrapingRouter(): Router {
   const router = Router();
@@ -236,7 +239,7 @@ export function createScrapingRouter(): Router {
    */
   router.get('/scrapers', async (_req: Request, res: Response) => {
     try {
-      const scrapers = getAvailableScrapers().map(brandId => {
+      const scrapers = getAvailableScrapers().map((brandId) => {
         const config = getBrandConfig(brandId);
         return {
           brandId,
@@ -300,10 +303,10 @@ export function createScrapingRouter(): Router {
 
       // Cron patterns for different frequencies
       const cronPatterns: Record<string, string> = {
-        hourly: '0 * * * *',      // Start of every hour
-        daily: '0 2 * * *',       // 2 AM daily
-        weekly: '0 2 * * 0',      // 2 AM every Sunday
-        monthly: '0 2 1 * *',     // 2 AM first day of month
+        hourly: '0 * * * *', // Start of every hour
+        daily: '0 2 * * *', // 2 AM daily
+        weekly: '0 2 * * 0', // 2 AM every Sunday
+        monthly: '0 2 1 * *', // 2 AM first day of month
       };
 
       const cronPattern = cronPatterns[frequency];

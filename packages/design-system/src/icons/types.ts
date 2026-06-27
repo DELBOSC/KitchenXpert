@@ -61,8 +61,26 @@ export interface IconPath {
 export type SvgElement =
   | { type: 'path'; d: string; fill?: string; stroke?: string; strokeWidth?: number }
   | { type: 'circle'; cx: number; cy: number; r: number; fill?: string; stroke?: string }
-  | { type: 'rect'; x: number; y: number; width: number; height: number; rx?: number; ry?: number; fill?: string; stroke?: string }
-  | { type: 'line'; x1: number; y1: number; x2: number; y2: number; stroke?: string; strokeWidth?: number }
+  | {
+      type: 'rect';
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      rx?: number;
+      ry?: number;
+      fill?: string;
+      stroke?: string;
+    }
+  | {
+      type: 'line';
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+      stroke?: string;
+      strokeWidth?: number;
+    }
   | { type: 'polyline'; points: string; fill?: string; stroke?: string }
   | { type: 'polygon'; points: string; fill?: string; stroke?: string };
 
@@ -88,10 +106,7 @@ export const defaultIconProps: Required<Omit<IconProps, 'className' | 'ariaLabel
 /**
  * Create SVG string from icon data
  */
-export function createSvgString(
-  icon: IconData | ComplexIconData,
-  props: IconProps = {}
-): string {
+export function createSvgString(icon: IconData | ComplexIconData, props: IconProps = {}): string {
   const {
     size = defaultIconProps.size,
     color = defaultIconProps.color,
@@ -104,8 +119,8 @@ export function createSvgString(
   const ariaAttrs = ariaLabel
     ? `aria-label="${ariaLabel}" role="img"`
     : ariaHidden
-    ? 'aria-hidden="true"'
-    : '';
+      ? 'aria-hidden="true"'
+      : '';
 
   let content = '';
 
@@ -113,11 +128,11 @@ export function createSvgString(
     content = `<path d="${icon.path}" fill="${color}" />`;
   } else if ('paths' in icon && icon.paths) {
     content = icon.paths
-      .map(p => `<path d="${p.d}" fill="${p.fill || color}" stroke="${p.stroke || 'none'}" />`)
+      .map((p) => `<path d="${p.d}" fill="${p.fill || color}" stroke="${p.stroke || 'none'}" />`)
       .join('');
   } else if ('elements' in icon) {
     content = (icon as ComplexIconData).elements
-      .map(el => renderSvgElement(el, color, strokeWidth))
+      .map((el) => renderSvgElement(el, color, strokeWidth))
       .join('');
   }
 
@@ -127,7 +142,11 @@ export function createSvgString(
 /**
  * Render a single SVG element to string
  */
-function renderSvgElement(element: SvgElement, defaultColor: string, defaultStrokeWidth: number): string {
+function renderSvgElement(
+  element: SvgElement,
+  defaultColor: string,
+  defaultStrokeWidth: number
+): string {
   switch (element.type) {
     case 'path':
       return `<path d="${element.d}" fill="${element.fill || 'none'}" stroke="${element.stroke || defaultColor}" stroke-width="${element.strokeWidth || defaultStrokeWidth}" stroke-linecap="round" stroke-linejoin="round" />`;

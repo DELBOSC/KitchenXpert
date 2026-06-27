@@ -60,7 +60,9 @@ describe('IkeaStrategy', () => {
 
   it('fetchProductByUrl extracts the item number and returns the match', async () => {
     const s = new IkeaStrategy(mockApi());
-    const r = await s.fetchProductByUrl('https://www.ikea.com/fr/fr/p/metod-colonne-blanc-60212565/');
+    const r = await s.fetchProductByUrl(
+      'https://www.ikea.com/fr/fr/p/metod-colonne-blanc-60212565/'
+    );
     expect(r.success).toBe(true);
     expect(r.product?.sku).toBe('60212565');
   });
@@ -73,7 +75,9 @@ describe('IkeaStrategy', () => {
   });
 
   it('returns skip-not-crash on an empty API response', async () => {
-    const s = new IkeaStrategy(mockApi({ searchResultPage: { products: { main: { items: [] } } } }));
+    const s = new IkeaStrategy(
+      mockApi({ searchResultPage: { products: { main: { items: [] } } } })
+    );
     const results = await s.fetchProductsByCategory('zzz');
     expect(results).toEqual([]);
   });
@@ -81,34 +85,100 @@ describe('IkeaStrategy', () => {
 
 describe('parseIkeaDims', () => {
   it('3 dims (cm) -> W×D×H mm, confidence 1.0', () => {
-    expect(parseIkeaDims('60x60x80 cm')).toEqual({ widthMm: 600, depthMm: 600, heightMm: 800, confidence: 1 });
+    expect(parseIkeaDims('60x60x80 cm')).toEqual({
+      widthMm: 600,
+      depthMm: 600,
+      heightMm: 800,
+      confidence: 1,
+    });
   });
   it('2 dims -> W,H mm, confidence 0.5', () => {
-    expect(parseIkeaDims('60x37 cm')).toEqual({ widthMm: 600, heightMm: 370, depthMm: null, confidence: 0.5 });
+    expect(parseIkeaDims('60x37 cm')).toEqual({
+      widthMm: 600,
+      heightMm: 370,
+      depthMm: null,
+      confidence: 0.5,
+    });
   });
   it('1 dim -> W mm, confidence 0.3', () => {
-    expect(parseIkeaDims('8 cm')).toEqual({ widthMm: 80, heightMm: null, depthMm: null, confidence: 0.3 });
+    expect(parseIkeaDims('8 cm')).toEqual({
+      widthMm: 80,
+      heightMm: null,
+      depthMm: null,
+      confidence: 0.3,
+    });
   });
   it('mm unit is not multiplied', () => {
-    expect(parseIkeaDims('600x800 mm')).toEqual({ widthMm: 600, heightMm: 800, depthMm: null, confidence: 0.5 });
+    expect(parseIkeaDims('600x800 mm')).toEqual({
+      widthMm: 600,
+      heightMm: 800,
+      depthMm: null,
+      confidence: 0.5,
+    });
   });
   it('decimal thickness rounds (worktop 186x3.8 cm)', () => {
-    expect(parseIkeaDims('186x3.8 cm')).toEqual({ widthMm: 1860, heightMm: 38, depthMm: null, confidence: 0.5 });
+    expect(parseIkeaDims('186x3.8 cm')).toEqual({
+      widthMm: 1860,
+      heightMm: 38,
+      depthMm: null,
+      confidence: 0.5,
+    });
   });
   it('empty/undefined -> all null, confidence 0', () => {
-    expect(parseIkeaDims(undefined)).toEqual({ widthMm: null, heightMm: null, depthMm: null, confidence: 0 });
-    expect(parseIkeaDims('')).toEqual({ widthMm: null, heightMm: null, depthMm: null, confidence: 0 });
+    expect(parseIkeaDims(undefined)).toEqual({
+      widthMm: null,
+      heightMm: null,
+      depthMm: null,
+      confidence: 0,
+    });
+    expect(parseIkeaDims('')).toEqual({
+      widthMm: null,
+      heightMm: null,
+      depthMm: null,
+      confidence: 0,
+    });
   });
 });
 
 describe('IkeaStrategy.detectType (via category batch)', () => {
   it('classifies worktop / appliance / sink from name + categoryPath', async () => {
     const raw = {
-      searchResultPage: { products: { main: { items: [
-        { product: { name: 'SÄLJAN', typeName: 'Plan de travail', itemNoGlobal: '1', pipUrl: 'https://www.ikea.com/fr/fr/p/x-1/', itemMeasureReferenceText: '186x3.8 cm', salesPrice: { numeral: 49, currencyCode: 'EUR' } } },
-        { product: { name: 'Four', typeName: 'encastrable', itemNoGlobal: '2', pipUrl: 'https://www.ikea.com/fr/fr/p/x-2/', salesPrice: { numeral: 300, currencyCode: 'EUR' } } },
-        { product: { name: 'Évier', typeName: '1 bac', itemNoGlobal: '3', pipUrl: 'https://www.ikea.com/fr/fr/p/x-3/', salesPrice: { numeral: 90, currencyCode: 'EUR' } } },
-      ] } } },
+      searchResultPage: {
+        products: {
+          main: {
+            items: [
+              {
+                product: {
+                  name: 'SÄLJAN',
+                  typeName: 'Plan de travail',
+                  itemNoGlobal: '1',
+                  pipUrl: 'https://www.ikea.com/fr/fr/p/x-1/',
+                  itemMeasureReferenceText: '186x3.8 cm',
+                  salesPrice: { numeral: 49, currencyCode: 'EUR' },
+                },
+              },
+              {
+                product: {
+                  name: 'Four',
+                  typeName: 'encastrable',
+                  itemNoGlobal: '2',
+                  pipUrl: 'https://www.ikea.com/fr/fr/p/x-2/',
+                  salesPrice: { numeral: 300, currencyCode: 'EUR' },
+                },
+              },
+              {
+                product: {
+                  name: 'Évier',
+                  typeName: '1 bac',
+                  itemNoGlobal: '3',
+                  pipUrl: 'https://www.ikea.com/fr/fr/p/x-3/',
+                  salesPrice: { numeral: 90, currencyCode: 'EUR' },
+                },
+              },
+            ],
+          },
+        },
+      },
     };
     const s = new IkeaStrategy(mockApi(raw));
     const types = (await s.fetchProductsByCategory('x')).map((r) => r.product!.type);

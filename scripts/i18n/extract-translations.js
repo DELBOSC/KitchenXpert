@@ -152,9 +152,7 @@ class TranslationExtractor {
   scanSourceFiles() {
     log.info('Scanning source files...');
 
-    const patterns = config.extensions.map(
-      (ext) => `${config.sourceDir}/**/*${ext}`
-    );
+    const patterns = config.extensions.map((ext) => `${config.sourceDir}/**/*${ext}`);
 
     for (const pattern of patterns) {
       const files = glob.sync(pattern, {
@@ -265,10 +263,7 @@ class TranslationExtractor {
       for (const [key, data] of keys) {
         if (!mergedNamespace.has(key)) {
           // For default locale, use default value; for others, leave empty
-          mergedNamespace.set(
-            key,
-            locale === config.defaultLocale ? data.defaultValue : ''
-          );
+          mergedNamespace.set(key, locale === config.defaultLocale ? data.defaultValue : '');
         }
       }
 

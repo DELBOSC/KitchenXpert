@@ -1,4 +1,9 @@
-import { type PrismaClient, type User as PrismaUser, type UserStatus, type Prisma } from '@prisma/client';
+import {
+  type PrismaClient,
+  type User as PrismaUser,
+  type UserStatus,
+  type Prisma,
+} from '@prisma/client';
 
 import { type User } from '@kitchenxpert/common';
 

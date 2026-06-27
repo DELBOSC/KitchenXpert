@@ -105,7 +105,11 @@ router.get('/count', partnerController.getCount);
  *       403:
  *         description: Forbidden - admin only
  */
-router.post('/validate', validateBody(validateCredentialsSchema), partnerController.validateCredentials);
+router.post(
+  '/validate',
+  validateBody(validateCredentialsSchema),
+  partnerController.validateCredentials
+);
 
 /**
  * @swagger
@@ -411,7 +415,11 @@ router.get('/:id/integrations', partnerController.getIntegrations);
  *       403:
  *         description: Forbidden - admin only
  */
-router.post('/:id/integrations', validateBody(createIntegrationSchema), partnerController.createIntegration);
+router.post(
+  '/:id/integrations',
+  validateBody(createIntegrationSchema),
+  partnerController.createIntegration
+);
 
 /**
  * @swagger
@@ -456,7 +464,11 @@ router.post('/:id/integrations', validateBody(createIntegrationSchema), partnerC
  *       404:
  *         description: Integration not found
  */
-router.put('/:partnerId/integrations/:integrationId', validateBody(updateIntegrationSchema), partnerController.updateIntegration);
+router.put(
+  '/:partnerId/integrations/:integrationId',
+  validateBody(updateIntegrationSchema),
+  partnerController.updateIntegration
+);
 
 /**
  * @swagger
@@ -518,6 +530,9 @@ router.delete('/:partnerId/integrations/:integrationId', partnerController.delet
  *       404:
  *         description: Integration not found
  */
-router.post('/:partnerId/integrations/:integrationId/sync', partnerController.markIntegrationSynced);
+router.post(
+  '/:partnerId/integrations/:integrationId/sync',
+  partnerController.markIntegrationSynced
+);
 
 export default router;

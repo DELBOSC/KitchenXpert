@@ -86,7 +86,7 @@ export const SYSTEM_ROLES = {
   INSTALLER: 'installer',
 } as const;
 
-export type SystemRole = typeof SYSTEM_ROLES[keyof typeof SYSTEM_ROLES];
+export type SystemRole = (typeof SYSTEM_ROLES)[keyof typeof SYSTEM_ROLES];
 
 export class RoleService {
   private roleCache: Map<string, RoleDefinition> = new Map();
@@ -122,7 +122,7 @@ export class RoleService {
 
   async getDefaultRole(): Promise<RoleDefinition | null> {
     const roles = await this.repository.findAll();
-    return roles.find(r => r.isDefault) || null;
+    return roles.find((r) => r.isDefault) || null;
   }
 
   async createRole(
@@ -137,7 +137,9 @@ export class RoleService {
 
   async updateRole(id: string, data: Partial<RoleDefinition>): Promise<RoleDefinition | null> {
     const role = await this.repository.findById(id);
-    if (!role) {return null;}
+    if (!role) {
+      return null;
+    }
 
     if (role.isSystem && data.permissions) {
       throw new RoleServiceError('SYSTEM_ROLE', 'Cannot modify permissions of system role');
@@ -153,14 +155,19 @@ export class RoleService {
 
   async deleteRole(id: string): Promise<boolean> {
     const role = await this.repository.findById(id);
-    if (!role) {return false;}
+    if (!role) {
+      return false;
+    }
     if (role.isSystem) {
       throw new RoleServiceError('SYSTEM_ROLE', 'Cannot delete system role');
     }
 
     const users = await this.repository.getUsersByRole(id);
     if (users.length > 0) {
-      throw new RoleServiceError('ROLE_IN_USE', `Cannot delete role: ${users.length} users are assigned`);
+      throw new RoleServiceError(
+        'ROLE_IN_USE',
+        `Cannot delete role: ${users.length} users are assigned`
+      );
     }
 
     this.roleCache.delete(id);
@@ -174,7 +181,9 @@ export class RoleService {
     options?: { assignedBy?: string; expiresAt?: Date; scope?: RoleScope }
   ): Promise<boolean> {
     const role = await this.repository.findBySlug(roleSlug);
-    if (!role) {throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');}
+    if (!role) {
+      throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');
+    }
 
     return this.repository.assignRole({
       userId,
@@ -188,19 +197,23 @@ export class RoleService {
 
   async revokeRole(userId: string, roleSlug: string): Promise<boolean> {
     const role = await this.repository.findBySlug(roleSlug);
-    if (!role) {throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');}
+    if (!role) {
+      throw new RoleServiceError('ROLE_NOT_FOUND', 'Role not found');
+    }
     return this.repository.revokeRole(userId, role.id);
   }
 
   async getUserRoles(userId: string): Promise<RoleDefinition[]> {
     const assignments = await this.repository.getAssignments(userId);
     const now = new Date();
-    const validAssignments = assignments.filter(a => !a.expiresAt || a.expiresAt > now);
+    const validAssignments = assignments.filter((a) => !a.expiresAt || a.expiresAt > now);
 
     const roles: RoleDefinition[] = [];
     for (const assignment of validAssignments) {
       const role = await this.getRoleById(assignment.roleId);
-      if (role) {roles.push(role);}
+      if (role) {
+        roles.push(role);
+      }
     }
 
     return roles.sort((a, b) => b.level - a.level);
@@ -213,17 +226,17 @@ export class RoleService {
 
   async userHasRole(userId: string, roleSlug: string): Promise<boolean> {
     const roles = await this.getUserRoles(userId);
-    return roles.some(r => r.slug === roleSlug);
+    return roles.some((r) => r.slug === roleSlug);
   }
 
   async userHasAnyRole(userId: string, roleSlugs: string[]): Promise<boolean> {
     const roles = await this.getUserRoles(userId);
-    return roles.some(r => roleSlugs.includes(r.slug));
+    return roles.some((r) => roleSlugs.includes(r.slug));
   }
 
   async userHasMinimumLevel(userId: string, minLevel: number): Promise<boolean> {
     const roles = await this.getUserRoles(userId);
-    return roles.some(r => r.level >= minLevel);
+    return roles.some((r) => r.level >= minLevel);
   }
 
   async getUserLimits(userId: string): Promise<RoleLimits> {
@@ -235,7 +248,10 @@ export class RoleService {
         mergedLimits.maxProjects = Math.max(mergedLimits.maxProjects || 0, role.limits.maxProjects);
       }
       if (role.limits.maxCollaborators !== undefined) {
-        mergedLimits.maxCollaborators = Math.max(mergedLimits.maxCollaborators || 0, role.limits.maxCollaborators);
+        mergedLimits.maxCollaborators = Math.max(
+          mergedLimits.maxCollaborators || 0,
+          role.limits.maxCollaborators
+        );
       }
       if (role.limits.maxStorage !== undefined) {
         mergedLimits.maxStorage = Math.max(mergedLimits.maxStorage || 0, role.limits.maxStorage);
@@ -244,7 +260,10 @@ export class RoleService {
         mergedLimits.maxExports = Math.max(mergedLimits.maxExports || 0, role.limits.maxExports);
       }
       if (role.limits.maxAIConfigurations !== undefined) {
-        mergedLimits.maxAIConfigurations = Math.max(mergedLimits.maxAIConfigurations || 0, role.limits.maxAIConfigurations);
+        mergedLimits.maxAIConfigurations = Math.max(
+          mergedLimits.maxAIConfigurations || 0,
+          role.limits.maxAIConfigurations
+        );
       }
     }
 
@@ -266,13 +285,15 @@ export class RoleService {
 
   async userHasFeature(userId: string, featureId: string): Promise<boolean> {
     const features = await this.getUserFeatures(userId);
-    const feature = features.find(f => f.id === featureId);
+    const feature = features.find((f) => f.id === featureId);
     return feature?.enabled || false;
   }
 
   async getUsersByRole(roleSlug: string): Promise<string[]> {
     const role = await this.repository.findBySlug(roleSlug);
-    if (!role) {return [];}
+    if (!role) {
+      return [];
+    }
     return this.repository.getUsersByRole(role.id);
   }
 
@@ -282,8 +303,8 @@ export class RoleService {
       this.getUserRoles(targetUserId),
     ]);
 
-    const managerMaxLevel = Math.max(...managerRoles.map(r => r.level), 0);
-    const targetMaxLevel = Math.max(...targetRoles.map(r => r.level), 0);
+    const managerMaxLevel = Math.max(...managerRoles.map((r) => r.level), 0);
+    const targetMaxLevel = Math.max(...targetRoles.map((r) => r.level), 0);
 
     return managerMaxLevel > targetMaxLevel;
   }
@@ -376,7 +397,10 @@ export class RoleService {
 }
 
 export class RoleServiceError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'RoleServiceError';
   }

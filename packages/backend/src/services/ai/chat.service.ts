@@ -1,4 +1,3 @@
-
 import { AnthropicService } from './anthropic.service';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
@@ -47,11 +46,15 @@ interface ChatMessage {
 const CHAT_TOOLS: Anthropic.Messages.Tool[] = [
   {
     name: 'suggest_add_item',
-    description: 'Suggere l\'ajout d\'un element au design (meuble, electromenager, etc.)',
+    description: "Suggere l'ajout d'un element au design (meuble, electromenager, etc.)",
     input_schema: {
       type: 'object' as const,
       properties: {
-        itemType: { type: 'string', description: 'Type: base_cabinet, wall_cabinet, tall_cabinet, sink, cooktop, refrigerator, dishwasher, hood' },
+        itemType: {
+          type: 'string',
+          description:
+            'Type: base_cabinet, wall_cabinet, tall_cabinet, sink, cooktop, refrigerator, dishwasher, hood',
+        },
         reason: { type: 'string', description: 'Raison de la suggestion en francais' },
         suggestedWall: { type: 'string', description: 'Mur suggere: back, left, right, front' },
       },
@@ -64,7 +67,7 @@ const CHAT_TOOLS: Anthropic.Messages.Tool[] = [
     input_schema: {
       type: 'object' as const,
       properties: {
-        itemId: { type: 'string', description: 'ID de l\'element a deplacer' },
+        itemId: { type: 'string', description: "ID de l'element a deplacer" },
         reason: { type: 'string', description: 'Raison du deplacement en francais' },
         direction: { type: 'string', description: 'Direction suggeree' },
       },
@@ -88,7 +91,7 @@ const CHAT_TOOLS: Anthropic.Messages.Tool[] = [
     input_schema: {
       type: 'object' as const,
       properties: {
-        includeInstallation: { type: 'boolean', description: 'Inclure les frais d\'installation' },
+        includeInstallation: { type: 'boolean', description: "Inclure les frais d'installation" },
       },
       required: [],
     },
@@ -116,9 +119,12 @@ export class AIChatService {
 
   // Build context from scene state
   private buildSceneDescription(context: SceneContext): string {
-    const items = context.items.map(i =>
-      `- ${i.type}${i.name ? ` (${i.name})` : ''} a position (${i.position.x.toFixed(0)}, ${i.position.y.toFixed(0)}, ${i.position.z.toFixed(0)})${i.dimensions ? ` [${i.dimensions.width}x${i.dimensions.height}x${i.dimensions.depth}mm]` : ''}`
-    ).join('\n');
+    const items = context.items
+      .map(
+        (i) =>
+          `- ${i.type}${i.name ? ` (${i.name})` : ''} a position (${i.position.x.toFixed(0)}, ${i.position.y.toFixed(0)}, ${i.position.z.toFixed(0)})${i.dimensions ? ` [${i.dimensions.width}x${i.dimensions.height}x${i.dimensions.depth}mm]` : ''}`
+      )
+      .join('\n');
 
     let desc = `ETAT ACTUEL DE LA CUISINE:
 Dimensions piece: ${context.roomWidth}mm x ${context.roomDepth}mm, hauteur ${context.roomHeight}mm
@@ -140,7 +146,7 @@ ${items || '(aucun element place)'}`;
     }
 
     if (context.suggestions && context.suggestions.length > 0) {
-      desc += `\n\nSUGGESTIONS SYSTEME:\n${context.suggestions.map(s => `- ${s}`).join('\n')}`;
+      desc += `\n\nSUGGESTIONS SYSTEME:\n${context.suggestions.map((s) => `- ${s}`).join('\n')}`;
     }
 
     return desc;
@@ -157,7 +163,7 @@ ${items || '(aucun element place)'}`;
     const systemPrompt = `${SYSTEM_PROMPTS.CHAT_ASSISTANT}\n\n${sceneDescription}`;
 
     const messages: Anthropic.Messages.MessageParam[] = [
-      ...options.conversationHistory.slice(-10).map(m => ({
+      ...options.conversationHistory.slice(-10).map((m) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
@@ -176,7 +182,9 @@ ${items || '(aucun element place)'}`;
       let toolUse: { name: string; input: Record<string, unknown> } | undefined;
 
       for (const block of result.content) {
-        if (block.type === 'text') {responseText += block.text;}
+        if (block.type === 'text') {
+          responseText += block.text;
+        }
         if (block.type === 'tool_use') {
           toolUse = { name: block.name, input: block.input as Record<string, unknown> };
         }
@@ -200,7 +208,7 @@ ${items || '(aucun element place)'}`;
     const systemPrompt = `${SYSTEM_PROMPTS.CHAT_ASSISTANT}\n\n${sceneDescription}`;
 
     const messages: Anthropic.Messages.MessageParam[] = [
-      ...options.conversationHistory.slice(-10).map(m => ({
+      ...options.conversationHistory.slice(-10).map((m) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
@@ -218,7 +226,13 @@ ${items || '(aucun element place)'}`;
         if (event.type === 'text_delta') {
           yield { type: 'text_delta', data: event.text };
         } else if (event.type === 'message_stop') {
-          yield { type: 'done', data: JSON.stringify({ inputTokens: event.inputTokens, outputTokens: event.outputTokens }) };
+          yield {
+            type: 'done',
+            data: JSON.stringify({
+              inputTokens: event.inputTokens,
+              outputTokens: event.outputTokens,
+            }),
+          };
         }
       }
     } catch (error) {
@@ -243,7 +257,7 @@ ${items || '(aucun element place)'}`;
     const systemPrompt = `${SYSTEM_PROMPTS.CHAT_ASSISTANT}\n\n${sceneDescription}`;
 
     const messages: Anthropic.Messages.MessageParam[] = [
-      ...options.conversationHistory.slice(-10).map(m => ({
+      ...options.conversationHistory.slice(-10).map((m) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),

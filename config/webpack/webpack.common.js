@@ -61,14 +61,20 @@ module.exports = {
               cacheDirectory: true,
               cacheCompression: false,
               presets: [
-                ['@babel/preset-env', {
-                  modules: false,
-                  useBuiltIns: 'usage',
-                  corejs: 3,
-                }],
-                ['@babel/preset-react', {
-                  runtime: 'automatic',
-                }],
+                [
+                  '@babel/preset-env',
+                  {
+                    modules: false,
+                    useBuiltIns: 'usage',
+                    corejs: 3,
+                  },
+                ],
+                [
+                  '@babel/preset-react',
+                  {
+                    runtime: 'automatic',
+                  },
+                ],
                 '@babel/preset-typescript',
               ],
               plugins: [
@@ -97,10 +103,7 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                plugins: [
-                  'autoprefixer',
-                  'postcss-preset-env',
-                ],
+                plugins: ['autoprefixer', 'postcss-preset-env'],
               },
               sourceMap: true,
             },

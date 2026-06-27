@@ -71,9 +71,7 @@ describe('ForgotPasswordPage', () => {
     it('should render the submit button', () => {
       renderForgotPasswordPage();
 
-      expect(
-        screen.getByRole('button', { name: /send reset link/i })
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /send reset link/i })).toBeInTheDocument();
     });
 
     it('should render back to login link', () => {
@@ -162,9 +160,7 @@ describe('ForgotPasswordPage', () => {
       await user.click(screen.getByRole('button', { name: /send reset link/i }));
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/if an account exists with this email/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/if an account exists with this email/i)).toBeInTheDocument();
       });
     });
 

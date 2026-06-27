@@ -27,12 +27,7 @@ import {
 import type { CatalogProduct, KitchenProductProvider } from '../types';
 
 // Re-export base classes and registry
-export {
-  BaseKitchenProvider,
-  KitchenProviderConfig,
-  KitchenProviderRegistry,
-  providerRegistry,
-};
+export { BaseKitchenProvider, KitchenProviderConfig, KitchenProviderRegistry, providerRegistry };
 
 // IKEA Provider (Furniture)
 export * from './ikea';
@@ -92,7 +87,9 @@ export async function getProductsFromAllProviders(
 ): Promise<Array<{ providerId: string; products: CatalogProduct[] }>> {
   const results: Array<{ providerId: string; products: CatalogProduct[] }> = [];
   const providers: KitchenProductProvider[] = options?.providers
-    ? (options.providers.map((id) => providerRegistry.get(id)).filter((p): p is KitchenProductProvider => p !== undefined))
+    ? options.providers
+        .map((id) => providerRegistry.get(id))
+        .filter((p): p is KitchenProductProvider => p !== undefined)
     : providerRegistry.getAll();
 
   const fetchPromises = providers.map(async (provider) => {
@@ -127,7 +124,9 @@ export async function searchAllProviders(
   }
 ): Promise<CatalogProduct[]> {
   const providers: KitchenProductProvider[] = options?.providers
-    ? (options.providers.map((id) => providerRegistry.get(id)).filter((p): p is KitchenProductProvider => p !== undefined))
+    ? options.providers
+        .map((id) => providerRegistry.get(id))
+        .filter((p): p is KitchenProductProvider => p !== undefined)
     : providerRegistry.getAll();
 
   const searchPromises = providers.map(async (provider) => {

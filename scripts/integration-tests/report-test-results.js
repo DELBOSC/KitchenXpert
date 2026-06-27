@@ -54,7 +54,7 @@ function parseJunitResults(junitDir) {
     return results;
   }
 
-  const files = fs.readdirSync(junitDir).filter(f => f.endsWith('.xml'));
+  const files = fs.readdirSync(junitDir).filter((f) => f.endsWith('.xml'));
 
   for (const file of files) {
     const content = fs.readFileSync(path.join(junitDir, file), 'utf8');
@@ -126,12 +126,12 @@ function calculateHealthScore(results, coverage) {
   }
 
   // Deduct for low coverage
-  const avgCoverage = (
-    coverage.lines.pct +
-    coverage.statements.pct +
-    coverage.functions.pct +
-    coverage.branches.pct
-  ) / 4;
+  const avgCoverage =
+    (coverage.lines.pct +
+      coverage.statements.pct +
+      coverage.functions.pct +
+      coverage.branches.pct) /
+    4;
 
   if (avgCoverage < 80) {
     score -= (80 - avgCoverage) * 0.5;
@@ -143,9 +143,10 @@ function calculateHealthScore(results, coverage) {
 // Generate Markdown report
 function generateMarkdownReport(results, coverage, healthScore) {
   const timestamp = new Date().toISOString();
-  const passRate = results.totals.tests > 0
-    ? ((results.totals.passed / results.totals.tests) * 100).toFixed(1)
-    : 0;
+  const passRate =
+    results.totals.tests > 0
+      ? ((results.totals.passed / results.totals.tests) * 100).toFixed(1)
+      : 0;
 
   let report = `# Integration Test Report
 
@@ -186,9 +187,7 @@ function generateMarkdownReport(results, coverage, healthScore) {
 `;
 
   for (const suite of results.suites) {
-    const suitePassRate = suite.tests > 0
-      ? ((suite.passed / suite.tests) * 100).toFixed(1)
-      : 0;
+    const suitePassRate = suite.tests > 0 ? ((suite.passed / suite.tests) * 100).toFixed(1) : 0;
     const status = suite.failed === 0 && suite.errors === 0 ? '✅' : '❌';
 
     report += `### ${status} ${suite.name}
@@ -243,9 +242,10 @@ function generateMarkdownReport(results, coverage, healthScore) {
 // Generate HTML report
 function generateHtmlReport(results, coverage, healthScore) {
   const timestamp = new Date().toISOString();
-  const passRate = results.totals.tests > 0
-    ? ((results.totals.passed / results.totals.tests) * 100).toFixed(1)
-    : 0;
+  const passRate =
+    results.totals.tests > 0
+      ? ((results.totals.passed / results.totals.tests) * 100).toFixed(1)
+      : 0;
 
   const scoreColor = healthScore >= 80 ? '#28a745' : healthScore >= 60 ? '#ffc107' : '#dc3545';
 
@@ -453,7 +453,9 @@ function generateHtmlReport(results, coverage, healthScore) {
                     <th>Duration</th>
                     <th>Status</th>
                 </tr>
-                ${results.suites.map(suite => `
+                ${results.suites
+                  .map(
+                    (suite) => `
                 <tr>
                     <td>${suite.name}</td>
                     <td>${suite.tests}</td>
@@ -462,7 +464,9 @@ function generateHtmlReport(results, coverage, healthScore) {
                     <td>${suite.time.toFixed(2)}s</td>
                     <td>${suite.failed === 0 && suite.errors === 0 ? '✅' : '❌'}</td>
                 </tr>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </table>
         </section>
     </div>
@@ -476,28 +480,39 @@ function generateHtmlReport(results, coverage, healthScore) {
 
 // Generate JSON report
 function generateJsonReport(results, coverage, healthScore) {
-  return JSON.stringify({
-    meta: {
-      generated: new Date().toISOString(),
-      project: 'KitchenXpert',
-      type: 'integration-test-report',
+  return JSON.stringify(
+    {
+      meta: {
+        generated: new Date().toISOString(),
+        project: 'KitchenXpert',
+        type: 'integration-test-report',
+      },
+      summary: {
+        healthScore,
+        passRate:
+          results.totals.tests > 0
+            ? ((results.totals.passed / results.totals.tests) * 100).toFixed(1)
+            : 0,
+      },
+      tests: results,
+      coverage,
     },
-    summary: {
-      healthScore,
-      passRate: results.totals.tests > 0
-        ? ((results.totals.passed / results.totals.tests) * 100).toFixed(1)
-        : 0,
-    },
-    tests: results,
-    coverage,
-  }, null, 2);
+    null,
+    2
+  );
 }
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}      KitchenXpert - Test Report Generator                  ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}      KitchenXpert - Test Report Generator                  ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   // Create output directory
@@ -543,9 +558,15 @@ async function main() {
   }
 
   console.log('');
-  console.log(`${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.green}║${colors.reset}        Test Report Generation Complete                     ${colors.green}║${colors.reset}`);
-  console.log(`${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.green}║${colors.reset}        Test Report Generation Complete                     ${colors.green}║${colors.reset}`
+  );
+  console.log(
+    `${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  Health Score: ${healthScore}/100`);
   console.log(`  Tests:        ${results.totals.passed}/${results.totals.tests} passed`);

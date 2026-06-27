@@ -30,7 +30,10 @@ interface CommentThreadProps {
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-function getRelativeTime(dateString: string, t: (key: string, defaultValue: string, options?: Record<string, unknown>) => string): string {
+function getRelativeTime(
+  dateString: string,
+  t: (key: string, defaultValue: string, options?: Record<string, unknown>) => string
+): string {
   const now = Date.now();
   const date = new Date(dateString).getTime();
   const diffMs = now - date;
@@ -39,10 +42,18 @@ function getRelativeTime(dateString: string, t: (key: string, defaultValue: stri
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
-  if (diffSec < 60) {return t('time.justNow', 'just now');}
-  if (diffMin < 60) {return t('time.minutesAgo', '{{count}}m ago', { count: diffMin });}
-  if (diffHour < 24) {return t('time.hoursAgo', '{{count}}h ago', { count: diffHour });}
-  if (diffDay < 30) {return t('time.daysAgo', '{{count}}d ago', { count: diffDay });}
+  if (diffSec < 60) {
+    return t('time.justNow', 'just now');
+  }
+  if (diffMin < 60) {
+    return t('time.minutesAgo', '{{count}}m ago', { count: diffMin });
+  }
+  if (diffHour < 24) {
+    return t('time.hoursAgo', '{{count}}h ago', { count: diffHour });
+  }
+  if (diffDay < 30) {
+    return t('time.daysAgo', '{{count}}d ago', { count: diffDay });
+  }
   return new Date(dateString).toLocaleDateString();
 }
 
@@ -97,7 +108,9 @@ function SingleComment({
   };
 
   const handleSubmitReply = async () => {
-    if (!replyContent.trim()) {return;}
+    if (!replyContent.trim()) {
+      return;
+    }
     setIsSubmittingReply(true);
     try {
       await onSubmitReply(comment.id, replyContent.trim());
@@ -108,7 +121,9 @@ function SingleComment({
   };
 
   return (
-    <div className={`${isNested ? 'ml-8 border-l-2 border-gray-200 dark:border-gray-600 pl-4' : ''}`}>
+    <div
+      className={`${isNested ? 'ml-8 border-l-2 border-gray-200 dark:border-gray-600 pl-4' : ''}`}
+    >
       <div className="flex gap-3 py-3">
         {/* Avatar */}
         <div className="flex-shrink-0">
@@ -217,7 +232,9 @@ function SingleComment({
                   disabled={!replyContent.trim() || isSubmittingReply}
                   className="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmittingReply ? t('comments.sending', 'Sending...') : t('comments.reply', 'Reply')}
+                  {isSubmittingReply
+                    ? t('comments.sending', 'Sending...')
+                    : t('comments.reply', 'Reply')}
                 </button>
                 <button
                   onClick={() => {
@@ -287,12 +304,18 @@ interface DeleteModalProps {
   isDeleting: boolean;
 }
 
-function DeleteConfirmModal({ onConfirm, onCancel, isDeleting }: DeleteModalProps): React.ReactElement {
+function DeleteConfirmModal({
+  onConfirm,
+  onCancel,
+  isDeleting,
+}: DeleteModalProps): React.ReactElement {
   const { t } = useTranslation();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && !isDeleting) {onCancel();}
+      if (e.key === 'Escape' && !isDeleting) {
+        onCancel();
+      }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
@@ -305,12 +328,26 @@ function DeleteConfirmModal({ onConfirm, onCancel, isDeleting }: DeleteModalProp
       aria-modal="true"
       aria-labelledby="delete-comment-modal-title"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl" ref={(el) => { if (el) { const btn = el.querySelector<HTMLElement>('button'); btn?.focus(); } }}>
-        <h3 id="delete-comment-modal-title" className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+      <div
+        className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl"
+        ref={(el) => {
+          if (el) {
+            const btn = el.querySelector<HTMLElement>('button');
+            btn?.focus();
+          }
+        }}
+      >
+        <h3
+          id="delete-comment-modal-title"
+          className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2"
+        >
           {t('comments.deleteTitle', 'Delete Comment')}
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-          {t('comments.deleteConfirmation', 'Are you sure you want to delete this comment? This action cannot be undone.')}
+          {t(
+            'comments.deleteConfirmation',
+            'Are you sure you want to delete this comment? This action cannot be undone.'
+          )}
         </p>
         <div className="flex justify-end gap-3">
           <button
@@ -353,7 +390,9 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
 
   // Fetch comments
   useEffect(() => {
-    if (!projectId) {return;}
+    if (!projectId) {
+      return;
+    }
 
     const controller = new AbortController();
 
@@ -362,10 +401,13 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
       setError(null);
 
       try {
-        const response = await fetch(`/api/v1/comments?projectId=${encodeURIComponent(projectId)}`, {
-          credentials: 'include',
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `/api/v1/comments?projectId=${encodeURIComponent(projectId)}`,
+          {
+            credentials: 'include',
+            signal: controller.signal,
+          }
+        );
 
         if (!response.ok) {
           throw new Error('Failed to load comments');
@@ -374,7 +416,9 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
         const data = (await response.json()) as { data?: Comment[] };
         setComments(data.data || []);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const msg = err instanceof Error ? err.message : 'Failed to load comments';
         setError(msg);
       } finally {
@@ -388,7 +432,9 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
 
   // Add a new top-level comment
   const handleAddComment = useCallback(async () => {
-    if (!newComment.trim() || isSubmitting) {return;}
+    if (!newComment.trim() || isSubmitting) {
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -415,30 +461,33 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
   }, [newComment, isSubmitting, projectId]);
 
   // Submit a reply
-  const handleSubmitReply = useCallback(async (parentId: string, content: string) => {
-    const response = await fetch('/api/v1/comments', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ projectId, content, parentId }),
-    });
+  const handleSubmitReply = useCallback(
+    async (parentId: string, content: string) => {
+      const response = await fetch('/api/v1/comments', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, content, parentId }),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to add reply');
-    }
+      if (!response.ok) {
+        throw new Error('Failed to add reply');
+      }
 
-    const data = (await response.json()) as { data: Comment };
+      const data = (await response.json()) as { data: Comment };
 
-    setComments((prev) =>
-      prev.map((c) => {
-        if (c.id === parentId) {
-          return { ...c, replies: [...(c.replies || []), data.data] };
-        }
-        return c;
-      })
-    );
-    setReplyingTo(null);
-  }, [projectId]);
+      setComments((prev) =>
+        prev.map((c) => {
+          if (c.id === parentId) {
+            return { ...c, replies: [...(c.replies || []), data.data] };
+          }
+          return c;
+        })
+      );
+      setReplyingTo(null);
+    },
+    [projectId]
+  );
 
   // Edit a comment
   const handleEdit = useCallback(async (commentId: string, content: string) => {
@@ -483,7 +532,9 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
 
   // Delete a comment
   const handleConfirmDelete = useCallback(async () => {
-    if (!deleteTarget) {return;}
+    if (!deleteTarget) {
+      return;
+    }
 
     setIsDeleting(true);
     try {
@@ -558,7 +609,9 @@ export default function CommentThread({ projectId }: CommentThreadProps): React.
             {isSubmitting && (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
             )}
-            {isSubmitting ? t('comments.posting', 'Posting...') : t('comments.addComment', 'Comment')}
+            {isSubmitting
+              ? t('comments.posting', 'Posting...')
+              : t('comments.addComment', 'Comment')}
           </button>
         </div>
       </div>

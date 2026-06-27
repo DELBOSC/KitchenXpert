@@ -13,8 +13,14 @@ import {
 
 const here = dirname(fileURLToPath(import.meta.url));
 const pdpHtml = readFileSync(join(here, '__fixtures__/castorama-pdp.html'), 'utf8');
-const pdpEnrichedHtml = readFileSync(join(here, '__fixtures__/castorama-pdp-enriched.html'), 'utf8');
-const pdpApplianceHtml = readFileSync(join(here, '__fixtures__/castorama-pdp-appliance.html'), 'utf8');
+const pdpEnrichedHtml = readFileSync(
+  join(here, '__fixtures__/castorama-pdp-enriched.html'),
+  'utf8'
+);
+const pdpApplianceHtml = readFileSync(
+  join(here, '__fixtures__/castorama-pdp-appliance.html'),
+  'utf8'
+);
 const sitemapXml = readFileSync(join(here, '__fixtures__/castorama-sitemap.xml'), 'utf8');
 const categoryHtml = readFileSync(join(here, '__fixtures__/castorama-category.html'), 'utf8');
 
@@ -59,7 +65,7 @@ describe('parseCastoramaDims (cotes labellisées dans le nom)', () => {
     expect([d.widthMm, d.heightMm, d.depthMm]).toEqual([null, null, null]);
     expect(d.confidence).toBe(0);
   });
-  it('ne matche pas un L/H/P à l\'intérieur d\'un mot (GoodHome, pour)', () => {
+  it("ne matche pas un L/H/P à l'intérieur d'un mot (GoodHome, pour)", () => {
     const d = parseCastoramaDims('Meuble GoodHome pour cuisine');
     expect(d.confidence).toBe(0);
   });
@@ -77,7 +83,9 @@ describe('CastoramaStrategy', () => {
 
   it('mappe une PDP : nom + prix + EAN + cotes (depuis le nom) + type', async () => {
     const s = new CastoramaStrategy(mockHtml());
-    const r = await s.fetchProductByUrl('https://www.castorama.fr/caisson-de-cuisine-goodhome/5059340242217_CAFR.prd');
+    const r = await s.fetchProductByUrl(
+      'https://www.castorama.fr/caisson-de-cuisine-goodhome/5059340242217_CAFR.prd'
+    );
     expect(r.success).toBe(true);
     const p = r.product!;
     expect(p.sku).toBe('5059340242217'); // gtin13 (EAN)
@@ -94,7 +102,9 @@ describe('CastoramaStrategy', () => {
 
   it('§15.8.3 : la table specifications enrichit (3 cotes table > 1 cote nom), conf 1.0', async () => {
     const s = new CastoramaStrategy(mockHtml(pdpEnrichedHtml));
-    const r = await s.fetchProductByUrl('https://www.castorama.fr/caisson-bas-goodhome/5059340999999_CAFR.prd');
+    const r = await s.fetchProductByUrl(
+      'https://www.castorama.fr/caisson-bas-goodhome/5059340999999_CAFR.prd'
+    );
     expect(r.success).toBe(true);
     const p = r.product!;
     // Le nom ne porte que "L. 60 cm" (1 cote, conf 0.3). La table donne 3 cotes.
@@ -112,7 +122,9 @@ describe('CastoramaStrategy', () => {
 
   it('§15.8.3 : appliance (plaque) -> 3 cotes table dont hauteur 6.2cm, conf 1.0', async () => {
     const s = new CastoramaStrategy(mockHtml(pdpApplianceHtml));
-    const r = await s.fetchProductByUrl('https://www.castorama.fr/plaque-induction-ciarra/5056668703949_CAFR.prd');
+    const r = await s.fetchProductByUrl(
+      'https://www.castorama.fr/plaque-induction-ciarra/5056668703949_CAFR.prd'
+    );
     expect(r.success).toBe(true);
     const p = r.product!;
     expect(p.type).toBe('appliance');
@@ -138,7 +150,7 @@ describe('CastoramaStrategy', () => {
     // 2 URLs "caisson" dans le sitemap fixture (pas le plan-de-travail ni la peinture)
     expect(r).toHaveLength(2);
     // 1 fetch sitemap + 2 fetch PDP = 3 appels
-    expect((fetcher.fetchText as ReturnType<typeof vi.fn>)).toHaveBeenCalledTimes(3);
+    expect(fetcher.fetchText as ReturnType<typeof vi.fn>).toHaveBeenCalledTimes(3);
   });
 
   it('respecte maxProducts (plafond de PDP fetchées)', async () => {

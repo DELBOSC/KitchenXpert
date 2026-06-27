@@ -34,7 +34,7 @@ export class CastoramaApiClient extends BaseApiClient {
     const url = `${this.config.apiEndpoint}/products?${params.toString()}`;
     const response = await this.request<{ products: ProviderProduct[] }>(url);
 
-    return response.products.map(product => ({
+    return response.products.map((product) => ({
       ...product,
       providerId: 'castorama-fr',
     }));
@@ -61,7 +61,7 @@ export class CastoramaApiClient extends BaseApiClient {
     const url = `${this.config.apiEndpoint}/products/search?${params.toString()}`;
     const response = await this.request<{ products: ProviderProduct[] }>(url);
 
-    return response.products.map(product => ({
+    return response.products.map((product) => ({
       ...product,
       providerId: 'castorama-fr',
     }));

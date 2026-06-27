@@ -180,7 +180,7 @@ export const transitions = {
 
 // Types
 export type Duration = keyof typeof durations;
-export type DurationValue = typeof durationValues[Duration];
+export type DurationValue = (typeof durationValues)[Duration];
 export type Easing = keyof typeof easings;
 export type Animation = keyof typeof animations;
 export type Transition = keyof typeof transitions;
@@ -192,7 +192,7 @@ export function createTransition(
   easing: Easing = 'smooth'
 ): string {
   const props = Array.isArray(properties) ? properties : [properties];
-  return props.map(prop => `${prop} ${durations[duration]} ${easings[easing]}`).join(', ');
+  return props.map((prop) => `${prop} ${durations[duration]} ${easings[easing]}`).join(', ');
 }
 
 // Combined motion export

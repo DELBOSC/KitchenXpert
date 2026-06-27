@@ -3,7 +3,7 @@
  * Handles real-time collaboration over WebSocket with JWT cookie auth
  */
 
-import { type Server as HTTPServer , type IncomingMessage } from 'http';
+import { type Server as HTTPServer, type IncomingMessage } from 'http';
 
 import cookie from 'cookie';
 import { WebSocketServer, type WebSocket } from 'ws';

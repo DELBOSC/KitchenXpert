@@ -10,13 +10,7 @@ import PropTypes from 'prop-types';
 /**
  * SliderQuestion Component
  */
-function SliderQuestion({
-  question,
-  value,
-  onChange,
-  language,
-  disabled
-}) {
+function SliderQuestion({ question, value, onChange, language, disabled }) {
   const {
     min = 1,
     max = 10,
@@ -24,7 +18,7 @@ function SliderQuestion({
     minLabel,
     maxLabel,
     showValue = true,
-    showLabels = true
+    showLabels = true,
   } = question;
 
   // Local state for smooth dragging
@@ -79,7 +73,7 @@ function SliderQuestion({
           disabled={disabled}
           className="slider-input"
           style={{
-            '--slider-percentage': `${percentage}%`
+            '--slider-percentage': `${percentage}%`,
           }}
           aria-valuemin={min}
           aria-valuemax={max}
@@ -97,7 +91,7 @@ function SliderQuestion({
       {question.valueLabels && (
         <div className="slider-value-labels">
           {question.valueLabels.map((label, index) => {
-            const labelValue = min + (index * (max - min) / (question.valueLabels.length - 1));
+            const labelValue = min + (index * (max - min)) / (question.valueLabels.length - 1);
             const isActive = Math.abs(localValue - labelValue) < step / 2;
             return (
               <span
@@ -123,11 +117,11 @@ SliderQuestion.propTypes = {
     step: PropTypes.number,
     minLabel: PropTypes.shape({
       en: PropTypes.string,
-      fr: PropTypes.string
+      fr: PropTypes.string,
     }),
     maxLabel: PropTypes.shape({
       en: PropTypes.string,
-      fr: PropTypes.string
+      fr: PropTypes.string,
     }),
     showValue: PropTypes.bool,
     showLabels: PropTypes.bool,
@@ -136,21 +130,21 @@ SliderQuestion.propTypes = {
         PropTypes.string,
         PropTypes.shape({
           en: PropTypes.string,
-          fr: PropTypes.string
-        })
+          fr: PropTypes.string,
+        }),
       ])
-    )
+    ),
   }).isRequired,
   value: PropTypes.number,
   onChange: PropTypes.func.isRequired,
   language: PropTypes.oneOf(['en', 'fr']),
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
 };
 
 SliderQuestion.defaultProps = {
   value: null,
   language: 'en',
-  disabled: false
+  disabled: false,
 };
 
 export default SliderQuestion;

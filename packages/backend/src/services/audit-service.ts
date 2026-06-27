@@ -16,17 +16,39 @@ export interface AuditLog {
 }
 
 export type AuditAction =
-  | 'create' | 'read' | 'update' | 'delete'
-  | 'login' | 'logout' | 'export' | 'import'
-  | 'share' | 'unshare' | 'approve' | 'reject'
-  | 'archive' | 'restore' | 'configure' | 'execute'
-  | 'ai_generate' | 'ai_suggest';
+  | 'create'
+  | 'read'
+  | 'update'
+  | 'delete'
+  | 'login'
+  | 'logout'
+  | 'export'
+  | 'import'
+  | 'share'
+  | 'unshare'
+  | 'approve'
+  | 'reject'
+  | 'archive'
+  | 'restore'
+  | 'configure'
+  | 'execute'
+  | 'ai_generate'
+  | 'ai_suggest';
 
 export type AuditCategory =
-  | 'authentication' | 'authorization' | 'user'
-  | 'project' | 'order' | 'payment' | 'partner'
-  | 'catalog' | 'configuration' | 'data'
-  | 'integration' | 'system' | 'ai';
+  | 'authentication'
+  | 'authorization'
+  | 'user'
+  | 'project'
+  | 'order'
+  | 'payment'
+  | 'partner'
+  | 'catalog'
+  | 'configuration'
+  | 'data'
+  | 'integration'
+  | 'system'
+  | 'ai';
 
 export interface AuditActor {
   id: string;
@@ -121,7 +143,19 @@ export interface AuditConfig {
 const defaultConfig: AuditConfig = {
   enabled: true,
   logReads: false,
-  sensitiveFields: ['password', 'token', 'apiKey', 'secret', 'creditCard', 'ssn', 'phone', 'cvv', 'ipAddress', 'refreshToken', 'accessToken'],
+  sensitiveFields: [
+    'password',
+    'token',
+    'apiKey',
+    'secret',
+    'creditCard',
+    'ssn',
+    'phone',
+    'cvv',
+    'ipAddress',
+    'refreshToken',
+    'accessToken',
+  ],
   retentionDays: 365,
   asyncLogging: true,
 };
@@ -152,8 +186,12 @@ export class AuditService {
       metadata?: Partial<AuditMetadata>;
     }
   ): Promise<AuditLog | null> {
-    if (!this.config.enabled) {return null;}
-    if (action === 'read' && !this.config.logReads) {return null;}
+    if (!this.config.enabled) {
+      return null;
+    }
+    if (action === 'read' && !this.config.logReads) {
+      return null;
+    }
 
     const sanitizedChanges = this.sanitizeChanges(data.changes);
 
@@ -185,7 +223,11 @@ export class AuditService {
     result: AuditResult,
     metadata?: Partial<AuditMetadata>
   ): Promise<AuditLog | null> {
-    return this.log(action, 'authentication', { actor, result, metadata: { ...metadata, source: 'auth' } });
+    return this.log(action, 'authentication', {
+      actor,
+      result,
+      metadata: { ...metadata, source: 'auth' },
+    });
   }
 
   async logCreate(
@@ -266,10 +308,12 @@ export class AuditService {
   }
 
   async flush(): Promise<void> {
-    if (this.pendingLogs.length === 0) {return;}
+    if (this.pendingLogs.length === 0) {
+      return;
+    }
     const logs = [...this.pendingLogs];
     this.pendingLogs = [];
-    await Promise.allSettled(logs.map(log => this.repository.create(log)));
+    await Promise.allSettled(logs.map((log) => this.repository.create(log)));
   }
 
   async stop(): Promise<void> {
@@ -285,8 +329,10 @@ export class AuditService {
   }
 
   private sanitizeChanges(changes?: AuditChange[]): AuditChange[] | undefined {
-    if (!changes) {return undefined;}
-    return changes.map(change => {
+    if (!changes) {
+      return undefined;
+    }
+    return changes.map((change) => {
       if (this.config.sensitiveFields.includes(change.field.toLowerCase())) {
         return { ...change, oldValue: '[REDACTED]', newValue: '[REDACTED]' };
       }
@@ -296,7 +342,10 @@ export class AuditService {
 }
 
 export class AuditServiceError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'AuditServiceError';
   }

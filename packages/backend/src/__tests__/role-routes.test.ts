@@ -259,7 +259,7 @@ describe('RoleController', () => {
       await controller.create(req as Request, res as Response);
 
       expect(mockRoleRepository.create).toHaveBeenCalledWith(
-        expect.objectContaining({ permissionIds: ['perm-1', 'perm-2'] }),
+        expect.objectContaining({ permissionIds: ['perm-1', 'perm-2'] })
       );
       expect(statusMock).toHaveBeenCalledWith(201);
     });
@@ -305,8 +305,9 @@ describe('RoleController', () => {
 
       await controller.update(req as Request, res as Response);
 
-      expect(mockRoleRepository.update).toHaveBeenCalledWith('role-1',
-        expect.objectContaining({ permissionIds: ['perm-3', 'perm-4'] }),
+      expect(mockRoleRepository.update).toHaveBeenCalledWith(
+        'role-1',
+        expect.objectContaining({ permissionIds: ['perm-3', 'perm-4'] })
       );
       expect(statusMock).toHaveBeenCalledWith(200);
     });
@@ -326,7 +327,10 @@ describe('RoleController', () => {
 
       expect(mockRoleRepository.delete).toHaveBeenCalledWith('role-1');
       expect(statusMock).toHaveBeenCalledWith(200);
-      expect(jsonMock).toHaveBeenCalledWith({ success: true, message: 'Role deleted successfully' });
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: true,
+        message: 'Role deleted successfully',
+      });
     });
   });
 
@@ -379,9 +383,16 @@ describe('RoleController', () => {
 
       await controller.setPermissions(req as Request, res as Response);
 
-      expect(mockRoleRepository.setPermissions).toHaveBeenCalledWith('role-1', ['perm-1', 'perm-2', 'perm-3']);
+      expect(mockRoleRepository.setPermissions).toHaveBeenCalledWith('role-1', [
+        'perm-1',
+        'perm-2',
+        'perm-3',
+      ]);
       expect(statusMock).toHaveBeenCalledWith(200);
-      expect(jsonMock).toHaveBeenCalledWith({ success: true, message: 'Permissions updated successfully' });
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: true,
+        message: 'Permissions updated successfully',
+      });
     });
   });
 
@@ -399,7 +410,10 @@ describe('RoleController', () => {
 
       expect(mockRoleRepository.addPermission).toHaveBeenCalledWith('role-1', 'perm-5');
       expect(statusMock).toHaveBeenCalledWith(200);
-      expect(jsonMock).toHaveBeenCalledWith({ success: true, message: 'Permission added successfully' });
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: true,
+        message: 'Permission added successfully',
+      });
     });
   });
 
@@ -417,7 +431,10 @@ describe('RoleController', () => {
 
       expect(mockRoleRepository.removePermission).toHaveBeenCalledWith('role-1', 'perm-5');
       expect(statusMock).toHaveBeenCalledWith(200);
-      expect(jsonMock).toHaveBeenCalledWith({ success: true, message: 'Permission removed successfully' });
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: true,
+        message: 'Permission removed successfully',
+      });
     });
   });
 
@@ -454,7 +471,10 @@ describe('RoleController', () => {
 
       expect(mockRoleRepository.assignToUser).toHaveBeenCalledWith('user-1', 'role-1');
       expect(statusMock).toHaveBeenCalledWith(200);
-      expect(jsonMock).toHaveBeenCalledWith({ success: true, message: 'Role assigned successfully' });
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: true,
+        message: 'Role assigned successfully',
+      });
     });
   });
 
@@ -472,7 +492,10 @@ describe('RoleController', () => {
 
       expect(mockRoleRepository.removeFromUser).toHaveBeenCalledWith('user-1', 'role-1');
       expect(statusMock).toHaveBeenCalledWith(200);
-      expect(jsonMock).toHaveBeenCalledWith({ success: true, message: 'Role removed successfully' });
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: true,
+        message: 'Role removed successfully',
+      });
     });
   });
 

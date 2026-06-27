@@ -113,11 +113,13 @@ describe('Catalog Slice', () => {
 
     describe('clearFilters', () => {
       it('should clear all filters', () => {
-        store.dispatch(setFilters({
-          category: 'cabinets',
-          minPrice: 100,
-          maxPrice: 1000,
-        }));
+        store.dispatch(
+          setFilters({
+            category: 'cabinets',
+            minPrice: 100,
+            maxPrice: 1000,
+          })
+        );
         store.dispatch(clearFilters());
 
         const state = store.getState().catalog;
@@ -205,10 +207,12 @@ describe('Catalog Slice', () => {
           resolvePromise = resolve;
         });
 
-        mockFetch.mockImplementation(() => promise.then(() => ({
-          ok: true,
-          json: () => Promise.resolve({ data: [] }),
-        })));
+        mockFetch.mockImplementation(() =>
+          promise.then(() => ({
+            ok: true,
+            json: () => Promise.resolve({ data: [] }),
+          }))
+        );
 
         const fetchPromise = store.dispatch(fetchCatalogs());
 
@@ -226,10 +230,11 @@ describe('Catalog Slice', () => {
       it('should fetch products successfully', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [mockProduct],
-            meta: { total: 1, page: 1, totalPages: 1 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [mockProduct],
+              meta: { total: 1, page: 1, totalPages: 1 },
+            }),
         });
 
         await store.dispatch(fetchProducts({ page: 1, limit: 20 }));
@@ -243,17 +248,20 @@ describe('Catalog Slice', () => {
       it('should fetch products with catalog ID', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [mockProduct],
-            meta: { total: 1, page: 1, totalPages: 1 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [mockProduct],
+              meta: { total: 1, page: 1, totalPages: 1 },
+            }),
         });
 
-        await store.dispatch(fetchProducts({
-          catalogId: 'catalog-123',
-          page: 1,
-          limit: 20,
-        }));
+        await store.dispatch(
+          fetchProducts({
+            catalogId: 'catalog-123',
+            page: 1,
+            limit: 20,
+          })
+        );
 
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringContaining('/catalog/catalog-123/products'),
@@ -264,22 +272,25 @@ describe('Catalog Slice', () => {
       it('should apply filters when fetching products', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [],
-            meta: { total: 0, page: 1, totalPages: 0 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [],
+              meta: { total: 0, page: 1, totalPages: 0 },
+            }),
         });
 
-        await store.dispatch(fetchProducts({
-          page: 1,
-          limit: 20,
-          filters: {
-            category: 'cabinets',
-            minPrice: 100,
-            maxPrice: 500,
-            search: 'modern',
-          },
-        }));
+        await store.dispatch(
+          fetchProducts({
+            page: 1,
+            limit: 20,
+            filters: {
+              category: 'cabinets',
+              minPrice: 100,
+              maxPrice: 500,
+              search: 'modern',
+            },
+          })
+        );
 
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringContaining('category=cabinets'),
@@ -302,10 +313,11 @@ describe('Catalog Slice', () => {
       it('should handle pagination correctly', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [mockProduct],
-            meta: { total: 100, page: 3, totalPages: 10 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [mockProduct],
+              meta: { total: 100, page: 3, totalPages: 10 },
+            }),
         });
 
         await store.dispatch(fetchProducts({ page: 3, limit: 10 }));
@@ -461,14 +473,17 @@ describe('Catalog Slice', () => {
       // First fetch with category filter
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: [mockProduct],
-          meta: { total: 1, page: 1, totalPages: 1 },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [mockProduct],
+            meta: { total: 1, page: 1, totalPages: 1 },
+          }),
       });
 
       store.dispatch(setFilters({ category: 'cabinets' }));
-      await store.dispatch(fetchProducts({ page: 1, limit: 20, filters: { category: 'cabinets' } }));
+      await store.dispatch(
+        fetchProducts({ page: 1, limit: 20, filters: { category: 'cabinets' } })
+      );
 
       let state = store.getState().catalog;
       expect(state.products).toHaveLength(1);
@@ -476,14 +491,17 @@ describe('Catalog Slice', () => {
       // Add price filter
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: [],
-          meta: { total: 0, page: 1, totalPages: 0 },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [],
+            meta: { total: 0, page: 1, totalPages: 0 },
+          }),
       });
 
       store.dispatch(setFilters({ category: 'cabinets', minPrice: 1000 }));
-      await store.dispatch(fetchProducts({ page: 1, limit: 20, filters: { category: 'cabinets', minPrice: 1000 } }));
+      await store.dispatch(
+        fetchProducts({ page: 1, limit: 20, filters: { category: 'cabinets', minPrice: 1000 } })
+      );
 
       state = store.getState().catalog;
       expect(state.products).toHaveLength(0);
@@ -501,10 +519,11 @@ describe('Catalog Slice', () => {
       // Fetch products
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: [mockProduct],
-          meta: { total: 1, page: 1, totalPages: 1 },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [mockProduct],
+            meta: { total: 1, page: 1, totalPages: 1 },
+          }),
       });
 
       await store.dispatch(fetchProducts({ page: 1, limit: 20 }));

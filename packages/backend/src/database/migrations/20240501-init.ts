@@ -37,7 +37,7 @@ export const InitMigration: Migration = {
     `);
 
     await tx.execute(
-      `INSERT INTO schema_version (version, description) VALUES (1, 'Initial schema setup')`,
+      `INSERT INTO schema_version (version, description) VALUES (1, 'Initial schema setup')`
     );
   },
 

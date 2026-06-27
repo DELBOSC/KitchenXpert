@@ -95,17 +95,17 @@ module.exports = {
       2,
       'always',
       [
-        'feat',      // New feature
-        'fix',       // Bug fix
-        'docs',      // Documentation only changes
-        'style',     // Code style (formatting, missing semicolons, etc.)
-        'refactor',  // Code change that neither fixes a bug nor adds a feature
-        'perf',      // Performance improvement
-        'test',      // Adding or updating tests
-        'build',     // Changes to build system or dependencies
-        'ci',        // Changes to CI configuration files and scripts
-        'chore',     // Other changes that don't modify src or test files
-        'revert',    // Reverts a previous commit
+        'feat', // New feature
+        'fix', // Bug fix
+        'docs', // Documentation only changes
+        'style', // Code style (formatting, missing semicolons, etc.)
+        'refactor', // Code change that neither fixes a bug nor adds a feature
+        'perf', // Performance improvement
+        'test', // Adding or updating tests
+        'build', // Changes to build system or dependencies
+        'ci', // Changes to CI configuration files and scripts
+        'chore', // Other changes that don't modify src or test files
+        'revert', // Reverts a previous commit
       ],
     ],
 
@@ -143,58 +143,58 @@ module.exports = {
       'always',
       [
         // Frontend modules
-        'catalog',      // Product catalog
-        'design',       // Kitchen design tool
+        'catalog', // Product catalog
+        'design', // Kitchen design tool
         'configurator', // 3D configurator
-        'cart',         // Shopping cart
-        'checkout',     // Checkout process
-        'auth',         // Authentication
-        'profile',      // User profile
-        'dashboard',    // User dashboard
-        'ui',           // UI components
-        'forms',        // Form components
-        'layout',       // Layout components
+        'cart', // Shopping cart
+        'checkout', // Checkout process
+        'auth', // Authentication
+        'profile', // User profile
+        'dashboard', // User dashboard
+        'ui', // UI components
+        'forms', // Form components
+        'layout', // Layout components
 
         // Backend modules
-        'api',          // API layer
-        'db',           // Database
-        'models',       // Data models
-        'services',     // Business services
-        'middleware',   // Middleware
-        'routes',       // Route handlers
-        'controllers',  // Controllers
-        'validators',   // Validation logic
+        'api', // API layer
+        'db', // Database
+        'models', // Data models
+        'services', // Business services
+        'middleware', // Middleware
+        'routes', // Route handlers
+        'controllers', // Controllers
+        'validators', // Validation logic
 
         // Features
-        'ai',           // AI recommendations
-        'search',       // Search functionality
-        'analytics',    // Analytics
-        'payments',     // Payment processing
-        'notifications',// Notifications
-        'webhooks',     // Webhook system
-        'cache',        // Caching
-        'queue',        // Job queue
+        'ai', // AI recommendations
+        'search', // Search functionality
+        'analytics', // Analytics
+        'payments', // Payment processing
+        'notifications', // Notifications
+        'webhooks', // Webhook system
+        'cache', // Caching
+        'queue', // Job queue
 
         // Infrastructure
-        'config',       // Configuration
-        'docker',       // Docker setup
-        'nginx',        // Nginx configuration
-        'redis',        // Redis
-        'postgres',     // PostgreSQL
-        'monitoring',   // Monitoring/logging
-        'security',     // Security
+        'config', // Configuration
+        'docker', // Docker setup
+        'nginx', // Nginx configuration
+        'redis', // Redis
+        'postgres', // PostgreSQL
+        'monitoring', // Monitoring/logging
+        'security', // Security
 
         // Development
-        'deps',         // Dependencies
-        'scripts',      // Build scripts
-        'tests',        // Testing infrastructure
-        'ci',           // CI/CD
-        'docs',         // Documentation
-        'i18n',         // Internationalization
+        'deps', // Dependencies
+        'scripts', // Build scripts
+        'tests', // Testing infrastructure
+        'ci', // CI/CD
+        'docs', // Documentation
+        'i18n', // Internationalization
 
         // Release
-        'release',      // Release process
-        'version',      // Versioning
+        'release', // Release process
+        'version', // Versioning
       ],
     ],
 
@@ -210,11 +210,7 @@ module.exports = {
     /**
      * Subject must start with lowercase
      */
-    'subject-case': [
-      2,
-      'always',
-      'lowercase',
-    ],
+    'subject-case': [2, 'always', 'lowercase'],
 
     /**
      * Subject must not end with a period
@@ -389,8 +385,7 @@ module.exports = {
         description: 'Are there any breaking changes?',
       },
       breakingBody: {
-        description:
-          'A BREAKING CHANGE commit requires a body. Please enter a longer description',
+        description: 'A BREAKING CHANGE commit requires a body. Please enter a longer description',
       },
       breaking: {
         description: 'Describe the breaking changes',
@@ -412,8 +407,7 @@ module.exports = {
   // Help Messages
   // ============================================================
 
-  helpUrl:
-    'https://github.com/conventional-changelog/commitlint/#what-is-commitlint',
+  helpUrl: 'https://github.com/conventional-changelog/commitlint/#what-is-commitlint',
 
   // ============================================================
   // Ignored Commits

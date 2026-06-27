@@ -147,16 +147,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -182,14 +184,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -243,7 +241,12 @@ const mockGeneration = {
       style: 'modern',
       estimatedCost: { min: 8000, max: 12000, currency: 'EUR' },
       features: ['LED lighting'],
-      materials: { cabinets: 'Laque mate', countertops: 'Quartz', backsplash: 'Metro', flooring: 'Parquet' },
+      materials: {
+        cabinets: 'Laque mate',
+        countertops: 'Quartz',
+        backsplash: 'Metro',
+        flooring: 'Parquet',
+      },
       layout: 'l-shaped',
       score: 85,
       createdAt: '2024-01-01T00:00:00.000Z',
@@ -340,7 +343,7 @@ describe('AI Generator Routes', () => {
       expect(JSON.stringify(response.body)).toContain('Project not found');
     });
 
-    it('should return 403 when accessing another user\'s project (IDOR prevention)', async () => {
+    it("should return 403 when accessing another user's project (IDOR prevention)", async () => {
       mockPrisma.project.findUnique.mockResolvedValue(otherUserProject);
 
       const response = await authedRequest(app)
@@ -496,7 +499,7 @@ describe('AI Generator Routes', () => {
       expect(JSON.stringify(response.body)).toContain('Generation not found');
     });
 
-    it('should return 403 when accessing another user\'s generation (IDOR prevention)', async () => {
+    it("should return 403 when accessing another user's generation (IDOR prevention)", async () => {
       mockPrisma.aIGeneration.findUnique.mockResolvedValue(otherUserGeneration);
 
       const response = await authedRequest(app)

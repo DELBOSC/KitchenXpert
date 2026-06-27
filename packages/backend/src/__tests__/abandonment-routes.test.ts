@@ -116,16 +116,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -151,14 +153,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -239,9 +237,7 @@ describe('Abandonment Routes', () => {
     });
 
     it('should return 401 for unauthenticated request to GET /abandonment/stats', async () => {
-      const response = await request(app)
-        .get('/abandonment/stats')
-        .expect(401);
+      const response = await request(app).get('/abandonment/stats').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -249,9 +245,7 @@ describe('Abandonment Routes', () => {
     it('should return 403 for non-admin user on GET /abandonment/stats', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .get('/abandonment/stats')
-        .expect(403);
+      const response = await authedRequest(app).get('/abandonment/stats').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -317,10 +311,7 @@ describe('Abandonment Routes', () => {
     });
 
     it('should return 400 when sessionData is missing', async () => {
-      const response = await authedRequest(app)
-        .post('/abandonment/analyze')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).post('/abandonment/analyze').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('sessionData');
@@ -369,9 +360,7 @@ describe('Abandonment Routes', () => {
     it('should return abandonment statistics for admin', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
 
-      const response = await authedRequest(app)
-        .get('/abandonment/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/abandonment/stats').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('totalSessionsAnalyzed');
@@ -382,9 +371,7 @@ describe('Abandonment Routes', () => {
     it('should return stats with correct structure', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
 
-      const response = await authedRequest(app)
-        .get('/abandonment/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/abandonment/stats').expect(200);
 
       expect(response.body.success).toBe(true);
       const data = response.body.data;
@@ -414,9 +401,7 @@ describe('Abandonment Routes', () => {
     it('GET /stats requires admin role', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .get('/abandonment/stats')
-        .expect(403);
+      const response = await authedRequest(app).get('/abandonment/stats').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -424,9 +409,7 @@ describe('Abandonment Routes', () => {
     it('GET /stats should succeed for admin', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
 
-      const response = await authedRequest(app)
-        .get('/abandonment/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/abandonment/stats').expect(200);
 
       expect(response.body.success).toBe(true);
     });

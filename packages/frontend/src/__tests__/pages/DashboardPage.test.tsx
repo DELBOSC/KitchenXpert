@@ -54,7 +54,10 @@ const mockProjectState = {
 
 const mockDispatch = vi.fn(() => {
   const p: Promise<unknown> & { unwrap?: () => Promise<unknown>; abort?: () => void } =
-    Promise.resolve({}) as Promise<unknown> & { unwrap?: () => Promise<unknown>; abort?: () => void };
+    Promise.resolve({}) as Promise<unknown> & {
+      unwrap?: () => Promise<unknown>;
+      abort?: () => void;
+    };
   p.unwrap = () => Promise.resolve({});
   p.abort = () => {};
   return p;

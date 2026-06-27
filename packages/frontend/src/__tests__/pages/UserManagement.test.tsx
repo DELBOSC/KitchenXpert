@@ -102,9 +102,7 @@ describe('UserManagement', () => {
 
       await waitFor(() => {
         // t('admin.userManagement', 'User Management') - not in fr.json, uses fallback
-        expect(
-          screen.getByRole('heading', { name: /user management/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /user management/i })).toBeInTheDocument();
       });
     });
 
@@ -124,9 +122,7 @@ describe('UserManagement', () => {
       renderUserManagement();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/search users/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/search users/i)).toBeInTheDocument();
       });
     });
 
@@ -156,9 +152,7 @@ describe('UserManagement', () => {
 
       await waitFor(() => {
         // fr.json: common.search = "Rechercher"
-        expect(
-          screen.getByRole('button', { name: /rechercher/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /rechercher/i })).toBeInTheDocument();
       });
     });
 
@@ -167,9 +161,7 @@ describe('UserManagement', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/search users/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/search users/i)).toBeInTheDocument();
       });
 
       const searchInput = screen.getByPlaceholderText(/search users/i);
@@ -268,9 +260,9 @@ describe('UserManagement', () => {
         expect(viewLinks.length).toBe(3);
       });
 
-      const viewLink = screen.getAllByRole('link').find(
-        (link) => link.getAttribute('href') === '/admin/users/user-1'
-      );
+      const viewLink = screen
+        .getAllByRole('link')
+        .find((link) => link.getAttribute('href') === '/admin/users/user-1');
       expect(viewLink).toBeInTheDocument();
     });
 
@@ -335,12 +327,8 @@ describe('UserManagement', () => {
 
       await waitFor(() => {
         // Bulk action buttons should appear
-        expect(
-          screen.getByText(/activate selected/i)
-        ).toBeInTheDocument();
-        expect(
-          screen.getByText(/suspend selected/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/activate selected/i)).toBeInTheDocument();
+        expect(screen.getByText(/suspend selected/i)).toBeInTheDocument();
         expect(screen.getByText(/change role/i)).toBeInTheDocument();
       });
     });
@@ -365,9 +353,7 @@ describe('UserManagement', () => {
       renderUserManagement();
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/no users found/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/no users found/i)).toBeInTheDocument();
       });
     });
   });
@@ -378,12 +364,8 @@ describe('UserManagement', () => {
 
       await waitFor(() => {
         // fr.json: common.previous = "Précédent", common.next = "Suivant"
-        expect(
-          screen.getByRole('button', { name: /précédent/i })
-        ).toBeInTheDocument();
-        expect(
-          screen.getByRole('button', { name: /suivant/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /précédent/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /suivant/i })).toBeInTheDocument();
       });
     });
 
@@ -419,9 +401,7 @@ describe('UserManagement', () => {
         expect(screen.getByText('Alice Martin')).toBeInTheDocument();
       });
 
-      expect(
-        screen.queryByRole('button', { name: /précédent/i })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /précédent/i })).not.toBeInTheDocument();
     });
   });
 
@@ -435,9 +415,7 @@ describe('UserManagement', () => {
       renderUserManagement();
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/failed to fetch users/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/failed to fetch users/i)).toBeInTheDocument();
       });
     });
 

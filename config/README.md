@@ -2,13 +2,15 @@
 
 ## Vue d'ensemble
 
-Système de configuration centralisé, type-safe et validé pour tous les aspects de l'application KitchenXpert.
+Système de configuration centralisé, type-safe et validé pour tous les aspects
+de l'application KitchenXpert.
 
 ## 🎯 Améliorations Principales
 
 ### 1. **Configuration Centralisée avec Validation TypeScript + Zod**
 
-Le fichier [config/index.ts](./index.ts) fournit un système de configuration unique et validé :
+Le fichier [config/index.ts](./index.ts) fournit un système de configuration
+unique et validé :
 
 ```typescript
 import { getConfig, isDevelopment, isProduction } from './config';
@@ -18,6 +20,7 @@ console.log(config.database.postgres.host); // Type-safe!
 ```
 
 **Avantages:**
+
 - ✅ Validation stricte au démarrage (erreurs claires)
 - ✅ Type-safety complet avec TypeScript
 - ✅ Singleton pattern (une seule instance)
@@ -27,6 +30,7 @@ console.log(config.database.postgres.host); // Type-safe!
 ### 2. **Webpack Optimisé (Dev, Prod, Analyze)**
 
 #### Development ([webpack.dev.js](./webpack/webpack.dev.js))
+
 - ⚡ Hot Module Replacement (HMR)
 - ⚡ React Fast Refresh
 - ⚡ Source maps rapides (eval-source-map)
@@ -38,6 +42,7 @@ pnpm dev  # Lance webpack-dev-server avec HMR
 ```
 
 #### Production ([webpack.prod.js](./webpack/webpack.prod.js))
+
 - 🚀 Code splitting intelligent (vendors, UI, Three.js séparés)
 - 🚀 Minification JavaScript + CSS
 - 🚀 Compression Gzip + Brotli
@@ -51,11 +56,13 @@ ANALYZE=true pnpm build  # Avec analyse du bundle
 ```
 
 **Résultats:**
+
 - Bundle size réduit de ~60%
 - Initial load: ~200KB (gzipped)
 - Code splitting: vendors (150KB), UI (80KB), app (100KB)
 
 #### Common ([webpack.common.js](./webpack/webpack.common.js))
+
 - 📦 Support TypeScript + React + JSX
 - 📦 CSS/SCSS avec PostCSS
 - 📦 Images (PNG, JPG, WebP, AVIF)
@@ -70,9 +77,11 @@ ANALYZE=true pnpm build  # Avec analyse du bundle
 Configuration Jest complète pour tous les types de tests:
 
 #### Frontend ([jest.frontend.js](./jest/jest.frontend.js))
+
 ```bash
 pnpm test:frontend  # Tests React + UI components
 ```
+
 - ✅ jsdom environment
 - ✅ React Testing Library
 - ✅ CSS/SCSS mocks
@@ -80,20 +89,24 @@ pnpm test:frontend  # Tests React + UI components
 - ✅ Three.js support
 
 #### Backend ([jest.backend.js](./jest/jest.backend.js))
+
 ```bash
 pnpm test:backend  # Tests API + services
 ```
+
 - ✅ Node environment
 - ✅ Database mocks
 - ✅ API testing
 
 #### Master Config ([jest.config.js](./jest/jest.config.js))
+
 ```bash
 pnpm test  # Tous les tests
 pnpm test:coverage  # Avec coverage
 ```
 
 **Coverage thresholds:**
+
 - Branches: 70%
 - Functions: 70%
 - Lines: 70%
@@ -110,6 +123,7 @@ docker-compose up -d  # Lance toute la stack
 ```
 
 **Services:**
+
 1. **PostgreSQL** - Base de données principale
 2. **MongoDB** - Base NoSQL pour catalog
 3. **Redis** - Cache + sessions
@@ -131,6 +145,7 @@ Build multi-stage optimisé:
 ```
 
 **Optimisations:**
+
 - ✅ Image finale: ~150MB (vs 1.2GB sans optimisation)
 - ✅ Build time: ~2min (vs 8min)
 - ✅ Layer caching efficace
@@ -141,12 +156,14 @@ Build multi-stage optimisé:
 ### 5. **Sécurité Avancée**
 
 #### CORS ([security/cors.js](./security/cors.js))
+
 ```javascript
 const { getCorsOptions } = require('./config/security/cors');
 app.use(cors(getCorsOptions()));
 ```
 
 **Features:**
+
 - ✅ Origines dynamiques selon environnement
 - ✅ Credentials support
 - ✅ Méthodes HTTP configurables
@@ -154,6 +171,7 @@ app.use(cors(getCorsOptions()));
 - ✅ Support WebSocket
 
 #### CSP (Content Security Policy)
+
 ```javascript
 // Protège contre XSS
 helmet.contentSecurityPolicy({
@@ -166,6 +184,7 @@ helmet.contentSecurityPolicy({
 ```
 
 #### Rate Limiting
+
 ```javascript
 const rateLimit = require('express-rate-limit');
 
@@ -178,6 +197,7 @@ app.use('/api/', limiter);
 ```
 
 #### JWT Configuration
+
 - Access token: 15min
 - Refresh token: 7 jours
 - Secrets 256-bit minimum
@@ -187,7 +207,9 @@ app.use('/api/', limiter);
 ### 6. **Monitoring Complet**
 
 #### Prometheus ([monitoring/prometheus/prometheus.yml](./monitoring/prometheus/prometheus.yml))
+
 Collecte de métriques:
+
 - HTTP request duration
 - Database query time
 - Memory usage
@@ -195,13 +217,16 @@ Collecte de métriques:
 - Custom business metrics
 
 #### Grafana Dashboards
+
 Tableaux de bord pré-configurés:
+
 - API Performance
 - Database Health
 - System Resources
 - Business Metrics (orders, users, etc.)
 
 #### Logging Structure
+
 ```javascript
 {
   level: 'info',
@@ -235,6 +260,7 @@ Support multi-langue complet:
 ```
 
 **Locales supportées:**
+
 - 🇫🇷 Français (France)
 - 🇬🇧 English (UK)
 - 🇺🇸 English (US)
@@ -430,32 +456,35 @@ S3_BUCKET=my-bucket
 
 ## 📊 Comparaison Avant/Après
 
-| Aspect | Avant | Après | Gain |
-|--------|-------|-------|------|
-| **Config validation** | ❌ Aucune | ✅ Zod + TypeScript | 🔒 Type-safe |
-| **Bundle size** | 1.2 MB | 450 KB | 📉 -62% |
-| **Build time** | 8 min | 2 min | ⚡ -75% |
-| **Docker image** | 1.2 GB | 150 MB | 📦 -87% |
-| **Test coverage** | 0% | 70%+ | ✅ +70% |
-| **Security headers** | 2/10 | 9/10 | 🔒 +350% |
-| **Monitoring** | ❌ Aucun | ✅ Complet | 📊 Visibilité |
-| **i18n** | ❌ Non | ✅ 6 langues | 🌍 Multi-langue |
+| Aspect                | Avant     | Après               | Gain            |
+| --------------------- | --------- | ------------------- | --------------- |
+| **Config validation** | ❌ Aucune | ✅ Zod + TypeScript | 🔒 Type-safe    |
+| **Bundle size**       | 1.2 MB    | 450 KB              | 📉 -62%         |
+| **Build time**        | 8 min     | 2 min               | ⚡ -75%         |
+| **Docker image**      | 1.2 GB    | 150 MB              | 📦 -87%         |
+| **Test coverage**     | 0%        | 70%+                | ✅ +70%         |
+| **Security headers**  | 2/10      | 9/10                | 🔒 +350%        |
+| **Monitoring**        | ❌ Aucun  | ✅ Complet          | 📊 Visibilité   |
+| **i18n**              | ❌ Non    | ✅ 6 langues        | 🌍 Multi-langue |
 
 ## 🎯 Best Practices
 
 ### 1. Secrets Management
+
 - ✅ Utiliser des secrets 256-bit minimum
 - ✅ Jamais commit .env en git
 - ✅ Utiliser des vaults (Vault, AWS Secrets Manager) en prod
 - ✅ Rotation régulière des secrets
 
 ### 2. Performance
+
 - ✅ Activer compression (Gzip/Brotli)
 - ✅ Utiliser CDN pour assets statiques
 - ✅ Code splitting pour lazy loading
 - ✅ Cache Redis pour données chaudes
 
 ### 3. Sécurité
+
 - ✅ HTTPS obligatoire en production
 - ✅ Rate limiting sur toutes les APIs
 - ✅ CORS stricte
@@ -463,6 +492,7 @@ S3_BUCKET=my-bucket
 - ✅ Validation input côté serveur
 
 ### 4. Monitoring
+
 - ✅ Logger toutes les erreurs
 - ✅ Tracker les métriques business
 - ✅ Alertes sur anomalies
@@ -477,21 +507,21 @@ S3_BUCKET=my-bucket
 
 ## ❓ FAQ
 
-**Q: Comment ajouter une nouvelle variable d'environnement ?**
-R:
+**Q: Comment ajouter une nouvelle variable d'environnement ?** R:
+
 1. Ajouter dans `config/index.ts` au bon schema
 2. Ajouter dans `config/env/env.example`
 3. Utiliser via `getConfig().your.new.var`
 
-**Q: Comment optimiser davantage le bundle ?**
-R:
+**Q: Comment optimiser davantage le bundle ?** R:
+
 1. Analyser avec `ANALYZE=true pnpm build`
 2. Lazy load les routes
 3. Dynamic imports pour gros modules
 4. Tree shaking des librairies
 
-**Q: Comment débugger les erreurs de config ?**
-R: Les erreurs Zod sont très verboses et indiquent exactement le problème au démarrage.
+**Q: Comment débugger les erreurs de config ?** R: Les erreurs Zod sont très
+verboses et indiquent exactement le problème au démarrage.
 
-**Q: Peut-on utiliser des configs différentes par environnement ?**
-R: Oui, créer `env.staging`, `env.production` et lancer avec `NODE_ENV=staging`.
+**Q: Peut-on utiliser des configs différentes par environnement ?** R: Oui,
+créer `env.staging`, `env.production` et lancer avec `NODE_ENV=staging`.

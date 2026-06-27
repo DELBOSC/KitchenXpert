@@ -18,8 +18,14 @@ export const UpdateProfileSchema = z.object({
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
 
 export interface UpdateProfileOutput {
-  id: string; email: string; firstName: string; lastName: string;
-  phone: string | null; avatar: string | null; language: string; timezone: string;
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  avatar: string | null;
+  language: string;
+  timezone: string;
 }
 
 export class UpdateProfileUseCase implements UseCase<UpdateProfileInput, UpdateProfileOutput> {
@@ -31,8 +37,14 @@ export class UpdateProfileUseCase implements UseCase<UpdateProfileInput, UpdateP
         where: { id: userId },
         data: patch,
         select: {
-          id: true, email: true, firstName: true, lastName: true,
-          phone: true, avatar: true, language: true, timezone: true,
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          avatar: true,
+          language: true,
+          timezone: true,
         },
       });
       return ok(user);

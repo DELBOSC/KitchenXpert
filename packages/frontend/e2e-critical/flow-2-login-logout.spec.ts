@@ -14,7 +14,7 @@ test.describe('@critical Flow 2 — Login + Logout', () => {
     await loginUI(page, freshUser);
 
     const cookies = await page.context().cookies();
-    const access  = cookies.find((c) => /access/i.test(c.name));
+    const access = cookies.find((c) => /access/i.test(c.name));
     const refresh = cookies.find((c) => /refresh/i.test(c.name));
 
     expect(access, 'access cookie missing').toBeTruthy();
@@ -24,20 +24,22 @@ test.describe('@critical Flow 2 — Login + Logout', () => {
     expect(access?.sameSite).toMatch(/Lax|Strict/);
 
     // Dashboard renders the user's name somewhere visible
-    await expect(
-      page.getByText(new RegExp(freshUser.firstName, 'i')).first(),
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(new RegExp(freshUser.firstName, 'i')).first()).toBeVisible({
+      timeout: 10_000,
+    });
   });
 
   test('logout clears cookies and protects /dashboard', async ({ page, freshUser }) => {
     await loginUI(page, freshUser);
 
     // Open the user menu and click "Déconnexion"
-    const menuTrigger = page.getByRole('button', { name: new RegExp(freshUser.firstName, 'i') })
+    const menuTrigger = page
+      .getByRole('button', { name: new RegExp(freshUser.firstName, 'i') })
       .or(page.getByRole('button', { name: /menu|profil|account/i }))
       .first();
     await menuTrigger.click();
-    await page.getByRole('menuitem', { name: /déconnex|logout|sign out/i })
+    await page
+      .getByRole('menuitem', { name: /déconnex|logout|sign out/i })
       .or(page.getByRole('button', { name: /déconnex|logout|sign out/i }))
       .first()
       .click();
@@ -47,7 +49,7 @@ test.describe('@critical Flow 2 — Login + Logout', () => {
     const cookies = await page.context().cookies();
     expect(
       cookies.filter((c) => /access|refresh/i.test(c.name)),
-      'auth cookies must be cleared on logout',
+      'auth cookies must be cleared on logout'
     ).toHaveLength(0);
 
     // Direct navigation to a protected route must redirect to /login

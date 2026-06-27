@@ -136,7 +136,7 @@ describe('CollaborationRoleService', () => {
           inviterId: mockUser.userId,
           inviteeEmail: 'collab@test.com',
           role: 'viewer',
-        }),
+        })
       ).rejects.toThrow('Kitchen not found');
     });
 
@@ -152,7 +152,7 @@ describe('CollaborationRoleService', () => {
           inviterId: mockUser.userId,
           inviteeEmail: 'collab@test.com',
           role: 'viewer',
-        }),
+        })
       ).rejects.toThrow('Only the kitchen owner can send invitations');
     });
 
@@ -224,9 +224,7 @@ describe('CollaborationRoleService', () => {
     it('should throw when invite is not found', async () => {
       mockPrisma.collaborationInvite.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.accept('invalid-token', 'user-id'),
-      ).rejects.toThrow('Invite not found');
+      await expect(service.accept('invalid-token', 'user-id')).rejects.toThrow('Invite not found');
     });
 
     it('should throw when invite has already been accepted', async () => {
@@ -235,9 +233,9 @@ describe('CollaborationRoleService', () => {
         status: 'accepted',
       });
 
-      await expect(
-        service.accept(mockInvite.token, 'user-id'),
-      ).rejects.toThrow('Invite has already been accepted');
+      await expect(service.accept(mockInvite.token, 'user-id')).rejects.toThrow(
+        'Invite has already been accepted'
+      );
     });
 
     it('should throw and mark as expired when invite has expired', async () => {
@@ -247,9 +245,9 @@ describe('CollaborationRoleService', () => {
       });
       mockPrisma.collaborationInvite.update.mockResolvedValue({});
 
-      await expect(
-        service.accept(mockInvite.token, 'user-id'),
-      ).rejects.toThrow('Invite has expired');
+      await expect(service.accept(mockInvite.token, 'user-id')).rejects.toThrow(
+        'Invite has expired'
+      );
 
       // Should update status to expired
       expect(mockPrisma.collaborationInvite.update).toHaveBeenCalledWith({
@@ -280,9 +278,7 @@ describe('CollaborationRoleService', () => {
     it('should throw when invite is not found', async () => {
       mockPrisma.collaborationInvite.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.decline('invalid-token'),
-      ).rejects.toThrow('Invite not found');
+      await expect(service.decline('invalid-token')).rejects.toThrow('Invite not found');
     });
 
     it('should throw when invite is not pending', async () => {
@@ -291,9 +287,9 @@ describe('CollaborationRoleService', () => {
         status: 'accepted',
       });
 
-      await expect(
-        service.decline(mockInvite.token),
-      ).rejects.toThrow('Invite has already been accepted');
+      await expect(service.decline(mockInvite.token)).rejects.toThrow(
+        'Invite has already been accepted'
+      );
     });
   });
 
@@ -303,7 +299,13 @@ describe('CollaborationRoleService', () => {
     it('should return all collaboration members for a kitchen', async () => {
       mockPrisma.collaborationInvite.findMany.mockResolvedValue([
         mockInvite,
-        { ...mockInvite, id: 'invite-2', inviteeEmail: 'another@test.com', role: 'viewer', status: 'accepted' },
+        {
+          ...mockInvite,
+          id: 'invite-2',
+          inviteeEmail: 'another@test.com',
+          role: 'viewer',
+          status: 'accepted',
+        },
       ]);
 
       const result = await service.getMembers('550e8400-e29b-41d4-a716-446655440000');
@@ -363,9 +365,9 @@ describe('CollaborationRoleService', () => {
     it('should throw when invite does not exist', async () => {
       mockPrisma.collaborationInvite.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.updateRole('non-existent', 'viewer', mockUser.userId),
-      ).rejects.toThrow('Collaboration invite not found');
+      await expect(service.updateRole('non-existent', 'viewer', mockUser.userId)).rejects.toThrow(
+        'Collaboration invite not found'
+      );
     });
 
     it('should throw when requester does not own the kitchen', async () => {
@@ -375,9 +377,9 @@ describe('CollaborationRoleService', () => {
         userId: 'other-owner-id',
       });
 
-      await expect(
-        service.updateRole('invite-1', 'viewer', mockUser.userId),
-      ).rejects.toThrow('Forbidden: only the kitchen owner can update roles');
+      await expect(service.updateRole('invite-1', 'viewer', mockUser.userId)).rejects.toThrow(
+        'Forbidden: only the kitchen owner can update roles'
+      );
     });
   });
 
@@ -399,9 +401,9 @@ describe('CollaborationRoleService', () => {
     it('should throw when invite does not exist', async () => {
       mockPrisma.collaborationInvite.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.removeMember('non-existent', mockUser.userId),
-      ).rejects.toThrow('Collaboration invite not found');
+      await expect(service.removeMember('non-existent', mockUser.userId)).rejects.toThrow(
+        'Collaboration invite not found'
+      );
     });
 
     it('should throw when requester is not the kitchen owner', async () => {
@@ -411,9 +413,9 @@ describe('CollaborationRoleService', () => {
         userId: 'other-owner-id',
       });
 
-      await expect(
-        service.removeMember('invite-1', mockUser.userId),
-      ).rejects.toThrow('Forbidden: only the kitchen owner can remove members');
+      await expect(service.removeMember('invite-1', mockUser.userId)).rejects.toThrow(
+        'Forbidden: only the kitchen owner can remove members'
+      );
     });
   });
 
@@ -423,7 +425,11 @@ describe('CollaborationRoleService', () => {
     it('should return true for kitchen owner regardless of permission', async () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(mockKitchen);
 
-      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
+      const result = await service.checkPermission(
+        mockUser.userId,
+        '550e8400-e29b-41d4-a716-446655440000',
+        'canEdit'
+      );
 
       expect(result).toBe(true);
     });
@@ -439,7 +445,11 @@ describe('CollaborationRoleService', () => {
         status: 'accepted',
       });
 
-      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
+      const result = await service.checkPermission(
+        mockUser.userId,
+        '550e8400-e29b-41d4-a716-446655440000',
+        'canEdit'
+      );
 
       expect(result).toBe(true);
     });
@@ -463,7 +473,11 @@ describe('CollaborationRoleService', () => {
         status: 'accepted',
       });
 
-      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
+      const result = await service.checkPermission(
+        mockUser.userId,
+        '550e8400-e29b-41d4-a716-446655440000',
+        'canEdit'
+      );
 
       expect(result).toBe(false);
     });
@@ -484,7 +498,11 @@ describe('CollaborationRoleService', () => {
       mockPrisma.user.findUnique.mockResolvedValue({ email: 'no-invite@test.com' });
       mockPrisma.collaborationInvite.findFirst.mockResolvedValue(null);
 
-      const result = await service.checkPermission(mockUser.userId, '550e8400-e29b-41d4-a716-446655440000', 'canEdit');
+      const result = await service.checkPermission(
+        mockUser.userId,
+        '550e8400-e29b-41d4-a716-446655440000',
+        'canEdit'
+      );
 
       expect(result).toBe(false);
     });

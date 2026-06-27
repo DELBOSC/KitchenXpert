@@ -27,13 +27,17 @@ const DEFAULT_INTERVAL_MS = 6 * 60 * 60 * 1000;
 let timer: ReturnType<typeof setInterval> | null = null;
 
 export function startProviderSyncScheduler(): void {
-  if (timer) {return;}
+  if (timer) {
+    return;
+  }
   if (process.env.PROVIDER_SYNC_ENABLED !== '1') {
     logger.info('[provider-sync-scheduler] disabled (set PROVIDER_SYNC_ENABLED=1)');
     return;
   }
   const intervalMs = Number(process.env.PROVIDER_SYNC_INTERVAL_MS) || DEFAULT_INTERVAL_MS;
-  const providers = process.env.PROVIDER_SYNC_PROVIDERS?.split(',').map((s) => s.trim()).filter(Boolean);
+  const providers = process.env.PROVIDER_SYNC_PROVIDERS?.split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
   const dryRun = process.env.PROVIDER_SYNC_DRY_RUN === '1';
 
   logger.info('[provider-sync-scheduler] starting', { intervalMs, providers, dryRun });

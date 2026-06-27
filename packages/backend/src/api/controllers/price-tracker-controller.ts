@@ -44,7 +44,10 @@ export class PriceTrackerController {
       return;
     }
 
-    const ids = productIds.split(',').map((id) => id.trim()).filter(Boolean);
+    const ids = productIds
+      .split(',')
+      .map((id) => id.trim())
+      .filter(Boolean);
 
     if (ids.length === 0) {
       res.status(400).json({ success: false, error: 'At least one product ID is required' });

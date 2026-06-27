@@ -44,10 +44,7 @@ function generateSignature(payload, secret, timestamp = null) {
   const payloadStr = typeof payload === 'string' ? payload : JSON.stringify(payload);
   const signedPayload = `${ts}.${payloadStr}`;
 
-  const signature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
+  const signature = crypto.createHmac('sha256', secret).update(signedPayload).digest('hex');
 
   return {
     timestamp: ts,
@@ -150,8 +147,7 @@ async function interactiveGenerate() {
     output: process.stdout,
   });
 
-  const question = (prompt) =>
-    new Promise((resolve) => rl.question(prompt, resolve));
+  const question = (prompt) => new Promise((resolve) => rl.question(prompt, resolve));
 
   console.log('');
   log('INFO', 'Interactive Signature Generator');
@@ -205,8 +201,7 @@ async function interactiveVerify() {
     output: process.stdout,
   });
 
-  const question = (prompt) =>
-    new Promise((resolve) => rl.question(prompt, resolve));
+  const question = (prompt) => new Promise((resolve) => rl.question(prompt, resolve));
 
   console.log('');
   log('INFO', 'Interactive Signature Verifier');
@@ -255,7 +250,9 @@ function debugSignature(payload, secret, timestamp = null) {
   log('INFO', 'Signature Debug Information');
   console.log('');
   console.log('  Input:');
-  console.log(`    Secret:    ${secret.slice(0, 4)}...${secret.slice(-4)} (${secret.length} chars)`);
+  console.log(
+    `    Secret:    ${secret.slice(0, 4)}...${secret.slice(-4)} (${secret.length} chars)`
+  );
   console.log(`    Timestamp: ${ts}`);
   console.log(`    Payload:   ${payloadStr.slice(0, 50)}...`);
   console.log('');
@@ -351,9 +348,15 @@ function batchVerify(logFilePath, secret) {
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}      KitchenXpert - Webhook Signature Verifier             ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}      KitchenXpert - Webhook Signature Verifier             ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
 
   switch (config.mode) {
     case 'generate':

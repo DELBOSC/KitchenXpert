@@ -14,8 +14,12 @@ import type {
 // Score badge color helper
 // ----------------------------------------------------------------
 function scoreBadgeClasses(score: number): string {
-  if (score > 80) {return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';}
-  if (score >= 60) {return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';}
+  if (score > 80) {
+    return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
+  }
+  if (score >= 60) {
+    return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
+  }
   return 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
 }
 
@@ -60,34 +64,32 @@ const DesignComparison: React.FC = () => {
       setError(null);
 
       try {
-        const response = await fetch(
-          `/api/v1${API_ENDPOINTS.AI_GENERATOR.RESULTS(generationId)}`,
-          {
-            signal: controller.signal,
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`/api/v1${API_ENDPOINTS.AI_GENERATOR.RESULTS(generationId)}`, {
+          signal: controller.signal,
+          credentials: 'include',
+        });
 
         if (!response.ok) {
           throw new Error(
             response.status === 404
               ? t('designComparison.notFound', 'Generation result not found')
-              : t('designComparison.fetchError', 'Failed to fetch generation results'),
+              : t('designComparison.fetchError', 'Failed to fetch generation results')
           );
         }
 
-        const json = (await response.json()) as
-          | { data?: AIGenerationResult }
-          | AIGenerationResult;
-        const data: AIGenerationResult =
-          ('data' in json && json.data ? json.data : json) as AIGenerationResult;
+        const json = (await response.json()) as { data?: AIGenerationResult } | AIGenerationResult;
+        const data: AIGenerationResult = (
+          'data' in json && json.data ? json.data : json
+        ) as AIGenerationResult;
 
         if (mountedRef.current) {
           setResult(data);
           setLoading(false);
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         if (mountedRef.current) {
           setError(err instanceof Error ? err.message : t('common.unknownError', 'Unknown error'));
           setLoading(false);
@@ -117,7 +119,7 @@ const DesignComparison: React.FC = () => {
         }
       }
     },
-    [generationId],
+    [generationId]
   );
 
   // ---- Retry ----
@@ -138,7 +140,9 @@ const DesignComparison: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
-          <p className="text-gray-500 dark:text-gray-400">{t('designComparison.loading', 'Loading designs for comparison...')}</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            {t('designComparison.loading', 'Loading designs for comparison...')}
+          </p>
         </div>
       </div>
     );
@@ -152,7 +156,9 @@ const DesignComparison: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow p-8 text-center">
           <div className="text-red-500 text-4xl mb-4">!</div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.error', 'Error')}</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {t('common.error', 'Error')}
+          </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
           <div className="flex gap-3 justify-center">
             <button
@@ -180,7 +186,9 @@ const DesignComparison: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow p-8 text-center">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('designComparison.noDesigns', 'No designs found')}</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {t('designComparison.noDesigns', 'No designs found')}
+          </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             {t('designComparison.noDesignsDesc', 'This generation has no designs to compare.')}
           </p>
@@ -216,9 +224,14 @@ const DesignComparison: React.FC = () => {
           <span className="text-xl">&larr;</span>
           <span>{t('designComparison.backToResults', 'Back to results')}</span>
         </button>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('designComparison.title', 'Design Comparison')}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          {t('designComparison.title', 'Design Comparison')}
+        </h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
-          {t('designComparison.comparingCount', { count: designs.length, defaultValue: `Comparing ${designs.length} generated design${designs.length !== 1 ? 's' : ''} side by side` })}
+          {t('designComparison.comparingCount', {
+            count: designs.length,
+            defaultValue: `Comparing ${designs.length} generated design${designs.length !== 1 ? 's' : ''} side by side`,
+          })}
         </p>
       </div>
 
@@ -274,7 +287,9 @@ const DesignComparison: React.FC = () => {
 
               {/* Layout type */}
               <div className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                <span className="font-medium text-gray-700 dark:text-gray-300">{t('designComparison.layout', 'Layout')}:</span>{' '}
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.layout', 'Layout')}:
+                </span>{' '}
                 {design.layout}
               </div>
 
@@ -318,11 +333,24 @@ const DesignComparison: React.FC = () => {
                 >
                   {savingDesignId === design.id && (
                     <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
                     </svg>
                   )}
-                  {savingDesignId === design.id ? t('common.saving', 'Saving...') : t('designComparison.saveDesign', 'Save Design')}
+                  {savingDesignId === design.id
+                    ? t('common.saving', 'Saving...')
+                    : t('designComparison.saveDesign', 'Save Design')}
                 </button>
               </div>
             </div>
@@ -356,7 +384,9 @@ const DesignComparison: React.FC = () => {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {/* Score */}
               <tr>
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{t('designComparison.score', 'Score')}</td>
+                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.score', 'Score')}
+                </td>
                 {designs.map((d) => (
                   <td key={d.id} className="p-4">
                     <span
@@ -370,7 +400,9 @@ const DesignComparison: React.FC = () => {
 
               {/* Layout Type */}
               <tr>
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{t('designComparison.layout', 'Layout')}</td>
+                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.layout', 'Layout')}
+                </td>
                 {designs.map((d) => (
                   <td key={d.id} className="p-4 text-gray-600 dark:text-gray-400">
                     {d.layout}
@@ -380,7 +412,9 @@ const DesignComparison: React.FC = () => {
 
               {/* Materials: Cabinets */}
               <tr>
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{t('designComparison.cabinets', 'Cabinets')}</td>
+                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.cabinets', 'Cabinets')}
+                </td>
                 {designs.map((d) => (
                   <td key={d.id} className="p-4 text-gray-600 dark:text-gray-400">
                     {d.materials?.cabinets || '-'}
@@ -390,7 +424,9 @@ const DesignComparison: React.FC = () => {
 
               {/* Materials: Countertops */}
               <tr>
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{t('designComparison.countertops', 'Countertops')}</td>
+                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.countertops', 'Countertops')}
+                </td>
                 {designs.map((d) => (
                   <td key={d.id} className="p-4 text-gray-600 dark:text-gray-400">
                     {d.materials?.countertops || '-'}
@@ -400,7 +436,9 @@ const DesignComparison: React.FC = () => {
 
               {/* Materials: Backsplash */}
               <tr>
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{t('designComparison.backsplash', 'Backsplash')}</td>
+                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.backsplash', 'Backsplash')}
+                </td>
                 {designs.map((d) => (
                   <td key={d.id} className="p-4 text-gray-600 dark:text-gray-400">
                     {d.materials?.backsplash || '-'}
@@ -410,7 +448,9 @@ const DesignComparison: React.FC = () => {
 
               {/* Materials: Flooring */}
               <tr>
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{t('designComparison.flooring', 'Flooring')}</td>
+                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.flooring', 'Flooring')}
+                </td>
                 {designs.map((d) => (
                   <td key={d.id} className="p-4 text-gray-600 dark:text-gray-400">
                     {d.materials?.flooring || '-'}
@@ -433,7 +473,9 @@ const DesignComparison: React.FC = () => {
 
               {/* Features */}
               <tr>
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">{t('designComparison.features', 'Features')}</td>
+                <td className="p-4 font-medium text-gray-700 dark:text-gray-300">
+                  {t('designComparison.features', 'Features')}
+                </td>
                 {designs.map((d) => (
                   <td key={d.id} className="p-4">
                     <ul className="space-y-1">
@@ -457,7 +499,9 @@ const DesignComparison: React.FC = () => {
 
       {/* ── Score Comparison Bar ── */}
       <div className="max-w-6xl mx-auto mt-10 mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t('designComparison.scoreComparison', 'Score Comparison')}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          {t('designComparison.scoreComparison', 'Score Comparison')}
+        </h2>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6">
           <div className="space-y-4">
             {designs.map((d) => (
@@ -468,11 +512,7 @@ const DesignComparison: React.FC = () => {
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      d.score > 80
-                        ? 'bg-green-500'
-                        : d.score >= 60
-                          ? 'bg-yellow-500'
-                          : 'bg-red-500'
+                      d.score > 80 ? 'bg-green-500' : d.score >= 60 ? 'bg-yellow-500' : 'bg-red-500'
                     }`}
                     style={{ width: `${Math.min(d.score, 100)}%` }}
                   />

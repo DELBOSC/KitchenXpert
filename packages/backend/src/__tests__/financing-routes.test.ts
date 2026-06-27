@@ -18,7 +18,10 @@ jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
@@ -40,7 +43,13 @@ jest.mock('../services/financing/financing.service', () => ({
 jest.mock('../database/client', () => ({ prisma: { $disconnect: jest.fn() } }));
 
 jest.mock('../config/app-config', () => ({
-  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+  config: {
+    corsOrigins: ['http://localhost:3000'],
+    env: 'test',
+    port: 3000,
+    version: '1.0.0',
+    rateLimit: { maxRequests: 100 },
+  },
 }));
 
 jest.mock('../auth/token-blacklist', () => ({
@@ -56,7 +65,9 @@ jest.mock('../auth/token-blacklist', () => ({
 jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
-      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+      userId: 'test-user-id',
+      email: 'test@test.com',
+      role: 'user',
     }),
     generateTokens: jest.fn(),
   },
@@ -110,8 +121,8 @@ function authedRequest(app: Application) {
 const mockSimulationResult = {
   id: 'sim-1',
   providers: [
-    { name: 'Sofinco', rate: 3.9, durations: [{ months: 36, monthly: 295.50, totalCost: 10638 }] },
-    { name: 'Cetelem', rate: 4.2, durations: [{ months: 36, monthly: 298.20, totalCost: 10735 }] },
+    { name: 'Sofinco', rate: 3.9, durations: [{ months: 36, monthly: 295.5, totalCost: 10638 }] },
+    { name: 'Cetelem', rate: 4.2, durations: [{ months: 36, monthly: 298.2, totalCost: 10735 }] },
   ],
 };
 
@@ -147,7 +158,7 @@ describe('Financing Routes', () => {
       expect(response.body.data.providers).toHaveLength(2);
       expect(mockSimulate).toHaveBeenCalledWith(
         'test-user-id',
-        expect.objectContaining({ totalAmount: 15000, downPayment: 5000 }),
+        expect.objectContaining({ totalAmount: 15000, downPayment: 5000 })
       );
     });
 

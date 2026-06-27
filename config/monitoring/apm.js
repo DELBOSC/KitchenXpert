@@ -64,17 +64,10 @@ const apmConfig = {
   usePathAsTransactionName: false,
 
   // Ignore certain routes
-  ignoreUrls: [
-    '/health',
-    '/metrics',
-    '/favicon.ico',
-  ],
+  ignoreUrls: ['/health', '/metrics', '/favicon.ico'],
 
   // Transaction ignore patterns
-  transactionIgnoreUrls: [
-    '/health',
-    '/metrics',
-  ],
+  transactionIgnoreUrls: ['/health', '/metrics'],
 
   // Capture exceptions
   captureExceptions: true,
@@ -329,7 +322,7 @@ if (apmInstance) {
     const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key'];
 
     if (payload.context?.request?.headers) {
-      sensitiveHeaders.forEach(header => {
+      sensitiveHeaders.forEach((header) => {
         if (payload.context.request.headers[header]) {
           payload.context.request.headers[header] = '[REDACTED]';
         }
@@ -339,7 +332,7 @@ if (apmInstance) {
     // Remove sensitive body fields
     if (payload.context?.request?.body) {
       const sensitiveFields = ['password', 'token', 'secret', 'credit_card'];
-      sensitiveFields.forEach(field => {
+      sensitiveFields.forEach((field) => {
         if (payload.context.request.body[field]) {
           payload.context.request.body[field] = '[REDACTED]';
         }

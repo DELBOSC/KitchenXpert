@@ -267,12 +267,7 @@ export class AuditModel implements AuditLog {
   /**
    * Create an audit log for a login event
    */
-  static createLoginEvent(
-    userId: ID,
-    ipAddress: string,
-    userAgent: string,
-    id: ID
-  ): AuditModel {
+  static createLoginEvent(userId: ID, ipAddress: string, userAgent: string, id: ID): AuditModel {
     return AuditModel.create(
       {
         userId,

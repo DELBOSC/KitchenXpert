@@ -19,10 +19,7 @@ export { createConfig, DEFAULT_CONFIG } from './config';
 export type { ApiClientConfig } from './config';
 
 // Endpoints
-export {
-  AuthEndpoints,
-  createAuthEndpoints,
-} from './endpoints/auth-endpoints';
+export { AuthEndpoints, createAuthEndpoints } from './endpoints/auth-endpoints';
 export type {
   LoginRequest,
   LoginResponse,
@@ -33,10 +30,7 @@ export type {
   ChangePasswordRequest,
 } from './endpoints/auth-endpoints';
 
-export {
-  UserEndpoints,
-  createUserEndpoints,
-} from './endpoints/user-endpoints';
+export { UserEndpoints, createUserEndpoints } from './endpoints/user-endpoints';
 export type {
   User,
   UpdateProfileRequest,
@@ -45,10 +39,7 @@ export type {
   UserSearchParams,
 } from './endpoints/user-endpoints';
 
-export {
-  KitchenEndpoints,
-  createKitchenEndpoints,
-} from './endpoints/kitchen-endpoints';
+export { KitchenEndpoints, createKitchenEndpoints } from './endpoints/kitchen-endpoints';
 export type {
   KitchenProject,
   ProjectItem,
@@ -60,10 +51,7 @@ export type {
   ProjectShare,
 } from './endpoints/kitchen-endpoints';
 
-export {
-  CatalogEndpoints,
-  createCatalogEndpoints,
-} from './endpoints/catalog-endpoints';
+export { CatalogEndpoints, createCatalogEndpoints } from './endpoints/catalog-endpoints';
 export type {
   CatalogItem,
   CatalogSearchParams,
@@ -73,10 +61,7 @@ export type {
   CatalogProvider,
 } from './endpoints/catalog-endpoints';
 
-export {
-  ProjectEndpoints,
-  createProjectEndpoints,
-} from './endpoints/project-endpoints';
+export { ProjectEndpoints, createProjectEndpoints } from './endpoints/project-endpoints';
 export type {
   ProjectQuote,
   QuoteItem,
@@ -87,22 +72,13 @@ export type {
 } from './endpoints/project-endpoints';
 
 // Interceptors
-export {
-  AuthInterceptor,
-  createAuthInterceptor,
-} from './interceptors/auth-interceptor';
+export { AuthInterceptor, createAuthInterceptor } from './interceptors/auth-interceptor';
 export type { AuthInterceptorConfig } from './interceptors/auth-interceptor';
 
-export {
-  ErrorInterceptor,
-  createErrorInterceptor,
-} from './interceptors/error-interceptor';
+export { ErrorInterceptor, createErrorInterceptor } from './interceptors/error-interceptor';
 export type { ErrorInterceptorConfig, ValidationError } from './interceptors/error-interceptor';
 
-export {
-  LoggerInterceptor,
-  createLoggerInterceptor,
-} from './interceptors/logger-interceptor';
+export { LoggerInterceptor, createLoggerInterceptor } from './interceptors/logger-interceptor';
 export type {
   LoggerInterceptorConfig,
   Logger,
@@ -112,17 +88,10 @@ export type {
 } from './interceptors/logger-interceptor';
 
 // Adapters
-export {
-  FetchAdapter,
-  FetchAdapterError,
-  createFetchAdapter,
-} from './adapters/fetch-adapter';
+export { FetchAdapter, FetchAdapterError, createFetchAdapter } from './adapters/fetch-adapter';
 export type { FetchAdapterConfig, HttpRequest, HttpResponse } from './adapters/fetch-adapter';
 
-export {
-  AxiosAdapter,
-  createAxiosAdapter,
-} from './adapters/axios-adapter';
+export { AxiosAdapter, createAxiosAdapter } from './adapters/axios-adapter';
 export type {
   AxiosAdapterConfig,
   AxiosRequestConfig,

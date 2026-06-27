@@ -30,20 +30,21 @@ export function createStatsRouter(): Router {
    */
   router.get('/', async (_req: Request, res: Response) => {
     try {
-      const [productStats, collectionsCount, imagesCount, lastUpdated, scrapingStats] = await Promise.all([
-        getProductStats(),
-        getCollectionsCount(),
-        getImagesCount(),
-        getLastUpdatedDate(),
-        getScrapingStats(),
-      ]);
+      const [productStats, collectionsCount, imagesCount, lastUpdated, scrapingStats] =
+        await Promise.all([
+          getProductStats(),
+          getCollectionsCount(),
+          getImagesCount(),
+          getLastUpdatedDate(),
+          getScrapingStats(),
+        ]);
 
       const stats = {
         brands: {
           total: BRANDS_CONFIG.length,
-          enabled: BRANDS_CONFIG.filter(b => b.enabled).length,
-          withPrices: BRANDS_CONFIG.filter(b => b.hasPricesOnline).length,
-          with3D: BRANDS_CONFIG.filter(b => b.has3DConfigurator).length,
+          enabled: BRANDS_CONFIG.filter((b) => b.enabled).length,
+          withPrices: BRANDS_CONFIG.filter((b) => b.hasPricesOnline).length,
+          with3D: BRANDS_CONFIG.filter((b) => b.has3DConfigurator).length,
         },
         products: {
           cabinets: productStats.cabinets,
@@ -61,9 +62,10 @@ export function createStatsRouter(): Router {
           lastRun: scrapingStats.totalRuns > 0 ? new Date() : null, // Would need additional query
           totalRuns: scrapingStats.totalRuns,
           averageDuration: scrapingStats.averageDuration,
-          successRate: scrapingStats.totalRuns > 0
-            ? Math.round((scrapingStats.successfulRuns / scrapingStats.totalRuns) * 100)
-            : 0,
+          successRate:
+            scrapingStats.totalRuns > 0
+              ? Math.round((scrapingStats.successfulRuns / scrapingStats.totalRuns) * 100)
+              : 0,
         },
       };
 
@@ -95,9 +97,14 @@ export function createStatsRouter(): Router {
           products: productStats,
           collections: 0, // Would need additional query
           lastScraped: scrapingStatus.lastRun,
-          scrapingStatus: scrapingStatus.lastStatus === 'completed' ? 'idle' :
-                          scrapingStatus.lastStatus === 'running' ? 'running' :
-                          scrapingStatus.lastStatus === 'failed' ? 'failed' : 'idle',
+          scrapingStatus:
+            scrapingStatus.lastStatus === 'completed'
+              ? 'idle'
+              : scrapingStatus.lastStatus === 'running'
+                ? 'running'
+                : scrapingStatus.lastStatus === 'failed'
+                  ? 'failed'
+                  : 'idle',
         };
       });
 
@@ -166,29 +173,32 @@ export function createStatsRouter(): Router {
 
       const dimensionStats = {
         cabinets: {
-          widths: cabinetDimensions.widths.length > 0
-            ? cabinetDimensions.widths.map(w => ({ value: w.value, count: w.count }))
-            : [
-                { value: 300, count: 0 },
-                { value: 400, count: 0 },
-                { value: 600, count: 0 },
-                { value: 800, count: 0 },
-                { value: 900, count: 0 },
-              ],
-          heights: cabinetDimensions.heights.length > 0
-            ? cabinetDimensions.heights.map(h => ({ value: h.value, count: h.count }))
-            : [
-                { value: 720, count: 0 },
-                { value: 900, count: 0 },
-                { value: 2000, count: 0 },
-              ],
-          depths: cabinetDimensions.depths.length > 0
-            ? cabinetDimensions.depths.map(d => ({ value: d.value, count: d.count }))
-            : [
-                { value: 560, count: 0 },
-                { value: 580, count: 0 },
-                { value: 600, count: 0 },
-              ],
+          widths:
+            cabinetDimensions.widths.length > 0
+              ? cabinetDimensions.widths.map((w) => ({ value: w.value, count: w.count }))
+              : [
+                  { value: 300, count: 0 },
+                  { value: 400, count: 0 },
+                  { value: 600, count: 0 },
+                  { value: 800, count: 0 },
+                  { value: 900, count: 0 },
+                ],
+          heights:
+            cabinetDimensions.heights.length > 0
+              ? cabinetDimensions.heights.map((h) => ({ value: h.value, count: h.count }))
+              : [
+                  { value: 720, count: 0 },
+                  { value: 900, count: 0 },
+                  { value: 2000, count: 0 },
+                ],
+          depths:
+            cabinetDimensions.depths.length > 0
+              ? cabinetDimensions.depths.map((d) => ({ value: d.value, count: d.count }))
+              : [
+                  { value: 560, count: 0 },
+                  { value: 580, count: 0 },
+                  { value: 600, count: 0 },
+                ],
         },
         worktops: {
           thicknesses: [
@@ -239,9 +249,10 @@ export function createStatsRouter(): Router {
         successfulRuns: scrapingStats.successfulRuns,
         failedRuns: scrapingStats.failedRuns,
         partialRuns: scrapingStats.partialRuns,
-        successRate: scrapingStats.totalRuns > 0
-          ? Math.round((scrapingStats.successfulRuns / scrapingStats.totalRuns) * 100)
-          : 0,
+        successRate:
+          scrapingStats.totalRuns > 0
+            ? Math.round((scrapingStats.successfulRuns / scrapingStats.totalRuns) * 100)
+            : 0,
         averageDuration: scrapingStats.averageDuration,
         totalProductsScraped: scrapingStats.totalProductsScraped,
         byBrand,
@@ -293,7 +304,9 @@ export function createStatsRouter(): Router {
         memory: {
           used: process.memoryUsage().heapUsed,
           total: process.memoryUsage().heapTotal,
-          percentage: Math.round((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100),
+          percentage: Math.round(
+            (process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100
+          ),
         },
         timestamp: new Date().toISOString(),
       };

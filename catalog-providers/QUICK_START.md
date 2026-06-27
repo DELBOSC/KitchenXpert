@@ -1,6 +1,7 @@
 # 🚀 Quick Start - Import de Catalogues
 
-Guide de démarrage rapide pour importer des catalogues de produits dans KitchenXpert.
+Guide de démarrage rapide pour importer des catalogues de produits dans
+KitchenXpert.
 
 ## 📋 Table des Matières
 
@@ -101,7 +102,8 @@ pnpm catalog:import ./catalog-providers/my-supplier-catalog.csv
 
 ### Providers Disponibles
 
-Voir la liste complète: [bulk-import/providers-list.json](bulk-import/providers-list.json)
+Voir la liste complète:
+[bulk-import/providers-list.json](bulk-import/providers-list.json)
 
 - 🟢 **Active**: IKEA, Home Depot, Wayfair, Darty
 - 🟡 **Experimental**: Leroy Merlin, Castorama, BUT, Conforama
@@ -224,6 +226,7 @@ pnpm catalog:import ./ikea-catalog.csv --template=ikea
 ```
 
 Colonnes attendues:
+
 - `article_number` → ID produit
 - `product_name` → Nom
 - `price` / `currency` → Prix
@@ -231,7 +234,8 @@ Colonnes attendues:
 - `main_material` → Matériau
 - `color` → Couleur
 
-Voir: [universal-importer/catalog-templates/ikea-template.json](universal-importer/catalog-templates/ikea-template.json)
+Voir:
+[universal-importer/catalog-templates/ikea-template.json](universal-importer/catalog-templates/ikea-template.json)
 
 ### 2. Template Schmidt
 
@@ -242,6 +246,7 @@ pnpm catalog:import ./schmidt-catalog.json --template=schmidt
 ```
 
 Colonnes attendues:
+
 - `ref_produit` → Référence
 - `designation` → Nom
 - `prix_public_ttc` → Prix TTC
@@ -249,7 +254,8 @@ Colonnes attendues:
 - `famille` → Catégorie
 - `sur_mesure` → Produit sur-mesure (oui/non)
 
-Voir: [universal-importer/catalog-templates/schmidt-template.json](universal-importer/catalog-templates/schmidt-template.json)
+Voir:
+[universal-importer/catalog-templates/schmidt-template.json](universal-importer/catalog-templates/schmidt-template.json)
 
 ### 3. Template Generic
 
@@ -260,13 +266,15 @@ pnpm catalog:import ./any-catalog.csv --template=generic
 ```
 
 **Auto-détection intelligente:**
+
 - Noms de colonnes en FR/EN
 - Délimiteur CSV automatique
 - Séparateur décimal automatique
 - Dimensions combinées ("80x60x200")
 - Prix avec symbole ("299.99€")
 
-Voir: [universal-importer/catalog-templates/generic-template.json](universal-importer/catalog-templates/generic-template.json)
+Voir:
+[universal-importer/catalog-templates/generic-template.json](universal-importer/catalog-templates/generic-template.json)
 
 ## 💡 Exemples
 
@@ -432,11 +440,13 @@ jq -r '.metadata.providerId' catalog-providers/imported-catalogs/*.json | sort |
 Une fois vos catalogues importés:
 
 1. **Visualiser dans l'app**: Démarrez le frontend pour voir vos produits
+
    ```bash
    pnpm frontend:dev
    ```
 
 2. **Synchroniser avec la DB**: Importez les produits en base de données
+
    ```bash
    pnpm db:seed --source=catalog-providers/imported-catalogs/
    ```
@@ -450,7 +460,8 @@ Une fois vos catalogues importés:
 ## 📞 Support
 
 - 📚 **Documentation complète**: [catalog-providers/README.md](README.md)
-- 🔍 **Analyse détaillée**: [catalog-providers/COMPLETE_ANALYSIS.md](COMPLETE_ANALYSIS.md)
+- 🔍 **Analyse détaillée**:
+  [catalog-providers/COMPLETE_ANALYSIS.md](COMPLETE_ANALYSIS.md)
 - 💬 **Questions**: Créez une issue sur GitHub
 - 📧 **Email**: dev@kitchenxpert.com
 
@@ -459,6 +470,7 @@ Une fois vos catalogues importés:
 Vous savez maintenant importer des catalogues en 30 secondes ! 🚀
 
 **Temps d'import moyen:**
+
 - Quick Import: **30 secondes** (vs 3h20min avant)
 - Bulk Import: **2-5 minutes** pour 1000 produits
 - CLI Generator: **5 minutes** pour créer un provider

@@ -20,11 +20,9 @@ describe('localizeUnknownLangPath', () => {
   it('preserves query string and hash', () => {
     expect(localizeUnknownLangPath('/pricing', '?utm=x')).toBe('/fr/pricing?utm=x');
     expect(localizeUnknownLangPath('/catalog/IKEA', '', '#section')).toBe(
-      '/fr/catalog/IKEA#section',
+      '/fr/catalog/IKEA#section'
     );
-    expect(localizeUnknownLangPath('/login', '?a=1&b=2', '#sec')).toBe(
-      '/fr/login?a=1&b=2#sec',
-    );
+    expect(localizeUnknownLangPath('/login', '?a=1&b=2', '#sec')).toBe('/fr/login?a=1&b=2#sec');
   });
 
   it('handles the root path', () => {

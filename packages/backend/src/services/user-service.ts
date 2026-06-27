@@ -11,11 +11,21 @@ const BCRYPT_ROUNDS = parseInt(process.env['BCRYPT_ROUNDS'] || '12', 10);
 
 function validatePasswordStrength(password: string): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  if (password.length < 8) {errors.push('Password must be at least 8 characters long');}
-  if (!/[A-Z]/.test(password)) {errors.push('Password must contain at least one uppercase letter');}
-  if (!/[a-z]/.test(password)) {errors.push('Password must contain at least one lowercase letter');}
-  if (!/[0-9]/.test(password)) {errors.push('Password must contain at least one number');}
-  if (!/[^A-Za-z0-9]/.test(password)) {errors.push('Password must contain at least one special character');}
+  if (password.length < 8) {
+    errors.push('Password must be at least 8 characters long');
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push('Password must contain at least one uppercase letter');
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push('Password must contain at least one lowercase letter');
+  }
+  if (!/[0-9]/.test(password)) {
+    errors.push('Password must contain at least one number');
+  }
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    errors.push('Password must contain at least one special character');
+  }
   return { valid: errors.length === 0, errors };
 }
 
@@ -298,7 +308,10 @@ export class UserService {
   /**
    * Change user status
    */
-  async changeUserStatus(id: string, status: UserStatus): Promise<Omit<User, 'passwordHash'> | null> {
+  async changeUserStatus(
+    id: string,
+    status: UserStatus
+  ): Promise<Omit<User, 'passwordHash'> | null> {
     const user = await this.repository.update(id, {
       status,
       updatedAt: new Date(),

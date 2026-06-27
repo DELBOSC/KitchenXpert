@@ -16,12 +16,15 @@ export function runUseCase<Body, Input, Output>(
   schema: ZodSchema<Body>,
   useCase: UseCase<Input, Output>,
   toInput: (body: Body, req: Request) => Input,
-  onSuccess?: (value: Output, res: Response) => void,
+  onSuccess?: (value: Output, res: Response) => void
 ) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) {
-      const issues = parsed.error.issues.map((i) => ({ path: i.path.join('.'), message: i.message }));
+      const issues = parsed.error.issues.map((i) => ({
+        path: i.path.join('.'),
+        message: i.message,
+      }));
       const error = DomainErrors.validation('Validation failed', issues);
       res.status(errorToStatus(error)).json(errorToBody(error));
       return;

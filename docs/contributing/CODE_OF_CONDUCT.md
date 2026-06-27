@@ -17,32 +17,32 @@ diverse, inclusive, and healthy community.
 Examples of behavior that contributes to a positive environment for our
 community include:
 
-* Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and experiences
-* Giving and gracefully accepting constructive feedback
-* Accepting responsibility and apologizing to those affected by our mistakes,
+- Demonstrating empathy and kindness toward other people
+- Being respectful of differing opinions, viewpoints, and experiences
+- Giving and gracefully accepting constructive feedback
+- Accepting responsibility and apologizing to those affected by our mistakes,
   and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the overall
+- Focusing on what is best not just for us as individuals, but for the overall
   community
-* Using welcoming and inclusive language
-* Being patient with newcomers and helping them learn
-* Sharing knowledge and expertise with others
-* Recognizing and valuing contributions from all community members
+- Using welcoming and inclusive language
+- Being patient with newcomers and helping them learn
+- Sharing knowledge and expertise with others
+- Recognizing and valuing contributions from all community members
 
 Examples of unacceptable behavior include:
 
-* The use of sexualized language or imagery, and sexual attention or advances of
+- The use of sexualized language or imagery, and sexual attention or advances of
   any kind
-* Trolling, insulting or derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or email address,
+- Trolling, insulting or derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information, such as a physical or email address,
   without their explicit permission
-* Spamming, including excessive self-promotion or off-topic content
-* Deliberately intimidating, stalking, or following others
-* Sustained disruption of community discussions or events
-* Other conduct which could reasonably be considered inappropriate in a
+- Spamming, including excessive self-promotion or off-topic content
+- Deliberately intimidating, stalking, or following others
+- Sustained disruption of community discussions or events
+- Other conduct which could reasonably be considered inappropriate in a
   professional setting
-* Advocating for, or encouraging, any of the above behavior
+- Advocating for, or encouraging, any of the above behavior
 
 ## Enforcement Responsibilities
 
@@ -84,12 +84,13 @@ reporter of any incident.
 
 When reporting an incident, please include:
 
-* Your contact information
-* Names (real, nicknames, or pseudonyms) of any individuals involved
-  * If there are additional witnesses, please include them as well
-* Your account of what occurred
-  * If there is a publicly available record (e.g., a mailing list archive or a public IRC logger), please include a link
-* Any additional information that may be helpful
+- Your contact information
+- Names (real, nicknames, or pseudonyms) of any individuals involved
+  - If there are additional witnesses, please include them as well
+- Your account of what occurred
+  - If there is a publicly available record (e.g., a mailing list archive or a
+    public IRC logger), please include a link
+- Any additional information that may be helpful
 
 After filing a report, a representative will contact you personally. The
 community leaders will then review the incident, follow up with any additional
@@ -174,10 +175,10 @@ different set of community leaders than those who made the original decision.
 
 Appeals should include:
 
-* Your contact information
-* A summary of the incident and the enforcement action taken
-* Why you believe the enforcement action was incorrect
-* Any supporting evidence or documentation
+- Your contact information
+- A summary of the incident and the enforcement action taken
+- Why you believe the enforcement action was incorrect
+- Any supporting evidence or documentation
 
 Appeals will be reviewed within 14 business days. The decision on appeals is
 final.
@@ -186,13 +187,13 @@ final.
 
 This Code of Conduct applies to the following community spaces:
 
-* **GitHub Repository**: Issues, pull requests, discussions, and code reviews
-* **Discord Server**: All channels and direct messages
-* **Email Lists**: All KitchenXpert mailing lists
-* **Events**: Conferences, meetups, and virtual events
-* **Social Media**: Official KitchenXpert accounts and mentions
-* **Documentation**: Wiki, docs, and other written materials
-* **Any other official KitchenXpert communication channel**
+- **GitHub Repository**: Issues, pull requests, discussions, and code reviews
+- **Discord Server**: All channels and direct messages
+- **Email Lists**: All KitchenXpert mailing lists
+- **Events**: Conferences, meetups, and virtual events
+- **Social Media**: Official KitchenXpert accounts and mentions
+- **Documentation**: Wiki, docs, and other written materials
+- **Any other official KitchenXpert communication channel**
 
 ## Community Values
 
@@ -200,68 +201,71 @@ Beyond the standards outlined above, we encourage all community members to:
 
 ### Be Collaborative
 
-* Work together to resolve conflicts
-* Share knowledge and help others learn
-* Provide constructive feedback
-* Acknowledge the contributions of others
+- Work together to resolve conflicts
+- Share knowledge and help others learn
+- Provide constructive feedback
+- Acknowledge the contributions of others
 
 ### Be Inclusive
 
-* Use inclusive language
-* Welcome newcomers and help them get started
-* Respect different perspectives and experiences
-* Create accessible content (documentation, code, events)
+- Use inclusive language
+- Welcome newcomers and help them get started
+- Respect different perspectives and experiences
+- Create accessible content (documentation, code, events)
 
 ### Be Professional
 
-* Maintain a professional demeanor in all interactions
-* Focus on the technical merits of ideas
-* Accept constructive criticism gracefully
-* Admit mistakes and learn from them
+- Maintain a professional demeanor in all interactions
+- Focus on the technical merits of ideas
+- Accept constructive criticism gracefully
+- Admit mistakes and learn from them
 
 ### Be Respectful
 
-* Value the time and effort of others
-* Assume good intentions
-* Disagree respectfully
-* Respect boundaries and privacy
+- Value the time and effort of others
+- Assume good intentions
+- Disagree respectfully
+- Respect boundaries and privacy
 
 ## Maintainer Responsibilities
 
 Project maintainers have additional responsibilities:
 
-* Set a positive example in their interactions with the community
-* Provide clear and constructive feedback on contributions
-* Make decisions transparently when possible
-* Respond to Code of Conduct violations promptly and fairly
-* Maintain confidentiality when investigating reports
-* Recuse themselves from enforcement decisions when they have a conflict of interest
+- Set a positive example in their interactions with the community
+- Provide clear and constructive feedback on contributions
+- Make decisions transparently when possible
+- Respond to Code of Conduct violations promptly and fairly
+- Maintain confidentiality when investigating reports
+- Recuse themselves from enforcement decisions when they have a conflict of
+  interest
 
 ## Modifications to This Code of Conduct
 
 This Code of Conduct may be revised from time to time. The current version will
-always be available at https://github.com/kitchenxpert/kitchenxpert/blob/main/CODE_OF_CONDUCT.md
+always be available at
+https://github.com/kitchenxpert/kitchenxpert/blob/main/CODE_OF_CONDUCT.md
 
 Significant changes will be announced via:
-* A pinned issue in the GitHub repository
-* An announcement in our Discord server
-* An email to registered contributors
+
+- A pinned issue in the GitHub repository
+- An announcement in our Discord server
+- An email to registered contributors
 
 ## Additional Resources
 
-* [Contributing Guidelines](CONTRIBUTING.md)
-* [Security Policy](SECURITY.md)
-* [Project License](LICENSE)
-* [Contributor Covenant](https://www.contributor-covenant.org/)
-* [GitHub Community Guidelines](https://docs.github.com/en/site-policy/github-terms/github-community-guidelines)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Project License](LICENSE)
+- [Contributor Covenant](https://www.contributor-covenant.org/)
+- [GitHub Community Guidelines](https://docs.github.com/en/site-policy/github-terms/github-community-guidelines)
 
 ## Questions
 
 If you have questions about this Code of Conduct, please contact:
 
-* **General Questions**: community@kitchenxpert.com
-* **Reporting Violations**: conduct@kitchenxpert.com
-* **Appeals**: conduct@kitchenxpert.com
+- **General Questions**: community@kitchenxpert.com
+- **Reporting Violations**: conduct@kitchenxpert.com
+- **Appeals**: conduct@kitchenxpert.com
 
 ## Acknowledgments
 
@@ -269,8 +273,8 @@ This Code of Conduct is adapted from the [Contributor Covenant][homepage],
 version 2.1, available at
 [https://www.contributor-covenant.org/version/2/1/code_of_conduct.html][v2.1].
 
-Community Impact Guidelines were inspired by
-[Mozilla's code of conduct enforcement ladder][Mozilla CoC].
+Community Impact Guidelines were inspired by [Mozilla's code of conduct
+enforcement ladder][Mozilla CoC].
 
 For answers to common questions about this code of conduct, see the FAQ at
 [https://www.contributor-covenant.org/faq][FAQ]. Translations are available at
@@ -284,10 +288,10 @@ For answers to common questions about this code of conduct, see the FAQ at
 
 ---
 
-**Version**: 2.1
-**Last Updated**: January 10, 2026
-**Effective Date**: January 10, 2026
+**Version**: 2.1 **Last Updated**: January 10, 2026 **Effective Date**: January
+10, 2026
 
 ---
 
-**Thank you for helping make the KitchenXpert community welcoming and inclusive for everyone!**
+**Thank you for helping make the KitchenXpert community welcoming and inclusive
+for everyone!**

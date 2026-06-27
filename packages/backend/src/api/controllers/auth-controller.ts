@@ -23,7 +23,10 @@ const isProduction = process.env.NODE_ENV === 'production';
 /**
  * Set auth tokens as httpOnly cookies on the response
  */
-function setAuthCookies(res: Response, tokens: { accessToken: string; refreshToken: string; expiresIn: number }): void {
+function setAuthCookies(
+  res: Response,
+  tokens: { accessToken: string; refreshToken: string; expiresIn: number }
+): void {
   res.cookie('accessToken', tokens.accessToken, {
     httpOnly: true,
     secure: isProduction,
@@ -104,14 +107,16 @@ export class AuthController {
     // Pad response time to prevent timing-based email enumeration
     const elapsed = Date.now() - start;
     if (elapsed < MIN_RESPONSE_MS) {
-      await new Promise(resolve => setTimeout(resolve, MIN_RESPONSE_MS - elapsed));
+      await new Promise((resolve) => setTimeout(resolve, MIN_RESPONSE_MS - elapsed));
     }
 
     res.status(201).json({
       success: true,
       data: {
         user: responseData.user,
-        tokens: responseData.tokens ? { expiresIn: responseData.tokens.expiresIn, tokenType: 'Bearer' } : undefined,
+        tokens: responseData.tokens
+          ? { expiresIn: responseData.tokens.expiresIn, tokenType: 'Bearer' }
+          : undefined,
       },
       message: 'User registered successfully. Please check your email to verify your account.',
     });
@@ -135,7 +140,9 @@ export class AuthController {
       success: true,
       data: {
         user: result.user,
-        tokens: result.tokens ? { expiresIn: result.tokens.expiresIn, tokenType: 'Bearer' } : undefined,
+        tokens: result.tokens
+          ? { expiresIn: result.tokens.expiresIn, tokenType: 'Bearer' }
+          : undefined,
       },
       message: 'Login successful',
     });
@@ -171,8 +178,11 @@ export class AuthController {
     const blacklist = getTokenBlacklist();
 
     // Blacklist access token
-    const accessToken = req.cookies?.accessToken
-      || (req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.substring(7) : null);
+    const accessToken =
+      req.cookies?.accessToken ||
+      (req.headers.authorization?.startsWith('Bearer ')
+        ? req.headers.authorization.substring(7)
+        : null);
 
     if (accessToken) {
       const expiresAt = getTokenExpiration(accessToken);
@@ -216,10 +226,7 @@ export class AuthController {
         const mailService = getMailService();
         const resetLink = `${config.corsOrigins[0] || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
 
-        await mailService.sendPasswordReset(
-          { email },
-          resetLink
-        );
+        await mailService.sendPasswordReset({ email }, resetLink);
       } catch (error) {
         // Log but don't fail the request if email sending fails
         logger.error('Failed to send password reset email', { error });
@@ -362,7 +369,7 @@ export class AuthController {
 
     // Only return masked email to prevent information disclosure
     const [localPart, domain] = user.email.split('@');
-    const maskedEmail = `${localPart!.charAt(0)  }***@${  domain}`;
+    const maskedEmail = `${localPart!.charAt(0)}***@${domain}`;
 
     res.status(200).json({
       success: true,

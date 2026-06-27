@@ -23,14 +23,61 @@ class ValidationError extends Error {
  */
 const VALID_OPTIONS = {
   'kitchen-style': Object.keys(styleMatrix.styles),
-  'color-preference': ['neutral-light', 'neutral-warm', 'neutral-dark', 'two-tone', 'colorful', 'natural'],
+  'color-preference': [
+    'neutral-light',
+    'neutral-warm',
+    'neutral-dark',
+    'two-tone',
+    'colorful',
+    'natural',
+  ],
   'cabinet-style': ['flat-panel', 'shaker', 'raised-panel', 'beadboard', 'glass-front', 'louvered'],
-  'countertop-material': ['quartz', 'granite', 'marble', 'butcher-block', 'solid-surface', 'concrete', 'laminate', 'stainless-steel'],
+  'countertop-material': [
+    'quartz',
+    'granite',
+    'marble',
+    'butcher-block',
+    'solid-surface',
+    'concrete',
+    'laminate',
+    'stainless-steel',
+  ],
   'hardware-style': ['handleless', 'bar-pulls', 'knobs', 'cup-pulls', 'mixed'],
-  'hardware-finish': ['matte-black', 'brushed-nickel', 'polished-chrome', 'brass', 'oil-rubbed-bronze', 'copper', 'stainless'],
-  'backsplash-preference': ['subway-tile', 'large-format', 'mosaic', 'natural-stone', 'glass', 'patterned-tile', 'slab'],
-  'flooring-preference': ['hardwood', 'engineered-wood', 'tile', 'lvp', 'natural-stone', 'concrete'],
-  'lighting-style': ['pendant-lights', 'under-cabinet', 'recessed', 'in-cabinet', 'toe-kick', 'natural-light', 'smart-lighting']
+  'hardware-finish': [
+    'matte-black',
+    'brushed-nickel',
+    'polished-chrome',
+    'brass',
+    'oil-rubbed-bronze',
+    'copper',
+    'stainless',
+  ],
+  'backsplash-preference': [
+    'subway-tile',
+    'large-format',
+    'mosaic',
+    'natural-stone',
+    'glass',
+    'patterned-tile',
+    'slab',
+  ],
+  'flooring-preference': [
+    'hardwood',
+    'engineered-wood',
+    'tile',
+    'lvp',
+    'natural-stone',
+    'concrete',
+  ],
+  'lighting-style': [
+    'pendant-lights',
+    'under-cabinet',
+    'recessed',
+    'in-cabinet',
+    'toe-kick',
+    'natural-light',
+    'smart-lighting',
+  ],
 };
 
 /**
@@ -45,7 +92,7 @@ const REQUIRED_QUESTIONS = [
   'hardware-finish',
   'backsplash-preference',
   'flooring-preference',
-  'lighting-style'
+  'lighting-style',
 ];
 
 /**
@@ -61,7 +108,7 @@ function validateAnswer(questionId, value, context = {}) {
     'hardware-finish': validateHardwareFinish,
     'backsplash-preference': validateBacksplashPreference,
     'flooring-preference': validateFlooringPreference,
-    'lighting-style': validateLightingStyle
+    'lighting-style': validateLightingStyle,
   };
 
   const validator = validators[questionId];
@@ -71,7 +118,7 @@ function validateAnswer(questionId, value, context = {}) {
       valid: true,
       questionId,
       value,
-      warnings: [{ code: 'UNKNOWN_QUESTION', message: 'No validator defined' }]
+      warnings: [{ code: 'UNKNOWN_QUESTION', message: 'No validator defined' }],
     };
   }
 
@@ -82,7 +129,7 @@ function validateAnswer(questionId, value, context = {}) {
       return {
         valid: false,
         questionId: error.questionId,
-        error: { code: error.code, message: error.message }
+        error: { code: error.code, message: error.message },
       };
     }
     throw error;
@@ -108,7 +155,7 @@ function validateKitchenStyle(value) {
     questionId,
     value,
     normalized: value,
-    styleConfig: styleMatrix.styles[value]
+    styleConfig: styleMatrix.styles[value],
   };
 }
 
@@ -130,7 +177,7 @@ function validateColorPreference(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -152,7 +199,7 @@ function validateCabinetStyle(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -174,7 +221,7 @@ function validateCountertopMaterial(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -196,7 +243,7 @@ function validateHardwareStyle(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -218,7 +265,7 @@ function validateHardwareFinish(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -240,7 +287,7 @@ function validateBacksplashPreference(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -262,7 +309,7 @@ function validateFlooringPreference(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -278,16 +325,20 @@ function validateLightingStyle(value) {
 
   const values = Array.isArray(value) ? value : [value];
 
-  const invalidOptions = values.filter(v => !VALID_OPTIONS['lighting-style'].includes(v));
+  const invalidOptions = values.filter((v) => !VALID_OPTIONS['lighting-style'].includes(v));
   if (invalidOptions.length > 0) {
-    throw new ValidationError(questionId, `Invalid options: ${invalidOptions.join(', ')}`, 'INVALID_OPTION');
+    throw new ValidationError(
+      questionId,
+      `Invalid options: ${invalidOptions.join(', ')}`,
+      'INVALID_OPTION'
+    );
   }
 
   return {
     valid: true,
     questionId,
     value: values,
-    normalized: values
+    normalized: values,
   };
 }
 
@@ -302,14 +353,18 @@ function validateSection(answers, context = {}) {
     answeredQuestions: [],
     missingRequired: [],
     validatedAnswers: {},
-    styleCoherenceWarnings: []
+    styleCoherenceWarnings: [],
   };
 
   // Check required questions
   for (const questionId of REQUIRED_QUESTIONS) {
     const value = answers[questionId];
-    if (value === undefined || value === null || value === '' ||
-        (Array.isArray(value) && value.length === 0)) {
+    if (
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
       results.missingRequired.push(questionId);
     }
   }
@@ -319,7 +374,7 @@ function validateSection(answers, context = {}) {
     results.errors.push({
       code: 'MISSING_REQUIRED',
       message: `Please answer: ${results.missingRequired.join(', ')}`,
-      questions: results.missingRequired
+      questions: results.missingRequired,
     });
   }
 
@@ -335,7 +390,7 @@ function validateSection(answers, context = {}) {
       results.validatedAnswers[questionId] = validationResult.normalized || validationResult.value;
 
       if (validationResult.warnings) {
-        results.warnings.push(...validationResult.warnings.map(w => ({ questionId, ...w })));
+        results.warnings.push(...validationResult.warnings.map((w) => ({ questionId, ...w })));
       }
     }
   }
@@ -345,20 +400,26 @@ function validateSection(answers, context = {}) {
     const styleConfig = styleMatrix.styles[answers['kitchen-style']];
     if (styleConfig) {
       // Check cabinet coherence
-      if (answers['cabinet-style'] && !styleConfig.recommendedCabinets.includes(answers['cabinet-style'])) {
+      if (
+        answers['cabinet-style'] &&
+        !styleConfig.recommendedCabinets.includes(answers['cabinet-style'])
+      ) {
         results.styleCoherenceWarnings.push({
           code: 'CABINET_STYLE_MISMATCH',
           message: `${answers['cabinet-style']} cabinets are unconventional for ${answers['kitchen-style']} style`,
-          suggestion: `Consider: ${styleConfig.recommendedCabinets.join(', ')}`
+          suggestion: `Consider: ${styleConfig.recommendedCabinets.join(', ')}`,
         });
       }
 
       // Check countertop coherence
-      if (answers['countertop-material'] && !styleConfig.recommendedCountertops.includes(answers['countertop-material'])) {
+      if (
+        answers['countertop-material'] &&
+        !styleConfig.recommendedCountertops.includes(answers['countertop-material'])
+      ) {
         results.styleCoherenceWarnings.push({
           code: 'COUNTERTOP_STYLE_MISMATCH',
           message: `${answers['countertop-material']} is less common for ${answers['kitchen-style']} style`,
-          suggestion: `Consider: ${styleConfig.recommendedCountertops.join(', ')}`
+          suggestion: `Consider: ${styleConfig.recommendedCountertops.join(', ')}`,
         });
       }
     }
@@ -386,5 +447,5 @@ module.exports = {
   isSectionComplete,
   ValidationError,
   VALID_OPTIONS,
-  REQUIRED_QUESTIONS
+  REQUIRED_QUESTIONS,
 };

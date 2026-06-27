@@ -18,7 +18,6 @@
 import type { UpsertProductDto } from '../../repositories/product-repository';
 import type { UnifiedProduct } from '@kitchenxpert/common';
 
-
 /** Convert integer millimetres to centimetres (2-decimal Number), or undefined. */
 function mmToCm(mm: number | null): number | undefined {
   return mm == null ? undefined : Number((mm / 10).toFixed(2));
@@ -40,7 +39,7 @@ export interface ResolvedCategory {
  */
 export function mapUnifiedProductToUpsert(
   up: UnifiedProduct,
-  category: ResolvedCategory = {},
+  category: ResolvedCategory = {}
 ): {
   sku: string;
   data: UpsertProductDto;

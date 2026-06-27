@@ -28,7 +28,9 @@ export class UpdateUserStatusUseCase implements UseCase<UpdateUserStatusInput, {
       });
       return ok({ ok: true });
     } catch (e: unknown) {
-      if ((e as { code?: string })?.code === 'P2025') {return err(DomainErrors.notFound('User'));}
+      if ((e as { code?: string })?.code === 'P2025') {
+        return err(DomainErrors.notFound('User'));
+      }
       throw e;
     }
   }

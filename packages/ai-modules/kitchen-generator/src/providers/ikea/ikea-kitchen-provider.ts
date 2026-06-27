@@ -55,7 +55,10 @@ interface IkeaApiResponse<T> {
 /**
  * IKEA-specific provider configuration
  */
-export interface IkeaKitchenProviderConfig extends Omit<KitchenProviderConfig, 'id' | 'name' | 'type'> {
+export interface IkeaKitchenProviderConfig extends Omit<
+  KitchenProviderConfig,
+  'id' | 'name' | 'type'
+> {
   /** IKEA country code (fr, de, us, etc.) */
   country: string;
   /** Language code */
@@ -72,7 +75,7 @@ export const METOD_RULES: ProviderProductRules = {
 
   // METOD heights by cabinet type
   standardHeights: {
-    base: [80],           // Standard METOD base height
+    base: [80], // Standard METOD base height
     wall: [40, 60, 80, 100],
     tall: [200, 220, 240],
     corner_base: [80],
@@ -155,7 +158,7 @@ const IKEA_CATEGORY_MAP: Record<string, CabinetType | string> = {
   'meuble bas': 'base',
   'meuble haut': 'wall',
   'meuble colonne': 'tall',
-  'tiroir': 'drawer',
+  tiroir: 'drawer',
   'sous-évier': 'sink_base',
 };
 
@@ -192,7 +195,10 @@ export class IkeaKitchenProvider extends BaseKitchenProvider {
   /**
    * Make API request to IKEA endpoints
    */
-  private async apiRequest<T>(endpoint: string, options?: RequestInit): Promise<IkeaApiResponse<T>> {
+  private async apiRequest<T>(
+    endpoint: string,
+    options?: RequestInit
+  ): Promise<IkeaApiResponse<T>> {
     const url = `${this.getApiBaseUrl()}${endpoint}`;
 
     try {
@@ -204,7 +210,7 @@ export class IkeaKitchenProvider extends BaseKitchenProvider {
         },
       });
 
-      return await response.json() as IkeaApiResponse<T>;
+      return (await response.json()) as IkeaApiResponse<T>;
     } catch (error) {
       return {
         success: false,
@@ -236,9 +242,7 @@ export class IkeaKitchenProvider extends BaseKitchenProvider {
       return [];
     }
 
-    const products = response.data.results.map((item) =>
-      this.transformIkeaProduct(item, category)
-    );
+    const products = response.data.results.map((item) => this.transformIkeaProduct(item, category));
 
     return this.applyFilters(products, options);
   }
@@ -325,7 +329,9 @@ export class IkeaKitchenProvider extends BaseKitchenProvider {
       results: IkeaSearchResult[];
       totalCount: number;
       categories: Record<string, number>;
-    }>(`/kitchen/all?country=${this.ikeaCountry}&language=${this.ikeaLanguage}&limitPerCategory=${limitPerCategory}`);
+    }>(
+      `/kitchen/all?country=${this.ikeaCountry}&language=${this.ikeaLanguage}&limitPerCategory=${limitPerCategory}`
+    );
 
     if (!response.success || !response.data) {
       return [];
@@ -400,9 +406,9 @@ export class IkeaKitchenProvider extends BaseKitchenProvider {
     // Try to match patterns like "60x40 cm", "80 cm", "W60xD60 cm"
     const patterns = [
       /(\d+)\s*x\s*(\d+)\s*x\s*(\d+)\s*cm/i, // WxDxH
-      /(\d+)\s*x\s*(\d+)\s*cm/i,              // WxD or WxH
-      /largeur[:\s]*(\d+)\s*cm/i,             // largeur: XX cm
-      /(\d+)\s*cm/i,                          // XX cm (width only)
+      /(\d+)\s*x\s*(\d+)\s*cm/i, // WxD or WxH
+      /largeur[:\s]*(\d+)\s*cm/i, // largeur: XX cm
+      /(\d+)\s*cm/i, // XX cm (width only)
     ];
 
     for (const pattern of patterns) {
@@ -488,16 +494,30 @@ export class IkeaKitchenProvider extends BaseKitchenProvider {
     if (text.includes('meuble') || text.includes('cabinet') || text.includes('metod')) {
       return 'cabinets';
     }
-    if (text.includes('plan de travail') || text.includes('worktop') || text.includes('countertop')) {
+    if (
+      text.includes('plan de travail') ||
+      text.includes('worktop') ||
+      text.includes('countertop')
+    ) {
       return 'worktops';
     }
-    if (text.includes('façade') || text.includes('porte') || text.includes('front') || text.includes('door')) {
+    if (
+      text.includes('façade') ||
+      text.includes('porte') ||
+      text.includes('front') ||
+      text.includes('door')
+    ) {
       return 'fronts';
     }
     if (text.includes('évier') || text.includes('sink')) {
       return 'sinks';
     }
-    if (text.includes('four') || text.includes('oven') || text.includes('plaque') || text.includes('hotte')) {
+    if (
+      text.includes('four') ||
+      text.includes('oven') ||
+      text.includes('plaque') ||
+      text.includes('hotte')
+    ) {
       return 'appliances';
     }
     if (text.includes('poignée') || text.includes('handle')) {

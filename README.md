@@ -1,10 +1,12 @@
 # KitchenXpert
 
-Plateforme SaaS complète de conception de cuisines avec intelligence artificielle, visualisation 3D, et intégrations multi-providers.
+Plateforme SaaS complète de conception de cuisines avec intelligence
+artificielle, visualisation 3D, et intégrations multi-providers.
 
 ## 🚀 Technologies
 
 ### Frontend
+
 - **React** + **TypeScript** - UI framework
 - **Next.js** - Framework React (optionnel)
 - **Zustand** - State management
@@ -12,6 +14,7 @@ Plateforme SaaS complète de conception de cuisines avec intelligence artificiel
 - **i18n** - Support 5 langues (EN, FR, ES, DE, AR)
 
 ### Backend
+
 - **Node.js** + **Express** + **TypeScript**
 - **PostgreSQL** - Base de données principale
 - **Redis** - Cache et sessions
@@ -19,6 +22,7 @@ Plateforme SaaS complète de conception de cuisines avec intelligence artificiel
 - **bcrypt** - Hashing des mots de passe
 
 ### AI/ML
+
 - **Python** - 4 modules IA
   - Kitchen Generator (génération de designs)
   - Appliance Advisor (recommandations)
@@ -26,10 +30,12 @@ Plateforme SaaS complète de conception de cuisines avec intelligence artificiel
   - Style Analyzer (analyse de tendances)
 
 ### 3D Engine
+
 - **Three.js** - Visualisation 3D
 - **WebGL** - Rendu graphique
 
 ### Infrastructure
+
 - **Docker** - Containerisation
 - **GitHub Actions** - CI/CD
 - **nginx** - Reverse proxy
@@ -152,17 +158,26 @@ pnpm dev
 
 ### ⚠️ Frontend seul vs stack complète
 
-`pnpm dev` à la racine lance backend + frontend en parallèle (recommandé en dev).
+`pnpm dev` à la racine lance backend + frontend en parallèle (recommandé en
+dev).
 
-Si tu lances uniquement le frontend (`pnpm frontend:dev`), la console DevTools affichera en boucle des erreurs **500 sur `/api/v1/...`** : le proxy Vite (port 3005) tape `http://localhost:4000` qui n'écoute pas. Trois options :
+Si tu lances uniquement le frontend (`pnpm frontend:dev`), la console DevTools
+affichera en boucle des erreurs **500 sur `/api/v1/...`** : le proxy Vite
+(port 3005) tape `http://localhost:4000` qui n'écoute pas. Trois options :
 
 - **Stack complète** : `pnpm dev` à la racine (Turbo lance backend + frontend)
-- **Backend seul** dans un autre terminal : `pnpm backend:dev` (port 4000), puis `pnpm frontend:dev` dans un terminal séparé
-- **Vérifier que le backend tourne** : `curl http://localhost:4000/health` doit répondre `{"status":"healthy",...}`
+- **Backend seul** dans un autre terminal : `pnpm backend:dev` (port 4000), puis
+  `pnpm frontend:dev` dans un terminal séparé
+- **Vérifier que le backend tourne** : `curl http://localhost:4000/health` doit
+  répondre `{"status":"healthy",...}`
 
-Prérequis backend : PostgreSQL démarré + `.env` configuré à la racine (`cp .env.example .env`). Sans DB, le backend exit après 5 tentatives de reconnexion (~31s).
+Prérequis backend : PostgreSQL démarré + `.env` configuré à la racine
+(`cp .env.example .env`). Sans DB, le backend exit après 5 tentatives de
+reconnexion (~31s).
 
-⚠️ Sans `.env` à la racine, le backend démarre sur le port 3001 (au lieu du port 4000 attendu par le proxy Vite) — ce qui reproduit les erreurs 500 sur `/api/v1/*`.
+⚠️ Sans `.env` à la racine, le backend démarre sur le port 3001 (au lieu du port
+4000 attendu par le proxy Vite) — ce qui reproduit les erreurs 500 sur
+`/api/v1/*`.
 
 ### Scripts Disponibles
 
@@ -251,19 +266,20 @@ Content-Type: application/json
 
 ```typescript
 // Ajouter le token dans le header
-Authorization: Bearer <accessToken>
+Authorization: Bearer<accessToken>;
 
 // Exemples
-GET /api/auth/me              // Utilisateur connecté
-POST /api/auth/logout         // Déconnexion
-POST /api/auth/password/change // Changer mot de passe
+GET / api / auth / me; // Utilisateur connecté
+POST / api / auth / logout; // Déconnexion
+POST / api / auth / password / change; // Changer mot de passe
 ```
 
 ## 📚 Catalog Providers
 
 ### Architecture Factory
 
-Le système utilise un **pattern Factory** pour gérer 183 intégrations de catalogues de manière standardisée.
+Le système utilise un **pattern Factory** pour gérer 183 intégrations de
+catalogues de manière standardisée.
 
 ```typescript
 import { ProviderFactory } from './catalog-providers/common';
@@ -274,7 +290,7 @@ const config = {
   apiKey: 'xxx',
   timeout: 5000,
   retryAttempts: 3,
-  rateLimit: { maxRequests: 100, windowMs: 60000 }
+  rateLimit: { maxRequests: 100, windowMs: 60000 },
 };
 
 const provider = ProviderFactory.create('ikea', config);
@@ -295,7 +311,8 @@ const product = await provider.fetchProduct('12345');
 - ✅ **Retry automatique** - Avec backoff
 - ✅ **Validation** - Standardisée
 
-Voir [catalog-providers/README.md](catalog-providers/README.md) pour plus de détails.
+Voir [catalog-providers/README.md](catalog-providers/README.md) pour plus de
+détails.
 
 ## 🧪 Tests
 
@@ -349,6 +366,7 @@ docker-compose -f config/docker/docker-compose.dev.yml up --build
 ## 🌍 Internationalisation
 
 Langues supportées:
+
 - 🇬🇧 Anglais (EN)
 - 🇫🇷 Français (FR)
 - 🇪🇸 Espagnol (ES)
@@ -375,6 +393,7 @@ Langues supportées:
 ### v1.0.0 (En cours)
 
 **✅ Implémenté:**
+
 - Configuration monorepo (Turbo + pnpm)
 - TypeScript strict pour tous les packages
 - ESLint/Prettier avec règles strictes
@@ -385,6 +404,7 @@ Langues supportées:
 - Variables d'environnement
 
 **🚧 En cours:**
+
 - Migrations de base de données
 - Tests unitaires et intégration
 - Frontend React

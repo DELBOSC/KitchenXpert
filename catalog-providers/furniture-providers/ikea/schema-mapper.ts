@@ -21,9 +21,7 @@ export class IkeaSchemaMapper implements ISchemaMapper {
       providerProduct.dimensions || providerProduct.size
     );
 
-    const { price, currency } = this.transformer.transformPrice(
-      providerProduct.price
-    );
+    const { price, currency } = this.transformer.transformPrice(providerProduct.price);
 
     const images = this.transformer.transformImages(
       providerProduct.images || providerProduct.pictures
@@ -91,9 +89,7 @@ export class IkeaSchemaMapper implements ISchemaMapper {
   /**
    * Mappe le statut IKEA vers notre format
    */
-  private mapStatus(
-    availability: any
-  ): 'available' | 'out_of_stock' | 'discontinued' {
+  private mapStatus(availability: any): 'available' | 'out_of_stock' | 'discontinued' {
     if (!availability) return 'available';
 
     const status = String(availability).toLowerCase();
@@ -114,9 +110,7 @@ export class IkeaSchemaMapper implements ISchemaMapper {
   /**
    * Mappe notre statut vers le format IKEA
    */
-  private mapStatusToProvider(
-    status: 'available' | 'out_of_stock' | 'discontinued'
-  ): string {
+  private mapStatusToProvider(status: 'available' | 'out_of_stock' | 'discontinued'): string {
     const mapping = {
       available: 'AVAILABLE',
       out_of_stock: 'OUT_OF_STOCK',

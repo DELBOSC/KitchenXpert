@@ -30,11 +30,15 @@ export function LanguageSwitcher(): React.ReactElement {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) {return;}
+    if (!open) {
+      return;
+    }
     const onClickOutside = (e: MouseEvent): void => {
       if (
-        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
-        menuRef.current && !menuRef.current.contains(e.target as Node)
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target as Node) &&
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node)
       ) {
         setOpen(false);
       }
@@ -54,7 +58,9 @@ export function LanguageSwitcher(): React.ReactElement {
   }, [open]);
 
   const handlePick = (next: SupportedLanguage): void => {
-    if (next !== language) {setLanguage(next);}
+    if (next !== language) {
+      setLanguage(next);
+    }
     setOpen(false);
   };
 
@@ -71,7 +77,10 @@ export function LanguageSwitcher(): React.ReactElement {
       >
         <Languages className="w-4 h-4" aria-hidden="true" />
         <span className="font-medium uppercase tracking-wide">{language}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+        <ChevronDown
+          className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
+          aria-hidden="true"
+        />
       </button>
 
       {open && (
@@ -97,9 +106,7 @@ export function LanguageSwitcher(): React.ReactElement {
                 }`}
               >
                 <span>{LABEL[lang]}</span>
-                {active && (
-                  <Check className="ml-auto w-4 h-4 text-white/50" aria-hidden="true" />
-                )}
+                {active && <Check className="ml-auto w-4 h-4 text-white/50" aria-hidden="true" />}
               </button>
             );
           })}

@@ -17,8 +17,14 @@ export type ListUsersInput = z.infer<typeof ListUsersSchema>;
 
 export interface ListUsersOutput {
   users: Array<{
-    id: string; email: string; firstName: string; lastName: string;
-    role: string; status: string; createdAt: Date; lastLoginAt: Date | null;
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    status: string;
+    createdAt: Date;
+    lastLoginAt: Date | null;
   }>;
   total: number;
   page: number;
@@ -28,15 +34,27 @@ export interface ListUsersOutput {
 export class ListUsersUseCase implements UseCase<ListUsersInput, ListUsersOutput> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async execute({ page, limit, search, role, status }: ListUsersInput): Promise<Result<ListUsersOutput>> {
+  async execute({
+    page,
+    limit,
+    search,
+    role,
+    status,
+  }: ListUsersInput): Promise<Result<ListUsersOutput>> {
     const where: Record<string, unknown> = {};
-    if (role) {where.role = role;}
-    if (status) {where.status = status;}
-    if (search) {where.OR = [
-      { email: { contains: search, mode: 'insensitive' } },
-      { firstName: { contains: search, mode: 'insensitive' } },
-      { lastName: { contains: search, mode: 'insensitive' } },
-    ];}
+    if (role) {
+      where.role = role;
+    }
+    if (status) {
+      where.status = status;
+    }
+    if (search) {
+      where.OR = [
+        { email: { contains: search, mode: 'insensitive' } },
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+      ];
+    }
 
     const [rows, total] = await Promise.all([
       this.prisma.user.findMany({
@@ -45,8 +63,14 @@ export class ListUsersUseCase implements UseCase<ListUsersInput, ListUsersOutput
         take: limit,
         orderBy: { createdAt: 'desc' },
         select: {
-          id: true, email: true, firstName: true, lastName: true,
-          role: true, status: true, createdAt: true, lastLoginAt: true,
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+          status: true,
+          createdAt: true,
+          lastLoginAt: true,
         },
       }),
       this.prisma.user.count({ where }),

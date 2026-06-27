@@ -45,10 +45,7 @@ export interface DecodedToken {
  * @returns The base64URL-encoded string
  */
 function base64UrlEncode(str: string): string {
-  return btoa(str)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 /**
@@ -142,10 +139,7 @@ export async function createToken(
  * @param secret - The signing secret
  * @returns A promise that resolves to the decoded token
  */
-export async function verifyToken(
-  token: string,
-  secret: string
-): Promise<DecodedToken> {
+export async function verifyToken(token: string, secret: string): Promise<DecodedToken> {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) {
@@ -163,10 +157,7 @@ export async function verifyToken(
 
     // Verify signature
     const expectedSignature = await hmacSha256(`${header}.${payloadStr}`, secret);
-    const isValidSignature = constantTimeCompare(
-      base64UrlDecode(signature),
-      expectedSignature
-    );
+    const isValidSignature = constantTimeCompare(base64UrlDecode(signature), expectedSignature);
 
     if (!isValidSignature) {
       return {
@@ -279,10 +270,7 @@ export function generateApiKey(prefix: string = 'sk'): string {
  * @param expectedPrefix - The expected prefix
  * @returns True if the API key format is valid
  */
-export function validateApiKeyFormat(
-  apiKey: string,
-  expectedPrefix: string = 'sk'
-): boolean {
+export function validateApiKeyFormat(apiKey: string, expectedPrefix: string = 'sk'): boolean {
   const pattern = new RegExp(`^${expectedPrefix}_[a-f0-9]{64}$`);
   return pattern.test(apiKey);
 }
@@ -340,10 +328,7 @@ export async function createSignedUrl(
  * @param secret - The signing secret
  * @returns A promise that resolves to true if the URL is valid
  */
-export async function verifySignedUrl(
-  signedUrl: string,
-  secret: string
-): Promise<boolean> {
+export async function verifySignedUrl(signedUrl: string, secret: string): Promise<boolean> {
   try {
     const urlObj = new URL(signedUrl);
     const expires = urlObj.searchParams.get('expires');
@@ -395,10 +380,7 @@ export async function hashToken(token: string): Promise<string> {
  * @param hash - The expected hash
  * @returns A promise that resolves to true if the token matches
  */
-export async function verifyTokenHash(
-  token: string,
-  hash: string
-): Promise<boolean> {
+export async function verifyTokenHash(token: string, hash: string): Promise<boolean> {
   const computedHash = await sha256(token);
   return constantTimeCompare(computedHash, hash);
 }

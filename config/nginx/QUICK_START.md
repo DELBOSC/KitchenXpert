@@ -34,17 +34,17 @@ sudo systemctl reload nginx
 
 ## Configuration Files Overview
 
-| File | Purpose |
-|------|---------|
-| `nginx.conf` | Main configuration (workers, gzip, SSL, rate limiting) |
-| `nginx.dev.conf` | Development settings (verbose logs, no SSL, permissive CORS) |
-| `nginx.prod.conf` | Production settings (HTTPS, HTTP/2, strict security) |
-| `mime.types` | File type mappings (includes modern formats) |
-| `proxy_params.conf` | Reusable proxy headers |
-| `sites-available/api.conf` | Backend API reverse proxy (port 4000) |
-| `sites-available/app.conf` | Frontend SPA (React/Vue) |
-| `sites-available/partner-portal.conf` | Partner portal with enhanced security |
-| `sites-available/documentation.conf` | Documentation site |
+| File                                  | Purpose                                                      |
+| ------------------------------------- | ------------------------------------------------------------ |
+| `nginx.conf`                          | Main configuration (workers, gzip, SSL, rate limiting)       |
+| `nginx.dev.conf`                      | Development settings (verbose logs, no SSL, permissive CORS) |
+| `nginx.prod.conf`                     | Production settings (HTTPS, HTTP/2, strict security)         |
+| `mime.types`                          | File type mappings (includes modern formats)                 |
+| `proxy_params.conf`                   | Reusable proxy headers                                       |
+| `sites-available/api.conf`            | Backend API reverse proxy (port 4000)                        |
+| `sites-available/app.conf`            | Frontend SPA (React/Vue)                                     |
+| `sites-available/partner-portal.conf` | Partner portal with enhanced security                        |
+| `sites-available/documentation.conf`  | Documentation site                                           |
 
 ## Common Tasks
 

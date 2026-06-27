@@ -79,10 +79,7 @@ export class ProviderFactory {
   /**
    * Crée plusieurs instances de providers
    */
-  static createMany(
-    slugs: string[],
-    configMap: Map<string, ProviderConfig>
-  ): BaseProvider[] {
+  static createMany(slugs: string[], configMap: Map<string, ProviderConfig>): BaseProvider[] {
     return slugs.map((slug) => {
       const config = configMap.get(slug);
       if (!config) {

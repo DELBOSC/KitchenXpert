@@ -84,12 +84,8 @@ const testUserId = 'test-user-id';
 const otherUserId = 'other-user-99';
 
 const mockAnalysisResult: ExistingKitchenAnalysis = {
-  cabinets: [
-    { type: 'bas', style: 'moderne laque blanc', condition: 'fair', estimatedCount: 6 },
-  ],
-  appliances: [
-    { type: 'four', builtin: true, condition: 'good' },
-  ],
+  cabinets: [{ type: 'bas', style: 'moderne laque blanc', condition: 'fair', estimatedCount: 6 }],
+  appliances: [{ type: 'four', builtin: true, condition: 'good' }],
   countertop: { material: 'granit', condition: 'fair', estimatedLengthM: 3.5 },
   flooring: { material: 'carrelage', condition: 'good' },
   wallCovering: { type: 'peinture', condition: 'poor' },
@@ -108,7 +104,7 @@ const mockComparisonResult = {
   estimatedDemolitionCostEur: 1200,
   estimatedRenovationCostEur: 12000,
   totalCostEur: 13200,
-  improvements: ['Plus d\'espace de rangement', 'Plan de travail plus grand'],
+  improvements: ["Plus d'espace de rangement", 'Plan de travail plus grand'],
   summary: 'La renovation apportera 25% de rangement en plus.',
 };
 
@@ -201,7 +197,11 @@ describe('RenovationService', () => {
     it('should return null when project is not found (404)', async () => {
       mockPrisma.renovationProject.findUnique.mockResolvedValue(null);
 
-      const result = await service.getProject('00000000-0000-0000-0000-000000000000', testUserId, false);
+      const result = await service.getProject(
+        '00000000-0000-0000-0000-000000000000',
+        testUserId,
+        false
+      );
 
       expect(result).toBeNull();
     });
@@ -273,16 +273,16 @@ describe('RenovationService', () => {
         2000,
         800,
         expect.any(Number),
-        expect.objectContaining({ feature: 'renovation-analyzer' }),
+        expect.objectContaining({ feature: 'renovation-analyzer' })
       );
     });
 
     it('should throw an error when image data is too small', async () => {
       const tinyPhoto = Buffer.alloc(50, 0xff);
 
-      await expect(
-        service.analyzeExistingKitchen(tinyPhoto, testUserId),
-      ).rejects.toThrow('Invalid image data: image is too small or empty');
+      await expect(service.analyzeExistingKitchen(tinyPhoto, testUserId)).rejects.toThrow(
+        'Invalid image data: image is too small or empty'
+      );
 
       expect(mockGenerateJSON).not.toHaveBeenCalled();
     });
@@ -292,9 +292,9 @@ describe('RenovationService', () => {
 
       const photo = Buffer.alloc(200, 0xff);
 
-      await expect(
-        service.analyzeExistingKitchen(photo, testUserId),
-      ).rejects.toThrow('AI service unavailable');
+      await expect(service.analyzeExistingKitchen(photo, testUserId)).rejects.toThrow(
+        'AI service unavailable'
+      );
     });
   });
 
@@ -309,7 +309,10 @@ describe('RenovationService', () => {
         outputTokens: 600,
       });
 
-      const result = await service.generateComparison(mockAnalysisResult, '550e8400-e29b-41d4-a716-446655440000');
+      const result = await service.generateComparison(
+        mockAnalysisResult,
+        '550e8400-e29b-41d4-a716-446655440000'
+      );
 
       expect(result).toEqual(mockComparisonResult);
       expect(result.totalCostEur).toBe(13200);
@@ -327,7 +330,7 @@ describe('RenovationService', () => {
       mockPrisma.kitchen.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.generateComparison(mockAnalysisResult, 'nonexistent-kitchen'),
+        service.generateComparison(mockAnalysisResult, 'nonexistent-kitchen')
       ).rejects.toThrow('Kitchen design nonexistent-kitchen not found');
 
       expect(mockGenerateJSON).not.toHaveBeenCalled();
@@ -338,7 +341,7 @@ describe('RenovationService', () => {
       mockGenerateJSON.mockRejectedValue(new Error('JSON parse failed'));
 
       await expect(
-        service.generateComparison(mockAnalysisResult, '550e8400-e29b-41d4-a716-446655440000'),
+        service.generateComparison(mockAnalysisResult, '550e8400-e29b-41d4-a716-446655440000')
       ).rejects.toThrow('JSON parse failed');
     });
   });

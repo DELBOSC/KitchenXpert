@@ -29,27 +29,27 @@ function App(): React.ReactElement {
   return (
     <ErrorBoundary>
       <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          {/* LanguageProvider must live INSIDE BrowserRouter because it
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            {/* LanguageProvider must live INSIDE BrowserRouter because it
               reads useLocation/useNavigate. It owns i18n.changeLanguage
               + document.documentElement.lang + the `kx-lang` cookie. */}
-          <LanguageProvider>
-            <ThemeProvider>
-              <AuthProvider>
-                <ToastProvider>
-                  {/* Skip-link target for keyboard users (matches index.html) */}
-                  <main id="main" tabIndex={-1}>
-                    <AppRouter />
-                  </main>
-                  <CookieConsent />
-                  <ReviewPromptModal />
-                </ToastProvider>
-              </AuthProvider>
-            </ThemeProvider>
-          </LanguageProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
+            <LanguageProvider>
+              <ThemeProvider>
+                <AuthProvider>
+                  <ToastProvider>
+                    {/* Skip-link target for keyboard users (matches index.html) */}
+                    <main id="main" tabIndex={-1}>
+                      <AppRouter />
+                    </main>
+                    <CookieConsent />
+                    <ReviewPromptModal />
+                  </ToastProvider>
+                </AuthProvider>
+              </ThemeProvider>
+            </LanguageProvider>
+          </BrowserRouter>
+        </QueryClientProvider>
       </Provider>
     </ErrorBoundary>
   );

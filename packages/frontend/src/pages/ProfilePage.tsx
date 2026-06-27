@@ -3,8 +3,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
-  Avatar, Badge, Button, Card, CardBody, CardHeader, CardTitle, CardDescription,
-  Container, Dialog, Input, PageHeader, Select, Skeleton, Switch,
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  Container,
+  Dialog,
+  Input,
+  PageHeader,
+  Select,
+  Skeleton,
+  Switch,
 } from '../components/ui';
 import { useToast } from '../components/ui/Toast';
 import { useAuth } from '../contexts/AuthContext';
@@ -39,7 +52,12 @@ export default function ProfilePage(): React.ReactElement {
   const [phone, setPhone] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
 
-  const [preferences, setPreferences] = useState<Preferences>({ language: 'fr', theme: 'system', currency: 'EUR', notifications: true });
+  const [preferences, setPreferences] = useState<Preferences>({
+    language: 'fr',
+    theme: 'system',
+    currency: 'EUR',
+    notifications: true,
+  });
   const [savingPrefs, setSavingPrefs] = useState(false);
 
   const [showPwModal, setShowPwModal] = useState(false);
@@ -56,7 +74,10 @@ export default function ProfilePage(): React.ReactElement {
       try {
         const [profileRes, prefRes] = await Promise.allSettled([
           fetch('/api/v1/users/me', { credentials: 'include', signal: controller.signal }),
-          fetch('/api/v1/users/me/preferences', { credentials: 'include', signal: controller.signal }),
+          fetch('/api/v1/users/me/preferences', {
+            credentials: 'include',
+            signal: controller.signal,
+          }),
         ]);
         if (profileRes.status === 'fulfilled' && profileRes.value.ok) {
           const data = (await profileRes.value.json()) as ApiEnvelope<ProfileData>;
@@ -68,16 +89,25 @@ export default function ProfilePage(): React.ReactElement {
         }
         if (prefRes.status === 'fulfilled' && prefRes.value.ok) {
           const data = (await prefRes.value.json()) as ApiEnvelope<Preferences>;
-          if (mountedRef.current && data.data) {setPreferences(data.data);}
+          if (mountedRef.current && data.data) {
+            setPreferences(data.data);
+          }
         }
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') {toast.error('Impossible de charger le profil');}
+        if ((err as Error).name !== 'AbortError') {
+          toast.error('Impossible de charger le profil');
+        }
       } finally {
-        if (mountedRef.current) {setLoading(false);}
+        if (mountedRef.current) {
+          setLoading(false);
+        }
       }
     })();
 
-    return () => { mountedRef.current = false; controller.abort(); };
+    return () => {
+      mountedRef.current = false;
+      controller.abort();
+    };
   }, [toast]);
 
   const saveProfile = async (): Promise<void> => {
@@ -90,12 +120,16 @@ export default function ProfilePage(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, phone }),
       });
-      if (!res.ok) {throw new Error('Échec de la mise à jour');}
+      if (!res.ok) {
+        throw new Error('Échec de la mise à jour');
+      }
       toast.success('Profil mis à jour');
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
-      if (mountedRef.current) {setSavingProfile(false);}
+      if (mountedRef.current) {
+        setSavingProfile(false);
+      }
     }
   };
 
@@ -108,18 +142,26 @@ export default function ProfilePage(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(preferences),
       });
-      if (!res.ok) {throw new Error('Échec de la mise à jour');}
+      if (!res.ok) {
+        throw new Error('Échec de la mise à jour');
+      }
       toast.success('Préférences enregistrées');
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
-      if (mountedRef.current) {setSavingPrefs(false);}
+      if (mountedRef.current) {
+        setSavingPrefs(false);
+      }
     }
   };
 
   const changePassword = async (): Promise<void> => {
-    if (newPassword !== confirmPassword) {return toast.error('Les mots de passe ne correspondent pas');}
-    if (newPassword.length < 8) {return toast.error('8 caractères minimum');}
+    if (newPassword !== confirmPassword) {
+      return toast.error('Les mots de passe ne correspondent pas');
+    }
+    if (newPassword.length < 8) {
+      return toast.error('8 caractères minimum');
+    }
     setChangingPw(true);
     try {
       const res = await fetch('/api/v1/auth/password/change', {
@@ -128,14 +170,20 @@ export default function ProfilePage(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
-      if (!res.ok) {throw new Error('Mot de passe actuel incorrect');}
+      if (!res.ok) {
+        throw new Error('Mot de passe actuel incorrect');
+      }
       setShowPwModal(false);
-      setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
       toast.success('Mot de passe modifié');
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
-      if (mountedRef.current) {setChangingPw(false);}
+      if (mountedRef.current) {
+        setChangingPw(false);
+      }
     }
   };
 
@@ -173,7 +221,9 @@ export default function ProfilePage(): React.ReactElement {
                 <Mail className="h-3.5 w-3.5" /> {user?.email}
               </div>
               <div className="mt-3 flex items-center gap-2">
-                <Badge variant="success" dot>Compte vérifié</Badge>
+                <Badge variant="success" dot>
+                  Compte vérifié
+                </Badge>
                 <Badge variant="info">{user?.role || 'user'}</Badge>
               </div>
             </div>
@@ -188,12 +238,27 @@ export default function ProfilePage(): React.ReactElement {
           </CardHeader>
           <CardBody className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input label="Prénom" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <Input
+                label="Prénom"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
               <Input label="Nom" value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </div>
-            <Input label="Téléphone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} leftIcon={<Phone className="h-4 w-4" />} placeholder="+33 6 12 34 56 78" />
+            <Input
+              label="Téléphone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              leftIcon={<Phone className="h-4 w-4" />}
+              placeholder="+33 6 12 34 56 78"
+            />
             <div className="flex justify-end">
-              <Button onClick={saveProfile} loading={savingProfile} leftIcon={<Check className="h-4 w-4" />}>
+              <Button
+                onClick={saveProfile}
+                loading={savingProfile}
+                leftIcon={<Check className="h-4 w-4" />}
+              >
                 Enregistrer
               </Button>
             </div>
@@ -208,18 +273,30 @@ export default function ProfilePage(): React.ReactElement {
           </CardHeader>
           <CardBody className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-3">
-              <Select label="Langue" value={preferences.language ?? 'fr'} onChange={(e) => setPreferences({ ...preferences, language: e.target.value })}>
+              <Select
+                label="Langue"
+                value={preferences.language ?? 'fr'}
+                onChange={(e) => setPreferences({ ...preferences, language: e.target.value })}
+              >
                 <option value="fr">Français</option>
                 <option value="en">English</option>
                 <option value="es">Español</option>
                 <option value="de">Deutsch</option>
               </Select>
-              <Select label="Thème" value={preferences.theme ?? 'system'} onChange={(e) => setPreferences({ ...preferences, theme: e.target.value })}>
+              <Select
+                label="Thème"
+                value={preferences.theme ?? 'system'}
+                onChange={(e) => setPreferences({ ...preferences, theme: e.target.value })}
+              >
                 <option value="system">Système</option>
                 <option value="light">Clair</option>
                 <option value="dark">Sombre</option>
               </Select>
-              <Select label="Devise" value={preferences.currency ?? 'EUR'} onChange={(e) => setPreferences({ ...preferences, currency: e.target.value })}>
+              <Select
+                label="Devise"
+                value={preferences.currency ?? 'EUR'}
+                onChange={(e) => setPreferences({ ...preferences, currency: e.target.value })}
+              >
                 <option value="EUR">EUR (€)</option>
                 <option value="USD">USD ($)</option>
                 <option value="GBP">GBP (£)</option>
@@ -232,7 +309,11 @@ export default function ProfilePage(): React.ReactElement {
               onChange={(e) => setPreferences({ ...preferences, notifications: e.target.checked })}
             />
             <div className="flex justify-end">
-              <Button onClick={savePreferences} loading={savingPrefs} leftIcon={<Check className="h-4 w-4" />}>
+              <Button
+                onClick={savePreferences}
+                loading={savingPrefs}
+                leftIcon={<Check className="h-4 w-4" />}
+              >
                 Enregistrer
               </Button>
             </div>
@@ -246,7 +327,11 @@ export default function ProfilePage(): React.ReactElement {
             <CardDescription>Mot de passe et accès à votre compte.</CardDescription>
           </CardHeader>
           <CardBody className="space-y-3">
-            <Button variant="outline" onClick={() => setShowPwModal(true)} leftIcon={<KeyRound className="h-4 w-4" />}>
+            <Button
+              variant="outline"
+              onClick={() => setShowPwModal(true)}
+              leftIcon={<KeyRound className="h-4 w-4" />}
+            >
               Changer mon mot de passe
             </Button>
             <Link
@@ -274,17 +359,42 @@ export default function ProfilePage(): React.ReactElement {
         description="Votre mot de passe actuel est requis pour confirmer l'opération."
         footer={
           <>
-            <Button variant="ghost" onClick={() => setShowPwModal(false)}>Annuler</Button>
-            <Button onClick={changePassword} loading={changingPw} disabled={!currentPassword || !newPassword || !confirmPassword}>
+            <Button variant="ghost" onClick={() => setShowPwModal(false)}>
+              Annuler
+            </Button>
+            <Button
+              onClick={changePassword}
+              loading={changingPw}
+              disabled={!currentPassword || !newPassword || !confirmPassword}
+            >
               Modifier
             </Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Input type="password" label="Mot de passe actuel" autoComplete="current-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-          <Input type="password" label="Nouveau mot de passe" description="8 caractères minimum" autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-          <Input type="password" label="Confirmation" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          <Input
+            type="password"
+            label="Mot de passe actuel"
+            autoComplete="current-password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+          />
+          <Input
+            type="password"
+            label="Nouveau mot de passe"
+            description="8 caractères minimum"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <Input
+            type="password"
+            label="Confirmation"
+            autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
         </div>
       </Dialog>
     </div>

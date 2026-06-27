@@ -112,13 +112,25 @@ export const PermissionsMigration: Migration = {
 
     // Create indexes
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_permissions_code ON permissions(code)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_permissions_resource ON permissions(resource)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_permissions_resource ON permissions(resource)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_permissions_action ON permissions(action)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_role_permissions_role ON role_permissions(role_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_role_permissions_permission ON role_permissions(permission_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_permissions_user ON user_permissions(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_permission_cache_user ON permission_cache(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_permission_cache_expires ON permission_cache(expires_at)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_role_permissions_role ON role_permissions(role_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_role_permissions_permission ON role_permissions(permission_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_user_permissions_user ON user_permissions(user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_permission_cache_user ON permission_cache(user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_permission_cache_expires ON permission_cache(expires_at)`
+    );
 
     // Trigger for updated_at
     await tx.execute(`

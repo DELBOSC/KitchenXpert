@@ -38,12 +38,7 @@ export function isNonNegative(value: number): boolean {
 /**
  * Vérifie si un nombre est dans une plage donnée
  */
-export function isInRange(
-  value: number,
-  min: number,
-  max: number,
-  inclusive = true
-): boolean {
+export function isInRange(value: number, min: number, max: number, inclusive = true): boolean {
   if (!isValidNumber(value)) return false;
 
   if (inclusive) {
@@ -178,11 +173,14 @@ export function isValidId(id: number): boolean {
 /**
  * Vérifie si un nombre est une année valide
  */
-export function isValidYear(year: number, options?: {
-  minYear?: number;
-  maxYear?: number;
-  allowFuture?: boolean;
-}): boolean {
+export function isValidYear(
+  year: number,
+  options?: {
+    minYear?: number;
+    maxYear?: number;
+    allowFuture?: boolean;
+  }
+): boolean {
   const { minYear = 1900, allowFuture = false } = options || {};
   const currentYear = new Date().getFullYear();
   const maxYear = options?.maxYear ?? (allowFuture ? currentYear + 10 : currentYear);

@@ -290,7 +290,7 @@ export class PaymentController {
       if (customer.deleted || customer.metadata?.userId !== userId) {
         res.status(403).json({
           success: false,
-          error: 'You are not authorized to view this customer\'s payment history',
+          error: "You are not authorized to view this customer's payment history",
         });
         return;
       }
@@ -367,12 +367,19 @@ export class PaymentController {
       const paymentIntent = await stripeService.getPaymentIntent(paymentIntentId);
       if (paymentIntent.customer) {
         const customer = await stripeService.getCustomer(paymentIntent.customer as string);
-        if (customer.deleted || (customer.metadata?.userId !== userId && req.user?.role !== 'admin')) {
-          res.status(403).json({ success: false, error: 'You do not have permission to refund this payment' });
+        if (
+          customer.deleted ||
+          (customer.metadata?.userId !== userId && req.user?.role !== 'admin')
+        ) {
+          res
+            .status(403)
+            .json({ success: false, error: 'You do not have permission to refund this payment' });
           return;
         }
       } else if (req.user?.role !== 'admin') {
-        res.status(403).json({ success: false, error: 'You do not have permission to refund this payment' });
+        res
+          .status(403)
+          .json({ success: false, error: 'You do not have permission to refund this payment' });
         return;
       }
 
@@ -381,7 +388,9 @@ export class PaymentController {
       res.status(200).json({
         success: true,
         data: refund,
-        message: amount ? 'Partial refund processed successfully' : 'Full refund processed successfully',
+        message: amount
+          ? 'Partial refund processed successfully'
+          : 'Full refund processed successfully',
       });
     } catch (error) {
       if (error instanceof StripeServiceError) {
@@ -566,7 +575,9 @@ export class PaymentController {
       const customer = await stripeService.getCustomer(customerId);
       const activeCustomer = customer as Stripe.Customer;
       if (activeCustomer.metadata?.userId !== userId && req.user?.role !== 'admin') {
-        res.status(403).json({ success: false, error: 'Access denied: customer does not belong to you' });
+        res
+          .status(403)
+          .json({ success: false, error: 'Access denied: customer does not belong to you' });
         return;
       }
     } catch {
@@ -606,7 +617,7 @@ export class PaymentController {
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           clientSecret,
           customerId: subscription.customer,
-          priceId: (subscription.items.data[0]?.price)?.id,
+          priceId: subscription.items.data[0]?.price?.id,
         },
         message: 'Subscription created successfully',
       });
@@ -650,7 +661,10 @@ export class PaymentController {
       const subscription = await stripeService.getSubscription(id);
 
       // Verify ownership via customer metadata
-      const customerId = typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id;
+      const customerId =
+        typeof subscription.customer === 'string'
+          ? subscription.customer
+          : subscription.customer.id;
       const customer = await stripeService.getCustomer(customerId);
       const activeCustomer = customer as Stripe.Customer;
       if (activeCustomer.metadata?.userId !== userId && req.user?.role !== 'admin') {
@@ -668,7 +682,7 @@ export class PaymentController {
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
           canceledAt: subscription.canceled_at ? new Date(subscription.canceled_at * 1000) : null,
           customerId: subscription.customer,
-          priceId: (subscription.items.data[0]?.price)?.id,
+          priceId: subscription.items.data[0]?.price?.id,
           metadata: subscription.metadata,
         },
       });
@@ -712,7 +726,8 @@ export class PaymentController {
     // Verify ownership before cancelling
     try {
       const existingSub = await stripeService.getSubscription(id);
-      const customerId = typeof existingSub.customer === 'string' ? existingSub.customer : existingSub.customer.id;
+      const customerId =
+        typeof existingSub.customer === 'string' ? existingSub.customer : existingSub.customer.id;
       const customer = await stripeService.getCustomer(customerId);
       const activeCustomer = customer as Stripe.Customer;
       if (activeCustomer.metadata?.userId !== userId && req.user?.role !== 'admin') {
@@ -804,7 +819,7 @@ export class PaymentController {
           currentPeriodStart: new Date(sub.current_period_start * 1000),
           currentPeriodEnd: new Date(sub.current_period_end * 1000),
           cancelAtPeriodEnd: sub.cancel_at_period_end,
-          priceId: (sub.items.data[0]?.price)?.id,
+          priceId: sub.items.data[0]?.price?.id,
         })),
         meta: {
           count: subscriptions.data.length,

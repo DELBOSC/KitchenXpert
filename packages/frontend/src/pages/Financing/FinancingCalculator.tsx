@@ -116,10 +116,16 @@ const EQUIPMENT_OPTIONS: Array<{ value: EquipmentType; label: string }> = [
 // ─── Helper ─────────────────────────────────────────────────────────────────
 
 /** Format a price as monthly installment string */
-export function formatMonthlyPrice(price: number, months: number = 36, annualRate: number = 4.7): string {
-  if (price <= 0 || months <= 0) {return '0 EUR/mois';}
+export function formatMonthlyPrice(
+  price: number,
+  months: number = 36,
+  annualRate: number = 4.7
+): string {
+  if (price <= 0 || months <= 0) {
+    return '0 EUR/mois';
+  }
   const monthlyRate = annualRate / 100 / 12;
-  const monthly = price * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
+  const monthly = (price * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
   return `${Math.round(monthly)} EUR/mois`;
 }
 
@@ -155,7 +161,10 @@ export default function FinancingCalculator(): React.ReactElement {
   const initialAmount = Number(searchParams.get('amount')) || 15000;
   const [totalAmount, setTotalAmount] = useState<number>(initialAmount);
   const [downPaymentPercent, setDownPaymentPercent] = useState<number>(10);
-  const downPayment = useMemo(() => Math.round(totalAmount * downPaymentPercent / 100), [totalAmount, downPaymentPercent]);
+  const downPayment = useMemo(
+    () => Math.round((totalAmount * downPaymentPercent) / 100),
+    [totalAmount, downPaymentPercent]
+  );
   const loanAmount = useMemo(() => totalAmount - downPayment, [totalAmount, downPayment]);
 
   // ── Section 2: Financing Simulation ────────────────────────────────────
@@ -201,7 +210,9 @@ export default function FinancingCalculator(): React.ReactElement {
           setProviders(response.data);
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
       }
     }
 
@@ -214,7 +225,9 @@ export default function FinancingCalculator(): React.ReactElement {
 
   // ── Simulate financing ─────────────────────────────────────────────────
   const runSimulation = useCallback(async () => {
-    if (loanAmount <= 0) {return;}
+    if (loanAmount <= 0) {
+      return;
+    }
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -230,16 +243,20 @@ export default function FinancingCalculator(): React.ReactElement {
           kitchenId: searchParams.get('kitchenId') || undefined,
           projectId: searchParams.get('projectId') || undefined,
         },
-        { signal: controller.signal },
+        { signal: controller.signal }
       );
 
       if (response.success && response.data) {
         setSimulation(response.data);
       } else {
-        setSimulationError(response.error?.message || t('financing.simulationError', 'Failed to run simulation'));
+        setSimulationError(
+          response.error?.message || t('financing.simulationError', 'Failed to run simulation')
+        );
       }
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AbortError') {return;}
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      }
       setSimulationError(t('financing.networkError', 'Network error. Please try again.'));
     } finally {
       setSimulationLoading(false);
@@ -268,16 +285,20 @@ export default function FinancingCalculator(): React.ReactElement {
           isRenovation,
           buildingAge: isRenovation ? buildingAge : undefined,
         },
-        { signal: controller.signal },
+        { signal: controller.signal }
       );
 
       if (response.success && response.data) {
         setEcoAids(response.data);
       } else {
-        setEcoAidsError(response.error?.message || t('financing.ecoAidsError', 'Failed to calculate eco aids'));
+        setEcoAidsError(
+          response.error?.message || t('financing.ecoAidsError', 'Failed to calculate eco aids')
+        );
       }
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AbortError') {return;}
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      }
       setEcoAidsError(t('financing.networkError', 'Network error. Please try again.'));
     } finally {
       setEcoAidsLoading(false);
@@ -286,16 +307,16 @@ export default function FinancingCalculator(): React.ReactElement {
 
   // ── Get selected duration data ─────────────────────────────────────────
   const selectedDurationData = useMemo(() => {
-    if (!simulation) {return null;}
-    return simulation.durations.find(d => d.months === selectedDuration) || null;
+    if (!simulation) {
+      return null;
+    }
+    return simulation.durations.find((d) => d.months === selectedDuration) || null;
   }, [simulation, selectedDuration]);
 
   // ── Toggle equipment type ──────────────────────────────────────────────
   const toggleEquipment = (equipType: EquipmentType) => {
-    setSelectedEquipment(prev =>
-      prev.includes(equipType)
-        ? prev.filter(e => e !== equipType)
-        : [...prev, equipType]
+    setSelectedEquipment((prev) =>
+      prev.includes(equipType) ? prev.filter((e) => e !== equipType) : [...prev, equipType]
     );
   };
 
@@ -308,7 +329,10 @@ export default function FinancingCalculator(): React.ReactElement {
           {t('financing.title', 'Calculateur de financement')}
         </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-400">
-          {t('financing.subtitle', 'Simulez votre financement, comparez les offres et decouvrez vos aides.')}
+          {t(
+            'financing.subtitle',
+            'Simulez votre financement, comparez les offres et decouvrez vos aides.'
+          )}
         </p>
       </div>
 
@@ -323,7 +347,10 @@ export default function FinancingCalculator(): React.ReactElement {
 
             {/* Total Amount */}
             <div className="mb-4">
-              <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="totalAmount"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('financing.totalAmount', 'Montant total (EUR)')}
               </label>
               <input
@@ -333,15 +360,19 @@ export default function FinancingCalculator(): React.ReactElement {
                 max={200000}
                 step={500}
                 value={totalAmount}
-                onChange={e => setTotalAmount(Math.max(0, Number(e.target.value)))}
+                onChange={(e) => setTotalAmount(Math.max(0, Number(e.target.value)))}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
             {/* Down Payment Slider */}
             <div className="mb-4">
-              <label htmlFor="downPaymentSlider" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {t('financing.downPayment', 'Apport personnel')}: {downPaymentPercent}% ({formatCurrency(downPayment)})
+              <label
+                htmlFor="downPaymentSlider"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t('financing.downPayment', 'Apport personnel')}: {downPaymentPercent}% (
+                {formatCurrency(downPayment)})
               </label>
               <input
                 id="downPaymentSlider"
@@ -350,7 +381,7 @@ export default function FinancingCalculator(): React.ReactElement {
                 max={50}
                 step={5}
                 value={downPaymentPercent}
-                onChange={e => setDownPaymentPercent(Number(e.target.value))}
+                onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
                 className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
               <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -379,24 +410,32 @@ export default function FinancingCalculator(): React.ReactElement {
 
             {/* Income Bracket */}
             <div className="mb-4">
-              <label htmlFor="incomeBracket" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {t('financing.incomeBracket', "Tranche de revenus")}
+              <label
+                htmlFor="incomeBracket"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t('financing.incomeBracket', 'Tranche de revenus')}
               </label>
               <select
                 id="incomeBracket"
                 value={incomeBracket}
-                onChange={e => setIncomeBracket(e.target.value as IncomeBracket)}
+                onChange={(e) => setIncomeBracket(e.target.value as IncomeBracket)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
               >
-                {INCOME_BRACKETS.map(b => (
-                  <option key={b.value} value={b.value}>{b.label}</option>
+                {INCOME_BRACKETS.map((b) => (
+                  <option key={b.value} value={b.value}>
+                    {b.label}
+                  </option>
                 ))}
               </select>
             </div>
 
             {/* Household Size */}
             <div className="mb-4">
-              <label htmlFor="householdSize" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="householdSize"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('financing.householdSize', 'Taille du foyer')}
               </label>
               <input
@@ -405,7 +444,7 @@ export default function FinancingCalculator(): React.ReactElement {
                 min={1}
                 max={20}
                 value={householdSize}
-                onChange={e => setHouseholdSize(Math.max(1, Number(e.target.value)))}
+                onChange={(e) => setHouseholdSize(Math.max(1, Number(e.target.value)))}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -416,10 +455,13 @@ export default function FinancingCalculator(): React.ReactElement {
                 id="isRenovation"
                 type="checkbox"
                 checked={isRenovation}
-                onChange={e => setIsRenovation(e.target.checked)}
+                onChange={(e) => setIsRenovation(e.target.checked)}
                 className="h-4 w-4 text-blue-600 rounded border-gray-300 dark:border-gray-600 focus:ring-blue-500"
               />
-              <label htmlFor="isRenovation" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="isRenovation"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 {t('financing.isRenovation', 'Projet de renovation')}
               </label>
             </div>
@@ -427,7 +469,10 @@ export default function FinancingCalculator(): React.ReactElement {
             {/* Building Age */}
             {isRenovation && (
               <div className="mb-4">
-                <label htmlFor="buildingAge" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="buildingAge"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   {t('financing.buildingAge', 'Age du logement (annees)')}
                 </label>
                 <input
@@ -436,7 +481,7 @@ export default function FinancingCalculator(): React.ReactElement {
                   min={0}
                   max={500}
                   value={buildingAge}
-                  onChange={e => setBuildingAge(Math.max(0, Number(e.target.value)))}
+                  onChange={(e) => setBuildingAge(Math.max(0, Number(e.target.value)))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -448,8 +493,11 @@ export default function FinancingCalculator(): React.ReactElement {
                 {t('financing.equipmentTypes', 'Equipements eligibles')}
               </span>
               <div className="space-y-2 max-h-48 overflow-y-auto">
-                {EQUIPMENT_OPTIONS.map(opt => (
-                  <label key={opt.value} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                {EQUIPMENT_OPTIONS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={selectedEquipment.includes(opt.value)}
@@ -501,7 +549,7 @@ export default function FinancingCalculator(): React.ReactElement {
                 <p className="text-red-700 dark:text-red-400">{simulationError}</p>
                 <button
                   type="button"
-                  onClick={() => setRetryCount(c => c + 1)}
+                  onClick={() => setRetryCount((c) => c + 1)}
                   className="mt-2 text-sm text-red-600 dark:text-red-400 underline hover:no-underline"
                 >
                   {t('common.tryAgain', 'Reessayer')}
@@ -513,7 +561,7 @@ export default function FinancingCalculator(): React.ReactElement {
               <>
                 {/* Duration Tabs */}
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {DURATIONS.map(months => (
+                  {DURATIONS.map((months) => (
                     <button
                       key={months}
                       type="button"
@@ -554,7 +602,8 @@ export default function FinancingCalculator(): React.ReactElement {
                       </thead>
                       <tbody>
                         {selectedDurationData.providers.map((provider, _idx) => {
-                          const isBest = provider.providerId === selectedDurationData.bestOption.providerId;
+                          const isBest =
+                            provider.providerId === selectedDurationData.bestOption.providerId;
                           return (
                             <tr
                               key={provider.providerId}
@@ -600,9 +649,12 @@ export default function FinancingCalculator(): React.ReactElement {
                     {t('financing.paymentByDuration', 'Mensualite par duree (meilleure offre)')}
                   </h3>
                   <div className="space-y-3">
-                    {simulation.durations.map(d => {
-                      const maxMonthly = Math.max(...simulation.durations.map(dur => dur.bestOption.monthlyPayment));
-                      const widthPercent = maxMonthly > 0 ? (d.bestOption.monthlyPayment / maxMonthly) * 100 : 0;
+                    {simulation.durations.map((d) => {
+                      const maxMonthly = Math.max(
+                        ...simulation.durations.map((dur) => dur.bestOption.monthlyPayment)
+                      );
+                      const widthPercent =
+                        maxMonthly > 0 ? (d.bestOption.monthlyPayment / maxMonthly) * 100 : 0;
 
                       return (
                         <div key={d.months} className="flex items-center gap-3">
@@ -642,77 +694,109 @@ export default function FinancingCalculator(): React.ReactElement {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* MaPrimeRenov */}
-                <div className={`rounded-lg border p-4 ${
-                  ecoAids.maprimerenov.eligible
-                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
-                }`}>
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">MaPrimeRenov</div>
-                  <div className={`text-2xl font-bold mt-1 ${
+                <div
+                  className={`rounded-lg border p-4 ${
                     ecoAids.maprimerenov.eligible
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-gray-400 dark:text-gray-500'
-                  }`}>
-                    {ecoAids.maprimerenov.eligible ? formatCurrency(ecoAids.maprimerenov.amount) : t('financing.notEligible', 'Non eligible')}
+                      ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
+                      : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
+                  }`}
+                >
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    MaPrimeRenov
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{ecoAids.maprimerenov.details}</p>
+                  <div
+                    className={`text-2xl font-bold mt-1 ${
+                      ecoAids.maprimerenov.eligible
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-gray-400 dark:text-gray-500'
+                    }`}
+                  >
+                    {ecoAids.maprimerenov.eligible
+                      ? formatCurrency(ecoAids.maprimerenov.amount)
+                      : t('financing.notEligible', 'Non eligible')}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {ecoAids.maprimerenov.details}
+                  </p>
                 </div>
 
                 {/* CEE */}
-                <div className={`rounded-lg border p-4 ${
-                  ecoAids.cee.eligible
-                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
-                }`}>
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">CEE</div>
-                  <div className={`text-2xl font-bold mt-1 ${
+                <div
+                  className={`rounded-lg border p-4 ${
                     ecoAids.cee.eligible
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-gray-400 dark:text-gray-500'
-                  }`}>
-                    {ecoAids.cee.eligible ? formatCurrency(ecoAids.cee.amount) : t('financing.notEligible', 'Non eligible')}
+                      ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
+                      : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
+                  }`}
+                >
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">CEE</div>
+                  <div
+                    className={`text-2xl font-bold mt-1 ${
+                      ecoAids.cee.eligible
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-gray-400 dark:text-gray-500'
+                    }`}
+                  >
+                    {ecoAids.cee.eligible
+                      ? formatCurrency(ecoAids.cee.amount)
+                      : t('financing.notEligible', 'Non eligible')}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{ecoAids.cee.details}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {ecoAids.cee.details}
+                  </p>
                 </div>
 
                 {/* TVA Reduite */}
-                <div className={`rounded-lg border p-4 ${
-                  ecoAids.tvaReduite.applicable
-                    ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
-                }`}>
+                <div
+                  className={`rounded-lg border p-4 ${
+                    ecoAids.tvaReduite.applicable
+                      ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
+                      : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
+                  }`}
+                >
                   <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     {t('financing.tvaReduite', 'TVA Reduite')}
                   </div>
-                  <div className={`text-2xl font-bold mt-1 ${
-                    ecoAids.tvaReduite.applicable
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-gray-400 dark:text-gray-500'
-                  }`}>
+                  <div
+                    className={`text-2xl font-bold mt-1 ${
+                      ecoAids.tvaReduite.applicable
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-gray-400 dark:text-gray-500'
+                    }`}
+                  >
                     {ecoAids.tvaReduite.applicable
                       ? `${ecoAids.tvaReduite.rate}% (-${formatCurrency(ecoAids.tvaReduite.savings)})`
                       : t('financing.standardRate', 'Taux standard 20%')}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{ecoAids.tvaReduite.details}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {ecoAids.tvaReduite.details}
+                  </p>
                 </div>
 
                 {/* Eco-PTZ */}
-                <div className={`rounded-lg border p-4 ${
-                  ecoAids.ecoPtz.eligible
-                    ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
-                }`}>
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Eco-PTZ</div>
-                  <div className={`text-2xl font-bold mt-1 ${
+                <div
+                  className={`rounded-lg border p-4 ${
                     ecoAids.ecoPtz.eligible
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-400 dark:text-gray-500'
-                  }`}>
+                      ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
+                  }`}
+                >
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Eco-PTZ
+                  </div>
+                  <div
+                    className={`text-2xl font-bold mt-1 ${
+                      ecoAids.ecoPtz.eligible
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-gray-400 dark:text-gray-500'
+                    }`}
+                  >
                     {ecoAids.ecoPtz.eligible
                       ? `${t('financing.eligible', 'Eligible')} (${formatCurrency(ecoAids.ecoPtz.maxAmount)} max)`
                       : t('financing.notEligible', 'Non eligible')}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{ecoAids.ecoPtz.details}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {ecoAids.ecoPtz.details}
+                  </p>
                 </div>
               </div>
 
@@ -757,7 +841,8 @@ export default function FinancingCalculator(): React.ReactElement {
                     {formatCurrencyDecimal(simulation.bestOverall.monthlyPayment)}
                   </div>
                   <div className="text-sm opacity-80 mt-1">
-                    / {t('financing.perMonth', 'mois')} ({simulation.bestOverall.months} {t('financing.months', 'mois')})
+                    / {t('financing.perMonth', 'mois')} ({simulation.bestOverall.months}{' '}
+                    {t('financing.months', 'mois')})
                   </div>
                   <div className="text-xs opacity-60 mt-1">
                     {simulation.bestOverall.providerName} - {simulation.bestOverall.rate}%
@@ -776,10 +861,13 @@ export default function FinancingCalculator(): React.ReactElement {
                     </div>
                     <div className="text-lg">
                       <span className="opacity-80">{t('financing.credit', 'Credit')}:</span>{' '}
-                      <span className="font-semibold">{formatCurrency(simulation.bestOverall.totalCost + downPayment)}</span>
+                      <span className="font-semibold">
+                        {formatCurrency(simulation.bestOverall.totalCost + downPayment)}
+                      </span>
                     </div>
                     <div className="text-xs opacity-60">
-                      ({t('financing.totalInterestLabel', 'interets')}: +{formatCurrency(simulation.bestOverall.totalInterest)})
+                      ({t('financing.totalInterestLabel', 'interets')}: +
+                      {formatCurrency(simulation.bestOverall.totalInterest)})
                     </div>
                   </div>
                 </div>

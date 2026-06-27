@@ -149,15 +149,17 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        return next(new ForbiddenError(`Access denied. Required roles: ${roles.join(', ')}`));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          return next(new ForbiddenError(`Access denied. Required roles: ${roles.join(', ')}`));
+        }
+        next();
+      },
   };
 });
 
@@ -184,12 +186,9 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -244,10 +243,7 @@ describe('Payment Routes', () => {
     it('should pass userId in metadata', async () => {
       mockStripeService.createPaymentIntent.mockResolvedValue(mockPaymentIntent);
 
-      await authedRequest(app)
-        .post('/payments/intent')
-        .send(validPayload)
-        .expect(201);
+      await authedRequest(app).post('/payments/intent').send(validPayload).expect(201);
 
       expect(mockStripeService.createPaymentIntent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -286,10 +282,7 @@ describe('Payment Routes', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .post('/payments/intent')
-        .send(validPayload)
-        .expect(401);
+      const response = await request(app).post('/payments/intent').send(validPayload).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -357,9 +350,7 @@ describe('Payment Routes', () => {
     it('should return payment intent details for the owner', async () => {
       mockStripeService.getPaymentIntent.mockResolvedValue(mockPaymentIntent);
 
-      const response = await authedRequest(app)
-        .get('/payments/intent/pi_test_123')
-        .expect(200);
+      const response = await authedRequest(app).get('/payments/intent/pi_test_123').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('pi_test_123');
@@ -373,9 +364,7 @@ describe('Payment Routes', () => {
         metadata: { userId: 'other-user-999' },
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/intent/pi_other_user')
-        .expect(403);
+      const response = await authedRequest(app).get('/payments/intent/pi_other_user').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Not authorized');
@@ -388,9 +377,7 @@ describe('Payment Routes', () => {
         metadata: { userId: 'other-user-999' },
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/intent/pi_other_user')
-        .expect(200);
+      const response = await authedRequest(app).get('/payments/intent/pi_other_user').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -400,17 +387,13 @@ describe('Payment Routes', () => {
         new StripeServiceError('PAYMENT_INTENT_NOT_FOUND', 'Payment intent not found')
       );
 
-      const response = await authedRequest(app)
-        .get('/payments/intent/pi_nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/payments/intent/pi_nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .get('/payments/intent/pi_test_123')
-        .expect(401);
+      const response = await request(app).get('/payments/intent/pi_test_123').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -437,7 +420,7 @@ describe('Payment Routes', () => {
       expect(response.body.data.status).toBe('canceled');
     });
 
-    it('should return 403 when trying to cancel another user\'s payment (IDOR)', async () => {
+    it("should return 403 when trying to cancel another user's payment (IDOR)", async () => {
       mockStripeService.getPaymentIntent.mockResolvedValue({
         id: 'pi_other',
         metadata: { userId: 'other-user' },
@@ -538,9 +521,7 @@ describe('Payment Routes', () => {
 
       mockStripeService.handleWebhook.mockReturnValue(mockEvent);
       // processWebhookEvent fails but response is still 200
-      mockStripeService.processWebhookEvent.mockRejectedValue(
-        new Error('Processing error')
-      );
+      mockStripeService.processWebhookEvent.mockRejectedValue(new Error('Processing error'));
 
       const response = await request(app)
         .post('/payments/webhook')
@@ -750,10 +731,7 @@ describe('Payment Routes', () => {
     it('should return 400 for missing paymentIntentId', async () => {
       currentTestUser = { userId: 'admin-user', email: 'admin@test.com', role: 'admin' };
 
-      const response = await authedRequest(app)
-        .post('/payments/refund')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).post('/payments/refund').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -840,9 +818,7 @@ describe('Payment Routes', () => {
     it('should return customer details for the owner', async () => {
       mockStripeService.getCustomer.mockResolvedValue(mockCustomer);
 
-      const response = await authedRequest(app)
-        .get('/payments/customers/cus_test_123')
-        .expect(200);
+      const response = await authedRequest(app).get('/payments/customers/cus_test_123').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('cus_test_123');
@@ -856,9 +832,7 @@ describe('Payment Routes', () => {
         metadata: { userId: 'other-user-999' },
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/customers/cus_other')
-        .expect(403);
+      const response = await authedRequest(app).get('/payments/customers/cus_other').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Access denied');
@@ -871,9 +845,7 @@ describe('Payment Routes', () => {
         metadata: { userId: 'some-other-user' },
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/customers/cus_other')
-        .expect(200);
+      const response = await authedRequest(app).get('/payments/customers/cus_other').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -884,9 +856,7 @@ describe('Payment Routes', () => {
         deleted: true,
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/customers/cus_deleted')
-        .expect(404);
+      const response = await authedRequest(app).get('/payments/customers/cus_deleted').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('deleted');
@@ -905,9 +875,7 @@ describe('Payment Routes', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      const response = await request(app)
-        .get('/payments/customers/cus_test_123')
-        .expect(401);
+      const response = await request(app).get('/payments/customers/cus_test_123').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -920,9 +888,7 @@ describe('Payment Routes', () => {
         metadata: { userId: 'user-B' },
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/customers/cus_test_123')
-        .expect(403);
+      const response = await authedRequest(app).get('/payments/customers/cus_test_123').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -959,10 +925,7 @@ describe('Payment Routes', () => {
     it('should include userId in customer metadata', async () => {
       mockStripeService.createCustomer.mockResolvedValue(mockCreatedCustomer);
 
-      await authedRequest(app)
-        .post('/payments/customers')
-        .send(validPayload)
-        .expect(201);
+      await authedRequest(app).post('/payments/customers').send(validPayload).expect(201);
 
       expect(mockStripeService.createCustomer).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1076,9 +1039,7 @@ describe('Payment Routes', () => {
     });
 
     it('should return 400 when customerId is missing', async () => {
-      const response = await authedRequest(app)
-        .get('/payments/history?limit=10')
-        .expect(400);
+      const response = await authedRequest(app).get('/payments/history?limit=10').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -1124,9 +1085,7 @@ describe('Payment Routes', () => {
         has_more: false,
       });
 
-      const response = await request(app)
-        .get('/payments/prices')
-        .expect(200);
+      const response = await request(app).get('/payments/prices').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -1140,9 +1099,7 @@ describe('Payment Routes', () => {
         new StripeServiceError('PRICES_LIST_FAILED', 'Failed to list prices')
       );
 
-      const response = await request(app)
-        .get('/payments/prices')
-        .expect(400);
+      const response = await request(app).get('/payments/prices').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -1166,9 +1123,7 @@ describe('Payment Routes', () => {
         has_more: false,
       });
 
-      const response = await request(app)
-        .get('/payments/products')
-        .expect(200);
+      const response = await request(app).get('/payments/products').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -1180,9 +1135,7 @@ describe('Payment Routes', () => {
         new StripeServiceError('PRODUCTS_LIST_FAILED', 'Failed to list products')
       );
 
-      const response = await request(app)
-        .get('/payments/products')
-        .expect(400);
+      const response = await request(app).get('/payments/products').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -1204,9 +1157,7 @@ describe('Payment Routes', () => {
         deleted: false,
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/customers/cus_victim')
-        .expect(403);
+      const response = await authedRequest(app).get('/payments/customers/cus_victim').expect(403);
 
       expect(response.body.success).toBe(false);
       // Should NOT return any customer data
@@ -1225,9 +1176,7 @@ describe('Payment Routes', () => {
         created: 1700000000,
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/intent/pi_victim')
-        .expect(403);
+      const response = await authedRequest(app).get('/payments/intent/pi_victim').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(response.body.data).toBeUndefined();
@@ -1262,9 +1211,7 @@ describe('Payment Routes', () => {
         deleted: false,
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/customers/cus_anyuser')
-        .expect(200);
+      const response = await authedRequest(app).get('/payments/customers/cus_anyuser').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe('cus_anyuser');
@@ -1282,9 +1229,7 @@ describe('Payment Routes', () => {
         created: 1700000000,
       });
 
-      const response = await authedRequest(app)
-        .get('/payments/intent/pi_anyuser')
-        .expect(200);
+      const response = await authedRequest(app).get('/payments/intent/pi_anyuser').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -1311,12 +1256,8 @@ describe('Payment Routes', () => {
         });
 
       const [res1, res2] = await Promise.all([
-        authedRequest(app)
-          .post('/payments/intent')
-          .send({ amount: 1000, currency: 'eur' }),
-        authedRequest(app)
-          .post('/payments/intent')
-          .send({ amount: 2000, currency: 'eur' }),
+        authedRequest(app).post('/payments/intent').send({ amount: 1000, currency: 'eur' }),
+        authedRequest(app).post('/payments/intent').send({ amount: 2000, currency: 'eur' }),
       ]);
 
       expect(res1.status).toBe(201);

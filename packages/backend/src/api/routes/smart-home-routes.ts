@@ -17,9 +17,7 @@ const createPlanBody = z.object({
     .object({
       budget: z.number().positive().optional(),
       protocols: z.array(z.string()).optional(),
-      priorities: z
-        .array(z.enum(['security', 'energy', 'comfort', 'automation']))
-        .optional(),
+      priorities: z.array(z.enum(['security', 'energy', 'comfort', 'automation'])).optional(),
       existingHub: z.string().optional(),
       roomDimensions: z
         .object({

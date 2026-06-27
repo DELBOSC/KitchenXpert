@@ -61,19 +61,21 @@ export class SnapSystem {
    * Standard kitchen heights in meters for constraint-based snapping
    */
   private static readonly STANDARD_HEIGHTS = {
-    WORKTOP: 0.85,              // 850mm - standard countertop
-    WALL_CABINET_BOTTOM: 1.4,   // 1400mm - bottom of wall cabinets
-    WALL_CABINET_TOP: 2.2,      // 2200mm - top of wall cabinets
-    PLINTH: 0.1,                // 100mm - plinth height
-    SPLASH_BACK: 0.9,           // 900mm - splash back height
+    WORKTOP: 0.85, // 850mm - standard countertop
+    WALL_CABINET_BOTTOM: 1.4, // 1400mm - bottom of wall cabinets
+    WALL_CABINET_TOP: 2.2, // 2200mm - top of wall cabinets
+    PLINTH: 0.1, // 100mm - plinth height
+    SPLASH_BACK: 0.9, // 900mm - splash back height
   };
 
   constructor(scene: THREE.Scene, config?: Partial<SnapConfig>) {
     this.scene = scene;
     this.config = {
-      gridSize: config?.gridSize ?? 0.001,  // 1mm precision
+      gridSize: config?.gridSize ?? 0.001, // 1mm precision
       snapDistance: config?.snapDistance ?? 0.05, // 5cm tolerance
-      enabledSnaps: config?.enabledSnaps ?? new Set<SnapType>(['grid', 'wall', 'corner', 'alignment', 'face', 'anchor']),
+      enabledSnaps:
+        config?.enabledSnaps ??
+        new Set<SnapType>(['grid', 'wall', 'corner', 'alignment', 'face', 'anchor']),
     };
 
     this.guidesGroup = new THREE.Group();
@@ -185,9 +187,7 @@ export class SnapSystem {
       if (isXWall) {
         // Wall runs along X axis - snap Z
         const wallZ = wallCenter.z;
-        const snapZ = wallZ > position.z
-          ? wallZ - objectSize.z / 2
-          : wallZ + objectSize.z / 2;
+        const snapZ = wallZ > position.z ? wallZ - objectSize.z / 2 : wallZ + objectSize.z / 2;
         const dist = Math.abs(position.z - snapZ);
 
         if (dist < bestDist) {
@@ -197,20 +197,20 @@ export class SnapSystem {
             snappedAxes: ['z'],
             snapType: 'wall',
             snapDistance: dist,
-            guides: [{
-              start: new THREE.Vector3(wallBox.min.x, 0.01, snapZ),
-              end: new THREE.Vector3(wallBox.max.x, 0.01, snapZ),
-              type: 'wall',
-              color: 0x00ff00,
-            }],
+            guides: [
+              {
+                start: new THREE.Vector3(wallBox.min.x, 0.01, snapZ),
+                end: new THREE.Vector3(wallBox.max.x, 0.01, snapZ),
+                type: 'wall',
+                color: 0x00ff00,
+              },
+            ],
           };
         }
       } else {
         // Wall runs along Z axis - snap X
         const wallX = wallCenter.x;
-        const snapX = wallX > position.x
-          ? wallX - objectSize.x / 2
-          : wallX + objectSize.x / 2;
+        const snapX = wallX > position.x ? wallX - objectSize.x / 2 : wallX + objectSize.x / 2;
         const dist = Math.abs(position.x - snapX);
 
         if (dist < bestDist) {
@@ -220,12 +220,14 @@ export class SnapSystem {
             snappedAxes: ['x'],
             snapType: 'wall',
             snapDistance: dist,
-            guides: [{
-              start: new THREE.Vector3(snapX, 0.01, wallBox.min.z),
-              end: new THREE.Vector3(snapX, 0.01, wallBox.max.z),
-              type: 'wall',
-              color: 0x00ff00,
-            }],
+            guides: [
+              {
+                start: new THREE.Vector3(snapX, 0.01, wallBox.min.z),
+                end: new THREE.Vector3(snapX, 0.01, wallBox.max.z),
+                type: 'wall',
+                color: 0x00ff00,
+              },
+            ],
           };
         }
       }
@@ -274,12 +276,14 @@ export class SnapSystem {
           snappedAxes: ['x', 'z'],
           snapType: 'corner',
           snapDistance: dist,
-          guides: [{
-            start: new THREE.Vector3(corner.x, 0.01, corner.z),
-            end: snapped.clone().setY(0.01),
-            type: 'corner',
-            color: 0xff8800,
-          }],
+          guides: [
+            {
+              start: new THREE.Vector3(corner.x, 0.01, corner.z),
+              end: snapped.clone().setY(0.01),
+              type: 'corner',
+              color: 0xff8800,
+            },
+          ],
         };
       }
     }
@@ -313,9 +317,17 @@ export class SnapSystem {
       // Check each face pair
       const faces = [
         { axis: 'x' as const, dir: 1, snapPos: otherCenter.x + otherSize.x / 2 + objectSize.x / 2 },
-        { axis: 'x' as const, dir: -1, snapPos: otherCenter.x - otherSize.x / 2 - objectSize.x / 2 },
+        {
+          axis: 'x' as const,
+          dir: -1,
+          snapPos: otherCenter.x - otherSize.x / 2 - objectSize.x / 2,
+        },
         { axis: 'z' as const, dir: 1, snapPos: otherCenter.z + otherSize.z / 2 + objectSize.z / 2 },
-        { axis: 'z' as const, dir: -1, snapPos: otherCenter.z - otherSize.z / 2 - objectSize.z / 2 },
+        {
+          axis: 'z' as const,
+          dir: -1,
+          snapPos: otherCenter.z - otherSize.z / 2 - objectSize.z / 2,
+        },
       ];
 
       for (const face of faces) {
@@ -330,12 +342,14 @@ export class SnapSystem {
             snappedAxes: [face.axis],
             snapType: 'face',
             snapDistance: dist,
-            guides: [{
-              start: otherCenter.clone().setY(0.01),
-              end: snappedPos.clone().setY(0.01),
-              type: 'face',
-              color: 0x0088ff,
-            }],
+            guides: [
+              {
+                start: otherCenter.clone().setY(0.01),
+                end: snappedPos.clone().setY(0.01),
+                type: 'face',
+                color: 0x0088ff,
+              },
+            ],
           };
         }
       }
@@ -425,12 +439,14 @@ export class SnapSystem {
           snappedAxes: ['x', 'z'],
           snapType: 'anchor',
           snapDistance: dist,
-          guides: [{
-            start: anchor.position.clone().setY(0.01),
-            end: position.clone().setY(0.01),
-            type: 'anchor',
-            color: 0xffff00,
-          }],
+          guides: [
+            {
+              start: anchor.position.clone().setY(0.01),
+              end: position.clone().setY(0.01),
+              type: 'anchor',
+              color: 0xffff00,
+            },
+          ],
         };
       }
     }
@@ -522,15 +538,15 @@ export class SnapSystem {
 
     // Map object types to their standard Y positions (in meters)
     const typeHeights: Record<string, number> = {
-      'base_cabinet': 0,     // Floor level
-      'base': 0,
-      'wall_cabinet': SnapSystem.STANDARD_HEIGHTS.WALL_CABINET_BOTTOM,
-      'wall': SnapSystem.STANDARD_HEIGHTS.WALL_CABINET_BOTTOM,
-      'tall_cabinet': 0,     // Floor level
-      'tall': 0,
-      'cooktop': SnapSystem.STANDARD_HEIGHTS.WORKTOP,
-      'hood': 1.6,           // Above cooktop
-      'sink': 0,             // Floor level (cabinet base)
+      base_cabinet: 0, // Floor level
+      base: 0,
+      wall_cabinet: SnapSystem.STANDARD_HEIGHTS.WALL_CABINET_BOTTOM,
+      wall: SnapSystem.STANDARD_HEIGHTS.WALL_CABINET_BOTTOM,
+      tall_cabinet: 0, // Floor level
+      tall: 0,
+      cooktop: SnapSystem.STANDARD_HEIGHTS.WORKTOP,
+      hood: 1.6, // Above cooktop
+      sink: 0, // Floor level (cabinet base)
     };
 
     const targetY = typeHeights[objectType];

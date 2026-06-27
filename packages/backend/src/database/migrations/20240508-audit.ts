@@ -132,18 +132,32 @@ export const AuditMigration: Migration = {
     // Create indexes
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_audit_logs_user ON audit_logs(user_id)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_audit_logs_resource ON audit_logs(resource_type, resource_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_audit_logs_resource ON audit_logs(resource_type, resource_id)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_audit_logs_created ON audit_logs(created_at)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_audit_logs_severity ON audit_logs(severity)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_audit_logs_ip ON audit_logs(ip_address)`);
 
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_security_events_user ON security_events(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_security_events_type ON security_events(event_type)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_security_events_severity ON security_events(severity)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_security_events_unresolved ON security_events(resolved) WHERE resolved = FALSE`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_security_events_user ON security_events(user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_security_events_type ON security_events(event_type)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_security_events_severity ON security_events(severity)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_security_events_unresolved ON security_events(resolved) WHERE resolved = FALSE`
+    );
 
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_data_access_accessor ON data_access_logs(accessor_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_data_access_subject ON data_access_logs(data_subject_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_data_access_accessor ON data_access_logs(accessor_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_data_access_subject ON data_access_logs(data_subject_id)`
+    );
 
     // Insert default retention policies
     await tx.execute(`

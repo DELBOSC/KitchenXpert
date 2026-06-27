@@ -62,7 +62,12 @@ const alertIdParamSchema = z.object({
  *       200:
  *         description: Price history data
  */
-router.get('/history/:productId', authenticate, validateParams(productIdParamSchema), priceTrackerController.getHistory);
+router.get(
+  '/history/:productId',
+  authenticate,
+  validateParams(productIdParamSchema),
+  priceTrackerController.getHistory
+);
 
 /**
  * @swagger
@@ -103,7 +108,12 @@ router.get('/trends', authenticate, priceTrackerController.getTrends);
  *       200:
  *         description: Buy-time recommendation
  */
-router.get('/best-time/:productId', authenticate, validateParams(productIdParamSchema), priceTrackerController.getBestTime);
+router.get(
+  '/best-time/:productId',
+  authenticate,
+  validateParams(productIdParamSchema),
+  priceTrackerController.getBestTime
+);
 
 /**
  * @swagger
@@ -132,7 +142,12 @@ router.get('/best-time/:productId', authenticate, validateParams(productIdParamS
  *       201:
  *         description: Alert created
  */
-router.post('/alerts', authenticate, validateBody(createAlertSchema), priceTrackerController.createAlert);
+router.post(
+  '/alerts',
+  authenticate,
+  validateBody(createAlertSchema),
+  priceTrackerController.createAlert
+);
 
 /**
  * @swagger
@@ -170,6 +185,11 @@ router.get('/alerts', authenticate, priceTrackerController.getAlerts);
  *       404:
  *         description: Alert not found
  */
-router.delete('/alerts/:id', authenticate, validateParams(alertIdParamSchema), priceTrackerController.deleteAlert);
+router.delete(
+  '/alerts/:id',
+  authenticate,
+  validateParams(alertIdParamSchema),
+  priceTrackerController.deleteAlert
+);
 
 export default router;

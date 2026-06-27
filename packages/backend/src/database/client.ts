@@ -19,10 +19,7 @@ declare global {
 
 const prismaClientSingleton = (): PrismaClient => {
   return new PrismaClient({
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'info', 'warn', 'error']
-        : ['error'],
+    log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
   });
 };
 
@@ -32,8 +29,7 @@ const prismaClientSingleton = (): PrismaClient => {
  * In development, we reuse the existing instance if available to prevent
  * exhausting the database connection pool during hot-reloading.
  */
-export const prisma: PrismaClient =
-  globalThis.prisma ?? prismaClientSingleton();
+export const prisma: PrismaClient = globalThis.prisma ?? prismaClientSingleton();
 
 if (process.env.NODE_ENV !== 'production') {
   globalThis.prisma = prisma;

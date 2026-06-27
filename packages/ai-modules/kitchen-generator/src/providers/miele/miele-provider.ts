@@ -178,36 +178,36 @@ export class MieleProvider implements SmartApplianceProvider {
 
   // Appliance type mapping from Miele to our types
   private readonly applianceTypeMapping: Record<number, ConnectedApplianceType> = {
-    1: 'Washer',           // Washing machine
-    2: 'Dryer',            // Tumble dryer
-    7: 'Dishwasher',       // Dishwasher
-    12: 'Oven',            // Oven
-    13: 'Oven',            // Oven Microwave
-    14: 'Hob',             // Hob
-    15: 'Oven',            // Steam Oven
-    16: 'Microwave',       // Microwave
-    17: 'CoffeeMaker',     // Coffee System
-    18: 'Hood',            // Hood
-    19: 'Refrigerator',    // Fridge
-    20: 'Freezer',         // Freezer
-    21: 'FridgeFreezer',   // Fridge/Freezer Combination
-    23: 'WarmingDrawer',   // Vacuum Drawer
-    24: 'WarmingDrawer',   // Warming Drawer
-    25: 'Oven',            // Dish Warmer
-    27: 'Hob',             // Hob with extraction
-    28: 'Oven',            // Steam Oven Microwave
-    31: 'Oven',            // Steam Oven
-    32: 'WarmingDrawer',   // Wine Storage
-    33: 'WarmingDrawer',   // Wine Conditioning
-    34: 'WarmingDrawer',   // Wine Cabinet Freezer
-    39: 'Oven',            // Double Oven
-    40: 'Oven',            // Double Steam Oven
-    41: 'Oven',            // Double Steam Oven Microwave
-    42: 'Oven',            // Double Oven Microwave
-    43: 'Oven',            // Combi Steam Oven
-    45: 'Oven',            // Steam Oven Combi
-    67: 'Oven',            // Dialog Oven
-    68: 'WarmingDrawer',   // Wine Cabinet
+    1: 'Washer', // Washing machine
+    2: 'Dryer', // Tumble dryer
+    7: 'Dishwasher', // Dishwasher
+    12: 'Oven', // Oven
+    13: 'Oven', // Oven Microwave
+    14: 'Hob', // Hob
+    15: 'Oven', // Steam Oven
+    16: 'Microwave', // Microwave
+    17: 'CoffeeMaker', // Coffee System
+    18: 'Hood', // Hood
+    19: 'Refrigerator', // Fridge
+    20: 'Freezer', // Freezer
+    21: 'FridgeFreezer', // Fridge/Freezer Combination
+    23: 'WarmingDrawer', // Vacuum Drawer
+    24: 'WarmingDrawer', // Warming Drawer
+    25: 'Oven', // Dish Warmer
+    27: 'Hob', // Hob with extraction
+    28: 'Oven', // Steam Oven Microwave
+    31: 'Oven', // Steam Oven
+    32: 'WarmingDrawer', // Wine Storage
+    33: 'WarmingDrawer', // Wine Conditioning
+    34: 'WarmingDrawer', // Wine Cabinet Freezer
+    39: 'Oven', // Double Oven
+    40: 'Oven', // Double Steam Oven
+    41: 'Oven', // Double Steam Oven Microwave
+    42: 'Oven', // Double Oven Microwave
+    43: 'Oven', // Combi Steam Oven
+    45: 'Oven', // Steam Oven Combi
+    67: 'Oven', // Dialog Oven
+    68: 'WarmingDrawer', // Wine Cabinet
   };
 
   constructor(config?: Partial<ApplianceOAuthConfig>) {
@@ -254,10 +254,10 @@ export class MieleProvider implements SmartApplianceProvider {
         return false;
       }
 
-      const data = await response.json() as TokenResponse;
+      const data = (await response.json()) as TokenResponse;
       this.accessToken = data.access_token;
       this.refreshToken = data.refresh_token || null;
-      this.tokenExpiresAt = Date.now() + (data.expires_in * 1000);
+      this.tokenExpiresAt = Date.now() + data.expires_in * 1000;
 
       return true;
     } catch (error) {
@@ -274,7 +274,7 @@ export class MieleProvider implements SmartApplianceProvider {
     if (credentials.accessToken) {
       this.accessToken = credentials.accessToken;
       this.refreshToken = credentials.refreshToken || null;
-      this.tokenExpiresAt = Date.now() + (3600 * 1000);
+      this.tokenExpiresAt = Date.now() + 3600 * 1000;
       return true;
     }
 
@@ -317,10 +317,10 @@ export class MieleProvider implements SmartApplianceProvider {
         return false;
       }
 
-      const data = await response.json() as TokenResponse;
+      const data = (await response.json()) as TokenResponse;
       this.accessToken = data.access_token;
       this.refreshToken = data.refresh_token || null;
-      this.tokenExpiresAt = Date.now() + (data.expires_in * 1000);
+      this.tokenExpiresAt = Date.now() + data.expires_in * 1000;
 
       return true;
     } catch {
@@ -354,12 +354,12 @@ export class MieleProvider implements SmartApplianceProvider {
         return false;
       }
 
-      const data = await response.json() as TokenResponse;
+      const data = (await response.json()) as TokenResponse;
       this.accessToken = data.access_token;
       if (data.refresh_token) {
         this.refreshToken = data.refresh_token;
       }
-      this.tokenExpiresAt = Date.now() + (data.expires_in * 1000);
+      this.tokenExpiresAt = Date.now() + data.expires_in * 1000;
 
       return true;
     } catch {
@@ -370,10 +370,7 @@ export class MieleProvider implements SmartApplianceProvider {
   /**
    * Make an authenticated API request
    */
-  private async apiRequest<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     // Check if token needs refresh
     if (this.tokenExpiresAt && Date.now() > this.tokenExpiresAt - 60000) {
       await this.refreshAccessToken();
@@ -386,8 +383,8 @@ export class MieleProvider implements SmartApplianceProvider {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers: {
-        'Authorization': `Bearer ${this.accessToken}`,
-        'Accept': 'application/json',
+        Authorization: `Bearer ${this.accessToken}`,
+        Accept: 'application/json',
         'Content-Type': 'application/json',
         ...options.headers,
       },
@@ -405,9 +402,7 @@ export class MieleProvider implements SmartApplianceProvider {
    * Get all connected appliances
    */
   async getAppliances(): Promise<ConnectedAppliance[]> {
-    const response = await this.apiRequest<Record<string, MieleAppliance>>(
-      '/v1/devices'
-    );
+    const response = await this.apiRequest<Record<string, MieleAppliance>>('/v1/devices');
 
     return Object.entries(response)
       .filter(([_, appliance]) => this.isKitchenAppliance(appliance.ident.type.value_raw))
@@ -466,13 +461,10 @@ export class MieleProvider implements SmartApplianceProvider {
         Object.assign(body, options);
       }
 
-      await this.apiRequest(
-        `/v1/devices/${applianceId}/programs`,
-        {
-          method: 'PUT',
-          body: JSON.stringify(body),
-        }
-      );
+      await this.apiRequest(`/v1/devices/${applianceId}/programs`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      });
 
       return true;
     } catch (error) {
@@ -486,13 +478,10 @@ export class MieleProvider implements SmartApplianceProvider {
    */
   async stopProgram(applianceId: string): Promise<boolean> {
     try {
-      await this.apiRequest(
-        `/v1/devices/${applianceId}/actions`,
-        {
-          method: 'PUT',
-          body: JSON.stringify({ processAction: 2 }), // Stop
-        }
-      );
+      await this.apiRequest(`/v1/devices/${applianceId}/actions`, {
+        method: 'PUT',
+        body: JSON.stringify({ processAction: 2 }), // Stop
+      });
       return true;
     } catch {
       return false;
@@ -502,19 +491,12 @@ export class MieleProvider implements SmartApplianceProvider {
   /**
    * Set an appliance setting
    */
-  async setSetting(
-    applianceId: string,
-    key: string,
-    value: unknown
-  ): Promise<boolean> {
+  async setSetting(applianceId: string, key: string, value: unknown): Promise<boolean> {
     try {
-      await this.apiRequest(
-        `/v1/devices/${applianceId}/actions`,
-        {
-          method: 'PUT',
-          body: JSON.stringify({ [key]: value }),
-        }
-      );
+      await this.apiRequest(`/v1/devices/${applianceId}/actions`, {
+        method: 'PUT',
+        body: JSON.stringify({ [key]: value }),
+      });
       return true;
     } catch {
       return false;
@@ -525,9 +507,7 @@ export class MieleProvider implements SmartApplianceProvider {
    * Get available actions for an appliance
    */
   async getAvailableActions(applianceId: string): Promise<MieleActionsResponse> {
-    return this.apiRequest<MieleActionsResponse>(
-      `/v1/devices/${applianceId}/actions`
-    );
+    return this.apiRequest<MieleActionsResponse>(`/v1/devices/${applianceId}/actions`);
   }
 
   /**
@@ -557,7 +537,10 @@ export class MieleProvider implements SmartApplianceProvider {
 
   private isKitchenAppliance(typeValue: string): boolean {
     const typeNum = parseInt(typeValue, 10);
-    const kitchenTypes = [7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 31, 32, 33, 34, 39, 40, 41, 42, 43, 45, 67, 68];
+    const kitchenTypes = [
+      7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 31, 32, 33, 34, 39, 40, 41, 42,
+      43, 45, 67, 68,
+    ];
     return kitchenTypes.includes(typeNum);
   }
 
@@ -596,41 +579,46 @@ export class MieleProvider implements SmartApplianceProvider {
 
   private getApplianceCategory(typeNum: number): string {
     const categoryMap: Record<number, string> = {
-      7: 'cleaning',       // Dishwasher
-      12: 'cooking',       // Oven
-      13: 'cooking',       // Oven Microwave
-      14: 'cooking',       // Hob
-      15: 'cooking',       // Steam Oven
-      16: 'cooking',       // Microwave
+      7: 'cleaning', // Dishwasher
+      12: 'cooking', // Oven
+      13: 'cooking', // Oven Microwave
+      14: 'cooking', // Hob
+      15: 'cooking', // Steam Oven
+      16: 'cooking', // Microwave
       17: 'small_appliances', // Coffee System
-      18: 'ventilation',   // Hood
-      19: 'cold_storage',  // Fridge
-      20: 'cold_storage',  // Freezer
-      21: 'cold_storage',  // Fridge/Freezer
-      23: 'cooking',       // Vacuum Drawer
-      24: 'cooking',       // Warming Drawer
-      25: 'cooking',       // Dish Warmer
-      27: 'cooking',       // Hob with extraction
+      18: 'ventilation', // Hood
+      19: 'cold_storage', // Fridge
+      20: 'cold_storage', // Freezer
+      21: 'cold_storage', // Fridge/Freezer
+      23: 'cooking', // Vacuum Drawer
+      24: 'cooking', // Warming Drawer
+      25: 'cooking', // Dish Warmer
+      27: 'cooking', // Hob with extraction
     };
     return categoryMap[typeNum] || 'other';
   }
 
-  private getDefaultDimensions(typeNum: number): { width: number; height: number; depth: number; unit: 'cm' } {
+  private getDefaultDimensions(typeNum: number): {
+    width: number;
+    height: number;
+    depth: number;
+    unit: 'cm';
+  } {
     const dimensions: Record<number, { width: number; height: number; depth: number }> = {
-      7: { width: 60, height: 82, depth: 57 },   // Dishwasher
-      12: { width: 60, height: 60, depth: 55 },  // Oven
-      13: { width: 60, height: 45, depth: 55 },  // Oven Microwave
-      14: { width: 80, height: 5, depth: 52 },   // Hob
-      15: { width: 60, height: 45, depth: 57 },  // Steam Oven
-      16: { width: 60, height: 38, depth: 32 },  // Microwave
-      17: { width: 60, height: 45, depth: 50 },  // Coffee System
-      18: { width: 90, height: 50, depth: 50 },  // Hood
+      7: { width: 60, height: 82, depth: 57 }, // Dishwasher
+      12: { width: 60, height: 60, depth: 55 }, // Oven
+      13: { width: 60, height: 45, depth: 55 }, // Oven Microwave
+      14: { width: 80, height: 5, depth: 52 }, // Hob
+      15: { width: 60, height: 45, depth: 57 }, // Steam Oven
+      16: { width: 60, height: 38, depth: 32 }, // Microwave
+      17: { width: 60, height: 45, depth: 50 }, // Coffee System
+      18: { width: 90, height: 50, depth: 50 }, // Hood
       19: { width: 60, height: 177, depth: 65 }, // Fridge
       20: { width: 60, height: 177, depth: 65 }, // Freezer
       21: { width: 60, height: 200, depth: 65 }, // Fridge/Freezer
-      24: { width: 60, height: 14, depth: 55 },  // Warming Drawer
+      24: { width: 60, height: 14, depth: 55 }, // Warming Drawer
     };
-    return { ...dimensions[typeNum] || { width: 60, height: 60, depth: 55 }, unit: 'cm' };
+    return { ...(dimensions[typeNum] || { width: 60, height: 60, depth: 55 }), unit: 'cm' };
   }
 
   private mapStatusResponse(state: MieleApplianceState): ConnectedApplianceStatus {
@@ -648,7 +636,11 @@ export class MieleProvider implements SmartApplianceProvider {
     if (state.temperature && state.temperature.length > 0 && state.temperature[0]) {
       status.temperature = state.temperature[0].value_localized;
     }
-    if (state.targetTemperature && state.targetTemperature.length > 0 && state.targetTemperature[0]) {
+    if (
+      state.targetTemperature &&
+      state.targetTemperature.length > 0 &&
+      state.targetTemperature[0]
+    ) {
       status.targetTemperature = state.targetTemperature[0].value_localized;
     }
 
@@ -673,23 +665,23 @@ export class MieleProvider implements SmartApplianceProvider {
 
   private mapMieleState(stateValue: number): ConnectedApplianceStatus['state'] {
     const stateMap: Record<number, ConnectedApplianceStatus['state']> = {
-      1: 'off',        // Off
-      2: 'ready',      // Stand-by
-      3: 'running',    // Programmed
-      4: 'running',    // Programmed waiting to start
-      5: 'running',    // Running
-      6: 'paused',     // Pause
-      7: 'finished',   // End programmed
-      8: 'error',      // Failure
-      9: 'running',    // Programme interrupted
-      10: 'off',       // Idle
-      11: 'running',   // Rinse hold
-      12: 'running',   // Service
-      13: 'running',   // Superfreezing
-      14: 'running',   // Supercooling
-      15: 'running',   // Superheating
-      146: 'running',  // Supercooling superfreezing
-      255: 'off',      // Not connected
+      1: 'off', // Off
+      2: 'ready', // Stand-by
+      3: 'running', // Programmed
+      4: 'running', // Programmed waiting to start
+      5: 'running', // Running
+      6: 'paused', // Pause
+      7: 'finished', // End programmed
+      8: 'error', // Failure
+      9: 'running', // Programme interrupted
+      10: 'off', // Idle
+      11: 'running', // Rinse hold
+      12: 'running', // Service
+      13: 'running', // Superfreezing
+      14: 'running', // Supercooling
+      15: 'running', // Superheating
+      146: 'running', // Supercooling superfreezing
+      255: 'off', // Not connected
     };
     return stateMap[stateValue] || 'ready';
   }

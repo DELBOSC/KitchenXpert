@@ -96,16 +96,7 @@ const StyledIconButton = styled.button<{
 `;
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  (
-    {
-      icon,
-      size = 'md',
-      variant = 'default',
-      rounded = false,
-      ...props
-    },
-    ref
-  ) => {
+  ({ icon, size = 'md', variant = 'default', rounded = false, ...props }, ref) => {
     return (
       <StyledIconButton
         ref={ref}

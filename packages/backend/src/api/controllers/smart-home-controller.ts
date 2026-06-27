@@ -177,7 +177,11 @@ export class SmartHomeController {
     };
     const protocol = (req.query.protocol as string) || 'WiFi';
 
-    const coverage = await this.smartHomeService.calculateCoverage(kitchenId, routerPosition, protocol);
+    const coverage = await this.smartHomeService.calculateCoverage(
+      kitchenId,
+      routerPosition,
+      protocol
+    );
 
     res.status(200).json({ success: true, data: coverage });
   });

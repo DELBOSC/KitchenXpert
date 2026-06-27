@@ -53,7 +53,11 @@ export class IkeaStrategy implements IngestionStrategy {
   async fetchProductByUrl(url: string): Promise<ParseResult> {
     const itemNo = this.extractItemNo(url);
     if (!itemNo) {
-      return { success: false, errors: [`Could not extract IKEA item number from URL: ${url}`], warnings: [] };
+      return {
+        success: false,
+        errors: [`Could not extract IKEA item number from URL: ${url}`],
+        warnings: [],
+      };
     }
     const products = await this.search(itemNo, 24);
     const match = products.find((p) => (p.itemNoGlobal ?? p.itemNo) === itemNo) ?? products[0];
@@ -104,11 +108,7 @@ export class IkeaStrategy implements IngestionStrategy {
 
   /** Port of legacy ikea.ts determineProductType, extended to the unified enum. */
   private detectType(p: IkeaApiProduct): ProductType {
-    const hay = [
-      p.name,
-      p.typeName,
-      ...(p.categoryPath ?? []).map((c) => c.name),
-    ]
+    const hay = [p.name, p.typeName, ...(p.categoryPath ?? []).map((c) => c.name)]
       .filter(Boolean)
       .join(' ')
       .toLowerCase();
@@ -117,7 +117,11 @@ export class IkeaStrategy implements IngestionStrategy {
     if (/évier|evier|sink/.test(hay)) return 'sink';
     if (/robinet|mitigeur|tap|faucet/.test(hay)) return 'tap';
     if (/spot|luminaire|éclairage|eclairage|lighting|lampe/.test(hay)) return 'lighting';
-    if (/four|réfrigérateur|refrigerateur|hotte|plaque|lave-vaisselle|congélateur|congelateur|micro-ondes|oven|fridge/.test(hay)) {
+    if (
+      /four|réfrigérateur|refrigerateur|hotte|plaque|lave-vaisselle|congélateur|congelateur|micro-ondes|oven|fridge/.test(
+        hay
+      )
+    ) {
       return 'appliance';
     }
     if (/porte|façade|facade|tiroir|front/.test(hay)) return 'facade';
@@ -151,10 +155,18 @@ export function parseIkeaDims(text: string | undefined | null): {
   if (!text) return { widthMm: null, heightMm: null, depthMm: null, confidence: 0 };
   const unit = /\bmm\b/i.test(text) ? 1 : 10; // default cm -> ×10
   const nums = (text.match(/\d+(?:[.,]\d+)?/g) ?? []).map((n) =>
-    Math.round(parseFloat(n.replace(',', '.')) * unit),
+    Math.round(parseFloat(n.replace(',', '.')) * unit)
   );
-  if (nums.length >= 3) return { widthMm: nums[0] ?? null, depthMm: nums[1] ?? null, heightMm: nums[2] ?? null, confidence: 1 };
-  if (nums.length === 2) return { widthMm: nums[0] ?? null, heightMm: nums[1] ?? null, depthMm: null, confidence: 0.5 };
-  if (nums.length === 1) return { widthMm: nums[0] ?? null, heightMm: null, depthMm: null, confidence: 0.3 };
+  if (nums.length >= 3)
+    return {
+      widthMm: nums[0] ?? null,
+      depthMm: nums[1] ?? null,
+      heightMm: nums[2] ?? null,
+      confidence: 1,
+    };
+  if (nums.length === 2)
+    return { widthMm: nums[0] ?? null, heightMm: nums[1] ?? null, depthMm: null, confidence: 0.5 };
+  if (nums.length === 1)
+    return { widthMm: nums[0] ?? null, heightMm: null, depthMm: null, confidence: 0.3 };
   return { widthMm: null, heightMm: null, depthMm: null, confidence: 0 };
 }

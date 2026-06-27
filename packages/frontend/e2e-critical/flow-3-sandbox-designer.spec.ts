@@ -30,19 +30,17 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
     // also renders the cookie-consent dialog, so an unscoped getByRole('dialog')
     // resolves to 2 elements (strict-mode error).
     await expect(
-      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i })
     ).toBeVisible();
     await expect(page.getByText(/comment souhaitez-vous démarrer/i)).toBeVisible();
 
     // Pick "Cuisine vide" → modal closes + project lands in localStorage
     await page.getByRole('button', { name: /cuisine vide/i }).click();
     await expect(
-      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i })
     ).toBeHidden();
 
-    const stored = await page.evaluate(() =>
-      window.localStorage.getItem('kx-sandbox-project-v1'),
-    );
+    const stored = await page.evaluate(() => window.localStorage.getItem('kx-sandbox-project-v1'));
     expect(stored, 'sandbox project must be persisted to localStorage').toBeTruthy();
 
     const parsed = JSON.parse(stored!);
@@ -52,7 +50,7 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
     await page.reload();
     await expect(page.getByText(/mode démo/i).first()).toBeVisible();
     await expect(
-      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i })
     ).toBeHidden();
   });
 
@@ -68,12 +66,10 @@ test.describe('@critical Flow 3 — Sandbox designer', () => {
     // Template loaded → onboarding modal gone (scope by name: the cookie-consent
     // dialog may still be present and would break an unscoped getByRole).
     await expect(
-      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i }),
+      page.getByRole('dialog', { name: /comment souhaitez-vous démarrer/i })
     ).toBeHidden();
 
-    const stored = await page.evaluate(() =>
-      window.localStorage.getItem('kx-sandbox-project-v1'),
-    );
+    const stored = await page.evaluate(() => window.localStorage.getItem('kx-sandbox-project-v1'));
     expect(stored).toBeTruthy();
 
     const parsed = JSON.parse(stored!);
@@ -158,10 +154,9 @@ test.describe('@critical Flow 3b — Sandbox → account migration', () => {
     expect(projects.some((p: { id: string }) => p.id === data.projectId)).toBe(true);
 
     // 6. Verify items were created
-    const items = await request.get(
-      `${API_BASE}/kitchens/${data.kitchenId}/items`,
-      { headers: { Cookie: cookies } },
-    );
+    const items = await request.get(`${API_BASE}/kitchens/${data.kitchenId}/items`, {
+      headers: { Cookie: cookies },
+    });
     expect(items.ok()).toBeTruthy();
     const { data: itemList } = await items.json();
     expect(itemList.length).toBe(2);
@@ -180,11 +175,17 @@ test.describe('@critical Flow 3b — Sandbox → account migration', () => {
         name: 'X',
         fromTemplate: null,
         kitchen: {
-          name: 'X', layout: 'L_SHAPED' as const,
-          widthCm: 400, depthCm: 350, heightCm: 270,
+          name: 'X',
+          layout: 'L_SHAPED' as const,
+          widthCm: 400,
+          depthCm: 350,
+          heightCm: 270,
           items: Array.from({ length: 201 }, () => ({
-            sku: 'X', label: 'X', providerCode: 'IKEA' as const,
-            unitPrice: 1, quantity: 1,
+            sku: 'X',
+            label: 'X',
+            providerCode: 'IKEA' as const,
+            unitPrice: 1,
+            quantity: 1,
             position: { x: 0, y: 0, z: 0 },
             rotation: 0,
             size: { w: 60, d: 60, h: 80 },

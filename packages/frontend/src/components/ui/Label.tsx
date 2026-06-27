@@ -11,7 +11,11 @@ export function Label({
   return (
     <label className={cn('block text-sm font-medium text-white/90', className)} {...rest}>
       {children}
-      {required && <span className="ml-0.5 text-rose-400" aria-hidden>*</span>}
+      {required && (
+        <span className="ml-0.5 text-rose-400" aria-hidden>
+          *
+        </span>
+      )}
     </label>
   );
 }

@@ -239,17 +239,33 @@ export class ElevationView {
   ): void {
     const vertices = new Float32Array([
       // Edge 0-1
-      corners[0].x, corners[0].y, corners[0].z,
-      corners[1].x, corners[1].y, corners[1].z,
+      corners[0].x,
+      corners[0].y,
+      corners[0].z,
+      corners[1].x,
+      corners[1].y,
+      corners[1].z,
       // Edge 1-2
-      corners[1].x, corners[1].y, corners[1].z,
-      corners[2].x, corners[2].y, corners[2].z,
+      corners[1].x,
+      corners[1].y,
+      corners[1].z,
+      corners[2].x,
+      corners[2].y,
+      corners[2].z,
       // Edge 2-3
-      corners[2].x, corners[2].y, corners[2].z,
-      corners[3].x, corners[3].y, corners[3].z,
+      corners[2].x,
+      corners[2].y,
+      corners[2].z,
+      corners[3].x,
+      corners[3].y,
+      corners[3].z,
       // Edge 3-0
-      corners[3].x, corners[3].y, corners[3].z,
-      corners[0].x, corners[0].y, corners[0].z,
+      corners[3].x,
+      corners[3].y,
+      corners[3].z,
+      corners[0].x,
+      corners[0].y,
+      corners[0].z,
     ]);
 
     const geometry = new THREE.BufferGeometry();

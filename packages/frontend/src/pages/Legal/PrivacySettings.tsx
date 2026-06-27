@@ -18,12 +18,19 @@ export default function PrivacySettings(): React.ReactElement {
     const controller = new AbortController();
     void (async () => {
       try {
-        const res = await fetch('/api/v1/me/gdpr/summary', { credentials: 'include', signal: controller.signal });
-        if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+        const res = await fetch('/api/v1/me/gdpr/summary', {
+          credentials: 'include',
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
         const json = (await res.json()) as { data: Summary };
         setSummary(json.data);
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}
+        if ((err as Error).name !== 'AbortError') {
+          setError((err as Error).message);
+        }
       } finally {
         setLoading(false);
       }
@@ -35,7 +42,9 @@ export default function PrivacySettings(): React.ReactElement {
     setBusy('export');
     try {
       const res = await fetch('/api/v1/me/gdpr/export', { credentials: 'include' });
-      if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -56,7 +65,9 @@ export default function PrivacySettings(): React.ReactElement {
     const confirmed = window.confirm(
       'Cette action anonymisera immédiatement votre compte. Les données non soumises à conservation légale seront purgées sous 30 jours. Continuer ?'
     );
-    if (!confirmed) {return;}
+    if (!confirmed) {
+      return;
+    }
     setBusy('delete');
     try {
       const res = await fetch('/api/v1/me/gdpr/account', {
@@ -65,7 +76,9 @@ export default function PrivacySettings(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ confirm: true }),
       });
-      if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       window.location.href = '/';
     } catch (err) {
       setError((err as Error).message);
@@ -84,9 +97,16 @@ export default function PrivacySettings(): React.ReactElement {
           <div className="not-prose rounded-2xl border border-white/10 bg-white/[0.03] p-6">
             <div className="mb-4 text-xs uppercase tracking-widest text-white/55">Compte</div>
             <div className="space-y-1 text-sm">
-              <div><span className="text-white/50">Email&nbsp;:</span> {summary.account.email}</div>
-              <div><span className="text-white/50">Créé le&nbsp;:</span> {new Date(summary.account.createdAt).toLocaleDateString('fr-FR')}</div>
-              <div><span className="text-white/50">Statut&nbsp;:</span> {summary.account.status}</div>
+              <div>
+                <span className="text-white/50">Email&nbsp;:</span> {summary.account.email}
+              </div>
+              <div>
+                <span className="text-white/50">Créé le&nbsp;:</span>{' '}
+                {new Date(summary.account.createdAt).toLocaleDateString('fr-FR')}
+              </div>
+              <div>
+                <span className="text-white/50">Statut&nbsp;:</span> {summary.account.status}
+              </div>
             </div>
           </div>
 
@@ -104,13 +124,16 @@ export default function PrivacySettings(): React.ReactElement {
       <h2>Vos droits</h2>
       <ul>
         <li>
-          <strong>Portabilité (Art. 20)</strong> — Téléchargez l&apos;intégralité de vos données au format JSON.
+          <strong>Portabilité (Art. 20)</strong> — Téléchargez l&apos;intégralité de vos données au
+          format JSON.
         </li>
         <li>
-          <strong>Effacement (Art. 17)</strong> — Anonymisation immédiate et purge complète sous 30 jours.
+          <strong>Effacement (Art. 17)</strong> — Anonymisation immédiate et purge complète sous 30
+          jours.
         </li>
         <li>
-          <strong>Rectification (Art. 16)</strong> — Modifiez vos informations depuis votre <a href="/profile">profil</a>.
+          <strong>Rectification (Art. 16)</strong> — Modifiez vos informations depuis votre{' '}
+          <a href="/profile">profil</a>.
         </li>
       </ul>
 
@@ -132,8 +155,8 @@ export default function PrivacySettings(): React.ReactElement {
       </div>
 
       <p className="mt-6 text-xs text-white/40">
-        Pour toute autre demande, contactez notre DPO&nbsp;:
-        {' '}<a href="mailto:dpo@kitchenxpert.com">dpo@kitchenxpert.com</a>
+        Pour toute autre demande, contactez notre DPO&nbsp;:{' '}
+        <a href="mailto:dpo@kitchenxpert.com">dpo@kitchenxpert.com</a>
       </p>
     </LegalLayout>
   );

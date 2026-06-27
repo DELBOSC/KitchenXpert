@@ -137,7 +137,11 @@ HTMLCanvasElement.prototype.toDataURL = jest.fn(() => 'data:image/png;base64,moc
 
 // Extend Jest matchers if needed
 expect.extend({
-  toBeNearVector3(received: { x: number; y: number; z: number }, expected: { x: number; y: number; z: number }, precision = 0.0001) {
+  toBeNearVector3(
+    received: { x: number; y: number; z: number },
+    expected: { x: number; y: number; z: number },
+    precision = 0.0001
+  ) {
     const pass =
       Math.abs(received.x - expected.x) < precision &&
       Math.abs(received.y - expected.y) < precision &&

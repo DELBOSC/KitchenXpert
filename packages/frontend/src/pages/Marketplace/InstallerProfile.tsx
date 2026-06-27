@@ -87,7 +87,9 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   const fetchInstaller = useCallback(
     async (controller: AbortController) => {
-      if (!id) {return;}
+      if (!id) {
+        return;
+      }
       setIsLoading(true);
       setError(null);
 
@@ -109,15 +111,19 @@ export default function InstallerProfilePage(): React.ReactElement {
         const result = (await response.json()) as { data: InstallerProfile };
         setInstaller(result.data);
       } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {return;}
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          return;
+        }
         const message =
-          err instanceof Error ? err.message : t('marketplace.loadError', 'Erreur lors du chargement');
+          err instanceof Error
+            ? err.message
+            : t('marketplace.loadError', 'Erreur lors du chargement');
         setError(message);
       } finally {
         setIsLoading(false);
       }
     },
-    [id, t],
+    [id, t]
   );
 
   useEffect(() => {
@@ -139,7 +145,9 @@ export default function InstallerProfilePage(): React.ReactElement {
         setKitchens(result.data ?? []);
       }
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {return;}
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return;
+      }
       // Non-critical failure: user just won't see kitchen dropdown
     }
   }, []);
@@ -157,7 +165,9 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   const handleRequestSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    if (!id) {return;}
+    if (!id) {
+      return;
+    }
 
     setIsSubmitting(true);
     setRequestError(null);
@@ -166,8 +176,12 @@ export default function InstallerProfilePage(): React.ReactElement {
       const body: Record<string, string> = {
         installerId: id,
       };
-      if (selectedKitchenId) {body.kitchenId = selectedKitchenId;}
-      if (requestNotes.trim()) {body.notes = requestNotes.trim();}
+      if (selectedKitchenId) {
+        body.kitchenId = selectedKitchenId;
+      }
+      if (requestNotes.trim()) {
+        body.notes = requestNotes.trim();
+      }
 
       const response = await fetch('/api/v1/installers/request', {
         method: 'POST',
@@ -178,9 +192,7 @@ export default function InstallerProfilePage(): React.ReactElement {
 
       if (!response.ok) {
         const result = (await response.json()) as { error?: string };
-        throw new Error(
-          result.error ?? t('marketplace.requestError', 'Erreur lors de la demande'),
-        );
+        throw new Error(result.error ?? t('marketplace.requestError', 'Erreur lors de la demande'));
       }
 
       setRequestSuccess(true);
@@ -192,7 +204,9 @@ export default function InstallerProfilePage(): React.ReactElement {
       }, 2000);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : t('marketplace.requestError', 'Erreur lors de la demande');
+        err instanceof Error
+          ? err.message
+          : t('marketplace.requestError', 'Erreur lors de la demande');
       setRequestError(message);
     } finally {
       setIsSubmitting(false);
@@ -203,7 +217,9 @@ export default function InstallerProfilePage(): React.ReactElement {
 
   const handleReviewSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    if (!id) {return;}
+    if (!id) {
+      return;
+    }
 
     setIsSubmittingReview(true);
     setReviewError(null);
@@ -212,8 +228,12 @@ export default function InstallerProfilePage(): React.ReactElement {
       const body: Record<string, unknown> = {
         rating: reviewRating,
       };
-      if (reviewTitle.trim()) {body.title = reviewTitle.trim();}
-      if (reviewComment.trim()) {body.comment = reviewComment.trim();}
+      if (reviewTitle.trim()) {
+        body.title = reviewTitle.trim();
+      }
+      if (reviewComment.trim()) {
+        body.comment = reviewComment.trim();
+      }
 
       const response = await fetch(`/api/v1/installers/${id}/reviews`, {
         method: 'POST',
@@ -225,7 +245,7 @@ export default function InstallerProfilePage(): React.ReactElement {
       if (!response.ok) {
         const result = (await response.json()) as { error?: string };
         throw new Error(
-          result.error ?? t('marketplace.reviewError', 'Erreur lors de l\'envoi de l\'avis'),
+          result.error ?? t('marketplace.reviewError', "Erreur lors de l'envoi de l'avis")
         );
       }
 
@@ -237,7 +257,7 @@ export default function InstallerProfilePage(): React.ReactElement {
       const message =
         err instanceof Error
           ? err.message
-          : t('marketplace.reviewError', 'Erreur lors de l\'envoi de l\'avis');
+          : t('marketplace.reviewError', "Erreur lors de l'envoi de l'avis");
       setReviewError(message);
     } finally {
       setIsSubmittingReview(false);
@@ -254,7 +274,11 @@ export default function InstallerProfilePage(): React.ReactElement {
     return (
       <span className="inline-flex items-center gap-0.5" aria-label={`${rating} sur 5`}>
         {Array.from({ length: fullStars }).map((_, i) => (
-          <svg key={`full-${i}`} className={`${size} text-yellow-400 fill-current`} viewBox="0 0 20 20">
+          <svg
+            key={`full-${i}`}
+            className={`${size} text-yellow-400 fill-current`}
+            viewBox="0 0 20 20"
+          >
             <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
           </svg>
         ))}
@@ -273,7 +297,11 @@ export default function InstallerProfilePage(): React.ReactElement {
           </svg>
         )}
         {Array.from({ length: emptyStars }).map((_, i) => (
-          <svg key={`empty-${i}`} className={`${size} text-gray-300 dark:text-gray-600 fill-current`} viewBox="0 0 20 20">
+          <svg
+            key={`empty-${i}`}
+            className={`${size} text-gray-300 dark:text-gray-600 fill-current`}
+            viewBox="0 0 20 20"
+          >
             <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
           </svg>
         ))}
@@ -366,7 +394,13 @@ export default function InstallerProfilePage(): React.ReactElement {
           onClick={() => navigate('/marketplace')}
           className="mb-6 inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
           {t('common.back', 'Retour a la marketplace')}
@@ -377,8 +411,18 @@ export default function InstallerProfilePage(): React.ReactElement {
           <div className="flex flex-col sm:flex-row items-start gap-6">
             {/* Photo Placeholder */}
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg className="w-10 h-10 sm:w-12 sm:h-12 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              <svg
+                className="w-10 h-10 sm:w-12 sm:h-12 text-blue-600 dark:text-blue-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                />
               </svg>
             </div>
 
@@ -413,7 +457,7 @@ export default function InstallerProfilePage(): React.ReactElement {
               <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
                 {installer.yearsExperience > 0 && (
                   <span>
-                    {installer.yearsExperience} {t('marketplace.yearsExp', 'ans d\'experience')}
+                    {installer.yearsExperience} {t('marketplace.yearsExp', "ans d'experience")}
                   </span>
                 )}
                 {installer.hourlyRate != null && installer.hourlyRate > 0 && (
@@ -446,9 +490,7 @@ export default function InstallerProfilePage(): React.ReactElement {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
               {t('marketplace.about', 'A propos')}
             </h2>
-            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
-              {installer.bio}
-            </p>
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">{installer.bio}</p>
           </section>
         )}
 
@@ -560,7 +602,10 @@ export default function InstallerProfilePage(): React.ReactElement {
 
           {/* Review Form */}
           {showReviewForm && (
-            <form onSubmit={handleReviewSubmit} className="mb-8 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <form
+              onSubmit={handleReviewSubmit}
+              className="mb-8 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+            >
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('marketplace.yourRating', 'Votre note')}
@@ -568,7 +613,10 @@ export default function InstallerProfilePage(): React.ReactElement {
                 {renderStarPicker()}
               </div>
               <div className="mb-4">
-                <label htmlFor="reviewTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="reviewTitle"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   {t('marketplace.reviewTitle', 'Titre (optionnel)')}
                 </label>
                 <input
@@ -581,7 +629,10 @@ export default function InstallerProfilePage(): React.ReactElement {
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="reviewComment" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="reviewComment"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   {t('marketplace.reviewComment', 'Commentaire (optionnel)')}
                 </label>
                 <textarea
@@ -603,7 +654,7 @@ export default function InstallerProfilePage(): React.ReactElement {
               >
                 {isSubmittingReview
                   ? t('common.submitting', 'Envoi en cours...')
-                  : t('marketplace.submitReview', 'Envoyer l\'avis')}
+                  : t('marketplace.submitReview', "Envoyer l'avis")}
               </button>
             </form>
           )}
@@ -676,7 +727,13 @@ export default function InstallerProfilePage(): React.ReactElement {
                   aria-label={t('common.close', 'Fermer')}
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -685,7 +742,13 @@ export default function InstallerProfilePage(): React.ReactElement {
               {requestSuccess ? (
                 <div className="p-6 text-center">
                   <div className="w-12 h-12 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg
+                      className="w-6 h-6 text-green-600 dark:text-green-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
@@ -697,7 +760,10 @@ export default function InstallerProfilePage(): React.ReactElement {
                 <form onSubmit={handleRequestSubmit}>
                   {/* Kitchen Select */}
                   <div className="mb-4">
-                    <label htmlFor="kitchenSelect" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor="kitchenSelect"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       {t('marketplace.selectKitchen', 'Selectionner une cuisine (optionnel)')}
                     </label>
                     <select
@@ -719,7 +785,10 @@ export default function InstallerProfilePage(): React.ReactElement {
 
                   {/* Notes */}
                   <div className="mb-4">
-                    <label htmlFor="requestNotes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor="requestNotes"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       {t('marketplace.notes', 'Notes et details supplementaires')}
                     </label>
                     <textarea
@@ -730,16 +799,14 @@ export default function InstallerProfilePage(): React.ReactElement {
                       rows={4}
                       placeholder={t(
                         'marketplace.notesPlaceholder',
-                        'Decrivez votre projet, vos besoins specifiques...',
+                        'Decrivez votre projet, vos besoins specifiques...'
                       )}
                       className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white resize-y"
                     />
                   </div>
 
                   {requestError && (
-                    <p className="text-red-600 dark:text-red-400 text-sm mb-3">
-                      {requestError}
-                    </p>
+                    <p className="text-red-600 dark:text-red-400 text-sm mb-3">{requestError}</p>
                   )}
 
                   <div className="flex justify-end gap-3">

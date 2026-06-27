@@ -15,14 +15,21 @@
 
 // ── Typed errors ────────────────────────────────────────────────────────────
 export class ApiError extends Error {
-  constructor(message: string, readonly url: string) {
+  constructor(
+    message: string,
+    readonly url: string
+  ) {
     super(message);
     this.name = 'ApiError';
   }
 }
 /** Network failure / non-retryable-after-retries HTTP status. */
 export class NetworkError extends ApiError {
-  constructor(message: string, url: string, readonly status?: number) {
+  constructor(
+    message: string,
+    url: string,
+    readonly status?: number
+  ) {
     super(message, url);
     this.name = 'NetworkError';
   }
@@ -36,7 +43,11 @@ export class ParseError extends ApiError {
 }
 /** Rate limited (429) and retries exhausted. */
 export class RateLimitError extends ApiError {
-  constructor(message: string, url: string, readonly retryAfterMs?: number) {
+  constructor(
+    message: string,
+    url: string,
+    readonly retryAfterMs?: number
+  ) {
     super(message, url);
     this.name = 'RateLimitError';
   }
@@ -88,7 +99,9 @@ const DEFAULTS = {
 const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
 
 export class ApiAdapter {
-  private readonly cfg: Required<Omit<ApiAdapterConfig, 'baseUrl' | 'logger' | 'fetchFn' | 'sleepFn'>> & {
+  private readonly cfg: Required<
+    Omit<ApiAdapterConfig, 'baseUrl' | 'logger' | 'fetchFn' | 'sleepFn'>
+  > & {
     baseUrl?: string;
   };
   private readonly log: AdapterLogger;
@@ -107,16 +120,16 @@ export class ApiAdapter {
     };
     this.log = config.logger ?? NOOP_LOGGER;
     this.fetchFn = config.fetchFn ?? globalThis.fetch.bind(globalThis);
-    this.sleep =
-      config.sleepFn ?? ((ms: number) => new Promise((r) => setTimeout(r, ms)));
+    this.sleep = config.sleepFn ?? ((ms: number) => new Promise((r) => setTimeout(r, ms)));
   }
 
   /** Fetch + parse JSON with retry/backoff/rate-limit. Throws typed errors. */
   async fetchJson<T = unknown>(
     url: string,
-    options?: { headers?: Record<string, string> },
+    options?: { headers?: Record<string, string> }
   ): Promise<T> {
-    const fullUrl = this.cfg.baseUrl && !/^https?:\/\//i.test(url) ? `${this.cfg.baseUrl}${url}` : url;
+    const fullUrl =
+      this.cfg.baseUrl && !/^https?:\/\//i.test(url) ? `${this.cfg.baseUrl}${url}` : url;
     let attempt = 0;
     // attempts = 1 initial + maxRetries
     for (;;) {
@@ -141,7 +154,10 @@ export class ApiAdapter {
     }
   }
 
-  private async attempt<T>(url: string, options?: { headers?: Record<string, string> }): Promise<T> {
+  private async attempt<T>(
+    url: string,
+    options?: { headers?: Record<string, string> }
+  ): Promise<T> {
     let res: Response;
     try {
       res = await this.fetchFn(url, {
@@ -157,7 +173,10 @@ export class ApiAdapter {
       if (err instanceof Error && (err.name === 'TimeoutError' || err.name === 'AbortError')) {
         throw new TimeoutError(`Request timed out after ${this.cfg.timeoutMs}ms`, url);
       }
-      throw new NetworkError(`Network request failed: ${err instanceof Error ? err.message : String(err)}`, url);
+      throw new NetworkError(
+        `Network request failed: ${err instanceof Error ? err.message : String(err)}`,
+        url
+      );
     }
 
     if (res.status === 429) {
@@ -179,7 +198,8 @@ export class ApiAdapter {
   private isRetryable(err: unknown): boolean {
     if (err instanceof RateLimitError) return true;
     if (err instanceof TimeoutError) return true;
-    if (err instanceof NetworkError) return err.status === undefined || RETRYABLE_STATUS.has(err.status);
+    if (err instanceof NetworkError)
+      return err.status === undefined || RETRYABLE_STATUS.has(err.status);
     return false; // ParseError + anything else: not retryable
   }
 

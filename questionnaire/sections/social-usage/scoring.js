@@ -18,12 +18,12 @@
  * Score weights for social usage factors (normalized to 1.0)
  */
 const SCORE_WEIGHTS = {
-  entertainingFrequency: 0.30,
-  guestCount: 0.20,
+  entertainingFrequency: 0.3,
+  guestCount: 0.2,
   gatheringType: 0.15,
   seatingNeeds: 0.15,
-  servingStyle: 0.10,
-  viewImportance: 0.10
+  servingStyle: 0.1,
+  viewImportance: 0.1,
 };
 
 /**
@@ -36,59 +36,59 @@ const ENTERTAINING_FREQUENCY_CONFIGURATIONS = {
     frequency: { timesPerYear: { min: 0, max: 2 } },
     description: {
       en: 'Rarely or never entertain guests',
-      fr: 'Reçoit rarement ou jamais des invités'
+      fr: 'Reçoit rarement ou jamais des invités',
     },
     characteristics: {
       priority: 'personal-use',
       seatingImportance: 'low',
       flowImportance: 'low',
-      presentationFocus: 'minimal'
+      presentationFocus: 'minimal',
     },
     recommendations: {
       focus: ['efficient-layout', 'personal-comfort', 'daily-functionality'],
-      avoid: ['oversized-seating', 'show-kitchen', 'formal-features']
+      avoid: ['oversized-seating', 'show-kitchen', 'formal-features'],
     },
-    tags: ['private-kitchen', 'personal-focus', 'efficiency-priority']
+    tags: ['private-kitchen', 'personal-focus', 'efficiency-priority'],
   },
-  'monthly': {
+  monthly: {
     score: 50,
     level: 'moderate',
     frequency: { timesPerYear: { min: 6, max: 15 } },
     description: {
       en: 'Entertain monthly or occasionally',
-      fr: 'Reçoit mensuellement ou occasionnellement'
+      fr: 'Reçoit mensuellement ou occasionnellement',
     },
     characteristics: {
       priority: 'balanced',
       seatingImportance: 'moderate',
       flowImportance: 'moderate',
-      presentationFocus: 'balanced'
+      presentationFocus: 'balanced',
     },
     recommendations: {
       focus: ['flexible-seating', 'open-sightlines', 'counter-dining-option'],
-      consider: ['peninsula-seating', 'serving-counter', 'beverage-station']
+      consider: ['peninsula-seating', 'serving-counter', 'beverage-station'],
     },
-    tags: ['casual-entertaining', 'flexible-space', 'dual-purpose']
+    tags: ['casual-entertaining', 'flexible-space', 'dual-purpose'],
   },
-  'weekly': {
+  weekly: {
     score: 75,
     level: 'frequent',
     frequency: { timesPerYear: { min: 25, max: 52 } },
     description: {
       en: 'Entertain weekly or regularly',
-      fr: 'Reçoit chaque semaine ou régulièrement'
+      fr: 'Reçoit chaque semaine ou régulièrement',
     },
     characteristics: {
       priority: 'entertaining-focused',
       seatingImportance: 'high',
       flowImportance: 'high',
-      presentationFocus: 'important'
+      presentationFocus: 'important',
     },
     recommendations: {
       focus: ['ample-seating', 'open-layout', 'serving-zones', 'guest-flow'],
-      consider: ['island-seating', 'wine-storage', 'multiple-prep-zones', 'guest-bathroom-access']
+      consider: ['island-seating', 'wine-storage', 'multiple-prep-zones', 'guest-bathroom-access'],
     },
-    tags: ['social-hub', 'entertaining-priority', 'guest-focused']
+    tags: ['social-hub', 'entertaining-priority', 'guest-focused'],
   },
   'multiple-weekly': {
     score: 100,
@@ -96,20 +96,31 @@ const ENTERTAINING_FREQUENCY_CONFIGURATIONS = {
     frequency: { timesPerYear: { min: 75, max: 365 } },
     description: {
       en: 'Entertain multiple times per week',
-      fr: 'Reçoit plusieurs fois par semaine'
+      fr: 'Reçoit plusieurs fois par semaine',
     },
     characteristics: {
       priority: 'entertainment-central',
       seatingImportance: 'critical',
       flowImportance: 'critical',
-      presentationFocus: 'essential'
+      presentationFocus: 'essential',
     },
     recommendations: {
-      focus: ['restaurant-style-flow', 'commercial-grade-hosting', 'multiple-zones', 'high-capacity'],
-      consider: ['dual-islands', 'butler-pantry', 'beverage-center', 'warming-drawer', 'commercial-appliances']
+      focus: [
+        'restaurant-style-flow',
+        'commercial-grade-hosting',
+        'multiple-zones',
+        'high-capacity',
+      ],
+      consider: [
+        'dual-islands',
+        'butler-pantry',
+        'beverage-center',
+        'warming-drawer',
+        'commercial-appliances',
+      ],
     },
-    tags: ['entertainment-central', 'high-traffic', 'professional-hosting', 'social-lifestyle']
-  }
+    tags: ['entertainment-central', 'high-traffic', 'professional-hosting', 'social-lifestyle'],
+  },
 };
 
 /**
@@ -122,24 +133,24 @@ const GUEST_COUNT_CONFIGURATIONS = {
     range: { min: 1, max: 4 },
     description: {
       en: 'Small, intimate gatherings (1-4 guests)',
-      fr: 'Petites réunions intimes (1-4 invités)'
+      fr: 'Petites réunions intimes (1-4 invités)',
     },
     seatingRequirements: {
       minSeats: 4,
       idealSeats: 6,
-      style: 'casual-counter-ok'
+      style: 'casual-counter-ok',
     },
     spaceRequirements: {
       minCounterSpace: 'standard',
       circulationSpace: 'standard',
-      servingArea: 'minimal'
+      servingArea: 'minimal',
     },
     recommendations: {
       seating: ['counter-stools-2-3', 'small-bistro-table'],
       layout: ['efficient-compact'],
-      features: ['conversational-layout']
+      features: ['conversational-layout'],
     },
-    tags: ['intimate-gatherings', 'small-groups', 'casual-hosting']
+    tags: ['intimate-gatherings', 'small-groups', 'casual-hosting'],
   },
   '5-8': {
     score: 50,
@@ -147,24 +158,24 @@ const GUEST_COUNT_CONFIGURATIONS = {
     range: { min: 5, max: 8 },
     description: {
       en: 'Standard gatherings (5-8 guests)',
-      fr: 'Réunions standards (5-8 invités)'
+      fr: 'Réunions standards (5-8 invités)',
     },
     seatingRequirements: {
       minSeats: 6,
       idealSeats: 8,
-      style: 'mixed-seating'
+      style: 'mixed-seating',
     },
     spaceRequirements: {
       minCounterSpace: 'generous',
       circulationSpace: 'open',
-      servingArea: 'moderate'
+      servingArea: 'moderate',
     },
     recommendations: {
       seating: ['island-with-4-stools', 'adjacent-dining-table-6'],
       layout: ['open-concept-preferred'],
-      features: ['island-gathering', 'buffet-counter']
+      features: ['island-gathering', 'buffet-counter'],
     },
-    tags: ['family-gatherings', 'dinner-parties', 'standard-entertaining']
+    tags: ['family-gatherings', 'dinner-parties', 'standard-entertaining'],
   },
   '9-12': {
     score: 70,
@@ -172,24 +183,24 @@ const GUEST_COUNT_CONFIGURATIONS = {
     range: { min: 9, max: 12 },
     description: {
       en: 'Large gatherings (9-12 guests)',
-      fr: 'Grandes réunions (9-12 invités)'
+      fr: 'Grandes réunions (9-12 invités)',
     },
     seatingRequirements: {
       minSeats: 8,
       idealSeats: 12,
-      style: 'flexible-multiple-zones'
+      style: 'flexible-multiple-zones',
     },
     spaceRequirements: {
       minCounterSpace: 'extensive',
       circulationSpace: 'wide-aisles',
-      servingArea: 'dedicated'
+      servingArea: 'dedicated',
     },
     recommendations: {
       seating: ['island-6-stools', 'dining-table-8-10', 'peninsula-option'],
       layout: ['open-floor-plan', 'multiple-gathering-zones'],
-      features: ['large-island', 'serving-counter', 'beverage-station', 'secondary-sink']
+      features: ['large-island', 'serving-counter', 'beverage-station', 'secondary-sink'],
     },
-    tags: ['large-parties', 'extended-family', 'serious-entertaining']
+    tags: ['large-parties', 'extended-family', 'serious-entertaining'],
   },
   '12-plus': {
     score: 90,
@@ -197,25 +208,32 @@ const GUEST_COUNT_CONFIGURATIONS = {
     range: { min: 12, max: 30 },
     description: {
       en: 'Very large gatherings (12+ guests)',
-      fr: 'Très grandes réunions (12+ invités)'
+      fr: 'Très grandes réunions (12+ invités)',
     },
     seatingRequirements: {
       minSeats: 12,
       idealSeats: 16,
-      style: 'multiple-zones-required'
+      style: 'multiple-zones-required',
     },
     spaceRequirements: {
       minCounterSpace: 'commercial-level',
       circulationSpace: 'restaurant-style',
-      servingArea: 'multiple-stations'
+      servingArea: 'multiple-stations',
     },
     recommendations: {
       seating: ['dual-islands', 'bar-seating-8-plus', 'adjacent-great-room'],
       layout: ['commercial-inspired', 'zone-based-design', 'traffic-flow-priority'],
-      features: ['butler-pantry', 'prep-kitchen', 'dual-dishwashers', 'warming-drawers', 'ice-maker', 'wine-fridge']
+      features: [
+        'butler-pantry',
+        'prep-kitchen',
+        'dual-dishwashers',
+        'warming-drawers',
+        'ice-maker',
+        'wine-fridge',
+      ],
     },
-    tags: ['event-hosting', 'large-scale-entertaining', 'commercial-needs', 'party-central']
-  }
+    tags: ['event-hosting', 'large-scale-entertaining', 'commercial-needs', 'party-central'],
+  },
 };
 
 /**
@@ -227,139 +245,167 @@ const GATHERING_TYPE_CONFIGURATIONS = {
     style: 'informal',
     description: {
       en: 'Casual family meals and gatherings',
-      fr: 'Repas familiaux décontractés et réunions'
+      fr: 'Repas familiaux décontractés et réunions',
     },
     characteristics: {
       formality: 'low',
       interaction: 'high',
       cookingVisibility: 'preferred',
-      cleanupVisibility: 'acceptable'
+      cleanupVisibility: 'acceptable',
     },
     recommendations: {
       layout: ['open-kitchen', 'conversational-island'],
       seating: ['casual-counter-seating', 'bar-stools'],
-      features: ['durable-surfaces', 'easy-cleanup', 'kid-friendly']
+      features: ['durable-surfaces', 'easy-cleanup', 'kid-friendly'],
     },
-    tags: ['casual', 'family-focused', 'interactive-cooking']
+    tags: ['casual', 'family-focused', 'interactive-cooking'],
   },
   'dinner-parties': {
     score: 70,
     style: 'semi-formal',
     description: {
       en: 'Dinner parties and hosted meals',
-      fr: 'Dîners et repas organisés'
+      fr: 'Dîners et repas organisés',
     },
     characteristics: {
       formality: 'moderate-high',
       interaction: 'moderate',
       cookingVisibility: 'controlled',
-      cleanupVisibility: 'hidden-preferred'
+      cleanupVisibility: 'hidden-preferred',
     },
     recommendations: {
       layout: ['open-with-zones', 'hidden-prep-area'],
       seating: ['formal-dining-option', 'quality-finishes'],
-      features: ['serving-counter', 'wine-storage', 'elegant-finishes', 'statement-lighting']
+      features: ['serving-counter', 'wine-storage', 'elegant-finishes', 'statement-lighting'],
     },
-    tags: ['dinner-parties', 'semi-formal', 'presentation-matters']
+    tags: ['dinner-parties', 'semi-formal', 'presentation-matters'],
   },
   'cocktail-parties': {
     score: 80,
     style: 'standing-social',
     description: {
       en: 'Cocktail parties and standing receptions',
-      fr: 'Cocktails et réceptions debout'
+      fr: 'Cocktails et réceptions debout',
     },
     characteristics: {
       formality: 'variable',
       interaction: 'very-high',
       cookingVisibility: 'minimal',
-      cleanupVisibility: 'must-hide'
+      cleanupVisibility: 'must-hide',
     },
     recommendations: {
       layout: ['open-flow', 'perimeter-circulation', 'no-bottlenecks'],
       seating: ['minimal-seating', 'perching-spots'],
-      features: ['beverage-station', 'ice-maker', 'wine-fridge', 'serving-surfaces', 'hidden-cleanup-zone']
+      features: [
+        'beverage-station',
+        'ice-maker',
+        'wine-fridge',
+        'serving-surfaces',
+        'hidden-cleanup-zone',
+      ],
     },
-    tags: ['cocktail-style', 'flow-critical', 'beverage-focused', 'standing-social']
+    tags: ['cocktail-style', 'flow-critical', 'beverage-focused', 'standing-social'],
   },
   'buffet-style': {
     score: 65,
     style: 'self-serve',
     description: {
       en: 'Buffet-style gatherings',
-      fr: 'Réunions style buffet'
+      fr: 'Réunions style buffet',
     },
     characteristics: {
       formality: 'low-moderate',
       interaction: 'high',
       cookingVisibility: 'acceptable',
-      cleanupVisibility: 'hidden-preferred'
+      cleanupVisibility: 'hidden-preferred',
     },
     recommendations: {
       layout: ['linear-serving-flow', 'accessible-island'],
       seating: ['flexible-casual'],
-      features: ['long-serving-counter', 'warming-drawer', 'multiple-serving-zones', 'easy-access-storage']
+      features: [
+        'long-serving-counter',
+        'warming-drawer',
+        'multiple-serving-zones',
+        'easy-access-storage',
+      ],
     },
-    tags: ['buffet-style', 'self-service', 'casual-flow']
+    tags: ['buffet-style', 'self-service', 'casual-flow'],
   },
   'cooking-shows': {
     score: 90,
     style: 'interactive-cooking',
     description: {
       en: 'Cooking demonstrations and interactive meal prep',
-      fr: 'Démonstrations culinaires et préparation interactive'
+      fr: 'Démonstrations culinaires et préparation interactive',
     },
     characteristics: {
       formality: 'variable',
       interaction: 'very-high',
       cookingVisibility: 'showcase',
-      cleanupVisibility: 'managed'
+      cleanupVisibility: 'managed',
     },
     recommendations: {
       layout: ['theater-kitchen', 'audience-seating-around-island'],
       seating: ['spectator-seating-6-plus'],
-      features: ['show-kitchen-island', 'professional-appliances', 'pot-filler', 'statement-hood', 'excellent-lighting', 'hidden-prep-pantry']
+      features: [
+        'show-kitchen-island',
+        'professional-appliances',
+        'pot-filler',
+        'statement-hood',
+        'excellent-lighting',
+        'hidden-prep-pantry',
+      ],
     },
-    tags: ['show-kitchen', 'interactive-cooking', 'entertainment-focused', 'cooking-as-entertainment']
+    tags: [
+      'show-kitchen',
+      'interactive-cooking',
+      'entertainment-focused',
+      'cooking-as-entertainment',
+    ],
   },
   'multi-family': {
     score: 75,
     style: 'collaborative',
     description: {
       en: 'Multi-family gatherings with shared cooking',
-      fr: 'Réunions multi-familiales avec cuisine partagée'
+      fr: 'Réunions multi-familiales avec cuisine partagée',
     },
     characteristics: {
       formality: 'low',
       interaction: 'very-high',
       cookingVisibility: 'full',
-      cleanupVisibility: 'acceptable'
+      cleanupVisibility: 'acceptable',
     },
     recommendations: {
       layout: ['multiple-work-zones', 'no-bottlenecks'],
       seating: ['casual-abundant'],
-      features: ['multiple-prep-areas', 'dual-sinks', 'ample-counter-space', 'collaborative-design']
+      features: [
+        'multiple-prep-areas',
+        'dual-sinks',
+        'ample-counter-space',
+        'collaborative-design',
+      ],
     },
-    tags: ['multi-cook', 'collaborative', 'high-activity', 'family-central']
-  }
+    tags: ['multi-cook', 'collaborative', 'high-activity', 'family-central'],
+  },
 };
 
 /**
  * Seating needs configurations
  */
 const SEATING_NEEDS_CONFIGURATIONS = {
-  'none': {
+  none: {
     score: 20,
     priority: 'not-needed',
     description: {
       en: 'No kitchen seating needed (separate dining)',
-      fr: 'Aucun siège de cuisine nécessaire (salle à manger séparée)'
+      fr: 'Aucun siège de cuisine nécessaire (salle à manger séparée)',
     },
     recommendations: {
       focus: ['maximize-work-space', 'storage-priority'],
-      avoid: ['island-overhang', 'breakfast-nook']
+      avoid: ['island-overhang', 'breakfast-nook'],
     },
-    tags: ['no-seating', 'separate-dining', 'work-focused']
+    tags: ['no-seating', 'separate-dining', 'work-focused'],
   },
   'counter-only': {
     score: 40,
@@ -368,13 +414,13 @@ const SEATING_NEEDS_CONFIGURATIONS = {
     idealSeats: 4,
     description: {
       en: 'Counter/bar seating only',
-      fr: 'Seulement sièges au comptoir/bar'
+      fr: 'Seulement sièges au comptoir/bar',
     },
     recommendations: {
       seating: ['island-overhang-12-inches', 'bar-stools-2-4'],
-      features: ['comfortable-counter-height', 'foot-rail', 'knee-clearance']
+      features: ['comfortable-counter-height', 'foot-rail', 'knee-clearance'],
     },
-    tags: ['counter-seating', 'casual-dining', 'space-efficient']
+    tags: ['counter-seating', 'casual-dining', 'space-efficient'],
   },
   'breakfast-nook': {
     score: 60,
@@ -383,14 +429,14 @@ const SEATING_NEEDS_CONFIGURATIONS = {
     idealSeats: 6,
     description: {
       en: 'Breakfast nook or casual dining area',
-      fr: 'Coin repas ou zone de repas décontractée'
+      fr: 'Coin repas ou zone de repas décontractée',
     },
     recommendations: {
       layout: ['nook-integration', 'natural-light-access'],
       seating: ['banquette-option', 'round-table-preferred'],
-      features: ['cozy-seating', 'storage-under-bench', 'window-view']
+      features: ['cozy-seating', 'storage-under-bench', 'window-view'],
     },
-    tags: ['breakfast-nook', 'family-dining', 'cozy-seating']
+    tags: ['breakfast-nook', 'family-dining', 'cozy-seating'],
   },
   'full-table': {
     score: 80,
@@ -399,14 +445,14 @@ const SEATING_NEEDS_CONFIGURATIONS = {
     idealSeats: 8,
     description: {
       en: 'Full dining table in or adjacent to kitchen',
-      fr: 'Table à manger complète dans ou adjacente à la cuisine'
+      fr: 'Table à manger complète dans ou adjacente à la cuisine',
     },
     recommendations: {
       layout: ['open-floor-plan', 'defined-zones'],
       seating: ['table-for-6-8', 'expandable-option'],
-      features: ['lighting-over-table', 'rug-definition', 'sideboard-storage']
+      features: ['lighting-over-table', 'rug-definition', 'sideboard-storage'],
     },
-    tags: ['full-dining', 'formal-option', 'separate-zone']
+    tags: ['full-dining', 'formal-option', 'separate-zone'],
   },
   'multiple-zones': {
     score: 95,
@@ -415,93 +461,103 @@ const SEATING_NEEDS_CONFIGURATIONS = {
     idealSeats: 14,
     description: {
       en: 'Multiple seating zones (counter + table + lounge)',
-      fr: 'Zones de sièges multiples (comptoir + table + salon)'
+      fr: 'Zones de sièges multiples (comptoir + table + salon)',
     },
     recommendations: {
       layout: ['great-room-concept', 'zone-based-design'],
       seating: ['island-seating-6', 'dining-table-8', 'lounge-seating-4'],
-      features: ['varied-seating-heights', 'multiple-gathering-points', 'flexible-furniture']
+      features: ['varied-seating-heights', 'multiple-gathering-points', 'flexible-furniture'],
     },
-    tags: ['multiple-zones', 'great-room', 'extensive-seating', 'entertaining-focus']
-  }
+    tags: ['multiple-zones', 'great-room', 'extensive-seating', 'entertaining-focus'],
+  },
 };
 
 /**
  * Serving style configurations
  */
 const SERVING_STYLE_CONFIGURATIONS = {
-  'plated': {
+  plated: {
     score: 60,
     style: 'formal',
     description: {
       en: 'Plated service (prepare and plate in kitchen)',
-      fr: 'Service à l\'assiette (préparer et dresser en cuisine)'
+      fr: "Service à l'assiette (préparer et dresser en cuisine)",
     },
     requirements: {
       counterSpace: 'plating-zone',
       storage: 'dishware-accessible',
-      warming: 'helpful'
+      warming: 'helpful',
     },
     recommendations: {
       features: ['plating-counter', 'warming-drawer', 'organized-dish-storage'],
-      layout: ['efficient-plating-zone', 'pass-through-option']
+      layout: ['efficient-plating-zone', 'pass-through-option'],
     },
-    tags: ['plated-service', 'formal-dining', 'kitchen-plating']
+    tags: ['plated-service', 'formal-dining', 'kitchen-plating'],
   },
   'family-style': {
     score: 50,
     style: 'casual',
     description: {
       en: 'Family-style (serve dishes at table)',
-      fr: 'Style familial (servir les plats à table)'
+      fr: 'Style familial (servir les plats à table)',
     },
     requirements: {
       counterSpace: 'serving-dish-prep',
       storage: 'large-serving-pieces',
-      warming: 'optional'
+      warming: 'optional',
     },
     recommendations: {
       features: ['hot-pad-storage', 'serving-dish-cabinet', 'easy-table-access'],
-      layout: ['efficient-path-to-dining']
+      layout: ['efficient-path-to-dining'],
     },
-    tags: ['family-style', 'casual-serving', 'shared-dishes']
+    tags: ['family-style', 'casual-serving', 'shared-dishes'],
   },
-  'buffet': {
+  buffet: {
     score: 75,
     style: 'self-serve',
     description: {
       en: 'Buffet service (self-serve from counter)',
-      fr: 'Service buffet (libre-service au comptoir)'
+      fr: 'Service buffet (libre-service au comptoir)',
     },
     requirements: {
       counterSpace: 'extensive-serving-area',
       storage: 'chafing-dishes',
-      warming: 'essential'
+      warming: 'essential',
     },
     recommendations: {
-      features: ['long-serving-counter', 'warming-drawers-multiple', 'linear-flow', 'tiered-serving-option'],
-      layout: ['buffet-line-design', 'accessible-both-sides']
+      features: [
+        'long-serving-counter',
+        'warming-drawers-multiple',
+        'linear-flow',
+        'tiered-serving-option',
+      ],
+      layout: ['buffet-line-design', 'accessible-both-sides'],
     },
-    tags: ['buffet-service', 'self-serve', 'large-groups', 'flow-important']
+    tags: ['buffet-service', 'self-serve', 'large-groups', 'flow-important'],
   },
-  'mixed': {
+  mixed: {
     score: 85,
     style: 'flexible',
     description: {
       en: 'Mixed service styles depending on occasion',
-      fr: 'Styles de service mixtes selon l\'occasion'
+      fr: "Styles de service mixtes selon l'occasion",
     },
     requirements: {
       counterSpace: 'versatile-zones',
       storage: 'varied-serviceware',
-      warming: 'recommended'
+      warming: 'recommended',
     },
     recommendations: {
-      features: ['flexible-counter-space', 'warming-drawer', 'multiple-serving-options', 'adaptable-layout'],
-      layout: ['multi-functional-zones']
+      features: [
+        'flexible-counter-space',
+        'warming-drawer',
+        'multiple-serving-options',
+        'adaptable-layout',
+      ],
+      layout: ['multi-functional-zones'],
     },
-    tags: ['flexible-serving', 'multi-purpose', 'adaptable']
-  }
+    tags: ['flexible-serving', 'multi-purpose', 'adaptable'],
+  },
 };
 
 /**
@@ -513,40 +569,40 @@ const VIEW_IMPORTANCE_CONFIGURATIONS = {
     priority: 'low',
     description: {
       en: 'Kitchen view/sightlines not important',
-      fr: 'Vue/lignes de vue de la cuisine pas importantes'
+      fr: 'Vue/lignes de vue de la cuisine pas importantes',
     },
     recommendations: {
       layout: ['efficiency-over-openness'],
-      avoid: ['sacrificing-storage-for-openness']
+      avoid: ['sacrificing-storage-for-openness'],
     },
-    tags: ['enclosed-ok', 'efficiency-priority']
+    tags: ['enclosed-ok', 'efficiency-priority'],
   },
   'somewhat-important': {
     score: 60,
     priority: 'moderate',
     description: {
       en: 'Some visibility to adjacent spaces desired',
-      fr: 'Une certaine visibilité vers les espaces adjacents souhaitée'
+      fr: 'Une certaine visibilité vers les espaces adjacents souhaitée',
     },
     recommendations: {
       layout: ['partial-openness', 'pass-through-option'],
-      features: ['peninsula-with-openness', 'half-wall-option']
+      features: ['peninsula-with-openness', 'half-wall-option'],
     },
-    tags: ['semi-open', 'partial-view', 'balanced']
+    tags: ['semi-open', 'partial-view', 'balanced'],
   },
   'very-important': {
     score: 90,
     priority: 'high',
     description: {
       en: 'Open sightlines to living/dining areas essential',
-      fr: 'Lignes de vue ouvertes vers salon/salle à manger essentielles'
+      fr: 'Lignes de vue ouvertes vers salon/salle à manger essentielles',
     },
     recommendations: {
       layout: ['open-concept', 'no-upper-cabinets-on-island', 'low-visual-barriers'],
-      features: ['open-shelving-option', 'glass-cabinets', 'minimal-upper-cabinets']
+      features: ['open-shelving-option', 'glass-cabinets', 'minimal-upper-cabinets'],
     },
-    tags: ['open-concept', 'sightlines-critical', 'connected-spaces', 'supervision-important']
-  }
+    tags: ['open-concept', 'sightlines-critical', 'connected-spaces', 'supervision-important'],
+  },
 };
 
 /**
@@ -556,63 +612,80 @@ const HOSTING_PERSONAS = {
   'non-entertainer': {
     description: {
       en: 'Kitchen is for personal/family use only',
-      fr: 'La cuisine est à usage personnel/familial uniquement'
+      fr: 'La cuisine est à usage personnel/familial uniquement',
     },
     characteristics: ['private-space', 'efficiency-focused', 'minimal-social-features'],
     priorities: ['work-efficiency', 'personal-comfort', 'storage'],
     recommendations: {
       avoid: ['oversized-islands', 'show-kitchen-features', 'extensive-seating'],
-      focus: ['compact-efficient', 'personal-workflow', 'adequate-storage']
-    }
+      focus: ['compact-efficient', 'personal-workflow', 'adequate-storage'],
+    },
   },
   'casual-host': {
     description: {
       en: 'Occasional casual gatherings with friends and family',
-      fr: 'Réunions occasionnelles décontractées avec amis et famille'
+      fr: 'Réunions occasionnelles décontractées avec amis et famille',
     },
     characteristics: ['flexible-space', 'informal-entertaining', 'dual-purpose'],
     priorities: ['flexibility', 'casual-seating', 'easy-cleanup'],
     recommendations: {
       focus: ['island-with-seating', 'open-sightlines', 'flexible-layout'],
-      features: ['counter-seating-4', 'easy-flow', 'casual-finishes']
-    }
+      features: ['counter-seating-4', 'easy-flow', 'casual-finishes'],
+    },
   },
   'regular-entertainer': {
     description: {
       en: 'Frequent host who enjoys regular gatherings',
-      fr: 'Hôte fréquent qui aime les réunions régulières'
+      fr: 'Hôte fréquent qui aime les réunions régulières',
     },
     characteristics: ['social-hub', 'entertaining-priority', 'guest-comfort'],
     priorities: ['guest-flow', 'ample-seating', 'serving-features', 'presentation'],
     recommendations: {
       focus: ['open-layout', 'island-seating-6', 'beverage-station', 'serving-zones'],
-      features: ['wine-storage', 'ice-maker', 'warming-drawer', 'multiple-prep-areas']
-    }
+      features: ['wine-storage', 'ice-maker', 'warming-drawer', 'multiple-prep-areas'],
+    },
   },
   'serious-host': {
     description: {
       en: 'Passionate entertainer who hosts large or frequent events',
-      fr: 'Hôte passionné qui organise des événements importants ou fréquents'
+      fr: 'Hôte passionné qui organise des événements importants ou fréquents',
     },
     characteristics: ['entertainment-central', 'show-kitchen', 'professional-level'],
     priorities: ['capacity', 'professional-flow', 'multiple-zones', 'high-end-presentation'],
     recommendations: {
       focus: ['commercial-inspired-design', 'butler-pantry', 'dual-islands', 'prep-kitchen'],
-      features: ['dual-dishwashers', 'warming-drawers', 'beverage-center', 'professional-appliances', 'statement-design']
-    }
+      features: [
+        'dual-dishwashers',
+        'warming-drawers',
+        'beverage-center',
+        'professional-appliances',
+        'statement-design',
+      ],
+    },
   },
   'cooking-entertainer': {
     description: {
       en: 'Interactive host who makes cooking part of entertainment',
-      fr: 'Hôte interactif qui fait de la cuisine une partie du divertissement'
+      fr: 'Hôte interactif qui fait de la cuisine une partie du divertissement',
     },
     characteristics: ['show-cooking', 'interactive-experience', 'performance-kitchen'],
     priorities: ['visibility', 'audience-seating', 'professional-equipment', 'presentation'],
     recommendations: {
-      focus: ['theater-kitchen-layout', 'island-with-audience-seating', 'statement-appliances', 'excellent-lighting'],
-      features: ['professional-range', 'pot-filler', 'statement-hood', 'prep-pantry-hidden', 'showcase-storage']
-    }
-  }
+      focus: [
+        'theater-kitchen-layout',
+        'island-with-audience-seating',
+        'statement-appliances',
+        'excellent-lighting',
+      ],
+      features: [
+        'professional-range',
+        'pot-filler',
+        'statement-hood',
+        'prep-pantry-hidden',
+        'showcase-storage',
+      ],
+    },
+  },
 };
 
 // ============================================================================
@@ -633,7 +706,7 @@ function calculateSectionScore(answers) {
     tags: new Set(),
     seatingRequirements: {},
     flowRequirements: {},
-    featurePriorities: {}
+    featurePriorities: {},
   };
 
   // Calculate individual component scores
@@ -643,7 +716,7 @@ function calculateSectionScore(answers) {
     gatheringType: scoreGatheringType(answers['gathering-type']),
     seatingNeeds: scoreSeatingNeeds(answers['seating-needs']),
     servingStyle: scoreServingStyle(answers['serving-style']),
-    viewImportance: scoreViewImportance(answers['view-importance'])
+    viewImportance: scoreViewImportance(answers['view-importance']),
   };
 
   // Calculate weighted overall score
@@ -654,7 +727,7 @@ function calculateSectionScore(answers) {
       totalWeight += weight;
 
       if (componentScores[key]?.tags) {
-        componentScores[key].tags.forEach(tag => scores.tags.add(tag));
+        componentScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
     }
   }
@@ -671,20 +744,20 @@ function calculateSectionScore(answers) {
     entertainingLevel: {
       score: componentScores.entertainingFrequency?.score || 50,
       level: componentScores.entertainingFrequency?.level || 'moderate',
-      frequency: componentScores.entertainingFrequency?.frequency || {}
+      frequency: componentScores.entertainingFrequency?.frequency || {},
     },
     guestCapacity: {
       score: componentScores.guestCount?.score || 50,
       capacity: componentScores.guestCount?.capacity || 'standard',
-      range: componentScores.guestCount?.range || {}
+      range: componentScores.guestCount?.range || {},
     },
     socialStyle: {
       score: componentScores.gatheringType?.score || 50,
       style: componentScores.gatheringType?.style || 'informal',
-      formality: componentScores.gatheringType?.characteristics?.formality || 'moderate'
+      formality: componentScores.gatheringType?.characteristics?.formality || 'moderate',
     },
     openness: calculateOpennessScore(answers, componentScores),
-    hostingCapability: calculateHostingCapability(answers, componentScores)
+    hostingCapability: calculateHostingCapability(answers, componentScores),
   };
 
   // Calculate seating requirements
@@ -694,7 +767,11 @@ function calculateSectionScore(answers) {
   scores.flowRequirements = calculateFlowRequirements(answers, componentScores);
 
   // Calculate feature priorities
-  scores.featurePriorities = calculateFeaturePriorities(answers, componentScores, scores.hostingPersona);
+  scores.featurePriorities = calculateFeaturePriorities(
+    answers,
+    componentScores,
+    scores.hostingPersona
+  );
 
   // Generate recommendations
   scores.recommendations = generateRecommendations(answers, componentScores, scores);
@@ -727,7 +804,7 @@ function scoreEntertainingFrequency(value) {
     description: config.description,
     characteristics: config.characteristics,
     recommendations: config.recommendations,
-    tags: config.tags
+    tags: config.tags,
   };
 }
 
@@ -750,7 +827,7 @@ function scoreGuestCount(value) {
     seatingRequirements: config.seatingRequirements,
     spaceRequirements: config.spaceRequirements,
     recommendations: config.recommendations,
-    tags: config.tags
+    tags: config.tags,
   };
 }
 
@@ -767,7 +844,7 @@ function scoreGatheringType(values) {
   let totalScore = 0;
   const allCharacteristics = [];
 
-  values.forEach(v => {
+  values.forEach((v) => {
     const config = GATHERING_TYPE_CONFIGURATIONS[v];
     if (config) {
       totalScore += config.score;
@@ -780,17 +857,20 @@ function scoreGatheringType(values) {
   const avgScore = values.length > 0 ? totalScore / values.length : 50;
 
   // Determine dominant style
-  const dominantStyle = styles.includes('interactive-cooking') ? 'interactive-cooking' :
-                       styles.includes('semi-formal') ? 'semi-formal' :
-                       styles.includes('standing-social') ? 'standing-social' :
-                       styles[0] || 'informal';
+  const dominantStyle = styles.includes('interactive-cooking')
+    ? 'interactive-cooking'
+    : styles.includes('semi-formal')
+      ? 'semi-formal'
+      : styles.includes('standing-social')
+        ? 'standing-social'
+        : styles[0] || 'informal';
 
   return {
     score: avgScore,
     style: dominantStyle,
     types: values,
     characteristics: allCharacteristics[0] || {},
-    tags
+    tags,
   };
 }
 
@@ -812,7 +892,7 @@ function scoreSeatingNeeds(value) {
     idealSeats: config.idealSeats,
     description: config.description,
     recommendations: config.recommendations,
-    tags: config.tags
+    tags: config.tags,
   };
 }
 
@@ -829,7 +909,7 @@ function scoreServingStyle(values) {
   let totalScore = 0;
   const allRequirements = [];
 
-  values.forEach(v => {
+  values.forEach((v) => {
     const config = SERVING_STYLE_CONFIGURATIONS[v];
     if (config) {
       totalScore += config.score;
@@ -846,7 +926,7 @@ function scoreServingStyle(values) {
     style: styles.includes('flexible') ? 'flexible' : styles[0] || 'casual',
     styles: values,
     requirements: allRequirements,
-    tags
+    tags,
   };
 }
 
@@ -866,7 +946,7 @@ function scoreViewImportance(value) {
     priority: config.priority,
     description: config.description,
     recommendations: config.recommendations,
-    tags: config.tags
+    tags: config.tags,
   };
 }
 
@@ -893,14 +973,15 @@ function identifyHostingPersona(answers, componentScores) {
   }
 
   // Serious host
-  if (frequency === 'multiple-weekly' ||
-      (frequency === 'weekly' && (guestCount === '12-plus' || guestCount === '9-12'))) {
+  if (
+    frequency === 'multiple-weekly' ||
+    (frequency === 'weekly' && (guestCount === '12-plus' || guestCount === '9-12'))
+  ) {
     return 'serious-host';
   }
 
   // Regular entertainer
-  if (frequency === 'weekly' ||
-      (frequency === 'monthly' && guestCount === '9-12')) {
+  if (frequency === 'weekly' || (frequency === 'monthly' && guestCount === '9-12')) {
     return 'regular-entertainer';
   }
 
@@ -921,7 +1002,7 @@ function calculateOpennessScore(answers, componentScores) {
   factors.push({
     factor: 'view-importance',
     impact: (viewScore - 50) * 0.4,
-    priority: componentScores.viewImportance?.priority || 'moderate'
+    priority: componentScores.viewImportance?.priority || 'moderate',
   });
 
   // Gathering type impact
@@ -943,7 +1024,8 @@ function calculateOpennessScore(answers, componentScores) {
     score,
     level: score >= 75 ? 'very-open' : score >= 50 ? 'moderately-open' : 'enclosed-ok',
     factors,
-    recommendation: score >= 75 ? 'open-concept-essential' : score >= 50 ? 'semi-open-preferred' : 'flexibility'
+    recommendation:
+      score >= 75 ? 'open-concept-essential' : score >= 50 ? 'semi-open-preferred' : 'flexibility',
   };
 }
 
@@ -957,10 +1039,7 @@ function calculateHostingCapability(answers, componentScores) {
   const servingScore = componentScores.servingStyle?.score || 0;
 
   const score = Math.round(
-    frequencyScore * 0.35 +
-    capacityScore * 0.30 +
-    gatheringScore * 0.20 +
-    servingScore * 0.15
+    frequencyScore * 0.35 + capacityScore * 0.3 + gatheringScore * 0.2 + servingScore * 0.15
   );
 
   let level;
@@ -973,7 +1052,7 @@ function calculateHostingCapability(answers, componentScores) {
     score,
     level,
     needsCommercialFeatures: score >= 80,
-    needsProfessionalFlow: score >= 70
+    needsProfessionalFlow: score >= 70,
   };
 }
 
@@ -998,14 +1077,20 @@ function calculateSeatingRequirements(answers, componentScores) {
     minSeats,
     idealSeats,
     seatingStyle: seatingConfig?.priority || 'casual',
-    zones: answers['seating-needs'] === 'multiple-zones' ? ['counter', 'table', 'lounge'] :
-           answers['seating-needs'] === 'full-table' ? ['counter', 'table'] :
-           answers['seating-needs'] === 'breakfast-nook' ? ['nook'] :
-           answers['seating-needs'] === 'counter-only' ? ['counter'] : [],
+    zones:
+      answers['seating-needs'] === 'multiple-zones'
+        ? ['counter', 'table', 'lounge']
+        : answers['seating-needs'] === 'full-table'
+          ? ['counter', 'table']
+          : answers['seating-needs'] === 'breakfast-nook'
+            ? ['nook']
+            : answers['seating-needs'] === 'counter-only'
+              ? ['counter']
+              : [],
     recommendations: [
       ...(guestConfig?.recommendations?.seating || []),
-      ...(seatingConfig?.recommendations?.seating || [])
-    ]
+      ...(seatingConfig?.recommendations?.seating || []),
+    ],
   };
 }
 
@@ -1039,7 +1124,10 @@ function calculateFlowRequirements(answers, componentScores) {
   }
 
   // Buffet style
-  if (gatheringTypes.includes('buffet-style') || (answers['serving-style'] || []).includes('buffet')) {
+  if (
+    gatheringTypes.includes('buffet-style') ||
+    (answers['serving-style'] || []).includes('buffet')
+  ) {
     requirements.push('linear-serving-flow', 'dual-access-counter');
   }
 
@@ -1048,7 +1136,7 @@ function calculateFlowRequirements(answers, componentScores) {
     aisleWidth: flowPriority === 'critical' ? '48-60-inches' : '42-48-inches',
     requirements,
     circulation: flowPriority === 'critical' ? 'multiple-paths' : 'standard',
-    bottleneckTolerance: flowPriority === 'critical' ? 'none' : 'minimal'
+    bottleneckTolerance: flowPriority === 'critical' ? 'none' : 'minimal',
   };
 }
 
@@ -1059,7 +1147,7 @@ function calculateFeaturePriorities(answers, componentScores, hostingPersona) {
   const priorities = {
     high: [],
     medium: [],
-    low: []
+    low: [],
   };
 
   // Seating features
@@ -1082,7 +1170,11 @@ function calculateFeaturePriorities(answers, componentScores, hostingPersona) {
 
   // Beverage features
   const gatheringTypes = answers['gathering-type'] || [];
-  if (gatheringTypes.includes('cocktail-parties') || answers['entertaining-frequency'] === 'weekly' || answers['entertaining-frequency'] === 'multiple-weekly') {
+  if (
+    gatheringTypes.includes('cocktail-parties') ||
+    answers['entertaining-frequency'] === 'weekly' ||
+    answers['entertaining-frequency'] === 'multiple-weekly'
+  ) {
     priorities.high.push('beverage-station', 'ice-maker');
     priorities.medium.push('wine-storage');
   }
@@ -1115,14 +1207,14 @@ function generateRecommendations(answers, componentScores, scores) {
     priority: 'essential',
     title: {
       en: 'Hosting Style',
-      fr: 'Style de réception'
+      fr: 'Style de réception',
     },
     description: {
       en: persona?.description.en || 'Your hosting style has been identified.',
-      fr: persona?.description.fr || 'Votre style de réception a été identifié.'
+      fr: persona?.description.fr || 'Votre style de réception a été identifié.',
     },
     persona: scores.hostingPersona,
-    priorities: persona?.priorities || []
+    priorities: persona?.priorities || [],
   });
 
   // Seating recommendations
@@ -1134,12 +1226,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Seating Capacity',
-        fr: 'Capacité d\'assise'
+        fr: "Capacité d'assise",
       },
       description: {
         en: `Plan for ${seatingReqs.minSeats}-${seatingReqs.idealSeats} seats across ${seatingReqs.zones.join(', ')} zones.`,
-        fr: `Prévoyez ${seatingReqs.minSeats}-${seatingReqs.idealSeats} sièges dans les zones ${seatingReqs.zones.join(', ')}.`
-      }
+        fr: `Prévoyez ${seatingReqs.minSeats}-${seatingReqs.idealSeats} sièges dans les zones ${seatingReqs.zones.join(', ')}.`,
+      },
     });
   }
 
@@ -1152,12 +1244,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Traffic Flow',
-        fr: 'Flux de circulation'
+        fr: 'Flux de circulation',
       },
       description: {
         en: `Critical flow requirements: ${flowReqs.aisleWidth} aisles, ${flowReqs.requirements.join(', ')}.`,
-        fr: `Exigences de flux critiques: allées de ${flowReqs.aisleWidth}, ${flowReqs.requirements.join(', ')}.`
-      }
+        fr: `Exigences de flux critiques: allées de ${flowReqs.aisleWidth}, ${flowReqs.requirements.join(', ')}.`,
+      },
     });
   }
 
@@ -1169,12 +1261,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Open Concept Layout',
-        fr: 'Disposition à concept ouvert'
+        fr: 'Disposition à concept ouvert',
       },
       description: {
         en: 'Open sightlines are essential for your entertaining style. Minimize visual barriers between kitchen and living spaces.',
-        fr: 'Les lignes de vue ouvertes sont essentielles pour votre style de réception. Minimisez les barrières visuelles entre la cuisine et les espaces de vie.'
-      }
+        fr: 'Les lignes de vue ouvertes sont essentielles pour votre style de réception. Minimisez les barrières visuelles entre la cuisine et les espaces de vie.',
+      },
     });
   }
 
@@ -1186,13 +1278,13 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Priority Features',
-        fr: 'Fonctionnalités prioritaires'
+        fr: 'Fonctionnalités prioritaires',
       },
       description: {
         en: `Key features for your hosting style: ${scores.featurePriorities.high.join(', ')}.`,
-        fr: `Caractéristiques clés pour votre style de réception: ${scores.featurePriorities.high.join(', ')}.`
+        fr: `Caractéristiques clés pour votre style de réception: ${scores.featurePriorities.high.join(', ')}.`,
       },
-      features: scores.featurePriorities.high
+      features: scores.featurePriorities.high,
     });
   }
 
@@ -1205,12 +1297,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: {
         en: 'Buffet Service Setup',
-        fr: 'Configuration du service buffet'
+        fr: 'Configuration du service buffet',
       },
       description: {
         en: 'Design a linear serving flow with accessible counters on both sides. Include warming drawers for food temperature control.',
-        fr: 'Concevez un flux de service linéaire avec des comptoirs accessibles des deux côtés. Incluez des tiroirs chauffants pour le contrôle de la température des aliments.'
-      }
+        fr: 'Concevez un flux de service linéaire avec des comptoirs accessibles des deux côtés. Incluez des tiroirs chauffants pour le contrôle de la température des aliments.',
+      },
     });
   }
 
@@ -1221,12 +1313,12 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'essential',
       title: {
         en: 'Show Kitchen Design',
-        fr: 'Conception de cuisine spectacle'
+        fr: 'Conception de cuisine spectacle',
       },
       description: {
         en: 'Create a theater-style kitchen with island seating for audience, professional-grade appliances as focal points, and hidden prep areas for staging.',
-        fr: 'Créez une cuisine de style théâtre avec des sièges îlot pour le public, des appareils de qualité professionnelle comme points focaux et des zones de préparation cachées pour la mise en scène.'
-      }
+        fr: 'Créez une cuisine de style théâtre avec des sièges îlot pour le public, des appareils de qualité professionnelle comme points focaux et des zones de préparation cachées pour la mise en scène.',
+      },
     });
   }
 
@@ -1259,5 +1351,5 @@ module.exports = {
   SEATING_NEEDS_CONFIGURATIONS,
   SERVING_STYLE_CONFIGURATIONS,
   VIEW_IMPORTANCE_CONFIGURATIONS,
-  HOSTING_PERSONAS
+  HOSTING_PERSONAS,
 };

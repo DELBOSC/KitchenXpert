@@ -19,7 +19,10 @@ jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
@@ -49,7 +52,13 @@ jest.mock('../middleware/upload-middleware', () => ({
 jest.mock('../database/client', () => ({ prisma: { $disconnect: jest.fn() } }));
 
 jest.mock('../config/app-config', () => ({
-  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+  config: {
+    corsOrigins: ['http://localhost:3000'],
+    env: 'test',
+    port: 3000,
+    version: '1.0.0',
+    rateLimit: { maxRequests: 100 },
+  },
 }));
 
 jest.mock('express-rate-limit', () => ({
@@ -69,7 +78,9 @@ jest.mock('../auth/token-blacklist', () => ({
 jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
-      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+      userId: 'test-user-id',
+      email: 'test@test.com',
+      role: 'user',
     }),
     generateTokens: jest.fn(),
   },
@@ -146,10 +157,7 @@ describe('Renovation Routes', () => {
     it('should create a renovation project and return 201 status', async () => {
       mockCreateProject.mockResolvedValue(mockProject);
 
-      const response = await authedRequest(app)
-        .post('/renovation')
-        .send({})
-        .expect(201);
+      const response = await authedRequest(app).post('/renovation').send({}).expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe(validProjectId);
@@ -157,10 +165,7 @@ describe('Renovation Routes', () => {
     });
 
     it('should return 401 when user is not authenticated', async () => {
-      const response = await request(app)
-        .post('/renovation')
-        .send({})
-        .expect(401);
+      const response = await request(app).post('/renovation').send({}).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -169,15 +174,12 @@ describe('Renovation Routes', () => {
       const kitchenId = '660e8400-e29b-41d4-a716-446655440001';
       mockCreateProject.mockResolvedValue({ ...mockProject, kitchenId });
 
-      const response = await authedRequest(app)
-        .post('/renovation')
-        .send({ kitchenId })
-        .expect(201);
+      const response = await authedRequest(app).post('/renovation').send({ kitchenId }).expect(201);
 
       expect(response.body.success).toBe(true);
       expect(mockCreateProject).toHaveBeenCalledWith(
         'test-user-id',
-        expect.objectContaining({ kitchenId }),
+        expect.objectContaining({ kitchenId })
       );
     });
   });
@@ -186,9 +188,7 @@ describe('Renovation Routes', () => {
     it('should return renovation project with 200 status', async () => {
       mockGetProject.mockResolvedValue(mockProject);
 
-      const response = await authedRequest(app)
-        .get(`/renovation/${validProjectId}`)
-        .expect(200);
+      const response = await authedRequest(app).get(`/renovation/${validProjectId}`).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.id).toBe(validProjectId);
@@ -197,25 +197,19 @@ describe('Renovation Routes', () => {
     it('should return 404 when project is not found', async () => {
       mockGetProject.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get(`/renovation/${validProjectId}`)
-        .expect(404);
+      const response = await authedRequest(app).get(`/renovation/${validProjectId}`).expect(404);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 when user is not authenticated', async () => {
-      const response = await request(app)
-        .get(`/renovation/${validProjectId}`)
-        .expect(401);
+      const response = await request(app).get(`/renovation/${validProjectId}`).expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 400 for invalid ID format', async () => {
-      const response = await authedRequest(app)
-        .get('/renovation/not-a-uuid')
-        .expect(400);
+      const response = await authedRequest(app).get('/renovation/not-a-uuid').expect(400);
 
       expect(response.body.success).toBe(false);
     });

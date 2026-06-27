@@ -100,9 +100,8 @@ export class DesignRatingController {
     });
 
     // Calculate average
-    const avg = ratings.length > 0
-      ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
-      : 0;
+    const avg =
+      ratings.length > 0 ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length : 0;
 
     res.status(200).json({
       success: true,

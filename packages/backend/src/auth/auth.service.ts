@@ -138,8 +138,8 @@ export class AuthService {
     if (!this.userRepository) {
       throw new Error(
         'CONFIGURATION ERROR: UserRepository is not configured. ' +
-        'You must inject a UserRepository implementation before using AuthService. ' +
-        'See IUserRepository interface for the required methods to implement.'
+          'You must inject a UserRepository implementation before using AuthService. ' +
+          'See IUserRepository interface for the required methods to implement.'
       );
     }
     return this.userRepository;
@@ -153,7 +153,7 @@ export class AuthService {
     if (!this.emailTokenService) {
       throw new Error(
         'CONFIGURATION ERROR: EmailTokenService is not configured. ' +
-        'You must inject an EmailTokenService before using email verification or password reset.'
+          'You must inject an EmailTokenService before using email verification or password reset.'
       );
     }
     return this.emailTokenService;
@@ -198,7 +198,9 @@ export class AuthService {
     // fails, the whole registration is rolled back.
     const shouldIssueToken = !!this.emailTokenService;
     const rawToken = shouldIssueToken ? crypto.randomBytes(32).toString('hex') : null;
-    const hashedToken = rawToken ? crypto.createHash('sha256').update(rawToken).digest('hex') : null;
+    const hashedToken = rawToken
+      ? crypto.createHash('sha256').update(rawToken).digest('hex')
+      : null;
     const tokenExpiresAt = new Date(Date.now() + TOKEN_EXPIRATION.EMAIL_VERIFICATION);
 
     const { user } = await prisma.$transaction(async (tx) => {
@@ -268,10 +270,7 @@ export class AuthService {
     }
 
     // Verify password
-    const isValidPassword = await this.comparePassword(
-      credentials.password,
-      user.password
-    );
+    const isValidPassword = await this.comparePassword(credentials.password, user.password);
 
     if (!isValidPassword) {
       throw new UnauthorizedError('Invalid credentials');
@@ -329,9 +328,7 @@ export class AuthService {
     // const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Reserved for stricter validation
 
     if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
-      throw new BadRequestError(
-        'Password must contain uppercase, lowercase, and numbers'
-      );
+      throw new BadRequestError('Password must contain uppercase, lowercase, and numbers');
     }
   }
 

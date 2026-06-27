@@ -132,12 +132,18 @@ export interface BulkDeleteResponse {
 export interface StorageStats {
   totalFiles: number;
   totalSize: number;
-  byType: Record<FileType, {
-    count: number;
-    size: number;
-  }>;
-  byProvider: Record<StorageProvider, {
-    count: number;
-    size: number;
-  }>;
+  byType: Record<
+    FileType,
+    {
+      count: number;
+      size: number;
+    }
+  >;
+  byProvider: Record<
+    StorageProvider,
+    {
+      count: number;
+      size: number;
+    }
+  >;
 }

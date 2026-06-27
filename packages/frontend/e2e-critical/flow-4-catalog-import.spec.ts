@@ -31,18 +31,20 @@ test.describe('@critical Flow 4 — Catalog → Import', () => {
         name: 'E2E Kitchen',
         // POST /kitchens validates width/length/height (createKitchenSchema),
         // not the *Cm names.
-        width: 400, length: 350, height: 270,
+        width: 400,
+        length: 350,
+        height: 270,
       },
     });
     const { data: kitchenData } = await kitchen.json();
 
     // 2. Open catalog hub
     await page.goto('/fr/catalog');
-    await expect(page.getByRole('heading', { name: /catalogue|catalog/i }).first())
-      .toBeVisible();
+    await expect(page.getByRole('heading', { name: /catalogue|catalog/i }).first()).toBeVisible();
 
     // 3. Switch to IKEA tab
-    await page.getByRole('tab', { name: /ikea/i })
+    await page
+      .getByRole('tab', { name: /ikea/i })
       .or(page.getByRole('link', { name: /ikea/i }))
       .first()
       .click();
@@ -50,7 +52,9 @@ test.describe('@critical Flow 4 — Catalog → Import', () => {
     await expect(page).toHaveURL(/\/(catalog\/ikea|ikea)/, { timeout: 10_000 });
 
     // 4. Search a known seeded item ("METOD" is the IKEA kitchen line)
-    await page.getByRole('searchbox').or(page.getByPlaceholder(/recherche|search/i))
+    await page
+      .getByRole('searchbox')
+      .or(page.getByPlaceholder(/recherche|search/i))
       .first()
       .fill('METOD');
     await page.keyboard.press('Enter');
@@ -64,22 +68,18 @@ test.describe('@critical Flow 4 — Catalog → Import', () => {
     // 6. Pick our kitchen in the modal that opens
     const dialog = page.getByRole('dialog');
     if (await dialog.isVisible().catch(() => false)) {
-      await dialog.getByRole('combobox').or(dialog.getByRole('listbox'))
-        .first()
-        .click();
+      await dialog.getByRole('combobox').or(dialog.getByRole('listbox')).first().click();
       await page.getByRole('option', { name: /E2E Kitchen/ }).click();
       await dialog.getByRole('button', { name: /import|ajouter|valider/i }).click();
     }
 
     // 7. Toast confirmation
-    await expect(page.getByText(/importé|added|ajouté/i).first())
-      .toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/importé|added|ajouté/i).first()).toBeVisible({ timeout: 10_000 });
 
     // 8. Verify a KitchenItem now exists in the DB
-    const items = await request.get(
-      `${API_BASE}/kitchens/${kitchenData.id}/items`,
-      { headers: { Cookie: cookies } },
-    );
+    const items = await request.get(`${API_BASE}/kitchens/${kitchenData.id}/items`, {
+      headers: { Cookie: cookies },
+    });
     const { data: itemList } = await items.json();
     expect(itemList.length, 'expected at least one imported item').toBeGreaterThan(0);
   });

@@ -83,7 +83,9 @@ export class PriceTrackerService {
       },
     });
 
-    logger.info(`Recorded price for product ${productId}: ${price} EUR (change: ${changePercent?.toFixed(2) ?? 'N/A'}%)`);
+    logger.info(
+      `Recorded price for product ${productId}: ${price} EUR (change: ${changePercent?.toFixed(2) ?? 'N/A'}%)`
+    );
     return record;
   }
 
@@ -121,9 +123,7 @@ export class PriceTrackerService {
 
     const currentPrice = history[history.length - 1]!.price;
     const prices90d = history.map((h) => h.price);
-    const prices30d = history
-      .filter((h) => h.recordedAt >= thirtyDaysAgo)
-      .map((h) => h.price);
+    const prices30d = history.filter((h) => h.recordedAt >= thirtyDaysAgo).map((h) => h.price);
 
     const avg = (arr: number[]): number | null =>
       arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
@@ -142,8 +142,11 @@ export class PriceTrackerService {
       const lastPrice30d = prices30d[prices30d.length - 1]!;
       if (firstPrice30d !== 0) {
         changePercent30d = ((lastPrice30d - firstPrice30d) / firstPrice30d) * 100;
-        if (changePercent30d > 2) {trendDirection = 'up';}
-        else if (changePercent30d < -2) {trendDirection = 'down';}
+        if (changePercent30d > 2) {
+          trendDirection = 'up';
+        } else if (changePercent30d < -2) {
+          trendDirection = 'down';
+        }
       }
     }
 
@@ -178,9 +181,7 @@ export class PriceTrackerService {
     }
 
     const percentVsAvg =
-      trends.avg90d !== 0
-        ? ((trends.currentPrice - trends.avg90d) / trends.avg90d) * 100
-        : 0;
+      trends.avg90d !== 0 ? ((trends.currentPrice - trends.avg90d) / trends.avg90d) * 100 : 0;
 
     let recommendation: BestTimeSuggestion['recommendation'];
     let message: string;
@@ -222,7 +223,7 @@ export class PriceTrackerService {
     userId: string,
     productId: string,
     targetPrice: number,
-    direction: 'below' | 'above',
+    direction: 'below' | 'above'
   ) {
     // Get current price
     const latest = await prisma.priceHistory.findFirst({
@@ -242,7 +243,9 @@ export class PriceTrackerService {
       },
     });
 
-    logger.info(`Created price alert for user ${userId}, product ${productId}, target: ${targetPrice} ${direction}`);
+    logger.info(
+      `Created price alert for user ${userId}, product ${productId}, target: ${targetPrice} ${direction}`
+    );
     return alert;
   }
 
@@ -296,7 +299,9 @@ export class PriceTrackerService {
         orderBy: { recordedAt: 'desc' },
       });
 
-      if (!latest) {continue;}
+      if (!latest) {
+        continue;
+      }
 
       const currentPrice = latest.price;
       let shouldTrigger = false;
@@ -317,7 +322,9 @@ export class PriceTrackerService {
           },
         });
         triggered++;
-        logger.info(`Alert ${alert.id} triggered: product ${alert.productId} at ${currentPrice} EUR (target: ${alert.targetPrice} ${alert.direction})`);
+        logger.info(
+          `Alert ${alert.id} triggered: product ${alert.productId} at ${currentPrice} EUR (target: ${alert.targetPrice} ${alert.direction})`
+        );
       } else {
         // Update current price even if not triggered
         await prisma.priceAlert.update({
@@ -327,7 +334,9 @@ export class PriceTrackerService {
       }
     }
 
-    logger.info(`Alert check complete: ${triggered} alert(s) triggered out of ${activeAlerts.length} active`);
+    logger.info(
+      `Alert check complete: ${triggered} alert(s) triggered out of ${activeAlerts.length} active`
+    );
     return { triggered };
   }
 }

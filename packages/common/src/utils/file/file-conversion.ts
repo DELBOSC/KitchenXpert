@@ -184,11 +184,7 @@ export function fileToText(file: File, encoding: string = 'UTF-8'): Promise<stri
  * @param mimeType - The MIME type (default: 'text/plain')
  * @returns The File object
  */
-export function textToFile(
-  text: string,
-  filename: string,
-  mimeType: string = 'text/plain'
-): File {
+export function textToFile(text: string, filename: string, mimeType: string = 'text/plain'): File {
   const blob = new Blob([text], { type: mimeType });
   return new File([blob], filename, { type: mimeType });
 }
@@ -255,11 +251,7 @@ export function downloadContent(
  * @param pretty - Whether to pretty-print the JSON (default: true)
  * @returns The File object
  */
-export function jsonToFile(
-  data: unknown,
-  filename: string,
-  pretty: boolean = true
-): File {
+export function jsonToFile(data: unknown, filename: string, pretty: boolean = true): File {
   const json = pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data);
   return textToFile(json, filename, 'application/json');
 }

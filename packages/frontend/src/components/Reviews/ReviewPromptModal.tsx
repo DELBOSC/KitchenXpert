@@ -56,12 +56,18 @@ export function ReviewPromptModal(): React.ReactElement | null {
     fetch(`${API_BASE}/me/reviews/pending`, { credentials: 'include' })
       .then((r) => (r.ok ? (r.json() as Promise<{ data: PendingRequest | null }>) : null))
       .then((json) => {
-        if (!mounted || !json?.data) {return;}
+        if (!mounted || !json?.data) {
+          return;
+        }
         setRequest(json.data);
         setOpen(true);
       })
-      .catch(() => { /* silent — non-critical */ });
-    return () => { mounted = false; };
+      .catch(() => {
+        /* silent — non-critical */
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const close = (): void => {
@@ -102,7 +108,9 @@ export function ReviewPromptModal(): React.ReactElement | null {
           context: window.location.pathname,
         }),
       });
-      if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const json = (await res.json()) as { data: RespondResult };
       if (json.data.externalUrl) {
         setExternalUrl(json.data.externalUrl);
@@ -116,32 +124,34 @@ export function ReviewPromptModal(): React.ReactElement | null {
   };
 
   const titleByStep: Record<Step, React.ReactNode> = {
-    'rate': <>Comment se passe votre expérience&nbsp;?</>,
+    rate: <>Comment se passe votre expérience&nbsp;?</>,
     'feedback-form': <>Qu&apos;est-ce qui pourrait être mieux&nbsp;?</>,
     'thanks-external': (
       <>
-        Merci&nbsp;! <PartyPopper className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
+        Merci&nbsp;!{' '}
+        <PartyPopper className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
       </>
     ),
     'thanks-internal': (
       <>
-        Bien reçu, merci. <Heart className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
+        Bien reçu, merci.{' '}
+        <Heart className="inline-block w-6 h-6 align-text-bottom" aria-hidden="true" />
       </>
     ),
   };
 
   const descriptionByStep: Record<Step, React.ReactNode> = {
-    'rate': <>Votre retour nous aide à améliorer KitchenXpert. Ça prend 30 secondes.</>,
+    rate: <>Votre retour nous aide à améliorer KitchenXpert. Ça prend 30 secondes.</>,
     'feedback-form': (
       <>
-        Votre message va directement à l&apos;équipe produit — il n&apos;est PAS publié.
-        Nous lisons et répondons généralement sous 48 h.
+        Votre message va directement à l&apos;équipe produit — il n&apos;est PAS publié. Nous lisons
+        et répondons généralement sous 48 h.
       </>
     ),
     'thanks-external': (
       <>
-        Acceptez-vous de partager votre avis sur une plateforme publique&nbsp;?
-        Ça nous aide énormément à exister face à la concurrence.
+        Acceptez-vous de partager votre avis sur une plateforme publique&nbsp;? Ça nous aide
+        énormément à exister face à la concurrence.
       </>
     ),
     'thanks-internal': <>On revient vers vous sous 48 h. En attendant, votre projet vous attend.</>,

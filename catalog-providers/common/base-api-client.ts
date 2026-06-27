@@ -16,10 +16,7 @@ export abstract class BaseApiClient implements IProviderApiClient {
   /**
    * Effectue une requête HTTP avec retry et rate limiting
    */
-  protected async request<T>(
-    url: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  protected async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     // Rate limiting
     await this.checkRateLimit();
 

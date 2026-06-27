@@ -27,7 +27,13 @@ vi.mock('react-i18next', () => ({
 const mockFetch = vi.fn();
 
 const mockStats = {
-  data: { total: 100, inStock: 80, lowStock: 15, outOfStock: 5, lastCheckAt: '2026-04-01T10:00:00Z' },
+  data: {
+    total: 100,
+    inStock: 80,
+    lowStock: 15,
+    outOfStock: 5,
+    lastCheckAt: '2026-04-01T10:00:00Z',
+  },
 };
 const mockResults = {
   data: [

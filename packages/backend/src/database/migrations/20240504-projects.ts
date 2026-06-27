@@ -105,12 +105,24 @@ export const ProjectsMigration: Migration = {
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_projects_visibility ON projects(visibility)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_project_items_project_id ON project_items(project_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_project_items_catalog_item ON project_items(catalog_item_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_project_collaborators_project_id ON project_collaborators(project_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_project_collaborators_user_id ON project_collaborators(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_project_versions_project_id ON project_versions(project_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_project_comments_project_id ON project_comments(project_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_project_items_project_id ON project_items(project_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_project_items_catalog_item ON project_items(catalog_item_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_project_collaborators_project_id ON project_collaborators(project_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_project_collaborators_user_id ON project_collaborators(user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_project_versions_project_id ON project_versions(project_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_project_comments_project_id ON project_comments(project_id)`
+    );
 
     // Apply updated_at triggers
     await tx.execute(`

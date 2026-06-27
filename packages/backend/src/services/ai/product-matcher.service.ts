@@ -59,10 +59,10 @@ interface RawBatchMatchResult {
 // ---------------------------------------------------------------------------
 
 /** Dimensional tolerance for pre-filtering: +/- 10% */
-const DIMENSION_TOLERANCE = 0.10;
+const DIMENSION_TOLERANCE = 0.1;
 
 /** Price tolerance for pre-filtering: +/- 20% */
-const PRICE_TOLERANCE = 0.20;
+const PRICE_TOLERANCE = 0.2;
 
 /** Maximum number of candidates to send in a single Claude batch call */
 const MAX_BATCH_SIZE = 15;
@@ -105,7 +105,7 @@ export class ProductMatcherService {
    */
   async matchPair(
     productA: ProductData,
-    productB: ProductData,
+    productB: ProductData
   ): Promise<{ score: number; reason: string }> {
     const prompt = this.buildPairPrompt(productA, productB);
 
@@ -143,12 +143,10 @@ export class ProductMatcherService {
    */
   async findMatches(
     product: ProductData,
-    candidates: ProductData[],
+    candidates: ProductData[]
   ): Promise<Array<{ candidateId: string; score: number; reason: string }>> {
     // Pre-filter candidates by dimensional and price proximity
-    const filtered = candidates.filter((c) =>
-      this.isWithinTolerance(product, c),
-    );
+    const filtered = candidates.filter((c) => this.isWithinTolerance(product, c));
 
     logger.info('[ProductMatcher] Pre-filter results', {
       productId: product.id,
@@ -182,11 +180,7 @@ export class ProductMatcherService {
    *
    * @returns Number of matches found and persisted.
    */
-  async crossMatchBrands(
-    brandIdA: string,
-    brandIdB: string,
-    productType: string,
-  ): Promise<number> {
+  async crossMatchBrands(brandIdA: string, brandIdB: string, productType: string): Promise<number> {
     logger.info('[ProductMatcher] Starting cross-brand matching', {
       brandIdA,
       brandIdB,
@@ -237,10 +231,14 @@ export class ProductMatcherService {
 
         // Persist matches with score >= 0.5
         for (const match of matches) {
-          if (match.score < 0.5) {continue;}
+          if (match.score < 0.5) {
+            continue;
+          }
 
           const candidateProduct = dataB.find((p) => p.id === match.candidateId);
-          if (!candidateProduct) {continue;}
+          if (!candidateProduct) {
+            continue;
+          }
 
           try {
             await prisma.productMatch.upsert({
@@ -313,12 +311,11 @@ export class ProductMatcherService {
    * Pre-filter check: returns true if the candidate is within dimensional
    * and price tolerance of the reference product.
    */
-  private isWithinTolerance(
-    reference: ProductData,
-    candidate: ProductData,
-  ): boolean {
+  private isWithinTolerance(reference: ProductData, candidate: ProductData): boolean {
     // Skip self-comparison
-    if (reference.id === candidate.id) {return false;}
+    if (reference.id === candidate.id) {
+      return false;
+    }
 
     // Check width tolerance (+/- 10%)
     if (
@@ -362,12 +359,10 @@ export class ProductMatcherService {
   /**
    * Check if value is within tolerance of reference.
    */
-  private withinRange(
-    reference: number,
-    value: number,
-    tolerance: number,
-  ): boolean {
-    if (reference === 0) {return value === 0;}
+  private withinRange(reference: number, value: number, tolerance: number): boolean {
+    if (reference === 0) {
+      return value === 0;
+    }
     const lower = reference * (1 - tolerance);
     const upper = reference * (1 + tolerance);
     return value >= lower && value <= upper;
@@ -378,7 +373,7 @@ export class ProductMatcherService {
    */
   private async matchBatch(
     product: ProductData,
-    candidates: ProductData[],
+    candidates: ProductData[]
   ): Promise<Array<{ candidateId: string; score: number; reason: string }>> {
     const prompt = this.buildBatchPrompt(product, candidates);
 
@@ -419,13 +414,12 @@ export class ProductMatcherService {
   /**
    * Build prompt for comparing two specific products.
    */
-  private buildPairPrompt(
-    productA: ProductData,
-    productB: ProductData,
-  ): string {
+  private buildPairPrompt(productA: ProductData, productB: ProductData): string {
     const sections: string[] = [];
 
-    sections.push('Compare ces deux produits de cuisine et determine leur degre de correspondance.');
+    sections.push(
+      'Compare ces deux produits de cuisine et determine leur degre de correspondance.'
+    );
     sections.push('');
     sections.push('=== PRODUIT A ===');
     sections.push(this.formatProductForPrompt(productA));
@@ -452,15 +446,10 @@ export class ProductMatcherService {
   /**
    * Build prompt for comparing one product against a batch of candidates.
    */
-  private buildBatchPrompt(
-    product: ProductData,
-    candidates: ProductData[],
-  ): string {
+  private buildBatchPrompt(product: ProductData, candidates: ProductData[]): string {
     const sections: string[] = [];
 
-    sections.push(
-      'Compare le produit de reference avec chacun des candidats ci-dessous.',
-    );
+    sections.push('Compare le produit de reference avec chacun des candidats ci-dessous.');
     sections.push('');
     sections.push('=== PRODUIT DE REFERENCE ===');
     sections.push(this.formatProductForPrompt(product));
@@ -468,7 +457,7 @@ export class ProductMatcherService {
     sections.push('=== CANDIDATS ===');
 
     for (let i = 0; i < candidates.length; i++) {
-      sections.push(`--- Candidat ${  i + 1  } (id: ${  candidates[i]!.id  }) ---`);
+      sections.push(`--- Candidat ${i + 1} (id: ${candidates[i]!.id}) ---`);
       sections.push(this.formatProductForPrompt(candidates[i]!));
       sections.push('');
     }
@@ -501,24 +490,42 @@ export class ProductMatcherService {
    */
   private formatProductForPrompt(product: ProductData): string {
     const lines: string[] = [];
-    lines.push(`- Nom: ${  product.name}`);
-    lines.push(`- Type: ${  product.productType}`);
-    if (product.brand) {lines.push(`- Marque: ${  product.brand}`);}
-    if (product.reference) {lines.push(`- Reference: ${  product.reference}`);}
-    if (product.ean) {lines.push(`- EAN: ${  product.ean}`);}
-    if (product.width != null) {lines.push(`- Largeur: ${  product.width  }mm`);}
-    if (product.height != null) {lines.push(`- Hauteur: ${  product.height  }mm`);}
-    if (product.depth != null) {lines.push(`- Profondeur: ${  product.depth  }mm`);}
-    if (product.price != null) {lines.push(`- Prix: ${  product.price  }EUR`);}
-    if (product.material) {lines.push(`- Materiau: ${  product.material}`);}
-    if (product.color) {lines.push(`- Couleur: ${  product.color}`);}
+    lines.push(`- Nom: ${product.name}`);
+    lines.push(`- Type: ${product.productType}`);
+    if (product.brand) {
+      lines.push(`- Marque: ${product.brand}`);
+    }
+    if (product.reference) {
+      lines.push(`- Reference: ${product.reference}`);
+    }
+    if (product.ean) {
+      lines.push(`- EAN: ${product.ean}`);
+    }
+    if (product.width != null) {
+      lines.push(`- Largeur: ${product.width}mm`);
+    }
+    if (product.height != null) {
+      lines.push(`- Hauteur: ${product.height}mm`);
+    }
+    if (product.depth != null) {
+      lines.push(`- Profondeur: ${product.depth}mm`);
+    }
+    if (product.price != null) {
+      lines.push(`- Prix: ${product.price}EUR`);
+    }
+    if (product.material) {
+      lines.push(`- Materiau: ${product.material}`);
+    }
+    if (product.color) {
+      lines.push(`- Couleur: ${product.color}`);
+    }
     if (product.description) {
       // Truncate long descriptions
       const desc =
         product.description.length > 200
-          ? `${product.description.substring(0, 200)  }...`
+          ? `${product.description.substring(0, 200)}...`
           : product.description;
-      lines.push(`- Description: ${  desc}`);
+      lines.push(`- Description: ${desc}`);
     }
     return lines.join('\n');
   }

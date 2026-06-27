@@ -48,7 +48,7 @@ export interface ProviderSyncStats {
 
 export async function runProviderSync(
   prismaArg?: PrismaClient,
-  options: ProviderSyncOptions = {},
+  options: ProviderSyncOptions = {}
 ): Promise<ProviderSyncStats[]> {
   const prisma = prismaArg ?? defaultPrisma;
   const providers = options.providers ?? DEFAULT_PROVIDER_CODES;
@@ -60,8 +60,18 @@ export async function runProviderSync(
       const single = await syncOne(prisma, code, source, options.dryRun ?? false);
       stats.push(single);
     } catch (err) {
-      logger.error('[provider-sync] failed', { provider: code, err: err instanceof Error ? err.message : String(err) });
-      stats.push({ provider: code, productsConsidered: 0, productsUpdated: 0, appliancesConsidered: 0, appliancesUpdated: 0, errors: 1 });
+      logger.error('[provider-sync] failed', {
+        provider: code,
+        err: err instanceof Error ? err.message : String(err),
+      });
+      stats.push({
+        provider: code,
+        productsConsidered: 0,
+        productsUpdated: 0,
+        appliancesConsidered: 0,
+        appliancesUpdated: 0,
+        errors: 1,
+      });
     }
   }
   return stats;
@@ -71,7 +81,7 @@ async function syncOne(
   prisma: PrismaClient,
   providerCode: string,
   source: SyncSource,
-  dryRun: boolean,
+  dryRun: boolean
 ): Promise<ProviderSyncStats> {
   const updates = await source.fetchUpdates(providerCode);
   let productsUpdated = 0;
@@ -96,23 +106,41 @@ async function syncOne(
   await prisma.$transaction(async (tx) => {
     for (const u of updates.products) {
       const data: Record<string, unknown> = {};
-      if (u.price !== undefined) {data.price = u.price;}
-      if (u.availability) {data.availability = u.availability;}
-      if (u.name) {data.name = u.name;}
-      if (Object.keys(data).length === 0) {continue;}
+      if (u.price !== undefined) {
+        data.price = u.price;
+      }
+      if (u.availability) {
+        data.availability = u.availability;
+      }
+      if (u.name) {
+        data.name = u.name;
+      }
+      if (Object.keys(data).length === 0) {
+        continue;
+      }
       const result = await tx.product.updateMany({ where: { sku: u.sku }, data });
-      if (result.count > 0) {productsUpdated += result.count;}
+      if (result.count > 0) {
+        productsUpdated += result.count;
+      }
     }
     for (const u of updates.appliances) {
       const data: Record<string, unknown> = {};
-      if (u.price !== undefined) {data.price = u.price;}
-      if (u.availability) {data.availability = u.availability;}
-      if (Object.keys(data).length === 0) {continue;}
+      if (u.price !== undefined) {
+        data.price = u.price;
+      }
+      if (u.availability) {
+        data.availability = u.availability;
+      }
+      if (Object.keys(data).length === 0) {
+        continue;
+      }
       const result = await tx.appliance.updateMany({
         where: { brand: u.brand, model: u.model },
         data,
       });
-      if (result.count > 0) {appliancesUpdated += result.count;}
+      if (result.count > 0) {
+        appliancesUpdated += result.count;
+      }
     }
     // Stamp lastSyncAt on every catalog tied to this provider so the
     // /sync/status endpoint reflects the latest run.

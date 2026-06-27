@@ -19,10 +19,14 @@ const checkStockSchema = z.object({
 });
 
 const bulkStockSchema = z.object({
-  items: z.array(z.object({
-    productId: z.string().min(1, 'productId is required'),
-    providerId: z.string().min(1, 'providerId is required'),
-  })).min(1, 'items array must not be empty'),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1, 'productId is required'),
+        providerId: z.string().min(1, 'providerId is required'),
+      })
+    )
+    .min(1, 'items array must not be empty'),
 });
 
 /**

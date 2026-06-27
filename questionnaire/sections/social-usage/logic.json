@@ -103,14 +103,24 @@
     "entertainmentFocused": {
       "condition": {
         "and": [
-          { "questionId": "entertaining-frequency", "in": ["weekly", "monthly"] },
-          { "questionId": "party-size", "in": ["medium", "large", "very-large"] }
+          {
+            "questionId": "entertaining-frequency",
+            "in": ["weekly", "monthly"]
+          },
+          {
+            "questionId": "party-size",
+            "in": ["medium", "large", "very-large"]
+          }
         ]
       },
       "suggestions": [
         { "type": "layout", "feature": "open-plan", "priority": "high" },
         { "type": "seating", "feature": "island-seating", "priority": "high" },
-        { "type": "feature", "category": "beverage-center", "priority": "medium" }
+        {
+          "type": "feature",
+          "category": "beverage-center",
+          "priority": "medium"
+        }
       ]
     }
   }

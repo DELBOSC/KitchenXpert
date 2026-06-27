@@ -60,7 +60,9 @@ function setMeta(selector: string, attrs: Record<string, string>): HTMLMetaEleme
     el = document.createElement('meta');
     document.head.appendChild(el);
   }
-  for (const [k, v] of Object.entries(attrs)) {el.setAttribute(k, v);}
+  for (const [k, v] of Object.entries(attrs)) {
+    el.setAttribute(k, v);
+  }
   return el;
 }
 
@@ -103,24 +105,32 @@ export function SeoHead({
     });
 
     // Open Graph
-    setMeta('meta[property="og:title"]',       { property: 'og:title', content: title });
-    setMeta('meta[property="og:description"]', { property: 'og:description', content: description });
-    setMeta('meta[property="og:type"]',        { property: 'og:type', content: ogType });
-    setMeta('meta[property="og:site_name"]',   { property: 'og:site_name', content: SITE_NAME });
-    setMeta('meta[property="og:image"]',       { property: 'og:image', content: ogImage });
-    setMeta('meta[property="og:locale"]',      { property: 'og:locale', content: 'fr_FR' });
+    setMeta('meta[property="og:title"]', { property: 'og:title', content: title });
+    setMeta('meta[property="og:description"]', {
+      property: 'og:description',
+      content: description,
+    });
+    setMeta('meta[property="og:type"]', { property: 'og:type', content: ogType });
+    setMeta('meta[property="og:site_name"]', { property: 'og:site_name', content: SITE_NAME });
+    setMeta('meta[property="og:image"]', { property: 'og:image', content: ogImage });
+    setMeta('meta[property="og:locale"]', { property: 'og:locale', content: 'fr_FR' });
     if (canonical) {
       setMeta('meta[property="og:url"]', { property: 'og:url', content: canonical });
     }
 
     // Twitter Cards (treated as Open Graph fallback by most validators)
-    setMeta('meta[name="twitter:card"]',        { name: 'twitter:card', content: 'summary_large_image' });
-    setMeta('meta[name="twitter:title"]',       { name: 'twitter:title', content: title });
-    setMeta('meta[name="twitter:description"]', { name: 'twitter:description', content: description });
-    setMeta('meta[name="twitter:image"]',       { name: 'twitter:image', content: ogImage });
+    setMeta('meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' });
+    setMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: title });
+    setMeta('meta[name="twitter:description"]', {
+      name: 'twitter:description',
+      content: description,
+    });
+    setMeta('meta[name="twitter:image"]', { name: 'twitter:image', content: ogImage });
 
     // Canonical
-    if (canonical) {setLink('canonical', canonical);}
+    if (canonical) {
+      setLink('canonical', canonical);
+    }
 
     // JSON-LD entries (one <script> per payload — separate so each is
     // independently cacheable + parseable by crawlers).
@@ -140,14 +150,18 @@ export function SeoHead({
       // Only remove the JSON-LD scripts we added; leave <meta> entries
       // in place — the next page's SeoHead will overwrite them, and
       // ripping them out on unmount causes an SEO-blank flicker.
-      for (const el of created) {el.remove();}
+      for (const el of created) {
+        el.remove();
+      }
     };
   }, [title, description, canonical, ogImage, ogType, noindex, jsonLd]);
 
   // Hreflang alternates are rendered by a sibling component so they get
   // their own useEffect lifecycle (independent cleanup) and the prop
   // `slugMap` only triggers re-render when it actually changes.
-  if (skipHreflang || noindex) {return <></>;}
+  if (skipHreflang || noindex) {
+    return <></>;
+  }
   return <Hreflang slugMap={slugMap} />;
 }
 
@@ -161,10 +175,7 @@ export const ORGANIZATION_JSONLD = {
   name: 'KitchenXpert',
   url: 'https://kitchenxpert.com',
   logo: 'https://kitchenxpert.com/logo-512.png',
-  sameAs: [
-    'https://twitter.com/kitchenxpert',
-    'https://www.linkedin.com/company/kitchenxpert',
-  ],
+  sameAs: ['https://twitter.com/kitchenxpert', 'https://www.linkedin.com/company/kitchenxpert'],
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer support',

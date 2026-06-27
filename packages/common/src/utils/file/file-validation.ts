@@ -3,7 +3,11 @@
  * Provides utility functions for validating files.
  */
 
-import { getExtensionFromMimeType, getMimeTypeFromExtension, MIME_TYPE_EXTENSIONS } from './mime-types';
+import {
+  getExtensionFromMimeType,
+  getMimeTypeFromExtension,
+  MIME_TYPE_EXTENSIONS,
+} from './mime-types';
 
 /**
  * File size units.
@@ -67,11 +71,7 @@ export function formatFileSize(bytes: number, decimals: number = 2): string {
  * @param unit - The unit of the max size (default: 'MB')
  * @returns True if the file is within the size limit
  */
-export function validateFileSize(
-  file: File,
-  maxSize: number,
-  unit: FileSizeUnit = 'MB'
-): boolean {
+export function validateFileSize(file: File, maxSize: number, unit: FileSizeUnit = 'MB'): boolean {
   const maxBytes = toBytes(maxSize, unit);
   return file.size <= maxBytes;
 }
@@ -111,10 +111,7 @@ export function validateFileType(file: File, allowedTypes: string[]): boolean {
  * @param allowedExtensions - The list of allowed extensions (with or without dot)
  * @returns True if the file extension is allowed
  */
-export function validateFileExtension(
-  file: File,
-  allowedExtensions: string[]
-): boolean {
+export function validateFileExtension(file: File, allowedExtensions: string[]): boolean {
   const extension = getFileExtension(file.name);
   const normalizedExtensions = allowedExtensions.map((ext) =>
     ext.startsWith('.') ? ext.slice(1).toLowerCase() : ext.toLowerCase()
@@ -311,7 +308,9 @@ export function validateFile(
  * @returns True if they match
  */
 export function mimeTypeMatchesExtension(mimeType: string, extension: string): boolean {
-  const normalizedExt = extension.startsWith('.') ? extension.slice(1).toLowerCase() : extension.toLowerCase();
+  const normalizedExt = extension.startsWith('.')
+    ? extension.slice(1).toLowerCase()
+    : extension.toLowerCase();
   const expectedExtension = getExtensionFromMimeType(mimeType);
   const expectedMimeType = getMimeTypeFromExtension(normalizedExt);
 

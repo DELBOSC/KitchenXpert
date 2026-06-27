@@ -78,19 +78,27 @@ export interface CreateRenovationDto {
 // ----------------------------------------------------------------
 
 const ExistingKitchenAnalysisSchema = z.object({
-  cabinets: z.array(z.object({
-    type: z.string().max(100),
-    brand: z.string().max(100).optional(),
-    style: z.string().max(100),
-    condition: z.enum(['good', 'fair', 'poor', 'replace']),
-    estimatedCount: z.number().min(0).max(50),
-  })).max(20),
-  appliances: z.array(z.object({
-    type: z.string().max(100),
-    brand: z.string().max(100).optional(),
-    builtin: z.boolean(),
-    condition: z.enum(['good', 'fair', 'poor', 'replace']),
-  })).max(15),
+  cabinets: z
+    .array(
+      z.object({
+        type: z.string().max(100),
+        brand: z.string().max(100).optional(),
+        style: z.string().max(100),
+        condition: z.enum(['good', 'fair', 'poor', 'replace']),
+        estimatedCount: z.number().min(0).max(50),
+      })
+    )
+    .max(20),
+  appliances: z
+    .array(
+      z.object({
+        type: z.string().max(100),
+        brand: z.string().max(100).optional(),
+        builtin: z.boolean(),
+        condition: z.enum(['good', 'fair', 'poor', 'replace']),
+      })
+    )
+    .max(15),
   countertop: z.object({
     material: z.string().max(100),
     condition: z.enum(['good', 'fair', 'poor', 'replace']),
@@ -149,7 +157,7 @@ export class RenovationService {
   async analyzeExistingKitchen(
     photo: Buffer,
     userId: string,
-    mediaType: 'image/jpeg' | 'image/png' | 'image/webp' = 'image/jpeg',
+    mediaType: 'image/jpeg' | 'image/png' | 'image/webp' = 'image/jpeg'
   ): Promise<ExistingKitchenAnalysis> {
     const startTime = Date.now();
 
@@ -206,7 +214,7 @@ export class RenovationService {
         result.inputTokens,
         result.outputTokens,
         durationMs,
-        { feature: 'renovation-analyzer', promptVersion: '1.0.0' },
+        { feature: 'renovation-analyzer', promptVersion: '1.0.0' }
       );
 
       logger.info('[Renovation] Analysis complete', {
@@ -237,7 +245,7 @@ export class RenovationService {
    */
   async generateComparison(
     existingAnalysis: ExistingKitchenAnalysis,
-    newDesignId: string,
+    newDesignId: string
   ): Promise<ComparisonData> {
     const startTime = Date.now();
 
@@ -297,10 +305,7 @@ export class RenovationService {
   /**
    * Create a new renovation project in the database.
    */
-  async createProject(
-    userId: string,
-    data: CreateRenovationDto,
-  ): Promise<Record<string, unknown>> {
+  async createProject(userId: string, data: CreateRenovationDto): Promise<Record<string, unknown>> {
     const project = await prisma.renovationProject.create({
       data: {
         userId,
@@ -324,13 +329,15 @@ export class RenovationService {
   async getProject(
     projectId: string,
     userId: string,
-    isAdmin: boolean,
+    isAdmin: boolean
   ): Promise<Record<string, unknown> | null> {
     const project = await prisma.renovationProject.findUnique({
       where: { id: projectId },
     });
 
-    if (!project) {return null;}
+    if (!project) {
+      return null;
+    }
 
     // Ownership verification
     if (project.userId !== userId && !isAdmin) {
@@ -365,7 +372,7 @@ export class RenovationService {
       comparisonData?: unknown;
       status?: string;
       beforePhotos?: string[];
-    },
+    }
   ): Promise<Record<string, unknown>> {
     const project = await prisma.renovationProject.update({
       where: { id: projectId },
@@ -450,7 +457,7 @@ Indique dans "elementsToReplace" ce qui doit etre change.`;
 
   private buildComparisonPrompt(
     existing: ExistingKitchenAnalysis,
-    kitchen: { id: string; name: string | null; metadata: unknown },
+    kitchen: { id: string; name: string | null; metadata: unknown }
   ): string {
     return `Compare cette cuisine existante avec le nouveau design et genere des metriques.
 

@@ -41,12 +41,14 @@ describe('UserRepository', () => {
       expect(mockPrismaClient.user.findUnique).toHaveBeenCalledWith({
         where: { id: 'user-1' },
       });
-      expect(result).toEqual(expect.objectContaining({
-        id: 'user-1',
-        email: 'test@example.com',
-        firstName: 'Test',
-        lastName: 'User',
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: 'user-1',
+          email: 'test@example.com',
+          firstName: 'Test',
+          lastName: 'User',
+        })
+      );
     });
 
     it('should return null when user not found', async () => {
@@ -84,11 +86,13 @@ describe('UserRepository', () => {
       expect(mockPrismaClient.user.findUnique).toHaveBeenCalledWith({
         where: { email: 'test@example.com' },
       });
-      expect(result).toEqual(expect.objectContaining({
-        id: 'user-1',
-        email: 'test@example.com',
-        password: 'hashed-password',
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: 'user-1',
+          email: 'test@example.com',
+          password: 'hashed-password',
+        })
+      );
     });
 
     it('should return null when user not found', async () => {
@@ -212,12 +216,14 @@ describe('UserRepository', () => {
           lastName: 'User',
         }),
       });
-      expect(result).toEqual(expect.objectContaining({
-        id: 'new-id',
-        email: 'new@example.com',
-        firstName: 'New',
-        lastName: 'User',
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: 'new-id',
+          email: 'new@example.com',
+          firstName: 'New',
+          lastName: 'User',
+        })
+      );
     });
   });
 
@@ -248,10 +254,12 @@ describe('UserRepository', () => {
         where: { id: 'u1' },
         data: { firstName: 'Updated' },
       });
-      expect(result).toEqual(expect.objectContaining({
-        id: 'u1',
-        firstName: 'Updated',
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: 'u1',
+          firstName: 'Updated',
+        })
+      );
     });
   });
 
@@ -329,7 +337,11 @@ describe('UserRepository', () => {
 
   describe('verifyEmail', () => {
     it('should verify user email and set status to active', async () => {
-      mockPrismaClient.user.update.mockResolvedValue({ id: 'u1', emailVerified: true, status: 'active' });
+      mockPrismaClient.user.update.mockResolvedValue({
+        id: 'u1',
+        emailVerified: true,
+        status: 'active',
+      });
 
       await repository.verifyEmail('u1');
 

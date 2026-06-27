@@ -86,11 +86,15 @@ export function formatNumber(
  * @returns The formatted percentage string
  */
 export function formatPercent(value: number, decimals = 0, locale?: string): string {
-  return formatNumber(value, {
-    style: 'percent',
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }, locale);
+  return formatNumber(
+    value,
+    {
+      style: 'percent',
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    },
+    locale
+  );
 }
 
 /**
@@ -101,10 +105,14 @@ export function formatPercent(value: number, decimals = 0, locale?: string): str
  * @returns The formatted number string
  */
 export function formatDecimal(value: number, decimals = 2, locale?: string): string {
-  return formatNumber(value, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }, locale);
+  return formatNumber(
+    value,
+    {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    },
+    locale
+  );
 }
 
 /**
@@ -114,10 +122,14 @@ export function formatDecimal(value: number, decimals = 2, locale?: string): str
  * @returns The formatted compact number string
  */
 export function formatCompact(value: number, locale?: string): string {
-  return formatNumber(value, {
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  }, locale);
+  return formatNumber(
+    value,
+    {
+      notation: 'compact',
+      maximumFractionDigits: 1,
+    },
+    locale
+  );
 }
 
 /**
@@ -134,11 +146,15 @@ export function formatUnit(
   unitDisplay: 'long' | 'short' | 'narrow' = 'short',
   locale?: string
 ): string {
-  return formatNumber(value, {
-    style: 'unit',
-    unit,
-    unitDisplay,
-  }, locale);
+  return formatNumber(
+    value,
+    {
+      style: 'unit',
+      unit,
+      unitDisplay,
+    },
+    locale
+  );
 }
 
 /**
@@ -148,9 +164,13 @@ export function formatUnit(
  * @returns The formatted integer string
  */
 export function formatInteger(value: number, locale?: string): string {
-  return formatNumber(Math.round(value), {
-    maximumFractionDigits: 0,
-  }, locale);
+  return formatNumber(
+    Math.round(value),
+    {
+      maximumFractionDigits: 0,
+    },
+    locale
+  );
 }
 
 /**
@@ -192,8 +212,8 @@ export function parseLocaleNumber(value: string, locale?: string): number {
 
   // Get the decimal and grouping separators for the locale
   const parts = new Intl.NumberFormat(targetLocale).formatToParts(1234.5);
-  const groupSeparator = parts.find(p => p.type === 'group')?.value || ',';
-  const decimalSeparator = parts.find(p => p.type === 'decimal')?.value || '.';
+  const groupSeparator = parts.find((p) => p.type === 'group')?.value || ',';
+  const decimalSeparator = parts.find((p) => p.type === 'decimal')?.value || '.';
 
   // Remove grouping separators and replace decimal separator with '.'
   const normalized = value
@@ -211,7 +231,7 @@ export function parseLocaleNumber(value: string, locale?: string): number {
 export function getDecimalSeparator(locale?: string): string {
   const targetLocale = locale ?? defaultLocale;
   const parts = new Intl.NumberFormat(targetLocale).formatToParts(1.1);
-  return parts.find(p => p.type === 'decimal')?.value || '.';
+  return parts.find((p) => p.type === 'decimal')?.value || '.';
 }
 
 /**
@@ -222,7 +242,7 @@ export function getDecimalSeparator(locale?: string): string {
 export function getGroupingSeparator(locale?: string): string {
   const targetLocale = locale ?? defaultLocale;
   const parts = new Intl.NumberFormat(targetLocale).formatToParts(1000);
-  return parts.find(p => p.type === 'group')?.value || ',';
+  return parts.find((p) => p.type === 'group')?.value || ',';
 }
 
 /**

@@ -53,167 +53,170 @@ export interface CarbonReport {
 /** kg CO2e per kg of material */
 const CARBON_FACTORS: Record<string, number> = {
   // Wood products
-  'particleboard': 0.59,
-  'mdf': 0.72,
-  'plywood': 0.81,
+  particleboard: 0.59,
+  mdf: 0.72,
+  plywood: 0.81,
   'solid-oak': 0.46,
   'solid-walnut': 0.46,
   'solid-pine': 0.31,
-  'bamboo': 0.50,
+  bamboo: 0.5,
 
   // Stone
-  'granite': 0.70,
-  'marble': 0.22,
+  granite: 0.7,
+  marble: 0.22,
   'quartz-engineered': 1.73,
-  'slate': 0.06,
-  'concrete': 0.13,
+  slate: 0.06,
+  concrete: 0.13,
   'ceramic-tile': 0.74,
 
   // Metals
   'stainless-steel': 6.15,
-  'aluminum': 11.46,
+  aluminum: 11.46,
   'aluminum-recycled': 0.52,
   'cast-iron': 1.91,
-  'copper': 3.83,
-  'brass': 3.50,
+  copper: 3.83,
+  brass: 3.5,
 
   // Plastics & Laminates
-  'laminate': 3.29,
-  'acrylic': 5.55,
-  'pvc': 3.10,
+  laminate: 3.29,
+  acrylic: 5.55,
+  pvc: 3.1,
   'abs-plastic': 3.76,
 
   // Glass
-  'glass': 1.44,
+  glass: 1.44,
   'tempered-glass': 1.67,
 };
 
 /** Material density in kg/m3 */
 const MATERIAL_DENSITY: Record<string, number> = {
-  'particleboard': 650,
-  'mdf': 750,
-  'plywood': 600,
+  particleboard: 650,
+  mdf: 750,
+  plywood: 600,
   'solid-oak': 700,
   'solid-walnut': 650,
   'solid-pine': 500,
-  'bamboo': 600,
-  'granite': 2700,
-  'marble': 2550,
+  bamboo: 600,
+  granite: 2700,
+  marble: 2550,
   'quartz-engineered': 2300,
-  'slate': 2800,
-  'concrete': 2400,
+  slate: 2800,
+  concrete: 2400,
   'ceramic-tile': 2000,
   'stainless-steel': 7900,
-  'aluminum': 2700,
+  aluminum: 2700,
   'aluminum-recycled': 2700,
   'cast-iron': 7200,
-  'copper': 8900,
-  'brass': 8500,
-  'laminate': 1400,
-  'acrylic': 1180,
-  'pvc': 1400,
+  copper: 8900,
+  brass: 8500,
+  laminate: 1400,
+  acrylic: 1180,
+  pvc: 1400,
   'abs-plastic': 1050,
-  'glass': 2500,
+  glass: 2500,
   'tempered-glass': 2500,
 };
 
 /** Transport CO2 factor based on country of origin (kg CO2 per kg product) */
 const TRANSPORT_FACTORS: Record<string, number> = {
-  'france': 0.05,
-  'fr': 0.05,
-  'germany': 0.10,
-  'de': 0.10,
-  'italy': 0.15,
-  'it': 0.15,
-  'spain': 0.12,
-  'es': 0.12,
-  'portugal': 0.15,
-  'pt': 0.15,
-  'poland': 0.12,
-  'pl': 0.12,
-  'sweden': 0.15,
-  'se': 0.15,
-  'denmark': 0.12,
-  'dk': 0.12,
-  'uk': 0.08,
-  'gb': 0.08,
-  'usa': 0.40,
-  'us': 0.40,
-  'china': 0.50,
-  'cn': 0.50,
-  'turkey': 0.25,
-  'tr': 0.25,
-  'india': 0.45,
-  'in': 0.45,
-  'brazil': 0.50,
-  'br': 0.50,
+  france: 0.05,
+  fr: 0.05,
+  germany: 0.1,
+  de: 0.1,
+  italy: 0.15,
+  it: 0.15,
+  spain: 0.12,
+  es: 0.12,
+  portugal: 0.15,
+  pt: 0.15,
+  poland: 0.12,
+  pl: 0.12,
+  sweden: 0.15,
+  se: 0.15,
+  denmark: 0.12,
+  dk: 0.12,
+  uk: 0.08,
+  gb: 0.08,
+  usa: 0.4,
+  us: 0.4,
+  china: 0.5,
+  cn: 0.5,
+  turkey: 0.25,
+  tr: 0.25,
+  india: 0.45,
+  in: 0.45,
+  brazil: 0.5,
+  br: 0.5,
 };
 
-const DEFAULT_TRANSPORT_FACTOR = 0.10;
+const DEFAULT_TRANSPORT_FACTOR = 0.1;
 
 /** Average kitchen CO2e baseline for comparison (kg CO2e) */
 const AVERAGE_KITCHEN_CO2E = 2500;
 
 /** Lower-carbon alternative suggestions */
-const CARBON_ALTERNATIVES: Record<string, { alternative: string; savingsPerKg: number; costImpactPerKg: number }> = {
+const CARBON_ALTERNATIVES: Record<
+  string,
+  { alternative: string; savingsPerKg: number; costImpactPerKg: number }
+> = {
   'quartz-engineered': {
     alternative: 'Recycled glass countertop',
-    savingsPerKg: 1.20, // 1.73 - 0.53 approximate
+    savingsPerKg: 1.2, // 1.73 - 0.53 approximate
     costImpactPerKg: 5,
   },
   'stainless-steel': {
     alternative: 'Recycled stainless steel',
-    savingsPerKg: 3.00,
+    savingsPerKg: 3.0,
     costImpactPerKg: 2,
   },
-  'aluminum': {
+  aluminum: {
     alternative: 'Recycled aluminum',
     savingsPerKg: 10.94, // 11.46 - 0.52
     costImpactPerKg: -1,
   },
-  'laminate': {
+  laminate: {
     alternative: 'Bamboo veneer',
     savingsPerKg: 2.79, // 3.29 - 0.50
     costImpactPerKg: 8,
   },
-  'acrylic': {
+  acrylic: {
     alternative: 'Natural stone (marble)',
     savingsPerKg: 5.33, // 5.55 - 0.22
     costImpactPerKg: 15,
   },
-  'mdf': {
+  mdf: {
     alternative: 'FSC-certified plywood',
     savingsPerKg: -0.09, // 0.72 - 0.81 (slightly worse but renewable)
     costImpactPerKg: 5,
   },
-  'particleboard': {
+  particleboard: {
     alternative: 'Solid pine (FSC)',
     savingsPerKg: 0.28, // 0.59 - 0.31
     costImpactPerKg: 10,
   },
-  'granite': {
+  granite: {
     alternative: 'Slate countertop',
     savingsPerKg: 0.64, // 0.70 - 0.06
     costImpactPerKg: -5,
   },
-  'pvc': {
+  pvc: {
     alternative: 'Bamboo edge banding',
-    savingsPerKg: 2.60, // 3.10 - 0.50
+    savingsPerKg: 2.6, // 3.10 - 0.50
     costImpactPerKg: 3,
   },
   'abs-plastic': {
     alternative: 'Recycled ABS',
-    savingsPerKg: 1.50,
+    savingsPerKg: 1.5,
     costImpactPerKg: 1,
   },
-  'concrete': {
+  concrete: {
     alternative: 'Low-carbon concrete',
     savingsPerKg: 0.06,
     costImpactPerKg: 2,
   },
-  'glass': {
+  glass: {
     alternative: 'Recycled glass',
-    savingsPerKg: 0.70,
+    savingsPerKg: 0.7,
     costImpactPerKg: -2,
   },
 };
@@ -240,7 +243,7 @@ function dimensionsToVolume(dims: { width: number; height: number; depth: number
 function estimateWeight(
   material: string,
   volume?: number,
-  dimensions?: { width: number; height: number; depth: number },
+  dimensions?: { width: number; height: number; depth: number }
 ): number {
   const normalizedMat = normalizeMaterial(material);
   const density = MATERIAL_DENSITY[normalizedMat] || 700; // default to MDF-like density
@@ -260,11 +263,21 @@ function estimateWeight(
 
 /** Determine CO2e grade */
 function calculateGrade(totalCO2e: number): CarbonReport['grade'] {
-  if (totalCO2e <= 1500) {return 'A+';}
-  if (totalCO2e <= 2000) {return 'A';}
-  if (totalCO2e <= 2500) {return 'B';}
-  if (totalCO2e <= 3500) {return 'C';}
-  if (totalCO2e <= 5000) {return 'D';}
+  if (totalCO2e <= 1500) {
+    return 'A+';
+  }
+  if (totalCO2e <= 2000) {
+    return 'A';
+  }
+  if (totalCO2e <= 2500) {
+    return 'B';
+  }
+  if (totalCO2e <= 3500) {
+    return 'C';
+  }
+  if (totalCO2e <= 5000) {
+    return 'D';
+  }
   return 'E';
 }
 
@@ -298,12 +311,13 @@ export class CarbonCalculatorService {
       const normalizedMat = normalizeMaterial(item.material);
 
       // Get weight: use provided weight, or estimate from volume/dimensions
-      const weight = item.weight && item.weight > 0
-        ? item.weight
-        : estimateWeight(normalizedMat, item.volume, item.dimensions);
+      const weight =
+        item.weight && item.weight > 0
+          ? item.weight
+          : estimateWeight(normalizedMat, item.volume, item.dimensions);
 
       // Production CO2e
-      const carbonFactor = CARBON_FACTORS[normalizedMat] || 0.60; // default to ~MDF
+      const carbonFactor = CARBON_FACTORS[normalizedMat] || 0.6; // default to ~MDF
       const productionCO2e = weight * carbonFactor;
 
       // Transport CO2e
@@ -339,9 +353,7 @@ export class CarbonCalculatorService {
 
     // Calculate percentages
     for (const entry of breakdown) {
-      entry.percentage = totalCO2e > 0
-        ? Number(((entry.co2e / totalCO2e) * 100).toFixed(1))
-        : 0;
+      entry.percentage = totalCO2e > 0 ? Number(((entry.co2e / totalCO2e) * 100).toFixed(1)) : 0;
     }
 
     // Build material breakdown
@@ -358,7 +370,7 @@ export class CarbonCalculatorService {
 
     // Comparison to average
     const comparisonToAverage = Number(
-      (((totalCO2e - AVERAGE_KITCHEN_CO2E) / AVERAGE_KITCHEN_CO2E) * 100).toFixed(1),
+      (((totalCO2e - AVERAGE_KITCHEN_CO2E) / AVERAGE_KITCHEN_CO2E) * 100).toFixed(1)
     );
 
     const grade = calculateGrade(totalCO2e);
@@ -388,20 +400,25 @@ export class CarbonCalculatorService {
    */
   private generateSuggestions(
     items: KitchenItem[],
-    materialMap: Map<string, { totalCO2e: number; totalWeight: number }>,
+    materialMap: Map<string, { totalCO2e: number; totalWeight: number }>
   ): CarbonReport['suggestions'] {
     const suggestions: CarbonReport['suggestions'] = [];
     const processedMaterials = new Set<string>();
 
     // Sort materials by total CO2e impact (highest first) for most impactful suggestions
-    const sortedMaterials = Array.from(materialMap.entries())
-      .sort(([, a], [, b]) => b.totalCO2e - a.totalCO2e);
+    const sortedMaterials = Array.from(materialMap.entries()).sort(
+      ([, a], [, b]) => b.totalCO2e - a.totalCO2e
+    );
 
     for (const [material, data] of sortedMaterials) {
-      if (processedMaterials.has(material)) {continue;}
+      if (processedMaterials.has(material)) {
+        continue;
+      }
 
       const alt = CARBON_ALTERNATIVES[material];
-      if (!alt || alt.savingsPerKg <= 0) {continue;}
+      if (!alt || alt.savingsPerKg <= 0) {
+        continue;
+      }
 
       const co2Savings = Number((data.totalWeight * alt.savingsPerKg).toFixed(2));
       const costImpact = Number((data.totalWeight * alt.costImpactPerKg).toFixed(0));
@@ -421,15 +438,16 @@ export class CarbonCalculatorService {
     // Suggest local sourcing if any items are from far away
     const farItems = items.filter((item) => {
       const country = item.countryOfOrigin?.toLowerCase() || '';
-      return (TRANSPORT_FACTORS[country] || 0) > 0.20;
+      return (TRANSPORT_FACTORS[country] || 0) > 0.2;
     });
 
     if (farItems.length > 0) {
       const totalTransportSavings = farItems.reduce((sum, item) => {
         const normalizedMat = normalizeMaterial(item.material);
-        const weight = item.weight && item.weight > 0
-          ? item.weight
-          : estimateWeight(normalizedMat, item.volume, item.dimensions);
+        const weight =
+          item.weight && item.weight > 0
+            ? item.weight
+            : estimateWeight(normalizedMat, item.volume, item.dimensions);
         const country = item.countryOfOrigin?.toLowerCase() || '';
         const currentFactor = TRANSPORT_FACTORS[country] || DEFAULT_TRANSPORT_FACTOR;
         return sum + weight * (currentFactor - 0.05); // savings vs local (France)
@@ -446,9 +464,7 @@ export class CarbonCalculatorService {
     }
 
     // Sort by CO2 savings (highest first) and limit
-    return suggestions
-      .sort((a, b) => b.co2Savings - a.co2Savings)
-      .slice(0, 5);
+    return suggestions.sort((a, b) => b.co2Savings - a.co2Savings).slice(0, 5);
   }
 }
 

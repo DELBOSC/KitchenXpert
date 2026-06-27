@@ -1,6 +1,8 @@
 # Project Sharing Feature
 
-Collaborate seamlessly on kitchen designs with family, designers, contractors, and manufacturers. KitchenXpert's Project Sharing enables real-time collaboration, version control, and professional-grade design handoffs.
+Collaborate seamlessly on kitchen designs with family, designers, contractors,
+and manufacturers. KitchenXpert's Project Sharing enables real-time
+collaboration, version control, and professional-grade design handoffs.
 
 **Last Updated:** 2026-01-10
 
@@ -27,11 +29,13 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 
 ## Overview
 
-**Project Sharing transforms kitchen design from a solo activity into a collaborative process.**
+**Project Sharing transforms kitchen design from a solo activity into a
+collaborative process.**
 
 ### Why Sharing Matters
 
 **Traditional Kitchen Design Process:**
+
 - Designer creates plan on paper
 - Shows static images to client
 - Client provides feedback
@@ -40,6 +44,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 - Contractor receives final plans (no context on decisions)
 
 **KitchenXpert Sharing:**
+
 - All stakeholders access same live 3D model
 - Real-time updates (everyone sees changes instantly)
 - Integrated communication (comments on specific elements)
@@ -49,18 +54,21 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 ### Key Benefits
 
 **For Homeowners:**
+
 - Collaborate with spouse/partner (joint decision-making)
 - Share with family/friends (get opinions)
 - Work with professional designer (if using one)
 - Communicate clearly with contractor (no misunderstandings)
 
 **For Professionals:**
+
 - Client collaboration (reduce revision cycles)
 - Team collaboration (multiple designers on large projects)
 - Contractor coordination (eliminate miscommunication)
 - Portfolio showcase (attract new clients)
 
 **For Everyone:**
+
 - Cloud-based (access anywhere, any device)
 - Version control (never lose previous versions)
 - Secure sharing (control who sees what)
@@ -75,6 +83,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 ### Permission Levels
 
 **Owner (You)**
+
 - Full control over project
 - Edit design
 - Manage collaborators (add, remove, change permissions)
@@ -83,6 +92,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 - **Only one owner per project**
 
 **Editor**
+
 - Full editing rights
 - Modify design (move cabinets, change materials, etc.)
 - Add/remove components
@@ -92,6 +102,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 - **Best for:** Co-designers, professional designers, spouses
 
 **Commenter**
+
 - View project in 3D
 - Add comments and annotations
 - View version history
@@ -100,12 +111,14 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 - **Best for:** Stakeholders providing feedback (family, friends)
 
 **Viewer**
+
 - View project in 3D only
 - No comments or edits
 - Read-only access
 - **Best for:** Contractors (quote stage), inspiration sharing
 
 **Public (Optional)**
+
 - Anyone with link can view
 - No login required
 - Read-only, no comments
@@ -116,6 +129,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 ### Share Link Types
 
 **Private Link (Default)**
+
 - Requires KitchenXpert account
 - Login to view
 - Permission level assigned
@@ -123,6 +137,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 - **Most secure**
 
 **Anonymous Link**
+
 - No account required
 - Anyone with link can access
 - Permission level: Viewer or Commenter
@@ -131,6 +146,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 - **Best for:** Quick shares, non-technical users
 
 **Embedded Link**
+
 - Embed 3D viewer in website or blog
 - Iframe code provided
 - Viewer permission only
@@ -255,29 +271,34 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 **Collaboration Workflow:**
 
 **Step 1: Initial Consultation**
+
 - Designer creates account (or uses existing)
 - You share project (Editor permission)
 - Designer reviews your initial ideas
 
 **Step 2: Designer Creates Proposals**
+
 - Designer creates design options
 - Saves as versions (Version 1A, 1B, 1C)
 - You review each independently
 - Provide feedback via comments
 
 **Step 3: Refinement**
+
 - You select favorite direction
 - Designer refines based on feedback
 - Iterative process (2-4 rounds typical)
 - All changes tracked in version history
 
 **Step 4: Final Approval**
+
 - Designer creates "Final" version
 - You review in VR (if available)
 - Sign off (digital approval feature)
 - Designer exports contractor package
 
 **Communication:**
+
 - Integrated chat (project-specific)
 - Comment threads (on specific elements)
 - Video calls (schedule via platform)
@@ -294,6 +315,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
 **Best Approach:**
 
 **For Quoting:**
+
 1. **Create Quote Package**
    - Tools > Export > Contractor Quote Package
    - Includes: 3D model (view-only), dimension drawings, component list
@@ -318,6 +340,7 @@ Collaborate seamlessly on kitchen designs with family, designers, contractors, a
    - All contractors see Q&A (transparent)
 
 **Post-Contract:**
+
 1. **Upgrade Permission**
    - Chosen contractor: Viewer → Editor (or Commenter)
    - Can access full project details
@@ -368,6 +391,7 @@ See [Local Manufacturing](local-manufacturing.md) for full details.
 **Google Docs for Kitchen Design:**
 
 Multiple users editing simultaneously:
+
 - See each other's cursors and avatars
 - Changes sync in real-time (< 1 second latency)
 - Conflict resolution (if two users modify same element)
@@ -376,11 +400,13 @@ Multiple users editing simultaneously:
 **Visual Indicators:**
 
 **Other Users:**
+
 - Avatar with name label
 - Colored cursor (each user different color)
 - Selection highlight (see what they're interacting with)
 
 **Recent Changes:**
+
 - Flash animation on newly added/modified elements
 - Change history panel (right sidebar)
 - "John changed island material to walnut" (3 seconds ago)
@@ -392,16 +418,19 @@ Multiple users editing simultaneously:
 ### Collaboration Modes
 
 **Active Collaboration (Both Editing)**
+
 - Both users working simultaneously
 - Common when: Co-designing, designer + client session
 - Communication: Voice chat (recommended) or text chat
 
 **Passive Observation**
+
 - One user editing, others watching
 - Common when: Designer demonstrating options to client
 - Follower mode: Observers' cameras track editor's view
 
 **Asynchronous Collaboration**
+
 - Users work at different times
 - Leave comments for next person
 - Common when: Different time zones, busy schedules
@@ -413,17 +442,20 @@ Multiple users editing simultaneously:
 **What happens if two users modify the same element simultaneously?**
 
 **Automatic Resolution (Most Cases):**
+
 - Last change wins
 - Earlier change overwritten
 - User notified: "Your change to cabinet A was overridden by Sarah"
 
 **Manual Resolution (Complex Conflicts):**
+
 - Conflict dialog appears
 - Show both versions side-by-side
 - Choose: Your version, Their version, or Merge
 - Merge: Take some attributes from each
 
 **Best Practice: Communicate**
+
 - "I'm working on the island—don't modify"
 - Divide work zones (you: left side, partner: right side)
 - Or use turn-taking (not simultaneous editing)
@@ -437,11 +469,13 @@ Multiple users editing simultaneously:
 **Every change is tracked:**
 
 **Auto-Save:**
+
 - Changes saved continuously (every 30 seconds)
 - No "Save" button needed
 - Never lose work
 
 **Version Snapshots:**
+
 - Manual snapshots: "Save Version" (with name and description)
 - Automatic snapshots:
   - Major milestones (e.g., "Layout finalized")
@@ -450,6 +484,7 @@ Multiple users editing simultaneously:
   - Daily (if changes made)
 
 **Version Timeline:**
+
 - Visual timeline of all versions
 - See thumbnail previews
 - Click any version to view or restore
@@ -513,28 +548,33 @@ Multiple users editing simultaneously:
 **Explore alternatives without losing main design:**
 
 **Create Branch:**
+
 1. File > Branch > Create New Branch
 2. Name: "Exploring Wood Countertops"
 3. Branch created (independent copy)
 4. Modify freely (doesn't affect main branch)
 
 **Work on Branch:**
+
 - Full editing capabilities
 - Separate version history
 - Can share branch independently
 
 **Merge Back to Main:**
+
 - File > Branch > Merge to Main
 - Review differences
 - Select elements to merge
 - Main branch updated
 
 **Discard Branch:**
+
 - File > Branch > Delete
 - Experiment didn't work out
 - Main branch unaffected
 
 **Use Cases:**
+
 - Testing bold design choices
 - Comparing materials (wood vs. quartz branch)
 - Budget scenarios (luxury vs. budget branch)
@@ -566,6 +606,7 @@ Multiple users editing simultaneously:
    - Notification sent to collaborators
 
 **Comment Features:**
+
 - **Threading:** Replies nest under original comment
 - **Mentions:** @John to notify specific user
 - **Status:** Mark as Open, In Progress, Resolved
@@ -580,22 +621,26 @@ Multiple users editing simultaneously:
 **Comment Panel (Right Sidebar):**
 
 **View All Comments:**
+
 - Chronological list
 - Or grouped by element
 - Filter: Open only, My comments, Mentions
 
 **Navigate to Comment:**
+
 - Click comment in list
 - 3D view jumps to that element
 - Highlight and zoom to comment location
 
 **Resolve Comments:**
+
 - Implement change
 - Mark comment as "Resolved"
 - Comment remains in history (grayed out)
 - Can re-open if needed
 
 **Delete Comments:**
+
 - Owner and comment author can delete
 - Permanent removal
 - Deleted comments not recoverable
@@ -607,18 +652,21 @@ Multiple users editing simultaneously:
 **Structured Review Process:**
 
 **Round 1: Initial Feedback**
+
 1. Designer shares design (Commenter permission to stakeholders)
 2. Stakeholders review (48-hour deadline)
 3. Add comments with specific feedback
 4. Designer reviews all comments
 
 **Round 2: Revisions**
+
 1. Designer makes changes addressing feedback
 2. Marks comments as "Resolved" with explanation
 3. Creates new version: "Revision 1 - Feedback Incorporated"
 4. Shares revised version
 
 **Round 3: Final Approval**
+
 1. Stakeholders review revisions
 2. Minor tweaks (if any)
 3. Approve design (digital sign-off)
@@ -707,18 +755,21 @@ Multiple users editing simultaneously:
 **AutoCAD-Compatible Exports:**
 
 **DWG Format:**
+
 - Industry-standard CAD format
 - Contractors can open in AutoCAD, SketchUp, etc.
 - Fully dimensioned
 - Layer organization (cabinets, appliances, dimensions, notes)
 
 **PDF Format:**
+
 - High-resolution (print-ready)
 - Scalable vector graphics
 - Annotations and dimensions embedded
 - No special software required
 
 **STEP Format:**
+
 - 3D solid model
 - For CNC manufacturing (see [Local Manufacturing](local-manufacturing.md))
 - Precise geometry
@@ -732,6 +783,7 @@ Multiple users editing simultaneously:
 **Showcase your designs publicly:**
 
 **Use Cases:**
+
 - **Professionals:** Attract clients, build portfolio
 - **Homeowners:** Inspire others, share accomplishment
 - **Influencers:** Content creation, social media
@@ -768,30 +820,35 @@ Multiple users editing simultaneously:
 **Professional Presentation:**
 
 **Image Gallery:**
+
 - Upload rendered images (or generate from 3D model)
 - Multiple angles (island view, stove view, entry view)
 - Before/after (if remodel)
 - Detail shots (hardware, finishes)
 
 **Design Story:**
+
 - Text description (markdown supported)
 - Explain design choices
 - Highlight unique features
 - Share challenges and solutions
 
 **Interactive 3D Viewer:**
+
 - Embedded 3D model
 - Visitors can explore freely
 - Orbit, zoom, pan controls
 - Open cabinets/drawers (if enabled)
 
 **Engagement:**
+
 - Like/favorite button (if logged in)
 - Share buttons (social media)
 - Comment section (optional)
 - Contact designer button (if professional)
 
 **Analytics:**
+
 - View count
 - Unique visitors
 - Average time spent
@@ -812,9 +869,13 @@ Multiple users editing simultaneously:
    - Iframe embed code provided
    - Example:
      ```html
-     <iframe src="https://kitchenxpert.com/embed/abc123"
-             width="800" height="600" frameborder="0"
-             allowfullscreen></iframe>
+     <iframe
+       src="https://kitchenxpert.com/embed/abc123"
+       width="800"
+       height="600"
+       frameborder="0"
+       allowfullscreen
+     ></iframe>
      ```
 
 3. **Paste into Website**
@@ -827,6 +888,7 @@ Multiple users editing simultaneously:
    - Loads quickly (optimized for web)
 
 **Use Cases:**
+
 - Designer portfolio website
 - Blog post showcasing project
 - Real estate listing (luxury home)
@@ -841,16 +903,19 @@ Multiple users editing simultaneously:
 **Your design data is secure:**
 
 **Encryption:**
+
 - Data encrypted in transit (TLS 1.3)
 - Data encrypted at rest (AES-256)
 - End-to-end encryption for sensitive projects (Enterprise tier)
 
 **Access Control:**
+
 - Granular permissions (Owner, Editor, Commenter, Viewer)
 - Revoke access anytime (instant effect)
 - Audit log (see who accessed project and when)
 
 **Secure Sharing:**
+
 - Links use cryptographically secure tokens
 - Optional password protection
 - Expiration dates (auto-revoke after X days)
@@ -861,6 +926,7 @@ Multiple users editing simultaneously:
 ### Managing Collaborator Access
 
 **Add Collaborator:**
+
 1. Share > Add Collaborator
 2. Enter email or generate link
 3. Set permission level
@@ -868,18 +934,21 @@ Multiple users editing simultaneously:
 5. Send invitation
 
 **Modify Permission:**
+
 1. Share > Manage Collaborators
 2. Find user in list
 3. Change permission (dropdown)
 4. Changes apply immediately
 
 **Revoke Access:**
+
 1. Share > Manage Collaborators
 2. Click "Remove" next to user
 3. Confirm removal
 4. User loses access immediately (cannot re-access even with old links)
 
 **Anonymous Link Management:**
+
 - View all active links (Share > Anonymous Links)
 - See usage stats (views, last accessed)
 - Disable link (revoke access)
@@ -895,21 +964,25 @@ Multiple users editing simultaneously:
 **Control what collaborators see:**
 
 **Hide Elements:**
+
 - Right-click element > Hide from Collaborators
 - You see it, they don't
 - Useful for: Budget details, alternative options, personal notes
 
 **Watermarks (Professional Tier):**
+
 - Add watermark to exported images
 - Protects intellectual property
 - Customizable text/logo
 
 **Download Restrictions:**
+
 - Prevent collaborators from exporting/downloading design
 - View-only (no local copies)
 - Protects against unauthorized use
 
 **Version Access:**
+
 - Control which versions collaborators can see
 - Show only "Final" version
 - Hide experimental versions
@@ -923,6 +996,7 @@ Multiple users editing simultaneously:
 **Collaborate on-the-go:**
 
 **Features:**
+
 - View shared projects (3D viewer optimized for mobile)
 - Add comments (pin to elements)
 - Upload photos (inspiration images, site photos)
@@ -930,11 +1004,13 @@ Multiple users editing simultaneously:
 - Basic editing (move objects, change materials)
 
 **Platforms:**
+
 - iOS (iPhone, iPad) - App Store
 - Android (phone, tablet) - Google Play
 - Responsive web app (any browser)
 
 **Use Cases:**
+
 - Review designs during commute
 - Share with family at appliance showroom
 - Contractor access on-site
@@ -945,6 +1021,7 @@ Multiple users editing simultaneously:
 ### Mobile-Specific Features
 
 **Augmented Reality (AR) Preview:**
+
 1. Open shared project on mobile
 2. Enable AR mode
 3. Point camera at your current kitchen
@@ -952,6 +1029,7 @@ Multiple users editing simultaneously:
 5. Take photos/videos to share
 
 **On-Site Verification:**
+
 1. Contractor on-site with tablet
 2. Opens shared project
 3. Verifies measurements against actual space
@@ -959,6 +1037,7 @@ Multiple users editing simultaneously:
 5. Adds comments: "Wall is 10cm shorter than plan"
 
 **Quick Approvals:**
+
 1. Designer makes change
 2. Notification sent to your phone
 3. Open app, review change
@@ -971,28 +1050,33 @@ Multiple users editing simultaneously:
 ### Effective Collaboration
 
 **1. Set Clear Roles**
+
 - Define who can edit vs. comment
 - Avoid too many editors (design by committee)
 - Designate one decision-maker (final authority)
 
 **2. Use Versions Strategically**
+
 - Save named versions at milestones
 - Don't over-version (creates clutter)
 - Name descriptively: "Kitchen Layout - Final" not "Version 23"
 
 **3. Communicate Context**
+
 - Add project description
 - Explain design goals in comments
 - Share inspiration images
 - Provide budget constraints (if relevant)
 
 **4. Manage Feedback**
+
 - Set review deadlines
 - Acknowledge all feedback (even if not implementing)
 - Explain decisions: "Went with quartz over granite for durability"
 - Close feedback loops (mark comments resolved)
 
 **5. Protect Your Work**
+
 - Limit Editor permissions (only trusted collaborators)
 - Use Viewer for broad sharing
 - Watermark public portfolios
@@ -1005,6 +1089,7 @@ Multiple users editing simultaneously:
 **For Collaborators:**
 
 **Do:**
+
 - Review within agreed timeframe
 - Provide specific, constructive feedback
 - Ask questions if unclear
@@ -1012,6 +1097,7 @@ Multiple users editing simultaneously:
 - Acknowledge when others address your feedback
 
 **Don't:**
+
 - Make major unsolicited changes (if Editor)
 - Criticize without suggesting alternatives
 - Ignore the project after requesting access
@@ -1020,6 +1106,7 @@ Multiple users editing simultaneously:
 **For Project Owners:**
 
 **Do:**
+
 - Set clear expectations (what feedback you want)
 - Provide context (why you made certain choices)
 - Thank collaborators for time and input
@@ -1027,6 +1114,7 @@ Multiple users editing simultaneously:
 - Communicate final decisions
 
 **Don't:**
+
 - Give editing rights to everyone (too chaotic)
 - Take criticism personally
 - Make everyone happy (impossible)
@@ -1041,6 +1129,7 @@ Multiple users editing simultaneously:
 **"Link doesn't work" or "Access denied":**
 
 **Check:**
+
 1. Link not expired (Share > Manage Links > check expiration)
 2. Collaborator has KitchenXpert account (if required)
 3. Collaborator using correct email (match invitation email)
@@ -1048,6 +1137,7 @@ Multiple users editing simultaneously:
 5. No typos in link (copy-paste, don't manually type)
 
 **Solution:**
+
 - Resend invitation
 - Or generate new link
 - Or add collaborator by email directly (more reliable)
@@ -1059,12 +1149,14 @@ Multiple users editing simultaneously:
 **"I made changes but collaborator doesn't see them":**
 
 **Check:**
+
 1. Internet connection (both users)
 2. Browser compatibility (Chrome, Edge, Firefox, Safari latest versions)
 3. Cache issues (hard refresh: Ctrl+Shift+R)
 4. Collaborator looking at old version (not latest)
 
 **Solution:**
+
 - Both users refresh browser
 - Check version (ensure viewing same version)
 - Switch to different browser
@@ -1128,46 +1220,60 @@ Multiple users editing simultaneously:
 
 ## FAQ
 
-**Q: Can I share my project with someone who doesn't have a KitchenXpert account?**
-A: Yes, use Anonymous Link (Share > Generate Anonymous Link). They can view without logging in. For editing, they need an account (free to create).
+**Q: Can I share my project with someone who doesn't have a KitchenXpert
+account?** A: Yes, use Anonymous Link (Share > Generate Anonymous Link). They
+can view without logging in. For editing, they need an account (free to create).
 
-**Q: How many collaborators can I add?**
-A: No limit on Viewers/Commenters. Editor limit: 5 (Free tier), 25 (Pro tier), Unlimited (Enterprise tier).
+**Q: How many collaborators can I add?** A: No limit on Viewers/Commenters.
+Editor limit: 5 (Free tier), 25 (Pro tier), Unlimited (Enterprise tier).
 
-**Q: Can I share only part of my design (hide other areas)?**
-A: Yes, use visibility controls. Right-click elements > Hide from Collaborators. Or export specific views as static images.
+**Q: Can I share only part of my design (hide other areas)?** A: Yes, use
+visibility controls. Right-click elements > Hide from Collaborators. Or export
+specific views as static images.
 
-**Q: Is my design safe if I share it?**
-A: Yes, your data is encrypted and you control access. Use appropriate permissions (Viewer for untrusted users). Revoke access anytime. Watermarks available for added protection.
+**Q: Is my design safe if I share it?** A: Yes, your data is encrypted and you
+control access. Use appropriate permissions (Viewer for untrusted users). Revoke
+access anytime. Watermarks available for added protection.
 
-**Q: Can collaborators download my design?**
-A: Only if you allow it (Share Settings > Allow Downloads). Disabled by default for Viewers/Commenters. Editors can always save their own copy.
+**Q: Can collaborators download my design?** A: Only if you allow it (Share
+Settings > Allow Downloads). Disabled by default for Viewers/Commenters. Editors
+can always save their own copy.
 
-**Q: How do I share my design on social media?**
-A: Enable Public Sharing (Share > Public Portfolio). Generate public link. Share link on Facebook, Instagram, etc. Or embed 3D viewer.
+**Q: How do I share my design on social media?** A: Enable Public Sharing
+(Share > Public Portfolio). Generate public link. Share link on Facebook,
+Instagram, etc. Or embed 3D viewer.
 
-**Q: Can I collaborate in real-time with voice chat?**
-A: Yes, integrated voice chat available (Pro/Enterprise tiers). Or use external tools (Zoom, Teams) alongside screen sharing.
+**Q: Can I collaborate in real-time with voice chat?** A: Yes, integrated voice
+chat available (Pro/Enterprise tiers). Or use external tools (Zoom, Teams)
+alongside screen sharing.
 
-**Q: What happens to shared projects if I cancel my subscription?**
-A: Shared links remain active for 30 days. After that, collaborators lose access. Export all data before canceling. Reactivate subscription to restore access.
+**Q: What happens to shared projects if I cancel my subscription?** A: Shared
+links remain active for 30 days. After that, collaborators lose access. Export
+all data before canceling. Reactivate subscription to restore access.
 
-**Q: Can contractors access my project on their mobile device on-site?**
-A: Yes, share project link. Contractor opens on smartphone/tablet. Mobile app provides AR overlay and measurements.
+**Q: Can contractors access my project on their mobile device on-site?** A: Yes,
+share project link. Contractor opens on smartphone/tablet. Mobile app provides
+AR overlay and measurements.
 
-**Q: How do I know if someone has viewed my shared design?**
-A: Share > Analytics. See view count, unique visitors, last accessed date per collaborator.
+**Q: How do I know if someone has viewed my shared design?** A: Share >
+Analytics. See view count, unique visitors, last accessed date per collaborator.
 
 ---
 
-**Project Sharing transforms kitchen design into a collaborative, transparent, and efficient process. Bring all stakeholders together, streamline communication, and ensure everyone is aligned from concept to completion.**
+**Project Sharing transforms kitchen design into a collaborative, transparent,
+and efficient process. Bring all stakeholders together, streamline
+communication, and ensure everyone is aligned from concept to completion.**
 
 **Related guides:**
-- [VR Experience](vr-experience.md) - Share immersive VR sessions with collaborators
-- [Evolutionary Design](evolutionary-design.md) - Share design evolution over time
-- [Local Manufacturing](local-manufacturing.md) - Share designs with manufacturers for production
+
+- [VR Experience](vr-experience.md) - Share immersive VR sessions with
+  collaborators
+- [Evolutionary Design](evolutionary-design.md) - Share design evolution over
+  time
+- [Local Manufacturing](local-manufacturing.md) - Share designs with
+  manufacturers for production
 
 ---
 
-*Last Updated: 2026-01-10*
-*For the latest version, visit [docs.kitchenxpert.com/user/features/project-sharing](https://docs.kitchenxpert.com/user/features/project-sharing)*
+_Last Updated: 2026-01-10_ _For the latest version, visit
+[docs.kitchenxpert.com/user/features/project-sharing](https://docs.kitchenxpert.com/user/features/project-sharing)_

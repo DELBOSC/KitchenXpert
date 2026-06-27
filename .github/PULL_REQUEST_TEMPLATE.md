@@ -8,7 +8,8 @@
 
 - [ ] 🐛 Bug fix (changement non-breaking qui corrige un problème)
 - [ ] ✨ New feature (changement non-breaking qui ajoute une fonctionnalité)
-- [ ] 💥 Breaking change (fix ou feature qui causerait un dysfonctionnement des fonctionnalités existantes)
+- [ ] 💥 Breaking change (fix ou feature qui causerait un dysfonctionnement des
+      fonctionnalités existantes)
 - [ ] 📚 Documentation update
 - [ ] ⚡ Performance improvement
 - [ ] ♻️ Code refactoring
@@ -22,9 +23,7 @@
 
 <!-- Lier les issues résolues par cette PR -->
 
-Fixes #(issue)
-Closes #(issue)
-Related to #(issue)
+Fixes #(issue) Closes #(issue) Related to #(issue)
 
 ## 📋 Détails des Changements
 
@@ -69,9 +68,11 @@ npm install
 <!-- Si changement visuel, ajouter des screenshots avant/après ou vidéo -->
 
 ### Avant
+
 <!-- Screenshot ou description de l'état avant -->
 
 ### Après
+
 <!-- Screenshot ou description de l'état après -->
 
 ## ✅ Checklist
@@ -86,7 +87,8 @@ npm install
 
 ### Tests
 
-- [ ] J'ai ajouté des tests qui prouvent que mon fix fonctionne ou que ma feature marche
+- [ ] J'ai ajouté des tests qui prouvent que mon fix fonctionne ou que ma
+      feature marche
 - [ ] Les tests unitaires existants passent localement
 - [ ] Les tests d'intégration passent
 - [ ] J'ai testé sur différents navigateurs (si frontend)
@@ -120,11 +122,13 @@ npm install
 <!-- Instructions pour migrer depuis la version précédente -->
 
 ### Avant
+
 ```typescript
 // Code ancien
 ```
 
 ### Après
+
 ```typescript
 // Nouveau code
 ```
@@ -135,8 +139,8 @@ npm install
 
 <!-- Impact sur les performances -->
 
-- Bundle size: +/- ___ KB
-- Build time: +/- ___ s
+- Bundle size: +/- \_\_\_ KB
+- Build time: +/- \_\_\_ s
 - Runtime performance: [amélioration/dégradation/neutre]
 
 ### Compatibilité
@@ -176,7 +180,7 @@ npm install
 - [ ] Variables d'environnement à ajouter
 - [ ] Configuration à mettre à jour
 - [ ] Redémarrage services requis
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ### Commandes de déploiement
 

@@ -147,9 +147,7 @@ export function getPreferredTheme(): ThemeName {
 /**
  * Watch for theme preference changes
  */
-export function watchThemePreferences(
-  callback: (theme: ThemeName) => void
-): () => void {
+export function watchThemePreferences(callback: (theme: ThemeName) => void): () => void {
   if (typeof window === 'undefined') {
     return () => {};
   }
@@ -173,10 +171,7 @@ export function watchThemePreferences(
 /**
  * Create a theme from base with overrides
  */
-export function createTheme<T extends Theme>(
-  baseTheme: T,
-  overrides: DeepPartial<T>
-): T {
+export function createTheme<T extends Theme>(baseTheme: T, overrides: DeepPartial<T>): T {
   return deepMerge(baseTheme, overrides) as T;
 }
 
@@ -210,9 +205,7 @@ function isObject(item: unknown): item is Record<string, unknown> {
 }
 
 // Deep partial type
-type DeepPartial<T> = T extends object
-  ? { [P in keyof T]?: DeepPartial<T[P]> }
-  : T;
+type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
 /**
  * Get a specific color from the theme using a path

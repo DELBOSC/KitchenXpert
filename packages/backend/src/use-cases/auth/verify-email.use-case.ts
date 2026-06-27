@@ -25,7 +25,9 @@ export class VerifyEmailUseCase implements UseCase<VerifyEmailInput, { userId: s
     const record = await this.prisma.emailVerificationToken.findFirst({
       where: { token: hashed, usedAt: null, expiresAt: { gt: new Date() } },
     });
-    if (!record) {return err(DomainErrors.validation('Invalid or expired verification token'));}
+    if (!record) {
+      return err(DomainErrors.validation('Invalid or expired verification token'));
+    }
 
     await this.prisma.$transaction([
       this.prisma.emailVerificationToken.update({

@@ -58,7 +58,8 @@ export function HowItWorks(): React.ReactElement {
           Du croquis au devis signé en 3 étapes
         </h2>
         <p className="mt-4 text-base text-white/55">
-          Pas de RDV magasin. Pas d&apos;appel commercial. Vous concevez, vous comparez, vous décidez.
+          Pas de RDV magasin. Pas d&apos;appel commercial. Vous concevez, vous comparez, vous
+          décidez.
         </p>
       </div>
 
@@ -89,7 +90,10 @@ export function HowItWorks(): React.ReactElement {
           className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-white/90 backdrop-blur transition hover:border-white/30 hover:bg-white/10"
         >
           Essayer maintenant
-          <ArrowRight className="w-4 h-4 transition group-hover:translate-x-0.5" aria-hidden="true" />
+          <ArrowRight
+            className="w-4 h-4 transition group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
         </Link>
       </div>
     </section>
@@ -107,9 +111,35 @@ const ImportIllustration = (): React.ReactElement => (
         <stop offset="100%" stopColor="#ec4899" stopOpacity="0.2" />
       </linearGradient>
     </defs>
-    <rect x="20" y="20" width="160" height="80" rx="8" stroke="url(#imp-grad)" strokeWidth="1.5" fill="rgba(255,255,255,0.02)" strokeDasharray="6 4" />
-    <path d="M100 45 L100 75 M85 60 L100 75 L115 60" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    <text x="100" y="105" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="system-ui">plan-cuisine.pdf</text>
+    <rect
+      x="20"
+      y="20"
+      width="160"
+      height="80"
+      rx="8"
+      stroke="url(#imp-grad)"
+      strokeWidth="1.5"
+      fill="rgba(255,255,255,0.02)"
+      strokeDasharray="6 4"
+    />
+    <path
+      d="M100 45 L100 75 M85 60 L100 75 L115 60"
+      stroke="#a78bfa"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    <text
+      x="100"
+      y="105"
+      textAnchor="middle"
+      fill="rgba(255,255,255,0.4)"
+      fontSize="9"
+      fontFamily="system-ui"
+    >
+      plan-cuisine.pdf
+    </text>
   </svg>
 );
 
@@ -130,23 +160,59 @@ const DesignerIllustration = (): React.ReactElement => (
     <rect x="118" y="30" width="40" height="20" fill="#a78bfa" opacity="0.7" rx="2" />
     <rect x="30" y="55" width="20" height="40" fill="#ec4899" opacity="0.5" rx="2" />
     {/* Snap line */}
-    <line x1="74" y1="20" x2="74" y2="100" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.7" />
+    <line
+      x1="74"
+      y1="20"
+      x2="74"
+      y2="100"
+      stroke="#60a5fa"
+      strokeWidth="1.5"
+      strokeDasharray="3 3"
+      opacity="0.7"
+    />
   </svg>
 );
 
 const QuoteIllustration = (): React.ReactElement => (
   <svg viewBox="0 0 200 120" className="h-32 w-auto" aria-hidden>
-    <rect x="20" y="20" width="160" height="80" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+    <rect
+      x="20"
+      y="20"
+      width="160"
+      height="80"
+      rx="6"
+      fill="rgba(255,255,255,0.04)"
+      stroke="rgba(255,255,255,0.1)"
+      strokeWidth="1"
+    />
     {[
-      { y: 35, label: 'IKEA',          price: '4 280 €', color: '#facc15' },
-      { y: 52, label: 'Leroy Merlin',  price: '4 950 €', color: '#fb7185' },
-      { y: 69, label: 'Schmidt',       price: '8 200 €', color: '#a78bfa' },
-      { y: 86, label: 'Mobalpa',       price: '7 850 €', color: '#60a5fa' },
+      { y: 35, label: 'IKEA', price: '4 280 €', color: '#facc15' },
+      { y: 52, label: 'Leroy Merlin', price: '4 950 €', color: '#fb7185' },
+      { y: 69, label: 'Schmidt', price: '8 200 €', color: '#a78bfa' },
+      { y: 86, label: 'Mobalpa', price: '7 850 €', color: '#60a5fa' },
     ].map((row) => (
       <g key={row.label}>
         <circle cx="32" cy={row.y + 4} r="3" fill={row.color} />
-        <text x="42" y={row.y + 7} fill="rgba(255,255,255,0.85)" fontSize="9" fontFamily="system-ui">{row.label}</text>
-        <text x="170" y={row.y + 7} textAnchor="end" fill="#fff" fontSize="9" fontFamily="system-ui" fontWeight="600">{row.price}</text>
+        <text
+          x="42"
+          y={row.y + 7}
+          fill="rgba(255,255,255,0.85)"
+          fontSize="9"
+          fontFamily="system-ui"
+        >
+          {row.label}
+        </text>
+        <text
+          x="170"
+          y={row.y + 7}
+          textAnchor="end"
+          fill="#fff"
+          fontSize="9"
+          fontFamily="system-ui"
+          fontWeight="600"
+        >
+          {row.price}
+        </text>
       </g>
     ))}
   </svg>

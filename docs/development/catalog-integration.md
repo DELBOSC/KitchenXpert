@@ -16,7 +16,8 @@
 
 ## Overview
 
-KitchenXpert provides a flexible catalog integration system that allows easy import of product data from various manufacturers and suppliers.
+KitchenXpert provides a flexible catalog integration system that allows easy
+import of product data from various manufacturers and suppliers.
 
 ### System Architecture
 
@@ -67,14 +68,14 @@ pnpm quick-import --file products.csv --dry-run
 
 ```typescript
 interface QuickImportOptions {
-  file: string;              // Path to import file
-  type: 'csv' | 'json' | 'xlsx';  // File format
-  template?: string;         // Template name
-  category?: string;         // Product category
-  manufacturer?: string;     // Manufacturer name
-  dryRun?: boolean;          // Validate without importing
-  batchSize?: number;        // Import batch size (default: 100)
-  skipValidation?: boolean;  // Skip validation (not recommended)
+  file: string; // Path to import file
+  type: 'csv' | 'json' | 'xlsx'; // File format
+  template?: string; // Template name
+  category?: string; // Product category
+  manufacturer?: string; // Manufacturer name
+  dryRun?: boolean; // Validate without importing
+  batchSize?: number; // Import batch size (default: 100)
+  skipValidation?: boolean; // Skip validation (not recommended)
 }
 ```
 
@@ -140,9 +141,9 @@ export class ManufacturerProvider implements IProductProvider {
   async fetchProducts(options?: FetchOptions): Promise<Product[]> {
     const response = await fetch(`${this.baseUrl}/products`, {
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
+      },
     });
 
     const data = await response.json();
@@ -151,7 +152,7 @@ export class ManufacturerProvider implements IProductProvider {
 
   async fetchProduct(sku: string): Promise<Product | null> {
     const response = await fetch(`${this.baseUrl}/products/${sku}`, {
-      headers: { 'Authorization': `Bearer ${this.apiKey}` }
+      headers: { Authorization: `Bearer ${this.apiKey}` },
     });
 
     if (response.status === 404) {
@@ -163,7 +164,7 @@ export class ManufacturerProvider implements IProductProvider {
   }
 
   private mapProducts(rawData: any[]): Product[] {
-    return rawData.map(item => this.mapProduct(item));
+    return rawData.map((item) => this.mapProduct(item));
   }
 
   private mapProduct(item: any): Product {
@@ -178,27 +179,27 @@ export class ManufacturerProvider implements IProductProvider {
         dimensions: item.dimensions,
         weight: item.weight,
         capacity: item.capacity,
-        energyRating: item.energy_star_rating
+        energyRating: item.energy_star_rating,
       },
       images: item.images?.map((img: any) => ({
         url: img.url,
-        isPrimary: img.is_main
+        isPrimary: img.is_main,
       })),
       features: item.features || [],
       inStock: item.stock_quantity > 0,
       metadata: {
         source: 'manufacturer-api',
-        lastUpdated: new Date()
-      }
+        lastUpdated: new Date(),
+      },
     };
   }
 
   private mapCategory(categoryCode: string): string {
     const categoryMap: Record<string, string> = {
-      'REF': 'refrigerators',
-      'DW': 'dishwashers',
-      'RNG': 'ranges',
-      'MW': 'microwaves'
+      REF: 'refrigerators',
+      DW: 'dishwashers',
+      RNG: 'ranges',
+      MW: 'microwaves',
     };
     return categoryMap[categoryCode] || 'other';
   }
@@ -219,7 +220,7 @@ export interface ManufacturerConfig {
 export const defaultConfig: Partial<ManufacturerConfig> = {
   baseUrl: 'https://api.manufacturer.com',
   rateLimit: 100, // requests per minute
-  timeout: 30000  // 30 seconds
+  timeout: 30000, // 30 seconds
 };
 ```
 
@@ -234,7 +235,7 @@ describe('ManufacturerProvider', () => {
 
   beforeEach(() => {
     provider = new ManufacturerProvider({
-      apiKey: 'test-key'
+      apiKey: 'test-key',
     });
   });
 
@@ -262,7 +263,7 @@ export const providers = {
   whirlpool: WhirlpoolProvider,
   samsung: SamsungProvider,
   bosch: BoschProvider,
-  'manufacturer-name': ManufacturerProvider  // Add new provider
+  'manufacturer-name': ManufacturerProvider, // Add new provider
 };
 
 export function getProvider(name: string, config: any) {
@@ -283,28 +284,23 @@ export function getProvider(name: string, config: any) {
 export const refrigeratorTemplate = {
   name: 'refrigerator',
   category: 'refrigerators',
-  requiredFields: [
-    'name',
-    'sku',
-    'price',
-    'manufacturer'
-  ],
+  requiredFields: ['name', 'sku', 'price', 'manufacturer'],
   optionalFields: [
     'description',
     'dimensions',
     'capacity',
     'energyRating',
-    'features'
+    'features',
   ],
   fieldMappings: {
     'Product Name': 'name',
-    'SKU': 'sku',
+    SKU: 'sku',
     'Price ($)': 'price',
-    'Brand': 'manufacturer',
-    'Description': 'description',
+    Brand: 'manufacturer',
+    Description: 'description',
     'Width x Height x Depth': 'dimensions',
     'Total Capacity (cu ft)': 'capacity',
-    'Energy Star Rating': 'energyRating'
+    'Energy Star Rating': 'energyRating',
   },
   validators: {
     price: (value: any) => {
@@ -314,12 +310,12 @@ export const refrigeratorTemplate = {
     capacity: (value: any) => {
       const capacity = parseFloat(value);
       return capacity > 0 && capacity < 50;
-    }
+    },
   },
   transformers: {
     price: (value: any) => parseFloat(value),
-    features: (value: any) => value.split(',').map((f: string) => f.trim())
-  }
+    features: (value: any) => value.split(',').map((f: string) => f.trim()),
+  },
 };
 ```
 
@@ -373,7 +369,7 @@ router.post(
         products,
         source,
         manufacturer,
-        userId: req.user.id
+        userId: req.user.id,
       });
 
       res.json({
@@ -382,13 +378,13 @@ router.post(
           imported: result.imported,
           failed: result.failed,
           skipped: result.skipped,
-          errors: result.errors
-        }
+          errors: result.errors,
+        },
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -400,18 +396,21 @@ router.post(
 ```typescript
 // Example: Import products via API
 async function importProducts(products: Product[]) {
-  const response = await fetch('https://api.kitchenxpert.com/api/v1/catalog/bulk-import', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      products: products,
-      source: 'manufacturer-api',
-      manufacturer: 'Whirlpool'
-    })
-  });
+  const response = await fetch(
+    'https://api.kitchenxpert.com/api/v1/catalog/bulk-import',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        products: products,
+        source: 'manufacturer-api',
+        manufacturer: 'Whirlpool',
+      }),
+    }
+  );
 
   const result = await response.json();
   console.log(`Imported: ${result.data.imported}`);
@@ -439,26 +438,32 @@ export const productSchema = z.object({
     'countertops',
     'sinks',
     'faucets',
-    'other'
+    'other',
   ]),
   manufacturer: z.string().min(1).max(100),
   description: z.string().optional(),
-  specifications: z.object({
-    dimensions: z.string().optional(),
-    weight: z.string().optional(),
-    capacity: z.string().optional(),
-    energyRating: z.string().optional(),
-    material: z.string().optional(),
-    color: z.string().optional()
-  }).optional(),
-  images: z.array(z.object({
-    url: z.string().url(),
-    isPrimary: z.boolean().default(false),
-    altText: z.string().optional()
-  })).optional(),
+  specifications: z
+    .object({
+      dimensions: z.string().optional(),
+      weight: z.string().optional(),
+      capacity: z.string().optional(),
+      energyRating: z.string().optional(),
+      material: z.string().optional(),
+      color: z.string().optional(),
+    })
+    .optional(),
+  images: z
+    .array(
+      z.object({
+        url: z.string().url(),
+        isPrimary: z.boolean().default(false),
+        altText: z.string().optional(),
+      })
+    )
+    .optional(),
   features: z.array(z.string()).optional(),
   inStock: z.boolean().default(true),
-  tags: z.array(z.string()).optional()
+  tags: z.array(z.string()).optional(),
 });
 
 export type Product = z.infer<typeof productSchema>;
@@ -499,8 +504,8 @@ describe('CatalogImporter', () => {
         name: 'Test Refrigerator',
         price: 999.99,
         category: 'refrigerators',
-        manufacturer: 'Test Brand'
-      }
+        manufacturer: 'Test Brand',
+      },
     ];
 
     const result = await CatalogImporter.import(products);
@@ -512,10 +517,10 @@ describe('CatalogImporter', () => {
   it('should reject invalid products', async () => {
     const products = [
       {
-        sku: '',  // Invalid: empty SKU
+        sku: '', // Invalid: empty SKU
         name: 'Test',
-        price: -100  // Invalid: negative price
-      }
+        price: -100, // Invalid: negative price
+      },
     ];
 
     const result = await CatalogImporter.import(products);
@@ -545,11 +550,11 @@ describe('Catalog Import API', () => {
             name: 'Test Product',
             price: 99.99,
             category: 'refrigerators',
-            manufacturer: 'Test'
-          }
+            manufacturer: 'Test',
+          },
         ],
         source: 'test',
-        manufacturer: 'Test'
+        manufacturer: 'Test',
       })
       .expect(200);
 
@@ -590,9 +595,11 @@ function generateProduct(category: string): SampleProduct {
     specifications: {
       dimensions: `${faker.number.int({ min: 20, max: 40 })}x${faker.number.int({ min: 50, max: 80 })}x${faker.number.int({ min: 20, max: 40 })}`,
       weight: `${faker.number.int({ min: 50, max: 300 })} lbs`,
-      capacity: `${faker.number.int({ min: 15, max: 30 })} cu ft`
+      capacity: `${faker.number.int({ min: 15, max: 30 })} cu ft`,
     },
-    features: Array.from({ length: 5 }, () => faker.commerce.productAdjective())
+    features: Array.from({ length: 5 }, () =>
+      faker.commerce.productAdjective()
+    ),
   };
 }
 
@@ -605,10 +612,7 @@ async function generateCatalog(count: number) {
     products.push(generateProduct(category));
   }
 
-  await writeFile(
-    'sample-catalog.json',
-    JSON.stringify(products, null, 2)
-  );
+  await writeFile('sample-catalog.json', JSON.stringify(products, null, 2));
 
   console.log(`Generated ${count} sample products`);
 }
@@ -656,9 +660,7 @@ pnpm quick-import --file products.csv --dry-run
 
 ```typescript
 // Check for missing fields
-const missingFields = requiredFields.filter(
-  field => !product[field]
-);
+const missingFields = requiredFields.filter((field) => !product[field]);
 
 if (missingFields.length > 0) {
   throw new ValidationError(
@@ -676,7 +678,7 @@ import pLimit from 'p-limit';
 const limit = pLimit(10); // Max 10 concurrent requests
 
 async function importProductsBatch(products: Product[]) {
-  const promises = products.map(product =>
+  const promises = products.map((product) =>
     limit(() => importProduct(product))
   );
 

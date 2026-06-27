@@ -4,7 +4,14 @@
 
 import { BaseEntity, ID } from './base.types';
 
-export type PermissionAction = 'create' | 'read' | 'update' | 'delete' | 'manage' | 'export' | 'import';
+export type PermissionAction =
+  | 'create'
+  | 'read'
+  | 'update'
+  | 'delete'
+  | 'manage'
+  | 'export'
+  | 'import';
 
 export type ResourceType =
   | 'user'

@@ -2,7 +2,10 @@
   "sectionId": "technology-preferences",
   "version": "1.0.0",
   "metadata": {
-    "title": { "en": "Smart Home & Technology", "fr": "Maison intelligente et technologie" },
+    "title": {
+      "en": "Smart Home & Technology",
+      "fr": "Maison intelligente et technologie"
+    },
     "icon": "cpu",
     "estimatedTime": 3
   },
@@ -11,89 +14,302 @@
       "id": "tech-comfort",
       "type": "single-choice",
       "required": true,
-      "label": { "en": "How comfortable are you with smart home technology?", "fr": "À quel point êtes-vous à l'aise avec la technologie maison intelligente ?" },
+      "label": {
+        "en": "How comfortable are you with smart home technology?",
+        "fr": "À quel point êtes-vous à l'aise avec la technologie maison intelligente ?"
+      },
       "options": [
-        { "value": "very-comfortable", "label": { "en": "Very comfortable - early adopter", "fr": "Très à l'aise - adopteur précoce" } },
-        { "value": "comfortable", "label": { "en": "Comfortable - use regularly", "fr": "À l'aise - utilisation régulière" } },
-        { "value": "somewhat", "label": { "en": "Somewhat - basic features only", "fr": "Assez - fonctions de base seulement" } },
-        { "value": "not-comfortable", "label": { "en": "Not comfortable - prefer traditional", "fr": "Pas à l'aise - préfère le traditionnel" } }
+        {
+          "value": "very-comfortable",
+          "label": {
+            "en": "Very comfortable - early adopter",
+            "fr": "Très à l'aise - adopteur précoce"
+          }
+        },
+        {
+          "value": "comfortable",
+          "label": {
+            "en": "Comfortable - use regularly",
+            "fr": "À l'aise - utilisation régulière"
+          }
+        },
+        {
+          "value": "somewhat",
+          "label": {
+            "en": "Somewhat - basic features only",
+            "fr": "Assez - fonctions de base seulement"
+          }
+        },
+        {
+          "value": "not-comfortable",
+          "label": {
+            "en": "Not comfortable - prefer traditional",
+            "fr": "Pas à l'aise - préfère le traditionnel"
+          }
+        }
       ]
     },
     {
       "id": "smart-appliances",
       "type": "multi-choice",
       "required": true,
-      "label": { "en": "Which smart appliances interest you?", "fr": "Quels appareils intelligents vous intéressent ?" },
+      "label": {
+        "en": "Which smart appliances interest you?",
+        "fr": "Quels appareils intelligents vous intéressent ?"
+      },
       "options": [
-        { "value": "smart-fridge", "label": { "en": "Smart refrigerator", "fr": "Réfrigérateur intelligent" } },
-        { "value": "smart-oven", "label": { "en": "Smart oven/range", "fr": "Four/cuisinière intelligent" } },
-        { "value": "smart-dishwasher", "label": { "en": "Smart dishwasher", "fr": "Lave-vaisselle intelligent" } },
-        { "value": "smart-coffee", "label": { "en": "Smart coffee maker", "fr": "Cafetière intelligente" } },
-        { "value": "smart-faucet", "label": { "en": "Touchless/smart faucet", "fr": "Robinet sans contact/intelligent" } },
-        { "value": "none", "label": { "en": "None - prefer traditional", "fr": "Aucun - préfère le traditionnel" } }
+        {
+          "value": "smart-fridge",
+          "label": {
+            "en": "Smart refrigerator",
+            "fr": "Réfrigérateur intelligent"
+          }
+        },
+        {
+          "value": "smart-oven",
+          "label": {
+            "en": "Smart oven/range",
+            "fr": "Four/cuisinière intelligent"
+          }
+        },
+        {
+          "value": "smart-dishwasher",
+          "label": {
+            "en": "Smart dishwasher",
+            "fr": "Lave-vaisselle intelligent"
+          }
+        },
+        {
+          "value": "smart-coffee",
+          "label": {
+            "en": "Smart coffee maker",
+            "fr": "Cafetière intelligente"
+          }
+        },
+        {
+          "value": "smart-faucet",
+          "label": {
+            "en": "Touchless/smart faucet",
+            "fr": "Robinet sans contact/intelligent"
+          }
+        },
+        {
+          "value": "none",
+          "label": {
+            "en": "None - prefer traditional",
+            "fr": "Aucun - préfère le traditionnel"
+          }
+        }
       ]
     },
     {
       "id": "voice-control",
       "type": "single-choice",
       "required": true,
-      "label": { "en": "Do you want voice control integration?", "fr": "Voulez-vous l'intégration du contrôle vocal ?" },
+      "label": {
+        "en": "Do you want voice control integration?",
+        "fr": "Voulez-vous l'intégration du contrôle vocal ?"
+      },
       "options": [
-        { "value": "yes-alexa", "label": { "en": "Yes - Amazon Alexa", "fr": "Oui - Amazon Alexa" } },
-        { "value": "yes-google", "label": { "en": "Yes - Google Assistant", "fr": "Oui - Google Assistant" } },
-        { "value": "yes-apple", "label": { "en": "Yes - Apple HomeKit", "fr": "Oui - Apple HomeKit" } },
-        { "value": "yes-multiple", "label": { "en": "Yes - multiple platforms", "fr": "Oui - plusieurs plateformes" } },
-        { "value": "no", "label": { "en": "No voice control needed", "fr": "Pas besoin de contrôle vocal" } }
+        {
+          "value": "yes-alexa",
+          "label": { "en": "Yes - Amazon Alexa", "fr": "Oui - Amazon Alexa" }
+        },
+        {
+          "value": "yes-google",
+          "label": {
+            "en": "Yes - Google Assistant",
+            "fr": "Oui - Google Assistant"
+          }
+        },
+        {
+          "value": "yes-apple",
+          "label": { "en": "Yes - Apple HomeKit", "fr": "Oui - Apple HomeKit" }
+        },
+        {
+          "value": "yes-multiple",
+          "label": {
+            "en": "Yes - multiple platforms",
+            "fr": "Oui - plusieurs plateformes"
+          }
+        },
+        {
+          "value": "no",
+          "label": {
+            "en": "No voice control needed",
+            "fr": "Pas besoin de contrôle vocal"
+          }
+        }
       ]
     },
     {
       "id": "smart-lighting",
       "type": "single-choice",
       "required": true,
-      "label": { "en": "Interest in smart lighting?", "fr": "Intérêt pour l'éclairage intelligent ?" },
+      "label": {
+        "en": "Interest in smart lighting?",
+        "fr": "Intérêt pour l'éclairage intelligent ?"
+      },
       "options": [
-        { "value": "full-system", "label": { "en": "Full smart lighting system", "fr": "Système d'éclairage intelligent complet" } },
-        { "value": "some-areas", "label": { "en": "Some smart zones (under-cabinet, etc.)", "fr": "Quelques zones intelligentes (sous-armoire, etc.)" } },
-        { "value": "dimmers-only", "label": { "en": "Just dimmers, not smart", "fr": "Juste des gradateurs, pas intelligents" } },
-        { "value": "standard", "label": { "en": "Standard switches are fine", "fr": "Interrupteurs standards suffisent" } }
+        {
+          "value": "full-system",
+          "label": {
+            "en": "Full smart lighting system",
+            "fr": "Système d'éclairage intelligent complet"
+          }
+        },
+        {
+          "value": "some-areas",
+          "label": {
+            "en": "Some smart zones (under-cabinet, etc.)",
+            "fr": "Quelques zones intelligentes (sous-armoire, etc.)"
+          }
+        },
+        {
+          "value": "dimmers-only",
+          "label": {
+            "en": "Just dimmers, not smart",
+            "fr": "Juste des gradateurs, pas intelligents"
+          }
+        },
+        {
+          "value": "standard",
+          "label": {
+            "en": "Standard switches are fine",
+            "fr": "Interrupteurs standards suffisent"
+          }
+        }
       ]
     },
     {
       "id": "charging-stations",
       "type": "single-choice",
       "required": false,
-      "label": { "en": "Do you need device charging stations?", "fr": "Avez-vous besoin de stations de charge ?" },
+      "label": {
+        "en": "Do you need device charging stations?",
+        "fr": "Avez-vous besoin de stations de charge ?"
+      },
       "options": [
-        { "value": "dedicated-area", "label": { "en": "Yes - dedicated charging area", "fr": "Oui - zone de charge dédiée" } },
-        { "value": "built-in-outlets", "label": { "en": "USB outlets in counter/island", "fr": "Prises USB dans le comptoir/îlot" } },
-        { "value": "wireless-charging", "label": { "en": "Wireless charging built into counter", "fr": "Charge sans fil intégrée au comptoir" } },
-        { "value": "not-needed", "label": { "en": "Not needed in kitchen", "fr": "Pas nécessaire dans la cuisine" } }
+        {
+          "value": "dedicated-area",
+          "label": {
+            "en": "Yes - dedicated charging area",
+            "fr": "Oui - zone de charge dédiée"
+          }
+        },
+        {
+          "value": "built-in-outlets",
+          "label": {
+            "en": "USB outlets in counter/island",
+            "fr": "Prises USB dans le comptoir/îlot"
+          }
+        },
+        {
+          "value": "wireless-charging",
+          "label": {
+            "en": "Wireless charging built into counter",
+            "fr": "Charge sans fil intégrée au comptoir"
+          }
+        },
+        {
+          "value": "not-needed",
+          "label": {
+            "en": "Not needed in kitchen",
+            "fr": "Pas nécessaire dans la cuisine"
+          }
+        }
       ]
     },
     {
       "id": "connectivity",
       "type": "multi-choice",
       "required": false,
-      "label": { "en": "What connectivity features do you need?", "fr": "Quelles fonctionnalités de connectivité vous faut-il ?" },
+      "label": {
+        "en": "What connectivity features do you need?",
+        "fr": "Quelles fonctionnalités de connectivité vous faut-il ?"
+      },
       "options": [
-        { "value": "strong-wifi", "label": { "en": "Strong WiFi coverage", "fr": "Bonne couverture WiFi" } },
-        { "value": "ethernet", "label": { "en": "Ethernet ports for appliances", "fr": "Ports Ethernet pour appareils" } },
-        { "value": "bluetooth-speakers", "label": { "en": "Built-in Bluetooth speakers", "fr": "Haut-parleurs Bluetooth intégrés" } },
-        { "value": "hub-location", "label": { "en": "Smart home hub location", "fr": "Emplacement pour hub maison intelligente" } },
-        { "value": "basic", "label": { "en": "Basic outlets are sufficient", "fr": "Prises de base suffisent" } }
+        {
+          "value": "strong-wifi",
+          "label": {
+            "en": "Strong WiFi coverage",
+            "fr": "Bonne couverture WiFi"
+          }
+        },
+        {
+          "value": "ethernet",
+          "label": {
+            "en": "Ethernet ports for appliances",
+            "fr": "Ports Ethernet pour appareils"
+          }
+        },
+        {
+          "value": "bluetooth-speakers",
+          "label": {
+            "en": "Built-in Bluetooth speakers",
+            "fr": "Haut-parleurs Bluetooth intégrés"
+          }
+        },
+        {
+          "value": "hub-location",
+          "label": {
+            "en": "Smart home hub location",
+            "fr": "Emplacement pour hub maison intelligente"
+          }
+        },
+        {
+          "value": "basic",
+          "label": {
+            "en": "Basic outlets are sufficient",
+            "fr": "Prises de base suffisent"
+          }
+        }
       ]
     },
     {
       "id": "security-features",
       "type": "multi-choice",
       "required": false,
-      "label": { "en": "Any smart security features for the kitchen?", "fr": "Des fonctions de sécurité intelligentes pour la cuisine ?" },
+      "label": {
+        "en": "Any smart security features for the kitchen?",
+        "fr": "Des fonctions de sécurité intelligentes pour la cuisine ?"
+      },
       "options": [
-        { "value": "smart-locks", "label": { "en": "Smart cabinet/drawer locks", "fr": "Serrures intelligentes armoires/tiroirs" } },
-        { "value": "leak-sensors", "label": { "en": "Water leak sensors", "fr": "Capteurs de fuite d'eau" } },
-        { "value": "smoke-detector", "label": { "en": "Smart smoke/CO detector", "fr": "Détecteur fumée/CO intelligent" } },
-        { "value": "cameras", "label": { "en": "Security camera view", "fr": "Vue caméra de sécurité" } },
-        { "value": "none", "label": { "en": "No smart security needed", "fr": "Pas de sécurité intelligente nécessaire" } }
+        {
+          "value": "smart-locks",
+          "label": {
+            "en": "Smart cabinet/drawer locks",
+            "fr": "Serrures intelligentes armoires/tiroirs"
+          }
+        },
+        {
+          "value": "leak-sensors",
+          "label": {
+            "en": "Water leak sensors",
+            "fr": "Capteurs de fuite d'eau"
+          }
+        },
+        {
+          "value": "smoke-detector",
+          "label": {
+            "en": "Smart smoke/CO detector",
+            "fr": "Détecteur fumée/CO intelligent"
+          }
+        },
+        {
+          "value": "cameras",
+          "label": {
+            "en": "Security camera view",
+            "fr": "Vue caméra de sécurité"
+          }
+        },
+        {
+          "value": "none",
+          "label": {
+            "en": "No smart security needed",
+            "fr": "Pas de sécurité intelligente nécessaire"
+          }
+        }
       ]
     }
   ]

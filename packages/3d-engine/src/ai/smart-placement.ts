@@ -193,17 +193,12 @@ export class SmartPlacement {
 
     // Si l'element doit etre au-dessus d'un autre
     if (rules.requiresAbove) {
-      const belowItem = existingItems.find((i) =>
-        i.type === rules.requiresAbove ||
-        i.type.includes(rules.requiresAbove!)
+      const belowItem = existingItems.find(
+        (i) => i.type === rules.requiresAbove || i.type.includes(rules.requiresAbove!)
       );
       if (belowItem) {
         return {
-          position: new THREE.Vector3(
-            belowItem.position.x,
-            rules.aboveFloor,
-            belowItem.position.z
-          ),
+          position: new THREE.Vector3(belowItem.position.x, rules.aboveFloor, belowItem.position.z),
           rotation: 0,
           confidence: 0.95,
           reason: `Placé au-dessus de ${belowItem.type}`,
@@ -213,20 +208,14 @@ export class SmartPlacement {
 
     // Si l'element doit etre pres d'un autre
     if (rules.requiresNear === 'sink') {
-      const sink = existingItems.find((i) =>
-        i.type === 'sink' || i.type === 'sink_base'
-      );
+      const sink = existingItems.find((i) => i.type === 'sink' || i.type === 'sink_base');
       if (sink) {
         const offset = sink.dimensions.width / 2 + dimensions.width / 2 + 0.02;
         return {
-          position: new THREE.Vector3(
-            sink.position.x + offset,
-            rules.aboveFloor,
-            sink.position.z
-          ),
+          position: new THREE.Vector3(sink.position.x + offset, rules.aboveFloor, sink.position.z),
           rotation: 0,
           confidence: 0.85,
-          reason: 'Placé à côté de l\'évier',
+          reason: "Placé à côté de l'évier",
         };
       }
     }
@@ -235,11 +224,7 @@ export class SmartPlacement {
     const wallPositions = this.findWallPositions(room, rules.preferredWalls);
 
     for (const wallPos of wallPositions) {
-      const candidatePos = new THREE.Vector3(
-        wallPos.x,
-        rules.aboveFloor,
-        wallPos.z
-      );
+      const candidatePos = new THREE.Vector3(wallPos.x, rules.aboveFloor, wallPos.z);
 
       // Verifier qu'il n'y a pas de collision
       const hasCollision = existingItems.some((existing) => {
@@ -298,8 +283,7 @@ export class SmartPlacement {
     const rules = this.getPlacementRules()[type];
 
     // Bounds check
-    if (position.x < 0 || position.x > room.width ||
-        position.z < 0 || position.z > room.depth) {
+    if (position.x < 0 || position.x > room.width || position.z < 0 || position.z > room.depth) {
       issues.push('Élément en dehors de la pièce');
     }
 
@@ -322,7 +306,9 @@ export class SmartPlacement {
         if (nearItem) {
           const dist = position.distanceTo(nearItem.position);
           if (dist < minDist) {
-            issues.push(`Trop proche de ${nearType} (${Math.round(dist * 1000)} mm, min ${Math.round(minDist * 1000)} mm)`);
+            issues.push(
+              `Trop proche de ${nearType} (${Math.round(dist * 1000)} mm, min ${Math.round(minDist * 1000)} mm)`
+            );
           }
         }
       }
@@ -408,13 +394,16 @@ export class SmartPlacement {
     // --- Left-handed: mirror work triangle ---
     if (biometrics.dominantHand === 'left') {
       layoutSuggestions.push({
-        suggestion: 'Mirror the work triangle: place fridge on the right side, sink in the center, and cooktop on the left for a right-to-left workflow',
+        suggestion:
+          'Mirror the work triangle: place fridge on the right side, sink in the center, and cooktop on the left for a right-to-left workflow',
         priority: 'high',
-        reason: 'Left-handed users work more efficiently with a right-to-left flow (fridge → sink → cooktop)',
+        reason:
+          'Left-handed users work more efficiently with a right-to-left flow (fridge → sink → cooktop)',
       });
 
       layoutSuggestions.push({
-        suggestion: 'Position primary prep area to the left of the sink for dominant-hand cutting and preparation',
+        suggestion:
+          'Position primary prep area to the left of the sink for dominant-hand cutting and preparation',
         priority: 'medium',
         reason: 'Left-handed users benefit from prep space on their dominant side',
       });
@@ -431,7 +420,8 @@ export class SmartPlacement {
       });
 
       layoutSuggestions.push({
-        suggestion: 'Avoid low drawers in base cabinets; prefer pull-out shelves at waist height (700-900 mm)',
+        suggestion:
+          'Avoid low drawers in base cabinets; prefer pull-out shelves at waist height (700-900 mm)',
         priority: 'high',
         reason: 'Reducing bending motions for users with back problems',
       });
@@ -459,13 +449,16 @@ export class SmartPlacement {
       });
 
       layoutSuggestions.push({
-        suggestion: 'Ensure knee space (min 700 mm wide, 700 mm high, 600 mm deep) under the sink for wheelchair approach',
+        suggestion:
+          'Ensure knee space (min 700 mm wide, 700 mm high, 600 mm deep) under the sink for wheelchair approach',
         priority: 'high',
-        reason: 'PMR accessibility requires clear knee space under at least one worktop section and the sink',
+        reason:
+          'PMR accessibility requires clear knee space under at least one worktop section and the sink',
       });
 
       layoutSuggestions.push({
-        suggestion: 'Ensure minimum 900 mm passage width between all elements and a 1500 mm turning circle',
+        suggestion:
+          'Ensure minimum 900 mm passage width between all elements and a 1500 mm turning circle',
         priority: 'high',
         reason: 'Wheelchair maneuvering requires wider passages and a rotation area',
       });
@@ -473,7 +466,8 @@ export class SmartPlacement {
       productRecommendations.push({
         category: 'cooktop',
         feature: 'induction cooktop with front-mounted controls',
-        reason: 'Induction is safer for wheelchair users (no flame, surface stays cool) and front controls avoid reaching over hot surfaces',
+        reason:
+          'Induction is safer for wheelchair users (no flame, surface stays cool) and front controls avoid reaching over hot surfaces',
       });
 
       productRecommendations.push({
@@ -483,7 +477,8 @@ export class SmartPlacement {
       });
 
       safetyWarnings.push({
-        warning: 'Wheelchair user detected — all placements should be verified against PMR accessibility standards (NF P 99-611)',
+        warning:
+          'Wheelchair user detected — all placements should be verified against PMR accessibility standards (NF P 99-611)',
         severity: 'critical',
       });
     }
@@ -493,23 +488,28 @@ export class SmartPlacement {
       productRecommendations.push({
         category: 'base_cabinet',
         feature: 'child-lock mechanisms on drawers near cooktop',
-        reason: 'Prevent children from accessing dangerous items (knives, cleaning products) near cooking area',
+        reason:
+          'Prevent children from accessing dangerous items (knives, cleaning products) near cooking area',
       });
 
       layoutSuggestions.push({
-        suggestion: 'Store knives and chemical/cleaning products in high wall cabinets out of children\'s reach',
+        suggestion:
+          "Store knives and chemical/cleaning products in high wall cabinets out of children's reach",
         priority: 'high',
         reason: 'Child safety requires hazardous items to be stored above 1200 mm',
       });
 
       layoutSuggestions.push({
-        suggestion: 'Avoid placing the oven at low level (floor-mounted); prefer a raised column oven installation',
+        suggestion:
+          'Avoid placing the oven at low level (floor-mounted); prefer a raised column oven installation',
         priority: 'high',
-        reason: 'A low oven door is a burn hazard for children — raised installation keeps hot surfaces out of reach',
+        reason:
+          'A low oven door is a burn hazard for children — raised installation keeps hot surfaces out of reach',
       });
 
       safetyWarnings.push({
-        warning: 'Household includes children — ensure cooktop has child-lock feature and oven is not installed at child-accessible height',
+        warning:
+          'Household includes children — ensure cooktop has child-lock feature and oven is not installed at child-accessible height',
         severity: 'critical',
       });
 
@@ -536,13 +536,15 @@ export class SmartPlacement {
       productRecommendations.push({
         category: 'faucet',
         feature: 'lever-style faucet (single lever operation)',
-        reason: 'Lever faucets require less grip strength and fine motor control than twist-type faucets',
+        reason:
+          'Lever faucets require less grip strength and fine motor control than twist-type faucets',
       });
 
       productRecommendations.push({
         category: 'lighting',
         feature: 'task lighting at all work areas (under-cabinet LED strips)',
-        reason: 'Elderly users benefit from increased task lighting to compensate for reduced vision',
+        reason:
+          'Elderly users benefit from increased task lighting to compensate for reduced vision',
       });
 
       layoutSuggestions.push({
@@ -552,7 +554,8 @@ export class SmartPlacement {
       });
 
       safetyWarnings.push({
-        warning: 'Elderly household member — ensure good lighting at all work zones and non-slip flooring',
+        warning:
+          'Elderly household member — ensure good lighting at all work zones and non-slip flooring',
         severity: 'warning',
       });
     }
@@ -560,7 +563,8 @@ export class SmartPlacement {
     // --- Mobility issues (not wheelchair but limited mobility) ---
     if (biometrics.hasMobilityIssues && !biometrics.isWheelchairUser) {
       layoutSuggestions.push({
-        suggestion: 'Minimize the work triangle perimeter to reduce walking distance between fridge, sink, and cooktop',
+        suggestion:
+          'Minimize the work triangle perimeter to reduce walking distance between fridge, sink, and cooktop',
         priority: 'high',
         reason: 'Reduced mobility requires shorter walking distances during cooking workflows',
       });
@@ -568,13 +572,15 @@ export class SmartPlacement {
       productRecommendations.push({
         category: 'base_cabinet',
         feature: 'soft-close full-extension drawers',
-        reason: 'Full-extension drawers with soft-close reduce effort and allow full access without deep reaching',
+        reason:
+          'Full-extension drawers with soft-close reduce effort and allow full access without deep reaching',
       });
 
       productRecommendations.push({
         category: 'oven',
         feature: 'side-opening oven door',
-        reason: 'Side-opening oven doors are easier to use for people with limited mobility than traditional drop-down doors',
+        reason:
+          'Side-opening oven doors are easier to use for people with limited mobility than traditional drop-down doors',
       });
     }
 

@@ -29,7 +29,10 @@ export interface RequestConfig extends RequestInit {
 }
 
 // Build URL with query params
-const buildUrl = (path: string, params?: Record<string, string | number | boolean | undefined>): string => {
+const buildUrl = (
+  path: string,
+  params?: Record<string, string | number | boolean | undefined>
+): string => {
   if (!params || Object.keys(params).length === 0) {
     return path;
   }
@@ -49,7 +52,7 @@ let refreshPromise: Promise<boolean> | null = null;
 async function request<T>(
   endpoint: string,
   config: RequestConfig = {},
-  _retried = false,
+  _retried = false
 ): Promise<ApiResponse<T>> {
   const { params, timeout = 30000, ...fetchConfig } = config;
 
@@ -134,7 +137,9 @@ async function request<T>(
 // Refresh token logic — uses httpOnly cookie, no localStorage
 async function refreshAccessToken(): Promise<boolean> {
   // If a refresh is already in progress, wait for it instead of starting a new one
-  if (refreshPromise) {return refreshPromise;}
+  if (refreshPromise) {
+    return refreshPromise;
+  }
 
   refreshPromise = (async () => {
     try {

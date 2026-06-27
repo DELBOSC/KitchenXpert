@@ -18,7 +18,12 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  })),
 }));
 
 jest.mock('../database/client', () => ({
@@ -54,7 +59,9 @@ const mockUploadController = {
     res.status(200).json({ success: true, message: 'File deleted' });
   }),
   getSignedUploadUrl: jest.fn((_req: Request, res: Response) => {
-    res.status(200).json({ success: true, data: { uploadUrl: 'https://s3.example.com/presigned' } });
+    res
+      .status(200)
+      .json({ success: true, data: { uploadUrl: 'https://s3.example.com/presigned' } });
   }),
   copyFile: jest.fn((_req: Request, res: Response) => {
     res.status(200).json({ success: true, message: 'File copied' });
@@ -83,7 +90,10 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'user@test.com', role: 'user' };
     next();
@@ -117,9 +127,7 @@ describe('Upload Routes', () => {
   describe('GET /uploads/allowed-types (public)', () => {
     it('should return allowed file types without auth', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .get('/uploads/allowed-types')
-        .expect(200);
+      const response = await request(app).get('/uploads/allowed-types').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -129,9 +137,7 @@ describe('Upload Routes', () => {
 
   describe('POST /uploads', () => {
     it('should upload a file and return 201', async () => {
-      const response = await request(app)
-        .post('/uploads')
-        .expect(201);
+      const response = await request(app).post('/uploads').expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('key');
@@ -141,9 +147,7 @@ describe('Upload Routes', () => {
 
     it('should return 401 when not authenticated', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .post('/uploads')
-        .expect(401);
+      const response = await request(app).post('/uploads').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -151,9 +155,7 @@ describe('Upload Routes', () => {
 
   describe('GET /uploads', () => {
     it('should list uploaded files', async () => {
-      const response = await request(app)
-        .get('/uploads')
-        .expect(200);
+      const response = await request(app).get('/uploads').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -163,9 +165,7 @@ describe('Upload Routes', () => {
 
   describe('DELETE /uploads/:key', () => {
     it('should delete a file', async () => {
-      const response = await request(app)
-        .delete('/uploads/test-file.jpg')
-        .expect(200);
+      const response = await request(app).delete('/uploads/test-file.jpg').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockUploadController.deleteFile).toHaveBeenCalled();
@@ -173,9 +173,7 @@ describe('Upload Routes', () => {
 
     it('should return 401 when not authenticated', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .delete('/uploads/test-file.jpg')
-        .expect(401);
+      const response = await request(app).delete('/uploads/test-file.jpg').expect(401);
 
       expect(response.body.success).toBe(false);
     });

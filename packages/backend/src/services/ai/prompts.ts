@@ -277,7 +277,8 @@ INTERDIT :
 export const SHOPPING_CHAT_TOOLS = [
   {
     name: 'searchCatalog',
-    description: 'Search the multi-brand catalog (IKEA, Schmidt, Bosch, Leroy Merlin, Castorama). Returns up to 5 best matches.',
+    description:
+      'Search the multi-brand catalog (IKEA, Schmidt, Bosch, Leroy Merlin, Castorama). Returns up to 5 best matches.',
     input_schema: {
       type: 'object',
       properties: {
@@ -285,8 +286,14 @@ export const SHOPPING_CHAT_TOOLS = [
         filters: {
           type: 'object',
           properties: {
-            brand: { type: 'string', enum: ['IKEA','SCHMIDT','MOBALPA','BOSCH','LEROY_MERLIN','CASTORAMA','LAPEYRE'] },
-            category: { type: 'string', enum: ['cabinet','appliance','worktop','splashback','sink','tap','accessory'] },
+            brand: {
+              type: 'string',
+              enum: ['IKEA', 'SCHMIDT', 'MOBALPA', 'BOSCH', 'LEROY_MERLIN', 'CASTORAMA', 'LAPEYRE'],
+            },
+            category: {
+              type: 'string',
+              enum: ['cabinet', 'appliance', 'worktop', 'splashback', 'sink', 'tap', 'accessory'],
+            },
             maxPriceEur: { type: 'number' },
           },
         },
@@ -296,7 +303,8 @@ export const SHOPPING_CHAT_TOOLS = [
   },
   {
     name: 'swapItem',
-    description: 'Swap an item in the current kitchen for another SKU. Confirm with the user first.',
+    description:
+      'Swap an item in the current kitchen for another SKU. Confirm with the user first.',
     input_schema: {
       type: 'object',
       properties: {
@@ -308,7 +316,8 @@ export const SHOPPING_CHAT_TOOLS = [
   },
   {
     name: 'addItem',
-    description: 'Add a new item to the kitchen at a specific position. Confirm with the user first.',
+    description:
+      'Add a new item to the kitchen at a specific position. Confirm with the user first.',
     input_schema: {
       type: 'object',
       properties: {
@@ -316,7 +325,9 @@ export const SHOPPING_CHAT_TOOLS = [
         position: {
           type: 'object',
           properties: {
-            x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' },
+            x: { type: 'number' },
+            y: { type: 'number' },
+            z: { type: 'number' },
           },
           required: ['x', 'y', 'z'],
         },
@@ -326,19 +337,23 @@ export const SHOPPING_CHAT_TOOLS = [
   },
   {
     name: 'getBudgetSummary',
-    description: 'Return the current kitchen total + per-category breakdown + gap vs user budget target.',
+    description:
+      'Return the current kitchen total + per-category breakdown + gap vs user budget target.',
     input_schema: { type: 'object', properties: {}, required: [] },
   },
   {
     name: 'resolve_colors',
     description:
-      'Get the real available colors for a product gamme. Pass the SKU of any product '
-      + '(variant or canonical) from the kitchen; returns the offerable colors with a representative '
-      + 'SKU and starting price per color. Use this BEFORE mentioning any color option.',
+      'Get the real available colors for a product gamme. Pass the SKU of any product ' +
+      '(variant or canonical) from the kitchen; returns the offerable colors with a representative ' +
+      'SKU and starting price per color. Use this BEFORE mentioning any color option.',
     input_schema: {
       type: 'object',
       properties: {
-        sku: { type: 'string', description: 'SKU of a product in the kitchen (from the snapshot items)' },
+        sku: {
+          type: 'string',
+          description: 'SKU of a product in the kitchen (from the snapshot items)',
+        },
       },
       required: ['sku'],
     },

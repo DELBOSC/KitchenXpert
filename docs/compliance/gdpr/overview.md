@@ -16,17 +16,24 @@
 
 ## Introduction
 
-The General Data Protection Regulation (GDPR) is the European Union's comprehensive data protection law that came into force on May 25, 2018. It establishes strict requirements for how organizations collect, process, store, and protect personal data of EU residents.
+The General Data Protection Regulation (GDPR) is the European Union's
+comprehensive data protection law that came into force on May 25, 2018. It
+establishes strict requirements for how organizations collect, process, store,
+and protect personal data of EU residents.
 
-KitchenXpert is committed to full GDPR compliance for all users, regardless of geographic location. This document provides an overview of how KitchenXpert implements GDPR requirements across our platform.
+KitchenXpert is committed to full GDPR compliance for all users, regardless of
+geographic location. This document provides an overview of how KitchenXpert
+implements GDPR requirements across our platform.
 
 ### What is Personal Data?
 
-Under GDPR, personal data is any information relating to an identified or identifiable natural person. For KitchenXpert, this includes:
+Under GDPR, personal data is any information relating to an identified or
+identifiable natural person. For KitchenXpert, this includes:
 
 - **Direct identifiers**: Name, email address, user ID
 - **Online identifiers**: IP addresses, cookie identifiers, device IDs
-- **Account information**: Password hashes, account preferences, subscription status
+- **Account information**: Password hashes, account preferences, subscription
+  status
 - **Usage data**: Kitchen designs, product preferences, search queries
 - **Financial data**: Payment information (processed by third-party providers)
 - **Technical data**: Browser type, operating system, session data
@@ -39,7 +46,8 @@ GDPR applies to KitchenXpert when:
 
 1. **Establishment in the EU**: We process personal data of EU residents
 2. **Offering goods/services**: We offer our kitchen design platform to EU users
-3. **Monitoring behavior**: We monitor behavior of individuals within the EU through analytics
+3. **Monitoring behavior**: We monitor behavior of individuals within the EU
+   through analytics
 
 ### Who is Protected?
 
@@ -62,32 +70,38 @@ All aspects of our business are GDPR-compliant:
 
 ## Legal Basis for Processing
 
-GDPR requires a lawful basis for processing personal data. KitchenXpert relies on the following legal bases:
+GDPR requires a lawful basis for processing personal data. KitchenXpert relies
+on the following legal bases:
 
 ### 1. Consent (Article 6(1)(a))
 
 Used for:
+
 - Marketing emails and newsletters
 - Optional analytics and personalization features
 - Cookie placement (non-essential cookies)
 - Sharing designs publicly or with third parties
 
-**Requirements**: Freely given, specific, informed, and unambiguous indication of wishes.
+**Requirements**: Freely given, specific, informed, and unambiguous indication
+of wishes.
 
 ### 2. Contract Performance (Article 6(1)(b))
 
 Used for:
+
 - Account creation and authentication
 - Storing and managing kitchen designs
 - Processing orders
 - Providing customer support
 - Delivering our core design platform services
 
-**Requirements**: Processing is necessary to fulfill our Terms of Service agreement with users.
+**Requirements**: Processing is necessary to fulfill our Terms of Service
+agreement with users.
 
 ### 3. Legal Obligation (Article 6(1)(c))
 
 Used for:
+
 - Tax and accounting records
 - Compliance with court orders or regulatory requests
 - Anti-fraud measures required by law
@@ -98,12 +112,14 @@ Used for:
 ### 4. Legitimate Interest (Article 6(1)(f))
 
 Used for:
+
 - Security monitoring and threat detection
 - Platform analytics and improvements
 - Fraud prevention
 - Internal research and development
 
-**Requirements**: We conduct Legitimate Interest Assessments (LIAs) to ensure our interests don't override user rights.
+**Requirements**: We conduct Legitimate Interest Assessments (LIAs) to ensure
+our interests don't override user rights.
 
 ## Data Controller and Processor Roles
 
@@ -117,21 +133,23 @@ KitchenXpert acts as the **data controller** for:
 - Order and payment information (in coordination with payment processors)
 - Marketing communications
 
-As a controller, we determine the purposes and means of processing personal data and bear primary responsibility for GDPR compliance.
+As a controller, we determine the purposes and means of processing personal data
+and bear primary responsibility for GDPR compliance.
 
 ### Third-Party Data Processors
 
 KitchenXpert engages the following processors who process data on our behalf:
 
-| Processor | Purpose | Location | Safeguards |
-|-----------|---------|----------|------------|
-| AWS | Cloud hosting and storage | US (with EU regions) | Standard Contractual Clauses, AWS DPA |
-| Stripe | Payment processing | US | PCI-DSS certified, Stripe DPA |
-| SendGrid | Email delivery | US | Standard Contractual Clauses, SendGrid DPA |
-| Google Analytics | Website analytics | US | Data Processing Amendment, IP anonymization |
-| Auth0 | Authentication services | US | Standard Contractual Clauses, Auth0 DPA |
+| Processor        | Purpose                   | Location             | Safeguards                                  |
+| ---------------- | ------------------------- | -------------------- | ------------------------------------------- |
+| AWS              | Cloud hosting and storage | US (with EU regions) | Standard Contractual Clauses, AWS DPA       |
+| Stripe           | Payment processing        | US                   | PCI-DSS certified, Stripe DPA               |
+| SendGrid         | Email delivery            | US                   | Standard Contractual Clauses, SendGrid DPA  |
+| Google Analytics | Website analytics         | US                   | Data Processing Amendment, IP anonymization |
+| Auth0            | Authentication services   | US                   | Standard Contractual Clauses, Auth0 DPA     |
 
 All processors are contractually bound to:
+
 - Process data only on our documented instructions
 - Maintain appropriate security measures
 - Ensure confidentiality of personnel
@@ -142,6 +160,7 @@ All processors are contractually bound to:
 ### Data Processing Agreements (DPAs)
 
 We maintain executed DPAs with all third-party processors, incorporating:
+
 - Standard Contractual Clauses (SCCs) for international transfers
 - Specific security and confidentiality obligations
 - Sub-processor disclosure and approval mechanisms
@@ -204,24 +223,29 @@ KitchenXpert adheres to all seven GDPR principles outlined in Article 5:
 - **Transparency**: We provide clear information about our data practices
 
 **Implementation**:
+
 - Privacy Policy available before account creation
 - Clear consent mechanisms with granular choices
 - No hidden data collection or unexpected uses
 
 ### 2. Purpose Limitation
 
-We collect personal data for specified, explicit, and legitimate purposes and do not process it further in ways incompatible with those purposes.
+We collect personal data for specified, explicit, and legitimate purposes and do
+not process it further in ways incompatible with those purposes.
 
 **Implementation**:
+
 - Data collection tied to specific features and services
 - New purposes require additional user consent
 - Regular review of processing purposes against actual use
 
 ### 3. Data Minimization
 
-We collect only personal data that is adequate, relevant, and limited to what is necessary.
+We collect only personal data that is adequate, relevant, and limited to what is
+necessary.
 
 **Implementation**:
+
 - No mandatory fields beyond essential account creation data
 - Optional features clearly marked
 - Regular audits to eliminate unnecessary data collection
@@ -229,9 +253,11 @@ We collect only personal data that is adequate, relevant, and limited to what is
 
 ### 4. Accuracy
 
-We take reasonable steps to ensure personal data is accurate and kept up to date.
+We take reasonable steps to ensure personal data is accurate and kept up to
+date.
 
 **Implementation**:
+
 - Users can update profile information at any time
 - Email verification for account creation
 - Regular prompts to review and update information
@@ -239,9 +265,11 @@ We take reasonable steps to ensure personal data is accurate and kept up to date
 
 ### 5. Storage Limitation
 
-We keep personal data only as long as necessary for the purposes for which it was collected.
+We keep personal data only as long as necessary for the purposes for which it
+was collected.
 
 **Implementation**:
+
 - Defined retention periods for each data category
 - Automated deletion processes
 - Option for users to delete accounts and data
@@ -249,9 +277,12 @@ We keep personal data only as long as necessary for the purposes for which it wa
 
 ### 6. Integrity and Confidentiality (Security)
 
-We process personal data in a manner that ensures appropriate security, including protection against unauthorized or unlawful processing and against accidental loss, destruction, or damage.
+We process personal data in a manner that ensures appropriate security,
+including protection against unauthorized or unlawful processing and against
+accidental loss, destruction, or damage.
 
 **Implementation**:
+
 - Encryption in transit and at rest
 - Regular security audits and penetration testing
 - Access controls and authentication requirements
@@ -263,6 +294,7 @@ We process personal data in a manner that ensures appropriate security, includin
 We are responsible for and can demonstrate compliance with all GDPR principles.
 
 **Implementation**:
+
 - Comprehensive documentation of all processing activities
 - Data Protection Impact Assessments (DPIAs) for high-risk processing
 - Records of consent and legitimate interest assessments
@@ -273,12 +305,11 @@ We are responsible for and can demonstrate compliance with all GDPR principles.
 
 ### Data Protection Officer (DPO)
 
-**Name**: Sarah Mitchell
-**Email**: dpo@kitchenxpert.com
-**Phone**: +1-555-0199
+**Name**: Sarah Mitchell **Email**: dpo@kitchenxpert.com **Phone**: +1-555-0199
 **Address**: KitchenXpert Inc., 123 Design Plaza, San Francisco, CA 94105
 
 **Responsibilities**:
+
 - Monitoring GDPR compliance
 - Conducting Data Protection Impact Assessments
 - Serving as contact point for supervisory authorities
@@ -309,21 +340,23 @@ Data Protection Officer (DPO)
 - **Frequency**: Quarterly comprehensive audits
 - **Last Audit**: December 2025
 - **Next Audit**: March 2026
-- **Audit Scope**: All data processing activities, security measures, third-party processors
+- **Audit Scope**: All data processing activities, security measures,
+  third-party processors
 
 ### External Certifications
 
-| Certification | Status | Valid Until | Auditor |
-|--------------|--------|-------------|---------|
-| ISO 27001 | Certified | August 2026 | BSI Group |
-| SOC 2 Type II | Certified | November 2026 | Deloitte |
-| Privacy Shield (historical) | N/A | Invalidated 2020 | N/A |
+| Certification               | Status    | Valid Until      | Auditor   |
+| --------------------------- | --------- | ---------------- | --------- |
+| ISO 27001                   | Certified | August 2026      | BSI Group |
+| SOC 2 Type II               | Certified | November 2026    | Deloitte  |
+| Privacy Shield (historical) | N/A       | Invalidated 2020 | N/A       |
 
 ### Compliance Assessments
 
 - **GDPR Compliance Score**: 98% (internal assessment)
 - **Areas of Excellence**: Data subject rights, transparency, security
-- **Ongoing Improvements**: Third-party processor monitoring, cross-border transfer documentation
+- **Ongoing Improvements**: Third-party processor monitoring, cross-border
+  transfer documentation
 
 ### Supervisory Authority
 
@@ -333,7 +366,9 @@ Data Protection Officer (DPO)
 
 ### Audit Trail
 
-All compliance activities are documented in our internal compliance management system:
+All compliance activities are documented in our internal compliance management
+system:
+
 - Policy updates and version control
 - Training completion records
 - Data Protection Impact Assessments
@@ -345,9 +380,12 @@ All compliance activities are documented in our internal compliance management s
 
 ### GDPR-Specific Documentation
 
-- [Data Processing Records](./data-processing.md) - Detailed processing activities
-- [Consent Management](./consent-management.md) - How we obtain and manage consent
-- [Data Subject Rights](./data-subject-rights.md) - User rights and how to exercise them
+- [Data Processing Records](./data-processing.md) - Detailed processing
+  activities
+- [Consent Management](./consent-management.md) - How we obtain and manage
+  consent
+- [Data Subject Rights](./data-subject-rights.md) - User rights and how to
+  exercise them
 - [Data Breach Protocol](./data-breach-protocol.md) - Breach response procedures
 - [Data Protection Impact Assessments](./dpia.md) - DPIA methodology and results
 
@@ -365,9 +403,12 @@ All compliance activities are documented in our internal compliance management s
 
 ### Security Documentation
 
-- [Security Architecture](../../security/architecture.md) - Technical security measures
-- [Encryption Standards](../../security/encryption.md) - Data protection implementation
-- [Access Control Policy](../../security/access-control.md) - Who can access what data
+- [Security Architecture](../../security/architecture.md) - Technical security
+  measures
+- [Encryption Standards](../../security/encryption.md) - Data protection
+  implementation
+- [Access Control Policy](../../security/access-control.md) - Who can access
+  what data
 
 ## Document Control
 
@@ -382,9 +423,9 @@ All compliance activities are documented in our internal compliance management s
 
 For questions about this document or to report compliance concerns, contact:
 
-**Email**: compliance@kitchenxpert.com
-**Response Time**: Within 5 business days
+**Email**: compliance@kitchenxpert.com **Response Time**: Within 5 business days
 
 ---
 
-*This document is part of KitchenXpert's comprehensive GDPR compliance program and should be read in conjunction with related documentation listed above.*
+_This document is part of KitchenXpert's comprehensive GDPR compliance program
+and should be read in conjunction with related documentation listed above._

@@ -10,51 +10,51 @@ import PropTypes from 'prop-types';
 /**
  * MultiChoiceQuestion Component
  */
-function MultiChoiceQuestion({
-  question,
-  value,
-  onChange,
-  language,
-  disabled
-}) {
+function MultiChoiceQuestion({ question, value, onChange, language, disabled }) {
   const isMultiSelect = question.type === 'multi-choice';
   const options = question.options || [];
   const maxSelections = question.maxSelections;
 
   // Handle selection change
-  const handleChange = useCallback((optionValue) => {
-    if (disabled) return;
+  const handleChange = useCallback(
+    (optionValue) => {
+      if (disabled) return;
 
-    if (isMultiSelect) {
-      const currentValues = Array.isArray(value) ? value : [];
-      let newValues;
+      if (isMultiSelect) {
+        const currentValues = Array.isArray(value) ? value : [];
+        let newValues;
 
-      if (currentValues.includes(optionValue)) {
-        // Remove option
-        newValues = currentValues.filter(v => v !== optionValue);
-      } else {
-        // Add option (respecting max selections)
-        if (maxSelections && currentValues.length >= maxSelections) {
-          // Replace oldest selection
-          newValues = [...currentValues.slice(1), optionValue];
+        if (currentValues.includes(optionValue)) {
+          // Remove option
+          newValues = currentValues.filter((v) => v !== optionValue);
         } else {
-          newValues = [...currentValues, optionValue];
+          // Add option (respecting max selections)
+          if (maxSelections && currentValues.length >= maxSelections) {
+            // Replace oldest selection
+            newValues = [...currentValues.slice(1), optionValue];
+          } else {
+            newValues = [...currentValues, optionValue];
+          }
         }
+        onChange(newValues);
+      } else {
+        // Single selection
+        onChange(optionValue);
       }
-      onChange(newValues);
-    } else {
-      // Single selection
-      onChange(optionValue);
-    }
-  }, [value, onChange, isMultiSelect, maxSelections, disabled]);
+    },
+    [value, onChange, isMultiSelect, maxSelections, disabled]
+  );
 
   // Check if option is selected
-  const isSelected = useCallback((optionValue) => {
-    if (isMultiSelect) {
-      return Array.isArray(value) && value.includes(optionValue);
-    }
-    return value === optionValue;
-  }, [value, isMultiSelect]);
+  const isSelected = useCallback(
+    (optionValue) => {
+      if (isMultiSelect) {
+        return Array.isArray(value) && value.includes(optionValue);
+      }
+      return value === optionValue;
+    },
+    [value, isMultiSelect]
+  );
 
   // Check if more selections allowed
   const canSelectMore = useCallback(() => {
@@ -95,16 +95,15 @@ function MultiChoiceQuestion({
                 checked={selected}
                 onChange={() => handleChange(option.value)}
                 disabled={disabled || (!selected && !canSelect)}
-                aria-describedby={optionDescription ? `${question.id}-${option.value}-desc` : undefined}
+                aria-describedby={
+                  optionDescription ? `${question.id}-${option.value}-desc` : undefined
+                }
               />
               <span className="option-indicator" />
               <span className="option-content">
                 <span className="option-label">{optionLabel}</span>
                 {optionDescription && (
-                  <span
-                    id={`${question.id}-${option.value}-desc`}
-                    className="option-description"
-                  >
+                  <span id={`${question.id}-${option.value}-desc`} className="option-description">
                     {optionDescription}
                   </span>
                 )}
@@ -117,9 +116,7 @@ function MultiChoiceQuestion({
       {isMultiSelect && value && Array.isArray(value) && value.length > 0 && (
         <div className="selection-summary">
           <span className="selection-count">
-            {language === 'fr'
-              ? `${value.length} sélectionné(s)`
-              : `${value.length} selected`}
+            {language === 'fr' ? `${value.length} sélectionné(s)` : `${value.length} selected`}
           </span>
           <button
             type="button"
@@ -139,32 +136,31 @@ MultiChoiceQuestion.propTypes = {
   question: PropTypes.shape({
     id: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['single-choice', 'multi-choice']).isRequired,
-    options: PropTypes.arrayOf(PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: PropTypes.shape({
-        en: PropTypes.string.isRequired,
-        fr: PropTypes.string
-      }).isRequired,
-      description: PropTypes.shape({
-        en: PropTypes.string,
-        fr: PropTypes.string
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        value: PropTypes.string.isRequired,
+        label: PropTypes.shape({
+          en: PropTypes.string.isRequired,
+          fr: PropTypes.string,
+        }).isRequired,
+        description: PropTypes.shape({
+          en: PropTypes.string,
+          fr: PropTypes.string,
+        }),
       })
-    })).isRequired,
-    maxSelections: PropTypes.number
+    ).isRequired,
+    maxSelections: PropTypes.number,
   }).isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.string)
-  ]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   onChange: PropTypes.func.isRequired,
   language: PropTypes.oneOf(['en', 'fr']),
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
 };
 
 MultiChoiceQuestion.defaultProps = {
   value: null,
   language: 'en',
-  disabled: false
+  disabled: false,
 };
 
 export default MultiChoiceQuestion;

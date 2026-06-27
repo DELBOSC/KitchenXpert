@@ -7,27 +7,12 @@
     "**/.env.*.local",
     "tsconfig.base.json"
   ],
-  "globalEnv": [
-    "NODE_ENV",
-    "CI",
-    "VERCEL",
-    "VERCEL_ENV"
-  ],
+  "globalEnv": ["NODE_ENV", "CI", "VERCEL", "VERCEL_ENV"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [
-        "dist/**",
-        "build/**",
-        ".next/**",
-        "!.next/cache/**"
-      ],
-      "env": [
-        "NODE_ENV",
-        "NEXT_PUBLIC_*",
-        "DATABASE_URL",
-        "REDIS_URL"
-      ]
+      "outputs": ["dist/**", "build/**", ".next/**", "!.next/cache/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*", "DATABASE_URL", "REDIS_URL"]
     },
 
     "@kitchenxpert/backend#build": {
@@ -57,22 +42,13 @@
     "@kitchenxpert/partner-portal#build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": [
-        "NODE_ENV",
-        "NEXT_PUBLIC_API_URL",
-        "NEXT_PUBLIC_PARTNER_API_URL"
-      ]
+      "env": ["NODE_ENV", "NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_PARTNER_API_URL"]
     },
 
     "@kitchenxpert/scraper#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
-      "env": [
-        "NODE_ENV",
-        "DATABASE_URL",
-        "REDIS_URL",
-        "PROXY_URL"
-      ]
+      "env": ["NODE_ENV", "DATABASE_URL", "REDIS_URL", "PROXY_URL"]
     },
 
     "@kitchenxpert/design-system#build": {

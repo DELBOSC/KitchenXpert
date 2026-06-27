@@ -43,9 +43,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
         <div className="flex h-16 items-center justify-center border-b border-gray-800">
           <div className="flex items-center space-x-2">
             <ChefHat className="h-8 w-8 text-primary-500" />
-            {!isCollapsed && (
-              <span className="text-xl font-bold">KitchenXpert</span>
-            )}
+            {!isCollapsed && <span className="text-xl font-bold">KitchenXpert</span>}
           </div>
         </div>
 
@@ -73,9 +71,7 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
         <div className="border-t border-gray-800 p-4">
           {!isCollapsed && user && (
             <div className="mb-4">
-              <p className="truncate text-sm font-medium text-white">
-                {user.companyName}
-              </p>
+              <p className="truncate text-sm font-medium text-white">{user.companyName}</p>
               <p className="truncate text-xs text-gray-400">{user.email}</p>
             </div>
           )}

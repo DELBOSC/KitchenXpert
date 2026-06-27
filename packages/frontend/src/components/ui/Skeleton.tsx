@@ -15,14 +15,20 @@ export function Skeleton({
         'after:absolute after:inset-0 after:-translate-x-full',
         'after:animate-[kx-shimmer_1.8s_infinite]',
         'after:bg-gradient-to-r after:from-transparent after:via-white/[0.06] after:to-transparent',
-        className,
+        className
       )}
       {...rest}
     />
   );
 }
 
-export function SkeletonText({ lines = 3, className }: { lines?: number; className?: string }): React.ReactElement {
+export function SkeletonText({
+  lines = 3,
+  className,
+}: {
+  lines?: number;
+  className?: string;
+}): React.ReactElement {
   return (
     <div className={cn('space-y-2', className)}>
       {Array.from({ length: lines }).map((_, i) => (

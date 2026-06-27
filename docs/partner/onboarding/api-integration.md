@@ -2,7 +2,8 @@
 
 **Last Updated:** 2026-01-10
 
-Complete guide to integrating with the KitchenXpert Partner API for automated catalog management, analytics, and order processing.
+Complete guide to integrating with the KitchenXpert Partner API for automated
+catalog management, analytics, and order processing.
 
 ## Table of Contents
 
@@ -37,6 +38,7 @@ curl -X POST https://api.kitchenxpert.com/partners/v1/auth/token \
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "eyJhbGci...",
@@ -63,11 +65,13 @@ Include the access token in the Authorization header for all API requests.
 ## Base URLs
 
 ### Production
+
 ```
 https://api.kitchenxpert.com/partners/v1
 ```
 
 ### Sandbox (Testing)
+
 ```
 https://sandbox-api.kitchenxpert.com/partners/v1
 ```
@@ -79,16 +83,19 @@ https://sandbox-api.kitchenxpert.com/partners/v1
 ## Core Endpoints
 
 ### POST /auth/token
+
 **Get Access Token**
 
 Authenticate and receive an access token for API requests.
 
 ### POST /catalog/upload
+
 **Bulk Upload Products**
 
 Upload multiple products at once (recommended for initial catalog setup).
 
 **Request Example:**
+
 ```json
 {
   "products": [
@@ -98,7 +105,7 @@ Upload multiple products at once (recommended for initial catalog setup).
       "category": "cabinet",
       "price": 299.99,
       "currency": "EUR",
-      "dimensions": {"width": 60, "height": 72, "depth": 58, "unit": "cm"},
+      "dimensions": { "width": 60, "height": 72, "depth": 58, "unit": "cm" },
       "brand": "YourBrand",
       "model": "MB-60"
     }
@@ -107,36 +114,43 @@ Upload multiple products at once (recommended for initial catalog setup).
 ```
 
 ### POST /catalog/products
+
 **Create Single Product**
 
 Create or add a single product to your catalog.
 
 ### PUT /catalog/products/{id}
+
 **Update Existing Product**
 
 Update product information (price, stock, etc.).
 
 ### DELETE /catalog/products/{id}
+
 **Remove Product**
 
 Remove a product from your catalog (soft delete - can be restored).
 
 ### GET /catalog/products
+
 **List All Products**
 
 Retrieve your product catalog with pagination and filtering.
 
 ### GET /catalog/sync-status
+
 **Check Sync Status**
 
 Check the status of bulk uploads and catalog synchronization.
 
 ### GET /analytics
+
 **Performance Metrics**
 
 Access product performance analytics.
 
 ### POST /webhooks/register
+
 **Register Webhook**
 
 Register a webhook endpoint to receive real-time notifications.
@@ -147,7 +161,8 @@ Register a webhook endpoint to receive real-time notifications.
 
 ### Available Events
 
-**order.created** - Triggered when a user creates an order containing your products
+**order.created** - Triggered when a user creates an order containing your
+products
 
 **order.updated** - Order status changed (paid, shipped, completed, cancelled)
 
@@ -191,9 +206,8 @@ Register a webhook endpoint to receive real-time notifications.
 
 ### By Tier
 
-**Basic:** 100 requests/hour
-**Pro:** 1,000 requests/hour
-**Enterprise:** Unlimited
+**Basic:** 100 requests/hour **Pro:** 1,000 requests/hour **Enterprise:**
+Unlimited
 
 ### Rate Limit Response
 
@@ -227,20 +241,24 @@ Register a webhook endpoint to receive real-time notifications.
 ### Common Error Codes
 
 **Authentication Errors:**
+
 - `invalid_credentials` (401) - Invalid API key or secret
 - `token_expired` (401) - Access token has expired
 - `insufficient_scope` (403) - Missing required scope
 
 **Validation Errors:**
+
 - `validation_error` (400) - Invalid request data
 - `missing_required_field` (400) - Required field missing
 - `invalid_format` (400) - Data format incorrect
 
 **Resource Errors:**
+
 - `not_found` (404) - Resource doesn't exist
 - `duplicate` (409) - Resource already exists
 
 **Server Errors:**
+
 - `internal_error` (500) - Server error
 - `service_unavailable` (503) - Temporary outage
 
@@ -254,7 +272,11 @@ Register a webhook endpoint to receive real-time notifications.
 const axios = require('axios');
 
 class KitchenXpertAPI {
-  constructor(clientId, clientSecret, baseURL = 'https://api.kitchenxpert.com/partners/v1') {
+  constructor(
+    clientId,
+    clientSecret,
+    baseURL = 'https://api.kitchenxpert.com/partners/v1'
+  ) {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.baseURL = baseURL;
@@ -265,7 +287,7 @@ class KitchenXpertAPI {
     const response = await axios.post(`${this.baseURL}/auth/token`, {
       grant_type: 'client_credentials',
       client_id: this.clientId,
-      client_secret: this.clientSecret
+      client_secret: this.clientSecret,
     });
 
     this.accessToken = response.data.access_token;
@@ -295,7 +317,7 @@ await api.createProduct({
   currency: 'EUR',
   dimensions: { width: 60, height: 72, depth: 58, unit: 'cm' },
   brand: 'YourBrand',
-  model: 'MB-60'
+  model: 'MB-60',
 });
 ```
 
@@ -461,11 +483,13 @@ curl -X POST https://api.kitchenxpert.com/partners/v1/catalog/products \
 Large result sets are paginated. Default page size is 50, maximum is 100.
 
 **Request:**
+
 ```bash
 GET /catalog/products?page=2&limit=100
 ```
 
 **Response includes pagination metadata:**
+
 ```json
 {
   "products": [...],
@@ -488,6 +512,7 @@ GET /catalog/products?category=cabinet&status=active&min_price=100&max_price=500
 ```
 
 **Available Filters:**
+
 - `category` - Product category
 - `status` - active, inactive, deleted
 - `min_price` / `max_price` - Price range
@@ -505,11 +530,13 @@ GET /catalog/products?category=cabinet&status=active&min_price=100&max_price=500
 Always test in sandbox before production:
 
 **Sandbox URL:**
+
 ```
 https://sandbox-api.kitchenxpert.com/partners/v1
 ```
 
 **Features:**
+
 - Identical API to production
 - Test data included
 - No real transactions
@@ -519,11 +546,13 @@ https://sandbox-api.kitchenxpert.com/partners/v1
 ### Test Credentials
 
 Generate sandbox credentials in Partner Portal:
+
 - Prefix: `pk_test_` and `sk_test_`
 
 ### Test Data
 
 Sandbox includes:
+
 - 50+ sample products
 - Test user accounts
 - Sample kitchen designs
@@ -534,16 +563,19 @@ Sandbox includes:
 ## API Support
 
 **Developer Support:**
+
 - Email: developers@kitchenxpert.com
 - Response Time: 24 hours (Pro), 8 hours (Enterprise)
 - Documentation: docs.kitchenxpert.com/partners/api
 
 **Interactive API Explorer:**
+
 - api-explorer.kitchenxpert.com
 
 **Postman Collection:**
+
 - Download from partner portal
 
 ---
 
-*Last Updated: 2026-01-10*
+_Last Updated: 2026-01-10_

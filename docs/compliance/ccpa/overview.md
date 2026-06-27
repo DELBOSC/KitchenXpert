@@ -17,25 +17,30 @@
 
 ## Introduction
 
-The California Consumer Privacy Act (CCPA) provides California residents with specific rights regarding their personal information. KitchenXpert is committed to CCPA compliance.
+The California Consumer Privacy Act (CCPA) provides California residents with
+specific rights regarding their personal information. KitchenXpert is committed
+to CCPA compliance.
 
 ---
 
 ## What is CCPA
 
-CCPA gives California residents rights to know, delete, opt-out of sale, access, correct, and non-discrimination regarding their personal information.
+CCPA gives California residents rights to know, delete, opt-out of sale, access,
+correct, and non-discrimination regarding their personal information.
 
 ---
 
 ## Applicability to KitchenXpert
 
-KitchenXpert meets CCPA threshold requirements (annual revenue over M) and must comply.
+KitchenXpert meets CCPA threshold requirements (annual revenue over M) and must
+comply.
 
 ---
 
 ## Key Definitions
 
-**Personal Information**: Identifiers, customer records, commercial info, internet activity, geolocation, inferences
+**Personal Information**: Identifiers, customer records, commercial info,
+internet activity, geolocation, inferences
 
 **Consumer**: California resident
 
@@ -58,7 +63,8 @@ KitchenXpert meets CCPA threshold requirements (annual revenue over M) and must
 
 **Link**: https://kitchenxpert.com/privacy/do-not-sell
 
-KitchenXpert does not sell personal information traditionally. Opt-out disables advertising cookies, affiliate tracking, and third-party pixels.
+KitchenXpert does not sell personal information traditionally. Opt-out disables
+advertising cookies, affiliate tracking, and third-party pixels.
 
 ---
 
@@ -79,12 +85,12 @@ KitchenXpert does not discriminate against consumers who exercise CCPA rights.
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value                   |
+| -------------- | ----------------------- |
 | Document Owner | Data Protection Officer |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10              |
+| Version        | 2.0                     |
 
 ---
 
-*For CCPA questions, contact privacy@kitchenxpert.com.*
+_For CCPA questions, contact privacy@kitchenxpert.com._

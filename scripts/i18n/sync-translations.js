@@ -277,11 +277,7 @@ class TranslationSyncer {
 
       // Sync each namespace
       for (const namespace of namespaces) {
-        const defaultPath = path.join(
-          config.localesDir,
-          config.defaultLocale,
-          `${namespace}.json`
-        );
+        const defaultPath = path.join(config.localesDir, config.defaultLocale, `${namespace}.json`);
         const defaultContent = this.loadFile(defaultPath);
 
         if (defaultContent) {

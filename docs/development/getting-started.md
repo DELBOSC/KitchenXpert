@@ -18,15 +18,21 @@
 
 ## Welcome
 
-Welcome to the KitchenXpert development team! This guide will help you get started contributing to the project, whether you're a new team member or an open-source contributor.
+Welcome to the KitchenXpert development team! This guide will help you get
+started contributing to the project, whether you're a new team member or an
+open-source contributor.
 
 ### What is KitchenXpert?
 
-KitchenXpert is a comprehensive kitchen design and planning platform that combines:
+KitchenXpert is a comprehensive kitchen design and planning platform that
+combines:
+
 - **3D Design Tools**: Interactive kitchen design using Three.js
 - **AI-Powered Recommendations**: Smart appliance and layout suggestions
-- **Product Catalog**: Extensive catalog of kitchen products from multiple manufacturers
-- **Partner Integration**: Tools for manufacturers and retailers to manage their products
+- **Product Catalog**: Extensive catalog of kitchen products from multiple
+  manufacturers
+- **Partner Integration**: Tools for manufacturers and retailers to manage their
+  products
 
 ### Prerequisites
 
@@ -93,12 +99,14 @@ pnpm dev
 ### Step 4: Pick Your First Issue
 
 Look for issues tagged with:
+
 - `good-first-issue` - Perfect for newcomers
 - `help-wanted` - Community contributions welcome
 - `documentation` - Documentation improvements
 - `bug` - Bug fixes (easier ones for beginners)
 
-Browse issues: https://github.com/your-org/kitchenxpert/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
+Browse issues:
+https://github.com/your-org/kitchenxpert/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 
 ### Step 5: Ask Questions
 
@@ -113,7 +121,8 @@ Don't hesitate to ask for help:
 
 ### Monorepo Structure
 
-KitchenXpert uses a **pnpm workspace** monorepo structure, with multiple packages in a single repository:
+KitchenXpert uses a **pnpm workspace** monorepo structure, with multiple
+packages in a single repository:
 
 ```
 kitchenxpert/
@@ -127,12 +136,14 @@ kitchenxpert/
 ### Why Monorepo?
 
 **Benefits:**
+
 - **Shared dependencies**: Common packages used across projects
 - **Atomic commits**: Change multiple packages in a single PR
 - **Easier refactoring**: Cross-package changes are simpler
 - **Consistent tooling**: Same linting, testing, build tools everywhere
 
 **Workspace Management:**
+
 - Managed by pnpm workspaces (see `pnpm-workspace.yaml`)
 - Each package has its own `package.json`
 - Shared dependencies hoisted to root `node_modules`
@@ -354,40 +365,40 @@ catalog-providers/
 
 ### Backend Technologies
 
-| Technology | Purpose | Documentation |
-|------------|---------|---------------|
-| Node.js 20 | Runtime environment | [nodejs.org](https://nodejs.org) |
-| TypeScript 5 | Type-safe JavaScript | [typescriptlang.org](https://www.typescriptlang.org) |
-| Express 4 | Web framework | [expressjs.com](https://expressjs.com) |
-| Prisma 5 | PostgreSQL ORM | [prisma.io](https://www.prisma.io) |
-| Mongoose 8 | MongoDB ODM | [mongoosejs.com](https://mongoosejs.com) |
-| Redis (ioredis) | Caching & sessions | [redis.io](https://redis.io) |
-| JWT | Authentication | [jwt.io](https://jwt.io) |
-| Zod | Input validation | [zod.dev](https://zod.dev) |
-| Winston | Logging | [github.com/winstonjs/winston](https://github.com/winstonjs/winston) |
+| Technology      | Purpose              | Documentation                                                        |
+| --------------- | -------------------- | -------------------------------------------------------------------- |
+| Node.js 20      | Runtime environment  | [nodejs.org](https://nodejs.org)                                     |
+| TypeScript 5    | Type-safe JavaScript | [typescriptlang.org](https://www.typescriptlang.org)                 |
+| Express 4       | Web framework        | [expressjs.com](https://expressjs.com)                               |
+| Prisma 5        | PostgreSQL ORM       | [prisma.io](https://www.prisma.io)                                   |
+| Mongoose 8      | MongoDB ODM          | [mongoosejs.com](https://mongoosejs.com)                             |
+| Redis (ioredis) | Caching & sessions   | [redis.io](https://redis.io)                                         |
+| JWT             | Authentication       | [jwt.io](https://jwt.io)                                             |
+| Zod             | Input validation     | [zod.dev](https://zod.dev)                                           |
+| Winston         | Logging              | [github.com/winstonjs/winston](https://github.com/winstonjs/winston) |
 
 ### Frontend Technologies
 
-| Technology | Purpose | Documentation |
-|------------|---------|---------------|
-| React 18 | UI framework | [react.dev](https://react.dev) |
-| TypeScript 5 | Type safety | [typescriptlang.org](https://www.typescriptlang.org) |
-| Vite 5 | Build tool | [vitejs.dev](https://vitejs.dev) |
-| React Router 6 | Routing | [reactrouter.com](https://reactrouter.com) |
-| TanStack Query | Data fetching | [tanstack.com/query](https://tanstack.com/query) |
-| Tailwind CSS 3 | Styling | [tailwindcss.com](https://tailwindcss.com) |
-| Three.js | 3D graphics | [threejs.org](https://threejs.org) |
-| Zustand | State management | [github.com/pmndrs/zustand](https://github.com/pmndrs/zustand) |
+| Technology     | Purpose          | Documentation                                                  |
+| -------------- | ---------------- | -------------------------------------------------------------- |
+| React 18       | UI framework     | [react.dev](https://react.dev)                                 |
+| TypeScript 5   | Type safety      | [typescriptlang.org](https://www.typescriptlang.org)           |
+| Vite 5         | Build tool       | [vitejs.dev](https://vitejs.dev)                               |
+| React Router 6 | Routing          | [reactrouter.com](https://reactrouter.com)                     |
+| TanStack Query | Data fetching    | [tanstack.com/query](https://tanstack.com/query)               |
+| Tailwind CSS 3 | Styling          | [tailwindcss.com](https://tailwindcss.com)                     |
+| Three.js       | 3D graphics      | [threejs.org](https://threejs.org)                             |
+| Zustand        | State management | [github.com/pmndrs/zustand](https://github.com/pmndrs/zustand) |
 
 ### AI/ML Technologies
 
-| Technology | Purpose | Documentation |
-|------------|---------|---------------|
-| Python 3.11 | Runtime | [python.org](https://www.python.org) |
-| FastAPI | API framework | [fastapi.tiangolo.com](https://fastapi.tiangolo.com) |
-| PyTorch | ML framework | [pytorch.org](https://pytorch.org) |
-| TensorFlow | ML framework | [tensorflow.org](https://www.tensorflow.org) |
-| Pydantic | Data validation | [docs.pydantic.dev](https://docs.pydantic.dev) |
+| Technology  | Purpose         | Documentation                                        |
+| ----------- | --------------- | ---------------------------------------------------- |
+| Python 3.11 | Runtime         | [python.org](https://www.python.org)                 |
+| FastAPI     | API framework   | [fastapi.tiangolo.com](https://fastapi.tiangolo.com) |
+| PyTorch     | ML framework    | [pytorch.org](https://pytorch.org)                   |
+| TensorFlow  | ML framework    | [tensorflow.org](https://www.tensorflow.org)         |
+| Pydantic    | Data validation | [docs.pydantic.dev](https://docs.pydantic.dev)       |
 
 ## Making Your First Change
 
@@ -432,26 +443,30 @@ import { UserService } from '../../../services/user.service';
 const router = Router();
 
 // GET /api/v1/users/:userId/statistics
-router.get('/:userId/statistics', authenticate, async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params;
+router.get(
+  '/:userId/statistics',
+  authenticate,
+  async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
 
-    // Ensure user can only access their own stats
-    if (req.user.id !== userId && !req.user.isAdmin) {
-      return res.status(403).json({ error: 'Forbidden' });
+      // Ensure user can only access their own stats
+      if (req.user.id !== userId && !req.user.isAdmin) {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+
+      const stats = await UserService.getStatistics(userId);
+
+      res.json({
+        success: true,
+        data: stats,
+      });
+    } catch (error) {
+      console.error('Error fetching user statistics:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-
-    const stats = await UserService.getStatistics(userId);
-
-    res.json({
-      success: true,
-      data: stats
-    });
-  } catch (error) {
-    console.error('Error fetching user statistics:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
-});
+);
 
 export default router;
 ```
@@ -468,21 +483,21 @@ export class UserService {
     const [designCount, favoriteCount, orderCount] = await Promise.all([
       prisma.design.count({ where: { userId } }),
       prisma.favorite.count({ where: { userId } }),
-      prisma.order.count({ where: { userId } })
+      prisma.order.count({ where: { userId } }),
     ]);
 
     return {
       designs: designCount,
       favorites: favoriteCount,
       orders: orderCount,
-      memberSince: await this.getMemberSince(userId)
+      memberSince: await this.getMemberSince(userId),
     };
   }
 
   private static async getMemberSince(userId: string) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { createdAt: true }
+      select: { createdAt: true },
     });
     return user?.createdAt;
   }
@@ -543,9 +558,7 @@ describe('GET /api/v1/users/:userId/statistics', () => {
   });
 
   it('should return 401 without authentication', async () => {
-    await request(app)
-      .get(`/api/v1/users/${userId}/statistics`)
-      .expect(401);
+    await request(app).get(`/api/v1/users/${userId}/statistics`).expect(401);
   });
 });
 ```
@@ -653,9 +666,11 @@ When creating a PR, use this template:
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
@@ -664,22 +679,27 @@ Brief description of changes
 - [ ] Code refactoring
 
 ## Related Issue
+
 Closes #123
 
 ## Changes Made
+
 - Added user statistics endpoint
 - Updated user service with statistics method
 - Added integration tests
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 
 ## Screenshots (if applicable)
+
 [Add screenshots for UI changes]
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Tests added/updated

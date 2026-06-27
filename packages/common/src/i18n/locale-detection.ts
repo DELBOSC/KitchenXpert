@@ -5,7 +5,9 @@
 // Declare browser globals for environments where they may not exist
 declare const navigator: { languages?: readonly string[]; language?: string } | undefined;
 declare const window: { location: { search: string } } | undefined;
-declare const localStorage: { getItem(key: string): string | null; setItem(key: string, value: string): void } | undefined;
+declare const localStorage:
+  | { getItem(key: string): string | null; setItem(key: string, value: string): void }
+  | undefined;
 declare const document: { cookie: string } | undefined;
 
 /**
@@ -249,7 +251,7 @@ export function findBestMatch(
 
   // Exact match
   const exactMatch = supportedLocales.find(
-    l => normalizeLocale(l).toLowerCase() === normalizeLocale(requestedLocale).toLowerCase()
+    (l) => normalizeLocale(l).toLowerCase() === normalizeLocale(requestedLocale).toLowerCase()
   );
   if (exactMatch) {
     return exactMatch;
@@ -257,7 +259,7 @@ export function findBestMatch(
 
   // Language + region match (ignoring script)
   if (requested.region) {
-    const regionMatch = supportedLocales.find(l => {
+    const regionMatch = supportedLocales.find((l) => {
       const supported = parseLocale(l);
       return supported.language === requested.language && supported.region === requested.region;
     });
@@ -267,7 +269,7 @@ export function findBestMatch(
   }
 
   // Language only match
-  const languageMatch = supportedLocales.find(l => {
+  const languageMatch = supportedLocales.find((l) => {
     const supported = parseLocale(l);
     return supported.language === requested.language;
   });
@@ -277,7 +279,7 @@ export function findBestMatch(
 
   // Return fallback
   const fallbackMatch = supportedLocales.find(
-    l => parseLocale(l).language === parseLocale(fallback).language
+    (l) => parseLocale(l).language === parseLocale(fallback).language
   );
   return fallbackMatch || supportedLocales[0] || fallback;
 }
@@ -321,7 +323,10 @@ export function detectLocale(options: LocaleDetectionOptions = {}): string {
       return lang;
     }
     const match = findBestMatch(lang, opts.supportedLocales, opts.fallbackLocale);
-    if (match !== opts.fallbackLocale || parseLocale(lang).language === parseLocale(match).language) {
+    if (
+      match !== opts.fallbackLocale ||
+      parseLocale(lang).language === parseLocale(match).language
+    ) {
       return match;
     }
   }

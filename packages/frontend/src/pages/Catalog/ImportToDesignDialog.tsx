@@ -34,7 +34,9 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!open) {return;}
+    if (!open) {
+      return;
+    }
     const controller = new AbortController();
     void (async () => {
       try {
@@ -42,28 +44,42 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
           credentials: 'include',
           signal: controller.signal,
         });
-        if (!res.ok) {throw new Error(`HTTP ${res.status}`);}
-        interface KitchenApiRow { id: string; name: string; project?: { name: string } }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        interface KitchenApiRow {
+          id: string;
+          name: string;
+          project?: { name: string };
+        }
         const json = (await res.json()) as {
           data?: KitchenApiRow[] | { data?: KitchenApiRow[] };
         };
         const rows: KitchenApiRow[] = Array.isArray(json.data)
           ? json.data
-          : json.data?.data ?? [];
+          : (json.data?.data ?? []);
         const list: KitchenSummary[] = rows.map((k) => ({
-          id: k.id, name: k.name, projectName: k.project?.name,
+          id: k.id,
+          name: k.name,
+          projectName: k.project?.name,
         }));
         setKitchens(list);
-        if (list[0]) {setKitchenId(list[0].id);}
+        if (list[0]) {
+          setKitchenId(list[0].id);
+        }
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') {setError((err as Error).message);}
+        if ((err as Error).name !== 'AbortError') {
+          setError((err as Error).message);
+        }
       }
     })();
     return () => controller.abort();
   }, [open]);
 
   const onSubmit = async (): Promise<void> => {
-    if (!kitchenId) {return;}
+    if (!kitchenId) {
+      return;
+    }
     setSubmitting(true);
     try {
       const body =
@@ -104,7 +120,9 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
       }
       footer={
         <>
-          <Button variant="ghost" onClick={onClose}>Annuler</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Annuler
+          </Button>
           <Button onClick={onSubmit} disabled={!kitchenId || submitting} loading={submitting}>
             Ajouter
           </Button>
@@ -130,7 +148,8 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
           >
             {kitchens.map((k) => (
               <option key={k.id} value={k.id}>
-                {k.projectName ? `${k.projectName} — ` : ''}{k.name}
+                {k.projectName ? `${k.projectName} — ` : ''}
+                {k.name}
               </option>
             ))}
           </Select>
@@ -140,7 +159,9 @@ export default function ImportToDesignDialog({ open, onClose, target }: Props): 
             onChange={(e) => setQuantity(Number(e.target.value))}
           >
             {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>{n}</option>
+              <option key={n} value={n}>
+                {n}
+              </option>
             ))}
           </Select>
         </div>

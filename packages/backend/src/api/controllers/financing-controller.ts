@@ -48,7 +48,8 @@ export class FinancingController {
       return;
     }
 
-    const { totalAmount, incomeBracket, householdSize, equipmentTypes, isRenovation, buildingAge } = req.body;
+    const { totalAmount, incomeBracket, householdSize, equipmentTypes, isRenovation, buildingAge } =
+      req.body;
 
     const result = await financingService.calculateEcoAids({
       totalAmount,

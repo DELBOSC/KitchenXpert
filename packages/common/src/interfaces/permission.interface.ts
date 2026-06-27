@@ -56,14 +56,8 @@ export interface CreatePermissionParams {
  * Interface pour l'évaluation des permissions
  */
 export interface IPermissionEvaluator {
-  evaluate(
-    userPermissions: PermissionSet,
-    check: PermissionCheck
-  ): PermissionCheckResult;
-  evaluateConditions(
-    conditions: PermissionCondition[],
-    context: Record<string, unknown>
-  ): boolean;
+  evaluate(userPermissions: PermissionSet, check: PermissionCheck): PermissionCheckResult;
+  evaluateConditions(conditions: PermissionCondition[], context: Record<string, unknown>): boolean;
 }
 
 /**
@@ -105,7 +99,10 @@ export interface IPermissionAuditor {
   logGrant(userId: ID, permissionId: ID, grantedBy: ID): Promise<void>;
   logRevoke(userId: ID, permissionId: ID, revokedBy: ID): Promise<void>;
   logCheck(userId: ID, check: PermissionCheck, result: PermissionCheckResult): Promise<void>;
-  getAuditLog(userId: ID, options?: PermissionAuditLogOptions): Promise<PermissionCheckAuditEntry[]>;
+  getAuditLog(
+    userId: ID,
+    options?: PermissionAuditLogOptions
+  ): Promise<PermissionCheckAuditEntry[]>;
 }
 
 export interface PermissionAuditLogOptions {

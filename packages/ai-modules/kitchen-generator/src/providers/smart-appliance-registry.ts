@@ -80,7 +80,10 @@ export class SmartApplianceRegistry {
   /**
    * Authenticate with a specific provider
    */
-  async authenticate(platform: SmartAppliancePlatform, credentials: ApplianceCredentials): Promise<boolean> {
+  async authenticate(
+    platform: SmartAppliancePlatform,
+    credentials: ApplianceCredentials
+  ): Promise<boolean> {
     const provider = this.providers.get(platform);
     if (!provider) {
       throw new Error(`Provider for platform '${platform}' not registered`);
@@ -126,7 +129,10 @@ export class SmartApplianceRegistry {
   /**
    * Get status of an appliance
    */
-  async getApplianceStatus(platform: SmartAppliancePlatform, applianceId: string): Promise<ConnectedApplianceStatus> {
+  async getApplianceStatus(
+    platform: SmartAppliancePlatform,
+    applianceId: string
+  ): Promise<ConnectedApplianceStatus> {
     const provider = this.providers.get(platform);
     if (!provider) {
       throw new Error(`Provider for platform '${platform}' not registered`);
@@ -137,7 +143,10 @@ export class SmartApplianceRegistry {
   /**
    * Get programs for an appliance
    */
-  async getAppliancePrograms(platform: SmartAppliancePlatform, applianceId: string): Promise<ApplianceProgram[]> {
+  async getAppliancePrograms(
+    platform: SmartAppliancePlatform,
+    applianceId: string
+  ): Promise<ApplianceProgram[]> {
     const provider = this.providers.get(platform);
     if (!provider) {
       throw new Error(`Provider for platform '${platform}' not registered`);
@@ -262,14 +271,14 @@ export async function matchAppliancesToConfiguration(
 
   configAppliances.forEach((configAppliance, index) => {
     // Try to find a matching connected appliance
-    const match = allAppliances.find(connected => {
+    const match = allAppliances.find((connected) => {
       const typeMatch = connected.type.toLowerCase().includes(configAppliance.type.toLowerCase());
       const connectedBrand = String(connected.specifications?.brand || '').toLowerCase();
       const connectedModel = String(connected.specifications?.model || '').toLowerCase();
-      const brandMatch = !configAppliance.brand ||
-        connectedBrand.includes(configAppliance.brand.toLowerCase());
-      const modelMatch = !configAppliance.model ||
-        connectedModel.includes(configAppliance.model.toLowerCase());
+      const brandMatch =
+        !configAppliance.brand || connectedBrand.includes(configAppliance.brand.toLowerCase());
+      const modelMatch =
+        !configAppliance.model || connectedModel.includes(configAppliance.model.toLowerCase());
 
       return typeMatch && brandMatch && modelMatch;
     });

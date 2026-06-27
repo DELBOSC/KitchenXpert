@@ -19,7 +19,7 @@ function QuestionnaireSection({
   language,
   errors,
   visibleQuestions,
-  disabled
+  disabled,
 }) {
   const sectionTitle = section.title[language] || section.title.en;
   const sectionDescription = section.description?.[language] || section.description?.en;
@@ -29,13 +29,16 @@ function QuestionnaireSection({
     if (!visibleQuestions || visibleQuestions.length === 0) {
       return questions;
     }
-    return questions.filter(q => visibleQuestions.includes(q.id));
+    return questions.filter((q) => visibleQuestions.includes(q.id));
   }, [questions, visibleQuestions]);
 
   // Handle individual question changes
-  const handleQuestionChange = useCallback((questionId, value) => {
-    onChange(section.id, questionId, value);
-  }, [onChange, section.id]);
+  const handleQuestionChange = useCallback(
+    (questionId, value) => {
+      onChange(section.id, questionId, value);
+    },
+    [onChange, section.id]
+  );
 
   return (
     <section className="questionnaire-section" aria-labelledby={`section-${section.id}`}>
@@ -44,9 +47,7 @@ function QuestionnaireSection({
           {section.icon && <span className="section-icon">{section.icon}</span>}
           {sectionTitle}
         </h2>
-        {sectionDescription && (
-          <p className="section-description">{sectionDescription}</p>
-        )}
+        {sectionDescription && <p className="section-description">{sectionDescription}</p>}
       </header>
 
       <div className="section-questions">
@@ -86,25 +87,27 @@ QuestionnaireSection.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.shape({
       en: PropTypes.string.isRequired,
-      fr: PropTypes.string
+      fr: PropTypes.string,
     }).isRequired,
     description: PropTypes.shape({
       en: PropTypes.string,
-      fr: PropTypes.string
+      fr: PropTypes.string,
     }),
-    icon: PropTypes.string
+    icon: PropTypes.string,
   }).isRequired,
-  questions: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    question: PropTypes.object.isRequired
-  })).isRequired,
+  questions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      question: PropTypes.object.isRequired,
+    })
+  ).isRequired,
   responses: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   language: PropTypes.oneOf(['en', 'fr']),
   errors: PropTypes.object,
   visibleQuestions: PropTypes.arrayOf(PropTypes.string),
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
 };
 
 QuestionnaireSection.defaultProps = {
@@ -112,7 +115,7 @@ QuestionnaireSection.defaultProps = {
   language: 'en',
   errors: null,
   visibleQuestions: null,
-  disabled: false
+  disabled: false,
 };
 
 export default QuestionnaireSection;

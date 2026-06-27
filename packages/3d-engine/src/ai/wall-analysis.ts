@@ -50,7 +50,11 @@ export class WallAnalyzer {
   /**
    * Trouve les segments utilisables d'un mur donne
    */
-  findUsableSegments(wallSide: WallSide, room: RoomConfig, obstacles: PlacedItem3D[]): WallSegment[] {
+  findUsableSegments(
+    wallSide: WallSide,
+    room: RoomConfig,
+    obstacles: PlacedItem3D[]
+  ): WallSegment[] {
     const wallLength = this.calculateWallLength(wallSide, room);
     const margin = 0.05; // 5cm de marge
 
@@ -60,29 +64,33 @@ export class WallAnalyzer {
       const halfD = item.dimensions.depth / 2;
 
       switch (wallSide) {
-        case 'back': return pos.z - halfD < 0.5;
-        case 'front': return pos.z + halfD > room.depth - 0.5;
-        case 'left': return pos.x - halfD < 0.5;
-        case 'right': return pos.x + halfD > room.width - 0.5;
+        case 'back':
+          return pos.z - halfD < 0.5;
+        case 'front':
+          return pos.z + halfD > room.depth - 0.5;
+        case 'left':
+          return pos.x - halfD < 0.5;
+        case 'right':
+          return pos.x + halfD > room.width - 0.5;
       }
     });
 
     if (wallItems.length === 0) {
-      return [{
-        wallSide,
-        startX: margin,
-        endX: wallLength - margin,
-        length: wallLength - margin * 2,
-        usable: true,
-      }];
+      return [
+        {
+          wallSide,
+          startX: margin,
+          endX: wallLength - margin,
+          length: wallLength - margin * 2,
+          usable: true,
+        },
+      ];
     }
 
     // Trier les items par position le long du mur
     const sorted = wallItems
       .map((item) => {
-        const pos = (wallSide === 'left' || wallSide === 'right')
-          ? item.position.z
-          : item.position.x;
+        const pos = wallSide === 'left' || wallSide === 'right' ? item.position.z : item.position.x;
         const halfW = item.dimensions.width / 2;
         return { start: pos - halfW, end: pos + halfW, id: item.id };
       })
@@ -131,6 +139,6 @@ export class WallAnalyzer {
    * Calcule la longueur d'un mur
    */
   calculateWallLength(wallSide: WallSide, room: RoomConfig): number {
-    return (wallSide === 'left' || wallSide === 'right') ? room.depth : room.width;
+    return wallSide === 'left' || wallSide === 'right' ? room.depth : room.width;
   }
 }

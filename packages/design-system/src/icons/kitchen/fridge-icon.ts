@@ -13,11 +13,7 @@ export interface IconProps {
 export const fridgeIconPath = 'M4 2h16v20H4V2zm0 8h16M8 5v3M8 13v6';
 
 export function createFridgeIcon(props: IconProps = {}): string {
-  const {
-    size = 24,
-    color = 'currentColor',
-    strokeWidth = 2
-  } = props;
+  const { size = 24, color = 'currentColor', strokeWidth = 2 } = props;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
     <rect x="4" y="2" width="16" height="20" rx="1"/>

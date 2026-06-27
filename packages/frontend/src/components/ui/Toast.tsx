@@ -93,7 +93,9 @@ function ToastContainer({
   toasts: Toast[];
   onRemove: (id: string) => void;
 }): React.ReactElement | null {
-  if (toasts.length === 0) {return null;}
+  if (toasts.length === 0) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-4 right-4 left-4 sm:left-auto z-50 flex flex-col gap-2">

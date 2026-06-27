@@ -23,7 +23,12 @@ export interface ICatalogProvider {
   fetchInventory(productIds?: string[]): Promise<ProviderInventory[]>;
 }
 
-export type ProviderOperation = 'fetch_products' | 'fetch_inventory' | 'fetch_categories' | 'search' | 'webhook';
+export type ProviderOperation =
+  | 'fetch_products'
+  | 'fetch_inventory'
+  | 'fetch_categories'
+  | 'search'
+  | 'webhook';
 
 export interface FetchOptions {
   page?: number;

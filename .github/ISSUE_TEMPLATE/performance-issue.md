@@ -13,46 +13,55 @@ assignees: ''
 ## 📍 Localisation
 
 ### Module Affecté
+
 - [ ] 3D Engine / Rendering
 - [ ] Catalog / Base de données
 - [ ] Backend API
 - [ ] Frontend UI
 - [ ] Build / Bundle
 - [ ] Requêtes réseau
-- [ ] Autre: _____
+- [ ] Autre: **\_**
 
 ### Opération Concernée
+
 <!-- Quelle action/opération est lente ? -->
 
 ## 📊 Métriques Actuelles
 
 ### Performance Observée
-- **Temps de chargement actuel:** ___ secondes
-- **Utilisation CPU:** ___ %
-- **Utilisation Mémoire:** ___ MB
-- **Requêtes réseau:** ___ requêtes
-- **Taille du bundle (si frontend):** ___ MB
+
+- **Temps de chargement actuel:** \_\_\_ secondes
+- **Utilisation CPU:** \_\_\_ %
+- **Utilisation Mémoire:** \_\_\_ MB
+- **Requêtes réseau:** \_\_\_ requêtes
+- **Taille du bundle (si frontend):** \_\_\_ MB
 
 ### Performance Attendue
-- **Temps de chargement souhaité:** ___ secondes
-- **Utilisation CPU acceptable:** ___ %
-- **Utilisation Mémoire acceptable:** ___ MB
+
+- **Temps de chargement souhaité:** \_\_\_ secondes
+- **Utilisation CPU acceptable:** \_\_\_ %
+- **Utilisation Mémoire acceptable:** \_\_\_ MB
 
 ## 🔍 Analyse
 
 ### Profiling / Mesures
+
 <!-- Fournir des screenshots de profiling, flamegraphs, network waterfall, etc. -->
 
 **Chrome DevTools Performance:**
+
 <!-- Screenshot du profiler -->
 
 **Network Waterfall:**
+
 <!-- Screenshot de l'onglet Network -->
 
 **Memory Snapshot:**
+
 <!-- Si problème de mémoire -->
 
 ### Données de Test
+
 - **Nombre d'objets 3D (si applicable):**
 - **Taille du dataset:**
 - **Nombre d'utilisateurs simultanés (si backend):**
@@ -76,12 +85,14 @@ assignees: ''
 ## 🎯 Impact
 
 ### Criticité
+
 - [ ] 🔥 Bloquant - L'app est inutilisable
 - [ ] ⚠️ Majeur - Impact significatif sur UX
 - [ ] 📝 Modéré - Gêne occasionnelle
 - [ ] 💡 Mineur - Optimisation souhaitable
 
 ### Fréquence
+
 - [ ] Systématique (100%)
 - [ ] Très fréquent (> 75%)
 - [ ] Occasionnel (25-75%)
@@ -92,9 +103,11 @@ assignees: ''
 <!-- Si vous avez des idées sur la cause ou la solution -->
 
 ### Cause Suspectée
+
 <!-- Ex: Trop de re-renders, requêtes N+1, bundle trop gros, etc. -->
 
 ### Solutions Envisagées
+
 <!-- Ex: Lazy loading, memoization, indexation DB, code splitting, etc. -->
 
 ## 🔗 Ressources

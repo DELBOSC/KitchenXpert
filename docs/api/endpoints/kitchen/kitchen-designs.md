@@ -2,7 +2,8 @@
 
 ## Overview
 
-Create and submit kitchen design configurations with dimensions, budget, and component specifications using a 3D coordinate system.
+Create and submit kitchen design configurations with dimensions, budget, and
+component specifications using a 3D coordinate system.
 
 **Endpoint:** `POST /api/v1/kitchen/designs`
 
@@ -23,22 +24,22 @@ Content-Type: application/json
 
 ### Request Body Schema
 
-| Field | Type | Required | Description | Constraints |
-|-------|------|----------|-------------|-------------|
-| `name` | string | Yes | Design name | Max 100 characters |
-| `dimensions` | object | Yes | Kitchen dimensions in cm | - |
-| `dimensions.length` | number | Yes | Length in cm | 100-1000 |
-| `dimensions.width` | number | Yes | Width in cm | 100-1000 |
-| `dimensions.height` | number | Yes | Height in cm | 200-350 |
-| `budget` | number | Yes | Total budget in USD | Min 1000 |
-| `components` | array | Yes | Array of kitchen components | - |
-| `components[].type` | string | Yes | Component type | refrigerator, oven, dishwasher, sink, cabinet, countertop, cooktop |
-| `components[].productId` | string | Yes | Product catalog ID | Must exist in catalog |
-| `components[].position` | object | Yes | 3D coordinates in cm | - |
-| `components[].position.x` | number | Yes | X coordinate | Within kitchen length |
-| `components[].position.y` | number | Yes | Y coordinate | Within kitchen width |
-| `components[].position.z` | number | Yes | Z coordinate (height) | Within kitchen height |
-| `components[].rotation` | number | No | Rotation in degrees | 0-360, Default: 0 |
+| Field                     | Type   | Required | Description                 | Constraints                                                        |
+| ------------------------- | ------ | -------- | --------------------------- | ------------------------------------------------------------------ |
+| `name`                    | string | Yes      | Design name                 | Max 100 characters                                                 |
+| `dimensions`              | object | Yes      | Kitchen dimensions in cm    | -                                                                  |
+| `dimensions.length`       | number | Yes      | Length in cm                | 100-1000                                                           |
+| `dimensions.width`        | number | Yes      | Width in cm                 | 100-1000                                                           |
+| `dimensions.height`       | number | Yes      | Height in cm                | 200-350                                                            |
+| `budget`                  | number | Yes      | Total budget in USD         | Min 1000                                                           |
+| `components`              | array  | Yes      | Array of kitchen components | -                                                                  |
+| `components[].type`       | string | Yes      | Component type              | refrigerator, oven, dishwasher, sink, cabinet, countertop, cooktop |
+| `components[].productId`  | string | Yes      | Product catalog ID          | Must exist in catalog                                              |
+| `components[].position`   | object | Yes      | 3D coordinates in cm        | -                                                                  |
+| `components[].position.x` | number | Yes      | X coordinate                | Within kitchen length                                              |
+| `components[].position.y` | number | Yes      | Y coordinate                | Within kitchen width                                               |
+| `components[].position.z` | number | Yes      | Z coordinate (height)       | Within kitchen height                                              |
+| `components[].rotation`   | number | No       | Rotation in degrees         | 0-360, Default: 0                                                  |
 
 ### Request Body Example
 
@@ -55,19 +56,19 @@ Content-Type: application/json
     {
       "type": "refrigerator",
       "productId": "prod_5h7g6f4d3s2a1z",
-      "position": {"x": 0, "y": 0, "z": 0},
+      "position": { "x": 0, "y": 0, "z": 0 },
       "rotation": 0
     },
     {
       "type": "oven",
       "productId": "prod_8j9k0l1m2n3o4p",
-      "position": {"x": 150, "y": 0, "z": 0},
+      "position": { "x": 150, "y": 0, "z": 0 },
       "rotation": 0
     },
     {
       "type": "sink",
       "productId": "prod_3a2b1c0d9e8f",
-      "position": {"x": 300, "y": 0, "z": 90},
+      "position": { "x": 300, "y": 0, "z": 90 },
       "rotation": 0
     }
   ]
@@ -119,8 +120,8 @@ Content-Type: application/json
         "area": 15.75
       },
       "budget": 15000,
-      "totalCost": 12450.50,
-      "remainingBudget": 2549.50,
+      "totalCost": 12450.5,
+      "remainingBudget": 2549.5,
       "componentsCount": 3,
       "status": "draft",
       "createdAt": "2026-01-10T17:00:00Z",
@@ -209,8 +210,16 @@ Content-Type: application/json
     "message": "Component placement collision detected",
     "details": {
       "conflictingComponents": [
-        {"id": "comp_1", "type": "refrigerator", "position": {"x": 0, "y": 0, "z": 0}},
-        {"id": "comp_2", "type": "oven", "position": {"x": 10, "y": 0, "z": 0}}
+        {
+          "id": "comp_1",
+          "type": "refrigerator",
+          "position": { "x": 0, "y": 0, "z": 0 }
+        },
+        {
+          "id": "comp_2",
+          "type": "oven",
+          "position": { "x": 10, "y": 0, "z": 0 }
+        }
       ],
       "suggestion": "Move components at least 60cm apart"
     }
@@ -226,7 +235,7 @@ Content-Type: application/json
   "error": {
     "code": "RATE_LIMIT_EXCEEDED",
     "message": "Too many design creation requests",
-    "details": {"limit": 20, "retryAfter": 3600}
+    "details": { "limit": 20, "retryAfter": 3600 }
   }
 }
 ```
@@ -303,9 +312,9 @@ const createDesign = async (designData) => {
     designData,
     {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        'Content-Type': 'application/json',
+      },
     }
   );
 
@@ -314,23 +323,22 @@ const createDesign = async (designData) => {
 
 // Usage
 const design = {
-  name: "Modern Minimalist Kitchen",
-  dimensions: {length: 450, width: 350, height: 250},
+  name: 'Modern Minimalist Kitchen',
+  dimensions: { length: 450, width: 350, height: 250 },
   budget: 15000,
   components: [
     {
-      type: "refrigerator",
-      productId: "prod_5h7g6f4d3s2a1z",
-      position: {x: 0, y: 0, z: 0}
-    }
-  ]
+      type: 'refrigerator',
+      productId: 'prod_5h7g6f4d3s2a1z',
+      position: { x: 0, y: 0, z: 0 },
+    },
+  ],
 };
 
-createDesign(design)
-  .then(data => {
-    console.log('Design created:', data.design.id);
-    console.log('Total cost:', data.design.totalCost);
-  });
+createDesign(design).then((data) => {
+  console.log('Design created:', data.design.id);
+  console.log('Total cost:', data.design.totalCost);
+});
 ```
 
 ### Python (Requests)

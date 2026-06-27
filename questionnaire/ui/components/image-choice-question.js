@@ -10,13 +10,7 @@ import PropTypes from 'prop-types';
 /**
  * ImageChoiceQuestion Component
  */
-function ImageChoiceQuestion({
-  question,
-  value,
-  onChange,
-  language,
-  disabled
-}) {
+function ImageChoiceQuestion({ question, value, onChange, language, disabled }) {
   const isMultiSelect = question.type === 'multi-choice' || question.allowMultiple;
   const options = question.options || [];
   const maxSelections = question.maxSelections;
@@ -27,44 +21,50 @@ function ImageChoiceQuestion({
 
   // Handle image load
   const handleImageLoad = useCallback((optionValue) => {
-    setLoadedImages(prev => ({ ...prev, [optionValue]: true }));
+    setLoadedImages((prev) => ({ ...prev, [optionValue]: true }));
   }, []);
 
   // Handle image error
   const handleImageError = useCallback((optionValue) => {
-    setErrorImages(prev => ({ ...prev, [optionValue]: true }));
+    setErrorImages((prev) => ({ ...prev, [optionValue]: true }));
   }, []);
 
   // Handle selection change
-  const handleSelect = useCallback((optionValue) => {
-    if (disabled) return;
+  const handleSelect = useCallback(
+    (optionValue) => {
+      if (disabled) return;
 
-    if (isMultiSelect) {
-      const currentValues = Array.isArray(value) ? value : [];
-      let newValues;
+      if (isMultiSelect) {
+        const currentValues = Array.isArray(value) ? value : [];
+        let newValues;
 
-      if (currentValues.includes(optionValue)) {
-        newValues = currentValues.filter(v => v !== optionValue);
-      } else {
-        if (maxSelections && currentValues.length >= maxSelections) {
-          newValues = [...currentValues.slice(1), optionValue];
+        if (currentValues.includes(optionValue)) {
+          newValues = currentValues.filter((v) => v !== optionValue);
         } else {
-          newValues = [...currentValues, optionValue];
+          if (maxSelections && currentValues.length >= maxSelections) {
+            newValues = [...currentValues.slice(1), optionValue];
+          } else {
+            newValues = [...currentValues, optionValue];
+          }
         }
+        onChange(newValues);
+      } else {
+        onChange(optionValue);
       }
-      onChange(newValues);
-    } else {
-      onChange(optionValue);
-    }
-  }, [value, onChange, isMultiSelect, maxSelections, disabled]);
+    },
+    [value, onChange, isMultiSelect, maxSelections, disabled]
+  );
 
   // Check if option is selected
-  const isSelected = useCallback((optionValue) => {
-    if (isMultiSelect) {
-      return Array.isArray(value) && value.includes(optionValue);
-    }
-    return value === optionValue;
-  }, [value, isMultiSelect]);
+  const isSelected = useCallback(
+    (optionValue) => {
+      if (isMultiSelect) {
+        return Array.isArray(value) && value.includes(optionValue);
+      }
+      return value === optionValue;
+    },
+    [value, isMultiSelect]
+  );
 
   // Check if more selections allowed
   const canSelectMore = useCallback(() => {
@@ -154,9 +154,7 @@ function ImageChoiceQuestion({
       {isMultiSelect && value && Array.isArray(value) && value.length > 0 && (
         <div className="selection-summary">
           <span className="selection-count">
-            {language === 'fr'
-              ? `${value.length} sélectionné(s)`
-              : `${value.length} selected`}
+            {language === 'fr' ? `${value.length} sélectionné(s)` : `${value.length} selected`}
           </span>
           <button
             type="button"
@@ -178,37 +176,36 @@ ImageChoiceQuestion.propTypes = {
     type: PropTypes.string,
     question: PropTypes.shape({
       en: PropTypes.string.isRequired,
-      fr: PropTypes.string
+      fr: PropTypes.string,
     }).isRequired,
-    options: PropTypes.arrayOf(PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: PropTypes.shape({
-        en: PropTypes.string.isRequired,
-        fr: PropTypes.string
-      }).isRequired,
-      description: PropTypes.shape({
-        en: PropTypes.string,
-        fr: PropTypes.string
-      }),
-      image: PropTypes.string.isRequired
-    })).isRequired,
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        value: PropTypes.string.isRequired,
+        label: PropTypes.shape({
+          en: PropTypes.string.isRequired,
+          fr: PropTypes.string,
+        }).isRequired,
+        description: PropTypes.shape({
+          en: PropTypes.string,
+          fr: PropTypes.string,
+        }),
+        image: PropTypes.string.isRequired,
+      })
+    ).isRequired,
     allowMultiple: PropTypes.bool,
     maxSelections: PropTypes.number,
-    columns: PropTypes.number
+    columns: PropTypes.number,
   }).isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.arrayOf(PropTypes.string)
-  ]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
   onChange: PropTypes.func.isRequired,
   language: PropTypes.oneOf(['en', 'fr']),
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
 };
 
 ImageChoiceQuestion.defaultProps = {
   value: null,
   language: 'en',
-  disabled: false
+  disabled: false,
 };
 
 export default ImageChoiceQuestion;

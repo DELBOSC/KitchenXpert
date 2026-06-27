@@ -110,11 +110,7 @@ function addMeasurement(measurement: PerformanceMeasurement): void {
  * @param metadata - Optional metadata
  * @returns The result of the function
  */
-export function measure<T>(
-  name: string,
-  fn: () => T,
-  metadata?: Record<string, unknown>
-): T {
+export function measure<T>(name: string, fn: () => T, metadata?: Record<string, unknown>): T {
   const startTime = performance.now();
   try {
     return fn();
@@ -315,7 +311,8 @@ export function getMemoryUsage(): MemoryUsage | null {
 
   // Browser environment - try Performance API
   if (typeof performance !== 'undefined' && 'memory' in performance) {
-    const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
+    const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } })
+      .memory;
     if (memory) {
       return {
         heapUsed: memory.usedJSHeapSize,

@@ -77,7 +77,9 @@ describe('SpatialConstraints', () => {
       renderSpatialConstraints();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /room dimensions/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /room dimensions/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -252,7 +254,10 @@ describe('SpatialConstraints', () => {
       });
 
       // The checkbox is inside the label text
-      const windowCheckbox = screen.getByText(/kitchen has window/i).closest('label')!.querySelector('input[type="checkbox"]')!;
+      const windowCheckbox = screen
+        .getByText(/kitchen has window/i)
+        .closest('label')!
+        .querySelector('input[type="checkbox"]')!;
       fireEvent.click(windowCheckbox);
 
       await waitFor(() => {
@@ -460,7 +465,10 @@ describe('SpatialConstraints', () => {
 
     it('should disable submit button while saving', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000)
+          )
       );
 
       renderSpatialConstraints();
@@ -544,7 +552,10 @@ describe('SpatialConstraints', () => {
 
     it('should have aria-busy on submit button while saving', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000)
+          )
       );
 
       renderSpatialConstraints();

@@ -144,16 +144,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -179,14 +181,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -242,18 +240,13 @@ describe('Webhook Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /webhooks', async () => {
-      const response = await request(app)
-        .get('/webhooks')
-        .expect(401);
+      const response = await request(app).get('/webhooks').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to POST /webhooks', async () => {
-      const response = await request(app)
-        .post('/webhooks')
-        .send({ name: 'Test' })
-        .expect(401);
+      const response = await request(app).post('/webhooks').send({ name: 'Test' }).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -265,9 +258,7 @@ describe('Webhook Routes', () => {
     it('should return 403 for regular user accessing webhooks', async () => {
       currentTestUser = { userId: 'user-1', email: 'user@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .get('/webhooks')
-        .expect(403);
+      const response = await authedRequest(app).get('/webhooks').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -276,9 +267,7 @@ describe('Webhook Routes', () => {
       currentTestUser = { userId: 'partner-1', email: 'partner@test.com', role: 'partner' };
       mockWebhookRepository.findAll.mockResolvedValue([mockWebhook]);
 
-      const response = await authedRequest(app)
-        .get('/webhooks')
-        .expect(200);
+      const response = await authedRequest(app).get('/webhooks').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -290,9 +279,7 @@ describe('Webhook Routes', () => {
     it('should list all webhooks for admin', async () => {
       mockWebhookRepository.findAll.mockResolvedValue([mockWebhook, otherWebhook]);
 
-      const response = await authedRequest(app)
-        .get('/webhooks')
-        .expect(200);
+      const response = await authedRequest(app).get('/webhooks').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
@@ -301,9 +288,7 @@ describe('Webhook Routes', () => {
     it('should strip secret from webhook data', async () => {
       mockWebhookRepository.findAll.mockResolvedValue([mockWebhook]);
 
-      const response = await authedRequest(app)
-        .get('/webhooks')
-        .expect(200);
+      const response = await authedRequest(app).get('/webhooks').expect(200);
 
       expect(response.body.data[0].secret).toBeUndefined();
       expect(response.body.data[0].name).toBe('Test Webhook');
@@ -321,13 +306,15 @@ describe('Webhook Routes', () => {
     };
 
     it('should create a webhook successfully and return 201', async () => {
-      const created = { id: 'new-webhook', ...validWebhook, secret: 'generated-secret', isActive: true };
+      const created = {
+        id: 'new-webhook',
+        ...validWebhook,
+        secret: 'generated-secret',
+        isActive: true,
+      };
       mockWebhookRepository.create.mockResolvedValue(created);
 
-      const response = await authedRequest(app)
-        .post('/webhooks')
-        .send(validWebhook)
-        .expect(201);
+      const response = await authedRequest(app).post('/webhooks').send(validWebhook).expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.name).toBe('New Webhook');
@@ -372,7 +359,13 @@ describe('Webhook Routes', () => {
     });
 
     it('should accept optional retryCount and timeout', async () => {
-      const created = { id: 'new-webhook', ...validWebhook, secret: 's', retryCount: 5, timeout: 10000 };
+      const created = {
+        id: 'new-webhook',
+        ...validWebhook,
+        secret: 's',
+        retryCount: 5,
+        timeout: 10000,
+      };
       mockWebhookRepository.create.mockResolvedValue(created);
 
       const response = await authedRequest(app)
@@ -399,9 +392,7 @@ describe('Webhook Routes', () => {
     it('should return webhook by ID for admin', async () => {
       mockWebhookRepository.findById.mockResolvedValue(mockWebhook);
 
-      const response = await authedRequest(app)
-        .get('/webhooks/webhook-1')
-        .expect(200);
+      const response = await authedRequest(app).get('/webhooks/webhook-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.name).toBe('Test Webhook');
@@ -411,9 +402,7 @@ describe('Webhook Routes', () => {
     it('should return 404 for non-existent webhook', async () => {
       mockWebhookRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/webhooks/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).get('/webhooks/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Webhook not found');
@@ -478,9 +467,7 @@ describe('Webhook Routes', () => {
       mockWebhookRepository.findById.mockResolvedValue(mockWebhook);
       mockWebhookRepository.delete.mockResolvedValue(mockWebhook);
 
-      const response = await authedRequest(app)
-        .delete('/webhooks/webhook-1')
-        .expect(200);
+      const response = await authedRequest(app).delete('/webhooks/webhook-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');
@@ -490,9 +477,7 @@ describe('Webhook Routes', () => {
     it('should return 404 for non-existent webhook', async () => {
       mockWebhookRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .delete('/webhooks/nonexistent')
-        .expect(404);
+      const response = await authedRequest(app).delete('/webhooks/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -505,9 +490,7 @@ describe('Webhook Routes', () => {
       mockWebhookRepository.findById.mockResolvedValue(mockWebhook);
       mockWebhookRepository.toggle.mockResolvedValue({ ...mockWebhook, isActive: false });
 
-      const response = await authedRequest(app)
-        .post('/webhooks/webhook-1/toggle')
-        .expect(200);
+      const response = await authedRequest(app).post('/webhooks/webhook-1/toggle').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deactivated');
@@ -516,9 +499,7 @@ describe('Webhook Routes', () => {
     it('should return 404 for non-existent webhook', async () => {
       mockWebhookRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .post('/webhooks/nonexistent/toggle')
-        .expect(404);
+      const response = await authedRequest(app).post('/webhooks/nonexistent/toggle').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -530,9 +511,7 @@ describe('Webhook Routes', () => {
     it('should return 404 for non-existent webhook', async () => {
       mockWebhookRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .post('/webhooks/nonexistent/test')
-        .expect(404);
+      const response = await authedRequest(app).post('/webhooks/nonexistent/test').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('Webhook not found');
@@ -577,9 +556,7 @@ describe('Webhook Routes', () => {
       ];
       mockWebhookRepository.getEvents.mockResolvedValue(mockEvents);
 
-      const response = await authedRequest(app)
-        .get('/webhooks/webhook-1/events')
-        .expect(200);
+      const response = await authedRequest(app).get('/webhooks/webhook-1/events').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
@@ -588,9 +565,7 @@ describe('Webhook Routes', () => {
     it('should return 404 for non-existent webhook', async () => {
       mockWebhookRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/webhooks/nonexistent/events')
-        .expect(404);
+      const response = await authedRequest(app).get('/webhooks/nonexistent/events').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -604,9 +579,7 @@ describe('Webhook Routes', () => {
       const mockStats = { total: 100, succeeded: 95, failed: 5 };
       mockWebhookRepository.getEventStats.mockResolvedValue(mockStats);
 
-      const response = await authedRequest(app)
-        .get('/webhooks/webhook-1/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/webhooks/webhook-1/stats').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.total).toBe(100);
@@ -615,9 +588,7 @@ describe('Webhook Routes', () => {
     it('should return 404 for non-existent webhook', async () => {
       mockWebhookRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/webhooks/nonexistent/stats')
-        .expect(404);
+      const response = await authedRequest(app).get('/webhooks/nonexistent/stats').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -658,9 +629,7 @@ describe('Webhook Routes', () => {
       ];
       mockWebhookRepository.getFailedEvents.mockResolvedValue(failedEvents);
 
-      const response = await authedRequest(app)
-        .get('/webhooks/failed')
-        .expect(200);
+      const response = await authedRequest(app).get('/webhooks/failed').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -669,9 +638,7 @@ describe('Webhook Routes', () => {
     it('should pass maxAttempts query parameter', async () => {
       mockWebhookRepository.getFailedEvents.mockResolvedValue([]);
 
-      await authedRequest(app)
-        .get('/webhooks/failed?maxAttempts=5')
-        .expect(200);
+      await authedRequest(app).get('/webhooks/failed?maxAttempts=5').expect(200);
 
       expect(mockWebhookRepository.getFailedEvents).toHaveBeenCalledWith(5);
     });

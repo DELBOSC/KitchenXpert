@@ -151,7 +151,11 @@ export class CabinetSolver {
         type: 'sink',
         position: pos,
         rotation: this.getWallRotation(seg.wallSide),
-        dimensions: { width: 0.6, height: mmToM(this.brandProfile.base.totalHeight), depth: mmToM(this.brandProfile.base.defaultDepth) },
+        dimensions: {
+          width: 0.6,
+          height: mmToM(this.brandProfile.base.totalHeight),
+          depth: mmToM(this.brandProfile.base.defaultDepth),
+        },
         price: this.estimatePrice('sink', 600),
       });
     }
@@ -177,15 +181,11 @@ export class CabinetSolver {
 
     // Place fridge on a different wall if possible
     if (!hasFridge && constraints.mustHave.includes('refrigerator')) {
-      const fridgeSeg = usableSegments.find((s) =>
-        s.wallSide !== usableSegments[0]?.wallSide && s.length >= 0.6
-      ) || usableSegments[usableSegments.length - 1]!;
+      const fridgeSeg =
+        usableSegments.find((s) => s.wallSide !== usableSegments[0]?.wallSide && s.length >= 0.6) ||
+        usableSegments[usableSegments.length - 1]!;
 
-      const pos = this.segmentToWorldPosition(
-        fridgeSeg.wallSide,
-        fridgeSeg.startX + 0.3,
-        0.325
-      );
+      const pos = this.segmentToWorldPosition(fridgeSeg.wallSide, fridgeSeg.startX + 0.3, 0.325);
       items.push({
         id: 'gen-fridge',
         type: 'refrigerator',
@@ -213,7 +213,11 @@ export class CabinetSolver {
 
   // --- Utilitaires ---
 
-  private segmentToWorldPosition(wallSide: WallSide, alongWall: number, depthOffset: number): THREE.Vector3 {
+  private segmentToWorldPosition(
+    wallSide: WallSide,
+    alongWall: number,
+    depthOffset: number
+  ): THREE.Vector3 {
     switch (wallSide) {
       case 'back':
         return new THREE.Vector3(alongWall, 0, depthOffset / 2);
@@ -234,8 +238,8 @@ export class CabinetSolver {
     const priceRanges: Record<string, { base: number; perMm: number }> = {
       base_cabinet: { base: 180, perMm: 0.35 },
       wall_cabinet: { base: 120, perMm: 0.25 },
-      tall_cabinet: { base: 350, perMm: 0.40 },
-      sink: { base: 250, perMm: 0.20 },
+      tall_cabinet: { base: 350, perMm: 0.4 },
+      sink: { base: 250, perMm: 0.2 },
       cooktop: { base: 300, perMm: 0.15 },
       refrigerator: { base: 500, perMm: 0.25 },
       dishwasher: { base: 400, perMm: 0 },
@@ -247,10 +251,14 @@ export class CabinetSolver {
 
   private getWallRotation(wallSide: WallSide): number {
     switch (wallSide) {
-      case 'back': return 0;
-      case 'front': return Math.PI;
-      case 'left': return Math.PI / 2;
-      case 'right': return -Math.PI / 2;
+      case 'back':
+        return 0;
+      case 'front':
+        return Math.PI;
+      case 'left':
+        return Math.PI / 2;
+      case 'right':
+        return -Math.PI / 2;
     }
   }
 }

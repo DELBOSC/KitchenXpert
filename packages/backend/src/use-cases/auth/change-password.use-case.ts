@@ -25,12 +25,20 @@ const SALT_ROUNDS = 12;
 export class ChangePasswordUseCase implements UseCase<ChangePasswordInput, { ok: true }> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async execute({ userId, currentPassword, newPassword }: ChangePasswordInput): Promise<Result<{ ok: true }>> {
+  async execute({
+    userId,
+    currentPassword,
+    newPassword,
+  }: ChangePasswordInput): Promise<Result<{ ok: true }>> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {return err(DomainErrors.notFound('User'));}
+    if (!user) {
+      return err(DomainErrors.notFound('User'));
+    }
 
     const valid = await bcrypt.compare(currentPassword, user.password);
-    if (!valid) {return err(DomainErrors.unauthorized('Current password is incorrect'));}
+    if (!valid) {
+      return err(DomainErrors.unauthorized('Current password is incorrect'));
+    }
 
     const hashed = await bcrypt.hash(newPassword, SALT_ROUNDS);
     await this.prisma.user.update({ where: { id: userId }, data: { password: hashed } });

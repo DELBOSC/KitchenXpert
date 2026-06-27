@@ -71,7 +71,15 @@ export interface ProjectItem {
   customProperties?: Record<string, unknown>;
 }
 
-export type ItemType = 'cabinet' | 'appliance' | 'countertop' | 'sink' | 'faucet' | 'lighting' | 'accessory' | 'custom';
+export type ItemType =
+  | 'cabinet'
+  | 'appliance'
+  | 'countertop'
+  | 'sink'
+  | 'faucet'
+  | 'lighting'
+  | 'accessory'
+  | 'custom';
 
 export interface Position3D {
   x: number;
@@ -148,7 +156,11 @@ export interface ProjectRepository {
   delete(id: string): Promise<boolean>;
   search(params: ProjectSearchParams): Promise<PaginatedProjects>;
   addItem(projectId: string, item: Omit<ProjectItem, 'id'>): Promise<ProjectItem>;
-  updateItem(projectId: string, itemId: string, data: Partial<ProjectItem>): Promise<ProjectItem | null>;
+  updateItem(
+    projectId: string,
+    itemId: string,
+    data: Partial<ProjectItem>
+  ): Promise<ProjectItem | null>;
   removeItem(projectId: string, itemId: string): Promise<boolean>;
   addCollaborator(projectId: string, collaborator: ProjectCollaborator): Promise<boolean>;
   removeCollaborator(projectId: string, userId: string): Promise<boolean>;
@@ -218,7 +230,10 @@ export class ProjectService {
 
     // Check edit permission
     if (!this.canEdit(project, userId)) {
-      throw new ProjectServiceError('EDIT_DENIED', 'You do not have permission to edit this project');
+      throw new ProjectServiceError(
+        'EDIT_DENIED',
+        'You do not have permission to edit this project'
+      );
     }
 
     return this.repository.update(id, {
@@ -239,7 +254,10 @@ export class ProjectService {
 
     // Only owner can delete
     if (project.userId !== userId) {
-      throw new ProjectServiceError('DELETE_DENIED', 'Only the project owner can delete the project');
+      throw new ProjectServiceError(
+        'DELETE_DENIED',
+        'Only the project owner can delete the project'
+      );
     }
 
     return this.repository.delete(id);
@@ -274,7 +292,10 @@ export class ProjectService {
     }
 
     if (!this.canEdit(project, userId)) {
-      throw new ProjectServiceError('EDIT_DENIED', 'You do not have permission to edit this project');
+      throw new ProjectServiceError(
+        'EDIT_DENIED',
+        'You do not have permission to edit this project'
+      );
     }
 
     const newItem = await this.repository.addItem(projectId, item);
@@ -301,7 +322,10 @@ export class ProjectService {
     }
 
     if (!this.canEdit(project, userId)) {
-      throw new ProjectServiceError('EDIT_DENIED', 'You do not have permission to edit this project');
+      throw new ProjectServiceError(
+        'EDIT_DENIED',
+        'You do not have permission to edit this project'
+      );
     }
 
     const updatedItem = await this.repository.updateItem(projectId, itemId, data);
@@ -323,7 +347,10 @@ export class ProjectService {
     }
 
     if (!this.canEdit(project, userId)) {
-      throw new ProjectServiceError('EDIT_DENIED', 'You do not have permission to edit this project');
+      throw new ProjectServiceError(
+        'EDIT_DENIED',
+        'You do not have permission to edit this project'
+      );
     }
 
     const result = await this.repository.removeItem(projectId, itemId);
@@ -350,11 +377,14 @@ export class ProjectService {
 
     // Only owner can add collaborators
     if (project.userId !== ownerId) {
-      throw new ProjectServiceError('ACCESS_DENIED', 'Only the project owner can add collaborators');
+      throw new ProjectServiceError(
+        'ACCESS_DENIED',
+        'Only the project owner can add collaborators'
+      );
     }
 
     // Check if already a collaborator
-    if (project.collaborators.some(c => c.userId === collaborator.userId)) {
+    if (project.collaborators.some((c) => c.userId === collaborator.userId)) {
       throw new ProjectServiceError('ALREADY_COLLABORATOR', 'User is already a collaborator');
     }
 
@@ -367,7 +397,11 @@ export class ProjectService {
   /**
    * Remove collaborator from project
    */
-  async removeCollaborator(projectId: string, ownerId: string, collaboratorUserId: string): Promise<boolean> {
+  async removeCollaborator(
+    projectId: string,
+    ownerId: string,
+    collaboratorUserId: string
+  ): Promise<boolean> {
     const project = await this.repository.findById(projectId);
 
     if (!project) {
@@ -376,7 +410,10 @@ export class ProjectService {
 
     // Only owner can remove collaborators
     if (project.userId !== ownerId) {
-      throw new ProjectServiceError('ACCESS_DENIED', 'Only the project owner can remove collaborators');
+      throw new ProjectServiceError(
+        'ACCESS_DENIED',
+        'Only the project owner can remove collaborators'
+      );
     }
 
     return this.repository.removeCollaborator(projectId, collaboratorUserId);
@@ -385,7 +422,11 @@ export class ProjectService {
   /**
    * Change project status
    */
-  async changeStatus(projectId: string, userId: string, status: ProjectStatus): Promise<KitchenProject | null> {
+  async changeStatus(
+    projectId: string,
+    userId: string,
+    status: ProjectStatus
+  ): Promise<KitchenProject | null> {
     const project = await this.getProjectWithAccess(projectId, userId);
 
     if (!project) {
@@ -393,7 +434,10 @@ export class ProjectService {
     }
 
     if (!this.canEdit(project, userId)) {
-      throw new ProjectServiceError('EDIT_DENIED', 'You do not have permission to edit this project');
+      throw new ProjectServiceError(
+        'EDIT_DENIED',
+        'You do not have permission to edit this project'
+      );
     }
 
     return this.repository.update(projectId, {
@@ -418,7 +462,10 @@ export class ProjectService {
 
     // Only owner can change visibility
     if (project.userId !== userId) {
-      throw new ProjectServiceError('ACCESS_DENIED', 'Only the project owner can change visibility');
+      throw new ProjectServiceError(
+        'ACCESS_DENIED',
+        'Only the project owner can change visibility'
+      );
     }
 
     const updateData: Partial<KitchenProject> = {
@@ -437,7 +484,11 @@ export class ProjectService {
   /**
    * Duplicate project
    */
-  async duplicateProject(projectId: string, userId: string, newName?: string): Promise<KitchenProject> {
+  async duplicateProject(
+    projectId: string,
+    userId: string,
+    newName?: string
+  ): Promise<KitchenProject> {
     const project = await this.getProjectWithAccess(projectId, userId);
 
     if (!project) {
@@ -454,7 +505,7 @@ export class ProjectService {
       dimensions: { ...project.dimensions },
       style: project.style ? { ...project.style } : undefined,
       budget: project.budget ? { ...project.budget } : undefined,
-      items: project.items.map(item => ({ ...item, id: undefined as unknown as string })),
+      items: project.items.map((item) => ({ ...item, id: undefined as unknown as string })),
       collaborators: [],
     });
   }
@@ -483,7 +534,7 @@ export class ProjectService {
     }
 
     // Check if user is a collaborator
-    return project.collaborators.some(c => c.userId === userId);
+    return project.collaborators.some((c) => c.userId === userId);
   }
 
   /**
@@ -496,7 +547,7 @@ export class ProjectService {
     }
 
     // Check collaborator role
-    const collaborator = project.collaborators.find(c => c.userId === userId);
+    const collaborator = project.collaborators.find((c) => c.userId === userId);
     return collaborator?.role === 'editor' || collaborator?.role === 'owner';
   }
 }

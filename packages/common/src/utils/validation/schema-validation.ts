@@ -85,11 +85,7 @@ function createError(
  * @param path - The current path
  * @returns An array of validation errors
  */
-function validateField(
-  value: unknown,
-  field: SchemaField,
-  path: string
-): SchemaValidationError[] {
+function validateField(value: unknown, field: SchemaField, path: string): SchemaValidationError[] {
   const errors: SchemaValidationError[] = [];
 
   // Handle null/undefined
@@ -164,11 +160,7 @@ function validateField(
  * @param path - The current path
  * @returns An array of validation errors
  */
-function validateType(
-  value: unknown,
-  field: SchemaField,
-  path: string
-): SchemaValidationError[] {
+function validateType(value: unknown, field: SchemaField, path: string): SchemaValidationError[] {
   const errors: SchemaValidationError[] = [];
 
   switch (field.type) {
@@ -241,23 +233,13 @@ function validateStringField(
 
   if (field.minLength !== undefined && value.length < field.minLength) {
     errors.push(
-      createError(
-        path,
-        field.message ?? `Minimum length is ${field.minLength}`,
-        value,
-        'minLength'
-      )
+      createError(path, field.message ?? `Minimum length is ${field.minLength}`, value, 'minLength')
     );
   }
 
   if (field.maxLength !== undefined && value.length > field.maxLength) {
     errors.push(
-      createError(
-        path,
-        field.message ?? `Maximum length is ${field.maxLength}`,
-        value,
-        'maxLength'
-      )
+      createError(path, field.message ?? `Maximum length is ${field.maxLength}`, value, 'maxLength')
     );
   }
 
@@ -308,15 +290,11 @@ function validateNumberField(
   const errors: SchemaValidationError[] = [];
 
   if (field.min !== undefined && value < field.min) {
-    errors.push(
-      createError(path, field.message ?? `Minimum value is ${field.min}`, value, 'min')
-    );
+    errors.push(createError(path, field.message ?? `Minimum value is ${field.min}`, value, 'min'));
   }
 
   if (field.max !== undefined && value > field.max) {
-    errors.push(
-      createError(path, field.message ?? `Maximum value is ${field.max}`, value, 'max')
-    );
+    errors.push(createError(path, field.message ?? `Maximum value is ${field.max}`, value, 'max'));
   }
 
   return errors;
@@ -338,23 +316,13 @@ function validateArrayField(
 
   if (field.minLength !== undefined && value.length < field.minLength) {
     errors.push(
-      createError(
-        path,
-        field.message ?? `Minimum length is ${field.minLength}`,
-        value,
-        'minLength'
-      )
+      createError(path, field.message ?? `Minimum length is ${field.minLength}`, value, 'minLength')
     );
   }
 
   if (field.maxLength !== undefined && value.length > field.maxLength) {
     errors.push(
-      createError(
-        path,
-        field.message ?? `Maximum length is ${field.maxLength}`,
-        value,
-        'maxLength'
-      )
+      createError(path, field.message ?? `Maximum length is ${field.maxLength}`, value, 'maxLength')
     );
   }
 
@@ -396,10 +364,7 @@ function validateObject(
  * @param schema - The schema to validate against
  * @returns The validation result
  */
-export function validate(
-  data: Record<string, unknown>,
-  schema: Schema
-): SchemaValidationResult {
+export function validate(data: Record<string, unknown>, schema: Schema): SchemaValidationResult {
   const errors = validateObject(data, schema);
   return {
     valid: errors.length === 0,
@@ -413,10 +378,7 @@ export function validate(
  * @param schema - The schema to validate against
  * @throws Error if validation fails
  */
-export function validateOrThrow(
-  data: Record<string, unknown>,
-  schema: Schema
-): void {
+export function validateOrThrow(data: Record<string, unknown>, schema: Schema): void {
   const result = validate(data, schema);
   if (!result.valid) {
     const messages = result.errors.map((e) => `${e.path}: ${e.message}`).join('; ');
@@ -430,10 +392,7 @@ export function validateOrThrow(
  * @param options - Additional options
  * @returns A SchemaField object
  */
-export function field(
-  type: SchemaFieldType,
-  options: Omit<SchemaField, 'type'> = {}
-): SchemaField {
+export function field(type: SchemaFieldType, options: Omit<SchemaField, 'type'> = {}): SchemaField {
   return { type, ...options };
 }
 
@@ -565,8 +524,7 @@ function isValidUrl(value: string): boolean {
  * @returns True if valid UUID
  */
 function isValidUuid(value: string): boolean {
-  const uuidRegex =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return uuidRegex.test(value);
 }
 
@@ -576,10 +534,7 @@ function isValidUuid(value: string): boolean {
  * @param schema - The schema with default values
  * @returns The data with defaults applied
  */
-export function applyDefaults<T extends Record<string, unknown>>(
-  data: T,
-  schema: Schema
-): T {
+export function applyDefaults<T extends Record<string, unknown>>(data: T, schema: Schema): T {
   const result = { ...data };
 
   for (const [key, field] of Object.entries(schema)) {

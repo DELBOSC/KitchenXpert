@@ -1,10 +1,9 @@
 # Notification Channels Documentation
 
-> Comprehensive guide to alert notification channels and routing for KitchenXpert.
+> Comprehensive guide to alert notification channels and routing for
+> KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** SRE Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** SRE Team **Version:** 1.0
 
 ---
 
@@ -24,29 +23,31 @@
 
 ### Overview
 
-KitchenXpert uses multiple notification channels to ensure alerts reach the right people at the right time.
+KitchenXpert uses multiple notification channels to ensure alerts reach the
+right people at the right time.
 
-| Channel | Use Case | Response Time | Severity |
-|---------|----------|---------------|----------|
-| **Slack** | Team awareness, collaboration | Minutes | All |
-| **PagerDuty** | Immediate response needed | Seconds | Critical, Warning |
-| **Email** | Daily digests, escalations | Hours | Info, Summary |
-| **SMS** | Critical alerts only | Seconds | Critical |
-| **Phone Call** | Unacknowledged critical | Immediate | Critical |
+| Channel        | Use Case                      | Response Time | Severity          |
+| -------------- | ----------------------------- | ------------- | ----------------- |
+| **Slack**      | Team awareness, collaboration | Minutes       | All               |
+| **PagerDuty**  | Immediate response needed     | Seconds       | Critical, Warning |
+| **Email**      | Daily digests, escalations    | Hours         | Info, Summary     |
+| **SMS**        | Critical alerts only          | Seconds       | Critical          |
+| **Phone Call** | Unacknowledged critical       | Immediate     | Critical          |
 
 ### Slack Channels
 
 **Purpose:** Real-time team communication and alert visibility
 
-| Channel | Purpose | Alerts |
-|---------|---------|--------|
-| `#alerts-critical` | Critical production alerts | Severity: Critical |
-| `#alerts-warnings` | Warning-level alerts | Severity: Warning |
-| `#alerts-info` | Informational alerts | Severity: Info |
-| `#incidents-active` | Active incident coordination | All active incidents |
-| `#oncall-primary` | On-call coordination | Escalations, handoffs |
+| Channel             | Purpose                      | Alerts                |
+| ------------------- | ---------------------------- | --------------------- |
+| `#alerts-critical`  | Critical production alerts   | Severity: Critical    |
+| `#alerts-warnings`  | Warning-level alerts         | Severity: Warning     |
+| `#alerts-info`      | Informational alerts         | Severity: Info        |
+| `#incidents-active` | Active incident coordination | All active incidents  |
+| `#oncall-primary`   | On-call coordination         | Escalations, handoffs |
 
 **Slack Alert Format:**
+
 ```
 :rotating_light: CRITICAL ALERT
 
@@ -70,6 +71,7 @@ Runbook: https://runbooks.kitchenxpert.internal/high-error-rate
 **Purpose:** Critical alert management and on-call notification
 
 **Features:**
+
 - Immediate push notifications
 - Phone calls for unacknowledged alerts
 - Incident timeline tracking
@@ -77,6 +79,7 @@ Runbook: https://runbooks.kitchenxpert.internal/high-error-rate
 - Mobile app support
 
 **Alert Format:**
+
 ```
 [CRITICAL] HighErrorRate on backend
 
@@ -98,14 +101,15 @@ Links:
 
 **Email Types:**
 
-| Type | Frequency | Content |
-|------|-----------|---------|
-| Alert Email | Immediate | Individual alert details |
-| Daily Digest | Daily 9 AM | Summary of alerts from past 24h |
-| Weekly Report | Monday 9 AM | Weekly alert statistics |
-| Escalation Notice | On escalation | Escalation details and context |
+| Type              | Frequency     | Content                         |
+| ----------------- | ------------- | ------------------------------- |
+| Alert Email       | Immediate     | Individual alert details        |
+| Daily Digest      | Daily 9 AM    | Summary of alerts from past 24h |
+| Weekly Report     | Monday 9 AM   | Weekly alert statistics         |
+| Escalation Notice | On escalation | Escalation details and context  |
 
 **Email Template:**
+
 ```
 Subject: [KitchenXpert Alert] CRITICAL: HighErrorRate on backend
 
@@ -136,12 +140,14 @@ Escalation policy: KitchenXpert Critical
 **Purpose:** Critical alerts when other channels may not be seen
 
 **Configuration:**
+
 - Used only for critical severity
 - Limited to on-call personnel
 - Character limit: 160 characters
 - Rate limited: Max 10 SMS/hour per recipient
 
 **SMS Format:**
+
 ```
 [KITCHENXPERT CRITICAL]
 HighErrorRate: 5.2% errors on backend
@@ -154,12 +160,14 @@ Call: 555-123-4567
 **Purpose:** Last resort for unacknowledged critical alerts
 
 **Configuration:**
+
 - Triggered after 10 minutes without acknowledgment
 - Up to 3 call attempts
 - Voicemail if unanswered
 - Escalates to next level after all attempts
 
 **Voice Message Script:**
+
 ```
 "This is KitchenXpert Alert System.
 Critical alert: High Error Rate on backend service.
@@ -257,7 +265,9 @@ receivers:
       - to: 'oncall@kitchenxpert.com'
         send_resolved: true
         headers:
-          Subject: '[KitchenXpert Alert] {{ .Status | toUpper }}: {{ .CommonAnnotations.summary }}'
+          Subject:
+            '[KitchenXpert Alert] {{ .Status | toUpper }}: {{
+            .CommonAnnotations.summary }}'
 
   - name: 'email-digest'
     email_configs:
@@ -281,25 +291,25 @@ receivers:
 # pagerduty-integration.yaml
 
 integrations:
-  - name: "Prometheus Alertmanager"
-    type: "events_api_v2"
-    service: "KitchenXpert Backend"
-    routing_key: "${PAGERDUTY_ROUTING_KEY}"
+  - name: 'Prometheus Alertmanager'
+    type: 'events_api_v2'
+    service: 'KitchenXpert Backend'
+    routing_key: '${PAGERDUTY_ROUTING_KEY}'
 
     event_rules:
       - condition:
           expression: "event.severity matches 'critical'"
         actions:
-          - severity: "critical"
-          - urgency: "high"
-          - route_to: "critical_escalation_policy"
+          - severity: 'critical'
+          - urgency: 'high'
+          - route_to: 'critical_escalation_policy'
 
       - condition:
           expression: "event.severity matches 'warning'"
         actions:
-          - severity: "warning"
-          - urgency: "low"
-          - route_to: "warning_escalation_policy"
+          - severity: 'warning'
+          - urgency: 'low'
+          - route_to: 'warning_escalation_policy'
 ```
 
 ---
@@ -330,12 +340,12 @@ route:
       group_wait: 10s
       group_interval: 1m
       repeat_interval: 1h
-      continue: true  # Also send to Slack
+      continue: true # Also send to Slack
       routes:
         - match:
             alertname: ServiceDown
           receiver: 'pagerduty-critical'
-          group_wait: 0s  # No wait for service down
+          group_wait: 0s # No wait for service down
 
     - match:
         severity: critical
@@ -387,7 +397,7 @@ route:
 
     # Business hours routing
     - match:
-        business_critical: "true"
+        business_critical: 'true'
       receiver: 'pagerduty-critical'
       active_time_intervals:
         - business_hours
@@ -435,15 +445,15 @@ mute_time_intervals:
 ```yaml
 # Grouping strategy
 group_by:
-  - alertname    # Group same alert names
-  - service      # Group by service
-  - cluster      # Group by cluster
-  - namespace    # Group by K8s namespace
+  - alertname # Group same alert names
+  - service # Group by service
+  - cluster # Group by cluster
+  - namespace # Group by K8s namespace
 
 # Grouping behavior
-group_wait: 30s       # Wait before sending first notification
-group_interval: 5m    # Wait before sending updated group
-repeat_interval: 4h   # Wait before re-sending same group
+group_wait: 30s # Wait before sending first notification
+group_interval: 5m # Wait before sending updated group
+repeat_interval: 4h # Wait before re-sending same group
 ```
 
 ### Example Grouping
@@ -451,12 +461,14 @@ repeat_interval: 4h   # Wait before re-sending same group
 **Scenario:** 3 instances of backend have high CPU
 
 **Without Grouping:**
+
 - Alert 1: HighCPU on backend-1
 - Alert 2: HighCPU on backend-2
 - Alert 3: HighCPU on backend-3
 - Result: 3 separate notifications
 
 **With Grouping (group_by: alertname, service):**
+
 - Alert Group: HighCPU on backend
   - backend-1, backend-2, backend-3
 - Result: 1 notification with all affected instances
@@ -464,11 +476,13 @@ repeat_interval: 4h   # Wait before re-sending same group
 ### Deduplication
 
 Alertmanager automatically deduplicates alerts based on:
+
 - Alert name
 - Labels
 - Fingerprint (hash of name + labels)
 
 **Configuration:**
+
 ```yaml
 # Alerts with same fingerprint are deduplicated
 # Fingerprint = hash(alertname + sorted(labels))
@@ -482,12 +496,12 @@ alert_1:
 alert_2:
   alertname: HighCPU
   instance: backend-1
-  severity: warning  # Same fingerprint
+  severity: warning # Same fingerprint
 
 # These are DIFFERENT alerts
 alert_3:
   alertname: HighCPU
-  instance: backend-2  # Different instance = different fingerprint
+  instance: backend-2 # Different instance = different fingerprint
   severity: warning
 ```
 
@@ -548,13 +562,13 @@ curl -X POST https://alertmanager.kitchenxpert.internal/api/v2/silences \
 
 ### Silence Best Practices
 
-| Do | Don't |
-|----|-------|
-| Set specific matchers | Silence all alerts broadly |
-| Include meaningful comments | Leave comments empty |
-| Set appropriate duration | Create indefinite silences |
-| Review silences regularly | Forget about active silences |
-| Use for planned maintenance | Use to hide problems |
+| Do                          | Don't                        |
+| --------------------------- | ---------------------------- |
+| Set specific matchers       | Silence all alerts broadly   |
+| Include meaningful comments | Leave comments empty         |
+| Set appropriate duration    | Create indefinite silences   |
+| Review silences regularly   | Forget about active silences |
+| Use for planned maintenance | Use to hide problems         |
 
 ### Mute Time Intervals
 
@@ -622,19 +636,19 @@ groups:
           severity: critical
           team: test
         annotations:
-          summary: "Test critical alert"
-          description: "This is a test alert for verification"
+          summary: 'Test critical alert'
+          description: 'This is a test alert for verification'
 ```
 
 ### Channel Test Checklist
 
-| Channel | Test Method | Verify |
-|---------|-------------|--------|
-| Slack | Send test alert | Message appears in correct channel |
+| Channel   | Test Method           | Verify                                  |
+| --------- | --------------------- | --------------------------------------- |
+| Slack     | Send test alert       | Message appears in correct channel      |
 | PagerDuty | Trigger test incident | Notification received, incident created |
-| Email | Send test email | Email received, format correct |
-| SMS | Manual test | SMS received within 30 seconds |
-| Phone | Manual test | Call received, message clear |
+| Email     | Send test email       | Email received, format correct          |
+| SMS       | Manual test           | SMS received within 30 seconds          |
+| Phone     | Manual test           | Call received, message clear            |
 
 ### Notification Test Script
 
@@ -672,12 +686,12 @@ echo "Test complete. Verify notifications were received."
 
 ### Monthly Channel Verification
 
-| Week | Test |
-|------|------|
+| Week   | Test                            |
+| ------ | ------------------------------- |
 | Week 1 | Slack channels (all severities) |
-| Week 2 | PagerDuty integration |
-| Week 3 | Email delivery |
-| Week 4 | SMS and phone (critical path) |
+| Week 2 | PagerDuty integration           |
+| Week 3 | Email delivery                  |
+| Week 4 | SMS and phone (critical path)   |
 
 ---
 
@@ -690,4 +704,5 @@ echo "Test complete. Verify notifications were received."
 
 ---
 
-*For questions about notification channels, contact the SRE team at sre@kitchenxpert.com*
+_For questions about notification channels, contact the SRE team at
+sre@kitchenxpert.com_

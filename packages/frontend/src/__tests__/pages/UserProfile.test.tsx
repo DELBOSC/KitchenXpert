@@ -90,9 +90,7 @@ describe('UserProfile', () => {
       renderUserProfile();
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/help us understand your household/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/help us understand your household/i)).toBeInTheDocument();
       });
     });
 
@@ -127,9 +125,7 @@ describe('UserProfile', () => {
       renderUserProfile();
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: /continue/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
       });
     });
   });
@@ -386,7 +382,10 @@ describe('UserProfile', () => {
       mockFetch
         .mockResolvedValueOnce({ ok: false, json: () => Promise.resolve({}) }) // Initial load
         .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ success: true }) }) // POST save
-        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ data: { tips: [], warnings: [], suggestions: [] } }) }); // AI tips
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ data: { tips: [], warnings: [], suggestions: [] } }),
+        }); // AI tips
 
       renderUserProfile();
       const user = userEvent.setup();
@@ -413,7 +412,10 @@ describe('UserProfile', () => {
       mockFetch
         .mockResolvedValueOnce({ ok: false, json: () => Promise.resolve({}) })
         .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ success: true }) })
-        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ data: { tips: [], warnings: [], suggestions: [] } }) });
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ data: { tips: [], warnings: [], suggestions: [] } }),
+        });
 
       renderUserProfile();
       const user = userEvent.setup();
@@ -531,7 +533,9 @@ describe('UserProfile', () => {
       renderUserProfile();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /tell us about yourself/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /tell us about yourself/i })
+        ).toBeInTheDocument();
       });
     });
   });

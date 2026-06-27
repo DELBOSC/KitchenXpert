@@ -29,7 +29,9 @@ function log(level, message) {
     ERROR: `${colors.red}[MONITOR]${colors.reset}`,
     DELIVERY: `${colors.cyan}[DELIVERY]${colors.reset}`,
   };
-  console.log(`${colors.gray}${timestamp}${colors.reset} ${prefix[level] || prefix.INFO} ${message}`);
+  console.log(
+    `${colors.gray}${timestamp}${colors.reset} ${prefix[level] || prefix.INFO} ${message}`
+  );
 }
 
 // Configuration
@@ -187,15 +189,17 @@ function calculateStats() {
     failed: stats.failed,
     pending: stats.pending,
     retrying: stats.retrying,
-    successRate: stats.total > 0
-      ? ((stats.successful / stats.total) * 100).toFixed(2) + '%'
-      : 'N/A',
-    avgResponseTime: responseTimes.length > 0
-      ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length) + 'ms'
-      : 'N/A',
-    p95ResponseTime: responseTimes.length > 0
-      ? Math.round(responseTimes.sort((a, b) => a - b)[Math.floor(responseTimes.length * 0.95)]) + 'ms'
-      : 'N/A',
+    successRate:
+      stats.total > 0 ? ((stats.successful / stats.total) * 100).toFixed(2) + '%' : 'N/A',
+    avgResponseTime:
+      responseTimes.length > 0
+        ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length) + 'ms'
+        : 'N/A',
+    p95ResponseTime:
+      responseTimes.length > 0
+        ? Math.round(responseTimes.sort((a, b) => a - b)[Math.floor(responseTimes.length * 0.95)]) +
+          'ms'
+        : 'N/A',
     byEventType: stats.byEventType,
     byEndpoint: stats.byEndpoint,
     recentErrors: stats.errors.slice(0, 10),
@@ -213,9 +217,15 @@ function displayStats(clear = true) {
   const calculated = calculateStats();
 
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}      KitchenXpert - Webhook Delivery Monitor               ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}      KitchenXpert - Webhook Delivery Monitor               ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log(`  ${colors.gray}Last updated: ${new Date().toISOString()}${colors.reset}`);
   console.log('');
@@ -225,10 +235,18 @@ function displayStats(clear = true) {
   console.log('  │ Overall Statistics                                      │');
   console.log('  ├─────────────────────────────────────────────────────────┤');
   console.log(`  │ Total Deliveries:    ${String(calculated.total).padEnd(35)}│`);
-  console.log(`  │ ${colors.green}Successful:${colors.reset}          ${String(calculated.successful).padEnd(35)}│`);
-  console.log(`  │ ${colors.red}Failed:${colors.reset}              ${String(calculated.failed).padEnd(35)}│`);
-  console.log(`  │ ${colors.yellow}Pending:${colors.reset}             ${String(calculated.pending).padEnd(35)}│`);
-  console.log(`  │ ${colors.cyan}Retrying:${colors.reset}            ${String(calculated.retrying).padEnd(35)}│`);
+  console.log(
+    `  │ ${colors.green}Successful:${colors.reset}          ${String(calculated.successful).padEnd(35)}│`
+  );
+  console.log(
+    `  │ ${colors.red}Failed:${colors.reset}              ${String(calculated.failed).padEnd(35)}│`
+  );
+  console.log(
+    `  │ ${colors.yellow}Pending:${colors.reset}             ${String(calculated.pending).padEnd(35)}│`
+  );
+  console.log(
+    `  │ ${colors.cyan}Retrying:${colors.reset}            ${String(calculated.retrying).padEnd(35)}│`
+  );
   console.log(`  │ Success Rate:        ${String(calculated.successRate).padEnd(35)}│`);
   console.log(`  │ Avg Response Time:   ${String(calculated.avgResponseTime).padEnd(35)}│`);
   console.log(`  │ P95 Response Time:   ${String(calculated.p95ResponseTime).padEnd(35)}│`);
@@ -256,7 +274,9 @@ function displayStats(clear = true) {
   // Recent errors
   if (calculated.recentErrors.length > 0) {
     console.log('  ┌─────────────────────────────────────────────────────────┐');
-    console.log(`  │ ${colors.red}Recent Errors${colors.reset}                                           │`);
+    console.log(
+      `  │ ${colors.red}Recent Errors${colors.reset}                                           │`
+    );
     console.log('  ├─────────────────────────────────────────────────────────┤');
     for (const error of calculated.recentErrors.slice(0, 5)) {
       const line = `${error.eventType}: ${error.error}`.slice(0, 53);
@@ -383,7 +403,9 @@ function generateDashboardHtml(stats) {
             <h2>By Event Type</h2>
             <table>
                 <tr><th>Event Type</th><th>Total</th><th>Success</th><th>Failed</th><th>Rate</th></tr>
-                ${Object.entries(stats.byEventType).map(([type, data]) => `
+                ${Object.entries(stats.byEventType)
+                  .map(
+                    ([type, data]) => `
                 <tr>
                     <td>${type}</td>
                     <td>${data.total}</td>
@@ -391,24 +413,35 @@ function generateDashboardHtml(stats) {
                     <td class="error">${data.failed}</td>
                     <td>${data.total > 0 ? ((data.success / data.total) * 100).toFixed(1) : 0}%</td>
                 </tr>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </table>
         </div>
 
-        ${stats.recentErrors.length > 0 ? `
+        ${
+          stats.recentErrors.length > 0
+            ? `
         <div class="card">
             <h2>Recent Errors</h2>
             <table>
                 <tr><th>Event Type</th><th>Error</th></tr>
-                ${stats.recentErrors.slice(0, 10).map(err => `
+                ${stats.recentErrors
+                  .slice(0, 10)
+                  .map(
+                    (err) => `
                 <tr>
                     <td>${err.eventType}</td>
                     <td class="error">${err.error}</td>
                 </tr>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </table>
         </div>
-        ` : ''}
+        `
+            : ''
+        }
     </div>
 </body>
 </html>`;
@@ -454,15 +487,20 @@ function generateReport() {
 
 | Event Type | Total | Success | Failed | Rate |
 |------------|-------|---------|--------|------|
-${Object.entries(calculated.byEventType).map(([type, data]) =>
-  `| ${type} | ${data.total} | ${data.success} | ${data.failed} | ${data.total > 0 ? ((data.success / data.total) * 100).toFixed(1) : 0}% |`
-).join('\n')}
+${Object.entries(calculated.byEventType)
+  .map(
+    ([type, data]) =>
+      `| ${type} | ${data.total} | ${data.success} | ${data.failed} | ${data.total > 0 ? ((data.success / data.total) * 100).toFixed(1) : 0}% |`
+  )
+  .join('\n')}
 
 ## Recent Errors
 
-${calculated.recentErrors.length > 0 ? calculated.recentErrors.map(err =>
-  `- **${err.eventType}**: ${err.error}`
-).join('\n') : 'No recent errors.'}
+${
+  calculated.recentErrors.length > 0
+    ? calculated.recentErrors.map((err) => `- **${err.eventType}**: ${err.error}`).join('\n')
+    : 'No recent errors.'
+}
 
 ---
 *Generated by KitchenXpert Webhook Monitor*
@@ -492,18 +530,26 @@ function tailLog() {
     const delivery = parseLogLine(line);
     if (delivery) {
       const status = delivery.status || 'unknown';
-      const statusColor = status === 'success' ? colors.green :
-                          status === 'failed' ? colors.red : colors.yellow;
-      console.log(`  ${statusColor}[${status.toUpperCase()}]${colors.reset} ${delivery.eventType || 'unknown'} - ${delivery.timestamp || ''}`);
+      const statusColor =
+        status === 'success' ? colors.green : status === 'failed' ? colors.red : colors.yellow;
+      console.log(
+        `  ${statusColor}[${status.toUpperCase()}]${colors.reset} ${delivery.eventType || 'unknown'} - ${delivery.timestamp || ''}`
+      );
     }
   }
 }
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}      KitchenXpert - Webhook Delivery Monitor               ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}      KitchenXpert - Webhook Delivery Monitor               ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   switch (config.mode) {

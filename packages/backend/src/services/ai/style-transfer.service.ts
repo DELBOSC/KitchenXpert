@@ -20,7 +20,7 @@ export interface StyleExtraction {
   style: string; // 'modern', 'traditional', 'farmhouse', 'industrial', 'scandinavian', etc.
   confidence: number;
   colorPalette: {
-    primary: string;   // hex color
+    primary: string; // hex color
     secondary: string;
     accent: string;
     neutral: string;
@@ -32,7 +32,7 @@ export interface StyleExtraction {
     backsplashMaterial: string;
     flooringMaterial: string;
   };
-  doorStyle: string;   // 'slab', 'shaker', 'raised-panel', 'louvered', 'glass-front'
+  doorStyle: string; // 'slab', 'shaker', 'raised-panel', 'louvered', 'glass-front'
   handleStyle: string; // 'bar-pull', 'knob', 'cup-pull', 'hidden', 'integrated'
   layoutFeatures: string[]; // ['island', 'open-plan', 'breakfast-bar', 'pendant-lights']
   mood: string; // 'warm', 'cool', 'bright', 'cozy', 'dramatic', 'airy'
@@ -59,10 +59,36 @@ const StyleExtractionSchema = z.object({
     backsplashMaterial: z.string().max(100),
     flooringMaterial: z.string().max(100),
   }),
-  doorStyle: z.enum(['slab', 'shaker', 'raised-panel', 'louvered', 'glass-front', 'beadboard', 'flat-panel']),
-  handleStyle: z.enum(['bar-pull', 'knob', 'cup-pull', 'hidden', 'integrated', 'ring-pull', 'edge-pull']),
+  doorStyle: z.enum([
+    'slab',
+    'shaker',
+    'raised-panel',
+    'louvered',
+    'glass-front',
+    'beadboard',
+    'flat-panel',
+  ]),
+  handleStyle: z.enum([
+    'bar-pull',
+    'knob',
+    'cup-pull',
+    'hidden',
+    'integrated',
+    'ring-pull',
+    'edge-pull',
+  ]),
   layoutFeatures: z.array(z.string().max(50)).max(10),
-  mood: z.enum(['warm', 'cool', 'bright', 'cozy', 'dramatic', 'airy', 'rustic', 'elegant', 'minimalist']),
+  mood: z.enum([
+    'warm',
+    'cool',
+    'bright',
+    'cozy',
+    'dramatic',
+    'airy',
+    'rustic',
+    'elegant',
+    'minimalist',
+  ]),
   suggestedBrands: z.array(z.string().max(50)).max(5),
 });
 
@@ -72,11 +98,13 @@ const StyleExtractionSchema = z.object({
 
 /** Sanitize user input to prevent prompt injection */
 export function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '') // Remove special chars
-    .replace(/\n/g, ' ')       // Flatten newlines
-    .slice(0, 200);            // Limit length
+    .replace(/\n/g, ' ') // Flatten newlines
+    .slice(0, 200); // Limit length
 }
 
 // ----------------------------------------------------------------
@@ -101,7 +129,7 @@ export class StyleTransferService {
   async analyzeKitchenPhoto(
     imageBase64: string,
     mediaType: 'image/jpeg' | 'image/png' | 'image/webp' = 'image/jpeg',
-    userId?: string,
+    userId?: string
   ): Promise<StyleExtraction> {
     const startTime = Date.now();
 
@@ -186,7 +214,7 @@ Les marques suggerees doivent etre des marques de cuisines francaises ou disponi
           result.inputTokens,
           result.outputTokens,
           durationMs,
-          { feature: 'style-transfer', promptVersion: '1.0.0' },
+          { feature: 'style-transfer', promptVersion: '1.0.0' }
         );
       }
 

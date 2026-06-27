@@ -146,14 +146,8 @@ export class ProjectModel implements KitchenProject {
    * Get the total cost of the project
    */
   getTotalCost(): number {
-    const applianceCost = this.appliances.reduce(
-      (sum, a) => sum + a.price * a.quantity,
-      0
-    );
-    const furnitureCost = this.furniture.reduce(
-      (sum, f) => sum + f.price * f.quantity,
-      0
-    );
+    const applianceCost = this.appliances.reduce((sum, a) => sum + a.price * a.quantity, 0);
+    const furnitureCost = this.furniture.reduce((sum, f) => sum + f.price * f.quantity, 0);
     return applianceCost + furnitureCost;
   }
 

@@ -115,10 +115,7 @@ interface EditedDimensions {
 export interface PhotoScanPanelProps {
   isOpen: boolean;
   onClose: () => void;
-  onApplyDimensions: (
-    dimensions: RoomScanDimensions,
-    floorPlan: FloorPlanData,
-  ) => void;
+  onApplyDimensions: (dimensions: RoomScanDimensions, floorPlan: FloorPlanData) => void;
 }
 
 type Step = 'guide' | 'upload' | 'analyzing' | 'results';
@@ -131,26 +128,23 @@ type ImageQuality = 'low' | 'ok';
 
 function confidenceBadge(
   confidence: number,
-  t: (key: string, fallback: string) => string,
+  t: (key: string, fallback: string) => string
 ): { label: string; color: string } {
   if (confidence >= 0.85) {
     return {
       label: t('photoScan.confidenceHigh', 'Haute confiance'),
-      color:
-        'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
+      color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
     };
   }
   if (confidence >= 0.6) {
     return {
       label: t('photoScan.confidenceMedium', 'Confiance moyenne'),
-      color:
-        'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+      color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
     };
   }
   return {
     label: t('photoScan.confidenceLow', 'Confiance faible'),
-    color:
-      'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
+    color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
   };
 }
 
@@ -206,10 +200,8 @@ function computeScale(walls: FloorPlanWall[]): ScaleFn {
   const rangeX = maxX - minX || 1;
   const rangeZ = maxZ - minZ || 1;
 
-  const scaleX = (x: number): number =>
-    padding + ((x - minX) / rangeX) * drawW;
-  const scaleZ = (z: number): number =>
-    padding + ((z - minZ) / rangeZ) * drawH;
+  const scaleX = (x: number): number => padding + ((x - minX) / rangeX) * drawW;
+  const scaleZ = (z: number): number => padding + ((z - minZ) / rangeZ) * drawH;
 
   return { scaleX, scaleZ };
 }
@@ -273,10 +265,14 @@ function renderFloorPlan(floorPlan: FloorPlanData): React.ReactElement {
     // Find the wall by matching op.wall to wall index or id key
     const wallIdx = parseInt(op.wall, 10);
     const wall = isNaN(wallIdx) ? walls[0] : (walls[wallIdx] ?? walls[0]);
-    if (!wall) {return null;}
+    if (!wall) {
+      return null;
+    }
 
     const wLen = wallLengthMeters(wall);
-    if (wLen === 0) {return null;}
+    if (wLen === 0) {
+      return null;
+    }
 
     const t = Math.min(Math.max(op.position / wLen, 0), 1);
     const cx = scaleX(wall.startX + t * (wall.endX - wall.startX));
@@ -442,7 +438,16 @@ function renderFloorPlan(floorPlan: FloorPlanData): React.ReactElement {
         </span>
         <span className="flex items-center gap-1">
           <svg width={14} height={10} viewBox="0 0 14 10">
-            <rect x={1} y={1} width={12} height={8} fill="none" stroke="#9CA3AF" strokeDasharray="3,2" strokeWidth={1.5} />
+            <rect
+              x={1}
+              y={1}
+              width={12}
+              height={8}
+              fill="none"
+              stroke="#9CA3AF"
+              strokeDasharray="3,2"
+              strokeWidth={1.5}
+            />
           </svg>
           Obstacle
         </span>
@@ -473,27 +478,71 @@ function GuideStep({ onStart }: { onStart: () => void }): React.ReactElement {
           aria-label="Vue de dessus d'une pièce avec positions de prise de vue"
         >
           {/* Room rectangle */}
-          <rect x={20} y={15} width={160} height={125} fill="#F9FAFB" stroke="#6B7280" strokeWidth={2.5} />
+          <rect
+            x={20}
+            y={15}
+            width={160}
+            height={125}
+            fill="#F9FAFB"
+            stroke="#6B7280"
+            strokeWidth={2.5}
+          />
           {/* Door gap on bottom wall */}
           <rect x={85} y={138} width={30} height={4} fill="#F9FAFB" />
-          <text x={100} y={155} fontSize={9} fill="#9CA3AF" textAnchor="middle">entree</text>
+          <text x={100} y={155} fontSize={9} fill="#9CA3AF" textAnchor="middle">
+            entree
+          </text>
 
           {/* Position 1 — rear-left corner */}
           <circle cx={32} cy={27} r={11} fill="#DBEAFE" stroke="#3B82F6" strokeWidth={2} />
-          <text x={32} y={31} fontSize={11} fill="#1D4ED8" textAnchor="middle" fontWeight="bold">1</text>
+          <text x={32} y={31} fontSize={11} fill="#1D4ED8" textAnchor="middle" fontWeight="bold">
+            1
+          </text>
 
           {/* Position 2 — doorway center (front wall) */}
           <circle cx={100} cy={140} r={11} fill="#DCFCE7" stroke="#16A34A" strokeWidth={2} />
-          <text x={100} y={144} fontSize={11} fill="#15803D" textAnchor="middle" fontWeight="bold">2</text>
+          <text x={100} y={144} fontSize={11} fill="#15803D" textAnchor="middle" fontWeight="bold">
+            2
+          </text>
 
           {/* Position 3 — right side */}
           <circle cx={174} cy={78} r={11} fill="#FEF9C3" stroke="#CA8A04" strokeWidth={2} />
-          <text x={174} y={82} fontSize={11} fill="#854D0E" textAnchor="middle" fontWeight="bold">3</text>
+          <text x={174} y={82} fontSize={11} fill="#854D0E" textAnchor="middle" fontWeight="bold">
+            3
+          </text>
 
           {/* Arrow hints */}
-          <line x1={43} y1={32} x2={80} y2={55} stroke="#3B82F6" strokeWidth={1} strokeDasharray="4,3" markerEnd="url(#arr)" opacity={0.5} />
-          <line x1={100} y1={129} x2={100} y2={90} stroke="#16A34A" strokeWidth={1} strokeDasharray="4,3" opacity={0.5} />
-          <line x1={163} y1={78} x2={130} y2={78} stroke="#CA8A04" strokeWidth={1} strokeDasharray="4,3" opacity={0.5} />
+          <line
+            x1={43}
+            y1={32}
+            x2={80}
+            y2={55}
+            stroke="#3B82F6"
+            strokeWidth={1}
+            strokeDasharray="4,3"
+            markerEnd="url(#arr)"
+            opacity={0.5}
+          />
+          <line
+            x1={100}
+            y1={129}
+            x2={100}
+            y2={90}
+            stroke="#16A34A"
+            strokeWidth={1}
+            strokeDasharray="4,3"
+            opacity={0.5}
+          />
+          <line
+            x1={163}
+            y1={78}
+            x2={130}
+            y2={78}
+            stroke="#CA8A04"
+            strokeWidth={1}
+            strokeDasharray="4,3"
+            opacity={0.5}
+          />
 
           <defs>
             <marker id="arr" markerWidth={6} markerHeight={6} refX={3} refY={3} orient="auto">
@@ -516,7 +565,7 @@ function GuideStep({ onStart }: { onStart: () => void }): React.ReactElement {
           {
             num: 2,
             title: 'Depuis la porte',
-            desc: 'Debout a l\'entree, capturez la piece entiere en paysage',
+            desc: "Debout a l'entree, capturez la piece entiere en paysage",
             bg: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
             numBg: 'bg-green-600',
           },
@@ -528,22 +577,15 @@ function GuideStep({ onStart }: { onStart: () => void }): React.ReactElement {
             numBg: 'bg-yellow-500',
           },
         ].map(({ num, title, desc, bg, numBg }) => (
-          <div
-            key={num}
-            className={`flex items-start gap-3 rounded-lg border px-3 py-2.5 ${bg}`}
-          >
+          <div key={num} className={`flex items-start gap-3 rounded-lg border px-3 py-2.5 ${bg}`}>
             <span
               className={`flex-shrink-0 w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center ${numBg}`}
             >
               {num}
             </span>
             <div>
-              <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">
-                {title}
-              </p>
-              <p className="text-[11px] text-gray-600 dark:text-gray-400 mt-0.5">
-                {desc}
-              </p>
+              <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">{title}</p>
+              <p className="text-[11px] text-gray-600 dark:text-gray-400 mt-0.5">{desc}</p>
             </div>
           </div>
         ))}
@@ -628,33 +670,35 @@ export default function PhotoScanPanel({
 
   // Escape key to close
   useEffect(() => {
-    if (!isOpen) {return;}
+    if (!isOpen) {
+      return;
+    }
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {onClose();}
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
   // Check image quality (resolution) for a single file
-  const checkImageQuality = useCallback(
-    async (file: File): Promise<ImageQuality> => {
-      try {
-        const bitmap = await createImageBitmap(file);
-        const quality: ImageQuality =
-          bitmap.width < 800 || bitmap.height < 600 ? 'low' : 'ok';
-        bitmap.close();
-        return quality;
-      } catch {
-        return 'ok';
-      }
-    },
-    [],
-  );
+  const checkImageQuality = useCallback(async (file: File): Promise<ImageQuality> => {
+    try {
+      const bitmap = await createImageBitmap(file);
+      const quality: ImageQuality = bitmap.width < 800 || bitmap.height < 600 ? 'low' : 'ok';
+      bitmap.close();
+      return quality;
+    } catch {
+      return 'ok';
+    }
+  }, []);
 
   const handleFilesChange = useCallback(
     async (selectedFiles: FileList | null) => {
-      if (!selectedFiles) {return;}
+      if (!selectedFiles) {
+        return;
+      }
 
       const newFiles = Array.from(selectedFiles);
 
@@ -688,7 +732,7 @@ export default function PhotoScanPanel({
         newFiles.map(async (f): Promise<[string, ImageQuality]> => {
           const q = await checkImageQuality(f);
           return [f.name + f.lastModified, q];
-        }),
+        })
       );
 
       setQualityMap((prev) => {
@@ -699,7 +743,7 @@ export default function PhotoScanPanel({
         return next;
       });
     },
-    [files, checkImageQuality],
+    [files, checkImageQuality]
   );
 
   const removeFile = useCallback(
@@ -726,7 +770,7 @@ export default function PhotoScanPanel({
         });
       }
     },
-    [files, previews],
+    [files, previews]
   );
 
   const handleDrop = useCallback(
@@ -734,11 +778,13 @@ export default function PhotoScanPanel({
       e.preventDefault();
       void handleFilesChange(e.dataTransfer.files);
     },
-    [handleFilesChange],
+    [handleFilesChange]
   );
 
   const handleAnalyze = useCallback(async () => {
-    if (files.length === 0) {return;}
+    if (files.length === 0) {
+      return;
+    }
 
     setStep('analyzing');
     setError(null);
@@ -772,16 +818,12 @@ export default function PhotoScanPanel({
 
       if (!response.ok) {
         const errData: unknown = await response.json().catch(() => null);
-        throw new Error(
-          getErrorMessage(errData, `HTTP ${response.status}`),
-        );
+        throw new Error(getErrorMessage(errData, `HTTP ${response.status}`));
       }
 
       const data: unknown = await response.json();
       const payload =
-        typeof data === 'object' && data !== null
-          ? (data as Record<string, unknown>)
-          : {};
+        typeof data === 'object' && data !== null ? (data as Record<string, unknown>) : {};
       const dataObj =
         typeof payload.data === 'object' && payload.data !== null
           ? (payload.data as Record<string, unknown>)
@@ -800,7 +842,7 @@ export default function PhotoScanPanel({
         return;
       }
       setError(
-        getErrorMessage(err, 'Une erreur est survenue lors de l\'analyse. Veuillez reessayer.'),
+        getErrorMessage(err, "Une erreur est survenue lors de l'analyse. Veuillez reessayer.")
       );
       setStep('upload');
     }
@@ -825,21 +867,18 @@ export default function PhotoScanPanel({
     onClose();
   }, [onClose]);
 
-  const handleDimensionChange = useCallback(
-    (field: keyof EditedDimensions, value: string) => {
-      const parsed = parseInt(value, 10);
-      if (!isNaN(parsed)) {
-        setEditedDimensions((prev) => ({ ...prev, [field]: parsed }));
-      }
-    },
-    [],
-  );
+  const handleDimensionChange = useCallback((field: keyof EditedDimensions, value: string) => {
+    const parsed = parseInt(value, 10);
+    if (!isNaN(parsed)) {
+      setEditedDimensions((prev) => ({ ...prev, [field]: parsed }));
+    }
+  }, []);
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
-  const badge = scanResult
-    ? confidenceBadge(scanResult.dimensions.confidence, t)
-    : null;
+  const badge = scanResult ? confidenceBadge(scanResult.dimensions.confidence, t) : null;
 
   return (
     <div className="absolute inset-y-0 right-0 w-96 bg-white dark:bg-gray-800 shadow-2xl z-40 flex flex-col border-l border-gray-200 dark:border-gray-700">
@@ -872,21 +911,18 @@ export default function PhotoScanPanel({
 
         {/* Step indicator pills */}
         <div className="flex items-center gap-1 mr-2">
-          {(['guide', 'upload', 'analyzing', 'results'] as Step[]).map(
-            (s, i) => (
-              <div
-                key={s}
-                className={`rounded-full transition-all ${
-                  s === step
-                    ? 'w-4 h-2 bg-blue-600 dark:bg-blue-400'
-                    : i <
-                        (['guide', 'upload', 'analyzing', 'results'] as Step[]).indexOf(step)
-                      ? 'w-2 h-2 bg-blue-300 dark:bg-blue-600'
-                      : 'w-2 h-2 bg-gray-300 dark:bg-gray-600'
-                }`}
-              />
-            ),
-          )}
+          {(['guide', 'upload', 'analyzing', 'results'] as Step[]).map((s, i) => (
+            <div
+              key={s}
+              className={`rounded-full transition-all ${
+                s === step
+                  ? 'w-4 h-2 bg-blue-600 dark:bg-blue-400'
+                  : i < (['guide', 'upload', 'analyzing', 'results'] as Step[]).indexOf(step)
+                    ? 'w-2 h-2 bg-blue-300 dark:bg-blue-600'
+                    : 'w-2 h-2 bg-gray-300 dark:bg-gray-600'
+              }`}
+            />
+          ))}
         </div>
 
         <button
@@ -901,28 +937,22 @@ export default function PhotoScanPanel({
             stroke="currentColor"
             strokeWidth={2}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto px-5 py-4">
-
         {/* ── Guide Step ── */}
-        {step === 'guide' && (
-          <GuideStep onStart={() => setStep('upload')} />
-        )}
+        {step === 'guide' && <GuideStep onStart={() => setStep('upload')} />}
 
         {/* ── Upload Step ── */}
         {step === 'upload' && (
           <div className="space-y-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Deposez 1 a 3 photos de votre piece. L&apos;IA detectera les murs, ouvertures, prises et estimera les dimensions.
+              Deposez 1 a 3 photos de votre piece. L&apos;IA detectera les murs, ouvertures, prises
+              et estimera les dimensions.
             </p>
 
             {/* Drop Zone */}
@@ -941,9 +971,7 @@ export default function PhotoScanPanel({
                   <div className="flex gap-2 justify-center flex-wrap">
                     {previews.map((url, idx) => {
                       const file = files[idx];
-                      const qualityKey = file
-                        ? file.name + file.lastModified
-                        : '';
+                      const qualityKey = file ? file.name + file.lastModified : '';
                       const quality = qualityMap.get(qualityKey);
                       const isLowRes = quality === 'low';
 
@@ -953,9 +981,7 @@ export default function PhotoScanPanel({
                             src={url}
                             alt={`Pièce ${idx + 1}`}
                             className={`w-20 h-20 rounded-lg object-cover ${
-                              isLowRes
-                                ? 'ring-2 ring-red-400 dark:ring-red-500'
-                                : ''
+                              isLowRes ? 'ring-2 ring-red-400 dark:ring-red-500' : ''
                             }`}
                           />
                           {isLowRes && (
@@ -1027,9 +1053,7 @@ export default function PhotoScanPanel({
             {/* Error */}
             {error && (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2">
-                <p className="text-xs text-red-700 dark:text-red-300">
-                  {error}
-                </p>
+                <p className="text-xs text-red-700 dark:text-red-300">{error}</p>
               </div>
             )}
 
@@ -1071,9 +1095,7 @@ export default function PhotoScanPanel({
                   style={{ width: `${Math.min(progress, 100)}%` }}
                 />
               </div>
-              <p className="text-[10px] text-gray-400">
-                {Math.round(Math.min(progress, 100))}%
-              </p>
+              <p className="text-[10px] text-gray-400">{Math.round(Math.min(progress, 100))}%</p>
             </div>
 
             <button
@@ -1098,8 +1120,7 @@ export default function PhotoScanPanel({
                   <span
                     className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${badge.color}`}
                   >
-                    {Math.round(scanResult.dimensions.confidence * 100)}%{' '}
-                    {badge.label}
+                    {Math.round(scanResult.dimensions.confidence * 100)}% {badge.label}
                   </span>
                 )}
               </div>
@@ -1205,9 +1226,7 @@ export default function PhotoScanPanel({
                       </span>
                       <span className="text-xs text-gray-600 dark:text-gray-400">
                         {opening.widthM.toFixed(1)}m
-                        {opening.heightM
-                          ? ` x ${opening.heightM.toFixed(1)}m`
-                          : ''}
+                        {opening.heightM ? ` x ${opening.heightM.toFixed(1)}m` : ''}
                       </span>
                     </div>
                   ))}
@@ -1250,8 +1269,7 @@ export default function PhotoScanPanel({
                         {obstacle.type}
                       </span>
                       <span className="text-xs text-gray-600 dark:text-gray-400">
-                        {obstacle.widthM.toFixed(1)}m x{' '}
-                        {obstacle.depthM.toFixed(1)}m
+                        {obstacle.widthM.toFixed(1)}m x {obstacle.depthM.toFixed(1)}m
                       </span>
                     </div>
                   ))}
@@ -1260,17 +1278,14 @@ export default function PhotoScanPanel({
             )}
 
             {/* Orientation */}
-            {scanResult.orientation &&
-              scanResult.orientation !== 'inconnue' && (
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg px-4 py-2">
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                    Orientation
-                  </p>
-                  <p className="text-xs font-medium text-gray-800 dark:text-gray-200 capitalize">
-                    {scanResult.orientation}
-                  </p>
-                </div>
-              )}
+            {scanResult.orientation && scanResult.orientation !== 'inconnue' && (
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg px-4 py-2">
+                <p className="text-[10px] text-gray-500 dark:text-gray-400">Orientation</p>
+                <p className="text-xs font-medium text-gray-800 dark:text-gray-200 capitalize">
+                  {scanResult.orientation}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

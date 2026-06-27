@@ -20,22 +20,22 @@ import type { FrictionTrigger } from '../../sandbox/useSandboxLimits';
 const COPY: Record<FrictionTrigger, { title: string; body: string; cta: string }> = {
   pdf_export: {
     title: 'Téléchargez votre devis sans filigrane',
-    body: "Le PDF preview est filigrané. Créez un compte gratuit pour exporter une version propre, partageable avec vos artisans.",
+    body: 'Le PDF preview est filigrané. Créez un compte gratuit pour exporter une version propre, partageable avec vos artisans.',
     cta: 'Créer mon compte gratuit',
   },
   ai_use: {
-    title: 'Continuez avec l\'assistant IA',
-    body: 'Vous avez utilisé vos 3 essais gratuits. Avec un compte, vous bénéficiez de 20 utilisations IA par heure et de l\'historique de vos conversations.',
-    cta: 'Débloquer l\'IA',
+    title: "Continuez avec l'assistant IA",
+    body: "Vous avez utilisé vos 3 essais gratuits. Avec un compte, vous bénéficiez de 20 utilisations IA par heure et de l'historique de vos conversations.",
+    cta: "Débloquer l'IA",
   },
   quote_compare: {
     title: 'Comparez les devis des fournisseurs',
-    body: "Le comparateur multi-fournisseurs est une fonctionnalité réservée aux comptes — il interroge les API IKEA, Leroy Merlin, Castorama, Bosch et Schmidt en temps réel.",
+    body: 'Le comparateur multi-fournisseurs est une fonctionnalité réservée aux comptes — il interroge les API IKEA, Leroy Merlin, Castorama, Bosch et Schmidt en temps réel.',
     cta: 'Comparer les prix',
   },
   pathtracer: {
     title: 'Rendu photo-réaliste haute définition',
-    body: "Le path-tracer haute résolution (4K, 16 samples/pixel) consomme beaucoup de calcul GPU. Réservé aux comptes pour préserver une expérience fluide pour tous.",
+    body: 'Le path-tracer haute résolution (4K, 16 samples/pixel) consomme beaucoup de calcul GPU. Réservé aux comptes pour préserver une expérience fluide pour tous.',
     cta: 'Activer la HD',
   },
   session_15min: {
@@ -56,7 +56,9 @@ export function SignupPromptModal({
   trigger,
   onClose,
 }: SignupPromptModalProps): React.ReactElement | null {
-  if (!trigger) {return null;}
+  if (!trigger) {
+    return null;
+  }
 
   const copy = COPY[trigger];
 
@@ -101,9 +103,7 @@ export function SignupPromptModal({
         </button>
       </div>
 
-      <p className="mt-4 text-center text-xs text-white/40">
-        Sans CB · 15 secondes · RGPD
-      </p>
+      <p className="mt-4 text-center text-xs text-white/40">Sans CB · 15 secondes · RGPD</p>
     </Dialog>
   );
 }

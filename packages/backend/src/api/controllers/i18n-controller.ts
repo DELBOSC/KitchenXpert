@@ -91,7 +91,12 @@ export class I18nController {
     const id = req.params.id as string;
     const { name, nativeName, isDefault, isActive } = req.body;
 
-    const locale = await localeRepository.updateLocale(id, { name, nativeName, isDefault, isActive });
+    const locale = await localeRepository.updateLocale(id, {
+      name,
+      nativeName,
+      isDefault,
+      isActive,
+    });
     res.status(200).json({ success: true, data: locale, message: 'Locale updated successfully' });
   });
 
@@ -121,7 +126,9 @@ export class I18nController {
   setDefaultLocale = asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const locale = await localeRepository.setDefaultLocale(id);
-    res.status(200).json({ success: true, data: locale, message: 'Default locale updated successfully' });
+    res
+      .status(200)
+      .json({ success: true, data: locale, message: 'Default locale updated successfully' });
   });
 
   // ==================== TRANSLATIONS ====================
@@ -167,8 +174,15 @@ export class I18nController {
    */
   createTranslation = asyncHandler(async (req: Request, res: Response) => {
     const { localeId, namespace, key, value } = req.body;
-    const translation = await localeRepository.createTranslation({ localeId, namespace, key, value });
-    res.status(201).json({ success: true, data: translation, message: 'Translation created successfully' });
+    const translation = await localeRepository.createTranslation({
+      localeId,
+      namespace,
+      key,
+      value,
+    });
+    res
+      .status(201)
+      .json({ success: true, data: translation, message: 'Translation created successfully' });
   });
 
   /**
@@ -177,8 +191,15 @@ export class I18nController {
    */
   upsertTranslation = asyncHandler(async (req: Request, res: Response) => {
     const { localeId, namespace, key, value } = req.body;
-    const translation = await localeRepository.upsertTranslation({ localeId, namespace, key, value });
-    res.status(200).json({ success: true, data: translation, message: 'Translation saved successfully' });
+    const translation = await localeRepository.upsertTranslation({
+      localeId,
+      namespace,
+      key,
+      value,
+    });
+    res
+      .status(200)
+      .json({ success: true, data: translation, message: 'Translation saved successfully' });
   });
 
   /**
@@ -189,7 +210,9 @@ export class I18nController {
     const id = req.params.id as string;
     const { value } = req.body;
     const translation = await localeRepository.updateTranslation(id, value);
-    res.status(200).json({ success: true, data: translation, message: 'Translation updated successfully' });
+    res
+      .status(200)
+      .json({ success: true, data: translation, message: 'Translation updated successfully' });
   });
 
   /**
@@ -209,7 +232,9 @@ export class I18nController {
   bulkCreateTranslations = asyncHandler(async (req: Request, res: Response) => {
     const { translations } = req.body;
     const result = await localeRepository.createManyTranslations(translations);
-    res.status(201).json({ success: true, data: result, message: `${result.count} translations created` });
+    res
+      .status(201)
+      .json({ success: true, data: result, message: `${result.count} translations created` });
   });
 
   /**
@@ -220,7 +245,9 @@ export class I18nController {
     const localeId = req.params.localeId as string;
     const namespace = req.params.namespace as string;
     const result = await localeRepository.deleteNamespaceTranslations(localeId, namespace);
-    res.status(200).json({ success: true, data: result, message: `${result.count} translations deleted` });
+    res
+      .status(200)
+      .json({ success: true, data: result, message: `${result.count} translations deleted` });
   });
 
   // ==================== UTILITIES ====================

@@ -120,7 +120,9 @@ export default function AIToolUseChat({
    */
   const sendMessage = useCallback(async () => {
     const trimmed = inputValue.trim();
-    if (!trimmed || isLoading) {return;}
+    if (!trimmed || isLoading) {
+      return;
+    }
 
     setError(null);
     setInputValue('');
@@ -132,7 +134,7 @@ export default function AIToolUseChat({
       content: trimmed,
       timestamp: new Date().toISOString(),
     };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
     // Create abort controller for this request
@@ -141,7 +143,7 @@ export default function AIToolUseChat({
 
     try {
       // Build conversation history (text-only, last 10 messages)
-      const conversationHistory = messages.slice(-10).map(m => ({
+      const conversationHistory = messages.slice(-10).map((m) => ({
         role: m.role,
         content: m.content,
         timestamp: m.timestamp,
@@ -163,7 +165,7 @@ export default function AIToolUseChat({
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const json = await response.json() as {
+      const json = (await response.json()) as {
         success: boolean;
         data?: { text: string; toolCalls: ToolCall[] };
         error?: string;
@@ -176,7 +178,7 @@ export default function AIToolUseChat({
       const { text, toolCalls } = json.data;
 
       // Execute each tool call on the 3D engine
-      const toolCallStatuses: ToolCallStatus[] = toolCalls.map(tc => ({
+      const toolCallStatuses: ToolCallStatus[] = toolCalls.map((tc) => ({
         ...tc,
         executed: false,
       }));
@@ -189,17 +191,19 @@ export default function AIToolUseChat({
         timestamp: new Date().toISOString(),
         toolCalls: toolCallStatuses,
       };
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
 
       // Execute tool calls sequentially
       for (let i = 0; i < toolCalls.length; i++) {
         const tc = toolCalls[i];
-        if (!tc) {continue;}
+        if (!tc) {
+          continue;
+        }
         try {
           onExecuteToolCall(tc.name, tc.params);
 
           // Mark as executed
-          setMessages(prev => {
+          setMessages((prev) => {
             const updated = [...prev];
             const lastMsg = updated[updated.length - 1];
             if (lastMsg?.toolCalls) {
@@ -221,7 +225,7 @@ export default function AIToolUseChat({
       setError(errorMsg);
 
       // Add error assistant message
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           id: generateMessageId(),
@@ -286,10 +290,20 @@ export default function AIToolUseChat({
           <button
             onClick={clearHistory}
             className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-            title={t('designer.toolUse.clearHistory', 'Effacer l\'historique')}
+            title={t('designer.toolUse.clearHistory', "Effacer l'historique")}
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
             </svg>
           </button>
         )}
@@ -320,7 +334,7 @@ export default function AIToolUseChat({
             </p>
           </div>
         ) : (
-          messages.map(msg => (
+          messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -392,9 +406,7 @@ export default function AIToolUseChat({
                 {/* Timestamp */}
                 <p
                   className={`text-[10px] mt-1 ${
-                    msg.role === 'user'
-                      ? 'text-indigo-200'
-                      : 'text-gray-400 dark:text-gray-500'
+                    msg.role === 'user' ? 'text-indigo-200' : 'text-gray-400 dark:text-gray-500'
                   }`}
                 >
                   {new Date(msg.timestamp).toLocaleTimeString(undefined, {
@@ -457,7 +469,7 @@ export default function AIToolUseChat({
             ref={inputRef}
             type="text"
             value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
+            onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t(
               'designer.toolUse.inputPlaceholder',
@@ -472,11 +484,7 @@ export default function AIToolUseChat({
             className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
-              <svg
-                className="w-4 h-4 animate-spin"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
+              <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
                 <circle
                   className="opacity-25"
                   cx="12"

@@ -182,9 +182,10 @@ export class I18nService {
 
     // Try cache first
     const cacheKey = `${namespace}:${targetLocale}`;
-    let translations = this.translationCache.has(cacheKey) && this.isCacheValid(cacheKey)
-      ? this.translationCache.get(cacheKey)
-      : undefined;
+    let translations =
+      this.translationCache.has(cacheKey) && this.isCacheValid(cacheKey)
+        ? this.translationCache.get(cacheKey)
+        : undefined;
 
     if (!translations) {
       const loaded = await this.repository.getNamespaceTranslations(namespace, targetLocale);
@@ -198,12 +199,16 @@ export class I18nService {
     // Try fallback locale
     if (!translation && targetLocale !== this.config.fallbackLocale) {
       const fallbackKey = `${namespace}:${this.config.fallbackLocale}`;
-      let fallbackTranslations = this.translationCache.has(fallbackKey) && this.isCacheValid(fallbackKey)
-        ? this.translationCache.get(fallbackKey)
-        : undefined;
+      let fallbackTranslations =
+        this.translationCache.has(fallbackKey) && this.isCacheValid(fallbackKey)
+          ? this.translationCache.get(fallbackKey)
+          : undefined;
 
       if (!fallbackTranslations) {
-        const loaded = await this.repository.getNamespaceTranslations(namespace, this.config.fallbackLocale);
+        const loaded = await this.repository.getNamespaceTranslations(
+          namespace,
+          this.config.fallbackLocale
+        );
         fallbackTranslations = new Map(Object.entries(loaded));
         this.translationCache.set(fallbackKey, fallbackTranslations);
         this.cacheTimestamps.set(fallbackKey, Date.now());
@@ -299,7 +304,7 @@ export class I18nService {
    */
   async getEnabledLocales(): Promise<Locale[]> {
     const locales = await this.getLocales();
-    return locales.filter(l => l.isEnabled);
+    return locales.filter((l) => l.isEnabled);
   }
 
   /**
@@ -317,7 +322,7 @@ export class I18nService {
       this.cacheTimestamps.set(cacheKey, Date.now());
     }
 
-    return locale || defaultLocales.find(l => l.code === code) || null;
+    return locale || defaultLocales.find((l) => l.code === code) || null;
   }
 
   /**
@@ -325,7 +330,7 @@ export class I18nService {
    */
   async getDefaultLocale(): Promise<Locale> {
     const locales = await this.getLocales();
-    return locales.find(l => l.isDefault) || locales[0] || defaultLocales[0]!;
+    return locales.find((l) => l.isDefault) || locales[0] || defaultLocales[0]!;
   }
 
   /**
@@ -357,14 +362,18 @@ export class I18nService {
    */
   async formatNumber(value: number, locale?: string): Promise<string> {
     const targetLocale = await this.getLocale(locale || this.config.defaultLocale);
-    if (!targetLocale) {return value.toString();}
+    if (!targetLocale) {
+      return value.toString();
+    }
 
     const { decimalSeparator, thousandsSeparator, decimalPlaces } = targetLocale.numberFormat;
 
     const fixed = value.toFixed(decimalPlaces);
     const [intPart, decPart] = fixed.split('.');
 
-    if (!intPart) {return fixed;}
+    if (!intPart) {
+      return fixed;
+    }
 
     const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
     return decPart ? `${formattedInt}${decimalSeparator}${decPart}` : formattedInt;
@@ -375,7 +384,9 @@ export class I18nService {
    */
   async formatCurrency(value: number, locale?: string, currencyCode?: string): Promise<string> {
     const targetLocale = await this.getLocale(locale || this.config.defaultLocale);
-    if (!targetLocale) {return value.toString();}
+    if (!targetLocale) {
+      return value.toString();
+    }
 
     const currency = currencyCode
       ? { ...targetLocale.currency, code: currencyCode }
@@ -387,12 +398,16 @@ export class I18nService {
     const fixed = value.toFixed(decimalPlaces);
     const [intPart, decPart] = fixed.split('.');
 
-    if (!intPart) {return fixed;}
+    if (!intPart) {
+      return fixed;
+    }
 
     const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
     const formattedValue = decPart ? `${formattedInt}${decimalSeparator}${decPart}` : formattedInt;
 
-    return symbolPosition === 'before' ? `${symbol}${formattedValue}` : `${formattedValue} ${symbol}`;
+    return symbolPosition === 'before'
+      ? `${symbol}${formattedValue}`
+      : `${formattedValue} ${symbol}`;
   }
 
   /**
@@ -400,7 +415,9 @@ export class I18nService {
    */
   async formatDate(date: Date, locale?: string, format?: string): Promise<string> {
     const targetLocale = await this.getLocale(locale || this.config.defaultLocale);
-    if (!targetLocale) {return date.toISOString();}
+    if (!targetLocale) {
+      return date.toISOString();
+    }
 
     const dateFormat = format || targetLocale.dateFormat;
 
@@ -408,10 +425,7 @@ export class I18nService {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = String(date.getFullYear());
 
-    return dateFormat
-      .replace('DD', day)
-      .replace('MM', month)
-      .replace('YYYY', year);
+    return dateFormat.replace('DD', day).replace('MM', month).replace('YYYY', year);
   }
 
   /**
@@ -466,7 +480,10 @@ export class I18nService {
 }
 
 export class I18nServiceError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'I18nServiceError';
   }

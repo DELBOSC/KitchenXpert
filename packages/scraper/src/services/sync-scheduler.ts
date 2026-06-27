@@ -88,9 +88,7 @@ export class SyncScheduler {
 
     // Filter by brand IDs if specified
     if (this.config.brandIds && this.config.brandIds.length > 0) {
-      this.schedules = this.schedules.filter((s) =>
-        this.config.brandIds!.includes(s.brandId)
-      );
+      this.schedules = this.schedules.filter((s) => this.config.brandIds!.includes(s.brandId));
     }
 
     // Register each schedule as a repeatable BullMQ job

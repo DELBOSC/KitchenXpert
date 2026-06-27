@@ -26,11 +26,14 @@ export function SandboxMigrationBanner(): React.ReactElement | null {
   const [dismissed, setDismissed] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  if (!snapshot || dismissed) {return null;}
+  if (!snapshot || dismissed) {
+    return null;
+  }
 
   const itemCount = snapshot.kitchen.items.length;
   const updated = new Date(snapshot.updatedAt).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long',
+    day: 'numeric',
+    month: 'long',
   });
 
   const handleImport = async (): Promise<void> => {
@@ -43,7 +46,7 @@ export function SandboxMigrationBanner(): React.ReactElement | null {
       tagConversion('hero', 'sandbox_signup_completed_ab');
       navigate(`/projects/${projectId}`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Échec de l\'import. Réessayez.');
+      setError(e instanceof Error ? e.message : "Échec de l'import. Réessayez.");
     } finally {
       setBusy(false);
     }
@@ -68,10 +71,13 @@ export function SandboxMigrationBanner(): React.ReactElement | null {
             Un projet démo en cours sur ce navigateur
           </div>
           <div className="mt-1 text-xs text-white/60">
-            « {snapshot.name} » · {itemCount} meuble{itemCount > 1 ? 's' : ''} · modifié le {updated}
+            « {snapshot.name} » · {itemCount} meuble{itemCount > 1 ? 's' : ''} · modifié le{' '}
+            {updated}
           </div>
           {error && (
-            <div className="mt-2 text-xs text-rose-300" role="alert">{error}</div>
+            <div className="mt-2 text-xs text-rose-300" role="alert">
+              {error}
+            </div>
           )}
         </div>
 

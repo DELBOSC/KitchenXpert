@@ -76,11 +76,7 @@ export * from './webhook-service';
 export { WebhookEventService, type WebhookPayload } from './webhook-event.service';
 
 // Data Export
-export {
-  ExportService,
-  type ExportFormat,
-  type ExportEntity,
-} from './export.service';
+export { ExportService, type ExportFormat, type ExportEntity } from './export.service';
 
 // IKEA API Integration
 export {

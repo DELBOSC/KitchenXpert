@@ -109,11 +109,7 @@ export function uncapitalize(str: string): string {
  * @param suffix - The suffix to add (default: '...')
  * @returns The truncated string
  */
-export function truncate(
-  str: string,
-  length: number,
-  suffix: string = '...'
-): string {
+export function truncate(str: string, length: number, suffix: string = '...'): string {
   if (str.length <= length) {
     return str;
   }
@@ -127,11 +123,7 @@ export function truncate(
  * @param suffix - The suffix to add (default: '...')
  * @returns The truncated string
  */
-export function truncateWords(
-  str: string,
-  wordCount: number,
-  suffix: string = '...'
-): string {
+export function truncateWords(str: string, wordCount: number, suffix: string = '...'): string {
   const words = str.split(/\s+/);
   if (words.length <= wordCount) {
     return str;
@@ -220,11 +212,7 @@ export function countOccurrences(str: string, substring: string): number {
  * @param separator - The separator between lines (default: '\n')
  * @returns The wrapped string
  */
-export function wordWrap(
-  str: string,
-  width: number,
-  separator: string = '\n'
-): string {
+export function wordWrap(str: string, width: number, separator: string = '\n'): string {
   const words = str.split(/\s+/);
   const lines: string[] = [];
   let currentLine = '';
@@ -309,11 +297,7 @@ export function slugify(str: string): string {
  * @param suffix - The suffix to add (default: '...')
  * @returns The excerpt
  */
-export function excerpt(
-  str: string,
-  length: number,
-  suffix: string = '...'
-): string {
+export function excerpt(str: string, length: number, suffix: string = '...'): string {
   const stripped = stripHtml(str);
   if (stripped.length <= length) {
     return stripped;
@@ -373,12 +357,7 @@ export function fromBase64(str: string): string {
  * @param maskChar - The masking character (default: '*')
  * @returns The masked string
  */
-export function mask(
-  str: string,
-  start: number,
-  end: number,
-  maskChar: string = '*'
-): string {
+export function mask(str: string, start: number, end: number, maskChar: string = '*'): string {
   if (start >= end || start < 0 || end > str.length) {
     return str;
   }

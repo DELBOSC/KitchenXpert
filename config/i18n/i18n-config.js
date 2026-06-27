@@ -86,15 +86,15 @@ export const FALLBACK_LOCALE = 'en-US';
 // ============================================================
 
 export const NAMESPACES = {
-  common: 'common',           // Common UI elements (buttons, labels, etc.)
-  catalog: 'catalog',         // Product catalog
-  design: 'design',           // Kitchen design tool
-  ai: 'ai',                   // AI recommendations
-  checkout: 'checkout',       // Checkout process
-  auth: 'auth',               // Authentication
-  profile: 'profile',         // User profile
-  errors: 'errors',           // Error messages
-  validation: 'validation',   // Form validation messages
+  common: 'common', // Common UI elements (buttons, labels, etc.)
+  catalog: 'catalog', // Product catalog
+  design: 'design', // Kitchen design tool
+  ai: 'ai', // AI recommendations
+  checkout: 'checkout', // Checkout process
+  auth: 'auth', // Authentication
+  profile: 'profile', // User profile
+  errors: 'errors', // Error messages
+  validation: 'validation', // Form validation messages
 };
 
 export const DEFAULT_NAMESPACE = NAMESPACES.common;
@@ -219,14 +219,7 @@ i18n
        * 5. navigator (browser language)
        * 6. htmlTag (html lang attribute)
        */
-      order: [
-        'querystring',
-        'cookie',
-        'localStorage',
-        'sessionStorage',
-        'navigator',
-        'htmlTag',
-      ],
+      order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'navigator', 'htmlTag'],
 
       /**
        * Keys to look for in different detection sources

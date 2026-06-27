@@ -37,7 +37,11 @@ const UserProfile: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [aiTips, setAiTips] = useState<{ tips: string[]; warnings: string[]; suggestions: string[] } | null>(null);
+  const [aiTips, setAiTips] = useState<{
+    tips: string[];
+    warnings: string[];
+    suggestions: string[];
+  } | null>(null);
   const [aiTipsLoading, setAiTipsLoading] = useState<boolean>(false);
 
   const dietaryOptions = [
@@ -109,16 +113,26 @@ const UserProfile: React.FC = () => {
     const controller = new AbortController();
     const fetchUserProfile = async (): Promise<void> => {
       try {
-        const response = await fetch('/api/v1/questionnaire/user-profile', { credentials: 'include', signal: controller.signal });
+        const response = await fetch('/api/v1/questionnaire/user-profile', {
+          credentials: 'include',
+          signal: controller.signal,
+        });
 
         if (response.ok) {
           const result = (await response.json()) as { data?: UserProfileData };
-          if (result.data) {setFormData(result.data);}
+          if (result.data) {
+            setFormData(result.data);
+          }
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         // If no existing profile, use defaults
-        logger.debug('Failed to fetch user profile, using defaults', err instanceof Error ? { error: err.message } : { error: err });
+        logger.debug(
+          'Failed to fetch user profile, using defaults',
+          err instanceof Error ? { error: err.message } : { error: err }
+        );
       } finally {
         setIsLoading(false);
       }
@@ -143,9 +157,7 @@ const UserProfile: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ): void => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value, type } = e.target;
 
     setFormData((prev) => ({
@@ -239,8 +251,12 @@ const UserProfile: React.FC = () => {
         {/* Progress Indicator */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">{t('questionnaire.step', { current: 1, total: 4, defaultValue: 'Step 1 of 4' })}</span>
-            <span className="text-sm text-gray-500">{t('questionnaire.userProfile', 'User Profile')}</span>
+            <span className="text-sm font-medium text-gray-700">
+              {t('questionnaire.step', { current: 1, total: 4, defaultValue: 'Step 1 of 4' })}
+            </span>
+            <span className="text-sm text-gray-500">
+              {t('questionnaire.userProfile', 'User Profile')}
+            </span>
           </div>
           <div className="h-2 bg-gray-200 rounded-full">
             <div
@@ -257,9 +273,14 @@ const UserProfile: React.FC = () => {
 
         {/* Form Card */}
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('questionnaire.tellUsAboutYourself', 'Tell Us About Yourself')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            {t('questionnaire.tellUsAboutYourself', 'Tell Us About Yourself')}
+          </h1>
           <p className="text-gray-600 mb-6">
-            {t('questionnaire.userProfileDesc', 'Help us understand your household and cooking habits to design the perfect kitchen.')}
+            {t(
+              'questionnaire.userProfileDesc',
+              'Help us understand your household and cooking habits to design the perfect kitchen.'
+            )}
           </p>
 
           {saveError && (
@@ -271,11 +292,16 @@ const UserProfile: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Household Information */}
             <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">{t('questionnaire.householdInfo', 'Household Information')}</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                {t('questionnaire.householdInfo', 'Household Information')}
+              </h2>
 
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <label htmlFor="householdSize" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="householdSize"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Household Size <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -294,12 +320,17 @@ const UserProfile: React.FC = () => {
                     }`}
                   />
                   {errors.householdSize && (
-                    <p id="householdSize-error" className="mt-1 text-sm text-red-600" role="alert">{errors.householdSize}</p>
+                    <p id="householdSize-error" className="mt-1 text-sm text-red-600" role="alert">
+                      {errors.householdSize}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="primaryCook" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="primaryCook"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Primary Cook <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -317,7 +348,9 @@ const UserProfile: React.FC = () => {
                     }`}
                   />
                   {errors.primaryCook && (
-                    <p id="primaryCook-error" className="mt-1 text-sm text-red-600" role="alert">{errors.primaryCook}</p>
+                    <p id="primaryCook-error" className="mt-1 text-sm text-red-600" role="alert">
+                      {errors.primaryCook}
+                    </p>
                   )}
                 </div>
               </div>
@@ -325,11 +358,16 @@ const UserProfile: React.FC = () => {
 
             {/* Cooking Habits */}
             <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">{t('questionnaire.cookingHabits', 'Cooking Habits')}</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                {t('questionnaire.cookingHabits', 'Cooking Habits')}
+              </h2>
 
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <label htmlFor="cookingFrequency" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="cookingFrequency"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     How often do you cook?
                   </label>
                   <select
@@ -347,7 +385,10 @@ const UserProfile: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="cookingExperience" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="cookingExperience"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Cooking Experience Level
                   </label>
                   <select
@@ -365,7 +406,10 @@ const UserProfile: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label htmlFor="entertainingFrequency" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="entertainingFrequency"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     How often do you entertain guests?
                   </label>
                   <select
@@ -386,7 +430,9 @@ const UserProfile: React.FC = () => {
 
             {/* Dietary Preferences */}
             <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">{t('questionnaire.dietaryPreferences', 'Dietary Preferences')}</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                {t('questionnaire.dietaryPreferences', 'Dietary Preferences')}
+              </h2>
               <p className="text-sm text-gray-500 mb-4">Select all that apply to your household</p>
 
               <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
@@ -405,14 +451,20 @@ const UserProfile: React.FC = () => {
                       onChange={() => handleCheckboxChange('dietaryPreferences', option)}
                       className="sr-only"
                     />
-                    <span className={`w-5 h-5 rounded border mr-3 flex items-center justify-center ${
-                      formData.dietaryPreferences.includes(option)
-                        ? 'bg-blue-600 border-blue-600'
-                        : 'border-gray-300'
-                    }`}>
+                    <span
+                      className={`w-5 h-5 rounded border mr-3 flex items-center justify-center ${
+                        formData.dietaryPreferences.includes(option)
+                          ? 'bg-blue-600 border-blue-600'
+                          : 'border-gray-300'
+                      }`}
+                    >
                       {formData.dietaryPreferences.includes(option) && (
                         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       )}
                     </span>
@@ -424,8 +476,12 @@ const UserProfile: React.FC = () => {
 
             {/* Accessibility & Special Needs */}
             <section>
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">{t('questionnaire.accessibilityNeeds', 'Accessibility & Special Needs')}</h2>
-              <p className="text-sm text-gray-500 mb-4">Select any special requirements for your kitchen</p>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                {t('questionnaire.accessibilityNeeds', 'Accessibility & Special Needs')}
+              </h2>
+              <p className="text-sm text-gray-500 mb-4">
+                Select any special requirements for your kitchen
+              </p>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {specialNeedsOptions.map((option) => (
@@ -443,14 +499,20 @@ const UserProfile: React.FC = () => {
                       onChange={() => handleCheckboxChange('specialNeeds', option)}
                       className="sr-only"
                     />
-                    <span className={`w-5 h-5 rounded border mr-3 flex items-center justify-center ${
-                      formData.specialNeeds.includes(option)
-                        ? 'bg-blue-600 border-blue-600'
-                        : 'border-gray-300'
-                    }`}>
+                    <span
+                      className={`w-5 h-5 rounded border mr-3 flex items-center justify-center ${
+                        formData.specialNeeds.includes(option)
+                          ? 'bg-blue-600 border-blue-600'
+                          : 'border-gray-300'
+                      }`}
+                    >
                       {formData.specialNeeds.includes(option) && (
                         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       )}
                     </span>
@@ -470,17 +532,26 @@ const UserProfile: React.FC = () => {
             {aiTips && (
               <div className="mt-6 space-y-3">
                 {aiTips.tips.map((tip, i) => (
-                  <div key={i} className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+                  <div
+                    key={i}
+                    className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800"
+                  >
                     <span className="font-medium">Conseil IA :</span> {tip}
                   </div>
                 ))}
                 {aiTips.warnings.map((w, i) => (
-                  <div key={i} className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+                  <div
+                    key={i}
+                    className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800"
+                  >
                     <span className="font-medium">Attention :</span> {w}
                   </div>
                 ))}
                 {aiTips.suggestions.map((s, i) => (
-                  <div key={i} className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700">
+                  <div
+                    key={i}
+                    className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700"
+                  >
                     <span className="font-medium">Suggestion :</span> {s}
                   </div>
                 ))}
@@ -504,10 +575,17 @@ const UserProfile: React.FC = () => {
                 {isSaving && (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
-                {isSaving ? t('common.saving', 'Enregistrement...') : t('common.continue', 'Continue')}
+                {isSaving
+                  ? t('common.saving', 'Enregistrement...')
+                  : t('common.continue', 'Continue')}
                 {!isSaving && (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 )}
               </button>

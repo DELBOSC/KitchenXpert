@@ -6,10 +6,31 @@
 import React, { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-export type GridColumns = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 'auto-fit' | 'auto-fill';
+export type GridColumns =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 'auto-fit'
+  | 'auto-fill';
 export type GridGap = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export type GridAlign = 'start' | 'center' | 'end' | 'stretch';
-export type GridJustify = 'start' | 'center' | 'end' | 'stretch' | 'space-between' | 'space-around' | 'space-evenly';
+export type GridJustify =
+  | 'start'
+  | 'center'
+  | 'end'
+  | 'stretch'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly';
 
 export interface ResponsiveColumns {
   xs?: GridColumns;
@@ -78,25 +99,29 @@ const generateResponsiveColumns = (
     return css`
       ${columns.xs && `grid-template-columns: ${getColumnsValue(columns.xs, minWidth)};`}
 
-      ${columns.sm && css`
+      ${columns.sm &&
+      css`
         @media (min-width: ${breakpoints.sm}) {
           grid-template-columns: ${getColumnsValue(columns.sm, minWidth)};
         }
       `}
 
-      ${columns.md && css`
+      ${columns.md &&
+      css`
         @media (min-width: ${breakpoints.md}) {
           grid-template-columns: ${getColumnsValue(columns.md, minWidth)};
         }
       `}
 
-      ${columns.lg && css`
+      ${columns.lg &&
+      css`
         @media (min-width: ${breakpoints.lg}) {
           grid-template-columns: ${getColumnsValue(columns.lg, minWidth)};
         }
       `}
 
-      ${columns.xl && css`
+      ${columns.xl &&
+      css`
         @media (min-width: ${breakpoints.xl}) {
           grid-template-columns: ${getColumnsValue(columns.xl, minWidth)};
         }
@@ -128,14 +153,42 @@ const StyledGrid = styled.div<StyledGridProps>`
   ${({ $columns, $minColumnWidth }) => generateResponsiveColumns($columns, $minColumnWidth)}
 
   gap: ${({ $gap }) => gapValues[$gap]};
-  ${({ $rowGap }) => $rowGap && css`row-gap: ${gapValues[$rowGap]};`}
-  ${({ $columnGap }) => $columnGap && css`column-gap: ${gapValues[$columnGap]};`}
+  ${({ $rowGap }) =>
+    $rowGap &&
+    css`
+      row-gap: ${gapValues[$rowGap]};
+    `}
+  ${({ $columnGap }) =>
+    $columnGap &&
+    css`
+      column-gap: ${gapValues[$columnGap]};
+    `}
 
-  ${({ $alignItems }) => $alignItems && css`align-items: ${$alignItems};`}
-  ${({ $justifyItems }) => $justifyItems && css`justify-items: ${$justifyItems};`}
-  ${({ $alignContent }) => $alignContent && css`align-content: ${$alignContent};`}
-  ${({ $justifyContent }) => $justifyContent && css`justify-content: ${$justifyContent};`}
-  ${({ $flow }) => $flow && css`grid-auto-flow: ${$flow};`}
+  ${({ $alignItems }) =>
+    $alignItems &&
+    css`
+      align-items: ${$alignItems};
+    `}
+  ${({ $justifyItems }) =>
+    $justifyItems &&
+    css`
+      justify-items: ${$justifyItems};
+    `}
+  ${({ $alignContent }) =>
+    $alignContent &&
+    css`
+      align-content: ${$alignContent};
+    `}
+  ${({ $justifyContent }) =>
+    $justifyContent &&
+    css`
+      justify-content: ${$justifyContent};
+    `}
+  ${({ $flow }) =>
+    $flow &&
+    css`
+      grid-auto-flow: ${$flow};
+    `}
 `;
 
 export const Grid = forwardRef<HTMLDivElement, GridProps>(

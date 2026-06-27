@@ -7,7 +7,11 @@
       "id": "AL-001",
       "prompt": "Cuisine de 12m² en L, style scandinave, budget 8000€, avec îlot petit-déjeuner",
       "expected": {
-        "shouldExtract": { "surfaceM2": 12, "style": "scandinavian", "budgetEur": 8000 },
+        "shouldExtract": {
+          "surfaceM2": 12,
+          "style": "scandinavian",
+          "budgetEur": 8000
+        },
         "criteria": [
           "Layout includes L_SHAPED OR ISLAND (both acceptable for 12 m²)",
           "Total cost ≤ 9 200 € (15% over budget tolerance)",
@@ -35,7 +39,11 @@
       "id": "AL-003",
       "prompt": "Grande cuisine ouverte 18m² avec îlot central, style industriel, budget 25000€, électroménager Bosch haut de gamme",
       "expected": {
-        "shouldExtract": { "surfaceM2": 18, "style": "industrial", "budgetEur": 25000 },
+        "shouldExtract": {
+          "surfaceM2": 18,
+          "style": "industrial",
+          "budgetEur": 25000
+        },
         "criteria": [
           "Layout ∈ {ISLAND, OPEN_PLAN}",
           "Total cost ≤ 28 750 € (15% tolerance)",
@@ -63,7 +71,11 @@
       "id": "AL-005",
       "prompt": "Cuisine PMR accessible fauteuil roulant 15m², plans abaissés, budget 18000€",
       "expected": {
-        "shouldExtract": { "surfaceM2": 15, "budgetEur": 18000, "extraConstraints": ["accessibilité PMR"] },
+        "shouldExtract": {
+          "surfaceM2": 15,
+          "budgetEur": 18000,
+          "extraConstraints": ["accessibilité PMR"]
+        },
         "criteria": [
           "Rationale mentions explicitly PMR / wheelchair / accessibilité",
           "Worktop height differs from default 90 cm (≤ 80 cm for wheelchair clearance)",
@@ -76,7 +88,11 @@
       "id": "AL-006",
       "prompt": "Cuisine japonaise wabi-sabi 10m² parallèle, bois clair, minimaliste, budget 14000€",
       "expected": {
-        "shouldExtract": { "surfaceM2": 10, "style": "japanese", "budgetEur": 14000 },
+        "shouldExtract": {
+          "surfaceM2": 10,
+          "style": "japanese",
+          "budgetEur": 14000
+        },
         "criteria": [
           "Layout = GALLEY",
           "Style descriptors: bois clair, lignes basses, minimal",
@@ -102,7 +118,11 @@
       "id": "AL-008",
       "prompt": "Cuisine en U style provençal pour résidence secondaire, 14m², pierre, terre cuite, budget 16000€",
       "expected": {
-        "shouldExtract": { "surfaceM2": 14, "style": "provencal", "budgetEur": 16000 },
+        "shouldExtract": {
+          "surfaceM2": 14,
+          "style": "provencal",
+          "budgetEur": 16000
+        },
         "criteria": [
           "Style descriptors: pierre, terre cuite, cream/beige tones",
           "At least one cabinet brand ∈ {LAPEYRE, SCHMIDT, MOBALPA} (French heritage brands)",
@@ -115,7 +135,11 @@
       "id": "AL-009",
       "prompt": "Cuisine ouverte sur séjour 20m² avec bar de séparation, induction Schmidt, style contemporain laqué noir, budget 30000€",
       "expected": {
-        "shouldExtract": { "surfaceM2": 20, "style": "contemporary", "budgetEur": 30000 },
+        "shouldExtract": {
+          "surfaceM2": 20,
+          "style": "contemporary",
+          "budgetEur": 30000
+        },
         "criteria": [
           "Layout ∈ {PENINSULA, OPEN_PLAN, ISLAND}",
           "At least 1 proposal uses SCHMIDT brand",
@@ -130,7 +154,11 @@
       "id": "AL-010",
       "prompt": "Cuisine 8m² en L, gaucher (évier à droite), 2 ours adultes, lave-vaisselle plein format, four pyrolyse, budget 10000€",
       "expected": {
-        "shouldExtract": { "surfaceM2": 8, "budgetEur": 10000, "extraConstraints": ["gaucher", "évier à droite"] },
+        "shouldExtract": {
+          "surfaceM2": 8,
+          "budgetEur": 10000,
+          "extraConstraints": ["gaucher", "évier à droite"]
+        },
         "criteria": [
           "Layout = L_SHAPED",
           "Évier positioned on the right side of the L (X > widthCm/2)",

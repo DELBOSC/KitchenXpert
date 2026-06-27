@@ -10,7 +10,12 @@ import { normalizeColor } from '../color-normalize';
 describe('normalizeColor', () => {
   describe('simple colors (dict-known, trend score from extractColor)', () => {
     it('"Blanc Haute brillance" -> blanc/color, score 100 (tier1)', () => {
-      expect(normalizeColor('Blanc Haute brillance')).toEqual({ key: 'blanc', label: 'Blanc', kind: 'color', score: 100 });
+      expect(normalizeColor('Blanc Haute brillance')).toEqual({
+        key: 'blanc',
+        label: 'Blanc',
+        kind: 'color',
+        score: 100,
+      });
     });
     it('"Noir mat" -> noir/color (finish "mat" dropped)', () => {
       const r = normalizeColor('Noir mat');
@@ -30,7 +35,10 @@ describe('normalizeColor', () => {
       expect(normalizeColor('Panneau en chêne')).toMatchObject({ key: 'chene', kind: 'material' });
     });
     it('"Chêne de force doré" -> chene/material (first family token wins)', () => {
-      expect(normalizeColor('Chêne de force doré')).toMatchObject({ key: 'chene', kind: 'material' });
+      expect(normalizeColor('Chêne de force doré')).toMatchObject({
+        key: 'chene',
+        kind: 'material',
+      });
     });
   });
 
@@ -48,16 +56,31 @@ describe('normalizeColor', () => {
 
   describe('colors missing from the trend dict -> neutral score 50', () => {
     it('"Bleu" -> bleu/color, score 50 (plain "bleu" not in COLOR_TIERS)', () => {
-      expect(normalizeColor('Bleu')).toEqual({ key: 'bleu', label: 'Bleu', kind: 'color', score: 50 });
+      expect(normalizeColor('Bleu')).toEqual({
+        key: 'bleu',
+        label: 'Bleu',
+        kind: 'color',
+        score: 50,
+      });
     });
     it('"Doré" -> dore/color, score 50', () => {
-      expect(normalizeColor('Doré')).toEqual({ key: 'dore', label: 'Doré', kind: 'color', score: 50 });
+      expect(normalizeColor('Doré')).toEqual({
+        key: 'dore',
+        label: 'Doré',
+        kind: 'color',
+        score: 50,
+      });
     });
     it('"Taupe" -> taupe/color, score 50', () => {
       expect(normalizeColor('Taupe')).toMatchObject({ key: 'taupe', kind: 'color', score: 50 });
     });
     it('"Vert sauge" -> vert/color, score 85 (dict "vert sauge" tier2 via extractColor)', () => {
-      expect(normalizeColor('Vert sauge')).toEqual({ key: 'vert', label: 'Vert', kind: 'color', score: 85 });
+      expect(normalizeColor('Vert sauge')).toEqual({
+        key: 'vert',
+        label: 'Vert',
+        kind: 'color',
+        score: 85,
+      });
     });
   });
 
@@ -66,7 +89,11 @@ describe('normalizeColor', () => {
       expect(normalizeColor('Chêne').score).toBe(50);
     });
     it('"Marbre blanc" -> marbre/material, score 50 (not blanc/100)', () => {
-      expect(normalizeColor('Marbre blanc')).toMatchObject({ key: 'marbre', kind: 'material', score: 50 });
+      expect(normalizeColor('Marbre blanc')).toMatchObject({
+        key: 'marbre',
+        kind: 'material',
+        score: 50,
+      });
     });
   });
 
@@ -74,14 +101,23 @@ describe('normalizeColor', () => {
     it.each(['0,74 kWh', '24 h', '15 cm', 'Non applicable', 'Transparent', 'Multicolore'])(
       '"%s" -> unknown',
       (raw) => {
-        expect(normalizeColor(raw)).toEqual({ key: 'unknown', label: '', kind: 'unknown', score: -1 });
-      },
+        expect(normalizeColor(raw)).toEqual({
+          key: 'unknown',
+          label: '',
+          kind: 'unknown',
+          score: -1,
+        });
+      }
     );
   });
 
   describe('null / empty -> unknown', () => {
     it.each([null, undefined, '', '   '])('%p -> unknown', (raw) => {
-      expect(normalizeColor(raw as string | null)).toMatchObject({ key: 'unknown', kind: 'unknown', score: -1 });
+      expect(normalizeColor(raw as string | null)).toMatchObject({
+        key: 'unknown',
+        kind: 'unknown',
+        score: -1,
+      });
     });
   });
 
@@ -96,10 +132,20 @@ describe('normalizeColor', () => {
 
   describe('direct locks for common base colors', () => {
     it('"Rouge" -> rouge/color, score 10 (dict tier6)', () => {
-      expect(normalizeColor('Rouge')).toEqual({ key: 'rouge', label: 'Rouge', kind: 'color', score: 10 });
+      expect(normalizeColor('Rouge')).toEqual({
+        key: 'rouge',
+        label: 'Rouge',
+        kind: 'color',
+        score: 10,
+      });
     });
     it('"Gris clair" -> gris/color, score 30 (dict tier5; "clair" dropped)', () => {
-      expect(normalizeColor('Gris clair')).toEqual({ key: 'gris', label: 'Gris', kind: 'color', score: 30 });
+      expect(normalizeColor('Gris clair')).toEqual({
+        key: 'gris',
+        label: 'Gris',
+        kind: 'color',
+        score: 30,
+      });
     });
   });
 });

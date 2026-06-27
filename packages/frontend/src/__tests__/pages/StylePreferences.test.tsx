@@ -77,7 +77,9 @@ describe('StylePreferences', () => {
       renderStylePreferences();
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { level: 1, name: /style preferences/i })).toBeInTheDocument();
+        expect(
+          screen.getByRole('heading', { level: 1, name: /style preferences/i })
+        ).toBeInTheDocument();
       });
     });
 
@@ -392,7 +394,10 @@ describe('StylePreferences', () => {
 
     it('should disable submit button while saving', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000)
+          )
       );
 
       renderStylePreferences();
@@ -413,7 +418,10 @@ describe('StylePreferences', () => {
 
     it('should show saving text on submit button while saving', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000)
+          )
       );
 
       renderStylePreferences();
@@ -433,7 +441,10 @@ describe('StylePreferences', () => {
 
     it('should have aria-busy on submit button while saving', async () => {
       mockFetch.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ ok: true, json: () => Promise.resolve({}) }), 1000)
+          )
       );
 
       renderStylePreferences();

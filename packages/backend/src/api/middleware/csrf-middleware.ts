@@ -176,11 +176,7 @@ function getSessionId(req: Request): string | undefined {
  * Validates for:
  * - State-changing requests (POST, PUT, PATCH, DELETE) without JWT
  */
-export function csrfProtection(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function csrfProtection(req: Request, res: Response, next: NextFunction): void {
   // Skip for safe methods
   if (!isStateChangingMethod(req.method)) {
     return next();
@@ -245,11 +241,7 @@ export function csrfProtection(
  * Middleware to generate and attach CSRF token
  * Use this for routes that render forms
  */
-export function attachCsrfToken(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function attachCsrfToken(req: Request, res: Response, next: NextFunction): void {
   const sessionId = getSessionId(req);
 
   if (sessionId) {
@@ -302,7 +294,7 @@ export function createCsrfProtection(options: CsrfOptions = {}) {
     }
 
     // Check skip paths
-    if (options.skipPaths && options.skipPaths.some(path => req.path.startsWith(path))) {
+    if (options.skipPaths && options.skipPaths.some((path) => req.path.startsWith(path))) {
       return next();
     }
 

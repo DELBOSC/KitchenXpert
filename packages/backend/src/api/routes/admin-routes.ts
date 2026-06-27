@@ -3,7 +3,12 @@ import { z } from 'zod';
 
 import { adminController } from '../controllers/admin-controller';
 import { authenticate, authorize } from '../middleware/auth-middleware';
-import { validateBody, validateParams, validateQuery, commonSchemas } from '../middleware/validation-middleware';
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+  commonSchemas,
+} from '../middleware/validation-middleware';
 
 const router: RouterType = Router();
 
@@ -24,17 +29,20 @@ const reportQuerySchema = z.object({
   days: z.coerce.number().int().min(1).max(365).default(30),
 });
 
-const bulkUpdateSchema = z.object({
-  userIds: z.array(z.string().uuid()).min(1, 'At least one user ID is required'),
-  action: z.enum(['suspend', 'activate', 'changeRole'], { required_error: 'Action is required' }),
-  value: z.enum(['user', 'admin', 'partner', 'designer']).optional(),
-}).refine(
-  (data) => data.action !== 'changeRole' || data.value !== undefined,
-  { message: 'Value (role) is required for changeRole action', path: ['value'] }
-).transform((data) => {
-  // Strip any extra fields — only allow userIds, action, value
-  return { userIds: data.userIds, action: data.action, value: data.value };
-});
+const bulkUpdateSchema = z
+  .object({
+    userIds: z.array(z.string().uuid()).min(1, 'At least one user ID is required'),
+    action: z.enum(['suspend', 'activate', 'changeRole'], { required_error: 'Action is required' }),
+    value: z.enum(['user', 'admin', 'partner', 'designer']).optional(),
+  })
+  .refine((data) => data.action !== 'changeRole' || data.value !== undefined, {
+    message: 'Value (role) is required for changeRole action',
+    path: ['value'],
+  })
+  .transform((data) => {
+    // Strip any extra fields — only allow userIds, action, value
+    return { userIds: data.userIds, action: data.action, value: data.value };
+  });
 
 // All routes require authentication and admin role
 router.use(authenticate);
@@ -153,7 +161,12 @@ router.patch('/users/bulk', validateBody(bulkUpdateSchema), adminController.bulk
  *       404:
  *         description: User not found
  */
-router.put('/users/:id/role', validateParams(commonSchemas.idParam), validateBody(changeRoleSchema), adminController.changeUserRole);
+router.put(
+  '/users/:id/role',
+  validateParams(commonSchemas.idParam),
+  validateBody(changeRoleSchema),
+  adminController.changeUserRole
+);
 
 /**
  * @swagger
@@ -179,7 +192,11 @@ router.put('/users/:id/role', validateParams(commonSchemas.idParam), validateBod
  *       404:
  *         description: User not found
  */
-router.put('/users/:id/toggle-active', validateParams(commonSchemas.idParam), adminController.toggleUserActive);
+router.put(
+  '/users/:id/toggle-active',
+  validateParams(commonSchemas.idParam),
+  adminController.toggleUserActive
+);
 
 /**
  * @swagger

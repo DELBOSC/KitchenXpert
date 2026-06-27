@@ -43,11 +43,11 @@ export class WebhookEventService {
       });
 
       // Filter to only webhooks whose partner (if any) is active
-      const activeWebhooks = webhooks.filter(
-        (w) => !w.partner || w.partner.isActive
-      );
+      const activeWebhooks = webhooks.filter((w) => !w.partner || w.partner.isActive);
 
-      if (activeWebhooks.length === 0) {return;}
+      if (activeWebhooks.length === 0) {
+        return;
+      }
 
       const payload: WebhookPayload = {
         event,
@@ -58,12 +58,7 @@ export class WebhookEventService {
 
       // Dispatch webhooks asynchronously (fire-and-forget with logging)
       const deliveryPromises = activeWebhooks.map((webhook) =>
-        WebhookEventService.deliver(
-          webhook.id,
-          webhook.url,
-          payload,
-          webhook.secret
-        )
+        WebhookEventService.deliver(webhook.id, webhook.url, payload, webhook.secret)
       );
 
       // Don't await in the caller — fire and forget
@@ -96,10 +91,7 @@ export class WebhookEventService {
 
     // Sign payload with HMAC if secret is configured
     if (secret) {
-      const signature = crypto
-        .createHmac('sha256', secret)
-        .update(body)
-        .digest('hex');
+      const signature = crypto.createHmac('sha256', secret).update(body).digest('hex');
       headers['X-Webhook-Signature'] = `sha256=${signature}`;
     }
 
@@ -125,9 +117,7 @@ export class WebhookEventService {
             attempts: 1,
             deliveredAt: response.ok ? new Date() : undefined,
             failedAt: response.ok ? undefined : new Date(),
-            error: response.ok
-              ? undefined
-              : `HTTP ${response.status}`,
+            error: response.ok ? undefined : `HTTP ${response.status}`,
           },
         })
         .catch((logErr) => {
@@ -135,9 +125,7 @@ export class WebhookEventService {
         });
 
       if (!response.ok) {
-        logger.warn(
-          `[WebhookEvent] Delivery to ${url} failed with status ${response.status}`
-        );
+        logger.warn(`[WebhookEvent] Delivery to ${url} failed with status ${response.status}`);
       }
     } catch (error) {
       // Log failed delivery
@@ -150,8 +138,7 @@ export class WebhookEventService {
             statusCode: 0,
             attempts: 1,
             failedAt: new Date(),
-            error:
-              error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message : 'Unknown error',
           },
         })
         .catch((logErr) => {

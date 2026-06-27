@@ -18,11 +18,15 @@
 
 ## Introduction
 
-This policy defines how long KitchenXpert retains personal data and business records. It ensures compliance with legal requirements while supporting business operations and protecting individual privacy rights.
+This policy defines how long KitchenXpert retains personal data and business
+records. It ensures compliance with legal requirements while supporting business
+operations and protecting individual privacy rights.
 
 ### Policy Statement
 
-KitchenXpert retains data only as long as necessary to fulfill the purposes for which it was collected, comply with legal obligations, and protect legitimate business interests.
+KitchenXpert retains data only as long as necessary to fulfill the purposes for
+which it was collected, comply with legal obligations, and protect legitimate
+business interests.
 
 ---
 
@@ -31,6 +35,7 @@ KitchenXpert retains data only as long as necessary to fulfill the purposes for 
 ### Data Covered
 
 This policy applies to:
+
 - Personal data of customers, partners, and employees
 - Business records and documents
 - System logs and audit trails
@@ -39,14 +44,14 @@ This policy applies to:
 
 ### Systems Covered
 
-| System | Data Types |
-|--------|------------|
+| System              | Data Types                     |
+| ------------------- | ------------------------------ |
 | Production Database | User accounts, designs, orders |
-| Data Warehouse | Analytics, aggregated data |
-| Backup Systems | All production data |
-| Log Management | Audit logs, system logs |
-| Email Systems | Business communications |
-| Document Storage | Contracts, invoices, reports |
+| Data Warehouse      | Analytics, aggregated data     |
+| Backup Systems      | All production data            |
+| Log Management      | Audit logs, system logs        |
+| Email Systems       | Business communications        |
+| Document Storage    | Contracts, invoices, reports   |
 
 ---
 
@@ -54,23 +59,28 @@ This policy applies to:
 
 ### Principle 1: Purpose Limitation
 
-Data is retained only for the purposes for which it was collected or for compatible purposes identified at the time of collection.
+Data is retained only for the purposes for which it was collected or for
+compatible purposes identified at the time of collection.
 
 ### Principle 2: Minimum Retention
 
-Data is retained for the minimum period necessary to fulfill the stated purpose, unless legal requirements mandate longer retention.
+Data is retained for the minimum period necessary to fulfill the stated purpose,
+unless legal requirements mandate longer retention.
 
 ### Principle 3: Legal Compliance
 
-Retention periods meet or exceed all applicable legal and regulatory requirements.
+Retention periods meet or exceed all applicable legal and regulatory
+requirements.
 
 ### Principle 4: Secure Storage
 
-Retained data is protected with appropriate security measures throughout its lifecycle.
+Retained data is protected with appropriate security measures throughout its
+lifecycle.
 
 ### Principle 5: Documented Deletion
 
-When retention periods expire, data is securely deleted with proper documentation.
+When retention periods expire, data is securely deleted with proper
+documentation.
 
 ---
 
@@ -78,44 +88,44 @@ When retention periods expire, data is securely deleted with proper documentatio
 
 ### Customer Data
 
-| Data Category | Retention Period | Legal Basis |
-|---------------|------------------|-------------|
-| Account Information | Account active + 3 years | Contract |
-| Contact Details | Account active + 3 years | Contract |
-| Design Data | Account active + 5 years | Contract |
-| Order History | 7 years from order date | Tax regulations |
-| Payment Records | 7 years from transaction | PCI DSS, tax |
-| Support Tickets | 3 years from resolution | Legitimate interest |
-| Marketing Preferences | Until consent withdrawn | Consent |
+| Data Category         | Retention Period         | Legal Basis         |
+| --------------------- | ------------------------ | ------------------- |
+| Account Information   | Account active + 3 years | Contract            |
+| Contact Details       | Account active + 3 years | Contract            |
+| Design Data           | Account active + 5 years | Contract            |
+| Order History         | 7 years from order date  | Tax regulations     |
+| Payment Records       | 7 years from transaction | PCI DSS, tax        |
+| Support Tickets       | 3 years from resolution  | Legitimate interest |
+| Marketing Preferences | Until consent withdrawn  | Consent             |
 
 ### Partner Data
 
-| Data Category | Retention Period | Legal Basis |
-|---------------|------------------|-------------|
-| Business Contact Info | Relationship + 3 years | Contract |
-| Contract Documents | Contract term + 7 years | Legal requirement |
-| Transaction Records | 7 years from transaction | Tax regulations |
-| Performance Data | Relationship + 2 years | Contract |
+| Data Category         | Retention Period         | Legal Basis       |
+| --------------------- | ------------------------ | ----------------- |
+| Business Contact Info | Relationship + 3 years   | Contract          |
+| Contract Documents    | Contract term + 7 years  | Legal requirement |
+| Transaction Records   | 7 years from transaction | Tax regulations   |
+| Performance Data      | Relationship + 2 years   | Contract          |
 
 ### Employee Data
 
-| Data Category | Retention Period | Legal Basis |
-|---------------|------------------|-------------|
-| Employment Records | Employment + 7 years | Employment law |
-| Payroll Records | 7 years | Tax regulations |
+| Data Category       | Retention Period     | Legal Basis         |
+| ------------------- | -------------------- | ------------------- |
+| Employment Records  | Employment + 7 years | Employment law      |
+| Payroll Records     | 7 years              | Tax regulations     |
 | Performance Reviews | Employment + 3 years | Legitimate interest |
-| Training Records | Employment + 5 years | Regulatory |
+| Training Records    | Employment + 5 years | Regulatory          |
 
 ### System Data
 
-| Data Category | Retention Period | Legal Basis |
-|---------------|------------------|-------------|
-| Security Logs | 3 years | Security, compliance |
-| Access Logs | 2 years | Security, compliance |
-| Audit Trails | 7 years | Compliance |
-| System Logs | 90 days | Operations |
-| Debug Logs | 7 days | Operations |
-| Backups | 90 days rolling | Business continuity |
+| Data Category | Retention Period | Legal Basis          |
+| ------------- | ---------------- | -------------------- |
+| Security Logs | 3 years          | Security, compliance |
+| Access Logs   | 2 years          | Security, compliance |
+| Audit Trails  | 7 years          | Compliance           |
+| System Logs   | 90 days          | Operations           |
+| Debug Logs    | 7 days           | Operations           |
+| Backups       | 90 days rolling  | Business continuity  |
 
 ---
 
@@ -123,13 +133,13 @@ When retention periods expire, data is securely deleted with proper documentatio
 
 ### Regulatory Requirements
 
-| Regulation | Requirement | Impact |
-|------------|-------------|--------|
-| GDPR | Storage limitation | Minimum necessary retention |
-| CCPA | Consumer request records 24 months | Request tracking |
-| SOC 2 | Audit evidence 1 year | Audit logs |
-| PCI DSS | Transaction logs 1 year | Payment records |
-| Tax Law | Financial records 7 years | Invoices, receipts |
+| Regulation | Requirement                        | Impact                      |
+| ---------- | ---------------------------------- | --------------------------- |
+| GDPR       | Storage limitation                 | Minimum necessary retention |
+| CCPA       | Consumer request records 24 months | Request tracking            |
+| SOC 2      | Audit evidence 1 year              | Audit logs                  |
+| PCI DSS    | Transaction logs 1 year            | Payment records             |
+| Tax Law    | Financial records 7 years          | Invoices, receipts          |
 
 ---
 
@@ -138,6 +148,7 @@ When retention periods expire, data is securely deleted with proper documentatio
 ### Extended Retention
 
 Data may be retained beyond standard periods when:
+
 - Subject to legal hold or investigation
 - Required by court order or regulatory inquiry
 - Necessary for ongoing dispute resolution
@@ -147,6 +158,7 @@ Data may be retained beyond standard periods when:
 ### Early Deletion
 
 Data may be deleted before standard periods when:
+
 - Data subject exercises right to erasure (GDPR/CCPA)
 - Consent is withdrawn (consent-based processing)
 - Data is no longer necessary for original purpose
@@ -203,12 +215,12 @@ Data may be deleted before standard periods when:
 
 ### Monitoring
 
-| Metric | Target | Frequency |
-|--------|--------|-----------|
-| Deletion compliance | 100% | Monthly |
-| Exception tracking | Complete | Continuous |
-| Storage utilization | Within budget | Weekly |
-| Policy acknowledgment | 100% | Annual |
+| Metric                | Target        | Frequency  |
+| --------------------- | ------------- | ---------- |
+| Deletion compliance   | 100%          | Monthly    |
+| Exception tracking    | Complete      | Continuous |
+| Storage utilization   | Within budget | Weekly     |
+| Policy acknowledgment | 100%          | Annual     |
 
 ### Compliance Checks
 
@@ -220,6 +232,7 @@ Data may be deleted before standard periods when:
 ### Non-Compliance
 
 Non-compliance with this policy may result in:
+
 - Corrective action for departments
 - Disciplinary action for individuals
 - Regulatory penalties for company
@@ -238,13 +251,13 @@ Non-compliance with this policy may result in:
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value                   |
+| -------------- | ----------------------- |
 | Document Owner | Data Protection Officer |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
-| Next Review | 2027-01-10 |
+| Last Reviewed  | 2026-01-10              |
+| Version        | 2.0                     |
+| Next Review    | 2027-01-10              |
 
 ---
 
-*For questions, contact privacy@kitchenxpert.com.*
+_For questions, contact privacy@kitchenxpert.com._

@@ -23,12 +23,36 @@ class ValidationError extends Error {
  */
 const VALID_OPTIONS = {
   'total-budget': Object.keys(budgetCalculator.BUDGET_RANGES),
-  'financing-method': ['cash-savings', 'home-equity', 'personal-loan', 'credit-card', 'contractor-financing', 'phased'],
-  'priority-spending': ['appliances', 'cabinets', 'countertops', 'layout', 'lighting', 'flooring', 'storage', 'technology'],
-  'savings-areas': ['cabinet-material', 'countertop-edges', 'hardware', 'backsplash', 'lighting-fixtures', 'sink-faucet', 'diy-some'],
+  'financing-method': [
+    'cash-savings',
+    'home-equity',
+    'personal-loan',
+    'credit-card',
+    'contractor-financing',
+    'phased',
+  ],
+  'priority-spending': [
+    'appliances',
+    'cabinets',
+    'countertops',
+    'layout',
+    'lighting',
+    'flooring',
+    'storage',
+    'technology',
+  ],
+  'savings-areas': [
+    'cabinet-material',
+    'countertop-edges',
+    'hardware',
+    'backsplash',
+    'lighting-fixtures',
+    'sink-faucet',
+    'diy-some',
+  ],
   'appliance-budget': Object.keys(budgetCalculator.APPLIANCE_RANGES),
   'roi-consideration': ['very-important', 'somewhat-important', 'not-important'],
-  'contingency-comfort': ['yes-20-plus', 'yes-10-20', 'some-buffer', 'no-buffer']
+  'contingency-comfort': ['yes-20-plus', 'yes-10-20', 'some-buffer', 'no-buffer'],
 };
 
 /**
@@ -41,7 +65,7 @@ const REQUIRED_QUESTIONS = [
   'priority-spending',
   'appliance-budget',
   'roi-consideration',
-  'contingency-comfort'
+  'contingency-comfort',
 ];
 
 /**
@@ -56,7 +80,7 @@ function validateAnswer(questionId, value, context = {}) {
     'savings-areas': validateSavingsAreas,
     'appliance-budget': validateApplianceBudget,
     'roi-consideration': validateROI,
-    'contingency-comfort': validateContingency
+    'contingency-comfort': validateContingency,
   };
 
   const validator = validators[questionId];
@@ -72,7 +96,7 @@ function validateAnswer(questionId, value, context = {}) {
       return {
         valid: false,
         questionId: error.questionId,
-        error: { code: error.code, message: error.message }
+        error: { code: error.code, message: error.message },
       };
     }
     throw error;
@@ -98,7 +122,7 @@ function validateTotalBudget(value) {
     questionId,
     value,
     normalized: value,
-    budgetRange: budgetCalculator.BUDGET_RANGES[value]
+    budgetRange: budgetCalculator.BUDGET_RANGES[value],
   };
 }
 
@@ -122,7 +146,7 @@ function validateBudgetFlexibility(value) {
     valid: true,
     questionId,
     value: numValue,
-    normalized: numValue
+    normalized: numValue,
   };
 }
 
@@ -144,7 +168,7 @@ function validateFinancingMethod(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -155,15 +179,23 @@ function validatePrioritySpending(value, context) {
   const questionId = 'priority-spending';
 
   if (!value || (Array.isArray(value) && value.length === 0)) {
-    throw new ValidationError(questionId, 'Please select at least one spending priority', 'REQUIRED');
+    throw new ValidationError(
+      questionId,
+      'Please select at least one spending priority',
+      'REQUIRED'
+    );
   }
 
   const values = Array.isArray(value) ? value : [value];
 
   // Check for invalid options
-  const invalidOptions = values.filter(v => !VALID_OPTIONS['priority-spending'].includes(v));
+  const invalidOptions = values.filter((v) => !VALID_OPTIONS['priority-spending'].includes(v));
   if (invalidOptions.length > 0) {
-    throw new ValidationError(questionId, `Invalid options: ${invalidOptions.join(', ')}`, 'INVALID_OPTION');
+    throw new ValidationError(
+      questionId,
+      `Invalid options: ${invalidOptions.join(', ')}`,
+      'INVALID_OPTION'
+    );
   }
 
   // Check max selections
@@ -171,7 +203,8 @@ function validatePrioritySpending(value, context) {
   if (values.length > 3) {
     warnings.push({
       code: 'TOO_MANY_PRIORITIES',
-      message: 'Select up to 3 priorities for best results. Having too many priorities dilutes your budget.'
+      message:
+        'Select up to 3 priorities for best results. Having too many priorities dilutes your budget.',
     });
   }
 
@@ -180,7 +213,7 @@ function validatePrioritySpending(value, context) {
     questionId,
     value: values,
     normalized: values.slice(0, 3),
-    warnings: warnings.length > 0 ? warnings : undefined
+    warnings: warnings.length > 0 ? warnings : undefined,
   };
 }
 
@@ -196,22 +229,26 @@ function validateSavingsAreas(value) {
       valid: true,
       questionId,
       value: [],
-      normalized: []
+      normalized: [],
     };
   }
 
   const values = Array.isArray(value) ? value : [value];
 
-  const invalidOptions = values.filter(v => !VALID_OPTIONS['savings-areas'].includes(v));
+  const invalidOptions = values.filter((v) => !VALID_OPTIONS['savings-areas'].includes(v));
   if (invalidOptions.length > 0) {
-    throw new ValidationError(questionId, `Invalid options: ${invalidOptions.join(', ')}`, 'INVALID_OPTION');
+    throw new ValidationError(
+      questionId,
+      `Invalid options: ${invalidOptions.join(', ')}`,
+      'INVALID_OPTION'
+    );
   }
 
   return {
     valid: true,
     questionId,
     value: values,
-    normalized: values
+    normalized: values,
   };
 }
 
@@ -244,7 +281,8 @@ function validateApplianceBudget(value, context) {
       if (applianceMidpoint > totalMidpoint * 0.4) {
         warnings.push({
           code: 'HIGH_APPLIANCE_RATIO',
-          message: 'Your appliance budget is more than 40% of your total budget. This may limit funds for other areas.'
+          message:
+            'Your appliance budget is more than 40% of your total budget. This may limit funds for other areas.',
         });
       }
 
@@ -252,7 +290,7 @@ function validateApplianceBudget(value, context) {
         warnings.push({
           code: 'APPLIANCE_EXCEEDS_TOTAL',
           message: 'Your appliance budget exceeds your total renovation budget.',
-          severity: 'error'
+          severity: 'error',
         });
       }
     }
@@ -264,7 +302,7 @@ function validateApplianceBudget(value, context) {
     value,
     normalized: value,
     applianceRange: budgetCalculator.APPLIANCE_RANGES[value],
-    warnings: warnings.length > 0 ? warnings : undefined
+    warnings: warnings.length > 0 ? warnings : undefined,
   };
 }
 
@@ -286,7 +324,7 @@ function validateROI(value) {
     valid: true,
     questionId,
     value,
-    normalized: value
+    normalized: value,
   };
 }
 
@@ -308,8 +346,9 @@ function validateContingency(value) {
   if (value === 'no-buffer') {
     warnings.push({
       code: 'NO_CONTINGENCY',
-      message: 'Renovations often have unexpected costs. Consider setting aside at least 10% for surprises.',
-      severity: 'warning'
+      message:
+        'Renovations often have unexpected costs. Consider setting aside at least 10% for surprises.',
+      severity: 'warning',
     });
   }
 
@@ -318,7 +357,7 @@ function validateContingency(value) {
     questionId,
     value,
     normalized: value,
-    warnings: warnings.length > 0 ? warnings : undefined
+    warnings: warnings.length > 0 ? warnings : undefined,
   };
 }
 
@@ -333,14 +372,18 @@ function validateSection(answers, context = {}) {
     answeredQuestions: [],
     missingRequired: [],
     validatedAnswers: {},
-    budgetAnalysis: null
+    budgetAnalysis: null,
   };
 
   // Check required questions
   for (const questionId of REQUIRED_QUESTIONS) {
     const value = answers[questionId];
-    if (value === undefined || value === null || value === '' ||
-        (Array.isArray(value) && value.length === 0)) {
+    if (
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
       results.missingRequired.push(questionId);
     }
   }
@@ -350,7 +393,7 @@ function validateSection(answers, context = {}) {
     results.errors.push({
       code: 'MISSING_REQUIRED',
       message: `Please answer: ${results.missingRequired.join(', ')}`,
-      questions: results.missingRequired
+      questions: results.missingRequired,
     });
   }
 
@@ -366,7 +409,7 @@ function validateSection(answers, context = {}) {
       results.validatedAnswers[questionId] = validationResult.normalized || validationResult.value;
 
       if (validationResult.warnings) {
-        results.warnings.push(...validationResult.warnings.map(w => ({ questionId, ...w })));
+        results.warnings.push(...validationResult.warnings.map((w) => ({ questionId, ...w })));
       }
     }
   }
@@ -406,7 +449,7 @@ function crossValidateBudgets(answers) {
       errors.push({
         code: 'BUDGET_MISMATCH',
         message: 'Your appliance budget minimum exceeds your total budget maximum',
-        questionIds: ['total-budget', 'appliance-budget']
+        questionIds: ['total-budget', 'appliance-budget'],
       });
     }
 
@@ -417,7 +460,8 @@ function crossValidateBudgets(answers) {
     if (applianceMid > totalMid * 0.5) {
       warnings.push({
         code: 'APPLIANCE_HEAVY_BUDGET',
-        message: 'More than 50% of your budget would go to appliances, leaving limited funds for cabinets, countertops, and installation'
+        message:
+          'More than 50% of your budget would go to appliances, leaving limited funds for cabinets, countertops, and installation',
       });
     }
   }
@@ -440,5 +484,5 @@ module.exports = {
   crossValidateBudgets,
   ValidationError,
   VALID_OPTIONS,
-  REQUIRED_QUESTIONS
+  REQUIRED_QUESTIONS,
 };

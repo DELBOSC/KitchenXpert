@@ -43,7 +43,7 @@ const renderBanner = () => {
   return render(
     <BrowserRouter>
       <SandboxMigrationBanner />
-    </BrowserRouter>,
+    </BrowserRouter>
   );
 };
 
@@ -54,7 +54,9 @@ describe('SandboxMigrationBanner — dual tracking on completion', () => {
     plausibleSpy = vi.fn();
     window.plausible = plausibleSpy;
     vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
-      if (key === 'kx-ab-hero') {return 'A';}
+      if (key === 'kx-ab-hero') {
+        return 'A';
+      }
       return null;
     });
   });

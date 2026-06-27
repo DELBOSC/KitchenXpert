@@ -13,7 +13,9 @@ const sizes: Record<Size, string> = {
 };
 
 function getInitials(name?: string): string {
-  if (!name) {return '?';}
+  if (!name) {
+    return '?';
+  }
   return name
     .split(/\s+/)
     .slice(0, 2)
@@ -42,7 +44,7 @@ export function Avatar({
         'relative inline-flex select-none items-center justify-center overflow-hidden rounded-full font-semibold text-white',
         'bg-gradient-to-br from-indigo-400 to-fuchsia-500',
         sizes[size],
-        className,
+        className
       )}
       role="img"
       aria-label={alt ?? name ?? 'avatar'}

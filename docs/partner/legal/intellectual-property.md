@@ -1,8 +1,6 @@
 # Intellectual Property Guidelines
 
-**Version:** 2.0
-**Last Updated:** 2026-01-12
-**Effective Date:** 2026-01-12
+**Version:** 2.0 **Last Updated:** 2026-01-12 **Effective Date:** 2026-01-12
 
 ---
 
@@ -27,7 +25,10 @@
 
 ### 1.1 Overview
 
-These Intellectual Property Guidelines ("Guidelines") establish the framework for the ownership, licensing, and use of intellectual property between KitchenXpert SAS ("KitchenXpert," "we," "us," or "our") and Partners ("Partner," "you," or "your") participating in the KitchenXpert Partner Program.
+These Intellectual Property Guidelines ("Guidelines") establish the framework
+for the ownership, licensing, and use of intellectual property between
+KitchenXpert SAS ("KitchenXpert," "we," "us," or "our") and Partners ("Partner,"
+"you," or "your") participating in the KitchenXpert Partner Program.
 
 ### 1.2 Purpose
 
@@ -37,23 +38,29 @@ a) Clearly define which intellectual property belongs to each party;
 
 b) Establish the licenses granted between the parties;
 
-c) Set forth guidelines for the proper use of each party's brands and trademarks;
+c) Set forth guidelines for the proper use of each party's brands and
+trademarks;
 
 d) Address ownership of 3D models and derivative works;
 
-e) Provide procedures for reporting and addressing intellectual property infringement;
+e) Provide procedures for reporting and addressing intellectual property
+infringement;
 
 f) Protect the intellectual property rights of both parties and third parties.
 
 ### 1.3 Relationship to Other Agreements
 
-These Guidelines are incorporated into and form part of the [Partner Terms of Service](./terms-of-service.md). In the event of any conflict between these Guidelines and the Partner Terms of Service regarding intellectual property matters, these Guidelines shall prevail.
+These Guidelines are incorporated into and form part of the
+[Partner Terms of Service](./terms-of-service.md). In the event of any conflict
+between these Guidelines and the Partner Terms of Service regarding intellectual
+property matters, these Guidelines shall prevail.
 
 ### 1.4 Scope
 
 These Guidelines apply to:
 
-- All intellectual property created, shared, or used in connection with the Partner Program
+- All intellectual property created, shared, or used in connection with the
+  Partner Program
 - Product content and media uploaded to the Platform
 - 3D models of Partner products
 - Marketing and promotional materials
@@ -66,25 +73,40 @@ These Guidelines apply to:
 
 For the purposes of these Guidelines:
 
-**"Brand Elements"** means the names, logos, trademarks, service marks, trade names, trade dress, slogans, and other distinctive brand features of a party.
+**"Brand Elements"** means the names, logos, trademarks, service marks, trade
+names, trade dress, slogans, and other distinctive brand features of a party.
 
-**"Content"** means any text, images, videos, audio, 3D models, CAD files, specifications, documentation, and other materials.
+**"Content"** means any text, images, videos, audio, 3D models, CAD files,
+specifications, documentation, and other materials.
 
-**"Derivative Work"** means a work based upon one or more preexisting works, including translations, adaptations, modifications, compilations, and any other form in which a work may be recast, transformed, or adapted.
+**"Derivative Work"** means a work based upon one or more preexisting works,
+including translations, adaptations, modifications, compilations, and any other
+form in which a work may be recast, transformed, or adapted.
 
-**"Intellectual Property Rights"** means all patents, copyrights, moral rights, trademarks, trade secrets, design rights, database rights, rights in know-how, and all other intellectual property rights, whether registered or unregistered, and including applications for registration.
+**"Intellectual Property Rights"** means all patents, copyrights, moral rights,
+trademarks, trade secrets, design rights, database rights, rights in know-how,
+and all other intellectual property rights, whether registered or unregistered,
+and including applications for registration.
 
-**"KitchenXpert Content"** means Content owned by or licensed to KitchenXpert, including the Platform, software, 3D models created by KitchenXpert, user interface designs, documentation, and marketing materials.
+**"KitchenXpert Content"** means Content owned by or licensed to KitchenXpert,
+including the Platform, software, 3D models created by KitchenXpert, user
+interface designs, documentation, and marketing materials.
 
-**"KitchenXpert Marks"** means the trademarks, service marks, logos, and trade names of KitchenXpert, including "KitchenXpert," the KitchenXpert logo, and related marks.
+**"KitchenXpert Marks"** means the trademarks, service marks, logos, and trade
+names of KitchenXpert, including "KitchenXpert," the KitchenXpert logo, and
+related marks.
 
-**"Partner Content"** means Content owned by or licensed to Partner, including product information, images, brand materials, and 3D models provided by Partner.
+**"Partner Content"** means Content owned by or licensed to Partner, including
+product information, images, brand materials, and 3D models provided by Partner.
 
-**"Partner Marks"** means the trademarks, service marks, logos, and trade names of Partner and Partner's products.
+**"Partner Marks"** means the trademarks, service marks, logos, and trade names
+of Partner and Partner's products.
 
-**"Platform"** means the KitchenXpert website, mobile applications, APIs, and all related technology and services.
+**"Platform"** means the KitchenXpert website, mobile applications, APIs, and
+all related technology and services.
 
-**"User-Generated Content"** means Content created by end users of the Platform, including reviews, ratings, and saved designs.
+**"User-Generated Content"** means Content created by end users of the Platform,
+including reviews, ratings, and saved designs.
 
 ---
 
@@ -92,7 +114,8 @@ For the purposes of these Guidelines:
 
 ### 3.1 Partner Ownership
 
-Partner retains all right, title, and interest in and to Partner's Intellectual Property Rights, including:
+Partner retains all right, title, and interest in and to Partner's Intellectual
+Property Rights, including:
 
 #### 3.1.1 Product Designs and Specifications
 
@@ -140,11 +163,14 @@ Partner represents and warrants that:
 
 a) Partner owns or has obtained all necessary rights to the Partner Content;
 
-b) Partner Content does not infringe any third-party Intellectual Property Rights;
+b) Partner Content does not infringe any third-party Intellectual Property
+Rights;
 
-c) Partner has the authority to grant the licenses set forth in these Guidelines;
+c) Partner has the authority to grant the licenses set forth in these
+Guidelines;
 
-d) Partner has obtained all necessary permissions, releases, and consents for any individuals depicted in Partner Content;
+d) Partner has obtained all necessary permissions, releases, and consents for
+any individuals depicted in Partner Content;
 
 e) Partner Content complies with all applicable laws and regulations.
 
@@ -156,7 +182,8 @@ a) Maintaining and protecting Partner's Intellectual Property Rights;
 
 b) Ensuring Partner Content is accurate and does not contain misrepresentations;
 
-c) Promptly notifying KitchenXpert of any known infringement of Partner's rights;
+c) Promptly notifying KitchenXpert of any known infringement of Partner's
+rights;
 
 d) Cooperating with KitchenXpert to address any intellectual property issues;
 
@@ -168,7 +195,8 @@ e) Updating or removing Content that may infringe third-party rights.
 
 ### 4.1 KitchenXpert Ownership
 
-KitchenXpert retains all right, title, and interest in and to KitchenXpert's Intellectual Property Rights, including:
+KitchenXpert retains all right, title, and interest in and to KitchenXpert's
+Intellectual Property Rights, including:
 
 #### 4.1.1 Platform Software and Code
 
@@ -223,19 +251,28 @@ KitchenXpert retains all right, title, and interest in and to KitchenXpert's Int
 
 ### 4.2 Reservation of Rights
 
-Except for the licenses expressly granted herein, KitchenXpert reserves all rights in KitchenXpert Intellectual Property. Nothing in these Guidelines or the Partner Agreement grants Partner any ownership interest in KitchenXpert Intellectual Property.
+Except for the licenses expressly granted herein, KitchenXpert reserves all
+rights in KitchenXpert Intellectual Property. Nothing in these Guidelines or the
+Partner Agreement grants Partner any ownership interest in KitchenXpert
+Intellectual Property.
 
 ### 4.3 Feedback
 
-If Partner provides any suggestions, ideas, enhancement requests, recommendations, or other feedback regarding the Platform or KitchenXpert services ("Feedback"):
+If Partner provides any suggestions, ideas, enhancement requests,
+recommendations, or other feedback regarding the Platform or KitchenXpert
+services ("Feedback"):
 
-a) KitchenXpert may freely use, implement, and incorporate such Feedback without any obligation to Partner;
+a) KitchenXpert may freely use, implement, and incorporate such Feedback without
+any obligation to Partner;
 
-b) Partner hereby assigns to KitchenXpert all right, title, and interest in any Feedback;
+b) Partner hereby assigns to KitchenXpert all right, title, and interest in any
+Feedback;
 
-c) Partner waives any claims based on moral rights or similar rights in Feedback;
+c) Partner waives any claims based on moral rights or similar rights in
+Feedback;
 
-d) Partner shall not provide Feedback that is subject to third-party Intellectual Property Rights.
+d) Partner shall not provide Feedback that is subject to third-party
+Intellectual Property Rights.
 
 ---
 
@@ -245,21 +282,31 @@ d) Partner shall not provide Feedback that is subject to third-party Intellectua
 
 #### 5.1.1 Scope of License
 
-Partner hereby grants to KitchenXpert a non-exclusive, worldwide, royalty-free license to:
+Partner hereby grants to KitchenXpert a non-exclusive, worldwide, royalty-free
+license to:
 
-a) **Display and Distribute:** Display Partner Content on the Platform, including product listings, catalog pages, search results, and design tools;
+a) **Display and Distribute:** Display Partner Content on the Platform,
+including product listings, catalog pages, search results, and design tools;
 
-b) **Market and Promote:** Use Partner Content in marketing and promotional materials, including advertising, social media, email campaigns, and press releases;
+b) **Market and Promote:** Use Partner Content in marketing and promotional
+materials, including advertising, social media, email campaigns, and press
+releases;
 
-c) **Create 3D Models:** Create three-dimensional models of Partner products based on specifications, images, and other information provided by Partner;
+c) **Create 3D Models:** Create three-dimensional models of Partner products
+based on specifications, images, and other information provided by Partner;
 
-d) **Include in Designs:** Include Partner products in customer kitchen designs, saved projects, and design inspiration content;
+d) **Include in Designs:** Include Partner products in customer kitchen designs,
+saved projects, and design inspiration content;
 
-e) **Technical Processing:** Resize, reformat, compress, and otherwise technically process Partner Content as necessary for Platform operation;
+e) **Technical Processing:** Resize, reformat, compress, and otherwise
+technically process Partner Content as necessary for Platform operation;
 
-f) **AI Training:** Include Partner Content in training data for AI/ML models used to improve recommendations, search, and design tools (with appropriate safeguards);
+f) **AI Training:** Include Partner Content in training data for AI/ML models
+used to improve recommendations, search, and design tools (with appropriate
+safeguards);
 
-g) **Sublicense:** Sublicense the above rights to service providers, affiliates, and partners as necessary for Platform operation and marketing.
+g) **Sublicense:** Sublicense the above rights to service providers, affiliates,
+and partners as necessary for Platform operation and marketing.
 
 #### 5.1.2 License Term
 
@@ -269,13 +316,16 @@ a) Commences upon Partner uploading Content to the Platform;
 
 b) Continues for the duration of the Partner Agreement;
 
-c) Terminates upon termination of the Partner Agreement, except as necessary to fulfill pending orders and legal obligations;
+c) Terminates upon termination of the Partner Agreement, except as necessary to
+fulfill pending orders and legal obligations;
 
-d) Survives termination to the extent Content remains in customer saved designs (which may continue to be viewable but not purchasable).
+d) Survives termination to the extent Content remains in customer saved designs
+(which may continue to be viewable but not purchasable).
 
 #### 5.1.3 Attribution
 
-KitchenXpert will provide appropriate attribution to Partner when displaying Partner Content, including:
+KitchenXpert will provide appropriate attribution to Partner when displaying
+Partner Content, including:
 
 - Partner/brand name on product listings
 - Link to Partner information where appropriate
@@ -285,13 +335,17 @@ KitchenXpert will provide appropriate attribution to Partner when displaying Par
 
 #### 5.2.1 Brand Usage License
 
-KitchenXpert grants Partner a limited, non-exclusive, non-transferable license to:
+KitchenXpert grants Partner a limited, non-exclusive, non-transferable license
+to:
 
-a) **Partner Designation:** Use the designation "KitchenXpert Partner" or "Available on KitchenXpert" in connection with Partner's business;
+a) **Partner Designation:** Use the designation "KitchenXpert Partner" or
+"Available on KitchenXpert" in connection with Partner's business;
 
-b) **Partner Badges:** Display approved Partner badges on Partner's website and marketing materials;
+b) **Partner Badges:** Display approved Partner badges on Partner's website and
+marketing materials;
 
-c) **Links:** Link to the KitchenXpert Platform from Partner's website and marketing materials;
+c) **Links:** Link to the KitchenXpert Platform from Partner's website and
+marketing materials;
 
 d) **Co-Marketing:** Participate in co-marketing activities as mutually agreed.
 
@@ -299,15 +353,20 @@ This license is subject to the Brand Usage Guidelines in Section 7.
 
 #### 5.2.2 3D Model License
 
-For 3D models created by KitchenXpert of Partner products, KitchenXpert grants Partner:
+For 3D models created by KitchenXpert of Partner products, KitchenXpert grants
+Partner:
 
-a) A non-exclusive, royalty-free license to use such models for Partner's own marketing purposes;
+a) A non-exclusive, royalty-free license to use such models for Partner's own
+marketing purposes;
 
-b) The right to display such models on Partner's website and in Partner's marketing materials;
+b) The right to display such models on Partner's website and in Partner's
+marketing materials;
 
-c) The right to provide such models to customers upon request (in approved formats);
+c) The right to provide such models to customers upon request (in approved
+formats);
 
-d) The right to use such models in third-party design software (subject to format availability).
+d) The right to use such models in third-party design software (subject to
+format availability).
 
 This license is subject to the terms in Section 6.
 
@@ -317,13 +376,16 @@ Partner shall not:
 
 a) Sublicense KitchenXpert Intellectual Property without written consent;
 
-b) Use KitchenXpert Marks in a manner that suggests endorsement beyond the Partner relationship;
+b) Use KitchenXpert Marks in a manner that suggests endorsement beyond the
+Partner relationship;
 
 c) Modify, alter, or create derivative works from KitchenXpert Brand Elements;
 
-d) Use KitchenXpert Intellectual Property in any way that disparages KitchenXpert or damages its reputation;
+d) Use KitchenXpert Intellectual Property in any way that disparages
+KitchenXpert or damages its reputation;
 
-e) Register or attempt to register any mark confusingly similar to KitchenXpert Marks.
+e) Register or attempt to register any mark confusingly similar to KitchenXpert
+Marks.
 
 ---
 
@@ -340,6 +402,7 @@ Models created by or for Partner and uploaded to the Platform.
 **Ownership:** Partner retains full ownership.
 
 **Usage Rights:**
+
 - KitchenXpert may use per the license in Section 5.1
 - Partner may use without restriction
 - Partner responsible for accuracy and quality
@@ -351,6 +414,7 @@ Models created by KitchenXpert based on Partner product information.
 **Ownership:** KitchenXpert retains ownership.
 
 **Partner License:**
+
 - Non-exclusive license per Section 5.2.2
 - May use for marketing purposes
 - May provide to customers
@@ -358,11 +422,14 @@ Models created by KitchenXpert based on Partner product information.
 
 #### 6.1.3 Jointly Developed Models
 
-Models created through collaboration between KitchenXpert and Partner (typically for Enterprise Partners).
+Models created through collaboration between KitchenXpert and Partner (typically
+for Enterprise Partners).
 
-**Ownership:** As negotiated in the applicable Statement of Work or Enterprise Agreement.
+**Ownership:** As negotiated in the applicable Statement of Work or Enterprise
+Agreement.
 
 **Typical arrangements:**
+
 - Joint ownership with cross-licenses
 - Partner ownership with KitchenXpert license
 - KitchenXpert ownership with enhanced Partner license
@@ -396,15 +463,17 @@ b) Will be optimized for web and mobile viewing;
 c) Will include standard materials and textures;
 
 d) Will be created within timeframes based on Partner Tier:
-   - Basic: Standard queue (4-6 weeks)
-   - Pro: Priority queue (2-4 weeks)
-   - Enterprise: Dedicated resources (as negotiated)
+
+- Basic: Standard queue (4-6 weeks)
+- Pro: Priority queue (2-4 weeks)
+- Enterprise: Dedicated resources (as negotiated)
 
 ### 6.3 Model Updates and Modifications
 
 #### 6.3.1 Partner-Provided Models
 
-Partner may update or replace Partner-provided models at any time through the Partner Portal. Partner is responsible for ensuring updates are accurate.
+Partner may update or replace Partner-provided models at any time through the
+Partner Portal. Partner is responsible for ensuring updates are accurate.
 
 #### 6.3.2 KitchenXpert-Created Models
 
@@ -423,15 +492,18 @@ d) Major redesigns may require new model creation.
 Upon termination of the Partner Agreement:
 
 **Partner-Provided Models:**
+
 - Removed from Platform within 30 days
 - Returned to Partner in original format upon request
 
 **KitchenXpert-Created Models:**
+
 - Removed from Platform within 30 days
 - Partner license terminates upon termination
 - Models retained by KitchenXpert but not publicly displayed
 
 **Customer Saved Designs:**
+
 - Existing customer designs may retain model references
 - Products displayed as "no longer available"
 - No new purchases possible
@@ -447,6 +519,7 @@ Partners may use KitchenXpert Brand Elements in the following approved ways:
 #### 7.1.1 Partner Designation
 
 Partners may state:
+
 - "KitchenXpert Partner"
 - "Official KitchenXpert Partner"
 - "Available on KitchenXpert"
@@ -455,6 +528,7 @@ Partners may state:
 #### 7.1.2 Partner Badges
 
 KitchenXpert provides official Partner badges for use in:
+
 - Partner websites (footer, partner page)
 - Email signatures
 - Marketing materials
@@ -466,6 +540,7 @@ Badge files are available in the Partner Portal under Brand Assets.
 #### 7.1.3 Linking
 
 Partners may link to:
+
 - KitchenXpert.com homepage
 - Partner's brand page on KitchenXpert
 - Specific product pages on KitchenXpert
@@ -474,6 +549,7 @@ Partners may link to:
 #### 7.1.4 Press and Media
 
 Partners may reference the partnership in:
+
 - Press releases (with KitchenXpert review/approval)
 - Media interviews (factual statements about partnership)
 - Industry publications
@@ -526,6 +602,7 @@ d) Display in the Partner showcase and directories;
 e) Use in advertising promoting the Partner Program.
 
 KitchenXpert will:
+
 - Use Partner Marks as provided by Partner
 - Follow any brand guidelines provided by Partner
 - Not modify Partner Marks without approval
@@ -536,6 +613,7 @@ KitchenXpert will:
 #### 7.4.1 Pre-Approved Uses
 
 No approval needed for:
+
 - Using approved Partner badges as provided
 - Stating "Available on KitchenXpert" in text
 - Linking to KitchenXpert website
@@ -544,6 +622,7 @@ No approval needed for:
 #### 7.4.2 Approval Required
 
 Approval needed for:
+
 - Press releases mentioning KitchenXpert
 - Joint marketing campaigns
 - Use of KitchenXpert Marks on product packaging
@@ -556,12 +635,14 @@ Approval needed for:
 Submit requests to: marketing@kitchenxpert.com
 
 Include:
+
 - Description of intended use
 - Draft materials or mockups
 - Timeline and distribution channels
 - Target audience
 
 Response time:
+
 - Standard requests: 10 business days
 - Urgent requests (mark as urgent): 5 business days
 - Enterprise Partners: Contact Partner Success Manager
@@ -602,7 +683,8 @@ Or use the Infringement Report form in the Partner Portal.
 
 Reports should include:
 
-a) Identification of the copyrighted work, trademark, or patent claimed to be infringed;
+a) Identification of the copyrighted work, trademark, or patent claimed to be
+infringed;
 
 b) Identification of the allegedly infringing material and its location;
 
@@ -612,7 +694,8 @@ d) Statement of good faith belief that the use is not authorized;
 
 e) Statement that the information in the notice is accurate;
 
-f) For copyright claims: A statement under penalty of perjury that the reporter is authorized to act on behalf of the owner;
+f) For copyright claims: A statement under penalty of perjury that the reporter
+is authorized to act on behalf of the owner;
 
 g) Physical or electronic signature of the rights owner or authorized agent.
 
@@ -621,6 +704,7 @@ g) Physical or electronic signature of the rights owner or authorized agent.
 #### 8.2.1 Acknowledgment
 
 KitchenXpert will:
+
 - Acknowledge receipt within 2 business days
 - Assign a case number for tracking
 - Designate a point of contact
@@ -651,7 +735,8 @@ f) Provide information to law enforcement if requested.
 
 #### 8.3.1 Right to Counter-Notify
 
-If content is removed based on an infringement claim, the affected party may submit a counter-notification if they believe:
+If content is removed based on an infringement claim, the affected party may
+submit a counter-notification if they believe:
 
 - The content was misidentified;
 - The content is not infringing;
@@ -663,7 +748,8 @@ Counter-notifications must include:
 
 a) Identification of the removed material and its location;
 
-b) Statement under penalty of perjury that the material was removed by mistake or misidentification;
+b) Statement under penalty of perjury that the material was removed by mistake
+or misidentification;
 
 c) Consent to jurisdiction of courts in Paris, France;
 
@@ -675,7 +761,8 @@ Upon receipt of valid counter-notification:
 
 a) KitchenXpert will notify the original complainant;
 
-b) If complainant does not file court action within 10 business days, content may be restored;
+b) If complainant does not file court action within 10 business days, content
+may be restored;
 
 c) If court action is filed, content remains removed pending resolution.
 
@@ -691,17 +778,20 @@ c) Cooperate with KitchenXpert in investigating infringement claims;
 
 d) Not knowingly upload infringing content to the Platform;
 
-e) Indemnify KitchenXpert for claims arising from Partner Content (per Section 10).
+e) Indemnify KitchenXpert for claims arising from Partner Content (per Section
+10).
 
 ### 8.5 Repeat Infringers
 
-KitchenXpert maintains a policy of terminating relationships with repeat infringers:
+KitchenXpert maintains a policy of terminating relationships with repeat
+infringers:
 
 - First valid infringement claim: Warning and content removal
 - Second valid infringement claim: Account suspension and review
 - Third valid infringement claim: Account termination
 
-KitchenXpert reserves the right to terminate accounts after a single egregious infringement.
+KitchenXpert reserves the right to terminate accounts after a single egregious
+infringement.
 
 ---
 
@@ -717,15 +807,18 @@ a) Partner owns or has validly licensed all Partner Content;
 
 b) Partner has the right to grant the licenses set forth herein;
 
-c) Partner Content does not infringe any third-party Intellectual Property Rights;
+c) Partner Content does not infringe any third-party Intellectual Property
+Rights;
 
 d) No consent, approval, or authorization of any third party is required.
 
 #### 9.1.2 Non-Infringement
 
-a) Partner's products do not infringe any third-party patents, copyrights, trademarks, or other Intellectual Property Rights;
+a) Partner's products do not infringe any third-party patents, copyrights,
+trademarks, or other Intellectual Property Rights;
 
-b) Partner is not aware of any claims or threats regarding infringement of Partner's products;
+b) Partner is not aware of any claims or threats regarding infringement of
+Partner's products;
 
 c) Partner will promptly notify KitchenXpert of any infringement claims.
 
@@ -735,7 +828,8 @@ a) Partner Content accurately represents Partner's products;
 
 b) Partner Content does not contain false or misleading information;
 
-c) Any individuals depicted in Partner Content have provided appropriate releases.
+c) Any individuals depicted in Partner Content have provided appropriate
+releases.
 
 ### 9.2 KitchenXpert Warranties
 
@@ -743,13 +837,16 @@ KitchenXpert represents and warrants that:
 
 a) KitchenXpert owns or has validly licensed all KitchenXpert Content;
 
-b) The Platform, as provided by KitchenXpert, does not knowingly infringe any third-party Intellectual Property Rights;
+b) The Platform, as provided by KitchenXpert, does not knowingly infringe any
+third-party Intellectual Property Rights;
 
 c) KitchenXpert will use Partner Marks in accordance with these Guidelines.
 
 ### 9.3 Disclaimer
 
-EXCEPT AS EXPRESSLY SET FORTH HEREIN, NEITHER PARTY MAKES ANY WARRANTIES REGARDING INTELLECTUAL PROPERTY, INCLUDING WARRANTIES OF NON-INFRINGEMENT. EACH PARTY USES THE OTHER PARTY'S INTELLECTUAL PROPERTY AT ITS OWN RISK.
+EXCEPT AS EXPRESSLY SET FORTH HEREIN, NEITHER PARTY MAKES ANY WARRANTIES
+REGARDING INTELLECTUAL PROPERTY, INCLUDING WARRANTIES OF NON-INFRINGEMENT. EACH
+PARTY USES THE OTHER PARTY'S INTELLECTUAL PROPERTY AT ITS OWN RISK.
 
 ---
 
@@ -757,25 +854,35 @@ EXCEPT AS EXPRESSLY SET FORTH HEREIN, NEITHER PARTY MAKES ANY WARRANTIES REGARDI
 
 ### 10.1 Partner Indemnification
 
-Partner shall defend, indemnify, and hold harmless KitchenXpert, its affiliates, and their respective directors, officers, employees, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising from or related to:
+Partner shall defend, indemnify, and hold harmless KitchenXpert, its affiliates,
+and their respective directors, officers, employees, and agents from and against
+any and all claims, damages, losses, liabilities, costs, and expenses (including
+reasonable attorneys' fees) arising from or related to:
 
-a) Any claim that Partner Content infringes any third-party Intellectual Property Rights;
+a) Any claim that Partner Content infringes any third-party Intellectual
+Property Rights;
 
-b) Any claim that Partner's products infringe any third-party patents, copyrights, trademarks, or trade secrets;
+b) Any claim that Partner's products infringe any third-party patents,
+copyrights, trademarks, or trade secrets;
 
 c) Partner's breach of any warranty or representation in these Guidelines;
 
 d) Partner's use of KitchenXpert Marks in violation of these Guidelines;
 
-e) Any claim arising from Partner's marketing activities or press releases referencing KitchenXpert.
+e) Any claim arising from Partner's marketing activities or press releases
+referencing KitchenXpert.
 
 ### 10.2 KitchenXpert Indemnification
 
-KitchenXpert shall defend, indemnify, and hold harmless Partner from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising from or related to:
+KitchenXpert shall defend, indemnify, and hold harmless Partner from and against
+any and all claims, damages, losses, liabilities, costs, and expenses (including
+reasonable attorneys' fees) arising from or related to:
 
-a) Any claim that the Platform (excluding Partner Content) infringes any third-party Intellectual Property Rights;
+a) Any claim that the Platform (excluding Partner Content) infringes any
+third-party Intellectual Property Rights;
 
-b) Any claim that 3D models created solely by KitchenXpert infringe any third-party rights (except where based on Partner specifications);
+b) Any claim that 3D models created solely by KitchenXpert infringe any
+third-party rights (except where based on Partner specifications);
 
 c) KitchenXpert's use of Partner Marks in violation of these Guidelines.
 
@@ -797,19 +904,22 @@ The indemnifying party shall:
 
 a) Have sole control over defense and settlement;
 
-b) Not settle any claim that admits fault or imposes obligations on the indemnified party without consent;
+b) Not settle any claim that admits fault or imposes obligations on the
+indemnified party without consent;
 
 c) Keep the indemnified party informed of developments.
 
 ### 10.4 Mitigation
 
-If any intellectual property becomes subject to an infringement claim, the indemnifying party may at its option:
+If any intellectual property becomes subject to an infringement claim, the
+indemnifying party may at its option:
 
 a) Obtain the right to continue using the intellectual property;
 
 b) Replace or modify the intellectual property to make it non-infringing;
 
-c) If neither of the above is commercially reasonable, terminate the license and refund any applicable fees.
+c) If neither of the above is commercially reasonable, terminate the license and
+refund any applicable fees.
 
 ---
 
@@ -817,7 +927,8 @@ c) If neither of the above is commercially reasonable, terminate the license and
 
 ### 11.1 Term
 
-These Guidelines are effective upon Partner's acceptance of the Partner Terms of Service and continue for the duration of the Partner Agreement.
+These Guidelines are effective upon Partner's acceptance of the Partner Terms of
+Service and continue for the duration of the Partner Agreement.
 
 ### 11.2 Effect of Termination
 
@@ -825,21 +936,25 @@ Upon termination of the Partner Agreement:
 
 #### 11.2.1 License Termination
 
-a) Licenses granted by Partner to KitchenXpert terminate, except as necessary to:
-   - Fulfill pending orders
-   - Maintain customer saved designs (viewable only)
-   - Comply with legal retention requirements
+a) Licenses granted by Partner to KitchenXpert terminate, except as necessary
+to:
+
+- Fulfill pending orders
+- Maintain customer saved designs (viewable only)
+- Comply with legal retention requirements
 
 b) Licenses granted by KitchenXpert to Partner terminate immediately, including:
-   - Use of KitchenXpert Marks
-   - Use of Partner designations
-   - License to KitchenXpert-created 3D models
+
+- Use of KitchenXpert Marks
+- Use of Partner designations
+- License to KitchenXpert-created 3D models
 
 #### 11.2.2 Content Removal
 
 a) Partner Content will be removed from public display within 30 days;
 
-b) KitchenXpert will remove Partner Marks from marketing materials within 60 days;
+b) KitchenXpert will remove Partner Marks from marketing materials within 60
+days;
 
 c) Partner must remove all KitchenXpert Brand Elements within 30 days.
 
@@ -861,22 +976,17 @@ The following provisions survive termination of the Partner Agreement:
 
 For questions about these Guidelines or intellectual property matters:
 
-**Legal Department**
-Email: legal@kitchenxpert.com
-Phone: +33 1 XX XX XX XX
+**Legal Department** Email: legal@kitchenxpert.com Phone: +33 1 XX XX XX XX
 
-**Mailing Address:**
-KitchenXpert SAS
-Legal Department - Intellectual Property
-15 Rue de la Innovation
-75008 Paris, France
+**Mailing Address:** KitchenXpert SAS Legal Department - Intellectual Property
+15 Rue de la Innovation 75008 Paris, France
 
 ### 12.2 Infringement Reports
 
 To report intellectual property infringement:
 
-**Email:** legal@kitchenxpert.com
-**Subject Line:** IP Infringement Report - [Brief Description]
+**Email:** legal@kitchenxpert.com **Subject Line:** IP Infringement Report -
+[Brief Description]
 
 **Online Form:** Partner Portal > Support > Report Infringement
 
@@ -900,8 +1010,8 @@ For questions about 3D models or model updates:
 
 For general partner support:
 
-**Email:** partners@kitchenxpert.com
-**Phone:** +33 1 XX XX XX XX (Business hours: 9:00-18:00 CET)
+**Email:** partners@kitchenxpert.com **Phone:** +33 1 XX XX XX XX (Business
+hours: 9:00-18:00 CET)
 
 **Pro/Enterprise Partners:** Contact your dedicated Partner Success Manager
 
@@ -921,23 +1031,23 @@ For general partner support:
 
 ### Approved Uses
 
-| Use | Allowed | Notes |
-|-----|---------|-------|
-| "KitchenXpert Partner" text | Yes | As-is, no modification |
-| Official Partner badges | Yes | Download from Partner Portal |
-| Link to KitchenXpert | Yes | Any relevant page |
-| "Available on KitchenXpert" | Yes | In marketing materials |
-| Factual partnership statements | Yes | Accurate information only |
+| Use                            | Allowed | Notes                        |
+| ------------------------------ | ------- | ---------------------------- |
+| "KitchenXpert Partner" text    | Yes     | As-is, no modification       |
+| Official Partner badges        | Yes     | Download from Partner Portal |
+| Link to KitchenXpert           | Yes     | Any relevant page            |
+| "Available on KitchenXpert"    | Yes     | In marketing materials       |
+| Factual partnership statements | Yes     | Accurate information only    |
 
 ### Prohibited Uses
 
-| Use | Allowed | Reason |
-|-----|---------|--------|
-| Modified KitchenXpert logo | No | Brand integrity |
-| "Exclusive KitchenXpert Partner" | No | Unless contractual |
-| KitchenXpert in domain name | No | Without approval |
-| Implying endorsement | No | Beyond partnership scope |
-| Using in ads without approval | No | Requires marketing approval |
+| Use                              | Allowed | Reason                      |
+| -------------------------------- | ------- | --------------------------- |
+| Modified KitchenXpert logo       | No      | Brand integrity             |
+| "Exclusive KitchenXpert Partner" | No      | Unless contractual          |
+| KitchenXpert in domain name      | No      | Without approval            |
+| Implying endorsement             | No      | Beyond partnership scope    |
+| Using in ads without approval    | No      | Requires marketing approval |
 
 ---
 
@@ -964,7 +1074,8 @@ For general partner support:
 
 ### Clear Space Requirements
 
-Maintain clear space around badges equal to the height of the "K" in KitchenXpert.
+Maintain clear space around badges equal to the height of the "K" in
+KitchenXpert.
 
 ### Background Requirements
 
@@ -976,14 +1087,16 @@ Maintain clear space around badges equal to the height of the "K" in KitchenXper
 
 ## Version History
 
-| Version | Date | Description |
-|---------|------|-------------|
-| 1.0 | 2025-06-01 | Initial release |
-| 1.1 | 2025-09-15 | Added 3D model provisions |
-| 2.0 | 2026-01-12 | Comprehensive revision and expansion |
+| Version | Date       | Description                          |
+| ------- | ---------- | ------------------------------------ |
+| 1.0     | 2025-06-01 | Initial release                      |
+| 1.1     | 2025-09-15 | Added 3D model provisions            |
+| 2.0     | 2026-01-12 | Comprehensive revision and expansion |
 
 ---
 
-*These Intellectual Property Guidelines form part of the Partner Terms of Service. By accepting the Partner Terms of Service, Partner agrees to be bound by these Guidelines.*
+_These Intellectual Property Guidelines form part of the Partner Terms of
+Service. By accepting the Partner Terms of Service, Partner agrees to be bound
+by these Guidelines._
 
 **Last Updated: 2026-01-12**

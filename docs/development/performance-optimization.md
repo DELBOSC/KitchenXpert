@@ -15,7 +15,8 @@
 
 ## Overview
 
-This guide covers performance optimization techniques for all components of KitchenXpert.
+This guide covers performance optimization techniques for all components of
+KitchenXpert.
 
 ### Performance Goals
 
@@ -34,7 +35,7 @@ async function getUsersWithDesigns() {
   const users = await prisma.user.findMany();
   for (const user of users) {
     user.designs = await prisma.design.findMany({
-      where: { userId: user.id }
+      where: { userId: user.id },
     });
   }
   return users;
@@ -43,7 +44,7 @@ async function getUsersWithDesigns() {
 // ✅ Use Eager Loading
 async function getUsersWithDesigns() {
   return await prisma.user.findMany({
-    include: { designs: true }
+    include: { designs: true },
   });
 }
 ```
@@ -75,9 +76,9 @@ async function getProducts(page = 1, limit = 20) {
     prisma.product.findMany({
       skip: offset,
       take: limit,
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     }),
-    prisma.product.count()
+    prisma.product.count(),
   ]);
 
   return {
@@ -86,8 +87,8 @@ async function getProducts(page = 1, limit = 20) {
       page,
       limit,
       total,
-      pages: Math.ceil(total / limit)
-    }
+      pages: Math.ceil(total / limit),
+    },
   };
 }
 ```
@@ -267,17 +268,11 @@ const highDetail = new THREE.Mesh(
 lod.addLevel(highDetail, 0);
 
 // Medium detail
-const medDetail = new THREE.Mesh(
-  new THREE.SphereGeometry(1, 16, 16),
-  material
-);
+const medDetail = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 16), material);
 lod.addLevel(medDetail, 10);
 
 // Low detail (far)
-const lowDetail = new THREE.Mesh(
-  new THREE.SphereGeometry(1, 8, 8),
-  material
-);
+const lowDetail = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 8), material);
 lod.addLevel(lowDetail, 50);
 
 scene.add(lod);
@@ -341,16 +336,16 @@ LIMIT 20;
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL
-    }
+      url: process.env.DATABASE_URL,
+    },
   },
   // Connection pool settings
   pool: {
     min: 2,
     max: 10,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000
-  }
+    connectionTimeoutMillis: 5000,
+  },
 });
 ```
 
@@ -360,13 +355,13 @@ const prisma = new PrismaClient({
 // ✅ Batch insert
 await prisma.product.createMany({
   data: products,
-  skipDuplicates: true
+  skipDuplicates: true,
 });
 
 // ✅ Batch update
 await prisma.user.updateMany({
   where: { isActive: false },
-  data: { deletedAt: new Date() }
+  data: { deletedAt: new Date() },
 });
 ```
 
@@ -376,7 +371,11 @@ await prisma.user.updateMany({
 
 ```typescript
 // Cache frequently accessed data
-async function getCachedData(key: string, fetcher: () => Promise<any>, ttl = 3600) {
+async function getCachedData(
+  key: string,
+  fetcher: () => Promise<any>,
+  ttl = 3600
+) {
   // Try cache
   const cached = await redis.get(key);
   if (cached) {
@@ -423,10 +422,10 @@ export default defineConfig({
         // Add content hash to filenames
         entryFileNames: 'assets/[name].[hash].js',
         chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]'
-      }
-    }
-  }
+        assetFileNames: 'assets/[name].[hash].[ext]',
+      },
+    },
+  },
 });
 ```
 
@@ -438,15 +437,15 @@ export default defineConfig({
 import { onCLS, onFID, onLCP } from 'web-vitals';
 
 // Measure Core Web Vitals
-onCLS(console.log);  // Cumulative Layout Shift
-onFID(console.log);  // First Input Delay
-onLCP(console.log);  // Largest Contentful Paint
+onCLS(console.log); // Cumulative Layout Shift
+onFID(console.log); // First Input Delay
+onLCP(console.log); // Largest Contentful Paint
 
 // Send to analytics
 function sendToAnalytics(metric) {
   fetch('/api/analytics', {
     method: 'POST',
-    body: JSON.stringify(metric)
+    body: JSON.stringify(metric),
   });
 }
 
@@ -489,27 +488,27 @@ jobs:
 
 ### Web Vitals Targets
 
-| Metric | Good | Needs Improvement | Poor |
-|--------|------|-------------------|------|
-| LCP (Largest Contentful Paint) | < 2.5s | 2.5-4s | > 4s |
-| FID (First Input Delay) | < 100ms | 100-300ms | > 300ms |
-| CLS (Cumulative Layout Shift) | < 0.1 | 0.1-0.25 | > 0.25 |
+| Metric                         | Good    | Needs Improvement | Poor    |
+| ------------------------------ | ------- | ----------------- | ------- |
+| LCP (Largest Contentful Paint) | < 2.5s  | 2.5-4s            | > 4s    |
+| FID (First Input Delay)        | < 100ms | 100-300ms         | > 300ms |
+| CLS (Cumulative Layout Shift)  | < 0.1   | 0.1-0.25          | > 0.25  |
 
 ### API Response Times
 
-| Endpoint Type | p50 | p95 | p99 |
-|---------------|-----|-----|-----|
-| Simple GET | < 50ms | < 100ms | < 200ms |
-| Complex GET | < 100ms | < 300ms | < 500ms |
-| POST/PUT | < 200ms | < 500ms | < 1s |
+| Endpoint Type | p50     | p95     | p99     |
+| ------------- | ------- | ------- | ------- |
+| Simple GET    | < 50ms  | < 100ms | < 200ms |
+| Complex GET   | < 100ms | < 300ms | < 500ms |
+| POST/PUT      | < 200ms | < 500ms | < 1s    |
 
 ### Database Query Times
 
-| Query Type | Target | Max |
-|------------|--------|-----|
-| Simple SELECT | < 10ms | 50ms |
-| JOIN query | < 50ms | 200ms |
-| Aggregation | < 100ms | 500ms |
+| Query Type    | Target  | Max   |
+| ------------- | ------- | ----- |
+| Simple SELECT | < 10ms  | 50ms  |
+| JOIN query    | < 50ms  | 200ms |
+| Aggregation   | < 100ms | 500ms |
 
 ## Related Documentation
 

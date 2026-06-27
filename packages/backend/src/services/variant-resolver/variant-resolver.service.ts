@@ -69,10 +69,14 @@ export class VariantResolverService {
     const self = req1.find((r) => r.sku === anySku);
 
     // Unknown / inactive / deleted -> not a resolvable gamme.
-    if (!self) {return [];}
+    if (!self) {
+      return [];
+    }
 
     // `anySku` IS the canonical -> req1 already holds the whole gamme (1 query).
-    if (self.isCanonical) {return this.groupColors(req1);}
+    if (self.isCanonical) {
+      return this.groupColors(req1);
+    }
 
     // `anySku` is a variant -> climb to its canonical, fetch the gamme (2 queries).
     if (self.parentSku != null) {
@@ -90,10 +94,15 @@ export class VariantResolverService {
    */
   private groupColors(rows: ResolverProductRow[]): ColorOption[] {
     // Group rows by normalized color key; drop unrecognized colors.
-    const groups = new Map<string, { label: string; kind: 'color' | 'material'; score: number; rows: ResolverProductRow[] }>();
+    const groups = new Map<
+      string,
+      { label: string; kind: 'color' | 'material'; score: number; rows: ResolverProductRow[] }
+    >();
     for (const row of rows) {
       const nc = normalizeColor(colorOf(row));
-      if (nc.kind === 'unknown') {continue;}
+      if (nc.kind === 'unknown') {
+        continue;
+      }
       const g = groups.get(nc.key) ?? { label: nc.label, kind: nc.kind, score: nc.score, rows: [] };
       g.rows.push(row);
       groups.set(nc.key, g);
@@ -106,7 +115,7 @@ export class VariantResolverService {
         (a, b) =>
           canonRank(a) - canonRank(b) ||
           priceForSort(a) - priceForSort(b) ||
-          a.sku.localeCompare(b.sku),
+          a.sku.localeCompare(b.sku)
       );
       const rep = sorted[0]!;
       const repPrice = Number(rep.price);
@@ -126,7 +135,7 @@ export class VariantResolverService {
     }
 
     options.sort(
-      (a, b) => b.score - a.score || b.skuCount - a.skuCount || a.label.localeCompare(b.label),
+      (a, b) => b.score - a.score || b.skuCount - a.skuCount || a.label.localeCompare(b.label)
     );
     return options;
   }
@@ -135,7 +144,10 @@ export class VariantResolverService {
    * Resolve a specific color of a gamme (from ANY of its SKUs) to its
    * representative purchasable SKU. Returns null if the gamme does not offer it.
    */
-  async resolveByColor(anySku: string, colorKey: string): Promise<{ sku: string; price: number } | null> {
+  async resolveByColor(
+    anySku: string,
+    colorKey: string
+  ): Promise<{ sku: string; price: number } | null> {
     const options = await this.resolveColors(anySku);
     const match = options.find((o) => o.key === colorKey);
     return match ? { sku: match.representativeSku, price: match.priceFrom } : null;

@@ -156,8 +156,7 @@ export class CompatibilityGeneratorService {
 
   static getInstance(): CompatibilityGeneratorService {
     if (!CompatibilityGeneratorService.instance) {
-      CompatibilityGeneratorService.instance =
-        new CompatibilityGeneratorService();
+      CompatibilityGeneratorService.instance = new CompatibilityGeneratorService();
     }
     return CompatibilityGeneratorService.instance;
   }
@@ -179,51 +178,44 @@ export class CompatibilityGeneratorService {
 
     const prompt = this.buildPromptForCabinet(cabinetType);
 
-    const result =
-      await this.anthropic.generateJSON<RawCompatibilityResponse>({
-        system: SYSTEM_PROMPTS.COMPATIBILITY_MATRIX,
-        messages: [{ role: 'user', content: prompt }],
-        maxTokens: 4096,
-        parse: (text: string) => {
-          const parsed = JSON.parse(text);
-          const response: RawCompatibilityResponse = parsed;
+    const result = await this.anthropic.generateJSON<RawCompatibilityResponse>({
+      system: SYSTEM_PROMPTS.COMPATIBILITY_MATRIX,
+      messages: [{ role: 'user', content: prompt }],
+      maxTokens: 4096,
+      parse: (text: string) => {
+        const parsed = JSON.parse(text);
+        const response: RawCompatibilityResponse = parsed;
 
+        if (!response.cabinetType || !Array.isArray(response.compatibleAppliances)) {
+          throw new Error(
+            'Invalid compatibility response: missing cabinetType or compatibleAppliances array'
+          );
+        }
+
+        // Validate each entry has required dimension fields
+        for (const entry of response.compatibleAppliances) {
           if (
-            !response.cabinetType ||
-            !Array.isArray(response.compatibleAppliances)
+            !entry.applianceType ||
+            typeof entry.cabinetWidthMin !== 'number' ||
+            typeof entry.cabinetWidthMax !== 'number' ||
+            typeof entry.cabinetDepthMin !== 'number'
           ) {
             throw new Error(
-              'Invalid compatibility response: missing cabinetType or compatibleAppliances array',
+              `Invalid entry for appliance ${JSON.stringify(entry.applianceType)}: missing required dimension fields`
             );
           }
+        }
 
-          // Validate each entry has required dimension fields
-          for (const entry of response.compatibleAppliances) {
-            if (
-              !entry.applianceType ||
-              typeof entry.cabinetWidthMin !== 'number' ||
-              typeof entry.cabinetWidthMax !== 'number' ||
-              typeof entry.cabinetDepthMin !== 'number'
-            ) {
-              throw new Error(
-                `Invalid entry for appliance ${  JSON.stringify(entry.applianceType)  }: missing required dimension fields`,
-              );
-            }
-          }
-
-          return response;
-        },
-      });
-
-    logger.info(
-      '[CompatibilityGenerator] Claude returned compatibility data',
-      {
-        cabinetType,
-        applianceCount: result.data.compatibleAppliances.length,
-        inputTokens: result.inputTokens,
-        outputTokens: result.outputTokens,
+        return response;
       },
-    );
+    });
+
+    logger.info('[CompatibilityGenerator] Claude returned compatibility data', {
+      cabinetType,
+      applianceCount: result.data.compatibleAppliances.length,
+      inputTokens: result.inputTokens,
+      outputTokens: result.outputTokens,
+    });
 
     // Persist to DB via upsert (unique: cabinetType + applianceType + cabinetWidthMin)
     let created = 0;
@@ -292,10 +284,9 @@ export class CompatibilityGeneratorService {
    * @returns Total number of rules created and errors encountered.
    */
   async generateFullMatrix(): Promise<{ rules: number; errors: number }> {
-    logger.info(
-      '[CompatibilityGenerator] Starting full matrix generation',
-      { cabinetCount: CABINETS_ACCEPTING_APPLIANCES.length },
-    );
+    logger.info('[CompatibilityGenerator] Starting full matrix generation', {
+      cabinetCount: CABINETS_ACCEPTING_APPLIANCES.length,
+    });
 
     let totalRules = 0;
     let totalErrors = 0;
@@ -306,13 +297,10 @@ export class CompatibilityGeneratorService {
         totalRules += count;
       } catch (err) {
         totalErrors++;
-        logger.error(
-          '[CompatibilityGenerator] Failed to generate for cabinet type',
-          {
-            cabinetType,
-            error: err instanceof Error ? err.message : String(err),
-          },
-        );
+        logger.error('[CompatibilityGenerator] Failed to generate for cabinet type', {
+          cabinetType,
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 
@@ -330,7 +318,7 @@ export class CompatibilityGeneratorService {
    */
   async checkCompatibility(
     cabinetType: string,
-    applianceType: string,
+    applianceType: string
   ): Promise<{
     compatible: boolean;
     rules: CompatibilityRule[];
@@ -346,9 +334,7 @@ export class CompatibilityGeneratorService {
       return {
         compatible: false,
         rules: [],
-        warnings: [
-          'Aucune regle de compatibilite trouvee pour cette combinaison.',
-        ],
+        warnings: ['Aucune regle de compatibilite trouvee pour cette combinaison.'],
       };
     }
 
@@ -356,29 +342,23 @@ export class CompatibilityGeneratorService {
     for (const rule of rules) {
       if (rule.requiresCutout) {
         warnings.push(
-          `Decoupe requise: ${ 
-            rule.cutoutWidth ?? '?' 
-            }mm x ${ 
-            rule.cutoutDepth ?? '?' 
-            }mm`,
+          `Decoupe requise: ${rule.cutoutWidth ?? '?'}mm x ${rule.cutoutDepth ?? '?'}mm`
         );
       }
       if (rule.ventilationGap && rule.ventilationGap > 0) {
-        warnings.push(
-          `Espace de ventilation requis: ${  rule.ventilationGap  }mm`,
-        );
+        warnings.push(`Espace de ventilation requis: ${rule.ventilationGap}mm`);
       }
       if (rule.electricalReq) {
-        warnings.push(`Raccordement electrique: ${  rule.electricalReq}`);
+        warnings.push(`Raccordement electrique: ${rule.electricalReq}`);
       }
       if (rule.waterReq) {
         warnings.push('Raccordement eau necessaire');
       }
       if (rule.confidence < 0.7) {
         warnings.push(
-          `Confiance faible (${ 
-            (rule.confidence * 100).toFixed(0) 
-            }%) — verification manuelle recommandee`,
+          `Confiance faible (${(rule.confidence * 100).toFixed(
+            0
+          )}%) — verification manuelle recommandee`
         );
       }
       if (rule.notes) {
@@ -392,9 +372,7 @@ export class CompatibilityGeneratorService {
   /**
    * Simple DB query returning all compatibility rules for a given cabinet type.
    */
-  async getRulesForCabinet(
-    cabinetType: string,
-  ): Promise<CompatibilityRule[]> {
+  async getRulesForCabinet(cabinetType: string): Promise<CompatibilityRule[]> {
     return prisma.compatibilityRule.findMany({
       where: { cabinetType },
       orderBy: { applianceType: 'asc' },
@@ -412,49 +390,37 @@ export class CompatibilityGeneratorService {
     const sections: string[] = [];
 
     sections.push(
-      `Determine tous les electromenagers compatibles avec le meuble de cuisine de type "${ 
-        cabinetType 
-        }".`,
+      `Determine tous les electromenagers compatibles avec le meuble de cuisine de type "${
+        cabinetType
+      }".`
     );
     sections.push('');
-    sections.push(
-      "=== TYPES D'ELECTROMENAGERS DISPONIBLES ===",
-    );
+    sections.push("=== TYPES D'ELECTROMENAGERS DISPONIBLES ===");
     sections.push(APPLIANCE_TYPES.join(', '));
     sections.push('');
     sections.push('=== REGLES ===');
     sections.push(
-      '- Ne liste QUE les electromenagers reellement compatibles avec ce type de meuble.',
+      '- Ne liste QUE les electromenagers reellement compatibles avec ce type de meuble.'
     );
     sections.push('- Les dimensions sont en millimetres (mm).');
     sections.push(
-      '- cabinetWidthMin/Max = largeur du caisson necessaire pour accueillir cet electromenager.',
+      '- cabinetWidthMin/Max = largeur du caisson necessaire pour accueillir cet electromenager.'
     );
     sections.push('- cabinetDepthMin = profondeur minimale du caisson.');
     sections.push(
-      '- requiresCutout = true si une decoupe du plan de travail ou de la facade est necessaire.',
+      '- requiresCutout = true si une decoupe du plan de travail ou de la facade est necessaire.'
     );
-    sections.push(
-      '- cutoutWidth/cutoutDepth = dimensions de la decoupe si applicable.',
-    );
-    sections.push(
-      "- ventilationGap = espace d'air necessaire autour (en mm), 0 si aucun.",
-    );
-    sections.push(
-      '- electricalReq = "16A", "20A", "32A", "gaz", ou null.',
-    );
+    sections.push('- cutoutWidth/cutoutDepth = dimensions de la decoupe si applicable.');
+    sections.push("- ventilationGap = espace d'air necessaire autour (en mm), 0 si aucun.");
+    sections.push('- electricalReq = "16A", "20A", "32A", "gaz", ou null.');
     sections.push('- waterReq = true si raccordement eau necessaire.');
-    sections.push(
-      '- confidence = ta confiance dans cette regle (0.0 a 1.0).',
-    );
+    sections.push('- confidence = ta confiance dans cette regle (0.0 a 1.0).');
     sections.push('');
     sections.push('=== FORMAT DE SORTIE ===');
     sections.push(
       `Reponds UNIQUEMENT avec un JSON valide, sans texte avant ou apres:\n` +
         `{\n` +
-        `  "cabinetType": "${ 
-        cabinetType 
-        }",\n` +
+        `  "cabinetType": "${cabinetType}",\n` +
         `  "compatibleAppliances": [\n` +
         `    {\n` +
         `      "applianceType": "type",\n` +
@@ -471,7 +437,7 @@ export class CompatibilityGeneratorService {
         `      "confidence": 0.9\n` +
         `    }\n` +
         `  ]\n` +
-        `}`,
+        `}`
     );
 
     return sections.join('\n');

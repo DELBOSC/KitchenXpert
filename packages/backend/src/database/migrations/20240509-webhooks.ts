@@ -135,13 +135,25 @@ export const WebhooksMigration: Migration = {
     // Create indexes
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhooks_owner ON webhooks(owner_id)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhooks_status ON webhooks(status)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhooks_events ON webhooks USING GIN(events)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_webhooks_events ON webhooks USING GIN(events)`
+    );
 
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_webhook ON webhook_deliveries(webhook_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_status ON webhook_deliveries(status)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_event ON webhook_deliveries(event_type)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_pending ON webhook_deliveries(next_retry_at) WHERE status IN ('pending', 'retrying')`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_created ON webhook_deliveries(created_at)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_webhook ON webhook_deliveries(webhook_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_status ON webhook_deliveries(status)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_event ON webhook_deliveries(event_type)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_pending ON webhook_deliveries(next_retry_at) WHERE status IN ('pending', 'retrying')`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_webhook_deliveries_created ON webhook_deliveries(created_at)`
+    );
 
     // Trigger for updated_at
     await tx.execute(`

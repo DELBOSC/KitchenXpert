@@ -57,14 +57,15 @@ const executeToolSchema = z.object({
   parameters: z.object({}).passthrough().optional(),
 });
 
-const styleTransferSchema = z.object({
-  image: z.string().optional(),
-  imageUrl: z.string().url().optional(),
-  mediaType: z.enum(['image/jpeg', 'image/png', 'image/webp']).optional(),
-}).refine(
-  (data) => data.image || data.imageUrl,
-  { message: 'image (base64) or imageUrl is required' }
-);
+const styleTransferSchema = z
+  .object({
+    image: z.string().optional(),
+    imageUrl: z.string().url().optional(),
+    mediaType: z.enum(['image/jpeg', 'image/png', 'image/webp']).optional(),
+  })
+  .refine((data) => data.image || data.imageUrl, {
+    message: 'image (base64) or imageUrl is required',
+  });
 
 // Streaming & messaging
 
@@ -82,7 +83,13 @@ const styleTransferSchema = z.object({
  *       401:
  *         description: Unauthorized
  */
-router.post('/stream', authenticate, aiRateLimiter, validateBody(chatMessageSchema), aiChatController.streamChat);
+router.post(
+  '/stream',
+  authenticate,
+  aiRateLimiter,
+  validateBody(chatMessageSchema),
+  aiChatController.streamChat
+);
 
 /**
  * @swagger
@@ -98,7 +105,13 @@ router.post('/stream', authenticate, aiRateLimiter, validateBody(chatMessageSche
  *       401:
  *         description: Unauthorized
  */
-router.post('/message', authenticate, aiRateLimiter, validateBody(chatMessageSchema), aiChatController.sendMessage);
+router.post(
+  '/message',
+  authenticate,
+  aiRateLimiter,
+  validateBody(chatMessageSchema),
+  aiChatController.sendMessage
+);
 
 // Chat history
 
@@ -142,7 +155,12 @@ router.get('/history/:sessionId', authenticate, aiChatController.getHistory);
  *       401:
  *         description: Unauthorized
  */
-router.post('/sessions', authenticate, validateBody(createSessionSchema), aiChatController.createSession);
+router.post(
+  '/sessions',
+  authenticate,
+  validateBody(createSessionSchema),
+  aiChatController.createSession
+);
 
 /**
  * @swagger
@@ -184,32 +202,36 @@ router.get('/sessions', authenticate, aiChatController.listSessions);
  *       404:
  *         description: Session not found
  */
-router.get('/sessions/:id', authenticate, asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = req.user?.userId;
-  if (!userId) {
-    res.status(401).json({ success: false, error: 'Not authenticated' });
-    return;
-  }
+router.get(
+  '/sessions/:id',
+  authenticate,
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
-  const { id } = req.params;
-  if (!id) {
-    res.status(400).json({ success: false, error: 'Session ID is required' });
-    return;
-  }
+    const { id } = req.params;
+    if (!id) {
+      res.status(400).json({ success: false, error: 'Session ID is required' });
+      return;
+    }
 
-  const session = await prisma.aIChatSession.findUnique({ where: { id } });
-  if (!session) {
-    res.status(404).json({ success: false, error: 'Session not found' });
-    return;
-  }
+    const session = await prisma.aIChatSession.findUnique({ where: { id } });
+    if (!session) {
+      res.status(404).json({ success: false, error: 'Session not found' });
+      return;
+    }
 
-  if (session.userId !== userId && req.user?.role !== 'admin') {
-    res.status(403).json({ success: false, error: 'Forbidden' });
-    return;
-  }
+    if (session.userId !== userId && req.user?.role !== 'admin') {
+      res.status(403).json({ success: false, error: 'Forbidden' });
+      return;
+    }
 
-  res.status(200).json({ success: true, data: session });
-}));
+    res.status(200).json({ success: true, data: session });
+  })
+);
 /**
  * @swagger
  * /api/v1/ai-chat/sessions/{id}:
@@ -234,7 +256,12 @@ router.get('/sessions/:id', authenticate, asyncHandler(async (req: Request, res:
  *       404:
  *         description: Session not found
  */
-router.put('/sessions/:id', authenticate, validateBody(updateSessionSchema), aiChatController.updateSession);
+router.put(
+  '/sessions/:id',
+  authenticate,
+  validateBody(updateSessionSchema),
+  aiChatController.updateSession
+);
 
 /**
  * @swagger
@@ -260,34 +287,38 @@ router.put('/sessions/:id', authenticate, validateBody(updateSessionSchema), aiC
  *       404:
  *         description: Session not found
  */
-router.delete('/sessions/:id', authenticate, asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = req.user?.userId;
-  if (!userId) {
-    res.status(401).json({ success: false, error: 'Not authenticated' });
-    return;
-  }
+router.delete(
+  '/sessions/:id',
+  authenticate,
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
-  const { id } = req.params;
-  if (!id) {
-    res.status(400).json({ success: false, error: 'Session ID is required' });
-    return;
-  }
+    const { id } = req.params;
+    if (!id) {
+      res.status(400).json({ success: false, error: 'Session ID is required' });
+      return;
+    }
 
-  const session = await prisma.aIChatSession.findUnique({ where: { id } });
-  if (!session) {
-    res.status(404).json({ success: false, error: 'Session not found' });
-    return;
-  }
+    const session = await prisma.aIChatSession.findUnique({ where: { id } });
+    if (!session) {
+      res.status(404).json({ success: false, error: 'Session not found' });
+      return;
+    }
 
-  if (session.userId !== userId && req.user?.role !== 'admin') {
-    res.status(403).json({ success: false, error: 'Forbidden' });
-    return;
-  }
+    if (session.userId !== userId && req.user?.role !== 'admin') {
+      res.status(403).json({ success: false, error: 'Forbidden' });
+      return;
+    }
 
-  await prisma.aIChatSession.delete({ where: { id } });
+    await prisma.aIChatSession.delete({ where: { id } });
 
-  res.status(200).json({ success: true, message: 'Session deleted' });
-}));
+    res.status(200).json({ success: true, message: 'Session deleted' });
+  })
+);
 
 /**
  * @swagger
@@ -359,31 +390,37 @@ router.delete('/sessions/:id', authenticate, asyncHandler(async (req: Request, r
  *       401:
  *         description: Unauthorized
  */
-router.post('/tool-use', authenticate, aiRateLimiter, validateBody(toolUseSchema), asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = req.user?.userId;
-  if (!userId) {
-    res.status(401).json({ success: false, error: 'Not authenticated' });
-    return;
-  }
+router.post(
+  '/tool-use',
+  authenticate,
+  aiRateLimiter,
+  validateBody(toolUseSchema),
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
-  const { message, sceneContext, conversationHistory } = req.body;
-  if (!message || !sceneContext) {
-    res.status(400).json({ success: false, error: 'message and sceneContext are required' });
-    return;
-  }
+    const { message, sceneContext, conversationHistory } = req.body;
+    if (!message || !sceneContext) {
+      res.status(400).json({ success: false, error: 'message and sceneContext are required' });
+      return;
+    }
 
-  logger.info('[AI:tool-use-3d] Tool use request', { userId, messageLength: message.length });
+    logger.info('[AI:tool-use-3d] Tool use request', { userId, messageLength: message.length });
 
-  const toolUseService = new ToolUse3DService();
-  const result = await toolUseService.processMessage({
-    message,
-    sceneContext,
-    conversationHistory: conversationHistory || [],
-    userId,
-  });
+    const toolUseService = new ToolUse3DService();
+    const result = await toolUseService.processMessage({
+      message,
+      sceneContext,
+      conversationHistory: conversationHistory || [],
+      userId,
+    });
 
-  res.status(200).json({ success: true, data: result });
-}));
+    res.status(200).json({ success: true, data: result });
+  })
+);
 
 /**
  * @swagger
@@ -413,32 +450,42 @@ router.post('/tool-use', authenticate, aiRateLimiter, validateBody(toolUseSchema
  *       401:
  *         description: Unauthorized
  */
-router.post('/execute-tool', authenticate, aiRateLimiter, validateBody(executeToolSchema), asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = req.user?.userId;
-  if (!userId) {
-    res.status(401).json({ success: false, error: 'Not authenticated' });
-    return;
-  }
+router.post(
+  '/execute-tool',
+  authenticate,
+  aiRateLimiter,
+  validateBody(executeToolSchema),
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
-  const { toolName, parameters } = req.body;
-  if (!toolName) {
-    res.status(400).json({ success: false, error: 'toolName is required' });
-    return;
-  }
+    const { toolName, parameters } = req.body;
+    if (!toolName) {
+      res.status(400).json({ success: false, error: 'toolName is required' });
+      return;
+    }
 
-  logger.info('[AI:chat] Execute tool request', { userId, toolName });
+    logger.info('[AI:chat] Execute tool request', { userId, toolName });
 
-  // Delegate to the tool-use 3D service
-  const { ToolUse3DService } = await import('../../services/ai/tool-use-3d.service.js');
-  const toolService = new ToolUse3DService();
-  const result = await toolService.processMessage({
-    message: `Execute tool: ${toolName}`,
-    sceneContext: parameters?.sceneContext || { items: [], roomDimensions: { width: 400, depth: 300, height: 250 }, scores: {} },
-    userId,
-  });
+    // Delegate to the tool-use 3D service
+    const { ToolUse3DService } = await import('../../services/ai/tool-use-3d.service.js');
+    const toolService = new ToolUse3DService();
+    const result = await toolService.processMessage({
+      message: `Execute tool: ${toolName}`,
+      sceneContext: parameters?.sceneContext || {
+        items: [],
+        roomDimensions: { width: 400, depth: 300, height: 250 },
+        scores: {},
+      },
+      userId,
+    });
 
-  res.status(200).json({ success: true, data: result });
-}));
+    res.status(200).json({ success: true, data: result });
+  })
+);
 
 /**
  * @swagger
@@ -473,44 +520,57 @@ router.post('/execute-tool', authenticate, aiRateLimiter, validateBody(executeTo
  *       401:
  *         description: Unauthorized
  */
-router.post('/style-transfer', authenticate, aiRateLimiter, validateBody(styleTransferSchema), asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const userId = req.user?.userId;
-  if (!userId) {
-    res.status(401).json({ success: false, error: 'Not authenticated' });
-    return;
-  }
-
-  const { image, imageUrl, mediaType } = req.body;
-  if (!image && !imageUrl) {
-    res.status(400).json({ success: false, error: 'image (base64) or imageUrl is required' });
-    return;
-  }
-
-  let imageBase64: string;
-  let resolvedMediaType: 'image/jpeg' | 'image/png' | 'image/webp' = mediaType || 'image/jpeg';
-
-  if (image) {
-    imageBase64 = image;
-  } else {
-    // Fetch image from URL and convert to base64
-    const response = await fetch(imageUrl);
-    if (!response.ok) {
-      res.status(400).json({ success: false, error: 'Failed to fetch image from URL' });
+router.post(
+  '/style-transfer',
+  authenticate,
+  aiRateLimiter,
+  validateBody(styleTransferSchema),
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
       return;
     }
-    const contentType = response.headers.get('content-type') || 'image/jpeg';
-    if (contentType.includes('png')) {resolvedMediaType = 'image/png';}
-    else if (contentType.includes('webp')) {resolvedMediaType = 'image/webp';}
-    const buffer = Buffer.from(await response.arrayBuffer());
-    imageBase64 = buffer.toString('base64');
-  }
 
-  logger.info('[AI:style-transfer] Analyzing photo', { userId, hasUrl: !!imageUrl });
+    const { image, imageUrl, mediaType } = req.body;
+    if (!image && !imageUrl) {
+      res.status(400).json({ success: false, error: 'image (base64) or imageUrl is required' });
+      return;
+    }
 
-  const styleData = await styleTransferService.analyzeKitchenPhoto(imageBase64, resolvedMediaType, userId);
+    let imageBase64: string;
+    let resolvedMediaType: 'image/jpeg' | 'image/png' | 'image/webp' = mediaType || 'image/jpeg';
 
-  res.status(200).json({ success: true, data: styleData });
-}));
+    if (image) {
+      imageBase64 = image;
+    } else {
+      // Fetch image from URL and convert to base64
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        res.status(400).json({ success: false, error: 'Failed to fetch image from URL' });
+        return;
+      }
+      const contentType = response.headers.get('content-type') || 'image/jpeg';
+      if (contentType.includes('png')) {
+        resolvedMediaType = 'image/png';
+      } else if (contentType.includes('webp')) {
+        resolvedMediaType = 'image/webp';
+      }
+      const buffer = Buffer.from(await response.arrayBuffer());
+      imageBase64 = buffer.toString('base64');
+    }
+
+    logger.info('[AI:style-transfer] Analyzing photo', { userId, hasUrl: !!imageUrl });
+
+    const styleData = await styleTransferService.analyzeKitchenPhoto(
+      imageBase64,
+      resolvedMediaType,
+      userId
+    );
+
+    res.status(200).json({ success: true, data: styleData });
+  })
+);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // SHOPPING CHAT (Claude native tool-use loop)
@@ -534,10 +594,16 @@ const anthropic = new Anthropic(); // reads ANTHROPIC_API_KEY
 
 function deriveAiTier(req: Request): AiTier {
   const role = req.user?.role;
-  if (role === 'admin') {return 'studio';}
+  if (role === 'admin') {
+    return 'studio';
+  }
   const subTier = (req.user as unknown as { subscriptionTier?: string })?.subscriptionTier;
-  if (subTier === 'studio') {return 'studio';}
-  if (subTier === 'premium') {return 'premium';}
+  if (subTier === 'studio') {
+    return 'studio';
+  }
+  if (subTier === 'premium') {
+    return 'premium';
+  }
   return 'free';
 }
 
@@ -549,7 +615,7 @@ function deriveAiTier(req: Request): AiTier {
 export async function executeShoppingTool(
   name: string,
   input: Record<string, unknown>,
-  ctx: { userId: string; kitchenContext?: z.infer<typeof ChatRequestSchema>['kitchenContext'] },
+  ctx: { userId: string; kitchenContext?: z.infer<typeof ChatRequestSchema>['kitchenContext'] }
 ): Promise<unknown> {
   switch (name) {
     case 'searchCatalog':
@@ -578,7 +644,9 @@ export async function executeShoppingTool(
 
     case 'getBudgetSummary': {
       const k = ctx.kitchenContext;
-      if (!k) {return { error: 'no kitchen context provided' };}
+      if (!k) {
+        return { error: 'no kitchen context provided' };
+      }
       const total = k.budgetTotalEur ?? k.items.reduce((s, it) => s + it.unitPriceEur, 0);
       const budget = k.budgetLimitEur ?? null;
       return {
@@ -591,7 +659,9 @@ export async function executeShoppingTool(
 
     case 'resolve_colors': {
       const sku = typeof input.sku === 'string' ? input.sku.trim() : '';
-      if (!sku) {return { error: 'sku is required' };}
+      if (!sku) {
+        return { error: 'sku is required' };
+      }
       try {
         const colors = await variantResolver.resolveColors(sku);
         return { sku, colors }; // colors: ColorOption[] (may be empty)
@@ -642,14 +712,27 @@ router.post(
       if (e instanceof QuotaExceededError) {
         res.status(402).json({
           success: false,
-          error: { code: 'AI_QUOTA_EXCEEDED', message: e.message, tier: e.tier, limit: e.limit, currentUsd: e.currentUsd, resetAt: e.resetAt },
+          error: {
+            code: 'AI_QUOTA_EXCEEDED',
+            message: e.message,
+            tier: e.tier,
+            limit: e.limit,
+            currentUsd: e.currentUsd,
+            resetAt: e.resetAt,
+          },
         });
         return;
       }
       if (e instanceof DailyQuotaExceededError) {
         res.status(429).json({
           success: false,
-          error: { code: 'AI_DAILY_LIMIT', message: e.message, tier: e.tier, limit: e.limit, current: e.current },
+          error: {
+            code: 'AI_DAILY_LIMIT',
+            message: e.message,
+            tier: e.tier,
+            limit: e.limit,
+            current: e.current,
+          },
         });
         return;
       }
@@ -678,7 +761,7 @@ router.post(
       tools: SHOPPING_CHAT_TOOLS as unknown as Anthropic.Tool[],
       messages,
     });
-    totalInputTokens  += response.usage.input_tokens;
+    totalInputTokens += response.usage.input_tokens;
     totalOutputTokens += response.usage.output_tokens;
 
     // Tool-use loop — bounded by SHOPPING_MAX_TOOL_ROUNDS.
@@ -686,7 +769,7 @@ router.post(
     while (response.stop_reason === 'tool_use' && rounds < SHOPPING_MAX_TOOL_ROUNDS) {
       rounds++;
       const toolBlocks = response.content.filter(
-        (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use',
+        (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use'
       );
 
       // Run all tools in parallel — they're independent reads/writes.
@@ -695,7 +778,7 @@ router.post(
           const output = await executeShoppingTool(
             block.name,
             block.input as Record<string, unknown>,
-            { userId, kitchenContext: body.kitchenContext },
+            { userId, kitchenContext: body.kitchenContext }
           );
           toolCallsLog.push({ name: block.name, input: block.input, output });
           return {
@@ -703,7 +786,7 @@ router.post(
             tool_use_id: block.id,
             content: JSON.stringify(output),
           };
-        }),
+        })
       );
 
       messages.push({ role: 'assistant', content: response.content });
@@ -716,7 +799,7 @@ router.post(
         tools: SHOPPING_CHAT_TOOLS as unknown as Anthropic.Tool[],
         messages,
       });
-      totalInputTokens  += response.usage.input_tokens;
+      totalInputTokens += response.usage.input_tokens;
       totalOutputTokens += response.usage.output_tokens;
     }
 
@@ -744,7 +827,7 @@ router.post(
       success: true,
       data: { reply: replyText, toolCalls: toolCallsLog, toolRounds: rounds },
     });
-  }),
+  })
 );
 
 export default router;

@@ -458,7 +458,10 @@ export interface GenerationMetadata {
 
 export interface KitchenGeneratorRepository {
   getProducts(filters: ProductQueryFilters): Promise<GeneratorProduct[]>;
-  getProductsByCategory(category: string, filters?: ProductQueryFilters): Promise<GeneratorProduct[]>;
+  getProductsByCategory(
+    category: string,
+    filters?: ProductQueryFilters
+  ): Promise<GeneratorProduct[]>;
   getProductById(id: string): Promise<GeneratorProduct | null>;
   getProviders(): Promise<CatalogProviderInfo[]>;
   saveConfiguration(config: GeneratedKitchenConfiguration): Promise<GeneratedKitchenConfiguration>;
@@ -502,10 +505,10 @@ export interface GeneratorProduct {
 const ERGONOMIC_CONSTANTS = {
   // Work triangle distances in centimeters
   workTriangle: {
-    minTotalDistance: 400,  // 4 meters minimum
-    maxTotalDistance: 790,  // 7.9 meters maximum
-    minLegDistance: 120,    // 1.2 meters minimum per leg
-    maxLegDistance: 270,    // 2.7 meters maximum per leg
+    minTotalDistance: 400, // 4 meters minimum
+    maxTotalDistance: 790, // 7.9 meters maximum
+    minLegDistance: 120, // 1.2 meters minimum per leg
+    maxLegDistance: 270, // 2.7 meters maximum per leg
   },
   // Standard heights in centimeters
   heights: {
@@ -589,11 +592,7 @@ export class KitchenGeneratorService {
       }
 
       // 3. Fetch compatible products from all active providers
-      const products = await this.fetchCompatibleProducts(
-        roomAnalysis,
-        preferences,
-        providers
-      );
+      const products = await this.fetchCompatibleProducts(roomAnalysis, preferences, providers);
 
       if (products.length === 0) {
         throw new KitchenGeneratorError(
@@ -606,7 +605,9 @@ export class KitchenGeneratorService {
       const configurations: GeneratedKitchenConfiguration[] = [];
 
       for (const layout of possibleLayouts) {
-        if (configurations.length >= numConfigs) {break;}
+        if (configurations.length >= numConfigs) {
+          break;
+        }
 
         const config = await this.generateSingleConfiguration(
           layout,
@@ -623,7 +624,9 @@ export class KitchenGeneratorService {
       // 5. Generate variation configurations if needed
       while (configurations.length < numConfigs && configurations.length > 0) {
         const baseConfig = configurations[configurations.length - 1];
-        if (!baseConfig) {break;}
+        if (!baseConfig) {
+          break;
+        }
 
         const variation = await this.generateVariation(
           baseConfig,
@@ -675,10 +678,7 @@ export class KitchenGeneratorService {
    * @param shape - Desired layout shape
    * @returns Optimal placement zones for each wall
    */
-  calculateOptimalLayout(
-    room: RoomSpecification,
-    shape: LayoutType
-  ): PlacementZone[] {
+  calculateOptimalLayout(room: RoomSpecification, shape: LayoutType): PlacementZone[] {
     const roomAnalysis = this.analyzeRoom(room);
     const zones: PlacementZone[] = [];
 
@@ -704,8 +704,8 @@ export class KitchenGeneratorService {
 
       case 'parallel':
         if (roomAnalysis.walls.length >= 2) {
-          const oppositeWall = roomAnalysis.walls.find(
-            w => this.areWallsOpposite(roomAnalysis.walls[0]!, w)
+          const oppositeWall = roomAnalysis.walls.find((w) =>
+            this.areWallsOpposite(roomAnalysis.walls[0]!, w)
           );
           zones.push(this.createZoneForWall(roomAnalysis.walls[0]!, 'primary'));
           if (oppositeWall) {
@@ -752,7 +752,7 @@ export class KitchenGeneratorService {
     style: KitchenStylePreference,
     providers: CatalogProviderInfo[]
   ): Promise<ProductSelection> {
-    const activeProviders = providers.filter(p => p.isActive);
+    const activeProviders = providers.filter((p) => p.isActive);
 
     if (activeProviders.length === 0) {
       throw new KitchenGeneratorError(
@@ -938,10 +938,7 @@ export class KitchenGeneratorService {
 
     // Recalculate scores after optimization
     optimized.scores = this.scoreConfiguration(optimized);
-    optimized.score = this.calculateOverallScore(
-      optimized,
-      { priorities } as GeneratorPreferences
-    );
+    optimized.score = this.calculateOverallScore(optimized, { priorities } as GeneratorPreferences);
     optimized.validation = this.validateConfiguration(optimized);
     optimized.recommendations = this.generateRecommendations(optimized);
 
@@ -960,9 +957,10 @@ export class KitchenGeneratorService {
     const floorArea = dimensions.width * dimensions.length;
 
     // Analyze walls
-    const walls = room.walls.length > 0
-      ? room.walls.map(wall => this.analyzeWall(wall, dimensions))
-      : this.generateDefaultWalls(dimensions);
+    const walls =
+      room.walls.length > 0
+        ? room.walls.map((wall) => this.analyzeWall(wall, dimensions))
+        : this.generateDefaultWalls(dimensions);
 
     // Calculate usable wall length
     const usableWallLength = walls.reduce((sum, w) => sum + w.usableLength, 0);
@@ -1020,10 +1018,10 @@ export class KitchenGeneratorService {
       usableLength,
       segments: this.calculateUsableSegments(wall),
       hasWaterConnection: wall.utilities.some(
-        u => u.type === 'water_inlet' || u.type === 'drain'
+        (u) => u.type === 'water_inlet' || u.type === 'drain'
       ),
-      hasElectricalConnection: wall.utilities.some(u => u.type === 'electrical_outlet'),
-      hasGasConnection: wall.utilities.some(u => u.type === 'gas_line'),
+      hasElectricalConnection: wall.utilities.some((u) => u.type === 'electrical_outlet'),
+      hasGasConnection: wall.utilities.some((u) => u.type === 'gas_line'),
     };
   }
 
@@ -1108,9 +1106,7 @@ export class KitchenGeneratorService {
     }
 
     const segments: WallSegmentInfo[] = [];
-    const sortedObstacles = [...wall.obstacles].sort(
-      (a, b) => a.position.x - b.position.x
-    );
+    const sortedObstacles = [...wall.obstacles].sort((a, b) => a.position.x - b.position.x);
 
     let currentStart = 0;
 
@@ -1197,8 +1193,12 @@ export class KitchenGeneratorService {
       layouts.sort((a, b) => {
         const aIsSocial = socialLayouts.includes(a);
         const bIsSocial = socialLayouts.includes(b);
-        if (aIsSocial && !bIsSocial) {return -1;}
-        if (!aIsSocial && bIsSocial) {return 1;}
+        if (aIsSocial && !bIsSocial) {
+          return -1;
+        }
+        if (!aIsSocial && bIsSocial) {
+          return 1;
+        }
         return 0;
       });
     }
@@ -1209,8 +1209,12 @@ export class KitchenGeneratorService {
       layouts.sort((a, b) => {
         const aIsEfficient = efficientLayouts.includes(a);
         const bIsEfficient = efficientLayouts.includes(b);
-        if (aIsEfficient && !bIsEfficient) {return -1;}
-        if (!aIsEfficient && bIsEfficient) {return 1;}
+        if (aIsEfficient && !bIsEfficient) {
+          return -1;
+        }
+        if (!aIsEfficient && bIsEfficient) {
+          return 1;
+        }
         return 0;
       });
     }
@@ -1227,7 +1231,7 @@ export class KitchenGeneratorService {
     preferences: GeneratorPreferences,
     providers: CatalogProviderInfo[]
   ): Promise<GeneratorProduct[]> {
-    const activeProviders = providers.filter(p => p.isActive);
+    const activeProviders = providers.filter((p) => p.isActive);
 
     if (activeProviders.length === 0) {
       return [];
@@ -1251,16 +1255,14 @@ export class KitchenGeneratorService {
     const allProducts = await this.repository.getProducts(filters);
 
     // Filter products that can physically fit
-    return allProducts.filter(product => {
+    return allProducts.filter((product) => {
       // Check if product fits on any wall
       const productWidth = product.width;
       const productDepth = product.depth;
       const productHeight = product.height;
 
       // Must fit on at least one wall
-      const fitsOnWall = roomAnalysis.walls.some(
-        wall => wall.usableLength >= productWidth
-      );
+      const fitsOnWall = roomAnalysis.walls.some((wall) => wall.usableLength >= productWidth);
 
       // Must leave passage after placement
       const minPassage = ERGONOMIC_CONSTANTS.clearances.minPassageWidth;
@@ -1377,48 +1379,56 @@ export class KitchenGeneratorService {
 
   private categorizeProducts(products: GeneratorProduct[]): CategorizedProducts {
     return {
-      baseCabinets: products.filter(p =>
-        p.category.toLowerCase().includes('base') ||
-        p.category.toLowerCase().includes('floor')
+      baseCabinets: products.filter(
+        (p) =>
+          p.category.toLowerCase().includes('base') || p.category.toLowerCase().includes('floor')
       ),
-      wallCabinets: products.filter(p =>
-        p.category.toLowerCase().includes('wall') ||
-        p.category.toLowerCase().includes('upper')
+      wallCabinets: products.filter(
+        (p) =>
+          p.category.toLowerCase().includes('wall') || p.category.toLowerCase().includes('upper')
       ),
-      tallCabinets: products.filter(p =>
-        p.category.toLowerCase().includes('tall') ||
-        p.category.toLowerCase().includes('pantry')
+      tallCabinets: products.filter(
+        (p) =>
+          p.category.toLowerCase().includes('tall') || p.category.toLowerCase().includes('pantry')
       ),
-      cornerCabinets: products.filter(p =>
-        p.category.toLowerCase().includes('corner')
+      cornerCabinets: products.filter((p) => p.category.toLowerCase().includes('corner')),
+      sinks: products.filter((p) => p.category.toLowerCase().includes('sink')),
+      cooktops: products.filter(
+        (p) =>
+          p.category.toLowerCase().includes('cooktop') || p.category.toLowerCase().includes('hob')
       ),
-      sinks: products.filter(p =>
-        p.category.toLowerCase().includes('sink')
+      ovens: products.filter((p) => p.category.toLowerCase().includes('oven')),
+      refrigerators: products.filter(
+        (p) =>
+          p.category.toLowerCase().includes('refrigerator') ||
+          p.category.toLowerCase().includes('fridge')
       ),
-      cooktops: products.filter(p =>
-        p.category.toLowerCase().includes('cooktop') ||
-        p.category.toLowerCase().includes('hob')
+      dishwashers: products.filter((p) => p.category.toLowerCase().includes('dishwasher')),
+      hoods: products.filter(
+        (p) =>
+          p.category.toLowerCase().includes('hood') ||
+          p.category.toLowerCase().includes('extractor')
       ),
-      ovens: products.filter(p =>
-        p.category.toLowerCase().includes('oven')
-      ),
-      refrigerators: products.filter(p =>
-        p.category.toLowerCase().includes('refrigerator') ||
-        p.category.toLowerCase().includes('fridge')
-      ),
-      dishwashers: products.filter(p =>
-        p.category.toLowerCase().includes('dishwasher')
-      ),
-      hoods: products.filter(p =>
-        p.category.toLowerCase().includes('hood') ||
-        p.category.toLowerCase().includes('extractor')
-      ),
-      other: products.filter(p => {
+      other: products.filter((p) => {
         const cat = p.category.toLowerCase();
-        return !['base', 'wall', 'tall', 'corner', 'sink', 'cooktop', 'hob',
-                 'oven', 'refrigerator', 'fridge', 'dishwasher', 'hood', 'extractor',
-                 'floor', 'upper', 'pantry']
-          .some(keyword => cat.includes(keyword));
+        return ![
+          'base',
+          'wall',
+          'tall',
+          'corner',
+          'sink',
+          'cooktop',
+          'hob',
+          'oven',
+          'refrigerator',
+          'fridge',
+          'dishwasher',
+          'hood',
+          'extractor',
+          'floor',
+          'upper',
+          'pantry',
+        ].some((keyword) => cat.includes(keyword));
       }),
     };
   }
@@ -1450,13 +1460,11 @@ export class KitchenGeneratorService {
     // Place sink
     if (sink) {
       const sinkWall = this.findWallWithUtility(roomAnalysis.walls, 'water_inlet');
-      placements.push(this.createPlacement(
-        sink,
-        positions.sink,
-        sinkWall?.side || 'north',
-        'cleaning',
-        [{ type: 'water_inlet', requiresExtension: !sinkWall }]
-      ));
+      placements.push(
+        this.createPlacement(sink, positions.sink, sinkWall?.side || 'north', 'cleaning', [
+          { type: 'water_inlet', requiresExtension: !sinkWall },
+        ])
+      );
     }
 
     // Place cooktop
@@ -1465,28 +1473,22 @@ export class KitchenGeneratorService {
       const electricWall = this.findWallWithUtility(roomAnalysis.walls, 'electrical_outlet');
       const cooktopWall = gasWall || electricWall || roomAnalysis.walls[0];
 
-      placements.push(this.createPlacement(
-        cooktop,
-        positions.cooktop,
-        cooktopWall?.side || 'west',
-        'cooking',
-        [
+      placements.push(
+        this.createPlacement(cooktop, positions.cooktop, cooktopWall?.side || 'west', 'cooking', [
           gasWall
             ? { type: 'gas_line', requiresExtension: false }
             : { type: 'electrical_outlet', requiresExtension: false },
-        ]
-      ));
+        ])
+      );
     }
 
     // Place refrigerator
     if (refrigerator) {
-      placements.push(this.createPlacement(
-        refrigerator,
-        positions.refrigerator,
-        'east',
-        'cold_storage',
-        [{ type: 'electrical_outlet', requiresExtension: false }]
-      ));
+      placements.push(
+        this.createPlacement(refrigerator, positions.refrigerator, 'east', 'cold_storage', [
+          { type: 'electrical_outlet', requiresExtension: false },
+        ])
+      );
     }
 
     return placements.length > 0 ? placements : null;
@@ -1518,13 +1520,21 @@ export class KitchenGeneratorService {
         return {
           sink: { x: width * 0.5, y: ERGONOMIC_CONSTANTS.depths.baseCabinet, z: baseHeight },
           cooktop: { x: ERGONOMIC_CONSTANTS.depths.baseCabinet, y: length * 0.5, z: baseHeight },
-          refrigerator: { x: width - ERGONOMIC_CONSTANTS.depths.tallCabinet, y: length * 0.5, z: 0 },
+          refrigerator: {
+            x: width - ERGONOMIC_CONSTANTS.depths.tallCabinet,
+            y: length * 0.5,
+            z: 0,
+          },
         };
 
       case 'parallel':
         return {
           sink: { x: width * 0.5, y: ERGONOMIC_CONSTANTS.depths.baseCabinet, z: baseHeight },
-          cooktop: { x: width * 0.3, y: length - ERGONOMIC_CONSTANTS.depths.baseCabinet, z: baseHeight },
+          cooktop: {
+            x: width * 0.3,
+            y: length - ERGONOMIC_CONSTANTS.depths.baseCabinet,
+            z: baseHeight,
+          },
           refrigerator: { x: width * 0.8, y: ERGONOMIC_CONSTANTS.depths.tallCabinet, z: 0 },
         };
 
@@ -1546,7 +1556,11 @@ export class KitchenGeneratorService {
         return {
           sink: { x: width * 0.5, y: ERGONOMIC_CONSTANTS.depths.baseCabinet, z: baseHeight },
           cooktop: { x: ERGONOMIC_CONSTANTS.depths.baseCabinet, y: length * 0.5, z: baseHeight },
-          refrigerator: { x: width - ERGONOMIC_CONSTANTS.depths.tallCabinet, y: length * 0.7, z: 0 },
+          refrigerator: {
+            x: width - ERGONOMIC_CONSTANTS.depths.tallCabinet,
+            y: length * 0.7,
+            z: 0,
+          },
         };
 
       default:
@@ -1562,12 +1576,14 @@ export class KitchenGeneratorService {
     products: GeneratorProduct[],
     preferences: GeneratorPreferences
   ): GeneratorProduct | null {
-    if (products.length === 0) {return null;}
+    if (products.length === 0) {
+      return null;
+    }
 
     // Filter by budget
     let filtered = products;
     if (preferences.budget) {
-      filtered = products.filter(p => p.price <= preferences.budget.max * 0.2);
+      filtered = products.filter((p) => p.price <= preferences.budget.max * 0.2);
     }
 
     if (filtered.length === 0) {
@@ -1576,24 +1592,26 @@ export class KitchenGeneratorService {
 
     // Filter by preferred brands
     if (preferences.preferredBrands && preferences.preferredBrands.length > 0) {
-      const brandFiltered = filtered.filter(p =>
-        preferences.preferredBrands!.includes(p.brand)
-      );
+      const brandFiltered = filtered.filter((p) => preferences.preferredBrands!.includes(p.brand));
       if (brandFiltered.length > 0) {
         filtered = brandFiltered;
       }
     }
 
     // Sort by availability and price (best value)
-    return filtered.sort((a, b) => {
-      // Prefer in-stock items
-      const aInStock = a.availability === 'in_stock' ? 1 : 0;
-      const bInStock = b.availability === 'in_stock' ? 1 : 0;
-      if (aInStock !== bInStock) {return bInStock - aInStock;}
+    return (
+      filtered.sort((a, b) => {
+        // Prefer in-stock items
+        const aInStock = a.availability === 'in_stock' ? 1 : 0;
+        const bInStock = b.availability === 'in_stock' ? 1 : 0;
+        if (aInStock !== bInStock) {
+          return bInStock - aInStock;
+        }
 
-      // Then by price (lower is better for value)
-      return a.price - b.price;
-    })[0] || null;
+        // Then by price (lower is better for value)
+        return a.price - b.price;
+      })[0] || null
+    );
   }
 
   private createPlacement(
@@ -1633,25 +1651,49 @@ export class KitchenGeneratorService {
 
   private mapToProductCategory(category: string): ProductCategoryType {
     const lower = category.toLowerCase();
-    if (lower.includes('base') || lower.includes('floor')) {return 'base_cabinet';}
-    if (lower.includes('wall') || lower.includes('upper')) {return 'wall_cabinet';}
-    if (lower.includes('tall') || lower.includes('pantry')) {return 'tall_cabinet';}
-    if (lower.includes('corner')) {return 'corner_cabinet';}
-    if (lower.includes('sink')) {return 'sink_cabinet';}
-    if (lower.includes('appliance') || lower.includes('cooktop') ||
-        lower.includes('oven') || lower.includes('refrigerator') ||
-        lower.includes('dishwasher') || lower.includes('hood')) {return 'appliance';}
-    if (lower.includes('countertop')) {return 'countertop';}
+    if (lower.includes('base') || lower.includes('floor')) {
+      return 'base_cabinet';
+    }
+    if (lower.includes('wall') || lower.includes('upper')) {
+      return 'wall_cabinet';
+    }
+    if (lower.includes('tall') || lower.includes('pantry')) {
+      return 'tall_cabinet';
+    }
+    if (lower.includes('corner')) {
+      return 'corner_cabinet';
+    }
+    if (lower.includes('sink')) {
+      return 'sink_cabinet';
+    }
+    if (
+      lower.includes('appliance') ||
+      lower.includes('cooktop') ||
+      lower.includes('oven') ||
+      lower.includes('refrigerator') ||
+      lower.includes('dishwasher') ||
+      lower.includes('hood')
+    ) {
+      return 'appliance';
+    }
+    if (lower.includes('countertop')) {
+      return 'countertop';
+    }
     return 'accessory';
   }
 
   private calculateRotationForWall(wallSide: WallSide): number {
     switch (wallSide) {
-      case 'north': return 0;
-      case 'east': return 90;
-      case 'south': return 180;
-      case 'west': return 270;
-      default: return 0;
+      case 'north':
+        return 0;
+      case 'east':
+        return 90;
+      case 'south':
+        return 180;
+      case 'west':
+        return 270;
+      default:
+        return 0;
     }
   }
 
@@ -1695,14 +1737,13 @@ export class KitchenGeneratorService {
     const placements = [...existingPlacements];
 
     // Calculate remaining space on each wall
-    const wallSpaces = this.calculateRemainingWallSpace(
-      roomAnalysis.walls,
-      existingPlacements
-    );
+    const wallSpaces = this.calculateRemainingWallSpace(roomAnalysis.walls, existingPlacements);
 
     // Place base cabinets
     for (const space of wallSpaces) {
-      if (space.remainingLength < 30) {continue;} // Skip if too small
+      if (space.remainingLength < 30) {
+        continue;
+      } // Skip if too small
 
       const cabinetsToPlace = this.selectCabinetsForSpace(
         space,
@@ -1712,53 +1753,60 @@ export class KitchenGeneratorService {
 
       let currentX = space.startX;
       for (const cabinet of cabinetsToPlace) {
-        if (currentX + cabinet.width > space.endX) {break;}
+        if (currentX + cabinet.width > space.endX) {
+          break;
+        }
 
-        placements.push(this.createPlacement(
-          cabinet,
-          {
-            x: currentX + cabinet.width / 2,
-            y: ERGONOMIC_CONSTANTS.depths.baseCabinet,
-            z: ERGONOMIC_CONSTANTS.heights.baseCabinet,
-          },
-          space.wallSide,
-          'storage',
-          []
-        ));
+        placements.push(
+          this.createPlacement(
+            cabinet,
+            {
+              x: currentX + cabinet.width / 2,
+              y: ERGONOMIC_CONSTANTS.depths.baseCabinet,
+              z: ERGONOMIC_CONSTANTS.heights.baseCabinet,
+            },
+            space.wallSide,
+            'storage',
+            []
+          )
+        );
 
         currentX += cabinet.width;
       }
     }
 
     // Place wall cabinets above base cabinets
-    const baseCabinetPlacements = placements.filter(
-      p => p.product.category === 'base_cabinet'
-    );
+    const baseCabinetPlacements = placements.filter((p) => p.product.category === 'base_cabinet');
 
     for (const basePlacement of baseCabinetPlacements) {
       // Check if there's space for a wall cabinet
-      const hasObstacleAbove = roomAnalysis.walls.some(wall =>
-        wall.side === basePlacement.wallSide &&
-        wall.obstacles.some(obs =>
-          obs.type === 'window' &&
-          Math.abs(obs.position.x - basePlacement.position.x) < basePlacement.product.dimensions.width
-        )
+      const hasObstacleAbove = roomAnalysis.walls.some(
+        (wall) =>
+          wall.side === basePlacement.wallSide &&
+          wall.obstacles.some(
+            (obs) =>
+              obs.type === 'window' &&
+              Math.abs(obs.position.x - basePlacement.position.x) <
+                basePlacement.product.dimensions.width
+          )
       );
 
       if (!hasObstacleAbove && products.wallCabinets.length > 0) {
         const wallCabinet = this.selectBestProduct(products.wallCabinets, preferences);
         if (wallCabinet) {
-          placements.push(this.createPlacement(
-            wallCabinet,
-            {
-              x: basePlacement.position.x,
-              y: ERGONOMIC_CONSTANTS.depths.wallCabinet,
-              z: ERGONOMIC_CONSTANTS.heights.wallCabinetBottom,
-            },
-            basePlacement.wallSide || 'north',
-            'storage',
-            []
-          ));
+          placements.push(
+            this.createPlacement(
+              wallCabinet,
+              {
+                x: basePlacement.position.x,
+                y: ERGONOMIC_CONSTANTS.depths.wallCabinet,
+                z: ERGONOMIC_CONSTANTS.heights.wallCabinetBottom,
+              },
+              basePlacement.wallSide || 'north',
+              'storage',
+              []
+            )
+          );
         }
       }
     }
@@ -1770,12 +1818,9 @@ export class KitchenGeneratorService {
     walls: AnalyzedWall[],
     placements: ItemPlacement[]
   ): WallSpace[] {
-    return walls.map(wall => {
-      const wallPlacements = placements.filter(p => p.wallSide === wall.side);
-      const usedWidth = wallPlacements.reduce(
-        (sum, p) => sum + p.product.dimensions.width,
-        0
-      );
+    return walls.map((wall) => {
+      const wallPlacements = placements.filter((p) => p.wallSide === wall.side);
+      const usedWidth = wallPlacements.reduce((sum, p) => sum + p.product.dimensions.width, 0);
 
       return {
         wallId: wall.id,
@@ -1805,7 +1850,9 @@ export class KitchenGeneratorService {
         remainingWidth -= cabinet.width;
       }
 
-      if (remainingWidth < 30) {break;} // Stop if remaining space is too small
+      if (remainingWidth < 30) {
+        break;
+      } // Stop if remaining space is too small
     }
 
     return selected;
@@ -1816,9 +1863,9 @@ export class KitchenGeneratorService {
   // ==========================================================================
 
   private calculateWorkTriangle(placements: ItemPlacement[]): WorkTriangleResult {
-    const sink = placements.find(p => p.zone === 'cleaning');
-    const cooktop = placements.find(p => p.zone === 'cooking');
-    const refrigerator = placements.find(p => p.zone === 'cold_storage');
+    const sink = placements.find((p) => p.zone === 'cleaning');
+    const cooktop = placements.find((p) => p.zone === 'cooking');
+    const refrigerator = placements.find((p) => p.zone === 'cold_storage');
 
     const defaultResult: WorkTriangleResult = {
       sink: { x: 0, y: 0 },
@@ -1902,7 +1949,10 @@ export class KitchenGeneratorService {
       if (sinkToCooktop < rules.minLegDistance || sinkToCooktop > rules.maxLegDistance) {
         score -= 15;
       }
-      if (cooktopToRefrigerator < rules.minLegDistance || cooktopToRefrigerator > rules.maxLegDistance) {
+      if (
+        cooktopToRefrigerator < rules.minLegDistance ||
+        cooktopToRefrigerator > rules.maxLegDistance
+      ) {
         score -= 15;
       }
       if (refrigeratorToSink < rules.minLegDistance || refrigeratorToSink > rules.maxLegDistance) {
@@ -1931,10 +1981,7 @@ export class KitchenGeneratorService {
   // PRIVATE METHODS - Cost Calculation
   // ==========================================================================
 
-  private calculateCosts(
-    placements: ItemPlacement[],
-    budget: BudgetConstraint
-  ): CostBreakdown {
+  private calculateCosts(placements: ItemPlacement[], budget: BudgetConstraint): CostBreakdown {
     let cabinets = 0;
     let appliances = 0;
     let countertops = 0;
@@ -1957,11 +2004,8 @@ export class KitchenGeneratorService {
 
     // Estimate countertop cost if not explicitly placed
     if (countertops === 0) {
-      const baseCabinets = placements.filter(p => p.product.category === 'base_cabinet');
-      const countertopLength = baseCabinets.reduce(
-        (sum, p) => sum + p.product.dimensions.width,
-        0
-      );
+      const baseCabinets = placements.filter((p) => p.product.category === 'base_cabinet');
+      const countertopLength = baseCabinets.reduce((sum, p) => sum + p.product.dimensions.width, 0);
       // Average countertop price per linear cm
       countertops = countertopLength * 3; // 3 EUR per cm
     }
@@ -1974,7 +2018,7 @@ export class KitchenGeneratorService {
     const budgetUtilization = (total / budget.max) * 100;
 
     // Determine confidence based on how many items have prices
-    const itemsWithPrices = placements.filter(p => p.product.price > 0).length;
+    const itemsWithPrices = placements.filter((p) => p.product.price > 0).length;
     const priceRatio = itemsWithPrices / placements.length;
     const confidence: 'low' | 'medium' | 'high' =
       priceRatio > 0.8 ? 'high' : priceRatio > 0.5 ? 'medium' : 'low';
@@ -2078,8 +2122,7 @@ export class KitchenGeneratorService {
     const countertopArea = countertopLength * ERGONOMIC_CONSTANTS.depths.countertop;
 
     // Calculate wall space utilization
-    const wallSpaceUtilization =
-      (countertopLength / roomAnalysis.usableWallLength) * 100;
+    const wallSpaceUtilization = (countertopLength / roomAnalysis.usableWallLength) * 100;
 
     return {
       totalItems: placements.length,
@@ -2103,38 +2146,38 @@ export class KitchenGeneratorService {
   ): number {
     // Base weights
     const weights = {
-      ergonomics: 0.20,
+      ergonomics: 0.2,
       storage: 0.15,
       aesthetics: 0.15,
-      budget: 0.20,
+      budget: 0.2,
       spaceUtilization: 0.15,
       workflow: 0.15,
     };
 
     // Adjust weights based on priorities
     if (preferences.priorities.includes('efficiency')) {
-      weights.ergonomics = 0.30;
-      weights.workflow = 0.20;
-      weights.aesthetics = 0.10;
+      weights.ergonomics = 0.3;
+      weights.workflow = 0.2;
+      weights.aesthetics = 0.1;
     }
     if (preferences.priorities.includes('storage')) {
       weights.storage = 0.25;
-      weights.spaceUtilization = 0.20;
+      weights.spaceUtilization = 0.2;
     }
     if (preferences.priorities.includes('aesthetics')) {
       weights.aesthetics = 0.25;
-      weights.storage = 0.10;
+      weights.storage = 0.1;
     }
 
     const { scores } = config;
 
     return Math.round(
       scores.ergonomics * weights.ergonomics +
-      scores.storage * weights.storage +
-      scores.aesthetics * weights.aesthetics +
-      scores.budget * weights.budget +
-      scores.spaceUtilization * weights.spaceUtilization +
-      scores.workflow * weights.workflow
+        scores.storage * weights.storage +
+        scores.aesthetics * weights.aesthetics +
+        scores.budget * weights.budget +
+        scores.spaceUtilization * weights.spaceUtilization +
+        scores.workflow * weights.workflow
     );
   }
 
@@ -2155,13 +2198,23 @@ export class KitchenGeneratorService {
     let score = 50; // Base score
 
     // More storage volume is better
-    if (statistics.storageVolume > 300) {score += 20;}
-    if (statistics.storageVolume > 500) {score += 15;}
-    if (statistics.storageVolume > 700) {score += 15;}
+    if (statistics.storageVolume > 300) {
+      score += 20;
+    }
+    if (statistics.storageVolume > 500) {
+      score += 15;
+    }
+    if (statistics.storageVolume > 700) {
+      score += 15;
+    }
 
     // Variety of cabinet types
-    if (statistics.cabinetCount.wall > 0) {score += 5;}
-    if (statistics.cabinetCount.tall > 0) {score += 5;}
+    if (statistics.cabinetCount.wall > 0) {
+      score += 5;
+    }
+    if (statistics.cabinetCount.tall > 0) {
+      score += 5;
+    }
 
     return Math.min(100, score);
   }
@@ -2170,15 +2223,21 @@ export class KitchenGeneratorService {
     let score = 70; // Base aesthetics score
 
     // Check brand consistency
-    const brands = new Set(config.placements.map(p => p.product.brand));
-    if (brands.size === 1) {score += 15;}
-    else if (brands.size <= 2) {score += 10;}
-    else if (brands.size <= 3) {score += 5;}
+    const brands = new Set(config.placements.map((p) => p.product.brand));
+    if (brands.size === 1) {
+      score += 15;
+    } else if (brands.size <= 2) {
+      score += 10;
+    } else if (brands.size <= 3) {
+      score += 5;
+    }
 
     // Check proportions (simplified)
     const { cabinetCount } = config.statistics;
     const wallToBaseRatio = cabinetCount.wall / Math.max(1, cabinetCount.base);
-    if (wallToBaseRatio >= 0.5 && wallToBaseRatio <= 1.5) {score += 10;}
+    if (wallToBaseRatio >= 0.5 && wallToBaseRatio <= 1.5) {
+      score += 10;
+    }
 
     return Math.min(100, score);
   }
@@ -2187,12 +2246,24 @@ export class KitchenGeneratorService {
     const utilization = config.statistics.wallSpaceUtilization;
 
     // Optimal utilization is 60-80%
-    if (utilization >= 60 && utilization <= 80) {return 100;}
-    if (utilization >= 50 && utilization < 60) {return 85;}
-    if (utilization >= 80 && utilization <= 90) {return 85;}
-    if (utilization >= 40 && utilization < 50) {return 70;}
-    if (utilization >= 90 && utilization <= 95) {return 70;}
-    if (utilization < 40) {return 50;}
+    if (utilization >= 60 && utilization <= 80) {
+      return 100;
+    }
+    if (utilization >= 50 && utilization < 60) {
+      return 85;
+    }
+    if (utilization >= 80 && utilization <= 90) {
+      return 85;
+    }
+    if (utilization >= 40 && utilization < 50) {
+      return 70;
+    }
+    if (utilization >= 90 && utilization <= 95) {
+      return 70;
+    }
+    if (utilization < 40) {
+      return 50;
+    }
 
     return 50;
   }
@@ -2202,10 +2273,10 @@ export class KitchenGeneratorService {
     let score = config.workTriangle.score;
 
     // Check dishwasher near sink
-    const sink = config.placements.find(p => p.zone === 'cleaning');
-    const dishwasher = config.placements.find(p =>
-      p.product.category === 'appliance' &&
-      p.product.name.toLowerCase().includes('dishwasher')
+    const sink = config.placements.find((p) => p.zone === 'cleaning');
+    const dishwasher = config.placements.find(
+      (p) =>
+        p.product.category === 'appliance' && p.product.name.toLowerCase().includes('dishwasher')
     );
 
     if (sink && dishwasher) {
@@ -2225,9 +2296,10 @@ export class KitchenGeneratorService {
   // PRIVATE METHODS - Validation
   // ==========================================================================
 
-  private validateWorkTriangle(
-    triangle: WorkTriangleResult
-  ): { errors: ValidationIssue[]; warnings: ValidationIssue[] } {
+  private validateWorkTriangle(triangle: WorkTriangleResult): {
+    errors: ValidationIssue[];
+    warnings: ValidationIssue[];
+  } {
     const errors: ValidationIssue[] = [];
     const warnings: ValidationIssue[] = [];
 
@@ -2245,9 +2317,10 @@ export class KitchenGeneratorService {
     return { errors, warnings };
   }
 
-  private validatePassages(
-    _config: GeneratedKitchenConfiguration
-  ): { errors: ValidationIssue[]; warnings: ValidationIssue[] } {
+  private validatePassages(_config: GeneratedKitchenConfiguration): {
+    errors: ValidationIssue[];
+    warnings: ValidationIssue[];
+  } {
     const errors: ValidationIssue[] = [];
     const warnings: ValidationIssue[] = [];
 
@@ -2257,9 +2330,10 @@ export class KitchenGeneratorService {
     return { errors, warnings };
   }
 
-  private validateClearances(
-    config: GeneratedKitchenConfiguration
-  ): { errors: ValidationIssue[]; warnings: ValidationIssue[] } {
+  private validateClearances(config: GeneratedKitchenConfiguration): {
+    errors: ValidationIssue[];
+    warnings: ValidationIssue[];
+  } {
     const errors: ValidationIssue[] = [];
     const warnings: ValidationIssue[] = [];
 
@@ -2273,9 +2347,10 @@ export class KitchenGeneratorService {
     return { errors, warnings };
   }
 
-  private validateNoOverlaps(
-    config: GeneratedKitchenConfiguration
-  ): { errors: ValidationIssue[]; warnings: ValidationIssue[] } {
+  private validateNoOverlaps(config: GeneratedKitchenConfiguration): {
+    errors: ValidationIssue[];
+    warnings: ValidationIssue[];
+  } {
     const errors: ValidationIssue[] = [];
 
     for (let i = 0; i < config.placements.length; i++) {
@@ -2299,9 +2374,10 @@ export class KitchenGeneratorService {
     return { errors, warnings: [] };
   }
 
-  private validateUtilityConnections(
-    config: GeneratedKitchenConfiguration
-  ): { errors: ValidationIssue[]; warnings: ValidationIssue[] } {
+  private validateUtilityConnections(config: GeneratedKitchenConfiguration): {
+    errors: ValidationIssue[];
+    warnings: ValidationIssue[];
+  } {
     const errors: ValidationIssue[] = [];
     const warnings: ValidationIssue[] = [];
 
@@ -2322,14 +2398,15 @@ export class KitchenGeneratorService {
     return { errors, warnings };
   }
 
-  private validateMinDistances(
-    config: GeneratedKitchenConfiguration
-  ): { errors: ValidationIssue[]; warnings: ValidationIssue[] } {
+  private validateMinDistances(config: GeneratedKitchenConfiguration): {
+    errors: ValidationIssue[];
+    warnings: ValidationIssue[];
+  } {
     const errors: ValidationIssue[] = [];
     const warnings: ValidationIssue[] = [];
 
-    const cooktop = config.placements.find(p => p.zone === 'cooking');
-    const sink = config.placements.find(p => p.zone === 'cleaning');
+    const cooktop = config.placements.find((p) => p.zone === 'cooking');
+    const sink = config.placements.find((p) => p.zone === 'cleaning');
 
     if (cooktop && sink) {
       const distance = this.distance2D(
@@ -2357,7 +2434,9 @@ export class KitchenGeneratorService {
 
     const zOverlap = !(z1Range.max <= z2Range.min || z2Range.max <= z1Range.min);
 
-    if (!zOverlap) {return false;}
+    if (!zOverlap) {
+      return false;
+    }
 
     // Check XY overlap
     const x1Range = {
@@ -2401,7 +2480,9 @@ export class KitchenGeneratorService {
         priority: 'high',
         category: 'ergonomics',
         title: 'Optimize Work Triangle',
-        message: config.workTriangle.suggestions[0] || 'Consider adjusting the positions of sink, cooktop, and refrigerator',
+        message:
+          config.workTriangle.suggestions[0] ||
+          'Consider adjusting the positions of sink, cooktop, and refrigerator',
       });
     }
 
@@ -2522,14 +2603,18 @@ export class KitchenGeneratorService {
   ): boolean {
     for (const existingConfig of existing) {
       // Compare layouts
-      if (config.layoutType !== existingConfig.layoutType) {continue;}
+      if (config.layoutType !== existingConfig.layoutType) {
+        continue;
+      }
 
       // Compare placement counts
-      if (config.placements.length !== existingConfig.placements.length) {continue;}
+      if (config.placements.length !== existingConfig.placements.length) {
+        continue;
+      }
 
       // Compare products used
-      const configProducts = new Set(config.placements.map(p => p.productId));
-      const existingProducts = new Set(existingConfig.placements.map(p => p.productId));
+      const configProducts = new Set(config.placements.map((p) => p.productId));
+      const existingProducts = new Set(existingConfig.placements.map((p) => p.productId));
 
       if (this.setsEqual(configProducts, existingProducts)) {
         return true;
@@ -2552,9 +2637,13 @@ export class KitchenGeneratorService {
   }
 
   private setsEqual<T>(a: Set<T>, b: Set<T>): boolean {
-    if (a.size !== b.size) {return false;}
+    if (a.size !== b.size) {
+      return false;
+    }
     for (const item of a) {
-      if (!b.has(item)) {return false;}
+      if (!b.has(item)) {
+        return false;
+      }
     }
     return true;
   }
@@ -2565,24 +2654,26 @@ export class KitchenGeneratorService {
       'L-shaped': 'L-Shaped Kitchen',
       'U-shaped': 'U-Shaped Kitchen',
       'G-shaped': 'G-Shaped Kitchen',
-      'parallel': 'Galley Kitchen',
-      'island': 'Island Kitchen',
-      'peninsula': 'Peninsula Kitchen',
+      parallel: 'Galley Kitchen',
+      island: 'Island Kitchen',
+      peninsula: 'Peninsula Kitchen',
     };
 
     return `${layoutNames[layout]} #${index}`;
   }
 
-  private generateDescription(
-    layout: LayoutType,
-    stats: ConfigurationStatistics
-  ): string {
-    const totalCabinets = stats.cabinetCount.base + stats.cabinetCount.wall +
-                          stats.cabinetCount.tall + stats.cabinetCount.corner;
+  private generateDescription(layout: LayoutType, stats: ConfigurationStatistics): string {
+    const totalCabinets =
+      stats.cabinetCount.base +
+      stats.cabinetCount.wall +
+      stats.cabinetCount.tall +
+      stats.cabinetCount.corner;
 
-    return `${this.getLayoutDescription(layout)} featuring ${totalCabinets} cabinets, ` +
-           `${stats.applianceCount} appliances, and ${(stats.countertopArea / 10000).toFixed(2)}m² of counter space. ` +
-           `Total storage: ${stats.storageVolume} liters.`;
+    return (
+      `${this.getLayoutDescription(layout)} featuring ${totalCabinets} cabinets, ` +
+      `${stats.applianceCount} appliances, and ${(stats.countertopArea / 10000).toFixed(2)}m² of counter space. ` +
+      `Total storage: ${stats.storageVolume} liters.`
+    );
   }
 
   private getLayoutDescription(layout: LayoutType): string {
@@ -2591,9 +2682,9 @@ export class KitchenGeneratorService {
       'L-shaped': 'An efficient L-configuration maximizing corner space',
       'U-shaped': 'A wraparound design offering maximum storage and workspace',
       'G-shaped': 'An extended U-shape with additional peninsula for extra functionality',
-      'parallel': 'A galley-style layout ideal for efficient workflow',
-      'island': 'An open design with central island for cooking and socializing',
-      'peninsula': 'A versatile layout with attached peninsula providing extra workspace',
+      parallel: 'A galley-style layout ideal for efficient workflow',
+      island: 'An open design with central island for cooking and socializing',
+      peninsula: 'A versatile layout with attached peninsula providing extra workspace',
     };
 
     return descriptions[layout];
@@ -2603,15 +2694,24 @@ export class KitchenGeneratorService {
     walls: AnalyzedWall[],
     utilityType: UtilityType
   ): AnalyzedWall | undefined {
-    return walls.find(wall => {
-      if (utilityType === 'water_inlet') {return wall.hasWaterConnection;}
-      if (utilityType === 'electrical_outlet') {return wall.hasElectricalConnection;}
-      if (utilityType === 'gas_line') {return wall.hasGasConnection;}
-      return wall.utilities.some(u => u.type === utilityType);
+    return walls.find((wall) => {
+      if (utilityType === 'water_inlet') {
+        return wall.hasWaterConnection;
+      }
+      if (utilityType === 'electrical_outlet') {
+        return wall.hasElectricalConnection;
+      }
+      if (utilityType === 'gas_line') {
+        return wall.hasGasConnection;
+      }
+      return wall.utilities.some((u) => u.type === utilityType);
     });
   }
 
-  private createZoneForWall(wall: AnalyzedWall, priority: 'primary' | 'secondary' | 'tertiary'): PlacementZone {
+  private createZoneForWall(
+    wall: AnalyzedWall,
+    priority: 'primary' | 'secondary' | 'tertiary'
+  ): PlacementZone {
     return {
       id: this.generateId(),
       wallId: wall.id,
@@ -2622,7 +2722,8 @@ export class KitchenGeneratorService {
       allowsBaseCabinets: true,
       allowsWallCabinets: true,
       allowsTallCabinets: priority === 'primary',
-      hasUtilities: wall.hasWaterConnection || wall.hasElectricalConnection || wall.hasGasConnection,
+      hasUtilities:
+        wall.hasWaterConnection || wall.hasElectricalConnection || wall.hasGasConnection,
     };
   }
 
@@ -2645,7 +2746,10 @@ export class KitchenGeneratorService {
     };
   }
 
-  private createPeninsulaZone(_roomAnalysis: RoomAnalysis, attachedWall: AnalyzedWall): PlacementZone {
+  private createPeninsulaZone(
+    _roomAnalysis: RoomAnalysis,
+    attachedWall: AnalyzedWall
+  ): PlacementZone {
     return {
       id: this.generateId(),
       wallId: 'peninsula',
@@ -2689,15 +2793,15 @@ export class KitchenGeneratorService {
     return styleKeywords[style] || [];
   }
 
-  private filterByStyle(
-    products: GeneratorProduct[],
-    styleKeywords: string[]
-  ): GeneratorProduct[] {
-    if (styleKeywords.length === 0) {return products;}
+  private filterByStyle(products: GeneratorProduct[], styleKeywords: string[]): GeneratorProduct[] {
+    if (styleKeywords.length === 0) {
+      return products;
+    }
 
-    return products.filter(product => {
-      const searchText = `${product.name} ${product.description || ''} ${product.material || ''}`.toLowerCase();
-      return styleKeywords.some(keyword => searchText.includes(keyword.toLowerCase()));
+    return products.filter((product) => {
+      const searchText =
+        `${product.name} ${product.description || ''} ${product.material || ''}`.toLowerCase();
+      return styleKeywords.some((keyword) => searchText.includes(keyword.toLowerCase()));
     });
   }
 }

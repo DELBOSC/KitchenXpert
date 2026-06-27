@@ -139,14 +139,10 @@ class TranslationStats {
     }
 
     stats.averageLength =
-      stats.translatedKeys > 0
-        ? Math.round(totalLength / stats.translatedKeys)
-        : 0;
+      stats.translatedKeys > 0 ? Math.round(totalLength / stats.translatedKeys) : 0;
 
     stats.coverage =
-      stats.totalKeys > 0
-        ? ((stats.translatedKeys / stats.totalKeys) * 100).toFixed(1)
-        : 0;
+      stats.totalKeys > 0 ? ((stats.translatedKeys / stats.totalKeys) * 100).toFixed(1) : 0;
 
     return stats;
   }
@@ -232,9 +228,15 @@ class TranslationStats {
    * Print statistics
    */
   print() {
-    console.log(`${colors.cyan}╔══════════════════════════════════════════════════════════════════╗${colors.reset}`);
-    console.log(`${colors.cyan}║${colors.reset}                   Translation Statistics                         ${colors.cyan}║${colors.reset}`);
-    console.log(`${colors.cyan}╚══════════════════════════════════════════════════════════════════╝${colors.reset}`);
+    console.log(
+      `${colors.cyan}╔══════════════════════════════════════════════════════════════════╗${colors.reset}`
+    );
+    console.log(
+      `${colors.cyan}║${colors.reset}                   Translation Statistics                         ${colors.cyan}║${colors.reset}`
+    );
+    console.log(
+      `${colors.cyan}╚══════════════════════════════════════════════════════════════════╝${colors.reset}`
+    );
     console.log('');
 
     // Overall statistics
@@ -259,7 +261,9 @@ class TranslationStats {
       const label = isDefault ? `${locale} (default)` : locale;
 
       console.log(`    ${label.padEnd(15)} ${this.coverageBar(parseFloat(stats.coverage))}`);
-      console.log(`                    ${stats.translatedKeys}/${stats.totalKeys} keys, ${stats.emptyKeys} empty`);
+      console.log(
+        `                    ${stats.translatedKeys}/${stats.totalKeys} keys, ${stats.emptyKeys} empty`
+      );
       console.log('');
     }
 
@@ -323,10 +327,7 @@ class TranslationStats {
     // Add comparisons
     for (const locale of Object.keys(this.locales)) {
       if (locale !== config.defaultLocale) {
-        report.comparisons[locale] = this.compareLocales(
-          config.defaultLocale,
-          locale
-        );
+        report.comparisons[locale] = this.compareLocales(config.defaultLocale, locale);
       }
     }
 
@@ -353,7 +354,8 @@ class TranslationStats {
     md += `|--------|----------|------------|-------|\n`;
 
     for (const [locale, stats] of Object.entries(this.locales)) {
-      const icon = parseFloat(stats.coverage) >= 90 ? '✅' : parseFloat(stats.coverage) >= 50 ? '⚠️' : '❌';
+      const icon =
+        parseFloat(stats.coverage) >= 90 ? '✅' : parseFloat(stats.coverage) >= 50 ? '⚠️' : '❌';
       md += `| ${locale} | ${icon} ${stats.coverage}% | ${stats.translatedKeys}/${stats.totalKeys} | ${stats.emptyKeys} |\n`;
     }
 

@@ -33,88 +33,182 @@ export interface EcoScoreProps {
 
 /** Energy rating score: A+++ = 100, down to E-G = 10 */
 function energyRatingScore(rating?: string): number {
-  if (!rating) {return 0;}
+  if (!rating) {
+    return 0;
+  }
   const normalized = rating.toUpperCase().replace(/\s/g, '');
   const map: Record<string, number> = {
     'A+++': 100,
     'A++': 100,
     'A+': 85,
-    'A': 70,
-    'B': 55,
-    'C': 40,
-    'D': 25,
-    'E': 10,
-    'F': 10,
-    'G': 10,
+    A: 70,
+    B: 55,
+    C: 40,
+    D: 25,
+    E: 10,
+    F: 10,
+    G: 10,
   };
   return map[normalized] ?? 0;
 }
 
 /** Water consumption score: < 6L = 100, 6-9 = 80, 9-12 = 60, > 12 = 40 */
 function waterScore(liters?: number): number {
-  if (liters == null || liters <= 0) {return 0;}
-  if (liters < 6) {return 100;}
-  if (liters < 9) {return 80;}
-  if (liters <= 12) {return 60;}
+  if (liters == null || liters <= 0) {
+    return 0;
+  }
+  if (liters < 6) {
+    return 100;
+  }
+  if (liters < 9) {
+    return 80;
+  }
+  if (liters <= 12) {
+    return 60;
+  }
   return 40;
 }
 
 /** Material sustainability score */
 function materialScore(material?: string): number {
-  if (!material) {return 30;}
+  if (!material) {
+    return 30;
+  }
   const lower = material.toLowerCase();
-  if (lower.includes('fsc') || lower.includes('recycled') || lower.includes('recycle')) {return 100;}
-  if (lower.includes('sustainable') || lower.includes('bamboo') || lower.includes('bio')) {return 75;}
-  if (lower.includes('standard') || lower.includes('melamine') || lower.includes('mdf')) {return 50;}
+  if (lower.includes('fsc') || lower.includes('recycled') || lower.includes('recycle')) {
+    return 100;
+  }
+  if (lower.includes('sustainable') || lower.includes('bamboo') || lower.includes('bio')) {
+    return 75;
+  }
+  if (lower.includes('standard') || lower.includes('melamine') || lower.includes('mdf')) {
+    return 50;
+  }
   return 30;
 }
 
 /** Lifespan score based on warranty years */
 function lifespanScore(warranty?: number): number {
-  if (warranty == null || warranty <= 0) {return 30;}
-  if (warranty >= 10) {return 100;}
-  if (warranty >= 5) {return 75;}
-  if (warranty >= 3) {return 50;}
+  if (warranty == null || warranty <= 0) {
+    return 30;
+  }
+  if (warranty >= 10) {
+    return 100;
+  }
+  if (warranty >= 5) {
+    return 75;
+  }
+  if (warranty >= 3) {
+    return 50;
+  }
   return 30;
 }
 
 /** Letter grade from numeric score */
 function letterGrade(score: number): string {
-  if (score >= 90) {return 'A+';}
-  if (score >= 80) {return 'A';}
-  if (score >= 70) {return 'B';}
-  if (score >= 60) {return 'C';}
-  if (score >= 50) {return 'D';}
-  if (score >= 35) {return 'E';}
+  if (score >= 90) {
+    return 'A+';
+  }
+  if (score >= 80) {
+    return 'A';
+  }
+  if (score >= 70) {
+    return 'B';
+  }
+  if (score >= 60) {
+    return 'C';
+  }
+  if (score >= 50) {
+    return 'D';
+  }
+  if (score >= 35) {
+    return 'E';
+  }
   return 'F';
 }
 
 /** Color for a letter grade */
-function gradeColor(grade: string): { bg: string; text: string; ring: string; darkBg: string; darkText: string } {
+function gradeColor(grade: string): {
+  bg: string;
+  text: string;
+  ring: string;
+  darkBg: string;
+  darkText: string;
+} {
   switch (grade) {
     case 'A+':
-      return { bg: 'bg-emerald-100', text: 'text-emerald-700', ring: 'ring-emerald-400', darkBg: 'dark:bg-emerald-900/30', darkText: 'dark:text-emerald-300' };
+      return {
+        bg: 'bg-emerald-100',
+        text: 'text-emerald-700',
+        ring: 'ring-emerald-400',
+        darkBg: 'dark:bg-emerald-900/30',
+        darkText: 'dark:text-emerald-300',
+      };
     case 'A':
-      return { bg: 'bg-green-100', text: 'text-green-700', ring: 'ring-green-400', darkBg: 'dark:bg-green-900/30', darkText: 'dark:text-green-300' };
+      return {
+        bg: 'bg-green-100',
+        text: 'text-green-700',
+        ring: 'ring-green-400',
+        darkBg: 'dark:bg-green-900/30',
+        darkText: 'dark:text-green-300',
+      };
     case 'B':
-      return { bg: 'bg-lime-100', text: 'text-lime-700', ring: 'ring-lime-400', darkBg: 'dark:bg-lime-900/30', darkText: 'dark:text-lime-300' };
+      return {
+        bg: 'bg-lime-100',
+        text: 'text-lime-700',
+        ring: 'ring-lime-400',
+        darkBg: 'dark:bg-lime-900/30',
+        darkText: 'dark:text-lime-300',
+      };
     case 'C':
-      return { bg: 'bg-yellow-100', text: 'text-yellow-700', ring: 'ring-yellow-400', darkBg: 'dark:bg-yellow-900/30', darkText: 'dark:text-yellow-300' };
+      return {
+        bg: 'bg-yellow-100',
+        text: 'text-yellow-700',
+        ring: 'ring-yellow-400',
+        darkBg: 'dark:bg-yellow-900/30',
+        darkText: 'dark:text-yellow-300',
+      };
     case 'D':
-      return { bg: 'bg-orange-100', text: 'text-orange-700', ring: 'ring-orange-400', darkBg: 'dark:bg-orange-900/30', darkText: 'dark:text-orange-300' };
+      return {
+        bg: 'bg-orange-100',
+        text: 'text-orange-700',
+        ring: 'ring-orange-400',
+        darkBg: 'dark:bg-orange-900/30',
+        darkText: 'dark:text-orange-300',
+      };
     case 'E':
-      return { bg: 'bg-red-100', text: 'text-red-600', ring: 'ring-red-400', darkBg: 'dark:bg-red-900/30', darkText: 'dark:text-red-300' };
+      return {
+        bg: 'bg-red-100',
+        text: 'text-red-600',
+        ring: 'ring-red-400',
+        darkBg: 'dark:bg-red-900/30',
+        darkText: 'dark:text-red-300',
+      };
     default:
-      return { bg: 'bg-red-200', text: 'text-red-800', ring: 'ring-red-500', darkBg: 'dark:bg-red-900/40', darkText: 'dark:text-red-200' };
+      return {
+        bg: 'bg-red-200',
+        text: 'text-red-800',
+        ring: 'ring-red-500',
+        darkBg: 'dark:bg-red-900/40',
+        darkText: 'dark:text-red-200',
+      };
   }
 }
 
 /** Progress bar color */
 function barColor(score: number): string {
-  if (score >= 80) {return 'bg-emerald-500';}
-  if (score >= 60) {return 'bg-green-500';}
-  if (score >= 40) {return 'bg-yellow-500';}
-  if (score >= 20) {return 'bg-orange-500';}
+  if (score >= 80) {
+    return 'bg-emerald-500';
+  }
+  if (score >= 60) {
+    return 'bg-green-500';
+  }
+  if (score >= 40) {
+    return 'bg-yellow-500';
+  }
+  if (score >= 20) {
+    return 'bg-orange-500';
+  }
   return 'bg-red-500';
 }
 
@@ -122,7 +216,10 @@ function barColor(score: number): string {
 // Component
 // ----------------------------------------------------------------
 
-export default function EcoScorePanel({ items, onSuggestionClick }: EcoScoreProps): React.ReactElement {
+export default function EcoScorePanel({
+  items,
+  onSuggestionClick,
+}: EcoScoreProps): React.ReactElement {
   const { t } = useTranslation();
   const [expandedSection, setExpandedSection] = useState<string | null>('categories');
 
@@ -137,31 +234,73 @@ export default function EcoScorePanel({ items, onSuggestionClick }: EcoScoreProp
     const materialItems = items.filter((i) => i.material);
     const warrantyItems = items.filter((i) => i.warranty != null && i.warranty > 0);
 
-    const avgEnergy = energyItems.length > 0
-      ? Math.round(energyItems.reduce((sum, i) => sum + energyRatingScore(i.energyRating), 0) / energyItems.length)
-      : 0;
-    const avgWater = waterItems.length > 0
-      ? Math.round(waterItems.reduce((sum, i) => sum + waterScore(i.waterConsumption), 0) / waterItems.length)
-      : 0;
-    const avgMaterial = materialItems.length > 0
-      ? Math.round(materialItems.reduce((sum, i) => sum + materialScore(i.material), 0) / materialItems.length)
-      : 0;
-    const avgLifespan = warrantyItems.length > 0
-      ? Math.round(warrantyItems.reduce((sum, i) => sum + lifespanScore(i.warranty), 0) / warrantyItems.length)
-      : 0;
+    const avgEnergy =
+      energyItems.length > 0
+        ? Math.round(
+            energyItems.reduce((sum, i) => sum + energyRatingScore(i.energyRating), 0) /
+              energyItems.length
+          )
+        : 0;
+    const avgWater =
+      waterItems.length > 0
+        ? Math.round(
+            waterItems.reduce((sum, i) => sum + waterScore(i.waterConsumption), 0) /
+              waterItems.length
+          )
+        : 0;
+    const avgMaterial =
+      materialItems.length > 0
+        ? Math.round(
+            materialItems.reduce((sum, i) => sum + materialScore(i.material), 0) /
+              materialItems.length
+          )
+        : 0;
+    const avgLifespan =
+      warrantyItems.length > 0
+        ? Math.round(
+            warrantyItems.reduce((sum, i) => sum + lifespanScore(i.warranty), 0) /
+              warrantyItems.length
+          )
+        : 0;
 
     return [
-      { key: 'energy', label: t('ecoScore.energy', 'Energy efficiency'), score: avgEnergy, weight: 0.35, count: energyItems.length },
-      { key: 'water', label: t('ecoScore.water', 'Water efficiency'), score: avgWater, weight: 0.20, count: waterItems.length },
-      { key: 'material', label: t('ecoScore.material', 'Material sustainability'), score: avgMaterial, weight: 0.30, count: materialItems.length },
-      { key: 'lifespan', label: t('ecoScore.lifespan', 'Product lifespan'), score: avgLifespan, weight: 0.15, count: warrantyItems.length },
+      {
+        key: 'energy',
+        label: t('ecoScore.energy', 'Energy efficiency'),
+        score: avgEnergy,
+        weight: 0.35,
+        count: energyItems.length,
+      },
+      {
+        key: 'water',
+        label: t('ecoScore.water', 'Water efficiency'),
+        score: avgWater,
+        weight: 0.2,
+        count: waterItems.length,
+      },
+      {
+        key: 'material',
+        label: t('ecoScore.material', 'Material sustainability'),
+        score: avgMaterial,
+        weight: 0.3,
+        count: materialItems.length,
+      },
+      {
+        key: 'lifespan',
+        label: t('ecoScore.lifespan', 'Product lifespan'),
+        score: avgLifespan,
+        weight: 0.15,
+        count: warrantyItems.length,
+      },
     ];
   }, [items, t]);
 
   // ---- Overall score ----
   const overallScore = useMemo(() => {
     const hasData = categories.some((c) => c.count > 0);
-    if (!hasData) {return 0;}
+    if (!hasData) {
+      return 0;
+    }
 
     let totalWeight = 0;
     let weightedSum = 0;
@@ -333,7 +472,12 @@ export default function EcoScorePanel({ items, onSuggestionClick }: EcoScoreProp
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
 
@@ -364,10 +508,16 @@ export default function EcoScorePanel({ items, onSuggestionClick }: EcoScoreProp
                   </div>
                   <div className="flex justify-between mt-0.5">
                     <span className="text-[10px] text-gray-400">
-                      {t('ecoScore.weight', { pct: Math.round(cat.weight * 100), defaultValue: '{{pct}}% weight' })}
+                      {t('ecoScore.weight', {
+                        pct: Math.round(cat.weight * 100),
+                        defaultValue: '{{pct}}% weight',
+                      })}
                     </span>
                     <span className="text-[10px] text-gray-400">
-                      {t('ecoScore.itemCount', { count: cat.count, defaultValue: '{{count}} items' })}
+                      {t('ecoScore.itemCount', {
+                        count: cat.count,
+                        defaultValue: '{{count}} items',
+                      })}
                     </span>
                   </div>
                 </div>
@@ -391,7 +541,12 @@ export default function EcoScorePanel({ items, onSuggestionClick }: EcoScoreProp
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 

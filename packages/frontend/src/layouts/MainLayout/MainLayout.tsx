@@ -16,12 +16,7 @@ export default function MainLayout(): React.ReactElement {
       <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
       <div className="flex">
-        {isAuthenticated && (
-          <Sidebar
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-          />
-        )}
+        {isAuthenticated && <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
 
         <main className={`flex-1 ${isAuthenticated ? 'lg:ml-0' : ''}`}>
           <Outlet />

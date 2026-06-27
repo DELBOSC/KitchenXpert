@@ -52,8 +52,8 @@ export function Login() {
           </div>
           <h1 className="mb-6 text-4xl font-bold">Partner Portal</h1>
           <p className="mb-8 text-lg text-primary-100">
-            Manage your kitchen products, track orders, and grow your business with
-            our comprehensive partner dashboard.
+            Manage your kitchen products, track orders, and grow your business with our
+            comprehensive partner dashboard.
           </p>
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
@@ -109,17 +109,12 @@ export function Login() {
           </p>
 
           {error && (
-            <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-600">
-              {error}
-            </div>
+            <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-600">{error}</div>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <label
-                htmlFor="email"
-                className="mb-1 block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <input
@@ -132,16 +127,11 @@ export function Login() {
                 }`}
                 placeholder="you@company.com"
               />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="mb-1 block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
                 Password
               </label>
               <div className="relative">
@@ -160,11 +150,7 @@ export function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
               {errors.password && (
@@ -206,10 +192,7 @@ export function Login() {
 
           <p className="mt-8 text-center text-sm text-gray-600">
             Not a partner yet?{' '}
-            <a
-              href="/register"
-              className="font-medium text-primary-600 hover:text-primary-500"
-            >
+            <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">
               Apply now
             </a>
           </p>

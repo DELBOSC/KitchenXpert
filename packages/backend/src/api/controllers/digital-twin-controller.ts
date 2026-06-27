@@ -91,8 +91,14 @@ export class DigitalTwinController {
       where: { id: kitchenId },
     });
 
-    if (kitchen && (kitchen as Record<string, unknown>).userId !== userId && req.user?.role !== 'admin') {
-      res.status(403).json({ success: false, error: 'You do not have access to this digital twin' });
+    if (
+      kitchen &&
+      (kitchen as Record<string, unknown>).userId !== userId &&
+      req.user?.role !== 'admin'
+    ) {
+      res
+        .status(403)
+        .json({ success: false, error: 'You do not have access to this digital twin' });
       return;
     }
 

@@ -113,16 +113,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -149,14 +151,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -179,9 +177,7 @@ const mockInsightsSummary = {
     'Consider adding farmhouse style templates to meet growing demand',
     'Optimize image generation for faster thumbnail delivery',
   ],
-  alerts: [
-    'Storage usage is approaching 80% capacity',
-  ],
+  alerts: ['Storage usage is approaching 80% capacity'],
 };
 
 // ==================== TESTS ====================
@@ -202,9 +198,7 @@ describe('AI Admin Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to POST /ai-admin/insights', async () => {
-      const response = await request(app)
-        .post('/ai-admin/insights')
-        .expect(401);
+      const response = await request(app).post('/ai-admin/insights').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -216,9 +210,7 @@ describe('AI Admin Routes', () => {
     it('should return 403 when a regular user tries to access insights', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(403);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Admin access required');
@@ -227,9 +219,7 @@ describe('AI Admin Routes', () => {
     it('should return 403 when a partner user tries to access insights', async () => {
       currentTestUser = { userId: 'partner-1', email: 'partner@test.com', role: 'partner' };
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(403);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(403);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Admin access required');
@@ -238,9 +228,7 @@ describe('AI Admin Routes', () => {
     it('should return 403 when a moderator user tries to access insights', async () => {
       currentTestUser = { userId: 'mod-1', email: 'mod@test.com', role: 'moderator' };
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(403);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -253,9 +241,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue(mockInsightsSummary);
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('summary');
@@ -266,9 +252,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue(mockInsightsSummary);
 
-      await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       expect(mockGenerateDashboardSummary).toHaveBeenCalledWith('admin-1');
     });
@@ -277,9 +261,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockRejectedValue(new Error('AI insights service unavailable'));
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(500);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(500);
 
       expect(response.body.success).toBe(false);
     });
@@ -287,9 +269,7 @@ describe('AI Admin Routes', () => {
     it('should not call service when user is not admin', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(403);
+      await authedRequest(app).post('/ai-admin/insights').expect(403);
 
       expect(mockGenerateDashboardSummary).not.toHaveBeenCalled();
     });
@@ -298,9 +278,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue({});
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.summary).toEqual({});
@@ -310,9 +288,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue('Simple text summary of dashboard metrics.');
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.summary).toBe('Simple text summary of dashboard metrics.');
@@ -322,9 +298,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-99', email: 'superadmin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue(mockInsightsSummary);
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockGenerateDashboardSummary).toHaveBeenCalledWith('admin-99');
@@ -332,11 +306,11 @@ describe('AI Admin Routes', () => {
 
     it('should not leak internal error details in production-like responses', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
-      mockGenerateDashboardSummary.mockRejectedValue(new Error('Internal: Redis connection refused at 127.0.0.1:6379'));
+      mockGenerateDashboardSummary.mockRejectedValue(
+        new Error('Internal: Redis connection refused at 127.0.0.1:6379')
+      );
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(500);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(500);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).not.toContain('Redis connection refused');
@@ -346,9 +320,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.summary).toBeNull();
@@ -358,10 +330,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue(mockInsightsSummary);
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .send()
-        .expect(200);
+      const response = await authedRequest(app).post('/ai-admin/insights').send().expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -370,13 +339,14 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       const summaryWithAlerts = {
         ...mockInsightsSummary,
-        alerts: ['Critical: Database approaching storage limit', 'Warning: High API error rate detected'],
+        alerts: [
+          'Critical: Database approaching storage limit',
+          'Warning: High API error rate detected',
+        ],
       };
       mockGenerateDashboardSummary.mockResolvedValue(summaryWithAlerts);
 
-      const response = await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      const response = await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.summary.alerts).toHaveLength(2);
@@ -401,9 +371,7 @@ describe('AI Admin Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockGenerateDashboardSummary.mockResolvedValue(mockInsightsSummary);
 
-      await authedRequest(app)
-        .post('/ai-admin/insights')
-        .expect(200);
+      await authedRequest(app).post('/ai-admin/insights').expect(200);
 
       // The service should be called with the userId (not id)
       expect(mockGenerateDashboardSummary).toHaveBeenCalledWith('admin-1');

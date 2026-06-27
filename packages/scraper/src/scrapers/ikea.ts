@@ -161,19 +161,19 @@ const KITCHEN_CATEGORIES = {
 
 // IKEA facade styles mapping
 const FACADE_STYLE_MAP: Record<string, FacadeStyle> = {
-  'VOXTORP': 'flat',
-  'AXSTAD': 'shaker',
-  'BODBYN': 'classic',
-  'RINGHULT': 'flat',
-  'LERHYTTAN': 'classic',
-  'ASKERSUND': 'flat',
-  'KUNGSBACKA': 'flat',
-  'HAVSTORP': 'shaker',
-  'STENSUND': 'flat',
-  'VEDDINGE': 'flat',
-  'FORSAND': 'flat',
-  'SINARP': 'flat',
-  'NICKEBO': 'handleless',
+  VOXTORP: 'flat',
+  AXSTAD: 'shaker',
+  BODBYN: 'classic',
+  RINGHULT: 'flat',
+  LERHYTTAN: 'classic',
+  ASKERSUND: 'flat',
+  KUNGSBACKA: 'flat',
+  HAVSTORP: 'shaker',
+  STENSUND: 'flat',
+  VEDDINGE: 'flat',
+  FORSAND: 'flat',
+  SINARP: 'flat',
+  NICKEBO: 'handleless',
 };
 
 // Cabinet type detection
@@ -182,20 +182,20 @@ const CABINET_TYPE_PATTERNS: Record<string, CabinetType> = {
   'élément bas': 'base_standard',
   'meuble haut': 'wall_standard',
   'élément haut': 'wall_standard',
-  'armoire': 'tall_pantry',
-  'colonne': 'tall_pantry',
-  'meuble d\'angle': 'base_corner',
-  'élément d\'angle': 'base_corner',
+  armoire: 'tall_pantry',
+  colonne: 'tall_pantry',
+  "meuble d'angle": 'base_corner',
+  "élément d'angle": 'base_corner',
 };
 
 // Worktop material detection
 const WORKTOP_MATERIAL_PATTERNS: Record<string, WorktopMaterial> = {
-  'stratifié': 'laminate',
-  'chêne': 'wood_solid',
-  'bouleau': 'wood_solid',
-  'noyer': 'wood_solid',
-  'hêtre': 'wood_solid',
-  'quartz': 'quartz',
+  stratifié: 'laminate',
+  chêne: 'wood_solid',
+  bouleau: 'wood_solid',
+  noyer: 'wood_solid',
+  hêtre: 'wood_solid',
+  quartz: 'quartz',
   'effet pierre': 'laminate',
   'effet bois': 'laminate',
   'effet béton': 'laminate',
@@ -332,20 +332,18 @@ export class IkeaScraper extends BaseScraper {
       const $ = this.parseHtml(html);
 
       // Extract category name from breadcrumbs or title
-      const name = $('h1').first().text().trim() ||
-                   $('.plp-title').text().trim() ||
-                   'IKEA Kitchen';
+      const name = $('h1').first().text().trim() || $('.plp-title').text().trim() || 'IKEA Kitchen';
 
-      const description = $('.plp-description').text().trim() ||
-                         $('meta[name="description"]').attr('content');
+      const description =
+        $('.plp-description').text().trim() || $('meta[name="description"]').attr('content');
 
       // Get category path for slug
       const pathMatch = url.match(/\/cat\/([^\/]+)/);
       const slug = pathMatch?.[1] ?? this.slugify(name);
 
       // Get banner image
-      const bannerImage = $('.plp-hero-image img').attr('src') ||
-                         $('header img').first().attr('src');
+      const bannerImage =
+        $('.plp-hero-image img').attr('src') || $('header img').first().attr('src');
 
       return {
         brandId: this.config.id,
@@ -387,52 +385,63 @@ export class IkeaScraper extends BaseScraper {
     });
 
     // Extract from page if JSON not available
-    const name = jsonData?.name ||
-                 $('h1.pip-header-section__title--big').text().trim() ||
-                 $('h1').first().text().trim();
+    const name =
+      jsonData?.name ||
+      $('h1.pip-header-section__title--big').text().trim() ||
+      $('h1').first().text().trim();
 
-    const articleNumber = jsonData?.sku ||
-                         $('[data-article-number]').attr('data-article-number') ||
-                         $('.pip-product-identifier__value').text().trim();
+    const articleNumber =
+      jsonData?.sku ||
+      $('[data-article-number]').attr('data-article-number') ||
+      $('.pip-product-identifier__value').text().trim();
 
-    const description = jsonData?.description ||
-                       $('[data-testid="product-description"]').text().trim() ||
-                       $('.pip-product-details__container').text().trim();
+    const description =
+      jsonData?.description ||
+      $('[data-testid="product-description"]').text().trim() ||
+      $('.pip-product-details__container').text().trim();
 
     // Price extraction
-    const priceText = $('[data-price]').attr('data-price') ||
-                     $('.pip-temp-price__integer').text().trim() ||
-                     $('.pip-price__integer').text().trim();
+    const priceText =
+      $('[data-price]').attr('data-price') ||
+      $('.pip-temp-price__integer').text().trim() ||
+      $('.pip-price__integer').text().trim();
     const price = this.parsePrice(priceText);
 
     // Dimensions
-    const dimensionsText = $('[data-testid="product-dimensions"]').text().trim() ||
-                          $('.pip-product-dimensions').text().trim();
+    const dimensionsText =
+      $('[data-testid="product-dimensions"]').text().trim() ||
+      $('.pip-product-dimensions').text().trim();
     const dimensions = this.parseDimensions(dimensionsText);
 
     // Images
     const images: string[] = [];
-    $('[data-testid="product-image"] img, .pip-media-grid img').each((_: number, img: cheerio.Element) => {
-      const src = $(img).attr('src') || $(img).attr('data-src');
-      if (src && !src.includes('placeholder')) {
-        images.push(this.resolveUrl(src));
+    $('[data-testid="product-image"] img, .pip-media-grid img').each(
+      (_: number, img: cheerio.Element) => {
+        const src = $(img).attr('src') || $(img).attr('data-src');
+        if (src && !src.includes('placeholder')) {
+          images.push(this.resolveUrl(src));
+        }
       }
-    });
+    );
 
     // Material
-    const materialText = $('[data-testid="product-materials"]').text().trim() ||
-                        $('.pip-product-details__material').text().trim();
+    const materialText =
+      $('[data-testid="product-materials"]').text().trim() ||
+      $('.pip-product-details__material').text().trim();
 
     // Color
-    const color = $('[data-testid="product-color"]').text().trim() ||
-                 $('[aria-label*="couleur"]').text().trim();
+    const color =
+      $('[data-testid="product-color"]').text().trim() ||
+      $('[aria-label*="couleur"]').text().trim();
 
     // Category from breadcrumbs
     const categories: string[] = [];
-    $('.pip-breadcrumb__item, [data-testid="breadcrumb"] a').each((_: number, el: cheerio.Element) => {
-      const text = $(el).text().trim();
-      if (text) categories.push(text);
-    });
+    $('.pip-breadcrumb__item, [data-testid="breadcrumb"] a').each(
+      (_: number, el: cheerio.Element) => {
+        const text = $(el).text().trim();
+        if (text) categories.push(text);
+      }
+    );
 
     return {
       name,
@@ -463,20 +472,33 @@ export class IkeaScraper extends BaseScraper {
       return 'worktop';
     }
 
-    if (combined.includes('porte') || combined.includes('façade') ||
-        combined.includes('tiroir') || combined.includes('façade')) {
+    if (
+      combined.includes('porte') ||
+      combined.includes('façade') ||
+      combined.includes('tiroir') ||
+      combined.includes('façade')
+    ) {
       return 'facade';
     }
 
-    if (combined.includes('four') || combined.includes('réfrigérateur') ||
-        combined.includes('hotte') || combined.includes('plaque') ||
-        combined.includes('lave-vaisselle') || combined.includes('congélateur')) {
+    if (
+      combined.includes('four') ||
+      combined.includes('réfrigérateur') ||
+      combined.includes('hotte') ||
+      combined.includes('plaque') ||
+      combined.includes('lave-vaisselle') ||
+      combined.includes('congélateur')
+    ) {
       return 'appliance';
     }
 
-    if (combined.includes('meuble') || combined.includes('armoire') ||
-        combined.includes('élément') || combined.includes('colonne') ||
-        combined.includes('metod')) {
+    if (
+      combined.includes('meuble') ||
+      combined.includes('armoire') ||
+      combined.includes('élément') ||
+      combined.includes('colonne') ||
+      combined.includes('metod')
+    ) {
       return 'cabinet';
     }
 
@@ -655,7 +677,8 @@ export class IkeaScraper extends BaseScraper {
 
     // Default based on height
     if (lower.includes('200') || lower.includes('220')) return 'tall_pantry';
-    if (lower.includes('80') || lower.includes('60') && !lower.includes('haut')) return 'base_standard';
+    if (lower.includes('80') || (lower.includes('60') && !lower.includes('haut')))
+      return 'base_standard';
 
     return 'base_standard';
   }

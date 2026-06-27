@@ -50,7 +50,7 @@ const ALL_STRATEGIES: LayoutStrategy[] = [
     type: 'u_shape',
     name: 'En U',
     walls: ['back', 'left', 'right'],
-    description: 'Trois murs utilises — maximum de rangement et d\'espace de travail.',
+    description: "Trois murs utilises — maximum de rangement et d'espace de travail.",
   },
   {
     type: 'galley',
@@ -148,7 +148,13 @@ export class LayoutGenerator {
     // Place essential appliances first
     const essentials = this.cabinetSolver.placeEssentialAppliances(
       strategySegments,
-      { mustHave: constraints.mustHave.length > 0 ? constraints.mustHave : ['sink', 'cooktop', 'refrigerator'], budget: constraints.budget },
+      {
+        mustHave:
+          constraints.mustHave.length > 0
+            ? constraints.mustHave
+            : ['sink', 'cooktop', 'refrigerator'],
+        budget: constraints.budget,
+      },
       []
     );
     items.push(...essentials);
@@ -183,7 +189,15 @@ export class LayoutGenerator {
       let totalCost = items.reduce((sum, i) => sum + (i.price || 0), 0);
       // Remove items from the end (least important, added last) until within budget
       // Never remove essential appliances
-      const essentialTypes = new Set(['sink', 'cooktop', 'refrigerator', 'dishwasher', 'stove', 'hob', 'fridge']);
+      const essentialTypes = new Set([
+        'sink',
+        'cooktop',
+        'refrigerator',
+        'dishwasher',
+        'stove',
+        'hob',
+        'fridge',
+      ]);
       while (totalCost > budgetMax && items.length > 0) {
         // Find last non-essential item to remove
         let removedIdx = -1;
@@ -217,20 +231,28 @@ export class LayoutGenerator {
   private addWallCabinets(items: PlacedItem3D[], strategy: LayoutStrategy): void {
     // Only add wall cabinets above base cabinets that are on the strategy's walls
     const strategyWallRotations = new Set(
-      strategy.walls.map(wall => {
+      strategy.walls.map((wall) => {
         switch (wall) {
-          case 'back': return 0;
-          case 'front': return Math.PI;
-          case 'left': return Math.PI / 2;
-          case 'right': return -Math.PI / 2;
+          case 'back':
+            return 0;
+          case 'front':
+            return Math.PI;
+          case 'left':
+            return Math.PI / 2;
+          case 'right':
+            return -Math.PI / 2;
         }
       })
     );
 
-    const baseCabinets = items.filter((i) =>
-      ['base_cabinet', 'base'].includes(i.type) &&
-      strategyWallRotations.has(i.rotation) &&
-      !items.some((other) => other.type === 'wall_cabinet' && Math.abs(other.position.x - i.position.x) < 0.3)
+    const baseCabinets = items.filter(
+      (i) =>
+        ['base_cabinet', 'base'].includes(i.type) &&
+        strategyWallRotations.has(i.rotation) &&
+        !items.some(
+          (other) =>
+            other.type === 'wall_cabinet' && Math.abs(other.position.x - i.position.x) < 0.3
+        )
     );
 
     const wallHeight = mmToM(this.brandProfile.wall.defaultHeight);
@@ -241,11 +263,7 @@ export class LayoutGenerator {
       items.push({
         id: `gen-wall-${base.id}`,
         type: 'wall_cabinet',
-        position: new THREE.Vector3(
-          base.position.x,
-          wallY,
-          base.position.z - 0.1
-        ),
+        position: new THREE.Vector3(base.position.x, wallY, base.position.z - 0.1),
         rotation: base.rotation,
         dimensions: { width: base.dimensions.width, height: wallHeight, depth: wallDepth },
         price: Math.round(120 + base.dimensions.width * 1000 * 0.2),

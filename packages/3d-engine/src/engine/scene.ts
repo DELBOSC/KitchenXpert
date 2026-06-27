@@ -53,11 +53,7 @@ export class KitchenScene {
 
     // Fog pour la profondeur
     if (this.config.fogEnabled) {
-      this.scene.fog = new THREE.Fog(
-        this.config.fogColor,
-        this.config.fogNear,
-        this.config.fogFar
-      );
+      this.scene.fog = new THREE.Fog(this.config.fogColor, this.config.fogNear, this.config.fogFar);
     }
 
     // Grille au sol pour repères
@@ -200,7 +196,13 @@ export class KitchenScene {
 
               // Extract texture info from standard materials
               if (mat instanceof THREE.MeshStandardMaterial) {
-                const textureMaps = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap'] as const;
+                const textureMaps = [
+                  'map',
+                  'normalMap',
+                  'roughnessMap',
+                  'metalnessMap',
+                  'aoMap',
+                ] as const;
                 textureMaps.forEach((mapName) => {
                   const texture = mat[mapName];
                   if (texture && !texturesSeen.has(texture.uuid)) {
@@ -268,10 +270,15 @@ export class KitchenScene {
       const fogData = sceneData.fog as Record<string, unknown> | undefined;
       if (fogData && fogData.enabled === true) {
         this.config.fogEnabled = true;
-        this.config.fogColor = typeof fogData.color === 'number' ? fogData.color : this.config.fogColor;
+        this.config.fogColor =
+          typeof fogData.color === 'number' ? fogData.color : this.config.fogColor;
         this.config.fogNear = typeof fogData.near === 'number' ? fogData.near : this.config.fogNear;
         this.config.fogFar = typeof fogData.far === 'number' ? fogData.far : this.config.fogFar;
-        this.scene.fog = new THREE.Fog(this.config.fogColor, this.config.fogNear, this.config.fogFar);
+        this.scene.fog = new THREE.Fog(
+          this.config.fogColor,
+          this.config.fogNear,
+          this.config.fogFar
+        );
       } else if (fogData && fogData.enabled === false) {
         this.config.fogEnabled = false;
         this.scene.fog = null;
@@ -513,7 +520,7 @@ export class KitchenScene {
       this.grid.geometry?.dispose();
       if (this.grid.material) {
         if (Array.isArray(this.grid.material)) {
-          this.grid.material.forEach(m => m.dispose());
+          this.grid.material.forEach((m) => m.dispose());
         } else {
           this.grid.material.dispose();
         }
@@ -530,7 +537,7 @@ export class KitchenScene {
       if ('material' in axesHelper && (axesHelper as THREE.LineSegments).material) {
         const mat = (axesHelper as THREE.LineSegments).material;
         if (Array.isArray(mat)) {
-          mat.forEach(m => m.dispose());
+          mat.forEach((m) => m.dispose());
         } else {
           mat.dispose();
         }

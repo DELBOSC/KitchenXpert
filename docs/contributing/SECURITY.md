@@ -10,11 +10,13 @@ We release security updates for the following versions:
 | ------- | ------------------ | -------------- |
 | 1.0.x   | :white_check_mark: | TBD            |
 
-**Note**: Only the latest minor version receives security updates. Please upgrade to the latest version to ensure you have all security patches.
+**Note**: Only the latest minor version receives security updates. Please
+upgrade to the latest version to ensure you have all security patches.
 
 ## Reporting a Vulnerability
 
-The KitchenXpert team takes security vulnerabilities seriously. We appreciate your efforts to responsibly disclose your findings.
+The KitchenXpert team takes security vulnerabilities seriously. We appreciate
+your efforts to responsibly disclose your findings.
 
 ### How to Report
 
@@ -52,6 +54,7 @@ We strive to respond to security reports according to the following timeline:
 We categorize vulnerabilities using the following severity levels:
 
 #### Critical (CVSS 9.0-10.0)
+
 - Remote code execution
 - SQL injection with data exfiltration
 - Authentication bypass affecting all users
@@ -60,6 +63,7 @@ We categorize vulnerabilities using the following severity levels:
 **Response**: Immediate hotfix, notification sent to all users
 
 #### High (CVSS 7.0-8.9)
+
 - Cross-site scripting (XSS) affecting sensitive data
 - Insecure direct object references
 - Privilege escalation
@@ -68,6 +72,7 @@ We categorize vulnerabilities using the following severity levels:
 **Response**: Fix within 1 week, included in next patch release
 
 #### Medium (CVSS 4.0-6.9)
+
 - Cross-site request forgery (CSRF)
 - Information disclosure
 - Insecure cryptographic storage
@@ -76,6 +81,7 @@ We categorize vulnerabilities using the following severity levels:
 **Response**: Fix within 2 weeks, included in next minor release
 
 #### Low (CVSS 0.1-3.9)
+
 - Minor information leaks
 - Non-exploitable security misconfigurations
 - Best practice violations
@@ -90,11 +96,13 @@ We categorize vulnerabilities using the following severity levels:
 4. **Fix development**: We create and test a patch
 5. **Private disclosure**: We may share details with trusted partners
 6. **Public release**: We deploy the fix and publish a security advisory
-7. **Recognition**: We credit the reporter (if desired) in our security acknowledgments
+7. **Recognition**: We credit the reporter (if desired) in our security
+   acknowledgments
 
 ## Bug Bounty Program
 
-We currently do not have a formal bug bounty program. However, we deeply appreciate security research and will:
+We currently do not have a formal bug bounty program. However, we deeply
+appreciate security research and will:
 
 - Acknowledge security researchers in our security advisories
 - Provide a KitchenXpert Premium account (1 year)
@@ -132,6 +140,7 @@ We are evaluating a formal bug bounty program for the future.
 ### For Developers/Self-Hosters
 
 1. **Environment Security**
+
    ```bash
    # Use strong secrets (minimum 32 characters)
    JWT_SECRET=$(openssl rand -base64 32)
@@ -145,6 +154,7 @@ We are evaluating a formal bug bounty program for the future.
    ```
 
 2. **Database Security**
+
    ```bash
    # Use strong database passwords
    # Restrict database access to localhost or specific IPs
@@ -158,6 +168,7 @@ We are evaluating a formal bug bounty program for the future.
    ```
 
 3. **API Security**
+
    ```bash
    # Enable rate limiting
    RATE_LIMIT_WINDOW_MS=60000
@@ -172,6 +183,7 @@ We are evaluating a formal bug bounty program for the future.
    ```
 
 4. **Network Security**
+
    ```bash
    # Use firewall to restrict access
    # Only expose necessary ports (443, 80)
@@ -180,6 +192,7 @@ We are evaluating a formal bug bounty program for the future.
    ```
 
 5. **Monitoring and Logging**
+
    ```bash
    # Enable comprehensive logging
    ENABLE_LOGGING=true
@@ -191,6 +204,7 @@ We are evaluating a formal bug bounty program for the future.
    ```
 
 6. **Regular Updates**
+
    ```bash
    # Check for dependency vulnerabilities
    npm audit
@@ -252,7 +266,8 @@ KitchenXpert implements the following security measures:
 1. **Two-Factor Authentication (2FA)**
    - Status: Planned for v1.1
    - Current: Email-based verification only
-   - Mitigation: Strong password requirements, account lockout after failed attempts
+   - Mitigation: Strong password requirements, account lockout after failed
+     attempts
 
 2. **API Key Rotation**
    - Status: Manual process
@@ -271,11 +286,12 @@ KitchenXpert implements the following security measures:
 
 ## Security Audit History
 
-| Date       | Type           | Conducted By | Severity Found | Status   |
-|------------|----------------|--------------|----------------|----------|
-| 2026-01-10 | Internal Audit | Security Team| None           | Complete |
+| Date       | Type           | Conducted By  | Severity Found | Status   |
+| ---------- | -------------- | ------------- | -------------- | -------- |
+| 2026-01-10 | Internal Audit | Security Team | None           | Complete |
 
-**Note**: We conduct internal security audits quarterly and external penetration testing annually.
+**Note**: We conduct internal security audits quarterly and external penetration
+testing annually.
 
 ## Security Contacts
 
@@ -285,7 +301,8 @@ KitchenXpert implements the following security measures:
 
 ## Security Acknowledgments
 
-We thank the following researchers for responsibly disclosing security vulnerabilities:
+We thank the following researchers for responsibly disclosing security
+vulnerabilities:
 
 - None yet (initial release)
 
@@ -297,8 +314,10 @@ Want to be listed here? Report a valid security vulnerability!
 
 KitchenXpert supports safe harbor for security researchers who:
 
-- Make a good faith effort to avoid privacy violations, data destruction, and service interruption
-- Only interact with accounts you own or with explicit permission from the account holder
+- Make a good faith effort to avoid privacy violations, data destruction, and
+  service interruption
+- Only interact with accounts you own or with explicit permission from the
+  account holder
 - Do not exploit a vulnerability beyond the minimum necessary to demonstrate it
 - Report vulnerabilities promptly
 - Keep vulnerability details confidential until we've resolved the issue
@@ -340,15 +359,18 @@ The following issues are **not considered vulnerabilities**:
 ## Additional Resources
 
 - **Security Best Practices Guide**: https://docs.kitchenxpert.com/security
-- **Architecture Security Documentation**: [docs/architecture/security.md](./docs/architecture/security.md)
+- **Architecture Security Documentation**:
+  [docs/architecture/security.md](./docs/architecture/security.md)
 - **OWASP Top 10**: https://owasp.org/www-project-top-ten/
 - **CWE/SANS Top 25**: https://cwe.mitre.org/top25/
 
 ## Updates to This Policy
 
-We may update this security policy from time to time. Changes will be posted on this page with an updated "Last Updated" date.
+We may update this security policy from time to time. Changes will be posted on
+this page with an updated "Last Updated" date.
 
 For significant changes, we will notify users via:
+
 - Email to registered users
 - Announcement on our blog
 - GitHub security advisory
@@ -357,4 +379,5 @@ For significant changes, we will notify users via:
 
 **Thank you for helping keep KitchenXpert secure!**
 
-If you have any questions about this security policy, please contact security@kitchenxpert.com.
+If you have any questions about this security policy, please contact
+security@kitchenxpert.com.

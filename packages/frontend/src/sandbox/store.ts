@@ -186,7 +186,9 @@ export const useSandboxStore = create<SandboxStore>()(
 
       addItem: (item) => {
         const project = get().project;
-        if (!project) {return;}
+        if (!project) {
+          return;
+        }
         const next: SandboxProject = {
           ...project,
           kitchen: {
@@ -203,15 +205,15 @@ export const useSandboxStore = create<SandboxStore>()(
 
       updateItem: (id, patch) => {
         const project = get().project;
-        if (!project) {return;}
+        if (!project) {
+          return;
+        }
         set({
           project: {
             ...project,
             kitchen: {
               ...project.kitchen,
-              items: project.kitchen.items.map((it) =>
-                it.id === id ? { ...it, ...patch } : it,
-              ),
+              items: project.kitchen.items.map((it) => (it.id === id ? { ...it, ...patch } : it)),
             },
             updatedAt: new Date().toISOString(),
           },
@@ -220,7 +222,9 @@ export const useSandboxStore = create<SandboxStore>()(
 
       removeItem: (id) => {
         const project = get().project;
-        if (!project) {return;}
+        if (!project) {
+          return;
+        }
         set({
           project: {
             ...project,
@@ -235,7 +239,9 @@ export const useSandboxStore = create<SandboxStore>()(
 
       setKitchenName: (name) => {
         const project = get().project;
-        if (!project) {return;}
+        if (!project) {
+          return;
+        }
         set({
           project: {
             ...project,
@@ -248,20 +254,26 @@ export const useSandboxStore = create<SandboxStore>()(
 
       consumeAiUse: () => {
         const { aiUsesRemaining } = get().limits;
-        if (aiUsesRemaining <= 0) {return false;}
+        if (aiUsesRemaining <= 0) {
+          return false;
+        }
         set((s) => ({ limits: { ...s.limits, aiUsesRemaining: aiUsesRemaining - 1 } }));
         return true;
       },
 
       consumePdfExport: () => {
         const { pdfExportsRemaining } = get().limits;
-        if (pdfExportsRemaining <= 0) {return false;}
+        if (pdfExportsRemaining <= 0) {
+          return false;
+        }
         set((s) => ({ limits: { ...s.limits, pdfExportsRemaining: pdfExportsRemaining - 1 } }));
         return true;
       },
 
       startSession: () => {
-        if (get().limits.sessionStartedAt) {return;}
+        if (get().limits.sessionStartedAt) {
+          return;
+        }
         set((s) => ({
           limits: { ...s.limits, sessionStartedAt: new Date().toISOString() },
         }));
@@ -293,8 +305,8 @@ export const useSandboxStore = create<SandboxStore>()(
         }
         return persistedState as PersistedShape;
       },
-    },
-  ),
+    }
+  )
 );
 
 // ---------------------------------------------------------------------------
@@ -311,14 +323,20 @@ let pendingWrite = false;
 
 useSandboxStore.subscribe((state, prev) => {
   // Skip the very first hydration callback
-  if (state.project === prev.project && state.limits === prev.limits) {return;}
+  if (state.project === prev.project && state.limits === prev.limits) {
+    return;
+  }
 
   pendingWrite = true;
-  if (writeTimer) {return;}
+  if (writeTimer) {
+    return;
+  }
 
   writeTimer = setTimeout(() => {
     writeTimer = null;
-    if (!pendingWrite) {return;}
+    if (!pendingWrite) {
+      return;
+    }
     pendingWrite = false;
 
     // Force the persist middleware to flush by touching `_lastSavedAt`
@@ -339,7 +357,9 @@ export const selectAiUsesRemaining = (s: SandboxStore): number => s.limits.aiUse
 export function readPersistedSandbox(): SandboxProject | null {
   try {
     const raw = localStorage.getItem(SANDBOX_STORAGE_KEY);
-    if (!raw) {return null;}
+    if (!raw) {
+      return null;
+    }
     const parsed = JSON.parse(raw) as { state?: { project?: SandboxProject | null } };
     return parsed?.state?.project ?? null;
   } catch {

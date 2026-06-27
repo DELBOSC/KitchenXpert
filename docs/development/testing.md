@@ -39,33 +39,33 @@ KitchenXpert follows the **testing pyramid** approach:
 
 ### Backend (Node.js/TypeScript)
 
-| Framework | Purpose | Documentation |
-|-----------|---------|---------------|
-| Jest | Unit & integration testing | [jestjs.io](https://jestjs.io) |
-| Supertest | HTTP assertion testing | [github.com/visionmedia/supertest](https://github.com/visionmedia/supertest) |
-| ts-jest | TypeScript support for Jest | [github.com/kulshekhar/ts-jest](https://github.com/kulshekhar/ts-jest) |
+| Framework | Purpose                     | Documentation                                                                |
+| --------- | --------------------------- | ---------------------------------------------------------------------------- |
+| Jest      | Unit & integration testing  | [jestjs.io](https://jestjs.io)                                               |
+| Supertest | HTTP assertion testing      | [github.com/visionmedia/supertest](https://github.com/visionmedia/supertest) |
+| ts-jest   | TypeScript support for Jest | [github.com/kulshekhar/ts-jest](https://github.com/kulshekhar/ts-jest)       |
 
 ### Frontend (React)
 
-| Framework | Purpose | Documentation |
-|-----------|---------|---------------|
-| Jest | Test runner | [jestjs.io](https://jestjs.io) |
-| React Testing Library | Component testing | [testing-library.com/react](https://testing-library.com/react) |
+| Framework                   | Purpose                     | Documentation                                                                      |
+| --------------------------- | --------------------------- | ---------------------------------------------------------------------------------- |
+| Jest                        | Test runner                 | [jestjs.io](https://jestjs.io)                                                     |
+| React Testing Library       | Component testing           | [testing-library.com/react](https://testing-library.com/react)                     |
 | @testing-library/user-event | User interaction simulation | [testing-library.com/docs/user-event](https://testing-library.com/docs/user-event) |
 
 ### E2E Testing
 
-| Framework | Purpose | Documentation |
-|-----------|---------|---------------|
+| Framework  | Purpose             | Documentation                            |
+| ---------- | ------------------- | ---------------------------------------- |
 | Playwright | E2E browser testing | [playwright.dev](https://playwright.dev) |
 
 ### AI Modules (Python)
 
-| Framework | Purpose | Documentation |
-|-----------|---------|---------------|
-| pytest | Testing framework | [pytest.org](https://docs.pytest.org) |
+| Framework      | Purpose            | Documentation                                                                        |
+| -------------- | ------------------ | ------------------------------------------------------------------------------------ |
+| pytest         | Testing framework  | [pytest.org](https://docs.pytest.org)                                                |
 | pytest-asyncio | Async test support | [github.com/pytest-dev/pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio) |
-| pytest-cov | Coverage reporting | [github.com/pytest-dev/pytest-cov](https://github.com/pytest-dev/pytest-cov) |
+| pytest-cov     | Coverage reporting | [github.com/pytest-dev/pytest-cov](https://github.com/pytest-dev/pytest-cov)         |
 
 ## Test Coverage Requirements
 
@@ -97,16 +97,16 @@ module.exports = {
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/*.test.{ts,tsx}',
-    '!src/index.ts'
+    '!src/index.ts',
   ],
   coverageThresholds: {
     global: {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
-  }
+      statements: 80,
+    },
+  },
 };
 ```
 
@@ -194,9 +194,9 @@ jest.mock('@/db/client', () => ({
     user: {
       create: jest.fn(),
       findUnique: jest.fn(),
-      findMany: jest.fn()
-    }
-  }
+      findMany: jest.fn(),
+    },
+  },
 }));
 
 describe('UserService', () => {
@@ -210,14 +210,14 @@ describe('UserService', () => {
       const userData = {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       const expectedUser = {
         id: '123',
         email: userData.email,
         name: userData.name,
-        createdAt: new Date()
+        createdAt: new Date(),
       };
 
       (prisma.user.create as jest.Mock).mockResolvedValue(expectedUser);
@@ -230,8 +230,8 @@ describe('UserService', () => {
       expect(prisma.user.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           email: userData.email,
-          name: userData.name
-        })
+          name: userData.name,
+        }),
       });
     });
 
@@ -240,7 +240,7 @@ describe('UserService', () => {
       const userData = {
         email: 'existing@example.com',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       (prisma.user.create as jest.Mock).mockRejectedValue(
@@ -353,7 +353,7 @@ describe('Authentication API', () => {
         .send({
           email: 'test@example.com',
           password: 'password123',
-          name: 'Test User'
+          name: 'Test User',
         })
         .expect(201);
 
@@ -368,7 +368,7 @@ describe('Authentication API', () => {
         .send({
           email: 'invalid-email',
           password: 'password123',
-          name: 'Test User'
+          name: 'Test User',
         })
         .expect(400);
 
@@ -473,7 +473,7 @@ beforeEach(() => {
 it('should fetch user data', async () => {
   (global.fetch as jest.Mock).mockResolvedValue({
     ok: true,
-    json: async () => ({ id: '123', name: 'Test' })
+    json: async () => ({ id: '123', name: 'Test' }),
   });
 
   const user = await fetchUser('123');
@@ -490,12 +490,12 @@ const mockPrisma = {
     findUnique: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
-    delete: jest.fn()
-  }
+    delete: jest.fn(),
+  },
 };
 
 jest.mock('@/db/client', () => ({
-  prisma: mockPrisma
+  prisma: mockPrisma,
 }));
 ```
 
@@ -531,7 +531,7 @@ export const createUser = (overrides = {}) => ({
   email: faker.internet.email(),
   name: faker.person.fullName(),
   createdAt: new Date(),
-  ...overrides
+  ...overrides,
 });
 
 // Usage
@@ -544,16 +544,16 @@ const user = createUser({ email: 'specific@example.com' });
 // tests/fixtures/users.json
 [
   {
-    "id": "test-user-1",
-    "email": "user1@example.com",
-    "name": "Test User 1"
+    id: 'test-user-1',
+    email: 'user1@example.com',
+    name: 'Test User 1',
   },
   {
-    "id": "test-user-2",
-    "email": "user2@example.com",
-    "name": "Test User 2"
-  }
-]
+    id: 'test-user-2',
+    email: 'user2@example.com',
+    name: 'Test User 2',
+  },
+];
 
 // Load in tests
 import users from './fixtures/users.json';
@@ -567,8 +567,8 @@ export async function seedDatabase() {
   await prisma.user.createMany({
     data: [
       { email: 'admin@example.com', name: 'Admin', role: 'admin' },
-      { email: 'user@example.com', name: 'User', role: 'user' }
-    ]
+      { email: 'user@example.com', name: 'User', role: 'user' },
+    ],
   });
 }
 
@@ -614,7 +614,8 @@ describe('UserService', () => {
 
 ## Related Documentation
 
-- [Integration Testing](./integration-testing/overview.md) - Integration test details
+- [Integration Testing](./integration-testing/overview.md) - Integration test
+  details
 - [E2E Testing](./integration-testing/e2e-testing.md) - E2E test guide
 - [CI Integration](./integration-testing/ci-integration.md) - CI/CD testing
 - [Coding Standards](./coding-standards.md) - Code standards

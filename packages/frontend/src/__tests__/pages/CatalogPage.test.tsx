@@ -38,8 +38,7 @@ const mockCatalogState = {
 
 vi.mock('../../store/hooks', () => ({
   useAppDispatch: () => mockDispatch,
-  useAppSelector: (selector: (s: typeof mockCatalogState) => unknown) =>
-    selector(mockCatalogState),
+  useAppSelector: (selector: (s: typeof mockCatalogState) => unknown) => selector(mockCatalogState),
 }));
 
 const renderCatalogPage = () => {
@@ -68,24 +67,18 @@ describe('CatalogPage', () => {
 
     it('should render the search input', () => {
       renderCatalogPage();
-      expect(
-        screen.getByPlaceholderText(/rechercher un produit/i),
-      ).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/rechercher un produit/i)).toBeInTheDocument();
     });
 
     it('should render an AI search button', () => {
       renderCatalogPage();
       // Inside the AI search panel — the only "Rechercher" button on the page.
-      expect(
-        screen.getByRole('button', { name: /rechercher/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /rechercher/i })).toBeInTheDocument();
     });
 
     it('should render the categories section', () => {
       renderCatalogPage();
-      expect(
-        screen.getByRole('heading', { name: /catégories/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /catégories/i })).toBeInTheDocument();
     });
   });
 
@@ -210,9 +203,7 @@ describe('CatalogPage', () => {
   describe('Empty State', () => {
     it('should display an empty-state title when there are no products and no filters', () => {
       renderCatalogPage();
-      expect(
-        screen.getByText(/catalogue en cours de chargement/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/catalogue en cours de chargement/i)).toBeInTheDocument();
     });
   });
 
@@ -243,9 +234,7 @@ describe('CatalogPage', () => {
 
     it('should expose an accessible search input', () => {
       renderCatalogPage();
-      expect(
-        screen.getByPlaceholderText(/rechercher un produit/i),
-      ).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/rechercher un produit/i)).toBeInTheDocument();
     });
 
     it('should expose enabled category buttons', () => {

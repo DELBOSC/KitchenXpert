@@ -118,12 +118,12 @@ export type KitchenStyle =
   | 'mediterranean';
 
 export type FunctionalPriority =
-  | 'cooking_space'      // Espace de cuisson étendu
-  | 'storage'            // Maximum de rangement
-  | 'workspace'          // Grand plan de travail
-  | 'social'             // Cuisine ouverte/conviviale
-  | 'efficiency'         // Triangle de travail optimal
-  | 'family_friendly';   // Adapté aux familles
+  | 'cooking_space' // Espace de cuisson étendu
+  | 'storage' // Maximum de rangement
+  | 'workspace' // Grand plan de travail
+  | 'social' // Cuisine ouverte/conviviale
+  | 'efficiency' // Triangle de travail optimal
+  | 'family_friendly'; // Adapté aux familles
 
 export interface ApplianceRequirement {
   type: ApplianceType;
@@ -199,19 +199,19 @@ export interface KitchenConfiguration {
 }
 
 export type LayoutType =
-  | 'I-shaped'    // Linéaire sur un mur
-  | 'L-shaped'    // En L sur deux murs adjacents
-  | 'U-shaped'    // En U sur trois murs
-  | 'G-shaped'    // En G avec péninsule
-  | 'parallel'    // Cuisine couloir
-  | 'island'      // Avec îlot central
-  | 'peninsula';  // Avec péninsule
+  | 'I-shaped' // Linéaire sur un mur
+  | 'L-shaped' // En L sur deux murs adjacents
+  | 'U-shaped' // En U sur trois murs
+  | 'G-shaped' // En G avec péninsule
+  | 'parallel' // Cuisine couloir
+  | 'island' // Avec îlot central
+  | 'peninsula'; // Avec péninsule
 
 export interface ScoreBreakdown {
-  ergonomics: number;      // Triangle de travail, hauteurs, accessibilité
-  functionality: number;   // Rangement, plan de travail, équipements
-  aesthetics: number;      // Style, harmonie, proportions
-  budget: number;          // Rapport qualité/prix
+  ergonomics: number; // Triangle de travail, hauteurs, accessibilité
+  functionality: number; // Rangement, plan de travail, équipements
+  aesthetics: number; // Style, harmonie, proportions
+  budget: number; // Rapport qualité/prix
   spaceUtilization: number; // Utilisation de l'espace disponible
 }
 
@@ -228,12 +228,12 @@ export interface ItemPlacement {
 }
 
 export type KitchenZone =
-  | 'cooking'      // Zone cuisson
-  | 'preparation'  // Zone préparation
-  | 'cleaning'     // Zone lavage
-  | 'storage'      // Zone stockage
-  | 'cold'         // Zone froid
-  | 'service';     // Zone service/repas
+  | 'cooking' // Zone cuisson
+  | 'preparation' // Zone préparation
+  | 'cleaning' // Zone lavage
+  | 'storage' // Zone stockage
+  | 'cold' // Zone froid
+  | 'service'; // Zone service/repas
 
 export interface PlacementConnection {
   type: 'electrical' | 'water' | 'gas' | 'ventilation';
@@ -298,11 +298,11 @@ export interface ConfigurationStatistics {
   wallCabinets: number;
   tallCabinets: number;
   totalAppliances: number;
-  countertopArea: number;      // en cm²
-  storageVolume: number;       // en litres
-  workSurfaceLength: number;   // en cm linéaire
-  floorSpaceCovered: number;   // en cm²
-  spaceUtilization: number;    // en %
+  countertopArea: number; // en cm²
+  storageVolume: number; // en litres
+  workSurfaceLength: number; // en cm linéaire
+  floorSpaceCovered: number; // en cm²
+  spaceUtilization: number; // en %
 }
 
 export interface Recommendation {
@@ -335,7 +335,12 @@ export interface GenerationMetadata {
 
 export interface AIConfiguratorRepository {
   getCatalogItems(filters?: CatalogFilters): Promise<CatalogItem[]>;
-  getCabinetsByDimensions(width: number, depth: number, height: number, tolerance: number): Promise<CatalogItem[]>;
+  getCabinetsByDimensions(
+    width: number,
+    depth: number,
+    height: number,
+    tolerance: number
+  ): Promise<CatalogItem[]>;
   getAppliancesByType(type: ApplianceType, maxWidth?: number): Promise<CatalogItem[]>;
   saveConfiguration(config: KitchenConfiguration): Promise<KitchenConfiguration>;
   getConfigurationHistory(userId: string): Promise<KitchenConfiguration[]>;
@@ -422,10 +427,7 @@ export class AIKitchenConfiguratorService {
     const possibleLayouts = this.determinePossibleLayouts(roomAnalysis, preferences);
 
     // 3. Récupérer les items du catalogue compatibles
-    const catalogItems = await this.fetchCompatibleCatalogItems(
-      roomAnalysis,
-      preferences
-    );
+    const catalogItems = await this.fetchCompatibleCatalogItems(roomAnalysis, preferences);
 
     // 4. Générer les configurations pour chaque layout
     const configurations: KitchenConfiguration[] = [];
@@ -442,12 +444,14 @@ export class AIKitchenConfiguratorService {
         configurations.push(config);
       }
 
-      if (configurations.length >= maxConfigs) {break;}
+      if (configurations.length >= maxConfigs) {
+        break;
+      }
     }
 
     // 5. Scorer et trier les configurations
     const scoredConfigs = configurations
-      .map(config => ({
+      .map((config) => ({
         ...config,
         score: this.calculateOverallScore(config, preferences),
       }))
@@ -545,8 +549,8 @@ export class AIKitchenConfiguratorService {
     if (preferences.priorities?.includes('social') && !layouts.includes('island')) {
       // Prioriser les layouts ouverts
       const socialLayouts: LayoutType[] = ['island', 'peninsula', 'L-shaped'];
-      return layouts.filter(l => socialLayouts.includes(l)).length > 0
-        ? layouts.filter(l => socialLayouts.includes(l))
+      return layouts.filter((l) => socialLayouts.includes(l)).length > 0
+        ? layouts.filter((l) => socialLayouts.includes(l))
         : layouts;
     }
 
@@ -573,8 +577,10 @@ export class AIKitchenConfiguratorService {
     const allItems = await this.repository.getCatalogItems(filters);
 
     // Filtrer les items qui rentrent physiquement dans l'espace
-    return allItems.filter(item => {
-      if (!item.dimensions) {return false;}
+    return allItems.filter((item) => {
+      if (!item.dimensions) {
+        return false;
+      }
 
       // Vérifier que le meuble peut rentrer
       const itemWidth = this.getDimensionValue(item.dimensions, 'width');
@@ -582,9 +588,7 @@ export class AIKitchenConfiguratorService {
       const itemHeight = this.getDimensionValue(item.dimensions, 'height');
 
       // Le meuble doit pouvoir tenir sur au moins un mur
-      const canFitOnWall = roomAnalysis.walls.some(
-        wall => wall.usableLength >= itemWidth
-      );
+      const canFitOnWall = roomAnalysis.walls.some((wall) => wall.usableLength >= itemWidth);
 
       // La profondeur ne doit pas bloquer le passage
       const passageRemaining = roomAnalysis.dimensions.depth - itemDepth;
@@ -622,10 +626,7 @@ export class AIKitchenConfiguratorService {
     }
 
     // Optimiser le triangle de travail
-    const optimizedPlacements = this.optimizeWorkTriangle(
-      essentialPlacements,
-      roomAnalysis
-    );
+    const optimizedPlacements = this.optimizeWorkTriangle(essentialPlacements, roomAnalysis);
 
     // Compléter avec les meubles de rangement
     const fullPlacements = await this.placeCabinets(
@@ -637,33 +638,19 @@ export class AIKitchenConfiguratorService {
     );
 
     // Ajouter les accessoires et finitions
-    const finalPlacements = this.addAccessoriesAndFinishes(
-      fullPlacements,
-      preferences
-    );
+    const finalPlacements = this.addAccessoriesAndFinishes(fullPlacements, preferences);
 
     // Générer les sections de plan de travail
-    const countertopSections = this.generateCountertopSections(
-      finalPlacements,
-      preferences
-    );
+    const countertopSections = this.generateCountertopSections(finalPlacements, preferences);
 
     // Calculer le triangle de travail final
     const workTriangle = this.calculateWorkTriangle(finalPlacements);
 
     // Estimer les coûts
-    const costEstimate = this.estimateCosts(
-      finalPlacements,
-      countertopSections,
-      preferences
-    );
+    const costEstimate = this.estimateCosts(finalPlacements, countertopSections, preferences);
 
     // Générer les statistiques
-    const statistics = this.calculateStatistics(
-      finalPlacements,
-      countertopSections,
-      roomAnalysis
-    );
+    const statistics = this.calculateStatistics(finalPlacements, countertopSections, roomAnalysis);
 
     // Générer les recommandations
     const recommendations = this.generateRecommendations(
@@ -718,29 +705,31 @@ export class AIKitchenConfiguratorService {
 
     // Trouver l'évier
     const sink = this.selectBestItem(items.sinks, preferences);
-    if (!sink) {return null;}
+    if (!sink) {
+      return null;
+    }
 
     // Trouver la plaque de cuisson
     const cooktop = this.selectBestItem(items.cooktops, preferences);
-    if (!cooktop) {return null;}
+    if (!cooktop) {
+      return null;
+    }
 
     // Trouver le réfrigérateur
     const refrigerator = this.selectBestItem(items.refrigerators, preferences);
-    if (!refrigerator) {return null;}
+    if (!refrigerator) {
+      return null;
+    }
 
     // Trouver les positions optimales selon le layout
-    const positions = this.calculateEssentialPositions(
-      layout,
-      roomAnalysis,
-      {
-        sinkWidth: this.getDimensionValue(sink.dimensions, 'width'),
-        cooktopWidth: this.getDimensionValue(cooktop.dimensions, 'width'),
-        refrigeratorWidth: this.getDimensionValue(refrigerator.dimensions, 'width'),
-      }
-    );
+    const positions = this.calculateEssentialPositions(layout, roomAnalysis, {
+      sinkWidth: this.getDimensionValue(sink.dimensions, 'width'),
+      cooktopWidth: this.getDimensionValue(cooktop.dimensions, 'width'),
+      refrigeratorWidth: this.getDimensionValue(refrigerator.dimensions, 'width'),
+    });
 
     // Placement de l'évier (près de l'arrivée d'eau si possible)
-    const waterInlet = roomAnalysis.utilities.find(u => u.type === 'water_inlet');
+    const waterInlet = roomAnalysis.utilities.find((u) => u.type === 'water_inlet');
     const sinkPosition = waterInlet
       ? this.adjustPositionToUtility(positions.sink, waterInlet)
       : positions.sink;
@@ -753,17 +742,22 @@ export class AIKitchenConfiguratorService {
       rotation: 0,
       wallSide: this.getWallSideForPosition(sinkPosition, roomAnalysis),
       zone: 'cleaning',
-      connections: [{
-        type: 'water',
-        utilityPointId: waterInlet?.type,
-        requiresExtension: !waterInlet || this.distance2D(sinkPosition, waterInlet.position) > 100,
-        extensionLength: waterInlet ? this.distance2D(sinkPosition, waterInlet.position) : undefined,
-      }],
+      connections: [
+        {
+          type: 'water',
+          utilityPointId: waterInlet?.type,
+          requiresExtension:
+            !waterInlet || this.distance2D(sinkPosition, waterInlet.position) > 100,
+          extensionLength: waterInlet
+            ? this.distance2D(sinkPosition, waterInlet.position)
+            : undefined,
+        },
+      ],
     });
 
     // Placement de la plaque de cuisson
-    const gasPoint = roomAnalysis.utilities.find(u => u.type === 'gas');
-    const electricalPoint = roomAnalysis.utilities.find(u => u.type === 'electrical');
+    const gasPoint = roomAnalysis.utilities.find((u) => u.type === 'gas');
+    const electricalPoint = roomAnalysis.utilities.find((u) => u.type === 'electrical');
 
     placements.push({
       id: this.generateId(),
@@ -773,15 +767,23 @@ export class AIKitchenConfiguratorService {
       rotation: 0,
       wallSide: this.getWallSideForPosition(positions.cooktop, roomAnalysis),
       zone: 'cooking',
-      connections: gasPoint ? [{
-        type: 'gas',
-        utilityPointId: gasPoint.type,
-        requiresExtension: this.distance2D(positions.cooktop, gasPoint.position) > 50,
-      }] : [{
-        type: 'electrical',
-        utilityPointId: electricalPoint?.type,
-        requiresExtension: !electricalPoint || this.distance2D(positions.cooktop, electricalPoint.position) > 150,
-      }],
+      connections: gasPoint
+        ? [
+            {
+              type: 'gas',
+              utilityPointId: gasPoint.type,
+              requiresExtension: this.distance2D(positions.cooktop, gasPoint.position) > 50,
+            },
+          ]
+        : [
+            {
+              type: 'electrical',
+              utilityPointId: electricalPoint?.type,
+              requiresExtension:
+                !electricalPoint ||
+                this.distance2D(positions.cooktop, electricalPoint.position) > 150,
+            },
+          ],
     });
 
     // Placement du réfrigérateur
@@ -793,10 +795,14 @@ export class AIKitchenConfiguratorService {
       rotation: 0,
       wallSide: this.getWallSideForPosition(positions.refrigerator, roomAnalysis),
       zone: 'cold',
-      connections: [{
-        type: 'electrical',
-        requiresExtension: !electricalPoint || this.distance2D(positions.refrigerator, electricalPoint.position) > 200,
-      }],
+      connections: [
+        {
+          type: 'electrical',
+          requiresExtension:
+            !electricalPoint ||
+            this.distance2D(positions.refrigerator, electricalPoint.position) > 200,
+        },
+      ],
     });
 
     return placements;
@@ -809,17 +815,21 @@ export class AIKitchenConfiguratorService {
     placements: ItemPlacement[],
     _roomAnalysis: RoomAnalysis
   ): ItemPlacement[] {
-    const sink = placements.find(p => p.zone === 'cleaning');
-    const cooktop = placements.find(p => p.zone === 'cooking');
-    const refrigerator = placements.find(p => p.zone === 'cold');
+    const sink = placements.find((p) => p.zone === 'cleaning');
+    const cooktop = placements.find((p) => p.zone === 'cooking');
+    const refrigerator = placements.find((p) => p.zone === 'cold');
 
-    if (!sink || !cooktop || !refrigerator) {return placements;}
+    if (!sink || !cooktop || !refrigerator) {
+      return placements;
+    }
 
     // Calculer le triangle actuel
     const currentTriangle = this.calculateWorkTriangle(placements);
 
     // Si le triangle est déjà optimal, ne rien faire
-    if (currentTriangle.isOptimal) {return placements;}
+    if (currentTriangle.isOptimal) {
+      return placements;
+    }
 
     // Sinon, tenter des ajustements
     const optimized = [...placements];
@@ -845,28 +855,17 @@ export class AIKitchenConfiguratorService {
     const placements = [...existingPlacements];
 
     // Calculer l'espace restant sur chaque mur
-    const remainingSpaces = this.calculateRemainingSpaces(
-      roomAnalysis.walls,
-      existingPlacements
-    );
+    const remainingSpaces = this.calculateRemainingSpaces(roomAnalysis.walls, existingPlacements);
 
     // Priorité des meubles (utilisé dans findBestFitCabinets)
     // const cabinetPriority = this.prioritizeCabinets(preferences);
 
     // Placer les meubles bas
     for (const space of remainingSpaces) {
-      const bestFitCabinets = this.findBestFitCabinets(
-        space,
-        items.baseCabinets,
-        preferences
-      );
+      const bestFitCabinets = this.findBestFitCabinets(space, items.baseCabinets, preferences);
 
       for (const cabinet of bestFitCabinets) {
-        const position = this.calculateCabinetPosition(
-          space,
-          cabinet,
-          placements
-        );
+        const position = this.calculateCabinetPosition(space, cabinet, placements);
 
         if (position) {
           placements.push({
@@ -887,26 +886,22 @@ export class AIKitchenConfiguratorService {
 
     // Placer les meubles hauts
     for (const space of remainingSpaces) {
-      if (preferences.storagePreferences?.upperCabinets === 'none') {continue;}
+      if (preferences.storagePreferences?.upperCabinets === 'none') {
+        continue;
+      }
 
-      const bestFitWallCabinets = this.findBestFitCabinets(
-        space,
-        items.wallCabinets,
-        preferences
-      );
+      const bestFitWallCabinets = this.findBestFitCabinets(space, items.wallCabinets, preferences);
 
       for (const cabinet of bestFitWallCabinets) {
         // Vérifier qu'il n'y a pas de fenêtre en dessous
         const hasWindow = roomAnalysis.constraints.some(
-          c => c.type === 'window' && c.side === space.wallSide
+          (c) => c.type === 'window' && c.side === space.wallSide
         );
-        if (hasWindow) {continue;}
+        if (hasWindow) {
+          continue;
+        }
 
-        const position = this.calculateWallCabinetPosition(
-          space,
-          cabinet,
-          placements
-        );
+        const position = this.calculateWallCabinetPosition(space, cabinet, placements);
 
         if (position) {
           placements.push({
@@ -924,9 +919,7 @@ export class AIKitchenConfiguratorService {
 
     // Placer les colonnes si possible
     if (items.tallCabinets.length > 0) {
-      const tallCabinetSpace = remainingSpaces.find(
-        s => s.width >= 60 && s.allowTallCabinets
-      );
+      const tallCabinetSpace = remainingSpaces.find((s) => s.width >= 60 && s.allowTallCabinets);
 
       if (tallCabinetSpace) {
         const tallCabinet = this.selectBestItem(items.tallCabinets, preferences);
@@ -972,15 +965,19 @@ export class AIKitchenConfiguratorService {
     preferences: UserPreferences
   ): CountertopSection[] {
     const sections: CountertopSection[] = [];
-    const baseCabinets = placements.filter(p =>
-      p.catalogItem.type === 'cabinet' && p.position.z === ERGONOMIC_RULES.heights.baseCabinetHeight
+    const baseCabinets = placements.filter(
+      (p) =>
+        p.catalogItem.type === 'cabinet' &&
+        p.position.z === ERGONOMIC_RULES.heights.baseCabinetHeight
     );
 
     // Grouper les meubles bas par mur
     const cabinetsByWall = this.groupByWall(baseCabinets);
 
     for (const [wallSide, cabinets] of Object.entries(cabinetsByWall)) {
-      if (cabinets.length === 0) {continue;}
+      if (cabinets.length === 0) {
+        continue;
+      }
 
       // Calculer les points du plan de travail
       const points = this.calculateCountertopPoints(cabinets);
@@ -988,7 +985,7 @@ export class AIKitchenConfiguratorService {
       // Identifier les découpes nécessaires
       const cutouts: Cutout[] = [];
 
-      const sink = placements.find(p => p.zone === 'cleaning');
+      const sink = placements.find((p) => p.zone === 'cleaning');
       if (sink && sink.wallSide === wallSide) {
         cutouts.push({
           type: 'sink',
@@ -1001,7 +998,7 @@ export class AIKitchenConfiguratorService {
         });
       }
 
-      const cooktop = placements.find(p => p.zone === 'cooking');
+      const cooktop = placements.find((p) => p.zone === 'cooking');
       if (cooktop && cooktop.wallSide === wallSide) {
         cutouts.push({
           type: 'cooktop',
@@ -1022,9 +1019,7 @@ export class AIKitchenConfiguratorService {
         thickness: 3,
         area: this.calculatePolygonArea(points),
         cutouts,
-        edgeProfiles: [
-          { side: 'front', profile: 'bullnose' },
-        ],
+        edgeProfiles: [{ side: 'front', profile: 'bullnose' }],
       });
     }
 
@@ -1035,9 +1030,9 @@ export class AIKitchenConfiguratorService {
    * Calcule le triangle de travail
    */
   private calculateWorkTriangle(placements: ItemPlacement[]): WorkTriangleAnalysis {
-    const sink = placements.find(p => p.zone === 'cleaning');
-    const cooktop = placements.find(p => p.zone === 'cooking');
-    const refrigerator = placements.find(p => p.zone === 'cold');
+    const sink = placements.find((p) => p.zone === 'cleaning');
+    const cooktop = placements.find((p) => p.zone === 'cooking');
+    const refrigerator = placements.find((p) => p.zone === 'cold');
 
     const defaultAnalysis: WorkTriangleAnalysis = {
       sink: { x: 0, y: 0 },
@@ -1055,7 +1050,9 @@ export class AIKitchenConfiguratorService {
       suggestions: [],
     };
 
-    if (!sink || !cooktop || !refrigerator) {return defaultAnalysis;}
+    if (!sink || !cooktop || !refrigerator) {
+      return defaultAnalysis;
+    }
 
     const sinkPos = { x: sink.position.x, y: sink.position.y };
     const cooktopPos = { x: cooktop.position.x, y: cooktop.position.y };
@@ -1070,7 +1067,8 @@ export class AIKitchenConfiguratorService {
     const suggestions: string[] = [];
 
     // Vérifier les distances
-    const { minTotalDistance, maxTotalDistance, minLegDistance, maxLegDistance } = ERGONOMIC_RULES.workTriangle;
+    const { minTotalDistance, maxTotalDistance, minLegDistance, maxLegDistance } =
+      ERGONOMIC_RULES.workTriangle;
 
     if (total < minTotalDistance) {
       issues.push('Triangle de travail trop compact');
@@ -1100,10 +1098,18 @@ export class AIKitchenConfiguratorService {
     // Score de 0 à 100
     let score = 100;
     if (!isOptimal) {
-      if (total < minTotalDistance || total > maxTotalDistance) {score -= 30;}
-      if (sinkToCooktop < minLegDistance || sinkToCooktop > maxLegDistance) {score -= 15;}
-      if (cooktopToRefrigerator < minLegDistance || cooktopToRefrigerator > maxLegDistance) {score -= 15;}
-      if (refrigeratorToSink < minLegDistance || refrigeratorToSink > maxLegDistance) {score -= 15;}
+      if (total < minTotalDistance || total > maxTotalDistance) {
+        score -= 30;
+      }
+      if (sinkToCooktop < minLegDistance || sinkToCooktop > maxLegDistance) {
+        score -= 15;
+      }
+      if (cooktopToRefrigerator < minLegDistance || cooktopToRefrigerator > maxLegDistance) {
+        score -= 15;
+      }
+      if (refrigeratorToSink < minLegDistance || refrigeratorToSink > maxLegDistance) {
+        score -= 15;
+      }
     }
 
     return {
@@ -1175,10 +1181,14 @@ export class AIKitchenConfiguratorService {
     countertops: CountertopSection[],
     roomAnalysis: RoomAnalysis
   ): ConfigurationStatistics {
-    const cabinets = placements.filter(p => p.catalogItem.type === 'cabinet');
-    const baseCabinets = cabinets.filter(p => p.position.z === ERGONOMIC_RULES.heights.baseCabinetHeight);
-    const wallCabinets = cabinets.filter(p => p.position.z >= ERGONOMIC_RULES.heights.wallCabinetBottomMin);
-    const tallCabinets = cabinets.filter(p => {
+    const cabinets = placements.filter((p) => p.catalogItem.type === 'cabinet');
+    const baseCabinets = cabinets.filter(
+      (p) => p.position.z === ERGONOMIC_RULES.heights.baseCabinetHeight
+    );
+    const wallCabinets = cabinets.filter(
+      (p) => p.position.z >= ERGONOMIC_RULES.heights.wallCabinetBottomMin
+    );
+    const tallCabinets = cabinets.filter((p) => {
       const height = this.getDimensionValue(p.catalogItem.dimensions, 'height');
       return height > 180;
     });
@@ -1247,18 +1257,19 @@ export class AIKitchenConfiguratorService {
     }
 
     // Recommandations de rangement
-    const storageItems = placements.filter(p => p.zone === 'storage');
+    const storageItems = placements.filter((p) => p.zone === 'storage');
     if (storageItems.length < 5 && preferences.priorities?.includes('storage')) {
       recommendations.push({
         type: 'improvement',
         priority: 'high',
         category: 'storage',
-        message: 'Le rangement est limité. Considérez des meubles hauts supplémentaires ou une colonne.',
+        message:
+          'Le rangement est limité. Considérez des meubles hauts supplémentaires ou une colonne.',
       });
     }
 
     // Recommandations de sécurité
-    const cooktop = placements.find(p => p.zone === 'cooking');
+    const cooktop = placements.find((p) => p.zone === 'cooking');
     if (cooktop) {
       // Vérifier la distance au mur
       const distanceToWall = Math.min(
@@ -1293,21 +1304,32 @@ export class AIKitchenConfiguratorService {
 
     // Fonctionnalité (rangement, équipements)
     let functionality = 50;
-    if (statistics.storageVolume > 500) {functionality += 20;}
-    if (statistics.totalAppliances >= 3) {functionality += 15;}
-    if (statistics.countertopArea > 10000) {functionality += 15;}
+    if (statistics.storageVolume > 500) {
+      functionality += 20;
+    }
+    if (statistics.totalAppliances >= 3) {
+      functionality += 15;
+    }
+    if (statistics.countertopArea > 10000) {
+      functionality += 15;
+    }
 
     // Esthétique (proportions, harmonie)
     let aesthetics = 70;
     // Bonus si tous les éléments sont de la même marque
-    const brands = new Set(placements.map(p => p.catalogItem.brand));
-    if (brands.size <= 2) {aesthetics += 15;}
+    const brands = new Set(placements.map((p) => p.catalogItem.brand));
+    if (brands.size <= 2) {
+      aesthetics += 15;
+    }
 
     // Budget (respect du budget)
     let budget = 100;
     if (preferences.budget) {
       if (costEstimate.total > preferences.budget.max) {
-        budget = Math.max(0, 100 - ((costEstimate.total - preferences.budget.max) / preferences.budget.max) * 100);
+        budget = Math.max(
+          0,
+          100 - ((costEstimate.total - preferences.budget.max) / preferences.budget.max) * 100
+        );
       } else if (costEstimate.total < preferences.budget.min) {
         budget = 80; // Sous le budget minimum peut indiquer une qualité moindre
       }
@@ -1336,28 +1358,28 @@ export class AIKitchenConfiguratorService {
       ergonomics: 0.25,
       functionality: 0.25,
       aesthetics: 0.15,
-      budget: 0.20,
+      budget: 0.2,
       spaceUtilization: 0.15,
     };
 
     // Ajuster les poids selon les priorités
     if (preferences.priorities?.includes('storage')) {
-      weights.functionality = 0.30;
-      weights.aesthetics = 0.10;
+      weights.functionality = 0.3;
+      weights.aesthetics = 0.1;
     }
     if (preferences.priorities?.includes('efficiency')) {
       weights.ergonomics = 0.35;
-      weights.spaceUtilization = 0.10;
+      weights.spaceUtilization = 0.1;
     }
 
     const { scoreBreakdown } = config;
 
     return Math.round(
       scoreBreakdown.ergonomics * weights.ergonomics +
-      scoreBreakdown.functionality * weights.functionality +
-      scoreBreakdown.aesthetics * weights.aesthetics +
-      scoreBreakdown.budget * weights.budget +
-      scoreBreakdown.spaceUtilization * weights.spaceUtilization
+        scoreBreakdown.functionality * weights.functionality +
+        scoreBreakdown.aesthetics * weights.aesthetics +
+        scoreBreakdown.budget * weights.budget +
+        scoreBreakdown.spaceUtilization * weights.spaceUtilization
     );
   }
 
@@ -1367,41 +1389,41 @@ export class AIKitchenConfiguratorService {
 
   private convertToCm(value: number, unit: 'cm' | 'mm' | 'inch'): number {
     switch (unit) {
-      case 'mm': return value / 10;
-      case 'inch': return value * 2.54;
-      default: return value;
+      case 'mm':
+        return value / 10;
+      case 'inch':
+        return value * 2.54;
+      default:
+        return value;
     }
   }
 
-  private calculateWalls(
-    width: number,
-    depth: number,
-    constraints: RoomConstraint[]
-  ): WallInfo[] {
-    const walls: Array<{ side: WallSide; length: number; usableLength: number; startX: number; y: number; rotation: number }> = [
+  private calculateWalls(width: number, depth: number, constraints: RoomConstraint[]): WallInfo[] {
+    const walls: Array<{
+      side: WallSide;
+      length: number;
+      usableLength: number;
+      startX: number;
+      y: number;
+      rotation: number;
+    }> = [
       { side: 'north', length: width, usableLength: width, startX: 0, y: 0, rotation: 0 },
       { side: 'east', length: depth, usableLength: depth, startX: width, y: 0, rotation: 90 },
       { side: 'south', length: width, usableLength: width, startX: 0, y: depth, rotation: 180 },
       { side: 'west', length: depth, usableLength: depth, startX: 0, y: 0, rotation: 270 },
     ];
-    return walls.map(wall => {
-      const wallConstraints = constraints.filter(c => c.side === wall.side);
-      const usedLength = wallConstraints.reduce(
-        (sum, c) => sum + (c.dimensions?.width || 100),
-        0
-      );
+    return walls.map((wall) => {
+      const wallConstraints = constraints.filter((c) => c.side === wall.side);
+      const usedLength = wallConstraints.reduce((sum, c) => sum + (c.dimensions?.width || 100), 0);
       return { ...wall, usableLength: wall.length - usedLength };
     });
   }
 
-  private identifyPlacementZones(
-    walls: WallInfo[],
-    utilities: UtilityPoint[]
-  ): PlacementZone[] {
+  private identifyPlacementZones(walls: WallInfo[], utilities: UtilityPoint[]): PlacementZone[] {
     const zones: PlacementZone[] = [];
 
     for (const wall of walls) {
-      const wallUtilities = utilities.filter(u => u.wallSide === wall.side);
+      const wallUtilities = utilities.filter((u) => u.wallSide === wall.side);
 
       zones.push({
         wallSide: wall.side,
@@ -1409,9 +1431,9 @@ export class AIKitchenConfiguratorService {
         y: wall.y,
         width: wall.usableLength,
         rotation: wall.rotation,
-        hasWater: wallUtilities.some(u => u.type === 'water_inlet'),
-        hasGas: wallUtilities.some(u => u.type === 'gas'),
-        hasElectrical: wallUtilities.some(u => u.type === 'electrical'),
+        hasWater: wallUtilities.some((u) => u.type === 'water_inlet'),
+        hasGas: wallUtilities.some((u) => u.type === 'gas'),
+        hasElectrical: wallUtilities.some((u) => u.type === 'electrical'),
         allowTallCabinets: true,
         usedWidth: 0,
       });
@@ -1422,16 +1444,16 @@ export class AIKitchenConfiguratorService {
 
   private categorizeItems(items: CatalogItem[]): CategorizedItems {
     return {
-      baseCabinets: items.filter(i => i.type === 'cabinet' && i.category === 'base'),
-      wallCabinets: items.filter(i => i.type === 'cabinet' && i.category === 'wall'),
-      tallCabinets: items.filter(i => i.type === 'cabinet' && i.category === 'tall'),
-      sinks: items.filter(i => i.type === 'sink'),
-      cooktops: items.filter(i => i.type === 'appliance' && i.category === 'cooktop'),
-      ovens: items.filter(i => i.type === 'appliance' && i.category === 'oven'),
-      refrigerators: items.filter(i => i.type === 'appliance' && i.category === 'refrigerator'),
-      dishwashers: items.filter(i => i.type === 'appliance' && i.category === 'dishwasher'),
-      hoods: items.filter(i => i.type === 'appliance' && i.category === 'hood'),
-      other: items.filter(i => !['cabinet', 'sink', 'appliance'].includes(i.type)),
+      baseCabinets: items.filter((i) => i.type === 'cabinet' && i.category === 'base'),
+      wallCabinets: items.filter((i) => i.type === 'cabinet' && i.category === 'wall'),
+      tallCabinets: items.filter((i) => i.type === 'cabinet' && i.category === 'tall'),
+      sinks: items.filter((i) => i.type === 'sink'),
+      cooktops: items.filter((i) => i.type === 'appliance' && i.category === 'cooktop'),
+      ovens: items.filter((i) => i.type === 'appliance' && i.category === 'oven'),
+      refrigerators: items.filter((i) => i.type === 'appliance' && i.category === 'refrigerator'),
+      dishwashers: items.filter((i) => i.type === 'appliance' && i.category === 'dishwasher'),
+      hoods: items.filter((i) => i.type === 'appliance' && i.category === 'hood'),
+      other: items.filter((i) => !['cabinet', 'sink', 'appliance'].includes(i.type)),
     };
   }
 
@@ -1439,14 +1461,16 @@ export class AIKitchenConfiguratorService {
     items: CatalogItem[],
     preferences: UserPreferences
   ): CatalogItem | undefined {
-    if (items.length === 0) {return undefined;}
+    if (items.length === 0) {
+      return undefined;
+    }
 
     let filtered = items;
 
     // Filtrer par budget si spécifié
     if (preferences.budget) {
       filtered = filtered.filter(
-        i => !i.price || i.price.amount <= preferences.budget!.max * 0.3
+        (i) => !i.price || i.price.amount <= preferences.budget!.max * 0.3
       );
     }
 
@@ -1497,7 +1521,10 @@ export class AIKitchenConfiguratorService {
     }
   }
 
-  private getDimensionValue(dimensions: ProductDimensions, key: 'width' | 'height' | 'depth'): number {
+  private getDimensionValue(
+    dimensions: ProductDimensions,
+    key: 'width' | 'height' | 'depth'
+  ): number {
     return dimensions[key] || 60;
   }
 
@@ -1528,16 +1555,18 @@ export class AIKitchenConfiguratorService {
       'L-shaped': 'Cuisine en L',
       'U-shaped': 'Cuisine en U',
       'G-shaped': 'Cuisine en G',
-      'parallel': 'Cuisine Couloir',
-      'island': 'Cuisine avec Îlot',
-      'peninsula': 'Cuisine avec Péninsule',
+      parallel: 'Cuisine Couloir',
+      island: 'Cuisine avec Îlot',
+      peninsula: 'Cuisine avec Péninsule',
     };
     return names[layout] || 'Configuration Personnalisée';
   }
 
   private generateDescription(layout: LayoutType, stats: ConfigurationStatistics): string {
-    return `Configuration ${layout} avec ${stats.totalCabinets} meubles, ` +
-           `${stats.totalAppliances} électroménagers et ${(stats.countertopArea / 10000).toFixed(1)}m² de plan de travail.`;
+    return (
+      `Configuration ${layout} avec ${stats.totalCabinets} meubles, ` +
+      `${stats.totalAppliances} électroménagers et ${(stats.countertopArea / 10000).toFixed(1)}m² de plan de travail.`
+    );
   }
 
   private adjustPositionToUtility(position: Point2D, utility: UtilityPoint): Point2D {
@@ -1554,10 +1583,18 @@ export class AIKitchenConfiguratorService {
   private getWallSideForPosition(position: Point2D, roomAnalysis: RoomAnalysis): WallSide {
     const { width, depth } = roomAnalysis.dimensions;
 
-    if (position.y < 60) {return 'north';}
-    if (position.y > depth - 60) {return 'south';}
-    if (position.x < 60) {return 'west';}
-    if (position.x > width - 60) {return 'east';}
+    if (position.y < 60) {
+      return 'north';
+    }
+    if (position.y > depth - 60) {
+      return 'south';
+    }
+    if (position.x < 60) {
+      return 'west';
+    }
+    if (position.x > width - 60) {
+      return 'east';
+    }
 
     return 'north';
   }
@@ -1566,8 +1603,8 @@ export class AIKitchenConfiguratorService {
     walls: WallInfo[],
     placements: ItemPlacement[]
   ): PlacementZone[] {
-    return walls.map(wall => {
-      const wallPlacements = placements.filter(p => p.wallSide === wall.side);
+    return walls.map((wall) => {
+      const wallPlacements = placements.filter((p) => p.wallSide === wall.side);
       const usedWidth = wallPlacements.reduce(
         (sum, p) => sum + this.getDimensionValue(p.catalogItem.dimensions, 'width'),
         0
@@ -1610,7 +1647,9 @@ export class AIKitchenConfiguratorService {
         remainingWidth -= cabinetWidth;
       }
 
-      if (remainingWidth < 30) {break;}
+      if (remainingWidth < 30) {
+        break;
+      }
     }
 
     return result;
@@ -1661,7 +1700,9 @@ export class AIKitchenConfiguratorService {
 
     for (const placement of placements) {
       const wall = placement.wallSide || 'unknown';
-      if (!grouped[wall]) {grouped[wall] = [];}
+      if (!grouped[wall]) {
+        grouped[wall] = [];
+      }
       grouped[wall].push(placement);
     }
 
@@ -1669,7 +1710,9 @@ export class AIKitchenConfiguratorService {
   }
 
   private calculateCountertopPoints(cabinets: ItemPlacement[]): Point2D[] {
-    if (cabinets.length === 0) {return [];}
+    if (cabinets.length === 0) {
+      return [];
+    }
 
     const sorted = [...cabinets].sort((a, b) => a.position.x - b.position.x);
     const first = sorted[0]!;
@@ -1680,18 +1723,30 @@ export class AIKitchenConfiguratorService {
 
     return [
       { x: first.position.x - overhang, y: first.position.y - overhang },
-      { x: last.position.x + this.getDimensionValue(last.catalogItem.dimensions, 'width') + overhang, y: first.position.y - overhang },
-      { x: last.position.x + this.getDimensionValue(last.catalogItem.dimensions, 'width') + overhang, y: first.position.y + depth + overhang },
+      {
+        x:
+          last.position.x + this.getDimensionValue(last.catalogItem.dimensions, 'width') + overhang,
+        y: first.position.y - overhang,
+      },
+      {
+        x:
+          last.position.x + this.getDimensionValue(last.catalogItem.dimensions, 'width') + overhang,
+        y: first.position.y + depth + overhang,
+      },
       { x: first.position.x - overhang, y: first.position.y + depth + overhang },
     ];
   }
 
   private calculateCostConfidence(placements: ItemPlacement[]): 'low' | 'medium' | 'high' {
-    const itemsWithPrices = placements.filter(p => p.catalogItem.price?.amount);
+    const itemsWithPrices = placements.filter((p) => p.catalogItem.price?.amount);
     const ratio = itemsWithPrices.length / placements.length;
 
-    if (ratio > 0.8) {return 'high';}
-    if (ratio > 0.5) {return 'medium';}
+    if (ratio > 0.8) {
+      return 'high';
+    }
+    if (ratio > 0.5) {
+      return 'medium';
+    }
     return 'low';
   }
 }
@@ -1759,7 +1814,10 @@ export interface ConfigurationResult {
 }
 
 export class AIConfiguratorError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'AIConfiguratorError';
   }

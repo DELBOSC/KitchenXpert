@@ -13,7 +13,10 @@ export interface MeasurementData {
 export class MeasurementTools {
   private scene: THREE.Scene;
   private measurements: Map<string, { data: MeasurementData; visuals: THREE.Group }> = new Map();
-  private activeMeasurement: { type: 'distance' | 'angle' | 'area'; points: THREE.Vector3[] } | null = null;
+  private activeMeasurement: {
+    type: 'distance' | 'angle' | 'area';
+    points: THREE.Vector3[];
+  } | null = null;
 
   constructor(scene: THREE.Scene) {
     this.scene = scene;
@@ -97,7 +100,7 @@ export class MeasurementTools {
       group.add(line);
 
       // End markers
-      m.points.forEach(p => {
+      m.points.forEach((p) => {
         const sphere = new THREE.Mesh(
           new THREE.SphereGeometry(0.02, 8, 8),
           new THREE.MeshBasicMaterial({ color: 0xff6600 })
@@ -140,14 +143,26 @@ export class MeasurementTools {
       // Fill
       const triGeo = new THREE.BufferGeometry();
       const vertices = new Float32Array([
-        m.points[0]!.x, m.points[0]!.y + 0.01, m.points[0]!.z,
-        m.points[1]!.x, m.points[1]!.y + 0.01, m.points[1]!.z,
-        m.points[2]!.x, m.points[2]!.y + 0.01, m.points[2]!.z,
+        m.points[0]!.x,
+        m.points[0]!.y + 0.01,
+        m.points[0]!.z,
+        m.points[1]!.x,
+        m.points[1]!.y + 0.01,
+        m.points[1]!.z,
+        m.points[2]!.x,
+        m.points[2]!.y + 0.01,
+        m.points[2]!.z,
       ]);
       triGeo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-      const fill = new THREE.Mesh(triGeo, new THREE.MeshBasicMaterial({
-        color: 0xff6600, transparent: true, opacity: 0.2, side: THREE.DoubleSide,
-      }));
+      const fill = new THREE.Mesh(
+        triGeo,
+        new THREE.MeshBasicMaterial({
+          color: 0xff6600,
+          transparent: true,
+          opacity: 0.2,
+          side: THREE.DoubleSide,
+        })
+      );
       group.add(fill);
     }
 
@@ -182,11 +197,11 @@ export class MeasurementTools {
 
   clearAll(): void {
     const ids = Array.from(this.measurements.keys());
-    ids.forEach(id => this.removeMeasurement(id));
+    ids.forEach((id) => this.removeMeasurement(id));
   }
 
   getMeasurements(): MeasurementData[] {
-    return Array.from(this.measurements.values()).map(m => m.data);
+    return Array.from(this.measurements.values()).map((m) => m.data);
   }
 
   cancelActive(): void {

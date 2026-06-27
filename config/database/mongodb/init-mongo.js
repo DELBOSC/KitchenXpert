@@ -46,16 +46,16 @@ db.createCollection('designs', {
       properties: {
         user_id: {
           bsonType: 'string',
-          description: 'User ID from PostgreSQL - required'
+          description: 'User ID from PostgreSQL - required',
         },
         project_id: {
           bsonType: 'string',
-          description: 'Project ID from PostgreSQL - required'
+          description: 'Project ID from PostgreSQL - required',
         },
         name: {
           bsonType: 'string',
           maxLength: 255,
-          description: 'Design name'
+          description: 'Design name',
         },
         geometry: {
           bsonType: 'object',
@@ -64,8 +64,8 @@ db.createCollection('designs', {
             vertices: { bsonType: 'array' },
             faces: { bsonType: 'array' },
             materials: { bsonType: 'array' },
-            textures: { bsonType: 'array' }
-          }
+            textures: { bsonType: 'array' },
+          },
         },
         layout: {
           bsonType: 'object',
@@ -74,8 +74,8 @@ db.createCollection('designs', {
             width: { bsonType: 'number' },
             height: { bsonType: 'number' },
             depth: { bsonType: 'number' },
-            unit: { bsonType: 'string' }
-          }
+            unit: { bsonType: 'string' },
+          },
         },
         components: {
           bsonType: 'array',
@@ -89,13 +89,13 @@ db.createCollection('designs', {
               rotation: { bsonType: 'object' },
               scale: { bsonType: 'object' },
               catalog_item_id: { bsonType: 'string' },
-              properties: { bsonType: 'object' }
-            }
-          }
+              properties: { bsonType: 'object' },
+            },
+          },
         },
         materials: {
           bsonType: 'object',
-          description: 'Material assignments'
+          description: 'Material assignments',
         },
         camera: {
           bsonType: 'object',
@@ -103,41 +103,41 @@ db.createCollection('designs', {
           properties: {
             position: { bsonType: 'object' },
             target: { bsonType: 'object' },
-            fov: { bsonType: 'number' }
-          }
+            fov: { bsonType: 'number' },
+          },
         },
         lighting: {
           bsonType: 'array',
-          description: 'Lighting configuration'
+          description: 'Lighting configuration',
         },
         render_settings: {
           bsonType: 'object',
-          description: 'Rendering preferences'
+          description: 'Rendering preferences',
         },
         metadata: {
           bsonType: 'object',
-          description: 'Additional metadata'
+          description: 'Additional metadata',
         },
         version: {
           bsonType: 'int',
           minimum: 1,
-          description: 'Design version number'
+          description: 'Design version number',
         },
         thumbnail_url: {
           bsonType: 'string',
-          description: 'URL to thumbnail image'
+          description: 'URL to thumbnail image',
         },
         created_at: {
           bsonType: 'date',
-          description: 'Creation timestamp - required'
+          description: 'Creation timestamp - required',
         },
         updated_at: {
           bsonType: 'date',
-          description: 'Last update timestamp'
-        }
-      }
-    }
-  }
+          description: 'Last update timestamp',
+        },
+      },
+    },
+  },
 });
 
 // Indexes for designs
@@ -160,24 +160,24 @@ db.createCollection('ai_suggestions', {
       properties: {
         user_id: {
           bsonType: 'string',
-          description: 'User ID - required'
+          description: 'User ID - required',
         },
         project_id: {
           bsonType: 'string',
-          description: 'Project ID - required'
+          description: 'Project ID - required',
         },
         suggestion_type: {
           enum: ['layout', 'material', 'color', 'component', 'optimization', 'style'],
-          description: 'Type of suggestion - required'
+          description: 'Type of suggestion - required',
         },
         title: {
           bsonType: 'string',
           maxLength: 255,
-          description: 'Suggestion title'
+          description: 'Suggestion title',
         },
         description: {
           bsonType: 'string',
-          description: 'Detailed description'
+          description: 'Detailed description',
         },
         suggestions: {
           bsonType: 'array',
@@ -190,9 +190,9 @@ db.createCollection('ai_suggestions', {
               description: { bsonType: 'string' },
               confidence: { bsonType: 'number' },
               data: { bsonType: 'object' },
-              preview_url: { bsonType: 'string' }
-            }
-          }
+              preview_url: { bsonType: 'string' },
+            },
+          },
         },
         context: {
           bsonType: 'object',
@@ -201,30 +201,30 @@ db.createCollection('ai_suggestions', {
             room_dimensions: { bsonType: 'object' },
             budget: { bsonType: 'number' },
             style_preferences: { bsonType: 'array' },
-            constraints: { bsonType: 'array' }
-          }
+            constraints: { bsonType: 'array' },
+          },
         },
         ai_model: {
           bsonType: 'string',
-          description: 'AI model used'
+          description: 'AI model used',
         },
         ai_version: {
           bsonType: 'string',
-          description: 'AI model version'
+          description: 'AI model version',
         },
         confidence_score: {
           bsonType: 'number',
           minimum: 0,
           maximum: 1,
-          description: 'Overall confidence score'
+          description: 'Overall confidence score',
         },
         status: {
           enum: ['pending', 'accepted', 'rejected', 'modified'],
-          description: 'Suggestion status'
+          description: 'Suggestion status',
         },
         applied_at: {
           bsonType: 'date',
-          description: 'When suggestion was applied'
+          description: 'When suggestion was applied',
         },
         feedback: {
           bsonType: 'object',
@@ -232,20 +232,20 @@ db.createCollection('ai_suggestions', {
           properties: {
             rating: { bsonType: 'int', minimum: 1, maximum: 5 },
             comment: { bsonType: 'string' },
-            helpful: { bsonType: 'bool' }
-          }
+            helpful: { bsonType: 'bool' },
+          },
         },
         created_at: {
           bsonType: 'date',
-          description: 'Creation timestamp - required'
+          description: 'Creation timestamp - required',
         },
         updated_at: {
           bsonType: 'date',
-          description: 'Last update timestamp'
-        }
-      }
-    }
-  }
+          description: 'Last update timestamp',
+        },
+      },
+    },
+  },
 });
 
 // Indexes for ai_suggestions
@@ -269,7 +269,7 @@ db.createCollection('catalog_cache', {
       properties: {
         item_id: {
           bsonType: 'string',
-          description: 'Catalog item ID from PostgreSQL - required'
+          description: 'Catalog item ID from PostgreSQL - required',
         },
         model_3d: {
           bsonType: 'object',
@@ -280,8 +280,8 @@ db.createCollection('catalog_cache', {
             vertices_count: { bsonType: 'int' },
             faces_count: { bsonType: 'int' },
             file_size: { bsonType: 'int' },
-            data: { bsonType: 'object' }
-          }
+            data: { bsonType: 'object' },
+          },
         },
         textures: {
           bsonType: 'array',
@@ -291,13 +291,13 @@ db.createCollection('catalog_cache', {
             properties: {
               type: { bsonType: 'string' },
               url: { bsonType: 'string' },
-              resolution: { bsonType: 'string' }
-            }
-          }
+              resolution: { bsonType: 'string' },
+            },
+          },
         },
         materials: {
           bsonType: 'array',
-          description: 'Material definitions'
+          description: 'Material definitions',
         },
         variants: {
           bsonType: 'array',
@@ -309,29 +309,29 @@ db.createCollection('catalog_cache', {
               name: { bsonType: 'string' },
               color: { bsonType: 'string' },
               finish: { bsonType: 'string' },
-              model_url: { bsonType: 'string' }
-            }
-          }
+              model_url: { bsonType: 'string' },
+            },
+          },
         },
         specifications: {
           bsonType: 'object',
-          description: 'Detailed specifications'
+          description: 'Detailed specifications',
         },
         compatibility: {
           bsonType: 'array',
-          description: 'Compatible items'
+          description: 'Compatible items',
         },
         cached_at: {
           bsonType: 'date',
-          description: 'Cache timestamp - required'
+          description: 'Cache timestamp - required',
         },
         expires_at: {
           bsonType: 'date',
-          description: 'Cache expiration'
-        }
-      }
-    }
-  }
+          description: 'Cache expiration',
+        },
+      },
+    },
+  },
 });
 
 // Indexes for catalog_cache
@@ -352,35 +352,35 @@ db.createCollection('analytics_events', {
       properties: {
         event_type: {
           bsonType: 'string',
-          description: 'Type of event - required'
+          description: 'Type of event - required',
         },
         user_id: {
           bsonType: 'string',
-          description: 'User ID (if authenticated)'
+          description: 'User ID (if authenticated)',
         },
         session_id: {
           bsonType: 'string',
-          description: 'Session identifier'
+          description: 'Session identifier',
         },
         project_id: {
           bsonType: 'string',
-          description: 'Related project ID'
+          description: 'Related project ID',
         },
         event_data: {
           bsonType: 'object',
-          description: 'Event-specific data'
+          description: 'Event-specific data',
         },
         properties: {
           bsonType: 'object',
-          description: 'Additional properties'
+          description: 'Additional properties',
         },
         user_agent: {
           bsonType: 'string',
-          description: 'Browser user agent'
+          description: 'Browser user agent',
         },
         ip_address: {
           bsonType: 'string',
-          description: 'IP address'
+          description: 'IP address',
         },
         location: {
           bsonType: 'object',
@@ -388,8 +388,8 @@ db.createCollection('analytics_events', {
           properties: {
             country: { bsonType: 'string' },
             city: { bsonType: 'string' },
-            coordinates: { bsonType: 'object' }
-          }
+            coordinates: { bsonType: 'object' },
+          },
         },
         device: {
           bsonType: 'object',
@@ -397,29 +397,29 @@ db.createCollection('analytics_events', {
           properties: {
             type: { bsonType: 'string' },
             os: { bsonType: 'string' },
-            browser: { bsonType: 'string' }
-          }
+            browser: { bsonType: 'string' },
+          },
         },
         referrer: {
           bsonType: 'string',
-          description: 'Referrer URL'
+          description: 'Referrer URL',
         },
         duration: {
           bsonType: 'int',
-          description: 'Event duration in milliseconds'
+          description: 'Event duration in milliseconds',
         },
         timestamp: {
           bsonType: 'date',
-          description: 'Event timestamp - required'
-        }
-      }
-    }
+          description: 'Event timestamp - required',
+        },
+      },
+    },
   },
   timeseries: {
     timeField: 'timestamp',
     metaField: 'event_type',
-    granularity: 'seconds'
-  }
+    granularity: 'seconds',
+  },
 });
 
 // Indexes for analytics_events
@@ -447,8 +447,8 @@ try {
     roles: [
       { role: 'userAdminAnyDatabase', db: 'admin' },
       { role: 'dbAdminAnyDatabase', db: 'admin' },
-      { role: 'readWriteAnyDatabase', db: 'admin' }
-    ]
+      { role: 'readWriteAnyDatabase', db: 'admin' },
+    ],
   });
   print(`✓ Created admin user: ${ADMIN_USER}`);
 } catch (e) {
@@ -467,9 +467,7 @@ try {
   db.createUser({
     user: APP_USER,
     pwd: APP_PASSWORD,
-    roles: [
-      { role: 'readWrite', db: DB_NAME }
-    ]
+    roles: [{ role: 'readWrite', db: DB_NAME }],
   });
   print(`✓ Created application user: ${APP_USER}`);
 } catch (e) {
@@ -494,13 +492,13 @@ const sampleDesign = {
     vertices: [],
     faces: [],
     materials: [],
-    textures: []
+    textures: [],
   },
   layout: {
     width: 120,
     height: 96,
     depth: 24,
-    unit: 'inches'
+    unit: 'inches',
   },
   components: [
     {
@@ -513,13 +511,13 @@ const sampleDesign = {
       properties: {
         width: 24,
         height: 36,
-        depth: 24
-      }
-    }
+        depth: 24,
+      },
+    },
   ],
   version: 1,
   created_at: new Date(),
-  updated_at: new Date()
+  updated_at: new Date(),
 };
 
 // Uncomment to insert sample data
@@ -534,7 +532,7 @@ print('MongoDB Initialization Complete!');
 print('========================================');
 print(`Database: ${DB_NAME}`);
 print('Collections created:');
-db.getCollectionNames().forEach(name => {
+db.getCollectionNames().forEach((name) => {
   const count = db[name].countDocuments();
   const indexes = db[name].getIndexes().length;
   print(`  - ${name} (${count} documents, ${indexes} indexes)`);

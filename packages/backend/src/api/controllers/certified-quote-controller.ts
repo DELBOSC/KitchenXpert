@@ -172,10 +172,7 @@ export class CertifiedQuoteController {
     }
 
     try {
-      const { html, quote } = await quoteService.generatePDF(
-        req.params.id as string,
-        userId
-      );
+      const { html, quote } = await quoteService.generatePDF(req.params.id as string, userId);
 
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.setHeader(

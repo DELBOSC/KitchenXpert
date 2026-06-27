@@ -10,7 +10,12 @@ const SECTION_FIELD_MAP: Record<string, string> = {
   'budget-planning': 'budgetData',
 };
 
-const SECTION_ORDER = ['user-profile', 'spatial-constraints', 'style-preferences', 'budget-planning'];
+const SECTION_ORDER = [
+  'user-profile',
+  'spatial-constraints',
+  'style-preferences',
+  'budget-planning',
+];
 
 export class QuestionnaireRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -38,7 +43,9 @@ export class QuestionnaireRepository {
           where: { project: { userId, deletedAt: null } },
           orderBy: { updatedAt: 'desc' },
         });
-        if (existing) {return existing;}
+        if (existing) {
+          return existing;
+        }
 
         // Find the user's latest project
         let project = await tx.project.findFirst({
@@ -60,7 +67,9 @@ export class QuestionnaireRepository {
         const projectQuestionnaire = await tx.questionnaireResponse.findUnique({
           where: { projectId: project.id },
         });
-        if (projectQuestionnaire) {return projectQuestionnaire;}
+        if (projectQuestionnaire) {
+          return projectQuestionnaire;
+        }
 
         // Create a new questionnaire response
         return tx.questionnaireResponse.create({
@@ -70,7 +79,9 @@ export class QuestionnaireRepository {
     } catch (error) {
       // If duplicate key error from race condition, just fetch the existing one
       const existing = await this.findForUser(userId);
-      if (existing) {return existing;}
+      if (existing) {
+        return existing;
+      }
       throw error;
     }
   }
@@ -80,7 +91,9 @@ export class QuestionnaireRepository {
    */
   getSectionData(questionnaire: QuestionnaireResponse, section: string): unknown {
     const field = SECTION_FIELD_MAP[section];
-    if (!field) {return null;}
+    if (!field) {
+      return null;
+    }
     return (questionnaire as Record<string, unknown>)[field] ?? null;
   }
 
@@ -91,7 +104,7 @@ export class QuestionnaireRepository {
   async saveSection(
     userId: string,
     section: string,
-    data: unknown,
+    data: unknown
   ): Promise<QuestionnaireResponse> {
     const field = SECTION_FIELD_MAP[section];
     if (!field) {
@@ -107,12 +120,11 @@ export class QuestionnaireRepository {
 
     // Determine next section
     const currentIndex = SECTION_ORDER.indexOf(section);
-    const nextSection = currentIndex < SECTION_ORDER.length - 1
-      ? SECTION_ORDER[currentIndex + 1]
-      : null;
+    const nextSection =
+      currentIndex < SECTION_ORDER.length - 1 ? SECTION_ORDER[currentIndex + 1] : null;
 
     // Check if all sections are now completed
-    const allCompleted = SECTION_ORDER.every(s => completedSections.includes(s));
+    const allCompleted = SECTION_ORDER.every((s) => completedSections.includes(s));
 
     return this.prisma.questionnaireResponse.update({
       where: { id: questionnaire.id },
@@ -152,9 +164,7 @@ export class QuestionnaireRepository {
       totalSections: SECTION_ORDER.length,
       currentSection: questionnaire.currentSection,
       isComplete: questionnaire.completedAt !== null,
-      percentage: Math.round(
-        (questionnaire.completedSections.length / SECTION_ORDER.length) * 100,
-      ),
+      percentage: Math.round((questionnaire.completedSections.length / SECTION_ORDER.length) * 100),
     };
   }
 }

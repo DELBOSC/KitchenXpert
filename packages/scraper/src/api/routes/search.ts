@@ -23,11 +23,13 @@ const SmartSearchSchema = z.object({
   roomDepth: z.number().min(1000).max(10000).optional(),
   layout: z.enum(['I', 'L', 'U', 'G', 'parallel', 'island', 'peninsula']).optional(),
   style: z.array(z.string()).optional(),
-  budget: z.object({
-    min: z.number().optional(),
-    max: z.number().optional(),
-    currency: z.string().default('EUR'),
-  }).optional(),
+  budget: z
+    .object({
+      min: z.number().optional(),
+      max: z.number().optional(),
+      currency: z.string().default('EUR'),
+    })
+    .optional(),
   mustHave: z.array(z.string()).optional(),
   niceToHave: z.array(z.string()).optional(),
   brands: z.array(z.string()).optional(),
@@ -73,24 +75,90 @@ export function createSearchRouter(): Router {
 
       // Query different cabinet categories
       const [baseCabinets, wallCabinets, tallCabinets] = await Promise.all([
-        queryCabinets({ ...cabinetParams, categories: ['base'], types: undefined, widthMin: undefined, widthMax: undefined, heightMin: undefined, heightMax: undefined, sinkCompatible: undefined, hobCompatible: undefined }),
-        queryCabinets({ ...cabinetParams, categories: ['wall'], types: undefined, widthMin: undefined, widthMax: undefined, heightMin: undefined, heightMax: undefined, sinkCompatible: undefined, hobCompatible: undefined }),
-        queryCabinets({ ...cabinetParams, categories: ['tall'], types: undefined, widthMin: undefined, widthMax: undefined, heightMin: undefined, heightMax: undefined, sinkCompatible: undefined, hobCompatible: undefined }),
+        queryCabinets({
+          ...cabinetParams,
+          categories: ['base'],
+          types: undefined,
+          widthMin: undefined,
+          widthMax: undefined,
+          heightMin: undefined,
+          heightMax: undefined,
+          sinkCompatible: undefined,
+          hobCompatible: undefined,
+        }),
+        queryCabinets({
+          ...cabinetParams,
+          categories: ['wall'],
+          types: undefined,
+          widthMin: undefined,
+          widthMax: undefined,
+          heightMin: undefined,
+          heightMax: undefined,
+          sinkCompatible: undefined,
+          hobCompatible: undefined,
+        }),
+        queryCabinets({
+          ...cabinetParams,
+          categories: ['tall'],
+          types: undefined,
+          widthMin: undefined,
+          widthMax: undefined,
+          heightMin: undefined,
+          heightMax: undefined,
+          sinkCompatible: undefined,
+          hobCompatible: undefined,
+        }),
       ]);
 
       // Query worktops and facades
       const [worktops, facades] = await Promise.all([
-        queryWorktops({ brandIds: searchRequest.brands, priceMin: searchRequest.budget?.min, priceMax: searchRequest.budget?.max, limit: 5 }),
-        queryFacades({ brandIds: searchRequest.brands, priceMin: searchRequest.budget?.min, priceMax: searchRequest.budget?.max, limit: 5, styles: searchRequest.style as never[] }),
+        queryWorktops({
+          brandIds: searchRequest.brands,
+          priceMin: searchRequest.budget?.min,
+          priceMax: searchRequest.budget?.max,
+          limit: 5,
+        }),
+        queryFacades({
+          brandIds: searchRequest.brands,
+          priceMin: searchRequest.budget?.min,
+          priceMax: searchRequest.budget?.max,
+          limit: 5,
+          styles: searchRequest.style as never[],
+        }),
       ]);
 
       // Query appliances by category
-      const [cookingAppliances, extractionAppliances, coldAppliances, washingAppliances] = await Promise.all([
-        queryAppliances({ brandIds: searchRequest.brands, priceMin: searchRequest.budget?.min, priceMax: searchRequest.budget?.max, categories: ['cooking'], limit: 5 }),
-        queryAppliances({ brandIds: searchRequest.brands, priceMin: searchRequest.budget?.min, priceMax: searchRequest.budget?.max, categories: ['extraction'], limit: 5 }),
-        queryAppliances({ brandIds: searchRequest.brands, priceMin: searchRequest.budget?.min, priceMax: searchRequest.budget?.max, categories: ['cold'], limit: 5 }),
-        queryAppliances({ brandIds: searchRequest.brands, priceMin: searchRequest.budget?.min, priceMax: searchRequest.budget?.max, categories: ['washing'], limit: 5 }),
-      ]);
+      const [cookingAppliances, extractionAppliances, coldAppliances, washingAppliances] =
+        await Promise.all([
+          queryAppliances({
+            brandIds: searchRequest.brands,
+            priceMin: searchRequest.budget?.min,
+            priceMax: searchRequest.budget?.max,
+            categories: ['cooking'],
+            limit: 5,
+          }),
+          queryAppliances({
+            brandIds: searchRequest.brands,
+            priceMin: searchRequest.budget?.min,
+            priceMax: searchRequest.budget?.max,
+            categories: ['extraction'],
+            limit: 5,
+          }),
+          queryAppliances({
+            brandIds: searchRequest.brands,
+            priceMin: searchRequest.budget?.min,
+            priceMax: searchRequest.budget?.max,
+            categories: ['cold'],
+            limit: 5,
+          }),
+          queryAppliances({
+            brandIds: searchRequest.brands,
+            priceMin: searchRequest.budget?.min,
+            priceMax: searchRequest.budget?.max,
+            categories: ['washing'],
+            limit: 5,
+          }),
+        ]);
 
       // Calculate totals and estimate prices
       const totalProducts =
@@ -175,7 +243,9 @@ export function createSearchRouter(): Router {
    */
   router.get('/suggest', async (req: Request, res: Response) => {
     try {
-      const query = String(req.query.q || '').trim().toLowerCase();
+      const query = String(req.query.q || '')
+        .trim()
+        .toLowerCase();
       const type = req.query.type as string | undefined;
       const limit = Math.min(parseInt(String(req.query.limit || '10'), 10), 50);
 

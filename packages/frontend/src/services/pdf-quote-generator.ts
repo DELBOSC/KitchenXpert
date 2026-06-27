@@ -5,8 +5,7 @@ import * as THREE from 'three';
 
 import { AIAssistant } from '@kitchenxpert/3d-engine';
 
-import type { KitchenEngine , BrandProfile } from '@kitchenxpert/3d-engine';
-
+import type { KitchenEngine, BrandProfile } from '@kitchenxpert/3d-engine';
 
 interface ProjectInfo {
   projectName: string;
@@ -98,7 +97,12 @@ export class PDFQuoteGenerator {
 
   // --- Page 1: Couverture ---
 
-  private renderCoverPage(doc: jsPDF, pageWidth: number, _pageHeight: number, margin: number): void {
+  private renderCoverPage(
+    doc: jsPDF,
+    pageWidth: number,
+    _pageHeight: number,
+    margin: number
+  ): void {
     // Background accent
     doc.setFillColor(37, 99, 235); // blue-600
     doc.rect(0, 0, pageWidth, 80, 'F');
@@ -121,7 +125,11 @@ export class PDFQuoteGenerator {
     doc.setTextColor(30, 41, 59); // gray-800
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text(i18next.t('pdfQuote.cover.projectInfo', 'Informations du projet'), margin + 10, boxY + 15);
+    doc.text(
+      i18next.t('pdfQuote.cover.projectInfo', 'Informations du projet'),
+      margin + 10,
+      boxY + 15
+    );
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
@@ -143,11 +151,22 @@ export class PDFQuoteGenerator {
     const roomY = 200;
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text(i18next.t('pdfQuote.cover.roomDimensions', 'Dimensions de la piece'), margin + 10, roomY);
+    doc.text(
+      i18next.t('pdfQuote.cover.roomDimensions', 'Dimensions de la piece'),
+      margin + 10,
+      roomY
+    );
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.text(i18next.t('pdfQuote.cover.roomDimensionsDesc', 'Dimensions extraites de la configuration 3D courante.'), margin + 10, roomY + 12);
+    doc.text(
+      i18next.t(
+        'pdfQuote.cover.roomDimensionsDesc',
+        'Dimensions extraites de la configuration 3D courante.'
+      ),
+      margin + 10,
+      roomY + 12
+    );
 
     // 3D thumbnail placeholder
     const thumbY = 230;
@@ -163,7 +182,12 @@ export class PDFQuoteGenerator {
       doc.roundedRect(margin, thumbY, pageWidth - margin * 2, 80, 4, 4, 'F');
       doc.setTextColor(156, 163, 175);
       doc.setFontSize(10);
-      doc.text(i18next.t('pdfQuote.cover.preview3DUnavailable', 'Apercu 3D non disponible'), pageWidth / 2, thumbY + 40, { align: 'center' });
+      doc.text(
+        i18next.t('pdfQuote.cover.preview3DUnavailable', 'Apercu 3D non disponible'),
+        pageWidth / 2,
+        thumbY + 40,
+        { align: 'center' }
+      );
     }
   }
 
@@ -189,7 +213,9 @@ export class PDFQuoteGenerator {
     } catch {
       doc.setTextColor(156, 163, 175);
       doc.setFontSize(10);
-      doc.text(i18next.t('pdfQuote.plan.unavailable', 'Vue 2D non disponible'), pageWidth / 2, 80, { align: 'center' });
+      doc.text(i18next.t('pdfQuote.plan.unavailable', 'Vue 2D non disponible'), pageWidth / 2, 80, {
+        align: 'center',
+      });
     }
 
     return Promise.resolve();
@@ -212,7 +238,9 @@ export class PDFQuoteGenerator {
     let startY = 30;
 
     for (const category of categories) {
-      if (category.items.length === 0) {continue;}
+      if (category.items.length === 0) {
+        continue;
+      }
 
       // Category header
       doc.setFontSize(11);
@@ -232,11 +260,27 @@ export class PDFQuoteGenerator {
       ]);
 
       // Subtotal row
-      tableRows.push(['', '', '', '', i18next.t('pdfQuote.bom.subtotal', 'Sous-total'), `${category.subtotal} €`]);
+      tableRows.push([
+        '',
+        '',
+        '',
+        '',
+        i18next.t('pdfQuote.bom.subtotal', 'Sous-total'),
+        `${category.subtotal} €`,
+      ]);
 
       autoTable(doc, {
         startY,
-        head: [[i18next.t('pdfQuote.bom.ref', 'Ref'), i18next.t('pdfQuote.bom.description', 'Description'), i18next.t('pdfQuote.bom.dimensions', 'Dimensions (mm)'), i18next.t('pdfQuote.bom.qty', 'Qte'), i18next.t('pdfQuote.bom.unitPrice', 'P.U.'), i18next.t('pdfQuote.bom.total', 'Total')]],
+        head: [
+          [
+            i18next.t('pdfQuote.bom.ref', 'Ref'),
+            i18next.t('pdfQuote.bom.description', 'Description'),
+            i18next.t('pdfQuote.bom.dimensions', 'Dimensions (mm)'),
+            i18next.t('pdfQuote.bom.qty', 'Qte'),
+            i18next.t('pdfQuote.bom.unitPrice', 'P.U.'),
+            i18next.t('pdfQuote.bom.total', 'Total'),
+          ],
+        ],
         body: tableRows,
         theme: 'striped',
         styles: { fontSize: 8, cellPadding: 2 },
@@ -259,7 +303,9 @@ export class PDFQuoteGenerator {
         },
       });
 
-      startY = (doc as jsPDF & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? startY + 40;
+      startY =
+        (doc as jsPDF & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ??
+        startY + 40;
       startY += 8;
 
       // New page if running out of space
@@ -296,20 +342,52 @@ export class PDFQuoteGenerator {
     const bp = this.brandProfile;
     const specs = [
       [i18next.t('pdfQuote.specs.brandProfile', 'Marque / Profil'), bp.id],
-      [i18next.t('pdfQuote.specs.baseTotalHeight', 'Hauteur totale meuble bas'), `${bp.base.totalHeight} mm`],
-      [i18next.t('pdfQuote.specs.baseDepth', 'Profondeur meuble bas'), `${bp.base.defaultDepth} mm`],
-      [i18next.t('pdfQuote.specs.plinthHeight', 'Hauteur plinthe'), `${bp.base.defaultPlinthHeight} mm`],
-      [i18next.t('pdfQuote.specs.worktopThickness', 'Epaisseur plan de travail'), `${bp.worktop.defaultThickness} mm`],
-      [i18next.t('pdfQuote.specs.worktopOverhang', 'Debord avant PDT'), `${bp.worktop.overhangFront} mm`],
-      [i18next.t('pdfQuote.specs.wallHeight', 'Hauteur meubles hauts'), `${bp.wall.defaultHeight} mm`],
-      [i18next.t('pdfQuote.specs.wallDepth', 'Profondeur meubles hauts'), `${bp.wall.defaultDepth} mm`],
-      [i18next.t('pdfQuote.specs.wallBottomPosition', 'Position bas meubles hauts'), `${bp.wall.bottomY} mm ${i18next.t('pdfQuote.specs.fromFloor', 'du sol')}`],
-      [i18next.t('pdfQuote.specs.backsplashThickness', 'Epaisseur credence'), `${bp.backsplash.thickness} mm`],
+      [
+        i18next.t('pdfQuote.specs.baseTotalHeight', 'Hauteur totale meuble bas'),
+        `${bp.base.totalHeight} mm`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.baseDepth', 'Profondeur meuble bas'),
+        `${bp.base.defaultDepth} mm`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.plinthHeight', 'Hauteur plinthe'),
+        `${bp.base.defaultPlinthHeight} mm`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.worktopThickness', 'Epaisseur plan de travail'),
+        `${bp.worktop.defaultThickness} mm`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.worktopOverhang', 'Debord avant PDT'),
+        `${bp.worktop.overhangFront} mm`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.wallHeight', 'Hauteur meubles hauts'),
+        `${bp.wall.defaultHeight} mm`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.wallDepth', 'Profondeur meubles hauts'),
+        `${bp.wall.defaultDepth} mm`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.wallBottomPosition', 'Position bas meubles hauts'),
+        `${bp.wall.bottomY} mm ${i18next.t('pdfQuote.specs.fromFloor', 'du sol')}`,
+      ],
+      [
+        i18next.t('pdfQuote.specs.backsplashThickness', 'Epaisseur credence'),
+        `${bp.backsplash.thickness} mm`,
+      ],
     ];
 
     autoTable(doc, {
       startY: 30,
-      head: [[i18next.t('pdfQuote.specs.specification', 'Specification'), i18next.t('pdfQuote.specs.value', 'Valeur')]],
+      head: [
+        [
+          i18next.t('pdfQuote.specs.specification', 'Specification'),
+          i18next.t('pdfQuote.specs.value', 'Valeur'),
+        ],
+      ],
       body: specs,
       theme: 'striped',
       styles: { fontSize: 9, cellPadding: 3 },
@@ -328,7 +406,11 @@ export class PDFQuoteGenerator {
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(30, 41, 59);
-    doc.text(i18next.t('pdfQuote.specs.electricalPlumbing', 'Besoins electriques et plomberie'), margin, y);
+    doc.text(
+      i18next.t('pdfQuote.specs.electricalPlumbing', 'Besoins electriques et plomberie'),
+      margin,
+      y
+    );
     y += 8;
 
     const items = this.extractSceneItems();
@@ -339,26 +421,44 @@ export class PDFQuoteGenerator {
       switch (item.type) {
         case 'cooktop':
         case 'hob':
-          electricNeeds.push(i18next.t('pdfQuote.specs.electric.cooktop', 'Prise 32A pour plaque de cuisson'));
+          electricNeeds.push(
+            i18next.t('pdfQuote.specs.electric.cooktop', 'Prise 32A pour plaque de cuisson')
+          );
           break;
         case 'oven':
           electricNeeds.push(i18next.t('pdfQuote.specs.electric.oven', 'Prise 20A pour four'));
           break;
         case 'dishwasher':
-          electricNeeds.push(i18next.t('pdfQuote.specs.electric.dishwasher', 'Prise 16A pour lave-vaisselle'));
-          plumbingNeeds.push(i18next.t('pdfQuote.specs.plumbing.dishwasher', 'Arrivee eau froide + evacuation pour lave-vaisselle'));
+          electricNeeds.push(
+            i18next.t('pdfQuote.specs.electric.dishwasher', 'Prise 16A pour lave-vaisselle')
+          );
+          plumbingNeeds.push(
+            i18next.t(
+              'pdfQuote.specs.plumbing.dishwasher',
+              'Arrivee eau froide + evacuation pour lave-vaisselle'
+            )
+          );
           break;
         case 'refrigerator':
         case 'fridge':
-          electricNeeds.push(i18next.t('pdfQuote.specs.electric.fridge', 'Prise 16A pour refrigerateur'));
+          electricNeeds.push(
+            i18next.t('pdfQuote.specs.electric.fridge', 'Prise 16A pour refrigerateur')
+          );
           break;
         case 'hood':
         case 'range_hood':
-          electricNeeds.push(i18next.t('pdfQuote.specs.electric.hood', 'Prise 16A pour hotte + extraction'));
+          electricNeeds.push(
+            i18next.t('pdfQuote.specs.electric.hood', 'Prise 16A pour hotte + extraction')
+          );
           break;
         case 'sink':
         case 'sink_base':
-          plumbingNeeds.push(i18next.t('pdfQuote.specs.plumbing.sink', 'Arrivee eau chaude + froide + evacuation pour evier'));
+          plumbingNeeds.push(
+            i18next.t(
+              'pdfQuote.specs.plumbing.sink',
+              'Arrivee eau chaude + froide + evacuation pour evier'
+            )
+          );
           break;
       }
     }
@@ -404,7 +504,12 @@ export class PDFQuoteGenerator {
 
     // Extract items and compute score
     const items = this.extractSceneItems();
-    const room = { width: this.engine.roomWidth, depth: this.engine.roomDepth, height: this.engine.roomHeight, walls: [] as THREE.Object3D[] };
+    const room = {
+      width: this.engine.roomWidth,
+      depth: this.engine.roomDepth,
+      height: this.engine.roomHeight,
+      walls: [] as THREE.Object3D[],
+    };
 
     const placedItems = items.map((item) => ({
       id: item.id,
@@ -445,7 +550,14 @@ export class PDFQuoteGenerator {
       doc.setFillColor(229, 231, 235); // gray-200
       doc.roundedRect(barX, y - 3, barWidth, 4, 1, 1, 'F');
 
-      const color = value >= 80 ? [34, 197, 94] : value >= 60 ? [234, 179, 8] : value >= 40 ? [249, 115, 22] : [239, 68, 68];
+      const color =
+        value >= 80
+          ? [34, 197, 94]
+          : value >= 60
+            ? [234, 179, 8]
+            : value >= 40
+              ? [249, 115, 22]
+              : [239, 68, 68];
       doc.setFillColor(color[0]!, color[1]!, color[2]!);
       doc.roundedRect(barX, y - 3, barWidth * (value / 100), 4, 1, 1, 'F');
 
@@ -463,24 +575,52 @@ export class PDFQuoteGenerator {
     doc.setFont('helvetica', 'normal');
 
     if (triangle.perimeter > 0) {
-      doc.text(`${i18next.t('pdfQuote.scores.perimeter', 'Perimetre')}: ${Math.round(triangle.perimeter * 1000)} mm`, margin, y);
+      doc.text(
+        `${i18next.t('pdfQuote.scores.perimeter', 'Perimetre')}: ${Math.round(triangle.perimeter * 1000)} mm`,
+        margin,
+        y
+      );
       y += 5;
-      doc.text(`${i18next.t('pdfQuote.scores.sinkToCooktop', 'Evier → Plaque')}: ${Math.round(triangle.legs.sinkToCooktop * 1000)} mm`, margin, y);
+      doc.text(
+        `${i18next.t('pdfQuote.scores.sinkToCooktop', 'Evier → Plaque')}: ${Math.round(triangle.legs.sinkToCooktop * 1000)} mm`,
+        margin,
+        y
+      );
       y += 5;
-      doc.text(`${i18next.t('pdfQuote.scores.cooktopToFridge', 'Plaque → Frigo')}: ${Math.round(triangle.legs.cooktopToFridge * 1000)} mm`, margin, y);
+      doc.text(
+        `${i18next.t('pdfQuote.scores.cooktopToFridge', 'Plaque → Frigo')}: ${Math.round(triangle.legs.cooktopToFridge * 1000)} mm`,
+        margin,
+        y
+      );
       y += 5;
-      doc.text(`${i18next.t('pdfQuote.scores.fridgeToSink', 'Frigo → Evier')}: ${Math.round(triangle.legs.fridgeToSink * 1000)} mm`, margin, y);
+      doc.text(
+        `${i18next.t('pdfQuote.scores.fridgeToSink', 'Frigo → Evier')}: ${Math.round(triangle.legs.fridgeToSink * 1000)} mm`,
+        margin,
+        y
+      );
       y += 5;
-      doc.text(`${i18next.t('pdfQuote.scores.optimal', 'Optimal')}: ${triangle.isOptimal ? i18next.t('pdfQuote.scores.yes', 'Oui') : i18next.t('pdfQuote.scores.no', 'Non')} (score: ${triangle.score}/100)`, margin, y);
+      doc.text(
+        `${i18next.t('pdfQuote.scores.optimal', 'Optimal')}: ${triangle.isOptimal ? i18next.t('pdfQuote.scores.yes', 'Oui') : i18next.t('pdfQuote.scores.no', 'Non')} (score: ${triangle.score}/100)`,
+        margin,
+        y
+      );
     } else {
-      doc.text(i18next.t('pdfQuote.scores.triangleIncomplete', 'Triangle incomplet (elements manquants).'), margin, y);
+      doc.text(
+        i18next.t('pdfQuote.scores.triangleIncomplete', 'Triangle incomplet (elements manquants).'),
+        margin,
+        y
+      );
     }
 
     // Suggestions
     y += 15;
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${i18next.t('pdfQuote.scores.suggestions', 'Suggestions')} (${suggestions.length})`, margin, y);
+    doc.text(
+      `${i18next.t('pdfQuote.scores.suggestions', 'Suggestions')} (${suggestions.length})`,
+      margin,
+      y
+    );
     y += 7;
 
     doc.setFontSize(8);
@@ -499,13 +639,21 @@ export class PDFQuoteGenerator {
         y += 5;
       }
 
-      if (y > 270) {break;}
+      if (y > 270) {
+        break;
+      }
     }
   }
 
   // --- Footer ---
 
-  private renderFooter(doc: jsPDF, pageWidth: number, pageHeight: number, page: number, totalPages: number): void {
+  private renderFooter(
+    doc: jsPDF,
+    pageWidth: number,
+    pageHeight: number,
+    page: number,
+    totalPages: number
+  ): void {
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(156, 163, 175); // gray-400
@@ -543,7 +691,8 @@ export class PDFQuoteGenerator {
     };
 
     for (const item of items) {
-      const categoryLabel = categoryLabels[item.type] || i18next.t('pdfQuote.category.other', 'Autres');
+      const categoryLabel =
+        categoryLabels[item.type] || i18next.t('pdfQuote.category.other', 'Autres');
       if (!categoryMap.has(categoryLabel)) {
         categoryMap.set(categoryLabel, []);
       }
@@ -665,8 +814,8 @@ export class PDFQuoteGenerator {
       const aspect = width / height;
       const viewSize = 5;
       const orthoCamera = new THREE.OrthographicCamera(
-        -viewSize * aspect / 2,
-        viewSize * aspect / 2,
+        (-viewSize * aspect) / 2,
+        (viewSize * aspect) / 2,
         viewSize / 2,
         -viewSize / 2,
         0.1,

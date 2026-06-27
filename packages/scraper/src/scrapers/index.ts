@@ -86,9 +86,6 @@ export function getAvailableScrapers(): string[] {
 /**
  * Register a new scraper
  */
-export function registerScraper(
-  brandId: string,
-  scraperClass: ScraperConstructor
-): void {
+export function registerScraper(brandId: string, scraperClass: ScraperConstructor): void {
   scraperRegistry.set(brandId, scraperClass);
 }

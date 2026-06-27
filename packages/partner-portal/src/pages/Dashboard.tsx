@@ -46,9 +46,7 @@ function StatCard({ title, value, change, icon, iconBg }: StatCardProps) {
                 <ArrowDownRight className="h-4 w-4 text-red-500" />
               )}
               <span
-                className={`text-sm font-medium ${
-                  isPositive ? 'text-green-500' : 'text-red-500'
-                }`}
+                className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}
               >
                 {Math.abs(change)}%
               </span>
@@ -117,7 +115,9 @@ export function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [salesData, setSalesData] = useState<{ date: string; revenue: number; orders: number }[]>([]);
+  const [salesData, setSalesData] = useState<{ date: string; revenue: number; orders: number }[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -230,7 +230,9 @@ export function Dashboard() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-gray-500">Welcome back! Here's what's happening with your business.</p>
+        <p className="mt-1 text-gray-500">
+          Welcome back! Here's what's happening with your business.
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -276,7 +278,9 @@ export function Dashboard() {
                 <XAxis
                   dataKey="date"
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  tickFormatter={(value) =>
+                    new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                  }
                 />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip
@@ -305,7 +309,9 @@ export function Dashboard() {
                 <XAxis
                   dataKey="date"
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { weekday: 'short' })}
+                  tickFormatter={(value) =>
+                    new Date(value).toLocaleDateString('en-US', { weekday: 'short' })
+                  }
                 />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip
@@ -334,9 +340,7 @@ export function Dashboard() {
           </div>
           <div>
             {recentOrders.length > 0 ? (
-              recentOrders.map((order) => (
-                <RecentOrderItem key={order.id} order={order} />
-              ))
+              recentOrders.map((order) => <RecentOrderItem key={order.id} order={order} />)
             ) : (
               <p className="py-8 text-center text-gray-500">No recent orders</p>
             )}
@@ -367,9 +371,7 @@ export function Dashboard() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Pending Orders</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {stats?.pendingOrders || 0}
-                  </p>
+                  <p className="text-lg font-semibold text-gray-900">{stats?.pendingOrders || 0}</p>
                 </div>
               </div>
             </div>

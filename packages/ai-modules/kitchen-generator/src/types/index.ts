@@ -45,7 +45,13 @@ export interface WallObstacle {
 }
 
 export interface UtilityConnection {
-  type: 'water_inlet' | 'water_outlet' | 'gas' | 'electrical_220v' | 'electrical_380v' | 'ventilation';
+  type:
+    | 'water_inlet'
+    | 'water_outlet'
+    | 'gas'
+    | 'electrical_220v'
+    | 'electrical_380v'
+    | 'ventilation';
   /** Wall location */
   wall: string;
   /** Position along wall (cm) */
@@ -79,16 +85,16 @@ export type KitchenStyle =
   | 'contemporary';
 
 export type CabinetType =
-  | 'base'           // Meuble bas
-  | 'wall'           // Meuble haut
-  | 'tall'           // Colonne
-  | 'corner_base'    // Angle bas
-  | 'corner_wall'    // Angle haut
-  | 'drawer'         // Tiroir
-  | 'sink_base'      // Sous-évier
-  | 'oven_housing'   // Colonne four
+  | 'base' // Meuble bas
+  | 'wall' // Meuble haut
+  | 'tall' // Colonne
+  | 'corner_base' // Angle bas
+  | 'corner_wall' // Angle haut
+  | 'drawer' // Tiroir
+  | 'sink_base' // Sous-évier
+  | 'oven_housing' // Colonne four
   | 'fridge_housing' // Colonne réfrigérateur
-  | 'pantry';        // Garde-manger
+  | 'pantry'; // Garde-manger
 
 export type ApplianceCategory =
   | 'refrigerator'
@@ -122,7 +128,13 @@ export interface CatalogProduct {
   imageUrl?: string;
   specifications?: Record<string, unknown>;
   compatibleWith?: string[];
-  requiresUtility?: ('water_inlet' | 'water_outlet' | 'gas' | 'electrical_220v' | 'electrical_380v')[];
+  requiresUtility?: (
+    | 'water_inlet'
+    | 'water_outlet'
+    | 'gas'
+    | 'electrical_220v'
+    | 'electrical_380v'
+  )[];
   inStock: boolean;
 }
 
@@ -347,11 +359,11 @@ export interface CompatibilityRule {
 
 /** Supported smart appliance platforms */
 export type SmartAppliancePlatform =
-  | 'home_connect'    // Bosch, Siemens, Neff, Gaggenau, Thermador
-  | 'miele'           // Miele
-  | 'smartthings'     // Samsung
-  | 'electrolux'      // Electrolux, AEG, Frigidaire
-  | 'ge_smarthq';     // GE Appliances
+  | 'home_connect' // Bosch, Siemens, Neff, Gaggenau, Thermador
+  | 'miele' // Miele
+  | 'smartthings' // Samsung
+  | 'electrolux' // Electrolux, AEG, Frigidaire
+  | 'ge_smarthq'; // GE Appliances
 
 /** Connected appliance types from Home Connect */
 export type ConnectedApplianceType =
@@ -449,7 +461,11 @@ export interface SmartApplianceProvider {
   getPrograms(applianceId: string): Promise<ApplianceProgram[]>;
 
   /** Start a program */
-  startProgram(applianceId: string, programKey: string, options?: Record<string, unknown>): Promise<boolean>;
+  startProgram(
+    applianceId: string,
+    programKey: string,
+    options?: Record<string, unknown>
+  ): Promise<boolean>;
 
   /** Stop current program */
   stopProgram(applianceId: string): Promise<boolean>;

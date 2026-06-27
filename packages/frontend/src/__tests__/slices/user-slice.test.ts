@@ -148,10 +148,11 @@ describe('User Slice', () => {
       it('should fetch users successfully', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [mockUser, mockAdminUser],
-            meta: { total: 2, page: 1, totalPages: 1 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [mockUser, mockAdminUser],
+              meta: { total: 2, page: 1, totalPages: 1 },
+            }),
         });
 
         await store.dispatch(fetchUsers({ page: 1, limit: 20 }));
@@ -178,17 +179,20 @@ describe('User Slice', () => {
       it('should apply filters when fetching', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [mockAdminUser],
-            meta: { total: 1, page: 1, totalPages: 1 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [mockAdminUser],
+              meta: { total: 1, page: 1, totalPages: 1 },
+            }),
         });
 
-        await store.dispatch(fetchUsers({
-          page: 1,
-          limit: 20,
-          filters: { role: 'admin', isActive: true },
-        }));
+        await store.dispatch(
+          fetchUsers({
+            page: 1,
+            limit: 20,
+            filters: { role: 'admin', isActive: true },
+          })
+        );
 
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringContaining('role=admin'),
@@ -199,17 +203,20 @@ describe('User Slice', () => {
       it('should filter out undefined values from params', async () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({
-            data: [],
-            meta: { total: 0, page: 1, totalPages: 0 },
-          }),
+          json: () =>
+            Promise.resolve({
+              data: [],
+              meta: { total: 0, page: 1, totalPages: 0 },
+            }),
         });
 
-        await store.dispatch(fetchUsers({
-          page: 1,
-          limit: 20,
-          filters: { role: undefined, search: 'test' },
-        }));
+        await store.dispatch(
+          fetchUsers({
+            page: 1,
+            limit: 20,
+            filters: { role: undefined, search: 'test' },
+          })
+        );
 
         const calledUrl = mockFetch.mock.calls[0][0];
         expect(calledUrl).not.toContain('role=undefined');
@@ -268,10 +275,12 @@ describe('User Slice', () => {
           json: () => Promise.resolve({ data: updatedUser }),
         });
 
-        await store.dispatch(updateUser({
-          id: 'user-123',
-          updates: { firstName: 'Jane' },
-        }));
+        await store.dispatch(
+          updateUser({
+            id: 'user-123',
+            updates: { firstName: 'Jane' },
+          })
+        );
 
         const state = store.getState().user;
         expect(state.users[0].firstName).toBe('Jane');
@@ -298,10 +307,12 @@ describe('User Slice', () => {
           json: () => Promise.resolve({ error: 'Update failed' }),
         });
 
-        await store.dispatch(updateUser({
-          id: 'user-123',
-          updates: { firstName: 'Jane' },
-        }));
+        await store.dispatch(
+          updateUser({
+            id: 'user-123',
+            updates: { firstName: 'Jane' },
+          })
+        );
 
         const state = store.getState().user;
         // Original data should be preserved
@@ -464,10 +475,11 @@ describe('User Slice', () => {
     it('should handle pagination correctly', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: [mockUser],
-          meta: { total: 100, page: 5, totalPages: 10 },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [mockUser],
+            meta: { total: 100, page: 5, totalPages: 10 },
+          }),
       });
 
       await store.dispatch(fetchUsers({ page: 5, limit: 10 }));
@@ -481,17 +493,20 @@ describe('User Slice', () => {
     it('should handle empty search results', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: [],
-          meta: { total: 0, page: 1, totalPages: 0 },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [],
+            meta: { total: 0, page: 1, totalPages: 0 },
+          }),
       });
 
-      await store.dispatch(fetchUsers({
-        page: 1,
-        limit: 20,
-        filters: { search: 'nonexistent' },
-      }));
+      await store.dispatch(
+        fetchUsers({
+          page: 1,
+          limit: 20,
+          filters: { search: 'nonexistent' },
+        })
+      );
 
       const state = store.getState().user;
       expect(state.users).toEqual([]);
@@ -520,10 +535,12 @@ describe('User Slice', () => {
         json: () => Promise.resolve({ data: updatedUser }),
       });
 
-      await store.dispatch(updateUser({
-        id: 'user-123',
-        updates: { email: 'newemail@example.com' },
-      }));
+      await store.dispatch(
+        updateUser({
+          id: 'user-123',
+          updates: { email: 'newemail@example.com' },
+        })
+      );
 
       const state = store.getState().user;
       expect(state.users[0].email).toBe('newemail@example.com');

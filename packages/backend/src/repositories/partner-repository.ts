@@ -1,4 +1,9 @@
-import { type PrismaClient, type Partner, type PartnerIntegration, type Prisma } from '@prisma/client';
+import {
+  type PrismaClient,
+  type Partner,
+  type PartnerIntegration,
+  type Prisma,
+} from '@prisma/client';
 
 import { encrypt, decrypt, isEncrypted } from '../utils/crypto';
 
@@ -52,8 +57,8 @@ export class PartnerRepository {
       where: { id },
       include: {
         integrations: true,
-        _count: { select: { webhooks: true } }
-      }
+        _count: { select: { webhooks: true } },
+      },
     });
   }
 
@@ -73,9 +78,9 @@ export class PartnerRepository {
     const partners = await this.prisma.partner.findMany({
       where: isActive !== undefined ? { isActive } : undefined,
       include: {
-        _count: { select: { integrations: true, webhooks: true } }
+        _count: { select: { integrations: true, webhooks: true } },
       },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
     // Strip apiSecret from results to prevent exposure in API responses
     return partners.map(({ apiSecret: _, ...rest }) => rest as unknown as Partner);
@@ -93,7 +98,7 @@ export class PartnerRepository {
         apiSecret: encrypt(data.apiSecret),
         commissionRate: data.commissionRate || 0,
         configuration: data.configuration as Prisma.InputJsonValue,
-      }
+      },
     });
   }
 
@@ -110,7 +115,7 @@ export class PartnerRepository {
         ...(data.isActive !== undefined && { isActive: data.isActive }),
         ...(data.commissionRate !== undefined && { commissionRate: data.commissionRate }),
         ...(data.configuration && { configuration: data.configuration as Prisma.InputJsonValue }),
-      }
+      },
     });
   }
 
@@ -121,7 +126,9 @@ export class PartnerRepository {
   async toggle(id: string): Promise<Partner> {
     return this.prisma.$transaction(async (tx) => {
       const partner = await tx.partner.findUnique({ where: { id } });
-      if (!partner) {throw new Error('Partner not found');}
+      if (!partner) {
+        throw new Error('Partner not found');
+      }
       return tx.partner.update({
         where: { id },
         data: { isActive: !partner.isActive },
@@ -131,15 +138,17 @@ export class PartnerRepository {
 
   async count(isActive?: boolean): Promise<number> {
     return this.prisma.partner.count({
-      where: isActive !== undefined ? { isActive } : undefined
+      where: isActive !== undefined ? { isActive } : undefined,
     });
   }
 
   async validateCredentials(apiKey: string, apiSecret: string): Promise<Partner | null> {
     const partner = await this.prisma.partner.findFirst({
-      where: { apiKey, isActive: true }
+      where: { apiKey, isActive: true },
     });
-    if (!partner) {return null;}
+    if (!partner) {
+      return null;
+    }
 
     try {
       const storedSecret = isEncrypted(partner.apiSecret)
@@ -147,10 +156,7 @@ export class PartnerRepository {
         : partner.apiSecret;
 
       const crypto = await import('crypto');
-      const isValid = crypto.timingSafeEqual(
-        Buffer.from(storedSecret),
-        Buffer.from(apiSecret)
-      );
+      const isValid = crypto.timingSafeEqual(Buffer.from(storedSecret), Buffer.from(apiSecret));
       return isValid ? partner : null;
     } catch {
       return null;
@@ -167,11 +173,14 @@ export class PartnerRepository {
         endpoint: data.endpoint,
         credentials: data.credentials as Prisma.InputJsonValue,
         configuration: data.configuration as Prisma.InputJsonValue,
-      }
+      },
     });
   }
 
-  async updateIntegration(id: string, data: Partial<CreateIntegrationDto> & { isActive?: boolean; lastSyncAt?: Date }): Promise<PartnerIntegration> {
+  async updateIntegration(
+    id: string,
+    data: Partial<CreateIntegrationDto> & { isActive?: boolean; lastSyncAt?: Date }
+  ): Promise<PartnerIntegration> {
     return this.prisma.partnerIntegration.update({
       where: { id },
       data: {
@@ -181,7 +190,7 @@ export class PartnerRepository {
         ...(data.configuration && { configuration: data.configuration as Prisma.InputJsonValue }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
         ...(data.lastSyncAt && { lastSyncAt: data.lastSyncAt }),
-      }
+      },
     });
   }
 
@@ -192,18 +201,21 @@ export class PartnerRepository {
   async getIntegrations(partnerId: string): Promise<PartnerIntegration[]> {
     return this.prisma.partnerIntegration.findMany({
       where: { partnerId },
-      orderBy: { type: 'asc' }
+      orderBy: { type: 'asc' },
     });
   }
 
   async getIntegrationsByType(type: string): Promise<PartnerIntegration[]> {
     return this.prisma.partnerIntegration.findMany({
       where: { type, isActive: true },
-      include: { partner: true }
+      include: { partner: true },
     });
   }
 
-  async findIntegrationByIdAndPartner(id: string, partnerId: string): Promise<PartnerIntegration | null> {
+  async findIntegrationByIdAndPartner(
+    id: string,
+    partnerId: string
+  ): Promise<PartnerIntegration | null> {
     return this.prisma.partnerIntegration.findFirst({
       where: { id, partnerId },
     });
@@ -212,7 +224,7 @@ export class PartnerRepository {
   async markIntegrationSynced(id: string): Promise<PartnerIntegration> {
     return this.prisma.partnerIntegration.update({
       where: { id },
-      data: { lastSyncAt: new Date() }
+      data: { lastSyncAt: new Date() },
     });
   }
 }

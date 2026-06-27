@@ -5,7 +5,6 @@ import { logger } from '../../services/logger';
 
 import type { ARLiveOverlay } from '@kitchenxpert/3d-engine';
 
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -106,14 +105,14 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
       await overlay.startAR();
       setArState('active');
     } catch (err) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : 'Failed to start AR session';
+      const msg = err instanceof Error ? err.message : 'Failed to start AR session';
 
       if (msg.includes('denied') || msg.includes('permission') || msg.includes('NotAllowedError')) {
         setErrorMessage(
-          t('arView.cameraPermissionDenied', 'Camera access denied. Please allow camera permissions to use AR.'),
+          t(
+            'arView.cameraPermissionDenied',
+            'Camera access denied. Please allow camera permissions to use AR.'
+          )
         );
       } else {
         setErrorMessage(msg);
@@ -156,7 +155,9 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
 
   // Take screenshot
   const handleScreenshot = useCallback(async () => {
-    if (!arOverlayRef.current) {return;}
+    if (!arOverlayRef.current) {
+      return;
+    }
     try {
       const blob = await arOverlayRef.current.captureScreenshot();
       const url = URL.createObjectURL(blob);
@@ -174,7 +175,9 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
 
   // Toggle split view
   const handleToggleSplitView = useCallback(() => {
-    if (!arOverlayRef.current) {return;}
+    if (!arOverlayRef.current) {
+      return;
+    }
 
     if (splitViewEnabled) {
       arOverlayRef.current.disableSplitView();
@@ -187,7 +190,9 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
 
   // Share AR view
   const handleShare = useCallback(async () => {
-    if (!arOverlayRef.current) {return;}
+    if (!arOverlayRef.current) {
+      return;
+    }
     try {
       await arOverlayRef.current.shareARView();
     } catch (err) {
@@ -242,15 +247,15 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
     return (
       <>
         {/* Floating AR controls overlay */}
-        <div
-          id="ar-overlay"
-          className="fixed inset-0 z-[10000] pointer-events-none"
-        >
+        <div id="ar-overlay" className="fixed inset-0 z-[10000] pointer-events-none">
           {/* Top instruction */}
           {arState === 'active' && (
             <div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-auto">
               <div className="bg-black bg-opacity-60 text-white px-4 py-2 rounded-lg text-sm text-center">
-                {t('arView.pointToFloor', 'Point your device at the floor, then tap to place the kitchen.')}
+                {t(
+                  'arView.pointToFloor',
+                  'Point your device at the floor, then tap to place the kitchen.'
+                )}
               </div>
             </div>
           )}
@@ -265,7 +270,12 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
                 title={t('arView.place', 'Place')}
               >
                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
                 </svg>
               </button>
             )}
@@ -320,7 +330,12 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
                     title={t('arView.splitView', 'Split View')}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                      />
                     </svg>
                   </button>
                 )}
@@ -349,7 +364,12 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
               title={t('arView.close', 'Close AR')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -367,12 +387,20 @@ const ARViewButton: React.FC<ARViewButtonProps> = ({
           className={`flex items-center gap-2 px-3 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors text-sm ${className}`}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
           </svg>
           {t('common.tryAgain', 'Try Again')}
         </button>
         {errorMessage && (
-          <span className="text-xs text-red-500 dark:text-red-400 max-w-[200px] truncate" title={errorMessage}>
+          <span
+            className="text-xs text-red-500 dark:text-red-400 max-w-[200px] truncate"
+            title={errorMessage}
+          >
             {errorMessage}
           </span>
         )}

@@ -96,7 +96,7 @@ export class EprelApplianceStrategy implements IngestionStrategy {
 
   constructor(
     private readonly api: JsonFetcher,
-    options: EprelStrategyOptions = {},
+    options: EprelStrategyOptions = {}
   ) {
     this.pageSize = Math.max(1, options.pageSize ?? 100);
     this.maxProducts = Math.max(1, options.maxProducts ?? this.pageSize);
@@ -146,7 +146,7 @@ export class EprelApplianceStrategy implements IngestionStrategy {
     }
     const results = await this.fetchProductsByCategory(group);
     const match = results.find(
-      (r) => r.success && String(r.product?.specifications?.eprelRegistrationNumber) === regNo,
+      (r) => r.success && String(r.product?.specifications?.eprelRegistrationNumber) === regNo
     );
     return (
       match ?? {
@@ -203,12 +203,7 @@ export class EprelApplianceStrategy implements IngestionStrategy {
    * (< 300 => cm). confidence = nb de cotes / 3, réduite (×0.7) si l'unité est
    * inférée. rawMeasureText garde la valeur d'origine.
    */
-  private normalizeDims(
-    group: string,
-    w?: number,
-    h?: number,
-    d?: number,
-  ): NormalizedDims {
+  private normalizeDims(group: string, w?: number, h?: number, d?: number): NormalizedDims {
     const known = GROUP_UNIT[group];
     const unitAssumed = known === undefined;
     const toMm = (v: number | undefined): number | null => {
@@ -227,10 +222,9 @@ export class EprelApplianceStrategy implements IngestionStrategy {
     const base = present === 3 ? 1 : present === 2 ? 0.5 : 0.3;
     const confidence = unitAssumed ? Math.round(base * 0.7 * 100) / 100 : base;
     const unit = known ?? '?';
-    const raw =
-      [w, h, d].some((v) => v != null)
-        ? `${w ?? '?'}×${h ?? '?'}×${d ?? '?'} ${unit}`
-        : null;
+    const raw = [w, h, d].some((v) => v != null)
+      ? `${w ?? '?'}×${h ?? '?'}×${d ?? '?'} ${unit}`
+      : null;
     return { widthMm, heightMm, depthMm, confidence, unitAssumed, rawMeasureText: raw };
   }
 }

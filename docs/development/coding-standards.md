@@ -17,7 +17,8 @@
 
 ## Overview
 
-This document defines the coding standards for KitchenXpert. Following these standards ensures consistency, maintainability, and quality across the codebase.
+This document defines the coding standards for KitchenXpert. Following these
+standards ensures consistency, maintainability, and quality across the codebase.
 
 ### Core Principles
 
@@ -40,15 +41,15 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier'
+    'prettier',
   ],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'warn',
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'prefer-const': 'error'
-  }
+    'prefer-const': 'error',
+  },
 };
 ```
 
@@ -64,7 +65,7 @@ module.exports = {
   printWidth: 100,
   tabWidth: 2,
   useTabs: false,
-  arrowParens: 'avoid'
+  arrowParens: 'avoid',
 };
 ```
 
@@ -359,8 +360,8 @@ export function errorHandler(
       success: false,
       error: {
         code: error.code,
-        message: error.message
-      }
+        message: error.message,
+      },
     });
     return;
   }
@@ -369,8 +370,8 @@ export function errorHandler(
     success: false,
     error: {
       code: 'INTERNAL_ERROR',
-      message: 'An unexpected error occurred'
-    }
+      message: 'An unexpected error occurred',
+    },
   });
 }
 ```
@@ -387,7 +388,7 @@ logger.debug('Query executed', { query });
 // Include context
 logger.info('Design created', {
   userId: user.id,
-  designId: design.id
+  designId: design.id,
 });
 
 // Never log sensitive data
@@ -405,7 +406,7 @@ import { z } from 'zod';
 const createUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-  name: z.string().min(1)
+  name: z.string().min(1),
 });
 
 const userData = createUserSchema.parse(req.body);
@@ -448,7 +449,7 @@ const users = await User.findAll({ include: [Design] });
 // ✅ Use pagination
 const users = await User.findAll({
   offset: (page - 1) * limit,
-  limit: limit
+  limit: limit,
 });
 ```
 

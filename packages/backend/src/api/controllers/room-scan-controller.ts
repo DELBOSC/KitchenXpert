@@ -103,9 +103,7 @@ class RoomScanController {
       }
 
       const photoBuffers = files.map((f) => f.buffer);
-      const mediaTypes = files.map(
-        (f) => f.mimetype as 'image/jpeg' | 'image/png' | 'image/webp',
-      );
+      const mediaTypes = files.map((f) => f.mimetype as 'image/jpeg' | 'image/png' | 'image/webp');
 
       const scanner = new PhotoRoomScannerService();
       const scanResult = await scanner.analyzeRoom(photoBuffers, userId, mediaTypes);

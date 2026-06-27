@@ -148,16 +148,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -183,14 +185,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -300,7 +298,11 @@ describe('Kitchen Generator Routes', () => {
       const response = await authedRequest(app)
         .post('/kitchen-generator/generate')
         .send({
-          preferences: { budget: { min: 3000, max: 10000 }, style: 'modern', requiredAppliances: [] },
+          preferences: {
+            budget: { min: 3000, max: 10000 },
+            style: 'modern',
+            requiredAppliances: [],
+          },
         })
         .expect(400);
 
@@ -314,7 +316,11 @@ describe('Kitchen Generator Routes', () => {
         .post('/kitchen-generator/generate')
         .send({
           room: { walls: [] },
-          preferences: { budget: { min: 3000, max: 10000 }, style: 'modern', requiredAppliances: [] },
+          preferences: {
+            budget: { min: 3000, max: 10000 },
+            style: 'modern',
+            requiredAppliances: [],
+          },
         })
         .expect(400);
 
@@ -353,7 +359,11 @@ describe('Kitchen Generator Routes', () => {
         .post('/kitchen-generator/generate')
         .send({
           room: { dimensions: { width: 50, length: 50 } },
-          preferences: { budget: { min: 3000, max: 10000 }, style: 'modern', requiredAppliances: [] },
+          preferences: {
+            budget: { min: 3000, max: 10000 },
+            style: 'modern',
+            requiredAppliances: [],
+          },
         })
         .expect(400);
 
@@ -366,7 +376,11 @@ describe('Kitchen Generator Routes', () => {
         .post('/kitchen-generator/generate')
         .send({
           room: { dimensions: { width: 400, length: 300 } },
-          preferences: { budget: { min: 10000, max: 3000 }, style: 'modern', requiredAppliances: [] },
+          preferences: {
+            budget: { min: 10000, max: 3000 },
+            style: 'modern',
+            requiredAppliances: [],
+          },
         })
         .expect(400);
 
@@ -379,7 +393,11 @@ describe('Kitchen Generator Routes', () => {
         .post('/kitchen-generator/generate')
         .send({
           room: { dimensions: { width: 400, length: 300 } },
-          preferences: { budget: { min: -100, max: 5000 }, style: 'modern', requiredAppliances: [] },
+          preferences: {
+            budget: { min: -100, max: 5000 },
+            style: 'modern',
+            requiredAppliances: [],
+          },
         })
         .expect(400);
 
@@ -471,7 +489,9 @@ describe('Kitchen Generator Routes', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.validation.valid).toBe(false);
-      expect(response.body.validation.errors.some((e: any) => e.code === 'MISSING_SINK')).toBe(true);
+      expect(response.body.validation.errors.some((e: any) => e.code === 'MISSING_SINK')).toBe(
+        true
+      );
     });
 
     it('should detect missing cooktop in configuration', async () => {
@@ -489,7 +509,9 @@ describe('Kitchen Generator Routes', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.validation.valid).toBe(false);
-      expect(response.body.validation.errors.some((e: any) => e.code === 'MISSING_COOKTOP')).toBe(true);
+      expect(response.body.validation.errors.some((e: any) => e.code === 'MISSING_COOKTOP')).toBe(
+        true
+      );
     });
 
     it('should warn about missing refrigerator', async () => {
@@ -506,7 +528,9 @@ describe('Kitchen Generator Routes', () => {
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.validation.warnings.some((w: any) => w.code === 'MISSING_FRIDGE')).toBe(true);
+      expect(response.body.validation.warnings.some((w: any) => w.code === 'MISSING_FRIDGE')).toBe(
+        true
+      );
     });
   });
 
@@ -589,9 +613,7 @@ describe('Kitchen Generator Routes', () => {
 
   describe('GET /kitchen-generator/shapes', () => {
     it('should return all available kitchen shapes', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/shapes')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/shapes').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -608,9 +630,7 @@ describe('Kitchen Generator Routes', () => {
     });
 
     it('should include dimension requirements for each shape', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/shapes')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/shapes').expect(200);
 
       response.body.data.forEach((shape: any) => {
         expect(shape).toHaveProperty('minWidth');
@@ -624,9 +644,7 @@ describe('Kitchen Generator Routes', () => {
 
   describe('GET /kitchen-generator/styles', () => {
     it('should return all available kitchen styles', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/styles')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/styles').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -640,9 +658,7 @@ describe('Kitchen Generator Routes', () => {
     });
 
     it('should include colors for each style', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/styles')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/styles').expect(200);
 
       response.body.data.forEach((style: any) => {
         expect(style).toHaveProperty('colors');
@@ -656,9 +672,7 @@ describe('Kitchen Generator Routes', () => {
 
   describe('GET /kitchen-generator/providers', () => {
     it('should return all available providers', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/providers')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/providers').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -666,9 +680,7 @@ describe('Kitchen Generator Routes', () => {
     });
 
     it('should include provider metadata', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/providers')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/providers').expect(200);
 
       response.body.data.forEach((provider: any) => {
         expect(provider).toHaveProperty('id');
@@ -679,9 +691,7 @@ describe('Kitchen Generator Routes', () => {
     });
 
     it('should include ikea-fr provider', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/providers')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/providers').expect(200);
 
       const ikea = response.body.data.find((p: any) => p.id === 'ikea-fr');
       expect(ikea).toBeDefined();
@@ -694,9 +704,7 @@ describe('Kitchen Generator Routes', () => {
 
   describe('GET /kitchen-generator/constraints', () => {
     it('should return default generation constraints', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/constraints')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/constraints').expect(200);
 
       expect(response.body.success).toBe(true);
       const data = response.body.data;
@@ -710,9 +718,7 @@ describe('Kitchen Generator Routes', () => {
     });
 
     it('should return constraint values with correct units', async () => {
-      const response = await request(app)
-        .get('/kitchen-generator/constraints')
-        .expect(200);
+      const response = await request(app).get('/kitchen-generator/constraints').expect(200);
 
       expect(response.body.data.minPassageWidth.value).toBe(90);
       expect(response.body.data.minPassageWidth.unit).toBe('cm');

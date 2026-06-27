@@ -173,7 +173,11 @@ export interface AlertCondition {
 
 export interface MonitoringRepository {
   saveMetrics(metrics: SystemMetrics & ApplicationMetrics): Promise<void>;
-  getMetrics(from: Date, to: Date, granularity?: string): Promise<Array<SystemMetrics & ApplicationMetrics & { timestamp: Date }>>;
+  getMetrics(
+    from: Date,
+    to: Date,
+    granularity?: string
+  ): Promise<Array<SystemMetrics & ApplicationMetrics & { timestamp: Date }>>;
   createAlert(alert: Omit<Alert, 'id'>): Promise<Alert>;
   getAlerts(params?: { acknowledged?: boolean; severity?: AlertSeverity }): Promise<Alert[]>;
   acknowledgeAlert(id: string, acknowledgedBy: string): Promise<Alert | null>;
@@ -205,7 +209,9 @@ export class MonitoringService {
    * Start metrics collection
    */
   start(): void {
-    if (this.collectInterval) {return;}
+    if (this.collectInterval) {
+      return;
+    }
 
     this.collectInterval = setInterval(
       () => this.collectAndStoreMetrics(),
@@ -243,8 +249,8 @@ export class MonitoringService {
       }
     }
 
-    const hasFailure = checks.some(c => c.status === 'fail');
-    const hasWarning = checks.some(c => c.status === 'warn');
+    const hasFailure = checks.some((c) => c.status === 'fail');
+    const hasWarning = checks.some((c) => c.status === 'warn');
 
     return {
       status: hasFailure ? 'unhealthy' : hasWarning ? 'degraded' : 'healthy',
@@ -367,11 +373,7 @@ export class MonitoringService {
   /**
    * Record request metrics
    */
-  recordRequest(
-    endpoint: string,
-    responseTime: number,
-    statusCode: number
-  ): void {
+  recordRequest(endpoint: string, responseTime: number, statusCode: number): void {
     // In real implementation, would update request metrics
     logger.info(`[Monitoring] Request: ${endpoint} - ${statusCode} - ${responseTime}ms`);
   }
@@ -379,12 +381,10 @@ export class MonitoringService {
   /**
    * Record AI configuration generation
    */
-  recordAIGeneration(
-    duration: number,
-    success: boolean,
-    configurationsCount: number
-  ): void {
-    logger.info(`[Monitoring] AI Generation: ${configurationsCount} configs in ${duration}ms - ${success ? 'success' : 'failed'}`);
+  recordAIGeneration(duration: number, success: boolean, configurationsCount: number): void {
+    logger.info(
+      `[Monitoring] AI Generation: ${configurationsCount} configs in ${duration}ms - ${success ? 'success' : 'failed'}`
+    );
   }
 
   /**
@@ -426,10 +426,7 @@ export class MonitoringService {
   /**
    * Get alerts
    */
-  async getAlerts(params?: {
-    acknowledged?: boolean;
-    severity?: AlertSeverity;
-  }): Promise<Alert[]> {
+  async getAlerts(params?: { acknowledged?: boolean; severity?: AlertSeverity }): Promise<Alert[]> {
     return this.repository.getAlerts(params);
   }
 
@@ -447,10 +444,14 @@ export class MonitoringService {
     const rules = await this.repository.getAlertRules();
 
     for (const rule of rules) {
-      if (!rule.enabled) {continue;}
+      if (!rule.enabled) {
+        continue;
+      }
 
       const value = this.getMetricValue(metrics, rule.condition.metric);
-      if (value === null) {continue;}
+      if (value === null) {
+        continue;
+      }
 
       const triggered = this.evaluateCondition(value, rule.condition);
 
@@ -500,16 +501,16 @@ export class MonitoringService {
    * Flush metrics buffer
    */
   private async flushMetrics(): Promise<void> {
-    if (this.metricsBuffer.length === 0) {return;}
+    if (this.metricsBuffer.length === 0) {
+      return;
+    }
 
     const metrics = [...this.metricsBuffer];
     this.metricsBuffer = [];
 
-    const results = await Promise.allSettled(
-      metrics.map(m => this.repository.saveMetrics(m))
-    );
+    const results = await Promise.allSettled(metrics.map((m) => this.repository.saveMetrics(m)));
 
-    const failures = results.filter(r => r.status === 'rejected');
+    const failures = results.filter((r) => r.status === 'rejected');
     if (failures.length > 0) {
       logger.error(`[Monitoring] Failed to save ${failures.length}/${metrics.length} metrics`);
     }
@@ -586,12 +587,18 @@ export class MonitoringService {
    */
   private evaluateCondition(value: number, condition: AlertCondition): boolean {
     switch (condition.operator) {
-      case 'gt': return value > condition.threshold;
-      case 'lt': return value < condition.threshold;
-      case 'eq': return value === condition.threshold;
-      case 'gte': return value >= condition.threshold;
-      case 'lte': return value <= condition.threshold;
-      default: return false;
+      case 'gt':
+        return value > condition.threshold;
+      case 'lt':
+        return value < condition.threshold;
+      case 'eq':
+        return value === condition.threshold;
+      case 'gte':
+        return value >= condition.threshold;
+      case 'lte':
+        return value <= condition.threshold;
+      default:
+        return false;
     }
   }
 }
@@ -609,7 +616,10 @@ const defaultConfig: MonitoringConfig = {
 };
 
 export class MonitoringServiceError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(
+    public readonly code: string,
+    message: string
+  ) {
     super(message);
     this.name = 'MonitoringServiceError';
   }

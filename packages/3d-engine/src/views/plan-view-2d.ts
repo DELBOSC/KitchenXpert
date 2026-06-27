@@ -118,11 +118,7 @@ export class PlanView2D {
   /**
    * Refresh outlines when objects change (re-generates plan overlays).
    */
-  refresh(
-    roomWidth: number,
-    roomDepth: number,
-    objects: Map<string, THREE.Object3D>
-  ): void {
+  refresh(roomWidth: number, roomDepth: number, objects: Map<string, THREE.Object3D>): void {
     if (!this.active) {
       return;
     }
@@ -186,14 +182,7 @@ export class PlanView2D {
       hasWalls = true;
 
       const box = new THREE.Box3().setFromObject(obj);
-      this.drawRectangleOutline(
-        box.min.x,
-        box.min.z,
-        box.max.x,
-        box.max.z,
-        planY,
-        0xffffff
-      );
+      this.drawRectangleOutline(box.min.x, box.min.z, box.max.x, box.max.z, planY, 0xffffff);
     }
 
     // If no wall objects found, draw a default room outline
@@ -205,10 +194,7 @@ export class PlanView2D {
   /**
    * Draws bounding boxes projected to XZ for furniture objects.
    */
-  private drawFurnitureOutlines(
-    objects: Map<string, THREE.Object3D>,
-    planY: number
-  ): void {
+  private drawFurnitureOutlines(objects: Map<string, THREE.Object3D>, planY: number): void {
     for (const [, obj] of objects) {
       const objType = obj.userData.type as string | undefined;
       if (objType === 'wall' || objType === 'floor') {
@@ -220,14 +206,7 @@ export class PlanView2D {
         continue;
       }
 
-      this.drawRectangleOutline(
-        box.min.x,
-        box.min.z,
-        box.max.x,
-        box.max.z,
-        planY + 0.01,
-        0x4488ff
-      );
+      this.drawRectangleOutline(box.min.x, box.min.z, box.max.x, box.max.z, planY + 0.01, 0x4488ff);
     }
   }
 
@@ -244,13 +223,33 @@ export class PlanView2D {
   ): void {
     const vertices = new Float32Array([
       // Bottom edge
-      minX, y, minZ, maxX, y, minZ,
+      minX,
+      y,
+      minZ,
+      maxX,
+      y,
+      minZ,
       // Right edge
-      maxX, y, minZ, maxX, y, maxZ,
+      maxX,
+      y,
+      minZ,
+      maxX,
+      y,
+      maxZ,
       // Top edge
-      maxX, y, maxZ, minX, y, maxZ,
+      maxX,
+      y,
+      maxZ,
+      minX,
+      y,
+      maxZ,
       // Left edge
-      minX, y, maxZ, minX, y, minZ,
+      minX,
+      y,
+      maxZ,
+      minX,
+      y,
+      minZ,
     ]);
 
     const geometry = new THREE.BufferGeometry();
@@ -269,11 +268,7 @@ export class PlanView2D {
    * Draws room dimension annotation lines with text sprites
    * showing width and depth in meters.
    */
-  private drawRoomDimensions(
-    roomWidth: number,
-    roomDepth: number,
-    planY: number
-  ): void {
+  private drawRoomDimensions(roomWidth: number, roomDepth: number, planY: number): void {
     const offset = 0.4; // Offset from room edge for annotation lines
 
     // Width annotation (along X axis, below the room)
@@ -302,11 +297,7 @@ export class PlanView2D {
   /**
    * Draws an annotation line with end caps and a label sprite at the midpoint.
    */
-  private drawAnnotationLine(
-    start: THREE.Vector3,
-    end: THREE.Vector3,
-    text: string
-  ): void {
+  private drawAnnotationLine(start: THREE.Vector3, end: THREE.Vector3, text: string): void {
     // Main line
     const lineGeom = new THREE.BufferGeometry().setFromPoints([start, end]);
     const lineMat = new THREE.LineBasicMaterial({ color: 0xffcc00, linewidth: 1 });
@@ -328,11 +319,7 @@ export class PlanView2D {
   /**
    * Draws a small perpendicular end cap line at a point.
    */
-  private drawEndCap(
-    point: THREE.Vector3,
-    lineStart: THREE.Vector3,
-    lineEnd: THREE.Vector3
-  ): void {
+  private drawEndCap(point: THREE.Vector3, lineStart: THREE.Vector3, lineEnd: THREE.Vector3): void {
     const dir = lineEnd.clone().sub(lineStart).normalize();
     const perp = new THREE.Vector3(-dir.z, 0, dir.x);
     if (perp.lengthSq() === 0) {

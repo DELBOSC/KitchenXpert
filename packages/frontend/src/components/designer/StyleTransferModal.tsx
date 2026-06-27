@@ -77,18 +77,38 @@ function hexToHSL(hex: string): { h: number; s: number; l: number } {
 }
 
 function hexToColorName(hex: string): string {
-  if (!hex || hex.length < 4) {return '';}
+  if (!hex || hex.length < 4) {
+    return '';
+  }
   try {
     const { h, s, l } = hexToHSL(hex);
-    if (l > 90) {return 'Blanc';}
-    if (l < 10) {return 'Noir';}
-    if (s < 20) {return 'Gris';}
-    if (h < 30 || h >= 330) {return 'Rouge / Rose';}
-    if (h < 60) {return 'Orange / Beige';}
-    if (h < 90) {return 'Jaune';}
-    if (h < 150) {return 'Vert';}
-    if (h < 210) {return 'Cyan / Turquoise';}
-    if (h < 270) {return 'Bleu';}
+    if (l > 90) {
+      return 'Blanc';
+    }
+    if (l < 10) {
+      return 'Noir';
+    }
+    if (s < 20) {
+      return 'Gris';
+    }
+    if (h < 30 || h >= 330) {
+      return 'Rouge / Rose';
+    }
+    if (h < 60) {
+      return 'Orange / Beige';
+    }
+    if (h < 90) {
+      return 'Jaune';
+    }
+    if (h < 150) {
+      return 'Vert';
+    }
+    if (h < 210) {
+      return 'Cyan / Turquoise';
+    }
+    if (h < 270) {
+      return 'Bleu';
+    }
     return 'Violet / Mauve';
   } catch {
     return '';
@@ -121,12 +141,9 @@ function getMaterialStyle(materialName: string, primaryColor?: string): React.CS
     return { background: '#8B9090' };
   }
 
-  if (
-    ['stainless-steel', 'stainless', 'chrome', 'metal'].some((k) => name.includes(k))
-  ) {
+  if (['stainless-steel', 'stainless', 'chrome', 'metal'].some((k) => name.includes(k))) {
     return {
-      background:
-        'linear-gradient(180deg, #e8e8e8 0%, #c0c0c0 40%, #d8d8d8 60%, #e8e8e8 100%)',
+      background: 'linear-gradient(180deg, #e8e8e8 0%, #c0c0c0 40%, #d8d8d8 60%, #e8e8e8 100%)',
     };
   }
 
@@ -149,14 +166,22 @@ function getMaterialStyle(materialName: string, primaryColor?: string): React.CS
 // ----------------------------------------------------------------
 
 function confidenceLabel(confidence: number, t: (key: string, fallback: string) => string): string {
-  if (confidence >= 0.85) {return t('styleTransfer.confidenceHigh', 'High confidence');}
-  if (confidence >= 0.6) {return t('styleTransfer.confidenceMedium', 'Medium confidence');}
+  if (confidence >= 0.85) {
+    return t('styleTransfer.confidenceHigh', 'High confidence');
+  }
+  if (confidence >= 0.6) {
+    return t('styleTransfer.confidenceMedium', 'Medium confidence');
+  }
   return t('styleTransfer.confidenceLow', 'Low confidence');
 }
 
 function confidenceColor(confidence: number): string {
-  if (confidence >= 0.85) {return 'text-emerald-600 dark:text-emerald-400';}
-  if (confidence >= 0.6) {return 'text-yellow-600 dark:text-yellow-400';}
+  if (confidence >= 0.85) {
+    return 'text-emerald-600 dark:text-emerald-400';
+  }
+  if (confidence >= 0.6) {
+    return 'text-yellow-600 dark:text-yellow-400';
+  }
   return 'text-orange-600 dark:text-orange-400';
 }
 
@@ -243,7 +268,11 @@ interface MaterialThumbnailProps {
   primaryColor?: string;
 }
 
-function MaterialThumbnail({ label, value, primaryColor }: MaterialThumbnailProps): React.ReactElement {
+function MaterialThumbnail({
+  label,
+  value,
+  primaryColor,
+}: MaterialThumbnailProps): React.ReactElement {
   const style = getMaterialStyle(value, primaryColor);
 
   return (
@@ -336,9 +365,13 @@ export default function StyleTransferModal({
 
   // ── Escape key to close ──
   useEffect(() => {
-    if (!isOpen) {return;}
+    if (!isOpen) {
+      return;
+    }
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {onClose();}
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
@@ -347,19 +380,21 @@ export default function StyleTransferModal({
   // ── Cleanup preview URL on unmount ──
   useEffect(() => {
     return () => {
-      if (preview) {URL.revokeObjectURL(preview);}
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
     };
   }, [preview]);
 
   // ── Handlers: file mode ──
   const handleFileChange = useCallback(
     (selectedFile: File | null) => {
-      if (!selectedFile) {return;}
+      if (!selectedFile) {
+        return;
+      }
 
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(selectedFile.type)) {
-        setError(
-          t('styleTransfer.invalidFileType', 'Please upload a JPEG, PNG, or WebP image.'),
-        );
+        setError(t('styleTransfer.invalidFileType', 'Please upload a JPEG, PNG, or WebP image.'));
         return;
       }
 
@@ -371,10 +406,12 @@ export default function StyleTransferModal({
       setFile(selectedFile);
       setError(null);
 
-      if (preview) {URL.revokeObjectURL(preview);}
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
       setPreview(URL.createObjectURL(selectedFile));
     },
-    [preview, t],
+    [preview, t]
   );
 
   const handleDrop = useCallback(
@@ -383,12 +420,14 @@ export default function StyleTransferModal({
       const droppedFile = e.dataTransfer.files[0] || null;
       handleFileChange(droppedFile);
     },
-    [handleFileChange],
+    [handleFileChange]
   );
 
   // ── Handlers: URL mode ──
   const handleUrlPreview = useCallback(async () => {
-    if (!imageUrl.trim()) {return;}
+    if (!imageUrl.trim()) {
+      return;
+    }
 
     setUrlPreviewError(null);
     setUrlPreviewReady(false);
@@ -409,12 +448,14 @@ export default function StyleTransferModal({
 
       setUrlPreviewReady(true);
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {return;}
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return;
+      }
       setUrlPreviewError(
         t(
           'styleTransfer.urlInaccessible',
-          'URL inaccessible — essayez d\'uploader le fichier directement',
-        ),
+          "URL inaccessible — essayez d'uploader le fichier directement"
+        )
       );
     } finally {
       setUrlPreviewing(false);
@@ -438,8 +479,12 @@ export default function StyleTransferModal({
   // ── Handler: analyze ──
   const handleAnalyze = useCallback(async () => {
     const isFileMode = inputMode === 'file';
-    if (isFileMode && !file) {return;}
-    if (!isFileMode && !imageUrl.trim()) {return;}
+    if (isFileMode && !file) {
+      return;
+    }
+    if (!isFileMode && !imageUrl.trim()) {
+      return;
+    }
 
     setStep('analyzing');
     setError(null);
@@ -468,16 +513,13 @@ export default function StyleTransferModal({
         body = { imageUrl: imageUrl.trim() };
       }
 
-      const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.STYLE_TRANSFER.ANALYZE}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-          credentials: 'include',
-          signal: controller.signal,
-        },
-      );
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.STYLE_TRANSFER.ANALYZE}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        credentials: 'include',
+        signal: controller.signal,
+      });
 
       if (!response.ok) {
         const errorData: unknown = await response.json().catch(() => ({}));
@@ -489,9 +531,7 @@ export default function StyleTransferModal({
       setProgress(100);
 
       const extraction =
-        data !== null &&
-        typeof data === 'object' &&
-        'data' in data
+        data !== null && typeof data === 'object' && 'data' in data
           ? (data as { data: StyleExtraction }).data
           : (data as StyleExtraction);
 
@@ -506,8 +546,8 @@ export default function StyleTransferModal({
       setError(
         getErrorMessage(
           err,
-          t('styleTransfer.analyzeError', 'An error occurred during analysis. Please try again.'),
-        ),
+          t('styleTransfer.analyzeError', 'An error occurred during analysis. Please try again.')
+        )
       );
       setStep('upload');
     }
@@ -515,14 +555,27 @@ export default function StyleTransferModal({
 
   // ── Handler: apply (selective) ──
   const buildFilteredResult = useCallback((): StyleExtraction => {
-    if (!result) {throw new Error('No result');}
+    if (!result) {
+      throw new Error('No result');
+    }
     const filtered: Partial<StyleExtraction> = { ...result };
 
-    if (!applySelections.colors) {delete filtered.colorPalette;}
-    if (!applySelections.doorStyle) {delete filtered.doorStyle;}
-    if (!applySelections.handleStyle) {delete filtered.handleStyle;}
+    if (!applySelections.colors) {
+      delete filtered.colorPalette;
+    }
+    if (!applySelections.doorStyle) {
+      delete filtered.doorStyle;
+    }
+    if (!applySelections.handleStyle) {
+      delete filtered.handleStyle;
+    }
 
-    if (!applySelections.cabinetMaterial || !applySelections.countertop || !applySelections.backsplash || !applySelections.flooring) {
+    if (
+      !applySelections.cabinetMaterial ||
+      !applySelections.countertop ||
+      !applySelections.backsplash ||
+      !applySelections.flooring
+    ) {
       const originalMaterials = result.materials;
       const filteredMaterials: Partial<StyleExtraction['materials']> = { ...originalMaterials };
 
@@ -530,9 +583,15 @@ export default function StyleTransferModal({
         delete filteredMaterials.cabinetMaterial;
         delete filteredMaterials.cabinetFinish;
       }
-      if (!applySelections.countertop) {delete filteredMaterials.countertopMaterial;}
-      if (!applySelections.backsplash) {delete filteredMaterials.backsplashMaterial;}
-      if (!applySelections.flooring) {delete filteredMaterials.flooringMaterial;}
+      if (!applySelections.countertop) {
+        delete filteredMaterials.countertopMaterial;
+      }
+      if (!applySelections.backsplash) {
+        delete filteredMaterials.backsplashMaterial;
+      }
+      if (!applySelections.flooring) {
+        delete filteredMaterials.flooringMaterial;
+      }
 
       filtered.materials = filteredMaterials as StyleExtraction['materials'];
     }
@@ -541,7 +600,9 @@ export default function StyleTransferModal({
   }, [result, applySelections]);
 
   const handleApply = useCallback(() => {
-    if (!result) {return;}
+    if (!result) {
+      return;
+    }
     const filtered = buildFilteredResult();
     onApplyStyle(filtered);
     onClose();
@@ -552,28 +613,22 @@ export default function StyleTransferModal({
     onClose();
   }, [onClose]);
 
-  const handleToggleSelection = useCallback(
-    (key: keyof typeof applySelections) => {
-      setApplySelections((prev) => ({ ...prev, [key]: !prev[key] }));
-    },
-    [],
-  );
+  const handleToggleSelection = useCallback((key: keyof typeof applySelections) => {
+    setApplySelections((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   const canAnalyze =
-    (inputMode === 'file' && file !== null) ||
-    (inputMode === 'url' && imageUrl.trim().length > 0);
+    (inputMode === 'file' && file !== null) || (inputMode === 'url' && imageUrl.trim().length > 0);
 
   const primaryColor = result?.colorPalette.primary;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div
-        className="absolute inset-0"
-        aria-hidden="true"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0" aria-hidden="true" onClick={onClose} />
       <div
         ref={dialogRef}
         className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] flex flex-col overflow-hidden"
@@ -608,14 +663,13 @@ export default function StyleTransferModal({
 
         {/* ── Content ── */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
-
           {/* ════════════════ Upload Step ════════════════ */}
           {step === 'upload' && (
             <div className="space-y-4">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 {t(
                   'styleTransfer.description',
-                  'Upload a kitchen photo and our AI will analyze the style, colors, and materials to apply to your design.',
+                  'Upload a kitchen photo and our AI will analyze the style, colors, and materials to apply to your design.'
                 )}
               </p>
 
@@ -716,7 +770,7 @@ export default function StyleTransferModal({
                       onChange={(e) => handleUrlChange(e.target.value)}
                       placeholder="https://example.com/image.jpg"
                       className="flex-1 text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      aria-label={t('styleTransfer.urlInputLabel', 'URL de l\'image')}
+                      aria-label={t('styleTransfer.urlInputLabel', "URL de l'image")}
                     />
                     <button
                       onClick={handleUrlPreview}
@@ -739,15 +793,15 @@ export default function StyleTransferModal({
                     <div className="text-center space-y-2">
                       <img
                         src={imageUrl}
-                        alt={t('styleTransfer.urlPreviewAlt', 'Aperçu de l\'image')}
+                        alt={t('styleTransfer.urlPreviewAlt', "Aperçu de l'image")}
                         className="max-h-48 mx-auto rounded-lg object-cover border border-gray-200 dark:border-gray-600"
                         onError={() => {
                           setUrlPreviewReady(false);
                           setUrlPreviewError(
                             t(
                               'styleTransfer.urlInaccessible',
-                              'URL inaccessible — essayez d\'uploader le fichier directement',
-                            ),
+                              "URL inaccessible — essayez d'uploader le fichier directement"
+                            )
                           );
                         }}
                       />
@@ -804,7 +858,7 @@ export default function StyleTransferModal({
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   {t(
                     'styleTransfer.analyzingDesc',
-                    'Our AI is identifying style, colors, and materials',
+                    'Our AI is identifying style, colors, and materials'
                   )}
                 </p>
 
@@ -815,9 +869,7 @@ export default function StyleTransferModal({
                     style={{ width: `${Math.min(progress, 100)}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-gray-400">
-                  {Math.round(Math.min(progress, 100))}%
-                </p>
+                <p className="text-[10px] text-gray-400">{Math.round(Math.min(progress, 100))}%</p>
               </div>
 
               <button
@@ -858,10 +910,26 @@ export default function StyleTransferModal({
                   {t('styleTransfer.colorPalette', 'Color Palette')}
                 </h3>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <ColorSwatch name={t('styleTransfer.color.primary', 'Primary')} hex={result.colorPalette.primary} size="large" />
-                  <ColorSwatch name={t('styleTransfer.color.secondary', 'Secondary')} hex={result.colorPalette.secondary} size="large" />
-                  <ColorSwatch name={t('styleTransfer.color.accent', 'Accent')} hex={result.colorPalette.accent} size="small" />
-                  <ColorSwatch name={t('styleTransfer.color.neutral', 'Neutral')} hex={result.colorPalette.neutral} size="small" />
+                  <ColorSwatch
+                    name={t('styleTransfer.color.primary', 'Primary')}
+                    hex={result.colorPalette.primary}
+                    size="large"
+                  />
+                  <ColorSwatch
+                    name={t('styleTransfer.color.secondary', 'Secondary')}
+                    hex={result.colorPalette.secondary}
+                    size="large"
+                  />
+                  <ColorSwatch
+                    name={t('styleTransfer.color.accent', 'Accent')}
+                    hex={result.colorPalette.accent}
+                    size="small"
+                  />
+                  <ColorSwatch
+                    name={t('styleTransfer.color.neutral', 'Neutral')}
+                    hex={result.colorPalette.neutral}
+                    size="small"
+                  />
                 </div>
               </div>
 
@@ -979,19 +1047,31 @@ export default function StyleTransferModal({
                 <div className="grid grid-cols-2 gap-2">
                   {(
                     [
-                      { key: 'colors', label: t('styleTransfer.sel.colors', 'Palette de couleurs') },
-                      { key: 'cabinetMaterial', label: t('styleTransfer.sel.cabinet', 'Matériau façades') },
-                      { key: 'countertop', label: t('styleTransfer.sel.countertop', 'Plan de travail') },
+                      {
+                        key: 'colors',
+                        label: t('styleTransfer.sel.colors', 'Palette de couleurs'),
+                      },
+                      {
+                        key: 'cabinetMaterial',
+                        label: t('styleTransfer.sel.cabinet', 'Matériau façades'),
+                      },
+                      {
+                        key: 'countertop',
+                        label: t('styleTransfer.sel.countertop', 'Plan de travail'),
+                      },
                       { key: 'backsplash', label: t('styleTransfer.sel.backsplash', 'Crédence') },
                       { key: 'flooring', label: t('styleTransfer.sel.flooring', 'Sol') },
-                      { key: 'doorStyle', label: t('styleTransfer.sel.doorStyle', 'Style de porte') },
-                      { key: 'handleStyle', label: t('styleTransfer.sel.handleStyle', 'Style de poignée') },
+                      {
+                        key: 'doorStyle',
+                        label: t('styleTransfer.sel.doorStyle', 'Style de porte'),
+                      },
+                      {
+                        key: 'handleStyle',
+                        label: t('styleTransfer.sel.handleStyle', 'Style de poignée'),
+                      },
                     ] as { key: keyof typeof applySelections; label: string }[]
                   ).map(({ key, label }) => (
-                    <label
-                      key={key}
-                      className="flex items-center gap-2 cursor-pointer group"
-                    >
+                    <label key={key} className="flex items-center gap-2 cursor-pointer group">
                       <input
                         type="checkbox"
                         checked={applySelections[key]}

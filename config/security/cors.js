@@ -65,13 +65,7 @@ function getCorsOptions() {
       'Content-Language',
     ],
 
-    exposedHeaders: [
-      'X-Total-Count',
-      'X-Page-Count',
-      'X-Current-Page',
-      'X-Per-Page',
-      'Link',
-    ],
+    exposedHeaders: ['X-Total-Count', 'X-Page-Count', 'X-Current-Page', 'X-Per-Page', 'Link'],
 
     maxAge: config.security.cors.maxAge,
 

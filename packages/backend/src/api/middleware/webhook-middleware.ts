@@ -46,7 +46,8 @@ const RETRY_CONFIG = {
  * Calculate retry delay with exponential backoff + jitter
  */
 function calculateRetryDelay(attempt: number): number {
-  const baseDelay = RETRY_CONFIG.initialDelayMs * Math.pow(RETRY_CONFIG.backoffMultiplier, attempt - 1);
+  const baseDelay =
+    RETRY_CONFIG.initialDelayMs * Math.pow(RETRY_CONFIG.backoffMultiplier, attempt - 1);
   const cappedDelay = Math.min(baseDelay, RETRY_CONFIG.maxDelayMs);
   const jitter = cappedDelay * RETRY_CONFIG.jitter * Math.random();
   return Math.floor(cappedDelay + jitter);
@@ -61,9 +62,15 @@ function isRetryable(statusCode?: number, error?: Error): boolean {
   }
   if (error) {
     const code = (error as NodeJS.ErrnoException).code;
-    if (code && RETRY_CONFIG.retryableErrorCodes.has(code)) {return true;}
-    if (error.name === 'AbortError' || error.name === 'TimeoutError') {return true;}
-    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('timeout')) {return true;}
+    if (code && RETRY_CONFIG.retryableErrorCodes.has(code)) {
+      return true;
+    }
+    if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      return true;
+    }
+    if (error.message?.includes('ECONNREFUSED') || error.message?.includes('timeout')) {
+      return true;
+    }
   }
   return false;
 }
@@ -72,7 +79,7 @@ function isRetryable(statusCode?: number, error?: Error): boolean {
  * Sleep helper
  */
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // ==================== SIGNATURE ====================
@@ -82,7 +89,10 @@ function sleep(ms: number): Promise<void> {
  *   message = `${unixTimestamp}.${payloadJSON}`
  *   signature = `sha256=` + hex(HMAC-SHA256(secret, message))
  */
-export function generateWebhookSignature(payload: unknown, secret: string): { signature: string; timestamp: string } {
+export function generateWebhookSignature(
+  payload: unknown,
+  secret: string
+): { signature: string; timestamp: string } {
   const timestamp = Math.floor(Date.now() / 1000).toString();
   const payloadString = typeof payload === 'string' ? payload : JSON.stringify(payload);
   const signature = `sha256=${crypto
@@ -110,7 +120,7 @@ function verifySignature(
   const expectedVariants = [`sha256=${rawHex}`, rawHex];
 
   try {
-    return expectedVariants.some(expected =>
+    return expectedVariants.some((expected) =>
       crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
     );
   } catch {
@@ -132,7 +142,11 @@ function verifyTimestamp(timestamp: string): boolean {
 /**
  * Verify incoming webhook request
  */
-export function verifyWebhook(options?: { secretHeader?: string; signatureHeader?: string; timestampHeader?: string }) {
+export function verifyWebhook(options?: {
+  secretHeader?: string;
+  signatureHeader?: string;
+  timestampHeader?: string;
+}) {
   const secretHeader = options?.secretHeader || 'X-Webhook-Secret';
   const signatureHeader = options?.signatureHeader || 'X-Webhook-Signature';
   const timestampHeader = options?.timestampHeader || 'X-Webhook-Timestamp';
@@ -359,7 +373,7 @@ export async function sendWebhook(
       'X-Webhook-ID': webhookId,
       'X-Webhook-Event': eventType,
       'User-Agent': 'KitchenXpert-Webhooks/1.0',
-      ...(webhook.headers as Record<string, string> || {}),
+      ...((webhook.headers as Record<string, string>) || {}),
     };
 
     try {
@@ -534,9 +548,13 @@ async function checkSuspension(webhookId: string): Promise<void> {
       select: { deliveredAt: true, failedAt: true },
     });
 
-    if (recentEvents.length < 5) {return;}
+    if (recentEvents.length < 5) {
+      return;
+    }
 
-    const failedCount = recentEvents.filter(e => e.failedAt !== null && e.deliveredAt === null).length;
+    const failedCount = recentEvents.filter(
+      (e) => e.failedAt !== null && e.deliveredAt === null
+    ).length;
     const failureRate = failedCount / recentEvents.length;
 
     if (failureRate > 0.8) {
@@ -545,7 +563,9 @@ async function checkSuspension(webhookId: string): Promise<void> {
         data: { isActive: false },
       });
 
-      logger.warn(`[Webhook] Auto-suspended webhook ${webhookId} due to ${(failureRate * 100).toFixed(0)}% failure rate`);
+      logger.warn(
+        `[Webhook] Auto-suspended webhook ${webhookId} due to ${(failureRate * 100).toFixed(0)}% failure rate`
+      );
     }
   } catch (error) {
     logger.error(`[Webhook] Failed to check suspension for ${webhookId}`, { error });
@@ -565,9 +585,7 @@ export async function triggerWebhooks(
       where: {
         isActive: true,
         ...(partnerId && { partnerId }),
-        OR: [
-          { events: { has: eventType as WebhookEventType } },
-        ],
+        OR: [{ events: { has: eventType as WebhookEventType } }],
       },
     });
 
@@ -576,7 +594,7 @@ export async function triggerWebhooks(
 
     // Dispatch in parallel (each webhook has its own retry loop)
     const results = await Promise.allSettled(
-      webhooks.map(webhook => sendWebhook(webhook.id, eventType, payload))
+      webhooks.map((webhook) => sendWebhook(webhook.id, eventType, payload))
     );
 
     for (const result of results) {

@@ -1,7 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { bootAnalyticsFromConsent, loadPlausible, unloadPlausible } from './analytics/plausible-loader';
+import {
+  bootAnalyticsFromConsent,
+  loadPlausible,
+  unloadPlausible,
+} from './analytics/plausible-loader';
 import App from './App';
 import './index.css';
 
@@ -12,14 +16,19 @@ bootAnalyticsFromConsent();
 // CookieConsent dispatches `kx:consent-changed` with the new state.
 window.addEventListener('kx:consent-changed', (e) => {
   const detail = (e as CustomEvent<{ analytics?: boolean }>).detail;
-  if (detail?.analytics) {loadPlausible();}
-  else {unloadPlausible();}
+  if (detail?.analytics) {
+    loadPlausible();
+  } else {
+    unloadPlausible();
+  }
 });
 
 const container = document.getElementById('root');
 
 if (!container) {
-  throw new Error('Root element not found. Make sure there is a <div id="root"></div> in your HTML.');
+  throw new Error(
+    'Root element not found. Make sure there is a <div id="root"></div> in your HTML.'
+  );
 }
 
 const root = createRoot(container);

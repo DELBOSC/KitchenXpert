@@ -29,14 +29,18 @@ const hasDocker = async (): Promise<boolean> => {
 const describeIf = (cond: boolean): jest.Describe => (cond ? describe : describe.skip);
 
 let dockerAvailable = false;
-beforeAll(async () => { dockerAvailable = await hasDocker(); });
+beforeAll(async () => {
+  dockerAvailable = await hasDocker();
+});
 
 describeIf(true)('RegisterUseCase (integration)', () => {
   let prisma: PrismaClient;
   let stop: (() => Promise<void>) | null = null;
 
   beforeAll(async () => {
-    if (!dockerAvailable) {return;}
+    if (!dockerAvailable) {
+      return;
+    }
     // Lazily require testcontainers so the file type-checks without the dep.
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PostgreSqlContainer } = require('testcontainers/modules/postgresql') as {
@@ -57,7 +61,9 @@ describeIf(true)('RegisterUseCase (integration)', () => {
     // the container's URL before invoking jest. This test stays behind a
     // DATABASE_URL env check.
     if (!process.env.DATABASE_URL) {
-      console.warn('Skipping integration tests — set DATABASE_URL and run prisma migrate deploy first.');
+      console.warn(
+        'Skipping integration tests — set DATABASE_URL and run prisma migrate deploy first.'
+      );
       return;
     }
   }, 60_000);
@@ -71,13 +77,16 @@ describeIf(true)('RegisterUseCase (integration)', () => {
     const result = RegisterSchema.safeParse({
       email: 'a@b.co',
       password: 'short',
-      firstName: 'A', lastName: 'B',
+      firstName: 'A',
+      lastName: 'B',
     });
     expect(result.success).toBe(false);
   });
 
   it('registers a new user atomically and issues a verification token', async () => {
-    if (!prisma || !process.env.DATABASE_URL) {return;}
+    if (!prisma || !process.env.DATABASE_URL) {
+      return;
+    }
     const useCase = new RegisterUseCase(prisma);
     const out = await useCase.execute({
       email: `t-${Date.now()}@example.com`,
@@ -88,7 +97,9 @@ describeIf(true)('RegisterUseCase (integration)', () => {
       timezone: 'Europe/Paris',
     });
     expect(out.ok).toBe(true);
-    if (!out.ok) {return;}
+    if (!out.ok) {
+      return;
+    }
     expect(out.value.user.email).toMatch(/@example\.com$/);
     expect(out.value.verificationToken).toHaveLength(64);
 
@@ -99,7 +110,9 @@ describeIf(true)('RegisterUseCase (integration)', () => {
   });
 
   it('rejects duplicate email with a CONFLICT domain error', async () => {
-    if (!prisma || !process.env.DATABASE_URL) {return;}
+    if (!prisma || !process.env.DATABASE_URL) {
+      return;
+    }
     const useCase = new RegisterUseCase(prisma);
     const email = `dup-${Date.now()}@example.com`;
     const base = { email, password: 'Test1234!', firstName: 'A', lastName: 'B' };
@@ -108,7 +121,9 @@ describeIf(true)('RegisterUseCase (integration)', () => {
     const second = await useCase.execute(base);
 
     expect(second.ok).toBe(false);
-    if (second.ok) {return;}
+    if (second.ok) {
+      return;
+    }
     expect(second.error.code).toBe('CONFLICT');
     expect(second.error.detail).toBe('EMAIL_TAKEN');
   });

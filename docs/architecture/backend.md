@@ -19,7 +19,10 @@
 
 ## Overview
 
-The KitchenXpert backend is built on Node.js with Express.js, following a modular, domain-driven architecture. It integrates multiple databases (PostgreSQL, MongoDB, Redis) for different use cases and employs a robust middleware stack for security, performance, and observability.
+The KitchenXpert backend is built on Node.js with Express.js, following a
+modular, domain-driven architecture. It integrates multiple databases
+(PostgreSQL, MongoDB, Redis) for different use cases and employs a robust
+middleware stack for security, performance, and observability.
 
 ```mermaid
 graph TB
@@ -92,9 +95,9 @@ backend/
 
 **Controllers**: Handle HTTP requests/responses, input validation, call services
 **Services**: Implement business logic, orchestrate repositories
-**Repositories**: Data access abstraction, database queries
-**Models**: Database schema definitions
-**Middleware**: Cross-cutting concerns (auth, logging, security)
+**Repositories**: Data access abstraction, database queries **Models**: Database
+schema definitions **Middleware**: Cross-cutting concerns (auth, logging,
+security)
 
 ## Middleware Stack
 
@@ -116,26 +119,30 @@ const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 
 // 1. CORS Configuration - Must be first to handle preflight
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS.split(','),
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-  exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining']
-}));
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS.split(','),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+    exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+  })
+);
 
 // 2. Helmet Security Headers
-app.use(helmet({
-  contentSecurityPolicy: false, // Handled separately
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  },
-  frameguard: { action: 'deny' },
-  noSniff: true,
-  referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Handled separately
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    frameguard: { action: 'deny' },
+    noSniff: true,
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  })
+);
 
 // 3. Rate Limiter (Redis-backed)
 app.use(rateLimiter.global); // Global 1000 req/hour
@@ -151,10 +158,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // 7. Compression (gzip/brotli)
-app.use(compression({
-  threshold: 1024, // Only compress > 1KB
-  level: 6 // Balance between speed and compression
-}));
+app.use(
+  compression({
+    threshold: 1024, // Only compress > 1KB
+    level: 6, // Balance between speed and compression
+  })
+);
 
 // 8. Request Logging (Winston)
 app.use(requestLogger);
@@ -179,13 +188,13 @@ app.use(errorHandler);
 module.exports = {
   development: {
     origin: ['http://localhost:3000', 'http://localhost:5173'],
-    credentials: true
+    credentials: true,
   },
   production: {
     origin: process.env.ALLOWED_ORIGINS.split(','),
     credentials: true,
-    maxAge: 86400 // Cache preflight for 24 hours
-  }
+    maxAge: 86400, // Cache preflight for 24 hours
+  },
 };
 ```
 
@@ -199,7 +208,7 @@ const Redis = require('ioredis');
 const redisClient = new Redis({
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
-  enableOfflineQueue: false
+  enableOfflineQueue: false,
 });
 
 // Global rate limiter
@@ -208,7 +217,7 @@ const globalLimiter = new RateLimiterRedis({
   keyPrefix: 'rl:global',
   points: 1000, // Requests
   duration: 3600, // Per hour
-  blockDuration: 600 // Block for 10 minutes if exceeded
+  blockDuration: 600, // Block for 10 minutes if exceeded
 });
 
 // Per-endpoint limiters
@@ -217,7 +226,7 @@ const authLimiter = new RateLimiterRedis({
   keyPrefix: 'rl:auth',
   points: 5, // 5 attempts
   duration: 60, // Per minute
-  blockDuration: 900 // Block for 15 minutes
+  blockDuration: 900, // Block for 15 minutes
 });
 
 const apiLimiter = new RateLimiterRedis({
@@ -225,7 +234,7 @@ const apiLimiter = new RateLimiterRedis({
   keyPrefix: 'rl:api',
   points: 100,
   duration: 60,
-  blockDuration: 300
+  blockDuration: 300,
 });
 
 const rateLimiterMiddleware = (limiter) => async (req, res, next) => {
@@ -235,13 +244,16 @@ const rateLimiterMiddleware = (limiter) => async (req, res, next) => {
 
     res.setHeader('X-RateLimit-Limit', limiter.points);
     res.setHeader('X-RateLimit-Remaining', rateLimiterRes.remainingPoints);
-    res.setHeader('X-RateLimit-Reset', new Date(Date.now() + rateLimiterRes.msBeforeNext));
+    res.setHeader(
+      'X-RateLimit-Reset',
+      new Date(Date.now() + rateLimiterRes.msBeforeNext)
+    );
 
     next();
   } catch (rejRes) {
     res.status(429).json({
       error: 'Too Many Requests',
-      retryAfter: Math.ceil(rejRes.msBeforeNext / 1000)
+      retryAfter: Math.ceil(rejRes.msBeforeNext / 1000),
     });
   }
 };
@@ -249,7 +261,7 @@ const rateLimiterMiddleware = (limiter) => async (req, res, next) => {
 module.exports = {
   global: rateLimiterMiddleware(globalLimiter),
   auth: rateLimiterMiddleware(authLimiter),
-  api: rateLimiterMiddleware(apiLimiter)
+  api: rateLimiterMiddleware(apiLimiter),
 };
 ```
 
@@ -272,7 +284,7 @@ module.exports = (req, res, next) => {
     method: req.method,
     url: req.url,
     ip: req.ip,
-    userAgent: req.get('user-agent')
+    userAgent: req.get('user-agent'),
   });
 
   // Capture response
@@ -285,7 +297,7 @@ module.exports = (req, res, next) => {
       method: req.method,
       url: req.url,
       statusCode: res.statusCode,
-      duration
+      duration,
     });
 
     originalSend.call(this, data);
@@ -347,14 +359,16 @@ router.get('/designs/:id', kitchenController.getDesign);
 router.post('/designs', validateDesign, kitchenController.createDesign);
 
 // Update design
-router.put('/designs/:id',
+router.put(
+  '/designs/:id',
   checkPermission('design:update'),
   validateDesign,
   kitchenController.updateDesign
 );
 
 // Delete design
-router.delete('/designs/:id',
+router.delete(
+  '/designs/:id',
   checkPermission('design:delete'),
   kitchenController.deleteDesign
 );
@@ -389,13 +403,16 @@ const AppDataSource = new DataSource({
   entities: ['src/models/postgres/**/*.js'],
   migrations: ['src/migrations/**/*.js'],
   subscribers: ['src/subscribers/**/*.js'],
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl:
+    process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false,
   poolSize: 20,
   extra: {
     max: 20,
     connectionTimeoutMillis: 5000,
-    idleTimeoutMillis: 30000
-  }
+    idleTimeoutMillis: 30000,
+  },
 });
 
 module.exports = { AppDataSource };
@@ -414,47 +431,44 @@ module.exports = new EntitySchema({
     id: {
       type: 'uuid',
       primary: true,
-      generated: 'uuid'
+      generated: 'uuid',
     },
     email: {
       type: 'varchar',
       unique: true,
-      nullable: false
+      nullable: false,
     },
     passwordHash: {
       type: 'varchar',
-      nullable: true // Null for OAuth users
+      nullable: true, // Null for OAuth users
     },
     firstName: {
       type: 'varchar',
-      nullable: false
+      nullable: false,
     },
     lastName: {
       type: 'varchar',
-      nullable: false
+      nullable: false,
     },
     role: {
       type: 'enum',
       enum: ['customer', 'partner', 'admin'],
-      default: 'customer'
+      default: 'customer',
     },
     emailVerified: {
       type: 'boolean',
-      default: false
+      default: false,
     },
     createdAt: {
       type: 'timestamp',
-      createDate: true
+      createDate: true,
     },
     updatedAt: {
       type: 'timestamp',
-      updateDate: true
-    }
+      updateDate: true,
+    },
   },
-  indices: [
-    { columns: ['email'] },
-    { columns: ['role'] }
-  ]
+  indices: [{ columns: ['email'] }, { columns: ['role'] }],
 });
 ```
 
@@ -472,7 +486,7 @@ const connectMongoDB = async () => {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-      family: 4
+      family: 4,
     });
 
     console.log('MongoDB connected successfully');
@@ -491,52 +505,55 @@ module.exports = { connectMongoDB };
 // models/mongo/Design.js
 const mongoose = require('mongoose');
 
-const designSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-    index: true
+const designSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    description: String,
+    dimensions: {
+      width: Number,
+      height: Number,
+      depth: Number,
+    },
+    layout: {
+      walls: [Object],
+      appliances: [Object],
+      cabinets: [Object],
+      countertops: [Object],
+    },
+    style: {
+      type: String,
+      enum: ['modern', 'traditional', 'contemporary', 'rustic', 'industrial'],
+    },
+    aiGenerated: {
+      type: Boolean,
+      default: false,
+    },
+    aiSuggestionId: String,
+    thumbnail: String,
+    tags: [String],
+    shared: {
+      type: Boolean,
+      default: false,
+    },
+    shareToken: String,
+    version: {
+      type: Number,
+      default: 1,
+    },
   },
-  name: {
-    type: String,
-    required: true
-  },
-  description: String,
-  dimensions: {
-    width: Number,
-    height: Number,
-    depth: Number
-  },
-  layout: {
-    walls: [Object],
-    appliances: [Object],
-    cabinets: [Object],
-    countertops: [Object]
-  },
-  style: {
-    type: String,
-    enum: ['modern', 'traditional', 'contemporary', 'rustic', 'industrial']
-  },
-  aiGenerated: {
-    type: Boolean,
-    default: false
-  },
-  aiSuggestionId: String,
-  thumbnail: String,
-  tags: [String],
-  shared: {
-    type: Boolean,
-    default: false
-  },
-  shareToken: String,
-  version: {
-    type: Number,
-    default: 1
+  {
+    timestamps: true,
+    collection: 'designs',
   }
-}, {
-  timestamps: true,
-  collection: 'designs'
-});
+);
 
 designSchema.index({ userId: 1, createdAt: -1 });
 designSchema.index({ tags: 1 });
@@ -562,7 +579,7 @@ const redisClient = new Redis({
     const delay = Math.min(times * 50, 2000);
     return delay;
   },
-  maxRetriesPerRequest: 3
+  maxRetriesPerRequest: 3,
 });
 
 redisClient.on('connect', () => {
@@ -618,7 +635,7 @@ class AuthService {
       {
         id: user.id,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: '15m' }
@@ -626,11 +643,9 @@ class AuthService {
   }
 
   generateRefreshToken(user) {
-    return jwt.sign(
-      { id: user.id },
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '7d' }
-    );
+    return jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, {
+      expiresIn: '7d',
+    });
   }
 
   async refreshAccessToken(refreshToken) {
@@ -670,7 +685,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 async function verifyGoogleToken(token) {
   const ticket = await client.verifyIdToken({
     idToken: token,
-    audience: process.env.GOOGLE_CLIENT_ID
+    audience: process.env.GOOGLE_CLIENT_ID,
   });
 
   const payload = ticket.getPayload();
@@ -680,7 +695,7 @@ async function verifyGoogleToken(token) {
     lastName: payload.family_name,
     emailVerified: payload.email_verified,
     provider: 'google',
-    providerId: payload.sub
+    providerId: payload.sub,
   };
 }
 
@@ -699,7 +714,7 @@ const permissions = {
     'design:delete:own',
     'catalog:read',
     'order:create:own',
-    'order:read:own'
+    'order:read:own',
   ],
   partner: [
     'design:read:own',
@@ -711,7 +726,7 @@ const permissions = {
     'catalog:update:own',
     'catalog:delete:own',
     'partner:read:own',
-    'partner:update:own'
+    'partner:update:own',
   ],
   admin: [
     'design:read:all',
@@ -726,8 +741,8 @@ const permissions = {
     'user:delete:all',
     'partner:read:all',
     'partner:update:all',
-    'partner:delete:all'
-  ]
+    'partner:delete:all',
+  ],
 };
 
 const checkPermission = (requiredPermission) => {
@@ -736,9 +751,13 @@ const checkPermission = (requiredPermission) => {
     const userPermissions = permissions[userRole] || [];
 
     // Check exact permission or wildcard
-    const hasPermission = userPermissions.some(perm => {
+    const hasPermission = userPermissions.some((perm) => {
       if (perm === requiredPermission) return true;
-      if (perm.endsWith(':all') && requiredPermission.startsWith(perm.split(':')[0])) return true;
+      if (
+        perm.endsWith(':all') &&
+        requiredPermission.startsWith(perm.split(':')[0])
+      )
+        return true;
       return false;
     });
 
@@ -825,13 +844,13 @@ const errorHandler = (err, req, res, next) => {
     error: {
       message: err.message,
       stack: err.stack,
-      statusCode
+      statusCode,
     },
     request: {
       method: req.method,
       url: req.url,
-      ip: req.ip
-    }
+      ip: req.ip,
+    },
   });
 
   // Don't leak error details in production
@@ -843,8 +862,8 @@ const errorHandler = (err, req, res, next) => {
     error: {
       message,
       statusCode,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-    }
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    },
   });
 };
 
@@ -854,7 +873,7 @@ module.exports = {
   UnauthorizedError,
   ForbiddenError,
   NotFoundError,
-  errorHandler
+  errorHandler,
 };
 ```
 
@@ -882,7 +901,7 @@ const transports = [
       winston.format.printf(({ timestamp, level, message, ...meta }) => {
         return `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`;
       })
-    )
+    ),
   }),
 
   // File transports
@@ -890,13 +909,13 @@ const transports = [
     filename: 'logs/error.log',
     level: 'error',
     maxsize: 10485760, // 10MB
-    maxFiles: 10
+    maxFiles: 10,
   }),
   new winston.transports.File({
     filename: 'logs/combined.log',
     maxsize: 10485760,
-    maxFiles: 10
-  })
+    maxFiles: 10,
+  }),
 ];
 
 // Add Elasticsearch in production
@@ -908,10 +927,10 @@ if (process.env.NODE_ENV === 'production') {
         node: process.env.ELASTICSEARCH_URL,
         auth: {
           username: process.env.ELASTICSEARCH_USER,
-          password: process.env.ELASTICSEARCH_PASSWORD
-        }
+          password: process.env.ELASTICSEARCH_PASSWORD,
+        },
       },
-      index: 'kitchenxpert-logs'
+      index: 'kitchenxpert-logs',
     })
   );
 }
@@ -920,7 +939,7 @@ const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: logFormat,
   transports,
-  exitOnError: false
+  exitOnError: false,
 });
 
 module.exports = logger;
@@ -1031,8 +1050,8 @@ const redisConfig = {
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
-    password: process.env.REDIS_PASSWORD
-  }
+    password: process.env.REDIS_PASSWORD,
+  },
 };
 
 // Queue definitions
@@ -1063,7 +1082,8 @@ webhookQueue.process(async (job) => {
 });
 
 // AI processing queue
-aiProcessingQueue.process(5, async (job) => { // 5 concurrent jobs
+aiProcessingQueue.process(5, async (job) => {
+  // 5 concurrent jobs
   const { userId, designId, params } = job.data;
 
   const result = await aiService.generateDesign(params);
@@ -1080,7 +1100,7 @@ module.exports = {
   emailQueue,
   webhookQueue,
   aiProcessingQueue,
-  catalogSyncQueue
+  catalogSyncQueue,
 };
 ```
 
@@ -1092,30 +1112,36 @@ const jobOptions = {
   attempts: 3,
   backoff: {
     type: 'exponential',
-    delay: 2000
+    delay: 2000,
   },
   removeOnComplete: true,
-  removeOnFail: false
+  removeOnFail: false,
 };
 
 // Add job
-await emailQueue.add({
-  to: 'user@example.com',
-  subject: 'Welcome to KitchenXpert',
-  template: 'welcome',
-  data: { name: 'John' }
-}, jobOptions);
+await emailQueue.add(
+  {
+    to: 'user@example.com',
+    subject: 'Welcome to KitchenXpert',
+    template: 'welcome',
+    data: { name: 'John' },
+  },
+  jobOptions
+);
 ```
 
 ## Best Practices
 
-1. **Error Handling**: Always use custom error classes for better error categorization
-2. **Validation**: Validate all inputs at the route level using validation middleware
+1. **Error Handling**: Always use custom error classes for better error
+   categorization
+2. **Validation**: Validate all inputs at the route level using validation
+   middleware
 3. **Database Queries**: Use repository pattern for abstraction and testability
 4. **Caching**: Implement cache-aside pattern with proper invalidation
 5. **Logging**: Include request IDs for tracing requests across services
 6. **Security**: Never trust user input, always sanitize and validate
-7. **Performance**: Use database indexes, connection pooling, and query optimization
+7. **Performance**: Use database indexes, connection pooling, and query
+   optimization
 8. **Testing**: Write unit tests for services, integration tests for routes
 9. **Documentation**: Keep API documentation up-to-date with OpenAPI/Swagger
 10. **Monitoring**: Track performance metrics, error rates, and resource usage

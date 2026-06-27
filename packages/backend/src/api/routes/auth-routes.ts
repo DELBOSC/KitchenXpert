@@ -5,7 +5,11 @@ import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
 import { authController } from '../controllers/auth-controller';
 import { authenticate } from '../middleware/auth-middleware';
-import { loginRateLimiter, authRateLimiter, passwordResetRateLimiter } from '../middleware/rate-limit-middleware';
+import {
+  loginRateLimiter,
+  authRateLimiter,
+  passwordResetRateLimiter,
+} from '../middleware/rate-limit-middleware';
 import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';
 
 const router: IRouter = Router();
@@ -52,7 +56,7 @@ if (process.env.NODE_ENV !== 'production') {
       } catch {
         res.status(404).json({ success: false, error: 'User not found' });
       }
-    },
+    }
   );
 }
 
@@ -323,7 +327,11 @@ router.post('/verify-email/:token', validateParams(tokenParamSchema), authContro
  *       404:
  *         description: Token not found
  */
-router.get('/verify-email/:token/info', validateParams(tokenParamSchema), authController.getVerificationTokenInfo);
+router.get(
+  '/verify-email/:token/info',
+  validateParams(tokenParamSchema),
+  authController.getVerificationTokenInfo
+);
 
 // ==================== PROTECTED ROUTES ====================
 

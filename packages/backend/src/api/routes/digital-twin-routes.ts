@@ -110,6 +110,10 @@ router.put('/:kitchenId/sync', validateParams(kitchenIdParam), digitalTwinContro
  *       404:
  *         description: Twin not found
  */
-router.get('/:kitchenId/maintenance', validateParams(kitchenIdParam), digitalTwinController.getMaintenanceSchedule);
+router.get(
+  '/:kitchenId/maintenance',
+  validateParams(kitchenIdParam),
+  digitalTwinController.getMaintenanceSchedule
+);
 
 export default router;

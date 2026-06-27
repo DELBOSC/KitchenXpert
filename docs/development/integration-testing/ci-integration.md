@@ -14,7 +14,8 @@
 
 ## Overview
 
-Continuous Integration (CI) automates testing and deployment for KitchenXpert. We use GitHub Actions to run tests on every push and pull request.
+Continuous Integration (CI) automates testing and deployment for KitchenXpert.
+We use GitHub Actions to run tests on every push and pull request.
 
 ## GitHub Actions Workflows
 
@@ -68,9 +69,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: kitchenxpert_test
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
         ports:
           - 5432:5432
@@ -211,9 +210,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: kitchenxpert_test
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
         ports:
           - 5432:5432
@@ -311,9 +308,7 @@ test-databases:
       env:
         POSTGRES_PASSWORD: postgres
       options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
+        --health-cmd pg_isready --health-interval 10s --health-timeout 5s
         --health-retries 5
       ports:
         - 5432:5432
@@ -358,7 +353,9 @@ e2e-tests-sharded:
       run: pnpm playwright install --with-deps
 
     - name: Run E2E tests
-      run: pnpm playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      run:
+        pnpm playwright test --shard=${{ matrix.shardIndex }}/${{
+        matrix.shardTotal }}
 
     - name: Upload blob report
       if: always()

@@ -29,13 +29,7 @@ export type FacadeMaterial =
   | 'fenix'
   | 'ceramic';
 
-export type FacadeFinish =
-  | 'matte'
-  | 'satin'
-  | 'gloss'
-  | 'super_matte'
-  | 'textured'
-  | 'soft_touch';
+export type FacadeFinish = 'matte' | 'satin' | 'gloss' | 'super_matte' | 'textured' | 'soft_touch';
 
 export type ColorCategory = 'neutral' | 'warm' | 'cool' | 'bold' | 'wood' | 'stone';
 
@@ -146,20 +140,21 @@ export interface FacadeSearchParams {
 /**
  * Material quality tiers
  */
-export const FACADE_MATERIAL_TIERS: Record<FacadeMaterial, 'entry' | 'mid' | 'premium' | 'luxury'> = {
-  melamine: 'entry',
-  laminate: 'entry',
-  pet: 'mid',
-  lacquer_matte: 'mid',
-  lacquer_satin: 'mid',
-  acrylic: 'mid',
-  lacquer_gloss: 'premium',
-  veneer: 'premium',
-  fenix: 'premium',
-  glass: 'premium',
-  solid_wood: 'luxury',
-  ceramic: 'luxury',
-};
+export const FACADE_MATERIAL_TIERS: Record<FacadeMaterial, 'entry' | 'mid' | 'premium' | 'luxury'> =
+  {
+    melamine: 'entry',
+    laminate: 'entry',
+    pet: 'mid',
+    lacquer_matte: 'mid',
+    lacquer_satin: 'mid',
+    acrylic: 'mid',
+    lacquer_gloss: 'premium',
+    veneer: 'premium',
+    fenix: 'premium',
+    glass: 'premium',
+    solid_wood: 'luxury',
+    ceramic: 'luxury',
+  };
 
 /**
  * Style descriptions for UI

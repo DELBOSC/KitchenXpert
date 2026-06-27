@@ -3,12 +3,7 @@
  * Main client for interacting with IKEA APIs
  */
 
-
-import {
-  IKEA_CLIENT_IDS,
-  IKEA_AUTH_SECRET,
-  IKEA_ENDPOINTS,
-} from './types';
+import { IKEA_CLIENT_IDS, IKEA_AUTH_SECRET, IKEA_ENDPOINTS } from './types';
 import {
   getDefaultHeaders,
   buildUrl,
@@ -47,7 +42,8 @@ export class IkeaClient {
       country: config.country,
       language: config.language,
       baseUrl: config.baseUrl || 'https://www.ikea.com',
-      userAgent: config.userAgent || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15',
+      userAgent:
+        config.userAgent || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15',
     };
   }
 
@@ -82,7 +78,7 @@ export class IkeaClient {
       throw new Error(`Auth failed: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json() as IkeaAuthResponse;
+    const data = (await response.json()) as IkeaAuthResponse;
 
     this.authToken = {
       accessToken: data.access_token,
@@ -91,7 +87,7 @@ export class IkeaClient {
     };
 
     // Set expiry time (token usually valid for 30 days)
-    this.tokenExpiry = Date.now() + (data.expires_in * 1000);
+    this.tokenExpiry = Date.now() + data.expires_in * 1000;
 
     return this.authToken;
   }
@@ -113,23 +109,20 @@ export class IkeaClient {
    */
   async search(params: SearchParams): Promise<ApiResponse<SearchResponse>> {
     try {
-      const url = buildUrl(
-        IKEA_ENDPOINTS.search(this.config.country, this.config.language),
-        {
-          q: params.query,
-          size: params.limit || 24,
-          types: params.types || ['PRODUCT'],
-          autocorrect: params.autocorrect !== false,
-          c: 'sr', // search results
-          v: 20210322,
-        }
-      );
+      const url = buildUrl(IKEA_ENDPOINTS.search(this.config.country, this.config.language), {
+        q: params.query,
+        size: params.limit || 24,
+        types: params.types || ['PRODUCT'],
+        autocorrect: params.autocorrect !== false,
+        c: 'sr', // search results
+        v: 20210322,
+      });
 
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           ...getDefaultHeaders(this.config.language),
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
       });
 
@@ -198,9 +191,10 @@ export class IkeaClient {
                     url: mainProduct.pipUrl as string | undefined,
                     rating: mainProduct.ratingValue as number | undefined,
                     reviewCount: mainProduct.ratingCount as number | undefined,
-                    dimensions: (dims.width || dims.depth || dims.height)
-                      ? { width: dims.width, depth: dims.depth, height: dims.height, unit: 'cm' }
-                      : undefined,
+                    dimensions:
+                      dims.width || dims.depth || dims.height
+                        ? { width: dims.width, depth: dims.depth, height: dims.height, unit: 'cm' }
+                        : undefined,
                   });
                 }
               }
@@ -236,13 +230,10 @@ export class IkeaClient {
         };
       }
 
-      const url = buildUrl(
-        IKEA_ENDPOINTS.stock(this.config.country),
-        {
-          itemNos: formatted.replace(/\./g, ''),
-          expand: 'StoresList,Restocks,SalesLocations',
-        }
-      );
+      const url = buildUrl(IKEA_ENDPOINTS.stock(this.config.country), {
+        itemNos: formatted.replace(/\./g, ''),
+        expand: 'StoresList,Restocks,SalesLocations',
+      });
 
       const response = await fetch(url, {
         method: 'GET',
@@ -438,9 +429,10 @@ export class IkeaClient {
       categoryName: obj.categoryName as string | undefined,
       categoryUrl: obj.categoryUrl as string | undefined,
       weight: Number(obj.weight || 0),
-      dimensions: (dims.width || dims.depth || dims.height)
-        ? { width: dims.width, depth: dims.depth, height: dims.height, unit: 'cm' }
-        : undefined,
+      dimensions:
+        dims.width || dims.depth || dims.height
+          ? { width: dims.width, depth: dims.depth, height: dims.height, unit: 'cm' }
+          : undefined,
       isCombination,
     };
   }
@@ -449,12 +441,9 @@ export class IkeaClient {
    * Get item from Ingka Items endpoint
    */
   private async getIngkaItem(itemCode: string): Promise<ApiResponse<IkeaProduct>> {
-    const url = buildUrl(
-      IKEA_ENDPOINTS.ingkaItems(this.config.language),
-      {
-        itemNos: itemCode.replace(/\./g, ''),
-      }
-    );
+    const url = buildUrl(IKEA_ENDPOINTS.ingkaItems(this.config.language), {
+      itemNos: itemCode.replace(/\./g, ''),
+    });
 
     const response = await fetch(url, {
       method: 'GET',
@@ -488,7 +477,9 @@ export class IkeaClient {
     const obj = data as Record<string, unknown>;
     const dataArray = obj.data as unknown[] | undefined;
     const item = dataArray?.[0] as Record<string, unknown> | undefined;
-    const localized = (item?.localisedCommunications as unknown[])?.[0] as Record<string, unknown> | undefined;
+    const localized = (item?.localisedCommunications as unknown[])?.[0] as
+      | Record<string, unknown>
+      | undefined;
 
     return {
       itemCode,
@@ -519,7 +510,7 @@ export class IkeaClient {
     const chunks = chunk(itemCodes, 10);
 
     for (const codes of chunks) {
-      const promises = codes.map(code => this.getProduct(code));
+      const promises = codes.map((code) => this.getProduct(code));
       const results = await Promise.all(promises);
 
       for (const result of results) {
@@ -534,10 +525,13 @@ export class IkeaClient {
     return {
       success: true,
       data: products,
-      error: errors.length > 0 ? {
-        code: 'PARTIAL_ERROR',
-        message: `Some items failed: ${errors.join(', ')}`,
-      } : undefined,
+      error:
+        errors.length > 0
+          ? {
+              code: 'PARTIAL_ERROR',
+              message: `Some items failed: ${errors.join(', ')}`,
+            }
+          : undefined,
     };
   }
 
@@ -548,7 +542,10 @@ export class IkeaClient {
   /**
    * Search for kitchen cabinets
    */
-  async searchKitchenCabinets(query: string = '', limit: number = 50): Promise<ApiResponse<SearchResponse>> {
+  async searchKitchenCabinets(
+    query: string = '',
+    limit: number = 50
+  ): Promise<ApiResponse<SearchResponse>> {
     return this.search({
       query: query || 'kitchen cabinet',
       limit,
@@ -559,7 +556,10 @@ export class IkeaClient {
   /**
    * Search for kitchen appliances
    */
-  async searchAppliances(query: string = '', limit: number = 50): Promise<ApiResponse<SearchResponse>> {
+  async searchAppliances(
+    query: string = '',
+    limit: number = 50
+  ): Promise<ApiResponse<SearchResponse>> {
     return this.search({
       query: query || 'kitchen appliance',
       limit,
@@ -570,7 +570,10 @@ export class IkeaClient {
   /**
    * Search for countertops
    */
-  async searchCountertops(query: string = '', limit: number = 50): Promise<ApiResponse<SearchResponse>> {
+  async searchCountertops(
+    query: string = '',
+    limit: number = 50
+  ): Promise<ApiResponse<SearchResponse>> {
     return this.search({
       query: query || 'countertop worktop',
       limit,
@@ -593,11 +596,13 @@ export class IkeaClient {
    * Get ALL kitchen furniture products from IKEA
    * Aggregates searches across all kitchen product ranges
    */
-  async getAllKitchenProducts(limitPerCategory: number = 100): Promise<ApiResponse<{
-    results: SearchResult[];
-    totalCount: number;
-    categories: Record<string, number>;
-  }>> {
+  async getAllKitchenProducts(limitPerCategory: number = 100): Promise<
+    ApiResponse<{
+      results: SearchResult[];
+      totalCount: number;
+      categories: Record<string, number>;
+    }>
+  > {
     // All IKEA kitchen product ranges and categories
     const kitchenSearchTerms = [
       // Kitchen systems
@@ -655,7 +660,7 @@ export class IkeaClient {
     for (let i = 0; i < kitchenSearchTerms.length; i += batchSize) {
       const batch = kitchenSearchTerms.slice(i, i + batchSize);
 
-      const promises = batch.map(term =>
+      const promises = batch.map((term) =>
         this.search({
           query: term,
           limit: limitPerCategory,
@@ -691,7 +696,7 @@ export class IkeaClient {
 
       // Small delay between batches to avoid rate limiting
       if (i + batchSize < kitchenSearchTerms.length) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }
 
@@ -713,11 +718,22 @@ export class IkeaClient {
     limit: number = 100
   ): Promise<ApiResponse<SearchResponse>> {
     const categoryTerms: Record<string, string[]> = {
-      cabinets: ['METOD meuble', 'KNOXHULT', 'ENHET meuble', 'meuble bas cuisine', 'meuble haut cuisine'],
+      cabinets: [
+        'METOD meuble',
+        'KNOXHULT',
+        'ENHET meuble',
+        'meuble bas cuisine',
+        'meuble haut cuisine',
+      ],
       fronts: ['façade cuisine', 'porte cuisine METOD', 'VOXTORP', 'ASKERSUND', 'BODARP'],
       worktops: ['plan de travail', 'EKBACKEN', 'SÄLJAN', 'KARLBY', 'PINNARP'],
       sinks: ['évier cuisine', 'HAVSEN', 'NORRSJON', 'HILLESJÖN', 'robinet cuisine'],
-      appliances: ['four encastrable IKEA', 'plaque cuisson IKEA', 'hotte IKEA', 'réfrigérateur IKEA'],
+      appliances: [
+        'four encastrable IKEA',
+        'plaque cuisson IKEA',
+        'hotte IKEA',
+        'réfrigérateur IKEA',
+      ],
       fittings: ['UTRUSTA', 'MAXIMERA', 'VARIERA', 'aménagement intérieur cuisine'],
       lighting: ['éclairage cuisine', 'OMLOPP', 'IRSTA', 'MITTLED'],
     };
@@ -726,7 +742,7 @@ export class IkeaClient {
     const allResults: SearchResult[] = [];
     const seenItemCodes = new Set<string>();
 
-    const promises = terms.map(term =>
+    const promises = terms.map((term) =>
       this.search({
         query: term,
         limit: Math.ceil(limit / terms.length),

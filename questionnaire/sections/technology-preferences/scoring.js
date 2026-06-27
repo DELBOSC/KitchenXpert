@@ -16,8 +16,8 @@ const SCORE_WEIGHTS = {
   voiceControl: 0.15,
   smartLighting: 0.15,
   chargingStations: 0.05,
-  connectivity: 0.10,
-  securityFeatures: 0.05
+  connectivity: 0.1,
+  securityFeatures: 0.05,
 };
 
 /**
@@ -28,53 +28,53 @@ const TECH_PERSONAS = {
   'tech-enthusiast': {
     description: {
       en: 'Early adopter who embraces cutting-edge smart home technology',
-      fr: 'Adopteur précoce qui embrasse la technologie de maison intelligente de pointe'
+      fr: 'Adopteur précoce qui embrasse la technologie de maison intelligente de pointe',
     },
     characteristics: ['very-comfortable', 'multiple-smart-devices', 'voice-control', 'automation'],
     priorities: ['integration', 'automation', 'future-proofing'],
     recommendedBudget: 'premium',
-    infrastructureNeeds: ['strong-wifi', 'smart-hub', 'dedicated-circuits']
+    infrastructureNeeds: ['strong-wifi', 'smart-hub', 'dedicated-circuits'],
   },
   'practical-adopter': {
     description: {
       en: 'Selective with technology, choosing practical smart features that add value',
-      fr: 'Sélectif avec la technologie, choisissant des fonctionnalités intelligentes pratiques qui ajoutent de la valeur'
+      fr: 'Sélectif avec la technologie, choisissant des fonctionnalités intelligentes pratiques qui ajoutent de la valeur',
     },
     characteristics: ['comfortable', 'some-smart-devices', 'energy-efficiency'],
     priorities: ['reliability', 'energy-savings', 'proven-technology'],
     recommendedBudget: 'mid-range',
-    infrastructureNeeds: ['wifi-coverage', 'usb-outlets']
+    infrastructureNeeds: ['wifi-coverage', 'usb-outlets'],
   },
   'traditional-user': {
     description: {
       en: 'Prefers traditional appliances with straightforward, reliable controls',
-      fr: 'Préfère les appareils traditionnels avec des commandes simples et fiables'
+      fr: 'Préfère les appareils traditionnels avec des commandes simples et fiables',
     },
     characteristics: ['not-comfortable', 'no-smart-devices', 'simple-controls'],
     priorities: ['simplicity', 'reliability', 'no-learning-curve'],
     recommendedBudget: 'standard',
-    infrastructureNeeds: ['standard-outlets']
+    infrastructureNeeds: ['standard-outlets'],
   },
   'safety-focused': {
     description: {
       en: 'Prioritizes smart safety and monitoring features for peace of mind',
-      fr: 'Privilégie les fonctionnalités de sécurité et de surveillance intelligentes pour la tranquillité d\'esprit'
+      fr: "Privilégie les fonctionnalités de sécurité et de surveillance intelligentes pour la tranquillité d'esprit",
     },
     characteristics: ['security-features', 'leak-sensors', 'smart-locks', 'monitoring'],
     priorities: ['safety', 'monitoring', 'alerts'],
     recommendedBudget: 'mid-range',
-    infrastructureNeeds: ['wifi-coverage', 'backup-power']
+    infrastructureNeeds: ['wifi-coverage', 'backup-power'],
   },
   'eco-tech': {
     description: {
       en: 'Uses technology primarily for energy monitoring and environmental efficiency',
-      fr: 'Utilise la technologie principalement pour la surveillance de l\'énergie et l\'efficacité environnementale'
+      fr: "Utilise la technologie principalement pour la surveillance de l'énergie et l'efficacité environnementale",
     },
     characteristics: ['energy-monitoring', 'smart-appliances', 'eco-conscious'],
     priorities: ['energy-tracking', 'efficiency', 'sustainability'],
     recommendedBudget: 'mid-to-premium',
-    infrastructureNeeds: ['wifi-coverage', 'smart-meter-integration']
-  }
+    infrastructureNeeds: ['wifi-coverage', 'smart-meter-integration'],
+  },
 };
 
 /**
@@ -82,9 +82,9 @@ const TECH_PERSONAS = {
  */
 const TECH_COMFORT_SCORES = {
   'very-comfortable': 100,
-  'comfortable': 75,
-  'somewhat': 50,
-  'not-comfortable': 25
+  comfortable: 75,
+  somewhat: 50,
+  'not-comfortable': 25,
 };
 
 /**
@@ -100,7 +100,7 @@ function calculateSectionScore(answers) {
     tags: new Set(),
     infrastructureNeeds: [],
     integrationComplexity: 'low',
-    futureProofScore: 0
+    futureProofScore: 0,
   };
 
   // Identify technology persona
@@ -113,7 +113,7 @@ function calculateSectionScore(answers) {
     smartLighting: scoreSmartLighting(answers['smart-lighting']),
     chargingStations: scoreChargingStations(answers['charging-stations']),
     connectivity: scoreConnectivity(answers['connectivity']),
-    securityFeatures: scoreSecurityFeatures(answers['security-features'])
+    securityFeatures: scoreSecurityFeatures(answers['security-features']),
   };
 
   let totalWeight = 0;
@@ -123,7 +123,7 @@ function calculateSectionScore(answers) {
       totalWeight += weight;
 
       if (componentScores[key]?.tags) {
-        componentScores[key].tags.forEach(tag => scores.tags.add(tag));
+        componentScores[key].tags.forEach((tag) => scores.tags.add(tag));
       }
 
       if (componentScores[key]?.infrastructureNeeds) {
@@ -148,13 +148,13 @@ function calculateSectionScore(answers) {
     adoption: {
       score: componentScores.techComfort?.score || 50,
       level: componentScores.techComfort?.level || 'moderate',
-      description: getTechComfortDescription(componentScores.techComfort?.level)
+      description: getTechComfortDescription(componentScores.techComfort?.level),
     },
     smartHome: calculateSmartHomeScore(answers),
     connectivity: calculateConnectivityScore(answers),
     automation: calculateAutomationScore(answers),
     safety: calculateSafetyScore(answers),
-    energyManagement: calculateEnergyManagementScore(answers)
+    energyManagement: calculateEnergyManagementScore(answers),
   };
 
   scores.recommendations = generateRecommendations(answers, componentScores, scores);
@@ -212,7 +212,8 @@ function identifyTechPersona(answers) {
       }
     }
 
-    personaScores[personaKey] = totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
+    personaScores[personaKey] =
+      totalCharacteristics > 0 ? (matchScore / totalCharacteristics) * 100 : 0;
   }
 
   // Find best match
@@ -225,11 +226,13 @@ function identifyTechPersona(answers) {
     }
   }
 
-  return bestPersona && bestScore >= 40 ? {
-    key: bestPersona,
-    matchScore: bestScore,
-    ...TECH_PERSONAS[bestPersona]
-  } : null;
+  return bestPersona && bestScore >= 40
+    ? {
+        key: bestPersona,
+        matchScore: bestScore,
+        ...TECH_PERSONAS[bestPersona],
+      }
+    : null;
 }
 
 /**
@@ -296,20 +299,20 @@ function getTechComfortDescription(level) {
   const descriptions = {
     'early-adopter': {
       en: 'Enthusiastic about new technology and automation',
-      fr: 'Enthousiaste à propos de la nouvelle technologie et de l\'automatisation'
+      fr: "Enthousiaste à propos de la nouvelle technologie et de l'automatisation",
     },
     'tech-friendly': {
       en: 'Comfortable with technology when it adds clear value',
-      fr: 'À l\'aise avec la technologie quand elle ajoute une valeur claire'
+      fr: "À l'aise avec la technologie quand elle ajoute une valeur claire",
     },
     'basic-tech': {
       en: 'Prefers simple, proven technology solutions',
-      fr: 'Préfère des solutions technologiques simples et éprouvées'
+      fr: 'Préfère des solutions technologiques simples et éprouvées',
     },
-    'traditional': {
+    traditional: {
       en: 'Most comfortable with traditional, non-connected appliances',
-      fr: 'Plus à l\'aise avec les appareils traditionnels non connectés'
-    }
+      fr: "Plus à l'aise avec les appareils traditionnels non connectés",
+    },
   };
   return descriptions[level] || descriptions['basic-tech'];
 }
@@ -319,14 +322,14 @@ function scoreTechComfort(value) {
 
   const levels = {
     'very-comfortable': { level: 'early-adopter', tags: ['tech-savvy', 'smart-home-ready'] },
-    'comfortable': { level: 'tech-friendly', tags: ['smart-home-interested'] },
-    'somewhat': { level: 'basic-tech', tags: [] },
-    'not-comfortable': { level: 'traditional', tags: ['traditional-preference'] }
+    comfortable: { level: 'tech-friendly', tags: ['smart-home-interested'] },
+    somewhat: { level: 'basic-tech', tags: [] },
+    'not-comfortable': { level: 'traditional', tags: ['traditional-preference'] },
   };
 
   return {
     score: TECH_COMFORT_SCORES[value] || 50,
-    ...levels[value]
+    ...levels[value],
   };
 }
 
@@ -344,13 +347,13 @@ function scoreSmartAppliances(values) {
     'smart-oven': ['smart-cooking'],
     'smart-dishwasher': ['smart-cleaning'],
     'smart-coffee': ['smart-beverage'],
-    'smart-faucet': ['touchless-fixtures']
+    'smart-faucet': ['touchless-fixtures'],
   };
 
   const tags = [];
   const infrastructureNeeds = [];
 
-  values.forEach(v => {
+  values.forEach((v) => {
     if (applianceTags[v]) {
       tags.push(...applianceTags[v]);
     }
@@ -362,11 +365,11 @@ function scoreSmartAppliances(values) {
   }
 
   return {
-    score: Math.min(100, 30 + (values.length * 15)),
+    score: Math.min(100, 30 + values.length * 15),
     count: values.length,
     appliances: values,
     tags,
-    infrastructureNeeds
+    infrastructureNeeds,
   };
 }
 
@@ -378,7 +381,7 @@ function scoreVoiceControl(value) {
     'yes-google': { score: 80, platform: 'google', tags: ['voice-control', 'google-home'] },
     'yes-apple': { score: 80, platform: 'homekit', tags: ['voice-control', 'apple-home'] },
     'yes-multiple': { score: 100, platform: 'multi', tags: ['voice-control', 'multi-platform'] },
-    'no': { score: 30, platform: 'none', tags: [] }
+    no: { score: 30, platform: 'none', tags: [] },
   };
 
   return scores[value] || { score: 50, platform: 'unknown', tags: [] };
@@ -392,26 +395,26 @@ function scoreSmartLighting(value) {
       score: 100,
       level: 'full',
       tags: ['smart-lighting', 'automation-ready'],
-      infrastructureNeeds: ['smart-switches', 'lighting-hub']
+      infrastructureNeeds: ['smart-switches', 'lighting-hub'],
     },
     'some-areas': {
       score: 70,
       level: 'partial',
       tags: ['smart-lighting'],
-      infrastructureNeeds: ['smart-switches']
+      infrastructureNeeds: ['smart-switches'],
     },
     'dimmers-only': {
       score: 50,
       level: 'basic',
       tags: ['dimmer-controls'],
-      infrastructureNeeds: ['dimmer-switches']
+      infrastructureNeeds: ['dimmer-switches'],
     },
-    'standard': {
+    standard: {
       score: 25,
       level: 'traditional',
       tags: [],
-      infrastructureNeeds: []
-    }
+      infrastructureNeeds: [],
+    },
   };
 
   return scores[value] || { score: 50, level: 'unknown', tags: [], infrastructureNeeds: [] };
@@ -424,7 +427,7 @@ function scoreChargingStations(value) {
     'dedicated-area': { score: 90, type: 'dedicated', tags: ['charging-station'] },
     'built-in-outlets': { score: 70, type: 'integrated', tags: ['usb-outlets'] },
     'wireless-charging': { score: 80, type: 'wireless', tags: ['wireless-charging'] },
-    'not-needed': { score: 30, type: 'none', tags: [] }
+    'not-needed': { score: 30, type: 'none', tags: [] },
   };
 
   return scores[value] || { score: 50, type: 'unknown', tags: [] };
@@ -459,10 +462,10 @@ function scoreConnectivity(values) {
   }
 
   return {
-    score: 40 + (values.length * 15),
+    score: 40 + values.length * 15,
     requirements: values,
     tags,
-    infrastructureNeeds
+    infrastructureNeeds,
   };
 }
 
@@ -481,9 +484,9 @@ function scoreSecurityFeatures(values) {
   if (values.includes('smart-locks')) tags.push('child-safety');
 
   return {
-    score: 40 + (values.length * 15),
+    score: 40 + values.length * 15,
     features: values,
-    tags
+    tags,
   };
 }
 
@@ -516,17 +519,17 @@ function calculateSmartHomeScore(answers) {
   return {
     score: components > 0 ? Math.min(100, score) : 0,
     components,
-    integrated: components >= 3
+    integrated: components >= 3,
   };
 }
 
 function calculateConnectivityScore(answers) {
   const connectivity = answers['connectivity'] || [];
-  const hasAdvanced = connectivity.some(c => ['ethernet', 'hub-location'].includes(c));
+  const hasAdvanced = connectivity.some((c) => ['ethernet', 'hub-location'].includes(c));
 
   return {
     score: connectivity.length * 20,
-    level: hasAdvanced ? 'advanced' : connectivity.length > 0 ? 'standard' : 'basic'
+    level: hasAdvanced ? 'advanced' : connectivity.length > 0 ? 'standard' : 'basic',
   };
 }
 
@@ -544,7 +547,7 @@ function calculateAutomationScore(answers) {
 
   return {
     score: Math.min(100, score),
-    potential: score >= 70 ? 'high' : score >= 40 ? 'medium' : 'low'
+    potential: score >= 70 ? 'high' : score >= 40 ? 'medium' : 'low',
   };
 }
 
@@ -561,8 +564,8 @@ function calculateSafetyScore(answers) {
       features: [],
       description: {
         en: 'Basic safety features only',
-        fr: 'Fonctionnalités de sécurité de base uniquement'
-      }
+        fr: 'Fonctionnalités de sécurité de base uniquement',
+      },
     };
   }
 
@@ -596,9 +599,19 @@ function calculateSafetyScore(answers) {
     features,
     count: security.length,
     description: {
-      en: score >= 75 ? 'Comprehensive smart safety system' : score >= 50 ? 'Enhanced safety monitoring' : 'Basic smart safety features',
-      fr: score >= 75 ? 'Système de sécurité intelligent complet' : score >= 50 ? 'Surveillance de sécurité améliorée' : 'Fonctionnalités de sécurité intelligentes de base'
-    }
+      en:
+        score >= 75
+          ? 'Comprehensive smart safety system'
+          : score >= 50
+            ? 'Enhanced safety monitoring'
+            : 'Basic smart safety features',
+      fr:
+        score >= 75
+          ? 'Système de sécurité intelligent complet'
+          : score >= 50
+            ? 'Surveillance de sécurité améliorée'
+            : 'Fonctionnalités de sécurité intelligentes de base',
+    },
   };
 }
 
@@ -631,12 +644,22 @@ function calculateEnergyManagementScore(answers) {
     potential: {
       monitoring: smartAppliances.length > 0,
       automation: answers['smart-lighting'] !== 'standard',
-      optimization: score >= 70
+      optimization: score >= 70,
     },
     description: {
-      en: score >= 75 ? 'Advanced energy monitoring and optimization' : score >= 50 ? 'Moderate energy management capabilities' : 'Basic energy awareness',
-      fr: score >= 75 ? 'Surveillance et optimisation énergétique avancées' : score >= 50 ? 'Capacités de gestion énergétique modérées' : 'Sensibilisation énergétique de base'
-    }
+      en:
+        score >= 75
+          ? 'Advanced energy monitoring and optimization'
+          : score >= 50
+            ? 'Moderate energy management capabilities'
+            : 'Basic energy awareness',
+      fr:
+        score >= 75
+          ? 'Surveillance et optimisation énergétique avancées'
+          : score >= 50
+            ? 'Capacités de gestion énergétique modérées'
+            : 'Sensibilisation énergétique de base',
+    },
   };
 }
 
@@ -650,13 +673,16 @@ function generateRecommendations(answers, componentScores, scores) {
       type: 'profile',
       priority: 'info',
       title: {
-        en: `${scores.techPersona.key.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Profile`,
-        fr: `Profil ${scores.techPersona.key.split('-').join(' ')}`
+        en: `${scores.techPersona.key
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')} Profile`,
+        fr: `Profil ${scores.techPersona.key.split('-').join(' ')}`,
       },
       description: {
         en: `You match the ${scores.techPersona.description.en.toLowerCase()}`,
-        fr: `Vous correspondez ${scores.techPersona.description.fr.toLowerCase()}`
-      }
+        fr: `Vous correspondez ${scores.techPersona.description.fr.toLowerCase()}`,
+      },
     });
   }
 
@@ -669,33 +695,39 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: scores.techReadiness === 'advanced' ? 'essential' : 'recommended',
       title: { en: 'Smart Home Hub', fr: 'Hub Maison Intelligente' },
       description: {
-        en: platform === 'multi'
-          ? 'A universal smart home hub will enable seamless cross-platform integration and automation.'
-          : `A ${platform || 'smart'} hub will centralize your kitchen automation and enable advanced scenarios.`,
-        fr: platform === 'multi'
-          ? 'Un hub universel permettra une intégration et une automatisation transparentes multi-plateformes.'
-          : `Un hub ${platform || 'intelligent'} centralisera l'automatisation de votre cuisine et permettra des scénarios avancés.`
-      }
+        en:
+          platform === 'multi'
+            ? 'A universal smart home hub will enable seamless cross-platform integration and automation.'
+            : `A ${platform || 'smart'} hub will centralize your kitchen automation and enable advanced scenarios.`,
+        fr:
+          platform === 'multi'
+            ? 'Un hub universel permettra une intégration et une automatisation transparentes multi-plateformes.'
+            : `Un hub ${platform || 'intelligent'} centralisera l'automatisation de votre cuisine et permettra des scénarios avancés.`,
+      },
     });
   }
 
   // WiFi infrastructure
-  if (scores.infrastructureNeeds.includes('strong-wifi-coverage') ||
-      scores.infrastructureNeeds.includes('wifi-access-point')) {
+  if (
+    scores.infrastructureNeeds.includes('strong-wifi-coverage') ||
+    scores.infrastructureNeeds.includes('wifi-access-point')
+  ) {
     recommendations.push({
       id: 'wifi-upgrade',
       type: 'infrastructure',
       priority: 'essential',
       title: { en: 'Robust WiFi Coverage', fr: 'Couverture WiFi Robuste' },
       description: {
-        en: `Strong WiFi is critical for ${(answers['smart-appliances'] || []).filter(a => a !== 'none').length} smart devices. Consider a mesh network or dedicated access point.`,
-        fr: `Un WiFi fort est essentiel pour ${(answers['smart-appliances'] || []).filter(a => a !== 'none').length} appareils intelligents. Envisagez un réseau maillé ou un point d'accès dédié.`
-      }
+        en: `Strong WiFi is critical for ${(answers['smart-appliances'] || []).filter((a) => a !== 'none').length} smart devices. Consider a mesh network or dedicated access point.`,
+        fr: `Un WiFi fort est essentiel pour ${(answers['smart-appliances'] || []).filter((a) => a !== 'none').length} appareils intelligents. Envisagez un réseau maillé ou un point d'accès dédié.`,
+      },
     });
   }
 
   // Electrical planning
-  const smartApplianceCount = (answers['smart-appliances'] || []).filter(a => a !== 'none').length;
+  const smartApplianceCount = (answers['smart-appliances'] || []).filter(
+    (a) => a !== 'none'
+  ).length;
   if (smartApplianceCount >= 2) {
     recommendations.push({
       id: 'electrical-planning',
@@ -704,8 +736,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Electrical Infrastructure', fr: 'Infrastructure Électrique' },
       description: {
         en: `Plan ${smartApplianceCount >= 4 ? 'dedicated circuits and' : ''} adequate outlets for smart appliances. Include USB-C outlets at counter height for device charging.`,
-        fr: `Planifiez ${smartApplianceCount >= 4 ? 'des circuits dédiés et' : ''} des prises adéquates pour les appareils intelligents. Incluez des prises USB-C à hauteur de comptoir pour la recharge.`
-      }
+        fr: `Planifiez ${smartApplianceCount >= 4 ? 'des circuits dédiés et' : ''} des prises adéquates pour les appareils intelligents. Incluez des prises USB-C à hauteur de comptoir pour la recharge.`,
+      },
     });
   }
 
@@ -718,8 +750,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Professional Integration', fr: 'Intégration Professionnelle' },
       description: {
         en: 'Your smart home setup is complex. Consider hiring a smart home integrator for optimal configuration.',
-        fr: 'Votre configuration de maison intelligente est complexe. Envisagez d\'embaucher un intégrateur de maison intelligente pour une configuration optimale.'
-      }
+        fr: "Votre configuration de maison intelligente est complexe. Envisagez d'embaucher un intégrateur de maison intelligente pour une configuration optimale.",
+      },
     });
   }
 
@@ -731,26 +763,29 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'recommended',
       title: { en: 'Future-Proof Infrastructure', fr: 'Infrastructure Pérenne' },
       description: {
-        en: 'Add conduit for future wiring, extra outlets, and Ethernet even if not using now. It\'s much cheaper during construction.',
-        fr: 'Ajoutez des conduits pour le câblage futur, des prises supplémentaires et Ethernet même si vous ne les utilisez pas maintenant. C\'est beaucoup moins cher pendant la construction.'
-      }
+        en: "Add conduit for future wiring, extra outlets, and Ethernet even if not using now. It's much cheaper during construction.",
+        fr: "Ajoutez des conduits pour le câblage futur, des prises supplémentaires et Ethernet même si vous ne les utilisez pas maintenant. C'est beaucoup moins cher pendant la construction.",
+      },
     });
   } else if (scores.futureProofScore >= 75) {
     recommendations.push({
       id: 'future-ready',
       type: 'infrastructure',
       priority: 'info',
-      title: { en: 'Future-Ready Design', fr: 'Conception Prête pour l\'Avenir' },
+      title: { en: 'Future-Ready Design', fr: "Conception Prête pour l'Avenir" },
       description: {
         en: 'Your technology infrastructure is well-planned for future upgrades and expansion.',
-        fr: 'Votre infrastructure technologique est bien planifiée pour les futures mises à niveau et l\'expansion.'
-      }
+        fr: "Votre infrastructure technologique est bien planifiée pour les futures mises à niveau et l'expansion.",
+      },
     });
   }
 
   // Security recommendations
   const securityFeatures = answers['security-features'] || [];
-  if (smartApplianceCount >= 2 && (securityFeatures.length === 0 || securityFeatures.includes('none'))) {
+  if (
+    smartApplianceCount >= 2 &&
+    (securityFeatures.length === 0 || securityFeatures.includes('none'))
+  ) {
     recommendations.push({
       id: 'add-security',
       type: 'safety',
@@ -758,8 +793,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Smart Safety Features', fr: 'Fonctionnalités de Sécurité Intelligentes' },
       description: {
         en: 'Consider adding leak sensors near appliances and a smart smoke detector for peace of mind.',
-        fr: 'Envisagez d\'ajouter des capteurs de fuite près des appareils et un détecteur de fumée intelligent pour la tranquillité d\'esprit.'
-      }
+        fr: "Envisagez d'ajouter des capteurs de fuite près des appareils et un détecteur de fumée intelligent pour la tranquillité d'esprit.",
+      },
     });
   }
 
@@ -769,11 +804,14 @@ function generateRecommendations(answers, componentScores, scores) {
       id: 'energy-monitoring',
       type: 'feature',
       priority: 'optional',
-      title: { en: 'Energy Monitoring Dashboard', fr: 'Tableau de Bord de Surveillance Énergétique' },
+      title: {
+        en: 'Energy Monitoring Dashboard',
+        fr: 'Tableau de Bord de Surveillance Énergétique',
+      },
       description: {
         en: 'Set up an energy monitoring dashboard to track usage and identify savings opportunities.',
-        fr: 'Configurez un tableau de bord de surveillance énergétique pour suivre l\'utilisation et identifier les opportunités d\'économies.'
-      }
+        fr: "Configurez un tableau de bord de surveillance énergétique pour suivre l'utilisation et identifier les opportunités d'économies.",
+      },
     });
   }
 
@@ -783,11 +821,11 @@ function generateRecommendations(answers, componentScores, scores) {
       id: 'voice-routines',
       type: 'feature',
       priority: 'optional',
-      title: { en: 'Voice Automation Routines', fr: 'Routines d\'Automatisation Vocale' },
+      title: { en: 'Voice Automation Routines', fr: "Routines d'Automatisation Vocale" },
       description: {
         en: `Create voice routines like "Good morning" to turn on lights, start coffee, and check the weather.`,
-        fr: `Créez des routines vocales comme "Bonjour" pour allumer les lumières, démarrer le café et vérifier la météo.`
-      }
+        fr: `Créez des routines vocales comme "Bonjour" pour allumer les lumières, démarrer le café et vérifier la météo.`,
+      },
     });
   }
 
@@ -799,9 +837,9 @@ function generateRecommendations(answers, componentScores, scores) {
       priority: 'noted',
       title: { en: 'Traditional Approach', fr: 'Approche Traditionnelle' },
       description: {
-        en: 'We\'ll focus on quality traditional appliances with intuitive, reliable controls. No app required.',
-        fr: 'Nous nous concentrerons sur des appareils traditionnels de qualité avec des commandes intuitives et fiables. Aucune application requise.'
-      }
+        en: "We'll focus on quality traditional appliances with intuitive, reliable controls. No app required.",
+        fr: 'Nous nous concentrerons sur des appareils traditionnels de qualité avec des commandes intuitives et fiables. Aucune application requise.',
+      },
     });
   }
 
@@ -811,11 +849,11 @@ function generateRecommendations(answers, componentScores, scores) {
       id: 'add-charging',
       type: 'infrastructure',
       priority: 'optional',
-      title: { en: 'Device Charging', fr: 'Recharge d\'Appareils' },
+      title: { en: 'Device Charging', fr: "Recharge d'Appareils" },
       description: {
         en: 'Consider adding USB outlets or a charging drawer for phones and tablets used in the kitchen.',
-        fr: 'Envisagez d\'ajouter des prises USB ou un tiroir de recharge pour les téléphones et tablettes utilisés dans la cuisine.'
-      }
+        fr: "Envisagez d'ajouter des prises USB ou un tiroir de recharge pour les téléphones et tablettes utilisés dans la cuisine.",
+      },
     });
   }
 
@@ -828,8 +866,8 @@ function generateRecommendations(answers, componentScores, scores) {
       title: { en: 'Backup Power', fr: 'Alimentation de Secours' },
       description: {
         en: 'Consider battery backup for critical safety devices (smoke, leak sensors) to maintain protection during power outages.',
-        fr: 'Envisagez une batterie de secours pour les appareils de sécurité critiques (fumée, capteurs de fuite) pour maintenir la protection pendant les pannes de courant.'
-      }
+        fr: 'Envisagez une batterie de secours pour les appareils de sécurité critiques (fumée, capteurs de fuite) pour maintenir la protection pendant les pannes de courant.',
+      },
     });
   }
 
@@ -857,5 +895,5 @@ module.exports = {
   generateRecommendations,
   SCORE_WEIGHTS,
   TECH_COMFORT_SCORES,
-  TECH_PERSONAS
+  TECH_PERSONAS,
 };

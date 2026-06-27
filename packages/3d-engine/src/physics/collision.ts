@@ -79,11 +79,7 @@ export class CollisionSystem {
   /**
    * Vérifie si une position est valide pour placer un objet
    */
-  isValidPosition(
-    object: THREE.Object3D,
-    position: THREE.Vector3,
-    _scene: THREE.Scene
-  ): boolean {
+  isValidPosition(object: THREE.Object3D, position: THREE.Vector3, _scene: THREE.Scene): boolean {
     // Sauvegarder la position actuelle
     const originalPosition = object.position.clone();
 
@@ -214,10 +210,7 @@ export class CollisionSystem {
 
     if (walls.length === 0) {
       // Pas de murs, retourner une zone par défaut
-      return new THREE.Box3(
-        new THREE.Vector3(-10, 0, -10),
-        new THREE.Vector3(10, 3, 10)
-      );
+      return new THREE.Box3(new THREE.Vector3(-10, 0, -10), new THREE.Vector3(10, 3, 10));
     }
 
     // Calculer la bounding box de tous les murs
@@ -227,18 +220,10 @@ export class CollisionSystem {
 
     // Réduire légèrement pour tenir compte de la distance minimale au mur
     bounds.min.add(
-      new THREE.Vector3(
-        this.constraints.minDistanceToWall,
-        0,
-        this.constraints.minDistanceToWall
-      )
+      new THREE.Vector3(this.constraints.minDistanceToWall, 0, this.constraints.minDistanceToWall)
     );
     bounds.max.sub(
-      new THREE.Vector3(
-        this.constraints.minDistanceToWall,
-        0,
-        this.constraints.minDistanceToWall
-      )
+      new THREE.Vector3(this.constraints.minDistanceToWall, 0, this.constraints.minDistanceToWall)
     );
 
     return bounds;
@@ -279,17 +264,32 @@ export class CollisionSystem {
     // Clamp X within room
     const minX = -roomWidth / 2 + halfW;
     const maxX = roomWidth / 2 - halfW;
-    if (clampedPosition.x < minX) { clampedPosition.x = minX; valid = false; }
-    if (clampedPosition.x > maxX) { clampedPosition.x = maxX; valid = false; }
+    if (clampedPosition.x < minX) {
+      clampedPosition.x = minX;
+      valid = false;
+    }
+    if (clampedPosition.x > maxX) {
+      clampedPosition.x = maxX;
+      valid = false;
+    }
 
     // Clamp Z within room
     const minZ = -roomDepth / 2 + halfD;
     const maxZ = roomDepth / 2 - halfD;
-    if (clampedPosition.z < minZ) { clampedPosition.z = minZ; valid = false; }
-    if (clampedPosition.z > maxZ) { clampedPosition.z = maxZ; valid = false; }
+    if (clampedPosition.z < minZ) {
+      clampedPosition.z = minZ;
+      valid = false;
+    }
+    if (clampedPosition.z > maxZ) {
+      clampedPosition.z = maxZ;
+      valid = false;
+    }
 
     // Clamp Y (floor to ceiling)
-    if (clampedPosition.y < 0) { clampedPosition.y = 0; valid = false; }
+    if (clampedPosition.y < 0) {
+      clampedPosition.y = 0;
+      valid = false;
+    }
     if (clampedPosition.y + objectSize.y > roomHeight) {
       clampedPosition.y = roomHeight - objectSize.y;
       valid = false;

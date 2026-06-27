@@ -139,9 +139,7 @@ export class KitchenLighting {
    * Change l'intensite d'une lumiere par nom
    */
   setIntensity(name: string, intensity: number): void {
-    const light = this.lights.find(
-      (l) => l.name === name || l.name === `${name}_light`
-    );
+    const light = this.lights.find((l) => l.name === name || l.name === `${name}_light`);
     if (light) {
       light.intensity = intensity;
     }
@@ -152,9 +150,11 @@ export class KitchenLighting {
    */
   setShadowsEnabled(enabled: boolean): void {
     this.lights.forEach((light) => {
-      if (light instanceof THREE.DirectionalLight ||
-          light instanceof THREE.SpotLight ||
-          light instanceof THREE.PointLight) {
+      if (
+        light instanceof THREE.DirectionalLight ||
+        light instanceof THREE.SpotLight ||
+        light instanceof THREE.PointLight
+      ) {
         light.castShadow = enabled;
       }
     });

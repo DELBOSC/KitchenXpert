@@ -75,7 +75,9 @@ describe('RegisterPage', () => {
     it('should render registration form with all fields', () => {
       renderRegisterPage();
 
-      expect(screen.getByRole('heading', { name: /créez votre espace|créer un compte/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /créez votre espace|créer un compte/i })
+      ).toBeInTheDocument();
       expect(screen.getByLabelText(/^prénom$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^nom$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -210,7 +212,12 @@ describe('RegisterPage', () => {
       await user.click(screen.getByRole('button', { name: submitButtonName }));
 
       await waitFor(() => {
-        expect(mockRegister).toHaveBeenCalledWith('jean@example.com', 'password123', 'Jean', 'Dupont');
+        expect(mockRegister).toHaveBeenCalledWith(
+          'jean@example.com',
+          'password123',
+          'Jean',
+          'Dupont'
+        );
       });
     });
 
@@ -308,7 +315,12 @@ describe('RegisterPage', () => {
       await user.click(screen.getByRole('button', { name: submitButtonName }));
 
       await waitFor(() => {
-        expect(mockRegister).toHaveBeenCalledWith('jean@example.com', 'password123', 'Jean-Pierre', "O'Brien");
+        expect(mockRegister).toHaveBeenCalledWith(
+          'jean@example.com',
+          'password123',
+          'Jean-Pierre',
+          "O'Brien"
+        );
       });
     });
 

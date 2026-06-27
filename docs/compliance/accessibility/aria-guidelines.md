@@ -16,7 +16,8 @@
 
 ## Introduction
 
-This document provides guidelines for implementing ARIA in KitchenXpert. ARIA enhances accessibility for dynamic content and custom UI components.
+This document provides guidelines for implementing ARIA in KitchenXpert. ARIA
+enhances accessibility for dynamic content and custom UI components.
 
 ### ARIA Golden Rules
 
@@ -32,39 +33,39 @@ This document provides guidelines for implementing ARIA in KitchenXpert. ARIA en
 
 ### Landmark Roles
 
-| Role | Usage |
-|------|-------|
-| banner | Site header |
-| navigation | Navigation areas |
-| main | Primary content |
-| complementary | Supporting content |
-| contentinfo | Footer |
-| search | Search functionality |
+| Role          | Usage                |
+| ------------- | -------------------- |
+| banner        | Site header          |
+| navigation    | Navigation areas     |
+| main          | Primary content      |
+| complementary | Supporting content   |
+| contentinfo   | Footer               |
+| search        | Search functionality |
 
 ### Widget Roles
 
-| Role | Usage |
-|------|-------|
-| button | Clickable actions |
-| checkbox | Toggle options |
-| dialog | Modal windows |
-| menu | Navigation menus |
-| tab/tabpanel | Tabbed interfaces |
-| slider | Range input |
-| progressbar | Progress indication |
+| Role         | Usage               |
+| ------------ | ------------------- |
+| button       | Clickable actions   |
+| checkbox     | Toggle options      |
+| dialog       | Modal windows       |
+| menu         | Navigation menus    |
+| tab/tabpanel | Tabbed interfaces   |
+| slider       | Range input         |
+| progressbar  | Progress indication |
 
 ### States and Properties
 
-| Attribute | Purpose | Values |
-|-----------|---------|--------|
-| aria-expanded | Expandable state | true/false |
-| aria-selected | Selected state | true/false |
-| aria-disabled | Disabled state | true/false |
-| aria-hidden | Hidden from AT | true/false |
-| aria-live | Dynamic updates | polite/assertive/off |
-| aria-label | Accessible name | String |
-| aria-describedby | Description reference | ID reference |
-| aria-labelledby | Label reference | ID reference |
+| Attribute        | Purpose               | Values               |
+| ---------------- | --------------------- | -------------------- |
+| aria-expanded    | Expandable state      | true/false           |
+| aria-selected    | Selected state        | true/false           |
+| aria-disabled    | Disabled state        | true/false           |
+| aria-hidden      | Hidden from AT        | true/false           |
+| aria-live        | Dynamic updates       | polite/assertive/off |
+| aria-label       | Accessible name       | String               |
+| aria-describedby | Description reference | ID reference         |
+| aria-labelledby  | Label reference       | ID reference         |
 
 ---
 
@@ -72,7 +73,8 @@ This document provides guidelines for implementing ARIA in KitchenXpert. ARIA en
 
 ### Button Component
 
-Use native button elements. Include aria-pressed for toggle buttons, aria-disabled for disabled state.
+Use native button elements. Include aria-pressed for toggle buttons,
+aria-disabled for disabled state.
 
 ### Form Inputs
 
@@ -84,6 +86,7 @@ Use native button elements. Include aria-pressed for toggle buttons, aria-disabl
 ### Custom Components
 
 When building custom controls (switches, sliders), include:
+
 - Appropriate role
 - Keyboard interaction
 - State management via aria attributes
@@ -181,12 +184,12 @@ The 3D designer uses canvas, requiring special handling:
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value                 |
+| -------------- | --------------------- |
 | Document Owner | Accessibility Officer |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10            |
+| Version        | 2.0                   |
 
 ---
 
-*For accessibility questions, contact accessibility@kitchenxpert.com.*
+_For accessibility questions, contact accessibility@kitchenxpert.com._

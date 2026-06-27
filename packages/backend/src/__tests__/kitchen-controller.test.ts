@@ -242,7 +242,10 @@ describe('KitchenController', () => {
 
       await controller.update(mockReq as Request, mockRes as Response);
 
-      expect(mockRepository.update).toHaveBeenCalledWith('k1', expect.objectContaining({ name: 'Updated Kitchen' }));
+      expect(mockRepository.update).toHaveBeenCalledWith(
+        'k1',
+        expect.objectContaining({ name: 'Updated Kitchen' })
+      );
       expect(statusMock).toHaveBeenCalledWith(200);
       expect(jsonMock).toHaveBeenCalledWith({
         success: true,

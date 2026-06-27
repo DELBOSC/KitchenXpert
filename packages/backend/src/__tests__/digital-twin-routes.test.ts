@@ -123,16 +123,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -158,14 +160,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -285,14 +283,13 @@ describe('Digital Twin Routes', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.kitchenId).toBe('550e8400-e29b-41d4-a716-446655440000');
-      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith('550e8400-e29b-41d4-a716-446655440000');
+      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith(
+        '550e8400-e29b-41d4-a716-446655440000'
+      );
     });
 
     it('should return 400 when kitchenId is missing', async () => {
-      const response = await authedRequest(app)
-        .post('/digital-twin')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).post('/digital-twin').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('kitchenId is required');
@@ -401,7 +398,9 @@ describe('Digital Twin Routes', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.kitchenId).toBe('550e8400-e29b-41d4-a716-446655440000');
-      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith('550e8400-e29b-41d4-a716-446655440000');
+      expect(mockTwinService.createDigitalTwin).toHaveBeenCalledWith(
+        '550e8400-e29b-41d4-a716-446655440000'
+      );
     });
 
     it('should return 404 when kitchen does not exist', async () => {

@@ -1,10 +1,10 @@
 # Error Metrics Documentation
 
-> Comprehensive guide to error tracking, classification, and analysis for KitchenXpert.
+> Comprehensive guide to error tracking, classification, and analysis for
+> KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** Platform Engineering Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Platform Engineering Team **Version:**
+1.0
 
 ---
 
@@ -26,6 +26,7 @@
 ### Overview
 
 HTTP errors are categorized into two main groups:
+
 - **4xx Errors:** Client errors (bad requests, unauthorized, not found)
 - **5xx Errors:** Server errors (internal errors, service unavailable)
 
@@ -33,19 +34,20 @@ HTTP errors are categorized into two main groups:
 
 #### Common 4xx Status Codes
 
-| Status Code | Name | Description | Common Causes |
-|-------------|------|-------------|---------------|
-| 400 | Bad Request | Malformed request syntax | Invalid JSON, missing fields |
-| 401 | Unauthorized | Authentication required | Missing/invalid token |
-| 403 | Forbidden | Access denied | Insufficient permissions |
-| 404 | Not Found | Resource not found | Invalid URL, deleted resource |
-| 409 | Conflict | Request conflict | Duplicate creation, version conflict |
-| 422 | Unprocessable Entity | Validation error | Invalid field values |
-| 429 | Too Many Requests | Rate limit exceeded | API abuse, bug in client |
+| Status Code | Name                 | Description              | Common Causes                        |
+| ----------- | -------------------- | ------------------------ | ------------------------------------ |
+| 400         | Bad Request          | Malformed request syntax | Invalid JSON, missing fields         |
+| 401         | Unauthorized         | Authentication required  | Missing/invalid token                |
+| 403         | Forbidden            | Access denied            | Insufficient permissions             |
+| 404         | Not Found            | Resource not found       | Invalid URL, deleted resource        |
+| 409         | Conflict             | Request conflict         | Duplicate creation, version conflict |
+| 422         | Unprocessable Entity | Validation error         | Invalid field values                 |
+| 429         | Too Many Requests    | Rate limit exceeded      | API abuse, bug in client             |
 
 #### 4xx Error Rate by Endpoint
 
 **Overall 4xx Error Rate**
+
 ```promql
 # 4xx error rate as percentage
 sum(rate(http_requests_total{status=~"4.."}[5m])) /
@@ -53,12 +55,14 @@ sum(rate(http_requests_total[5m])) * 100
 ```
 
 **4xx Errors by Endpoint**
+
 ```promql
 # 4xx errors grouped by endpoint
 sum(rate(http_requests_total{status=~"4.."}[5m])) by (endpoint, status)
 ```
 
 **Top 4xx Error Endpoints**
+
 ```promql
 # Top 10 endpoints with highest 4xx rate
 topk(10, sum(rate(http_requests_total{status=~"4.."}[5m])) by (endpoint))
@@ -66,11 +70,11 @@ topk(10, sum(rate(http_requests_total{status=~"4.."}[5m])) by (endpoint))
 
 #### Key 4xx Metrics Dashboard
 
-| Metric | PromQL Query | Target |
-|--------|--------------|--------|
-| 400 Rate | `sum(rate(http_requests_total{status="400"}[5m]))` | < 1% |
-| 401 Rate | `sum(rate(http_requests_total{status="401"}[5m]))` | < 5% |
-| 404 Rate | `sum(rate(http_requests_total{status="404"}[5m]))` | < 2% |
+| Metric   | PromQL Query                                       | Target |
+| -------- | -------------------------------------------------- | ------ |
+| 400 Rate | `sum(rate(http_requests_total{status="400"}[5m]))` | < 1%   |
+| 401 Rate | `sum(rate(http_requests_total{status="401"}[5m]))` | < 5%   |
+| 404 Rate | `sum(rate(http_requests_total{status="404"}[5m]))` | < 2%   |
 | 429 Rate | `sum(rate(http_requests_total{status="429"}[5m]))` | < 0.1% |
 
 ---
@@ -79,16 +83,17 @@ topk(10, sum(rate(http_requests_total{status=~"4.."}[5m])) by (endpoint))
 
 #### Common 5xx Status Codes
 
-| Status Code | Name | Description | Typical Causes |
-|-------------|------|-------------|----------------|
-| 500 | Internal Server Error | Generic server error | Unhandled exception, bug |
-| 502 | Bad Gateway | Invalid upstream response | Backend down, timeout |
-| 503 | Service Unavailable | Server overloaded | Capacity issues, deployment |
-| 504 | Gateway Timeout | Upstream timeout | Slow database, external API |
+| Status Code | Name                  | Description               | Typical Causes              |
+| ----------- | --------------------- | ------------------------- | --------------------------- |
+| 500         | Internal Server Error | Generic server error      | Unhandled exception, bug    |
+| 502         | Bad Gateway           | Invalid upstream response | Backend down, timeout       |
+| 503         | Service Unavailable   | Server overloaded         | Capacity issues, deployment |
+| 504         | Gateway Timeout       | Upstream timeout          | Slow database, external API |
 
 #### 5xx Error Rate by Endpoint
 
 **Overall 5xx Error Rate**
+
 ```promql
 # 5xx error rate as percentage
 sum(rate(http_requests_total{status=~"5.."}[5m])) /
@@ -96,12 +101,14 @@ sum(rate(http_requests_total[5m])) * 100
 ```
 
 **5xx Errors by Service**
+
 ```promql
 # 5xx errors grouped by service
 sum(rate(http_requests_total{status=~"5.."}[5m])) by (service, status)
 ```
 
 **5xx Error Trend**
+
 ```promql
 # 5xx error rate over time (for graphing)
 sum(rate(http_requests_total{status=~"5.."}[5m]))
@@ -109,12 +116,12 @@ sum(rate(http_requests_total{status=~"5.."}[5m]))
 
 #### Critical 5xx Metrics
 
-| Metric | PromQL Query | Critical Threshold |
-|--------|--------------|-------------------|
-| 500 Rate | `sum(rate(http_requests_total{status="500"}[5m]))` | > 0.1% |
-| 502 Rate | `sum(rate(http_requests_total{status="502"}[5m]))` | > 0.05% |
-| 503 Rate | `sum(rate(http_requests_total{status="503"}[5m]))` | > 0.05% |
-| 504 Rate | `sum(rate(http_requests_total{status="504"}[5m]))` | > 0.1% |
+| Metric   | PromQL Query                                       | Critical Threshold |
+| -------- | -------------------------------------------------- | ------------------ |
+| 500 Rate | `sum(rate(http_requests_total{status="500"}[5m]))` | > 0.1%             |
+| 502 Rate | `sum(rate(http_requests_total{status="502"}[5m]))` | > 0.05%            |
+| 503 Rate | `sum(rate(http_requests_total{status="503"}[5m]))` | > 0.05%            |
+| 504 Rate | `sum(rate(http_requests_total{status="504"}[5m]))` | > 0.1%             |
 
 ---
 
@@ -124,19 +131,21 @@ sum(rate(http_requests_total{status=~"5.."}[5m]))
 
 #### Exception Metrics
 
-| Metric | Description |
-|--------|-------------|
-| `app_exceptions_total` | Total uncaught exceptions |
-| `app_exceptions_total{type="..."}` | Exceptions by type |
-| `nodejs_active_handles_total` | Active handles (memory leak indicator) |
+| Metric                             | Description                            |
+| ---------------------------------- | -------------------------------------- |
+| `app_exceptions_total`             | Total uncaught exceptions              |
+| `app_exceptions_total{type="..."}` | Exceptions by type                     |
+| `nodejs_active_handles_total`      | Active handles (memory leak indicator) |
 
 **Exception Rate**
+
 ```promql
 # Exceptions per minute
 rate(app_exceptions_total[5m]) * 60
 ```
 
 **Exception Rate by Type**
+
 ```promql
 # Exceptions grouped by type
 sum(rate(app_exceptions_total[5m])) by (type, service)
@@ -144,13 +153,13 @@ sum(rate(app_exceptions_total[5m])) by (type, service)
 
 #### Common Exception Types
 
-| Type | Description | Investigation Steps |
-|------|-------------|---------------------|
-| `TypeError` | Type mismatch | Check null values, API responses |
+| Type             | Description        | Investigation Steps              |
+| ---------------- | ------------------ | -------------------------------- |
+| `TypeError`      | Type mismatch      | Check null values, API responses |
 | `ReferenceError` | Undefined variable | Code bug, missing initialization |
-| `RangeError` | Value out of range | Input validation |
-| `SyntaxError` | JSON parse error | External data format |
-| `TimeoutError` | Operation timeout | Network, database issues |
+| `RangeError`     | Value out of range | Input validation                 |
+| `SyntaxError`    | JSON parse error   | External data format             |
+| `TimeoutError`   | Operation timeout  | Network, database issues         |
 
 ---
 
@@ -158,20 +167,22 @@ sum(rate(app_exceptions_total[5m])) by (type, service)
 
 #### PostgreSQL Errors
 
-| Metric | Description |
-|--------|-------------|
-| `pg_errors_total` | Total database errors |
-| `pg_errors_total{type="connection"}` | Connection errors |
-| `pg_errors_total{type="query"}` | Query errors |
+| Metric                               | Description           |
+| ------------------------------------ | --------------------- |
+| `pg_errors_total`                    | Total database errors |
+| `pg_errors_total{type="connection"}` | Connection errors     |
+| `pg_errors_total{type="query"}`      | Query errors          |
 | `pg_errors_total{type="constraint"}` | Constraint violations |
 
 **Database Error Rate**
+
 ```promql
 # PostgreSQL errors per minute
 rate(pg_errors_total[5m]) * 60
 ```
 
 **Connection Errors**
+
 ```promql
 # Connection errors (critical)
 rate(pg_errors_total{type="connection"}[5m]) * 60
@@ -180,6 +191,7 @@ rate(pg_errors_total{type="connection"}[5m]) * 60
 #### MongoDB Errors
 
 **MongoDB Error Rate**
+
 ```promql
 # MongoDB errors per minute
 rate(mongodb_errors_total[5m]) * 60
@@ -188,6 +200,7 @@ rate(mongodb_errors_total[5m]) * 60
 #### Redis Errors
 
 **Redis Error Rate**
+
 ```promql
 # Redis errors per minute
 rate(redis_errors_total[5m]) * 60
@@ -199,20 +212,22 @@ rate(redis_errors_total[5m]) * 60
 
 #### Third-Party API Errors
 
-| Service | Metric |
-|---------|--------|
+| Service          | Metric                                                 |
+| ---------------- | ------------------------------------------------------ |
 | Partner Catalogs | `external_api_errors_total{service="partner_catalog"}` |
-| Payment Gateway | `external_api_errors_total{service="payment"}` |
-| Email Service | `external_api_errors_total{service="email"}` |
-| AI/ML Services | `external_api_errors_total{service="ai"}` |
+| Payment Gateway  | `external_api_errors_total{service="payment"}`         |
+| Email Service    | `external_api_errors_total{service="email"}`           |
+| AI/ML Services   | `external_api_errors_total{service="ai"}`              |
 
 **External Service Error Rate**
+
 ```promql
 # External API errors by service
 sum(rate(external_api_errors_total[5m])) by (service) * 60
 ```
 
 **External Service Availability**
+
 ```promql
 # External service success rate
 sum(rate(external_api_requests_total{status="success"}[5m])) by (service) /
@@ -229,14 +244,15 @@ sum(rate(external_api_requests_total[5m])) by (service) * 100
 
 **Definition:** Errors that cause service outage or data loss
 
-| Criteria | Examples | Response Time |
-|----------|----------|---------------|
-| Complete service failure | 503 across all endpoints | Immediate |
-| Data corruption risk | Database write failures | Immediate |
-| Security breach | Auth bypass detected | Immediate |
-| Revenue impact | Payment processing failure | < 5 minutes |
+| Criteria                 | Examples                   | Response Time |
+| ------------------------ | -------------------------- | ------------- |
+| Complete service failure | 503 across all endpoints   | Immediate     |
+| Data corruption risk     | Database write failures    | Immediate     |
+| Security breach          | Auth bypass detected       | Immediate     |
+| Revenue impact           | Payment processing failure | < 5 minutes   |
 
 **Critical Error Query**
+
 ```promql
 # Critical error conditions
 (
@@ -252,14 +268,15 @@ sum(rate(external_api_requests_total[5m])) by (service) * 100
 
 **Definition:** Errors affecting significant functionality
 
-| Criteria | Examples | Response Time |
-|----------|----------|---------------|
-| Feature degradation | AI service errors | < 15 minutes |
-| Partial outage | Single endpoint down | < 15 minutes |
-| Performance impact | Response time > 5s | < 30 minutes |
-| User impact | Login failures > 5% | < 30 minutes |
+| Criteria            | Examples             | Response Time |
+| ------------------- | -------------------- | ------------- |
+| Feature degradation | AI service errors    | < 15 minutes  |
+| Partial outage      | Single endpoint down | < 15 minutes  |
+| Performance impact  | Response time > 5s   | < 30 minutes  |
+| User impact         | Login failures > 5%  | < 30 minutes  |
 
 **Major Error Query**
+
 ```promql
 # Major error conditions
 (
@@ -273,12 +290,12 @@ sum(rate(external_api_requests_total[5m])) by (service) * 100
 
 **Definition:** Errors with limited impact
 
-| Criteria | Examples | Response Time |
-|----------|----------|---------------|
-| Single user impact | Individual request failure | Business hours |
-| Non-critical feature | Export function error | Next business day |
-| Warning conditions | Cache miss rate high | Monitor |
-| Cosmetic issues | UI rendering error | Backlog |
+| Criteria             | Examples                   | Response Time     |
+| -------------------- | -------------------------- | ----------------- |
+| Single user impact   | Individual request failure | Business hours    |
+| Non-critical feature | Export function error      | Next business day |
+| Warning conditions   | Cache miss rate high       | Monitor           |
+| Cosmetic issues      | UI rendering error         | Backlog           |
 
 ---
 
@@ -289,12 +306,14 @@ sum(rate(external_api_requests_total[5m])) by (service) * 100
 #### Error Rate Over Time
 
 **Hourly Error Trend**
+
 ```promql
 # Hourly error rate trend (for past 24h graph)
 sum(increase(http_requests_total{status=~"5.."}[1h]))
 ```
 
 **Daily Error Comparison**
+
 ```promql
 # Today vs yesterday error rate
 sum(rate(http_requests_total{status=~"5.."}[5m])) /
@@ -302,6 +321,7 @@ sum(rate(http_requests_total{status=~"5.."}[5m] offset 24h))
 ```
 
 **Week Over Week Trend**
+
 ```promql
 # This week vs last week
 sum(increase(http_requests_total{status=~"5.."}[7d])) /
@@ -312,14 +332,15 @@ sum(increase(http_requests_total{status=~"5.."}[7d] offset 7d))
 
 #### Time-Based Patterns
 
-| Pattern | Indicator | Investigation |
-|---------|-----------|---------------|
-| Peak hour errors | Errors spike at 10am, 2pm | Capacity issues |
-| Nightly errors | Errors spike at midnight | Batch job issues |
-| Weekend patterns | Different error profile | Different user behavior |
-| Deploy-related | Errors after deployments | Code or config issue |
+| Pattern          | Indicator                 | Investigation           |
+| ---------------- | ------------------------- | ----------------------- |
+| Peak hour errors | Errors spike at 10am, 2pm | Capacity issues         |
+| Nightly errors   | Errors spike at midnight  | Batch job issues        |
+| Weekend patterns | Different error profile   | Different user behavior |
+| Deploy-related   | Errors after deployments  | Code or config issue    |
 
 **Peak Hour Analysis**
+
 ```promql
 # Error rate by hour of day
 sum(rate(http_requests_total{status=~"5.."}[5m])) by (hour_of_day)
@@ -328,12 +349,14 @@ sum(rate(http_requests_total{status=~"5.."}[5m])) by (hour_of_day)
 #### Endpoint Patterns
 
 **Most Error-Prone Endpoints**
+
 ```promql
 # Top 10 endpoints by error count
 topk(10, sum(increase(http_requests_total{status=~"5.."}[24h])) by (endpoint))
 ```
 
 **Error Hotspots**
+
 ```promql
 # Endpoints with highest error percentage
 topk(10,
@@ -366,13 +389,13 @@ Where:
 
 #### MTTR Tracking Dashboard
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| MTTD (Detection) | < 5 min | Alert timestamp - Error start time |
-| MTTI (Investigation) | < 15 min | RCA start - Alert timestamp |
-| MTTF (Fix) | < 30 min | Fix deployed - RCA start |
-| MTTV (Verification) | < 10 min | Verification - Fix deployed |
-| **Total MTTR** | **< 60 min** | Resolution - Error start |
+| Metric               | Target       | Measurement                        |
+| -------------------- | ------------ | ---------------------------------- |
+| MTTD (Detection)     | < 5 min      | Alert timestamp - Error start time |
+| MTTI (Investigation) | < 15 min     | RCA start - Alert timestamp        |
+| MTTF (Fix)           | < 30 min     | Fix deployed - RCA start           |
+| MTTV (Verification)  | < 10 min     | Verification - Fix deployed        |
+| **Total MTTR**       | **< 60 min** | Resolution - Error start           |
 
 #### MTTR Calculation
 
@@ -383,11 +406,11 @@ avg(pagerduty_incident_resolve_time_seconds) / 60  # in minutes
 
 #### MTTR Targets by Severity
 
-| Severity | Target MTTR | Escalation |
-|----------|-------------|------------|
-| Critical | < 30 min | Immediate page |
-| Major | < 2 hours | Alert within 15 min |
-| Minor | < 24 hours | Business hours |
+| Severity | Target MTTR | Escalation          |
+| -------- | ----------- | ------------------- |
+| Critical | < 30 min    | Immediate page      |
+| Major    | < 2 hours   | Alert within 15 min |
+| Minor    | < 24 hours  | Business hours      |
 
 ---
 
@@ -397,12 +420,12 @@ avg(pagerduty_incident_resolve_time_seconds) / 60  # in minutes
 
 #### Service Level Objectives
 
-| Service | SLO | Error Budget (monthly) |
-|---------|-----|------------------------|
-| API Availability | 99.9% | 43.2 minutes |
-| API Latency (p99 < 1s) | 99.5% | 3.6 hours |
-| AI Service Availability | 99.5% | 3.6 hours |
-| Design Load Success | 99.0% | 7.2 hours |
+| Service                 | SLO   | Error Budget (monthly) |
+| ----------------------- | ----- | ---------------------- |
+| API Availability        | 99.9% | 43.2 minutes           |
+| API Latency (p99 < 1s)  | 99.5% | 3.6 hours              |
+| AI Service Availability | 99.5% | 3.6 hours              |
+| Design Load Success     | 99.0% | 7.2 hours              |
 
 #### Error Budget Calculation
 
@@ -416,6 +439,7 @@ Error Budget = 0.001 x 43,200 = 43.2 minutes
 #### Error Budget Consumption
 
 **Current Error Budget Usage**
+
 ```promql
 # Error budget consumed (percentage)
 (1 - (
@@ -425,6 +449,7 @@ Error Budget = 0.001 x 43,200 = 43.2 minutes
 ```
 
 **Error Budget Burn Rate**
+
 ```promql
 # Burn rate (1.0 = on track, >1.0 = burning too fast)
 (1 - (
@@ -435,12 +460,12 @@ Error Budget = 0.001 x 43,200 = 43.2 minutes
 
 #### Error Budget Alert Thresholds
 
-| Condition | Action |
-|-----------|--------|
-| Budget > 50% consumed in first week | Review recent changes |
-| Budget > 75% consumed | Freeze non-critical deployments |
-| Budget exhausted | Emergency review, postmortem required |
-| Budget burn rate > 2x | Page on-call engineer |
+| Condition                           | Action                                |
+| ----------------------------------- | ------------------------------------- |
+| Budget > 50% consumed in first week | Review recent changes                 |
+| Budget > 75% consumed               | Freeze non-critical deployments       |
+| Budget exhausted                    | Emergency review, postmortem required |
+| Budget burn rate > 2x               | Page on-call engineer                 |
 
 ---
 
@@ -462,67 +487,67 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value | humanizePercentage }}"
-          runbook_url: "https://runbooks.kitchenxpert.internal/high-error-rate"
+          summary: 'High error rate detected'
+          description: 'Error rate is {{ $value | humanizePercentage }}'
+          runbook_url: 'https://runbooks.kitchenxpert.internal/high-error-rate'
 ```
 
 #### Error Spike Detection
 
 ```yaml
-      - alert: ErrorRateSpike
-        expr: |
-          (sum(rate(http_requests_total{status=~"5.."}[5m])) /
-          sum(rate(http_requests_total{status=~"5.."}[5m] offset 1h))) > 3
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Error rate spike detected"
-          description: "Error rate is {{ $value }}x higher than 1 hour ago"
+- alert: ErrorRateSpike
+  expr: |
+    (sum(rate(http_requests_total{status=~"5.."}[5m])) /
+    sum(rate(http_requests_total{status=~"5.."}[5m] offset 1h))) > 3
+  for: 5m
+  labels:
+    severity: warning
+  annotations:
+    summary: 'Error rate spike detected'
+    description: 'Error rate is {{ $value }}x higher than 1 hour ago'
 ```
 
 #### Critical Service Errors
 
 ```yaml
-      - alert: CriticalServiceDown
-        expr: |
-          sum(rate(http_requests_total{status="503", service="backend"}[1m])) > 0.1
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Critical service returning 503"
-          description: "Backend service is returning 503 errors"
+- alert: CriticalServiceDown
+  expr: |
+    sum(rate(http_requests_total{status="503", service="backend"}[1m])) > 0.1
+  for: 1m
+  labels:
+    severity: critical
+  annotations:
+    summary: 'Critical service returning 503'
+    description: 'Backend service is returning 503 errors'
 ```
 
 #### Database Connection Errors
 
 ```yaml
-      - alert: DatabaseConnectionErrors
-        expr: |
-          rate(pg_errors_total{type="connection"}[5m]) > 0.1
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Database connection errors"
-          description: "PostgreSQL connection errors detected"
+- alert: DatabaseConnectionErrors
+  expr: |
+    rate(pg_errors_total{type="connection"}[5m]) > 0.1
+  for: 2m
+  labels:
+    severity: critical
+  annotations:
+    summary: 'Database connection errors'
+    description: 'PostgreSQL connection errors detected'
 ```
 
 #### External Service Failures
 
 ```yaml
-      - alert: ExternalServiceFailure
-        expr: |
-          sum(rate(external_api_errors_total[5m])) by (service) /
-          sum(rate(external_api_requests_total[5m])) by (service) > 0.1
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "External service {{ $labels.service }} failing"
-          description: "Error rate: {{ $value | humanizePercentage }}"
+- alert: ExternalServiceFailure
+  expr: |
+    sum(rate(external_api_errors_total[5m])) by (service) /
+    sum(rate(external_api_requests_total[5m])) by (service) > 0.1
+  for: 5m
+  labels:
+    severity: warning
+  annotations:
+    summary: 'External service {{ $labels.service }} failing'
+    description: 'Error rate: {{ $value | humanizePercentage }}'
 ```
 
 ### Alert Routing Rules
@@ -581,4 +606,5 @@ route:
 
 ---
 
-*For questions about error metrics, contact the SRE team at sre@kitchenxpert.com*
+_For questions about error metrics, contact the SRE team at
+sre@kitchenxpert.com_

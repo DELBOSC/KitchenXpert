@@ -30,56 +30,80 @@
         {
           "value": "modern",
           "label": { "en": "Modern", "fr": "Moderne" },
-          "description": { "en": "Clean lines, minimalist, sleek finishes", "fr": "Lignes épurées, minimaliste, finitions élégantes" },
+          "description": {
+            "en": "Clean lines, minimalist, sleek finishes",
+            "fr": "Lignes épurées, minimaliste, finitions élégantes"
+          },
           "image": "/images/styles/modern-kitchen.jpg",
           "tags": ["handleless", "high-gloss", "integrated-appliances"]
         },
         {
           "value": "contemporary",
           "label": { "en": "Contemporary", "fr": "Contemporain" },
-          "description": { "en": "Current trends, mixed materials, bold accents", "fr": "Tendances actuelles, matériaux mixtes, accents audacieux" },
+          "description": {
+            "en": "Current trends, mixed materials, bold accents",
+            "fr": "Tendances actuelles, matériaux mixtes, accents audacieux"
+          },
           "image": "/images/styles/contemporary-kitchen.jpg",
           "tags": ["mixed-materials", "statement-lighting", "open-shelving"]
         },
         {
           "value": "traditional",
           "label": { "en": "Traditional", "fr": "Traditionnel" },
-          "description": { "en": "Classic details, ornate moldings, timeless elegance", "fr": "Détails classiques, moulures ornées, élégance intemporelle" },
+          "description": {
+            "en": "Classic details, ornate moldings, timeless elegance",
+            "fr": "Détails classiques, moulures ornées, élégance intemporelle"
+          },
           "image": "/images/styles/traditional-kitchen.jpg",
           "tags": ["raised-panel", "crown-molding", "decorative-hardware"]
         },
         {
           "value": "transitional",
           "label": { "en": "Transitional", "fr": "Transitionnel" },
-          "description": { "en": "Blend of traditional and contemporary", "fr": "Mélange de traditionnel et contemporain" },
+          "description": {
+            "en": "Blend of traditional and contemporary",
+            "fr": "Mélange de traditionnel et contemporain"
+          },
           "image": "/images/styles/transitional-kitchen.jpg",
           "tags": ["shaker-style", "neutral-palette", "balanced"]
         },
         {
           "value": "farmhouse",
           "label": { "en": "Farmhouse", "fr": "Campagne" },
-          "description": { "en": "Rustic charm, natural materials, cozy feel", "fr": "Charme rustique, matériaux naturels, ambiance chaleureuse" },
+          "description": {
+            "en": "Rustic charm, natural materials, cozy feel",
+            "fr": "Charme rustique, matériaux naturels, ambiance chaleureuse"
+          },
           "image": "/images/styles/farmhouse-kitchen.jpg",
           "tags": ["apron-sink", "open-shelving", "reclaimed-wood"]
         },
         {
           "value": "industrial",
           "label": { "en": "Industrial", "fr": "Industriel" },
-          "description": { "en": "Raw materials, exposed elements, urban edge", "fr": "Matériaux bruts, éléments exposés, style urbain" },
+          "description": {
+            "en": "Raw materials, exposed elements, urban edge",
+            "fr": "Matériaux bruts, éléments exposés, style urbain"
+          },
           "image": "/images/styles/industrial-kitchen.jpg",
           "tags": ["metal-accents", "exposed-brick", "concrete"]
         },
         {
           "value": "scandinavian",
           "label": { "en": "Scandinavian", "fr": "Scandinave" },
-          "description": { "en": "Light, airy, functional simplicity", "fr": "Lumineux, aéré, simplicité fonctionnelle" },
+          "description": {
+            "en": "Light, airy, functional simplicity",
+            "fr": "Lumineux, aéré, simplicité fonctionnelle"
+          },
           "image": "/images/styles/scandinavian-kitchen.jpg",
           "tags": ["white-base", "natural-wood", "minimalist"]
         },
         {
           "value": "mediterranean",
           "label": { "en": "Mediterranean", "fr": "Méditerranéen" },
-          "description": { "en": "Warm colors, textured walls, artisan tiles", "fr": "Couleurs chaudes, murs texturés, carreaux artisanaux" },
+          "description": {
+            "en": "Warm colors, textured walls, artisan tiles",
+            "fr": "Couleurs chaudes, murs texturés, carreaux artisanaux"
+          },
           "image": "/images/styles/mediterranean-kitchen.jpg",
           "tags": ["terracotta", "hand-painted-tiles", "arched-details"]
         }
@@ -102,42 +126,60 @@
         {
           "value": "neutral-light",
           "label": { "en": "Light Neutrals", "fr": "Neutres clairs" },
-          "description": { "en": "Whites, creams, light grays", "fr": "Blancs, crèmes, gris clairs" },
+          "description": {
+            "en": "Whites, creams, light grays",
+            "fr": "Blancs, crèmes, gris clairs"
+          },
           "image": "/images/colors/neutral-light.jpg",
           "tags": ["bright", "airy", "timeless"]
         },
         {
           "value": "neutral-warm",
           "label": { "en": "Warm Neutrals", "fr": "Neutres chauds" },
-          "description": { "en": "Beiges, taupes, warm grays", "fr": "Beiges, taupes, gris chauds" },
+          "description": {
+            "en": "Beiges, taupes, warm grays",
+            "fr": "Beiges, taupes, gris chauds"
+          },
           "image": "/images/colors/neutral-warm.jpg",
           "tags": ["cozy", "inviting", "classic"]
         },
         {
           "value": "neutral-dark",
           "label": { "en": "Dark & Moody", "fr": "Sombre et intense" },
-          "description": { "en": "Charcoals, navy, deep greens", "fr": "Anthracites, bleu marine, verts profonds" },
+          "description": {
+            "en": "Charcoals, navy, deep greens",
+            "fr": "Anthracites, bleu marine, verts profonds"
+          },
           "image": "/images/colors/neutral-dark.jpg",
           "tags": ["dramatic", "sophisticated", "bold"]
         },
         {
           "value": "two-tone",
           "label": { "en": "Two-Tone", "fr": "Bicolore" },
-          "description": { "en": "Contrasting upper and lower cabinets", "fr": "Armoires hautes et basses contrastées" },
+          "description": {
+            "en": "Contrasting upper and lower cabinets",
+            "fr": "Armoires hautes et basses contrastées"
+          },
           "image": "/images/colors/two-tone.jpg",
           "tags": ["modern", "dynamic", "layered"]
         },
         {
           "value": "colorful",
           "label": { "en": "Bold & Colorful", "fr": "Audacieux et coloré" },
-          "description": { "en": "Vibrant colors, statement pieces", "fr": "Couleurs vibrantes, pièces maîtresses" },
+          "description": {
+            "en": "Vibrant colors, statement pieces",
+            "fr": "Couleurs vibrantes, pièces maîtresses"
+          },
           "image": "/images/colors/colorful.jpg",
           "tags": ["personality", "unique", "expressive"]
         },
         {
           "value": "natural",
           "label": { "en": "Natural Wood Tones", "fr": "Tons bois naturel" },
-          "description": { "en": "Wood grains, organic feel", "fr": "Veines du bois, ambiance organique" },
+          "description": {
+            "en": "Wood grains, organic feel",
+            "fr": "Veines du bois, ambiance organique"
+          },
           "image": "/images/colors/natural-wood.jpg",
           "tags": ["organic", "warm", "textured"]
         }
@@ -160,42 +202,60 @@
         {
           "value": "flat-panel",
           "label": { "en": "Flat Panel (Slab)", "fr": "Panneau plat" },
-          "description": { "en": "Smooth, modern, no detailing", "fr": "Lisse, moderne, sans détails" },
+          "description": {
+            "en": "Smooth, modern, no detailing",
+            "fr": "Lisse, moderne, sans détails"
+          },
           "image": "/images/cabinets/flat-panel.jpg",
           "tags": ["modern", "minimalist", "easy-clean"]
         },
         {
           "value": "shaker",
           "label": { "en": "Shaker", "fr": "Shaker" },
-          "description": { "en": "Simple frame, recessed panel, versatile", "fr": "Cadre simple, panneau encastré, polyvalent" },
+          "description": {
+            "en": "Simple frame, recessed panel, versatile",
+            "fr": "Cadre simple, panneau encastré, polyvalent"
+          },
           "image": "/images/cabinets/shaker.jpg",
           "tags": ["transitional", "classic", "versatile"]
         },
         {
           "value": "raised-panel",
           "label": { "en": "Raised Panel", "fr": "Panneau surélevé" },
-          "description": { "en": "Traditional, dimensional, elegant", "fr": "Traditionnel, dimensionnel, élégant" },
+          "description": {
+            "en": "Traditional, dimensional, elegant",
+            "fr": "Traditionnel, dimensionnel, élégant"
+          },
           "image": "/images/cabinets/raised-panel.jpg",
           "tags": ["traditional", "formal", "detailed"]
         },
         {
           "value": "beadboard",
           "label": { "en": "Beadboard", "fr": "Lambris" },
-          "description": { "en": "Vertical grooves, cottage style", "fr": "Rainures verticales, style cottage" },
+          "description": {
+            "en": "Vertical grooves, cottage style",
+            "fr": "Rainures verticales, style cottage"
+          },
           "image": "/images/cabinets/beadboard.jpg",
           "tags": ["farmhouse", "cottage", "charming"]
         },
         {
           "value": "glass-front",
           "label": { "en": "Glass Front", "fr": "Vitré" },
-          "description": { "en": "Display cabinets, open feel", "fr": "Armoires vitrines, impression d'ouverture" },
+          "description": {
+            "en": "Display cabinets, open feel",
+            "fr": "Armoires vitrines, impression d'ouverture"
+          },
           "image": "/images/cabinets/glass-front.jpg",
           "tags": ["display", "elegant", "airy"]
         },
         {
           "value": "louvered",
           "label": { "en": "Louvered", "fr": "À persiennes" },
-          "description": { "en": "Horizontal slats, tropical feel", "fr": "Lamelles horizontales, ambiance tropicale" },
+          "description": {
+            "en": "Horizontal slats, tropical feel",
+            "fr": "Lamelles horizontales, ambiance tropicale"
+          },
           "image": "/images/cabinets/louvered.jpg",
           "tags": ["tropical", "ventilated", "unique"]
         }
@@ -218,56 +278,80 @@
         {
           "value": "quartz",
           "label": { "en": "Quartz", "fr": "Quartz" },
-          "description": { "en": "Engineered stone, low maintenance, durable", "fr": "Pierre reconstituée, faible entretien, durable" },
+          "description": {
+            "en": "Engineered stone, low maintenance, durable",
+            "fr": "Pierre reconstituée, faible entretien, durable"
+          },
           "image": "/images/countertops/quartz.jpg",
           "tags": ["durable", "low-maintenance", "consistent-pattern"]
         },
         {
           "value": "granite",
           "label": { "en": "Granite", "fr": "Granit" },
-          "description": { "en": "Natural stone, unique patterns, heat resistant", "fr": "Pierre naturelle, motifs uniques, résistant à la chaleur" },
+          "description": {
+            "en": "Natural stone, unique patterns, heat resistant",
+            "fr": "Pierre naturelle, motifs uniques, résistant à la chaleur"
+          },
           "image": "/images/countertops/granite.jpg",
           "tags": ["natural", "unique", "heat-resistant"]
         },
         {
           "value": "marble",
           "label": { "en": "Marble", "fr": "Marbre" },
-          "description": { "en": "Luxurious, classic, requires maintenance", "fr": "Luxueux, classique, nécessite de l'entretien" },
+          "description": {
+            "en": "Luxurious, classic, requires maintenance",
+            "fr": "Luxueux, classique, nécessite de l'entretien"
+          },
           "image": "/images/countertops/marble.jpg",
           "tags": ["luxury", "elegant", "high-maintenance"]
         },
         {
           "value": "butcher-block",
           "label": { "en": "Butcher Block", "fr": "Billot de bois" },
-          "description": { "en": "Warm wood, great for food prep", "fr": "Bois chaleureux, idéal pour la préparation" },
+          "description": {
+            "en": "Warm wood, great for food prep",
+            "fr": "Bois chaleureux, idéal pour la préparation"
+          },
           "image": "/images/countertops/butcher-block.jpg",
           "tags": ["warm", "natural", "functional"]
         },
         {
           "value": "solid-surface",
           "label": { "en": "Solid Surface", "fr": "Surface solide" },
-          "description": { "en": "Seamless, repairable, many colors", "fr": "Sans joint, réparable, nombreuses couleurs" },
+          "description": {
+            "en": "Seamless, repairable, many colors",
+            "fr": "Sans joint, réparable, nombreuses couleurs"
+          },
           "image": "/images/countertops/solid-surface.jpg",
           "tags": ["seamless", "versatile", "repairable"]
         },
         {
           "value": "concrete",
           "label": { "en": "Concrete", "fr": "Béton" },
-          "description": { "en": "Industrial, customizable, unique", "fr": "Industriel, personnalisable, unique" },
+          "description": {
+            "en": "Industrial, customizable, unique",
+            "fr": "Industriel, personnalisable, unique"
+          },
           "image": "/images/countertops/concrete.jpg",
           "tags": ["industrial", "custom", "statement"]
         },
         {
           "value": "laminate",
           "label": { "en": "Laminate", "fr": "Stratifié" },
-          "description": { "en": "Budget-friendly, many designs, easy install", "fr": "Économique, nombreux designs, installation facile" },
+          "description": {
+            "en": "Budget-friendly, many designs, easy install",
+            "fr": "Économique, nombreux designs, installation facile"
+          },
           "image": "/images/countertops/laminate.jpg",
           "tags": ["affordable", "variety", "practical"]
         },
         {
           "value": "stainless-steel",
           "label": { "en": "Stainless Steel", "fr": "Acier inoxydable" },
-          "description": { "en": "Professional, hygienic, heat resistant", "fr": "Professionnel, hygiénique, résistant à la chaleur" },
+          "description": {
+            "en": "Professional, hygienic, heat resistant",
+            "fr": "Professionnel, hygiénique, résistant à la chaleur"
+          },
           "image": "/images/countertops/stainless-steel.jpg",
           "tags": ["professional", "durable", "modern"]
         }
@@ -290,35 +374,50 @@
         {
           "value": "handleless",
           "label": { "en": "Handleless", "fr": "Sans poignées" },
-          "description": { "en": "Push-to-open or integrated grip", "fr": "Ouverture par pression ou prise intégrée" },
+          "description": {
+            "en": "Push-to-open or integrated grip",
+            "fr": "Ouverture par pression ou prise intégrée"
+          },
           "image": "/images/hardware/handleless.jpg",
           "tags": ["modern", "sleek", "minimalist"]
         },
         {
           "value": "bar-pulls",
           "label": { "en": "Bar Pulls", "fr": "Tirettes" },
-          "description": { "en": "Long, linear, contemporary", "fr": "Longues, linéaires, contemporaines" },
+          "description": {
+            "en": "Long, linear, contemporary",
+            "fr": "Longues, linéaires, contemporaines"
+          },
           "image": "/images/hardware/bar-pulls.jpg",
           "tags": ["contemporary", "versatile", "ergonomic"]
         },
         {
           "value": "knobs",
           "label": { "en": "Knobs", "fr": "Boutons" },
-          "description": { "en": "Classic round or decorative shapes", "fr": "Formes rondes classiques ou décoratives" },
+          "description": {
+            "en": "Classic round or decorative shapes",
+            "fr": "Formes rondes classiques ou décoratives"
+          },
           "image": "/images/hardware/knobs.jpg",
           "tags": ["traditional", "classic", "charming"]
         },
         {
           "value": "cup-pulls",
           "label": { "en": "Cup Pulls", "fr": "Poignées coquille" },
-          "description": { "en": "Bin-style, vintage charm", "fr": "Style tiroir, charme vintage" },
+          "description": {
+            "en": "Bin-style, vintage charm",
+            "fr": "Style tiroir, charme vintage"
+          },
           "image": "/images/hardware/cup-pulls.jpg",
           "tags": ["vintage", "farmhouse", "character"]
         },
         {
           "value": "mixed",
           "label": { "en": "Mixed Hardware", "fr": "Mixte" },
-          "description": { "en": "Combination of styles for interest", "fr": "Combinaison de styles pour plus d'intérêt" },
+          "description": {
+            "en": "Combination of styles for interest",
+            "fr": "Combinaison de styles pour plus d'intérêt"
+          },
           "image": "/images/hardware/mixed.jpg",
           "tags": ["eclectic", "personalized", "layered"]
         }
@@ -338,13 +437,41 @@
         "fr": "Quelle finition de quincaillerie préférez-vous ?"
       },
       "options": [
-        { "value": "matte-black", "label": { "en": "Matte Black", "fr": "Noir mat" }, "tags": ["modern", "bold"] },
-        { "value": "brushed-nickel", "label": { "en": "Brushed Nickel", "fr": "Nickel brossé" }, "tags": ["versatile", "classic"] },
-        { "value": "polished-chrome", "label": { "en": "Polished Chrome", "fr": "Chrome poli" }, "tags": ["sleek", "modern"] },
-        { "value": "brass", "label": { "en": "Brass/Gold", "fr": "Laiton/Or" }, "tags": ["warm", "luxurious"] },
-        { "value": "oil-rubbed-bronze", "label": { "en": "Oil-Rubbed Bronze", "fr": "Bronze huilé" }, "tags": ["traditional", "warm"] },
-        { "value": "copper", "label": { "en": "Copper", "fr": "Cuivre" }, "tags": ["artisan", "warm"] },
-        { "value": "stainless", "label": { "en": "Stainless Steel", "fr": "Acier inoxydable" }, "tags": ["professional", "neutral"] }
+        {
+          "value": "matte-black",
+          "label": { "en": "Matte Black", "fr": "Noir mat" },
+          "tags": ["modern", "bold"]
+        },
+        {
+          "value": "brushed-nickel",
+          "label": { "en": "Brushed Nickel", "fr": "Nickel brossé" },
+          "tags": ["versatile", "classic"]
+        },
+        {
+          "value": "polished-chrome",
+          "label": { "en": "Polished Chrome", "fr": "Chrome poli" },
+          "tags": ["sleek", "modern"]
+        },
+        {
+          "value": "brass",
+          "label": { "en": "Brass/Gold", "fr": "Laiton/Or" },
+          "tags": ["warm", "luxurious"]
+        },
+        {
+          "value": "oil-rubbed-bronze",
+          "label": { "en": "Oil-Rubbed Bronze", "fr": "Bronze huilé" },
+          "tags": ["traditional", "warm"]
+        },
+        {
+          "value": "copper",
+          "label": { "en": "Copper", "fr": "Cuivre" },
+          "tags": ["artisan", "warm"]
+        },
+        {
+          "value": "stainless",
+          "label": { "en": "Stainless Steel", "fr": "Acier inoxydable" },
+          "tags": ["professional", "neutral"]
+        }
       ],
       "scoring": {
         "weight": 2,
@@ -399,7 +526,10 @@
         },
         {
           "value": "slab",
-          "label": { "en": "Full Slab (Same as Counter)", "fr": "Dalle complète" },
+          "label": {
+            "en": "Full Slab (Same as Counter)",
+            "fr": "Dalle complète"
+          },
           "image": "/images/backsplash/slab.jpg",
           "tags": ["seamless", "luxurious", "continuous"]
         }
@@ -475,13 +605,56 @@
         "fr": "Sélectionnez tout ce qui s'applique"
       },
       "options": [
-        { "value": "pendant-lights", "label": { "en": "Statement Pendant Lights", "fr": "Suspensions décoratives" }, "tags": ["focal-point", "decorative"] },
-        { "value": "under-cabinet", "label": { "en": "Under-Cabinet Lighting", "fr": "Éclairage sous armoire" }, "tags": ["task-lighting", "practical"] },
-        { "value": "recessed", "label": { "en": "Recessed/Can Lights", "fr": "Spots encastrés" }, "tags": ["clean-look", "ambient"] },
-        { "value": "in-cabinet", "label": { "en": "In-Cabinet Lighting", "fr": "Éclairage intérieur armoire" }, "tags": ["functional", "display"] },
-        { "value": "toe-kick", "label": { "en": "Toe Kick Lighting", "fr": "Éclairage de plinthe" }, "tags": ["ambient", "modern"] },
-        { "value": "natural-light", "label": { "en": "Maximize Natural Light", "fr": "Maximiser lumière naturelle" }, "tags": ["skylights", "windows"] },
-        { "value": "smart-lighting", "label": { "en": "Smart Lighting Controls", "fr": "Éclairage intelligent" }, "tags": ["technology", "customizable"] }
+        {
+          "value": "pendant-lights",
+          "label": {
+            "en": "Statement Pendant Lights",
+            "fr": "Suspensions décoratives"
+          },
+          "tags": ["focal-point", "decorative"]
+        },
+        {
+          "value": "under-cabinet",
+          "label": {
+            "en": "Under-Cabinet Lighting",
+            "fr": "Éclairage sous armoire"
+          },
+          "tags": ["task-lighting", "practical"]
+        },
+        {
+          "value": "recessed",
+          "label": { "en": "Recessed/Can Lights", "fr": "Spots encastrés" },
+          "tags": ["clean-look", "ambient"]
+        },
+        {
+          "value": "in-cabinet",
+          "label": {
+            "en": "In-Cabinet Lighting",
+            "fr": "Éclairage intérieur armoire"
+          },
+          "tags": ["functional", "display"]
+        },
+        {
+          "value": "toe-kick",
+          "label": { "en": "Toe Kick Lighting", "fr": "Éclairage de plinthe" },
+          "tags": ["ambient", "modern"]
+        },
+        {
+          "value": "natural-light",
+          "label": {
+            "en": "Maximize Natural Light",
+            "fr": "Maximiser lumière naturelle"
+          },
+          "tags": ["skylights", "windows"]
+        },
+        {
+          "value": "smart-lighting",
+          "label": {
+            "en": "Smart Lighting Controls",
+            "fr": "Éclairage intelligent"
+          },
+          "tags": ["technology", "customizable"]
+        }
       ],
       "scoring": {
         "weight": 2,

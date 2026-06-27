@@ -74,20 +74,21 @@ export class QuickImporter {
 
     // 4. Appliquer le mapping
     const mapper = new DeclarativeMapper(mappingConfig);
-    const mappedProducts = rawData.map((row, index) => {
-      try {
-        return mapper.map(row, options.providerId || 'unknown');
-      } catch (error) {
-        console.warn(`⚠️  Ligne ${index + 1}: ${error.message}`);
-        return null;
-      }
-    }).filter((p): p is CatalogItem => p !== null);
+    const mappedProducts = rawData
+      .map((row, index) => {
+        try {
+          return mapper.map(row, options.providerId || 'unknown');
+        } catch (error) {
+          console.warn(`⚠️  Ligne ${index + 1}: ${error.message}`);
+          return null;
+        }
+      })
+      .filter((p): p is CatalogItem => p !== null);
 
     // 5. Générer le preview avec validation
     console.log('🔍 Validation des produits...\n');
-    const preview = await this.previewManager.generatePreview(
-      rawData,
-      (row) => mapper.map(row, options.providerId || 'unknown')
+    const preview = await this.previewManager.generatePreview(rawData, (row) =>
+      mapper.map(row, options.providerId || 'unknown')
     );
 
     // 6. Afficher le résumé
@@ -97,7 +98,7 @@ export class QuickImporter {
     if (!options.autoConfirm && !options.dryRun) {
       const confirmed = await this.askConfirmation();
       if (!confirmed) {
-        console.log('\n❌ Import annulé par l\'utilisateur');
+        console.log("\n❌ Import annulé par l'utilisateur");
         return {
           totalRows: rawData.length,
           validProducts: 0,
@@ -112,7 +113,7 @@ export class QuickImporter {
     let importedCount = 0;
     if (!options.dryRun) {
       importedCount = await this.saveProducts(
-        preview.validProducts.map(p => p.mapped),
+        preview.validProducts.map((p) => p.mapped),
         options
       );
       console.log(`\n✅ ${importedCount} produits importés avec succès !`);
@@ -178,12 +179,12 @@ export class QuickImporter {
     const firstLine = content.split('\n')[0];
 
     const delimiters = [',', ';', '\t', '|'];
-    const counts = delimiters.map(d => ({
+    const counts = delimiters.map((d) => ({
       delimiter: d,
       count: (firstLine.match(new RegExp(`\\${d}`, 'g')) || []).length,
     }));
 
-    const best = counts.reduce((max, curr) => curr.count > max.count ? curr : max);
+    const best = counts.reduce((max, curr) => (curr.count > max.count ? curr : max));
     return best.delimiter;
   }
 
@@ -247,16 +248,13 @@ export class QuickImporter {
    */
   private loadXml(filePath: string): any[] {
     // TODO: Implémenter le parsing XML
-    throw new Error('❌ Support XML à venir - utilisez JSON ou CSV pour l\'instant');
+    throw new Error("❌ Support XML à venir - utilisez JSON ou CSV pour l'instant");
   }
 
   /**
    * Obtenir la configuration de mapping
    */
-  private async getMappingConfig(
-    options: QuickImportOptions,
-    sampleRow: any
-  ): Promise<any> {
+  private async getMappingConfig(options: QuickImportOptions, sampleRow: any): Promise<any> {
     // 1. Si un template est spécifié, le charger
     if (options.template) {
       return this.loadTemplate(options.template);
@@ -280,11 +278,7 @@ export class QuickImporter {
    * Charger un template pré-configuré
    */
   private loadTemplate(templateName: string): any {
-    const templatePath = path.join(
-      __dirname,
-      'catalog-templates',
-      `${templateName}-template.json`
-    );
+    const templatePath = path.join(__dirname, 'catalog-templates', `${templateName}-template.json`);
 
     if (!fs.existsSync(templatePath)) {
       throw new Error(`❌ Template introuvable: ${templateName}`);
@@ -298,7 +292,7 @@ export class QuickImporter {
    * Afficher le preview des produits
    */
   private displayPreview(preview: any): void {
-    console.log('📊 Résumé de l\'import:\n');
+    console.log("📊 Résumé de l'import:\n");
     console.log(`   ✅ Produits valides:   ${preview.stats.validCount}`);
     console.log(`   ❌ Produits invalides: ${preview.stats.invalidCount}`);
     console.log(`   ⚠️  Avertissements:    ${preview.stats.warningCount}`);
@@ -347,7 +341,7 @@ export class QuickImporter {
     });
 
     return new Promise((resolve) => {
-      readline.question('❓ Voulez-vous continuer l\'import ? (o/n): ', (answer: string) => {
+      readline.question("❓ Voulez-vous continuer l'import ? (o/n): ", (answer: string) => {
         readline.close();
         resolve(answer.toLowerCase() === 'o' || answer.toLowerCase() === 'y');
       });
@@ -361,12 +355,9 @@ export class QuickImporter {
     products: CatalogItem[],
     options: QuickImportOptions
   ): Promise<number> {
-    const outputPath = options.outputPath || path.join(
-      __dirname,
-      '..',
-      'imported-catalogs',
-      `import-${Date.now()}.json`
-    );
+    const outputPath =
+      options.outputPath ||
+      path.join(__dirname, '..', 'imported-catalogs', `import-${Date.now()}.json`);
 
     // Créer le dossier si nécessaire
     const outputDir = path.dirname(outputPath);
@@ -377,15 +368,19 @@ export class QuickImporter {
     // Sauvegarder les produits
     fs.writeFileSync(
       outputPath,
-      JSON.stringify({
-        metadata: {
-          importDate: new Date().toISOString(),
-          providerId: options.providerId || 'unknown',
-          sourceFile: path.basename(options.file),
-          productCount: products.length,
+      JSON.stringify(
+        {
+          metadata: {
+            importDate: new Date().toISOString(),
+            providerId: options.providerId || 'unknown',
+            sourceFile: path.basename(options.file),
+            productCount: products.length,
+          },
+          products,
         },
-        products,
-      }, null, 2),
+        null,
+        2
+      ),
       'utf-8'
     );
 
@@ -432,10 +427,10 @@ Formats supportés:
   }
 
   // Parser les arguments
-  const file = args.find(arg => !arg.startsWith('--')) || '';
-  const template = args.find(arg => arg.startsWith('--template='))?.split('=')[1];
-  const providerId = args.find(arg => arg.startsWith('--provider-id='))?.split('=')[1];
-  const outputPath = args.find(arg => arg.startsWith('--output='))?.split('=')[1];
+  const file = args.find((arg) => !arg.startsWith('--')) || '';
+  const template = args.find((arg) => arg.startsWith('--template='))?.split('=')[1];
+  const providerId = args.find((arg) => arg.startsWith('--provider-id='))?.split('=')[1];
+  const outputPath = args.find((arg) => arg.startsWith('--output='))?.split('=')[1];
   const autoConfirm = args.includes('--auto-confirm');
   const dryRun = args.includes('--dry-run');
 

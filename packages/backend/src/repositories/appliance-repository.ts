@@ -64,13 +64,13 @@ export class ApplianceRepository {
   async findById(id: string): Promise<Appliance | null> {
     return this.prisma.appliance.findUnique({
       where: { id, deletedAt: null },
-      include: { provider: true }
+      include: { provider: true },
     });
   }
 
   async findByBrandModel(brand: string, model: string): Promise<Appliance | null> {
     return this.prisma.appliance.findUnique({
-      where: { brand_model: { brand, model } }
+      where: { brand_model: { brand, model } },
     });
   }
 
@@ -92,21 +92,21 @@ export class ApplianceRepository {
         price: {
           ...(filters.minPrice && { gte: filters.minPrice }),
           ...(filters.maxPrice && { lte: filters.maxPrice }),
-        }
+        },
       }),
       ...(filters.hasSmart && { smartFeatures: { not: null } }),
       ...(filters.search && {
         OR: [
           { name: { contains: filters.search, mode: 'insensitive' as const } },
           { brand: { contains: filters.search, mode: 'insensitive' as const } },
-          { model: { contains: filters.search, mode: 'insensitive' as const } }
-        ]
+          { model: { contains: filters.search, mode: 'insensitive' as const } },
+        ],
       }),
     };
 
     const [data, total] = await Promise.all([
       this.prisma.appliance.findMany({ where, skip, take: limit, orderBy: { name: 'asc' } }),
-      this.prisma.appliance.count({ where })
+      this.prisma.appliance.count({ where }),
     ]);
 
     return { data, total, page, totalPages: Math.ceil(total / limit) };
@@ -115,14 +115,14 @@ export class ApplianceRepository {
   async findByType(type: string): Promise<Appliance[]> {
     return this.prisma.appliance.findMany({
       where: { type, deletedAt: null, isActive: true },
-      orderBy: [{ brand: 'asc' }, { name: 'asc' }]
+      orderBy: [{ brand: 'asc' }, { name: 'asc' }],
     });
   }
 
   async findByBrand(brand: string): Promise<Appliance[]> {
     return this.prisma.appliance.findMany({
       where: { brand: { equals: brand, mode: 'insensitive' }, deletedAt: null, isActive: true },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -135,13 +135,13 @@ export class ApplianceRepository {
         specifications: data.specifications as any,
         images: data.images as any,
         smartFeatures: data.smartFeatures as any,
-      }
+      },
     });
   }
 
   async createMany(appliances: CreateApplianceDto[]): Promise<{ count: number }> {
     return this.prisma.appliance.createMany({
-      data: appliances.map(a => ({
+      data: appliances.map((a) => ({
         ...a,
         currency: a.currency || 'EUR',
         features: a.features as any,
@@ -149,7 +149,7 @@ export class ApplianceRepository {
         images: a.images as any,
         smartFeatures: a.smartFeatures as any,
       })),
-      skipDuplicates: true
+      skipDuplicates: true,
     });
   }
 
@@ -162,14 +162,14 @@ export class ApplianceRepository {
         specifications: data.specifications as any,
         images: data.images as any,
         smartFeatures: data.smartFeatures as any,
-      }
+      },
     });
   }
 
   async delete(id: string): Promise<Appliance> {
     return this.prisma.appliance.update({
       where: { id },
-      data: { deletedAt: new Date(), isActive: false }
+      data: { deletedAt: new Date(), isActive: false },
     });
   }
 
@@ -180,7 +180,7 @@ export class ApplianceRepository {
         ...(filters.type && { type: filters.type }),
         ...(filters.brand && { brand: filters.brand }),
         ...(filters.isActive !== undefined && { isActive: filters.isActive }),
-      }
+      },
     });
   }
 
@@ -188,27 +188,27 @@ export class ApplianceRepository {
     const types = await this.prisma.appliance.findMany({
       where: { deletedAt: null, isActive: true },
       select: { type: true },
-      distinct: ['type']
+      distinct: ['type'],
     });
-    return types.map(t => t.type);
+    return types.map((t) => t.type);
   }
 
   async getBrands(): Promise<string[]> {
     const brands = await this.prisma.appliance.findMany({
       where: { deletedAt: null, isActive: true },
       select: { brand: true },
-      distinct: ['brand']
+      distinct: ['brand'],
     });
-    return brands.map(b => b.brand);
+    return brands.map((b) => b.brand);
   }
 
   async getEnergyRatings(): Promise<string[]> {
     const ratings = await this.prisma.appliance.findMany({
       where: { deletedAt: null, isActive: true, energyRating: { not: null } },
       select: { energyRating: true },
-      distinct: ['energyRating']
+      distinct: ['energyRating'],
     });
-    return ratings.map(r => r.energyRating).filter(Boolean) as string[];
+    return ratings.map((r) => r.energyRating).filter(Boolean) as string[];
   }
 
   async search(query: string, limit = 20): Promise<Appliance[]> {
@@ -220,10 +220,10 @@ export class ApplianceRepository {
           { name: { contains: query, mode: 'insensitive' } },
           { brand: { contains: query, mode: 'insensitive' } },
           { model: { contains: query, mode: 'insensitive' } },
-          { type: { contains: query, mode: 'insensitive' } }
-        ]
+          { type: { contains: query, mode: 'insensitive' } },
+        ],
       },
-      take: limit
+      take: limit,
     });
   }
 }

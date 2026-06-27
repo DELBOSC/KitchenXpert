@@ -119,7 +119,12 @@ export class ModelLoader {
       case 'base_cabinet':
       case 'base': {
         // Plinth (recessed base)
-        const plinth = this.createBox(width - 0.06, 0.1, depth - 0.03, this.darkenColor(color, 0.3));
+        const plinth = this.createBox(
+          width - 0.06,
+          0.1,
+          depth - 0.03,
+          this.darkenColor(color, 0.3)
+        );
         plinth.position.set(0, 0.05, 0.015);
         group.add(plinth);
 
@@ -129,8 +134,15 @@ export class ModelLoader {
         group.add(cabinet);
 
         // Worktop
-        const worktopMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.1 });
-        const worktop = new THREE.Mesh(new THREE.BoxGeometry(width + 0.025, 0.038, depth + 0.025), worktopMat);
+        const worktopMat = new THREE.MeshStandardMaterial({
+          color: 0x555555,
+          roughness: 0.3,
+          metalness: 0.1,
+        });
+        const worktop = new THREE.Mesh(
+          new THREE.BoxGeometry(width + 0.025, 0.038, depth + 0.025),
+          worktopMat
+        );
         worktop.position.set(0, height + 0.019, 0.0125);
         worktop.castShadow = true;
         worktop.receiveShadow = true;
@@ -148,13 +160,21 @@ export class ModelLoader {
       case 'tall_cabinet':
       case 'tall': {
         // Plinth
-        const plinth = this.createBox(width - 0.06, 0.1, depth - 0.03, this.darkenColor(color, 0.3));
+        const plinth = this.createBox(
+          width - 0.06,
+          0.1,
+          depth - 0.03,
+          this.darkenColor(color, 0.3)
+        );
         plinth.position.set(0, 0.05, 0.015);
         group.add(plinth);
 
         // Lower section with drawers
         const lowerH = Math.min(0.72, height * 0.35);
-        const lower = this.createCabinetBody(width, lowerH, depth, color, { hasDrawers: true, drawerCount: 3 });
+        const lower = this.createCabinetBody(width, lowerH, depth, color, {
+          hasDrawers: true,
+          drawerCount: 3,
+        });
         lower.position.y = 0.1;
         group.add(lower);
 
@@ -167,7 +187,12 @@ export class ModelLoader {
       }
 
       case 'sink': {
-        const plinthSink = this.createBox(width - 0.06, 0.1, depth - 0.03, this.darkenColor(color, 0.3));
+        const plinthSink = this.createBox(
+          width - 0.06,
+          0.1,
+          depth - 0.03,
+          this.darkenColor(color, 0.3)
+        );
         plinthSink.position.set(0, 0.05, 0.015);
         group.add(plinthSink);
 
@@ -229,10 +254,10 @@ export class ModelLoader {
 
         // Burner rings (4 burners, 2 sizes)
         const burnerConfigs: { x: number; z: number; r: number }[] = [
-          { x: -width / 4, z: -depth / 4, r: 0.09 },  // large
-          { x: width / 4, z: -depth / 4, r: 0.07 },   // small
-          { x: -width / 4, z: depth / 4, r: 0.07 },   // small
-          { x: width / 4, z: depth / 4, r: 0.09 },    // large
+          { x: -width / 4, z: -depth / 4, r: 0.09 }, // large
+          { x: width / 4, z: -depth / 4, r: 0.07 }, // small
+          { x: -width / 4, z: depth / 4, r: 0.07 }, // small
+          { x: width / 4, z: depth / 4, r: 0.09 }, // large
         ];
         for (const bc of burnerConfigs) {
           // Outer ring
@@ -326,7 +351,11 @@ export class ModelLoader {
         // LED strip at bottom front
         const led = new THREE.Mesh(
           new THREE.BoxGeometry(width * 0.6, 0.005, 0.01),
-          new THREE.MeshStandardMaterial({ color: 0xffffee, emissive: 0xffffcc, emissiveIntensity: 0.3 })
+          new THREE.MeshStandardMaterial({
+            color: 0xffffee,
+            emissive: 0xffffcc,
+            emissiveIntensity: 0.3,
+          })
         );
         led.position.set(0, height * 0.2, depth / 2 - 0.01);
         group.add(led);
@@ -391,11 +420,17 @@ export class ModelLoader {
     return this.cache.size;
   }
 
-  private createCabinetBody(w: number, h: number, d: number, color: number, options?: {
-    panelCount?: number;
-    hasDrawers?: boolean;
-    drawerCount?: number;
-  }): THREE.Group {
+  private createCabinetBody(
+    w: number,
+    h: number,
+    d: number,
+    color: number,
+    options?: {
+      panelCount?: number;
+      hasDrawers?: boolean;
+      drawerCount?: number;
+    }
+  ): THREE.Group {
     const group = new THREE.Group();
 
     // Main body with slight bevel — tag it so applyVisuals() can swap the

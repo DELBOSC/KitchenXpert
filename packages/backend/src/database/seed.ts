@@ -28,7 +28,7 @@ async function main(): Promise<void> {
     console.log('\n[Seed] Database is already up to date.');
   } else {
     console.log(`\n[Seed] Successfully executed ${result.executed.length} seed(s):`);
-    result.executed.forEach(id => console.log(`  - ${id}`));
+    result.executed.forEach((id) => console.log(`  - ${id}`));
   }
 
   await closeDatabase();

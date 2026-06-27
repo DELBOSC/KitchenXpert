@@ -17,13 +17,21 @@ import type * as YType from 'yjs' with { 'resolution-mode': 'import' };
 
 let yjsModule: typeof YType | null = null;
 async function loadYjs(): Promise<typeof YType> {
-  if (!yjsModule) {yjsModule = await import('yjs');}
+  if (!yjsModule) {
+    yjsModule = await import('yjs');
+  }
   return yjsModule;
 }
 
 const USER_COLORS = [
-  '#3b82f6', '#ef4444', '#10b981', '#f59e0b',
-  '#8b5cf6', '#ec4899', '#06b6d4', '#f97316',
+  '#3b82f6',
+  '#ef4444',
+  '#10b981',
+  '#f59e0b',
+  '#8b5cf6',
+  '#ec4899',
+  '#06b6d4',
+  '#f97316',
 ];
 
 interface CollaborationRoom {
@@ -41,9 +49,12 @@ export class CollaborationRoomManager {
 
   constructor() {
     // Cleanup inactive rooms every 5 minutes
-    this.cleanupInterval = setInterval(() => {
-      this.cleanupInactiveRooms();
-    }, 5 * 60 * 1000);
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanupInactiveRooms();
+      },
+      5 * 60 * 1000
+    );
   }
 
   async joinRoom(socket: AuthenticatedSocket): Promise<void> {
@@ -89,7 +100,9 @@ export class CollaborationRoomManager {
   leaveRoom(socket: AuthenticatedSocket): void {
     const { kitchenId, userId } = socket;
     const room = this.rooms.get(kitchenId);
-    if (!room) {return;}
+    if (!room) {
+      return;
+    }
 
     room.clients.delete(userId);
     room.users.delete(userId);
@@ -108,7 +121,9 @@ export class CollaborationRoomManager {
 
   async handleMessage(socket: AuthenticatedSocket, message: WSMessage): Promise<void> {
     const room = this.rooms.get(socket.kitchenId);
-    if (!room) {return;}
+    if (!room) {
+      return;
+    }
 
     room.lastActivity = Date.now();
 
@@ -162,7 +177,9 @@ export class CollaborationRoomManager {
 
   private destroyRoom(kitchenId: string): void {
     const room = this.rooms.get(kitchenId);
-    if (!room) {return;}
+    if (!room) {
+      return;
+    }
 
     room.doc.destroy();
     room.clients.clear();
@@ -173,9 +190,15 @@ export class CollaborationRoomManager {
     logger.info('[Room] Destroyed', { kitchenId });
   }
 
-  private async handleDocUpdate(room: CollaborationRoom, socket: AuthenticatedSocket, message: WSMessage): Promise<void> {
+  private async handleDocUpdate(
+    room: CollaborationRoom,
+    socket: AuthenticatedSocket,
+    message: WSMessage
+  ): Promise<void> {
     const payload = message.payload as { update: string };
-    if (!payload?.update) {return;}
+    if (!payload?.update) {
+      return;
+    }
 
     try {
       const Y = await loadYjs();
@@ -195,9 +218,15 @@ export class CollaborationRoomManager {
     }
   }
 
-  private handleCursorUpdate(room: CollaborationRoom, socket: AuthenticatedSocket, message: WSMessage): void {
+  private handleCursorUpdate(
+    room: CollaborationRoom,
+    socket: AuthenticatedSocket,
+    message: WSMessage
+  ): void {
     const cursor = message.payload as CursorPosition;
-    if (!cursor) {return;}
+    if (!cursor) {
+      return;
+    }
 
     cursor.userId = socket.userId;
     cursor.timestamp = Date.now();
@@ -213,7 +242,10 @@ export class CollaborationRoomManager {
     });
   }
 
-  private async handleRequestState(room: CollaborationRoom, socket: AuthenticatedSocket): Promise<void> {
+  private async handleRequestState(
+    room: CollaborationRoom,
+    socket: AuthenticatedSocket
+  ): Promise<void> {
     const Y = await loadYjs();
     const stateVector = Y.encodeStateAsUpdate(room.doc);
     this.sendToSocket(socket, {
@@ -240,7 +272,11 @@ export class CollaborationRoomManager {
     }
   }
 
-  private broadcastToOthers(room: CollaborationRoom, excludeUserId: string, message: WSMessage): void {
+  private broadcastToOthers(
+    room: CollaborationRoom,
+    excludeUserId: string,
+    message: WSMessage
+  ): void {
     for (const [userId, client] of room.clients) {
       if (userId !== excludeUserId) {
         this.sendToSocket(client, message);

@@ -105,7 +105,11 @@ const SelectWrapper = styled.div<{ $fullWidth: boolean }>`
   flex-direction: column;
   gap: 4px;
   position: relative;
-  ${({ $fullWidth }) => $fullWidth && css`width: 100%;`}
+  ${({ $fullWidth }) =>
+    $fullWidth &&
+    css`
+      width: 100%;
+    `}
 `;
 
 const Label = styled.label`
@@ -251,7 +255,11 @@ const ChevronIcon = styled.span<{ $isOpen: boolean }>`
   display: inline-flex;
   color: var(--color-gray-500, #6b7280);
   transition: transform 0.2s ease;
-  ${({ $isOpen }) => $isOpen && css`transform: rotate(180deg);`}
+  ${({ $isOpen }) =>
+    $isOpen &&
+    css`
+      transform: rotate(180deg);
+    `}
 `;
 
 const Dropdown = styled.div<{ $isOpen: boolean }>`
@@ -264,7 +272,9 @@ const Dropdown = styled.div<{ $isOpen: boolean }>`
   background: var(--color-white, #ffffff);
   border: 1px solid var(--color-gray-200, #e5e7eb);
   border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 50;
   max-height: 240px;
   overflow-y: auto;
@@ -308,9 +318,7 @@ const Option = styled.div<{
 
   &:hover:not([data-disabled='true']) {
     background: ${({ $isSelected }) =>
-      $isSelected
-        ? 'var(--color-primary-light, #eff6ff)'
-        : 'var(--color-gray-100, #f3f4f6)'};
+      $isSelected ? 'var(--color-primary-light, #eff6ff)' : 'var(--color-gray-100, #f3f4f6)'};
   }
 `;
 
@@ -359,7 +367,13 @@ const ChevronSvg = () => (
 
 // Close/X SVG icon
 const CloseSvg = ({ size = 12 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       d="M4 4L12 12M12 4L4 12"
       stroke="currentColor"
@@ -434,9 +448,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     );
 
     const selectedOptions = options.filter((option) =>
-      multiple
-        ? (value as string[]).includes(option.value)
-        : value === option.value
+      multiple ? (value as string[]).includes(option.value) : value === option.value
     );
 
     const handleValueChange = useCallback(
@@ -507,9 +519,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             if (!isOpen) {
               setIsOpen(true);
             } else {
-              setHighlightedIndex((prev) =>
-                prev < filteredOptions.length - 1 ? prev + 1 : 0
-              );
+              setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
             }
             break;
           case 'ArrowUp':
@@ -517,9 +527,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             if (!isOpen) {
               setIsOpen(true);
             } else {
-              setHighlightedIndex((prev) =>
-                prev > 0 ? prev - 1 : filteredOptions.length - 1
-              );
+              setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1));
             }
             break;
           case 'Escape':
@@ -550,10 +558,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     // Close dropdown when clicking outside
     useEffect(() => {
       const handleClickOutside = (e: MouseEvent) => {
-        if (
-          containerRef.current &&
-          !containerRef.current.contains(e.target as Node)
-        ) {
+        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
           setIsOpen(false);
           setHighlightedIndex(-1);
         }
@@ -575,9 +580,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       setHighlightedIndex(-1);
     }, [searchQuery]);
 
-    const hasValue = multiple
-      ? (value as string[]).length > 0
-      : Boolean(value);
+    const hasValue = multiple ? (value as string[]).length > 0 : Boolean(value);
 
     return (
       <SelectWrapper $fullWidth={fullWidth} ref={ref}>
@@ -596,9 +599,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             aria-haspopup="listbox"
             aria-controls={listboxId}
             aria-label={ariaLabel || label}
-            aria-describedby={
-              ariaDescribedBy || (displayHelperText ? helperId : undefined)
-            }
+            aria-describedby={ariaDescribedBy || (displayHelperText ? helperId : undefined)}
             aria-disabled={disabled}
             id={selectId}
           >
@@ -638,9 +639,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               ))
             ) : selectedOptions.length > 0 && selectedOptions[0] ? (
               <SelectedValue>
-                {selectedOptions[0].icon && (
-                  <OptionIcon>{selectedOptions[0].icon}</OptionIcon>
-                )}
+                {selectedOptions[0].icon && <OptionIcon>{selectedOptions[0].icon}</OptionIcon>}
                 {selectedOptions[0].label}
               </SelectedValue>
             ) : (
@@ -649,11 +648,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
 
             <IconsContainer>
               {clearable && hasValue && !disabled && (
-                <IconButton
-                  type="button"
-                  onClick={handleClear}
-                  aria-label="Clear selection"
-                >
+                <IconButton type="button" onClick={handleClear} aria-label="Clear selection">
                   <CloseSvg />
                 </IconButton>
               )}
@@ -683,9 +678,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                     data-disabled={option.disabled}
                   >
                     {multiple && (
-                      <span style={{ width: 14, height: 14 }}>
-                        {isSelected && <CheckSvg />}
-                      </span>
+                      <span style={{ width: 14, height: 14 }}>{isSelected && <CheckSvg />}</span>
                     )}
                     {option.icon && <OptionIcon>{option.icon}</OptionIcon>}
                     {option.label}

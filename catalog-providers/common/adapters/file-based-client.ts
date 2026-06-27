@@ -14,8 +14,8 @@ export type FileSourceType = 'csv' | 'excel' | 'json' | 'xml';
 export interface FileSourceConfig extends ProviderConfig {
   filePath: string;
   encoding?: string;
-  delimiter?: string;  // Pour CSV
-  sheetName?: string;  // Pour Excel
+  delimiter?: string; // Pour CSV
+  sheetName?: string; // Pour Excel
 }
 
 /**
@@ -46,10 +46,7 @@ export abstract class FileBasedApiClient {
       throw new Error(`File not found: ${filePath}`);
     }
 
-    const rawContent = fs.readFileSync(
-      filePath,
-      this.config.encoding || 'utf-8'
-    );
+    const rawContent = fs.readFileSync(filePath, this.config.encoding || 'utf-8');
 
     let parsedData: any;
 
@@ -90,15 +87,11 @@ export abstract class FileBasedApiClient {
     }
 
     // Première ligne = headers
-    const headers = lines[0]
-      .split(delimiter)
-      .map((h) => h.trim().replace(/^"|"$/g, ''));
+    const headers = lines[0].split(delimiter).map((h) => h.trim().replace(/^"|"$/g, ''));
 
     // Lignes suivantes = data
     return lines.slice(1).map((line) => {
-      const values = line
-        .split(delimiter)
-        .map((v) => v.trim().replace(/^"|"$/g, ''));
+      const values = line.split(delimiter).map((v) => v.trim().replace(/^"|"$/g, ''));
 
       const row: any = {};
       headers.forEach((header, index) => {
@@ -118,15 +111,12 @@ export abstract class FileBasedApiClient {
       const XLSX = await import('xlsx');
 
       const workbook = XLSX.readFile(filePath);
-      const sheetName =
-        this.config.sheetName || workbook.SheetNames[0];
+      const sheetName = this.config.sheetName || workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
 
       return XLSX.utils.sheet_to_json(worksheet);
     } catch (error) {
-      throw new Error(
-        `Failed to parse Excel file: ${error}. Install xlsx package: pnpm add xlsx`
-      );
+      throw new Error(`Failed to parse Excel file: ${error}. Install xlsx package: pnpm add xlsx`);
     }
   }
 
@@ -146,9 +136,7 @@ export abstract class FileBasedApiClient {
         });
       });
     } catch (error) {
-      throw new Error(
-        `Failed to parse XML: ${error}. Install xml2js package: pnpm add xml2js`
-      );
+      throw new Error(`Failed to parse XML: ${error}. Install xml2js package: pnpm add xml2js`);
     }
   }
 
@@ -168,9 +156,7 @@ export abstract class FileBasedApiClient {
 
     // Filtrer par catégorie si spécifié
     if (options?.category) {
-      filtered = filtered.filter(
-        (p) => p.category === options.category
-      );
+      filtered = filtered.filter((p) => p.category === options.category);
     }
 
     // Pagination

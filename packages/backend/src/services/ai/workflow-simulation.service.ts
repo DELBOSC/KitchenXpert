@@ -7,7 +7,9 @@ import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -148,14 +150,14 @@ export class WorkflowSimulationService {
       key: 'dinner_for_6',
       name: 'Diner pour 6 personnes',
       description:
-        'Preparation complete d\'un repas a 3 plats pour 6 convives: entree, plat principal, dessert.',
+        "Preparation complete d'un repas a 3 plats pour 6 convives: entree, plat principal, dessert.",
       stepsRange: { min: 15, max: 20 },
     },
     quick_breakfast: {
       key: 'quick_breakfast',
       name: 'Petit-dejeuner rapide',
       description:
-        'Preparation d\'un petit-dejeuner pour la famille: cafe, tartines, oeufs, jus de fruits.',
+        "Preparation d'un petit-dejeuner pour la famille: cafe, tartines, oeufs, jus de fruits.",
       stepsRange: { min: 8, max: 10 },
     },
     meal_prep: {
@@ -168,8 +170,7 @@ export class WorkflowSimulationService {
     baking: {
       key: 'baking',
       name: 'Patisserie (gateau)',
-      description:
-        'Realisation d\'un gateau: preparation de la pate, cuisson, decoration.',
+      description: "Realisation d'un gateau: preparation de la pate, cuisson, decoration.",
       stepsRange: { min: 12, max: 15 },
     },
   };
@@ -205,11 +206,7 @@ export class WorkflowSimulationService {
    * 8. Store in WorkflowSimulation table
    * 9. Return simulation result
    */
-  async simulate(
-    kitchenId: string,
-    userId: string,
-    scenario: string,
-  ): Promise<SimulationResult> {
+  async simulate(kitchenId: string, userId: string, scenario: string): Promise<SimulationResult> {
     const scenarioDef = this.scenarios[scenario];
     if (!scenarioDef) {
       throw new Error(`Unknown scenario: ${scenario}`);
@@ -232,12 +229,7 @@ export class WorkflowSimulationService {
     const zonePositions = this.identifyZonePositions(kitchenItems, kitchen);
 
     // 3. Build the prompt and ask Claude for simulation steps
-    const prompt = this.buildSimulationPrompt(
-      kitchen,
-      kitchenItems,
-      scenarioDef,
-      zonePositions,
-    );
+    const prompt = this.buildSimulationPrompt(kitchen, kitchenItems, scenarioDef, zonePositions);
 
     logger.info('[WorkflowSimulation] Starting simulation', {
       kitchenId,
@@ -267,14 +259,11 @@ export class WorkflowSimulationService {
       result.inputTokens,
       result.outputTokens,
       durationMs,
-      { feature: 'workflow_simulation', scenario },
+      { feature: 'workflow_simulation', scenario }
     );
 
     // 4 & 5. Enrich steps with 3D positions and distances
-    const enrichedSteps = this.enrichStepsWithPositions(
-      result.data.steps,
-      zonePositions,
-    );
+    const enrichedSteps = this.enrichStepsWithPositions(result.data.steps, zonePositions);
 
     // 6. Calculate totals
     const totalDistanceM = enrichedSteps.reduce((sum, s) => sum + s.distanceM, 0);
@@ -292,7 +281,7 @@ export class WorkflowSimulationService {
       enrichedSteps,
       bottlenecks,
       totalDistanceM,
-      zoneUsage,
+      zoneUsage
     );
 
     // 10. Store in DB
@@ -334,10 +323,7 @@ export class WorkflowSimulationService {
   /**
    * Get AI suggestions to optimize the workflow by rearranging the kitchen layout.
    */
-  async optimize(
-    simulationId: string,
-    userId: string,
-  ): Promise<OptimizationResult> {
+  async optimize(simulationId: string, userId: string): Promise<OptimizationResult> {
     const simulation = await prisma.workflowSimulation.findUnique({
       where: { id: simulationId },
     });
@@ -367,7 +353,7 @@ export class WorkflowSimulationService {
       steps,
       simulation.totalDistanceM,
       simulation.efficiencyScore,
-      zonePositions,
+      zonePositions
     );
 
     logger.info('[WorkflowSimulation] Generating optimization suggestions', {
@@ -396,7 +382,7 @@ export class WorkflowSimulationService {
       result.inputTokens,
       result.outputTokens,
       durationMs,
-      { feature: 'workflow_optimization', simulationId },
+      { feature: 'workflow_optimization', simulationId }
     );
 
     // Enrich suggestions with 3D positions
@@ -482,7 +468,7 @@ export class WorkflowSimulationService {
       positionY: any;
       positionZ: any;
     }>,
-    kitchen: { width: any; length: any; height: any },
+    kitchen: { width: any; length: any; height: any }
   ): Record<string, Position3D> {
     const width = Number(kitchen.width);
     const depth = Number(kitchen.length);
@@ -490,21 +476,16 @@ export class WorkflowSimulationService {
     const zonePositions: Record<string, Position3D> = {};
 
     for (const [zoneName, itemTypes] of Object.entries(ZONE_ITEM_TYPES)) {
-      const matchingItems = items.filter((item) =>
-        itemTypes.some((t) => item.type.includes(t)),
-      );
+      const matchingItems = items.filter((item) => itemTypes.some((t) => item.type.includes(t)));
 
       if (matchingItems.length > 0) {
         // Compute centroid of matching items
         const avgX =
-          matchingItems.reduce((sum, i) => sum + Number(i.positionX), 0) /
-          matchingItems.length;
+          matchingItems.reduce((sum, i) => sum + Number(i.positionX), 0) / matchingItems.length;
         const avgY =
-          matchingItems.reduce((sum, i) => sum + Number(i.positionY), 0) /
-          matchingItems.length;
+          matchingItems.reduce((sum, i) => sum + Number(i.positionY), 0) / matchingItems.length;
         const avgZ =
-          matchingItems.reduce((sum, i) => sum + Number(i.positionZ), 0) /
-          matchingItems.length;
+          matchingItems.reduce((sum, i) => sum + Number(i.positionZ), 0) / matchingItems.length;
 
         zonePositions[zoneName] = {
           x: Math.round(avgX * 100) / 100,
@@ -542,11 +523,7 @@ export class WorkflowSimulationService {
    * In a kitchen, you walk along walls, not diagonally.
    */
   private calculateDistance(from: Position3D, to: Position3D): number {
-    return (
-      Math.round(
-        (Math.abs(from.x - to.x) + Math.abs(from.z - to.z)) * 100,
-      ) / 100
-    );
+    return Math.round((Math.abs(from.x - to.x) + Math.abs(from.z - to.z)) * 100) / 100;
   }
 
   /**
@@ -554,7 +531,7 @@ export class WorkflowSimulationService {
    */
   private enrichStepsWithPositions(
     aiSteps: AISimulationResponse['steps'],
-    zonePositions: Record<string, Position3D>,
+    zonePositions: Record<string, Position3D>
   ): SimulationStep[] {
     const defaultPos: Position3D = { x: 0, y: 0, z: 0 };
 
@@ -594,7 +571,7 @@ export class WorkflowSimulationService {
    */
   private enrichBottlenecks(
     aiBottlenecks: AISimulationResponse['bottlenecks'],
-    zonePositions: Record<string, Position3D>,
+    zonePositions: Record<string, Position3D>
   ): Bottleneck[] {
     const defaultPos: Position3D = { x: 0, y: 0, z: 0 };
 
@@ -612,16 +589,21 @@ export class WorkflowSimulationService {
     steps: SimulationStep[],
     bottlenecks: Bottleneck[],
     totalDistanceM: number,
-    zoneUsage: Record<string, number>,
+    zoneUsage: Record<string, number>
   ): number {
     let score = 100;
 
     // Penalize for excessive total distance
     // Optimal single cycle: 5-12m. Penalty for going over
-    if (totalDistanceM > 50) {score -= 20;}
-    else if (totalDistanceM > 35) {score -= 15;}
-    else if (totalDistanceM > 20) {score -= 10;}
-    else if (totalDistanceM > 15) {score -= 5;}
+    if (totalDistanceM > 50) {
+      score -= 20;
+    } else if (totalDistanceM > 35) {
+      score -= 15;
+    } else if (totalDistanceM > 20) {
+      score -= 10;
+    } else if (totalDistanceM > 15) {
+      score -= 5;
+    }
 
     // Penalize for bottlenecks
     score -= bottlenecks.length * 5;
@@ -633,15 +615,18 @@ export class WorkflowSimulationService {
     // Penalize for uneven zone usage (one zone visited excessively)
     const usageCounts = Object.values(zoneUsage);
     if (usageCounts.length > 0) {
-      const avgUsage =
-        usageCounts.reduce((s, c) => s + c, 0) / usageCounts.length;
+      const avgUsage = usageCounts.reduce((s, c) => s + c, 0) / usageCounts.length;
       const maxUsage = Math.max(...usageCounts);
-      if (maxUsage > avgUsage * 3) {score -= 5;}
+      if (maxUsage > avgUsage * 3) {
+        score -= 5;
+      }
     }
 
     // Bonus for good zone distribution
     const distinctZones = new Set(steps.flatMap((s) => [s.fromZone, s.toZone]));
-    if (distinctZones.size >= 4) {score += 5;}
+    if (distinctZones.size >= 4) {
+      score += 5;
+    }
 
     return Math.max(0, Math.min(100, Math.round(score)));
   }
@@ -653,14 +638,14 @@ export class WorkflowSimulationService {
     kitchen: any,
     kitchenItems: any[],
     scenario: ScenarioDefinition,
-    zonePositions: Record<string, Position3D>,
+    zonePositions: Record<string, Position3D>
   ): string {
     const sections: string[] = [];
 
     sections.push(`Simule un workflow de cuisine pour le scenario: "${scenario.name}"`);
     sections.push(`Description: ${scenario.description}`);
     sections.push(
-      `Nombre d'etapes attendu: entre ${scenario.stepsRange.min} et ${scenario.stepsRange.max}`,
+      `Nombre d'etapes attendu: entre ${scenario.stepsRange.min} et ${scenario.stepsRange.max}`
     );
     sections.push('');
 
@@ -684,7 +669,7 @@ export class WorkflowSimulationService {
       sections.push('=== ELEMENTS PLACES ===');
       for (const item of kitchenItems) {
         sections.push(
-          `- ${sanitizeInput(item.name)} (${sanitizeInput(item.type)}) a position (${item.positionX}, ${item.positionY}, ${item.positionZ})`,
+          `- ${sanitizeInput(item.name)} (${sanitizeInput(item.type)}) a position (${item.positionX}, ${item.positionY}, ${item.positionZ})`
         );
       }
       sections.push('');
@@ -713,13 +698,11 @@ export class WorkflowSimulationService {
 }`);
     sections.push('');
     sections.push(
-      'Les zones possibles sont: fridge, sink, countertop, hob, oven, storage, island, dishwasher',
+      'Les zones possibles sont: fridge, sink, countertop, hob, oven, storage, island, dishwasher'
     );
+    sections.push('Chaque etape doit avoir une action descriptive en francais.');
     sections.push(
-      'Chaque etape doit avoir une action descriptive en francais.',
-    );
-    sections.push(
-      'Identifie les goulots d\'etranglement: zones croisees trop souvent, longs detours, passages encombres.',
+      "Identifie les goulots d'etranglement: zones croisees trop souvent, longs detours, passages encombres."
     );
     sections.push('Reponds UNIQUEMENT avec le JSON, sans texte avant ou apres.');
 
@@ -735,13 +718,11 @@ export class WorkflowSimulationService {
     steps: SimulationStep[],
     totalDistanceM: number,
     efficiencyScore: number,
-    zonePositions: Record<string, Position3D>,
+    zonePositions: Record<string, Position3D>
   ): string {
     const sections: string[] = [];
 
-    sections.push(
-      'Analyse ce workflow de cuisine et propose des optimisations de layout.',
-    );
+    sections.push('Analyse ce workflow de cuisine et propose des optimisations de layout.');
     sections.push('');
 
     // Current metrics
@@ -769,7 +750,7 @@ export class WorkflowSimulationService {
       sections.push('=== ELEMENTS PLACES ===');
       for (const item of kitchenItems) {
         sections.push(
-          `- ${sanitizeInput(item.name)} (${sanitizeInput(item.type)}) a (${item.positionX}, ${item.positionZ})`,
+          `- ${sanitizeInput(item.name)} (${sanitizeInput(item.type)}) a (${item.positionX}, ${item.positionZ})`
         );
       }
       sections.push('');
@@ -792,7 +773,7 @@ export class WorkflowSimulationService {
     sections.push('=== ETAPES LES PLUS LONGUES ===');
     for (const step of longestSteps) {
       sections.push(
-        `- Etape ${step.stepNumber}: ${step.action} (${step.fromZone} -> ${step.toZone}, ${step.distanceM}m)`,
+        `- Etape ${step.stepNumber}: ${step.action} (${step.fromZone} -> ${step.toZone}, ${step.distanceM}m)`
       );
     }
     sections.push('');
@@ -813,12 +794,8 @@ export class WorkflowSimulationService {
   ]
 }`);
     sections.push('');
-    sections.push(
-      'Propose 3 a 5 suggestions concretes et actionables.',
-    );
-    sections.push(
-      'Chaque suggestion doit indiquer quel element deplacer et pourquoi.',
-    );
+    sections.push('Propose 3 a 5 suggestions concretes et actionables.');
+    sections.push('Chaque suggestion doit indiquer quel element deplacer et pourquoi.');
     sections.push('Reponds UNIQUEMENT avec le JSON, sans texte avant ou apres.');
 
     return sections.join('\n');

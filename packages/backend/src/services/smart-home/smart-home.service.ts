@@ -150,21 +150,126 @@ export class SmartHomeService {
    * Smart device catalog -- curated list of popular French-market devices.
    */
   private deviceCatalog: SmartDevice[] = [
-    { type: 'smart_outlet', brand: 'Legrand', model: 'Celiane with Netatmo', protocol: 'WiFi', powerW: 3680, price: 89 },
-    { type: 'smart_outlet', brand: 'Schneider', model: 'Wiser', protocol: 'Zigbee', powerW: 3680, price: 75 },
-    { type: 'smart_light', brand: 'Philips Hue', model: 'White Ambiance GU10', protocol: 'Zigbee', powerW: 5.7, price: 25 },
-    { type: 'smart_light', brand: 'IKEA Tradfri', model: 'LED GU10', protocol: 'Zigbee', powerW: 5.3, price: 10 },
-    { type: 'smart_light_strip', brand: 'Philips Hue', model: 'Lightstrip Plus 2m', protocol: 'Zigbee', powerW: 20, price: 80 },
-    { type: 'smoke_detector', brand: 'Netatmo', model: 'Smart Smoke Alarm', protocol: 'WiFi', powerW: 0, price: 100 },
-    { type: 'water_sensor', brand: 'Aqara', model: 'Water Leak Sensor', protocol: 'Zigbee', powerW: 0, price: 20 },
-    { type: 'temp_humidity', brand: 'Aqara', model: 'Temperature Sensor', protocol: 'Zigbee', powerW: 0, price: 15 },
-    { type: 'smart_fridge', brand: 'Samsung', model: 'Family Hub', protocol: 'WiFi/Matter', powerW: 200, price: 2500 },
-    { type: 'smart_oven', brand: 'Bosch', model: 'Series 8 Home Connect', protocol: 'WiFi', powerW: 3600, price: 1200 },
-    { type: 'smart_dishwasher', brand: 'Miele', model: 'G 7000 WiFi', protocol: 'WiFi', powerW: 2200, price: 1500 },
-    { type: 'smart_hood', brand: 'Bosch', model: 'DWB96DM50', protocol: 'WiFi', powerW: 300, price: 600 },
-    { type: 'co_detector', brand: 'Kidde', model: 'Smart CO', protocol: 'WiFi', powerW: 0, price: 50 },
-    { type: 'wifi_router', brand: 'Google', model: 'Nest WiFi Pro', protocol: 'WiFi 6E/Thread', powerW: 15, price: 220 },
-    { type: 'matter_hub', brand: 'Apple', model: 'HomePod Mini', protocol: 'Matter/Thread', powerW: 10, price: 110 },
+    {
+      type: 'smart_outlet',
+      brand: 'Legrand',
+      model: 'Celiane with Netatmo',
+      protocol: 'WiFi',
+      powerW: 3680,
+      price: 89,
+    },
+    {
+      type: 'smart_outlet',
+      brand: 'Schneider',
+      model: 'Wiser',
+      protocol: 'Zigbee',
+      powerW: 3680,
+      price: 75,
+    },
+    {
+      type: 'smart_light',
+      brand: 'Philips Hue',
+      model: 'White Ambiance GU10',
+      protocol: 'Zigbee',
+      powerW: 5.7,
+      price: 25,
+    },
+    {
+      type: 'smart_light',
+      brand: 'IKEA Tradfri',
+      model: 'LED GU10',
+      protocol: 'Zigbee',
+      powerW: 5.3,
+      price: 10,
+    },
+    {
+      type: 'smart_light_strip',
+      brand: 'Philips Hue',
+      model: 'Lightstrip Plus 2m',
+      protocol: 'Zigbee',
+      powerW: 20,
+      price: 80,
+    },
+    {
+      type: 'smoke_detector',
+      brand: 'Netatmo',
+      model: 'Smart Smoke Alarm',
+      protocol: 'WiFi',
+      powerW: 0,
+      price: 100,
+    },
+    {
+      type: 'water_sensor',
+      brand: 'Aqara',
+      model: 'Water Leak Sensor',
+      protocol: 'Zigbee',
+      powerW: 0,
+      price: 20,
+    },
+    {
+      type: 'temp_humidity',
+      brand: 'Aqara',
+      model: 'Temperature Sensor',
+      protocol: 'Zigbee',
+      powerW: 0,
+      price: 15,
+    },
+    {
+      type: 'smart_fridge',
+      brand: 'Samsung',
+      model: 'Family Hub',
+      protocol: 'WiFi/Matter',
+      powerW: 200,
+      price: 2500,
+    },
+    {
+      type: 'smart_oven',
+      brand: 'Bosch',
+      model: 'Series 8 Home Connect',
+      protocol: 'WiFi',
+      powerW: 3600,
+      price: 1200,
+    },
+    {
+      type: 'smart_dishwasher',
+      brand: 'Miele',
+      model: 'G 7000 WiFi',
+      protocol: 'WiFi',
+      powerW: 2200,
+      price: 1500,
+    },
+    {
+      type: 'smart_hood',
+      brand: 'Bosch',
+      model: 'DWB96DM50',
+      protocol: 'WiFi',
+      powerW: 300,
+      price: 600,
+    },
+    {
+      type: 'co_detector',
+      brand: 'Kidde',
+      model: 'Smart CO',
+      protocol: 'WiFi',
+      powerW: 0,
+      price: 50,
+    },
+    {
+      type: 'wifi_router',
+      brand: 'Google',
+      model: 'Nest WiFi Pro',
+      protocol: 'WiFi 6E/Thread',
+      powerW: 15,
+      price: 220,
+    },
+    {
+      type: 'matter_hub',
+      brand: 'Apple',
+      model: 'HomePod Mini',
+      protocol: 'Matter/Thread',
+      powerW: 10,
+      price: 110,
+    },
   ];
 
   // -----------------------------------------------------------------------
@@ -184,7 +289,7 @@ export class SmartHomeService {
   async createPlan(
     kitchenId: string,
     userId: string,
-    preferences: SmartHomePreferences,
+    preferences: SmartHomePreferences
   ): Promise<SmartHomePlanData> {
     logger.info('[SmartHome] Creating plan', { kitchenId, userId });
 
@@ -226,7 +331,7 @@ export class SmartHomeService {
       aiResult.inputTokens,
       aiResult.outputTokens,
       durationMs,
-      { feature: 'smart_home_planner', promptVersion: PROMPT_VERSIONS.SMART_HOME_PLANNER },
+      { feature: 'smart_home_planner', promptVersion: PROMPT_VERSIONS.SMART_HOME_PLANNER }
     );
 
     const suggestion = aiResult.data;
@@ -272,7 +377,8 @@ export class SmartHomeService {
 
     // Identify Matter-compatible devices
     const matterDevices = devices.filter(
-      (d) => d.protocol.toLowerCase().includes('matter') || d.protocol.toLowerCase().includes('thread'),
+      (d) =>
+        d.protocol.toLowerCase().includes('matter') || d.protocol.toLowerCase().includes('thread')
     );
 
     const totalPowerDraw = devices.reduce((sum, d) => sum + d.powerW, 0);
@@ -292,7 +398,11 @@ export class SmartHomeService {
       },
     });
 
-    logger.info('[SmartHome] Plan created', { planId: record.id, kitchenId, deviceCount: devices.length });
+    logger.info('[SmartHome] Plan created', {
+      planId: record.id,
+      kitchenId,
+      deviceCount: devices.length,
+    });
 
     return {
       id: record.id,
@@ -315,7 +425,9 @@ export class SmartHomeService {
    */
   async getPlan(kitchenId: string): Promise<SmartHomePlanData | null> {
     const record = await prisma.smartHomePlan.findUnique({ where: { kitchenId } });
-    if (!record) {return null;}
+    if (!record) {
+      return null;
+    }
 
     const devices = (record.devices as unknown as PlacedDevice[]) ?? [];
     const matterDevices = (record.matterDevices as unknown as PlacedDevice[]) ?? [];
@@ -342,7 +454,7 @@ export class SmartHomeService {
   async updatePlan(
     kitchenId: string,
     userId: string,
-    data: UpdateSmartHomeDto,
+    data: UpdateSmartHomeDto
   ): Promise<SmartHomePlanData> {
     const existing = await prisma.smartHomePlan.findUnique({ where: { kitchenId } });
     if (!existing) {
@@ -354,12 +466,15 @@ export class SmartHomeService {
     }
 
     const devices = data.devices ?? (existing.devices as unknown as PlacedDevice[]) ?? [];
-    const automations = data.automations ?? (existing.automations as unknown as AutomationRule[]) ?? [];
+    const automations =
+      data.automations ?? (existing.automations as unknown as AutomationRule[]) ?? [];
     const circuits = data.circuits ?? (existing.circuits as unknown as Circuit[]) ?? [];
-    const wifiCoverage = data.wifiCoverage ?? (existing.wifiCoverage as unknown as CoverageMap) ?? null;
+    const wifiCoverage =
+      data.wifiCoverage ?? (existing.wifiCoverage as unknown as CoverageMap) ?? null;
 
     const matterDevices = devices.filter(
-      (d) => d.protocol.toLowerCase().includes('matter') || d.protocol.toLowerCase().includes('thread'),
+      (d) =>
+        d.protocol.toLowerCase().includes('matter') || d.protocol.toLowerCase().includes('thread')
     );
     const totalPowerDraw = devices.reduce((sum, d) => sum + d.powerW, 0);
 
@@ -402,7 +517,7 @@ export class SmartHomeService {
   async calculateCoverage(
     kitchenId: string,
     routerPosition: Position3D,
-    protocol: string = 'WiFi',
+    protocol: string = 'WiFi'
   ): Promise<CoverageMap> {
     const kitchen = await prisma.kitchen.findUnique({ where: { id: kitchenId } });
     if (!kitchen) {
@@ -410,7 +525,10 @@ export class SmartHomeService {
     }
 
     // Retrieve room dimensions (fallback to 4x3m default)
-    const layout = (kitchen as Record<string, unknown>).layoutData as Record<string, unknown> | null;
+    const layout = (kitchen as Record<string, unknown>).layoutData as Record<
+      string,
+      unknown
+    > | null;
     const roomWidth = (layout?.roomWidth as number) ?? 4;
     const roomDepth = (layout?.roomDepth as number) ?? 3;
 
@@ -443,14 +561,18 @@ export class SmartHomeService {
         points.push({ x: parseFloat(x.toFixed(2)), z: parseFloat(z.toFixed(2)), signalStrength });
 
         if (signalStrength < 20) {
-          deadZones.push({ x: parseFloat(x.toFixed(2)), z: parseFloat(z.toFixed(2)), radius: step / 2 });
+          deadZones.push({
+            x: parseFloat(x.toFixed(2)),
+            z: parseFloat(z.toFixed(2)),
+            radius: step / 2,
+          });
         }
       }
     }
 
     // Overall score: average signal strength
     const overallScore = Math.round(
-      points.reduce((sum, p) => sum + p.signalStrength, 0) / (points.length || 1),
+      points.reduce((sum, p) => sum + p.signalStrength, 0) / (points.length || 1)
     );
 
     const coverageMap: CoverageMap = {

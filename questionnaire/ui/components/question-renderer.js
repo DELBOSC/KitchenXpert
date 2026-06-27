@@ -22,20 +22,13 @@ const QUESTION_COMPONENTS = {
   'number-input': TextQuestion,
   'text-input': TextQuestion,
   'image-choice': ImageChoiceQuestion,
-  'dimension-input': DimensionInput
+  'dimension-input': DimensionInput,
 };
 
 /**
  * QuestionRenderer Component
  */
-function QuestionRenderer({
-  question,
-  value,
-  onChange,
-  language,
-  errors,
-  disabled
-}) {
+function QuestionRenderer({ question, value, onChange, language, errors, disabled }) {
   const QuestionComponent = QUESTION_COMPONENTS[question.type];
 
   if (!QuestionComponent) {
@@ -52,15 +45,15 @@ function QuestionRenderer({
   const error = errors?.[question.id];
 
   return (
-    <div className={`question-container ${error ? 'has-error' : ''} ${question.required ? 'required' : ''}`}>
+    <div
+      className={`question-container ${error ? 'has-error' : ''} ${question.required ? 'required' : ''}`}
+    >
       <div className="question-header">
         <label className="question-label" htmlFor={question.id}>
           {questionText}
           {question.required && <span className="required-indicator">*</span>}
         </label>
-        {helpText && (
-          <p className="question-help">{helpText}</p>
-        )}
+        {helpText && <p className="question-help">{helpText}</p>}
       </div>
 
       <div className="question-input">
@@ -88,27 +81,27 @@ QuestionRenderer.propTypes = {
     type: PropTypes.string.isRequired,
     question: PropTypes.shape({
       en: PropTypes.string.isRequired,
-      fr: PropTypes.string
+      fr: PropTypes.string,
     }).isRequired,
     helpText: PropTypes.shape({
       en: PropTypes.string,
-      fr: PropTypes.string
+      fr: PropTypes.string,
     }),
     required: PropTypes.bool,
-    options: PropTypes.array
+    options: PropTypes.array,
   }).isRequired,
   value: PropTypes.any,
   onChange: PropTypes.func.isRequired,
   language: PropTypes.oneOf(['en', 'fr']),
   errors: PropTypes.object,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
 };
 
 QuestionRenderer.defaultProps = {
   value: null,
   language: 'en',
   errors: null,
-  disabled: false
+  disabled: false,
 };
 
 export default QuestionRenderer;

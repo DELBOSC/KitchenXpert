@@ -88,7 +88,11 @@ function formatPrice(value: number): string {
 
 // ─── Component ────────────────────────────────────────────────
 
-export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: ShoppingListPanelProps): React.ReactElement | null {
+export default function ShoppingListPanel({
+  kitchenId,
+  isOpen,
+  onClose,
+}: ShoppingListPanelProps): React.ReactElement | null {
   const { t } = useTranslation();
   const categoryLabels = useCategoryLabels();
   const [data, setData] = useState<ShoppingListData | null>(null);
@@ -98,7 +102,9 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Fetch shopping list ───────────────────────────
   useEffect(() => {
-    if (!isOpen || !kitchenId) {return;}
+    if (!isOpen || !kitchenId) {
+      return;
+    }
 
     const controller = new AbortController();
     setLoading(true);
@@ -113,10 +119,14 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
         if (res.success && res.data) {
           setData(res.data);
         } else {
-          setError(res.error?.message || t('designer.shoppingList.fetchError', 'Erreur lors du chargement'));
+          setError(
+            res.error?.message || t('designer.shoppingList.fetchError', 'Erreur lors du chargement')
+          );
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         setError(t('designer.shoppingList.fetchError', 'Erreur lors du chargement'));
       } finally {
         setLoading(false);
@@ -129,10 +139,14 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Close on Escape ───────────────────────────────
   useEffect(() => {
-    if (!isOpen) {return;}
+    if (!isOpen) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {onClose();}
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -141,11 +155,15 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Group items by category ───────────────────────
   const groupedItems = useCallback((): Record<string, ShoppingItem[]> => {
-    if (!data?.items) {return {};}
+    if (!data?.items) {
+      return {};
+    }
     const groups: Record<string, ShoppingItem[]> = {};
     for (const item of data.items) {
       const cat = item.category || 'Accessories';
-      if (!groups[cat]) {groups[cat] = [];}
+      if (!groups[cat]) {
+        groups[cat] = [];
+      }
       groups[cat].push(item);
     }
     return groups;
@@ -153,7 +171,9 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Export as PDF ─────────────────────────────────
   const handleExportPDF = useCallback(() => {
-    if (!data) {return;}
+    if (!data) {
+      return;
+    }
 
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -161,7 +181,9 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
     // Title
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(t('shopping.pdfTitle', "Liste d'achats - KitchenXpert"), pageWidth / 2, 20, { align: 'center' });
+    doc.text(t('shopping.pdfTitle', "Liste d'achats - KitchenXpert"), pageWidth / 2, 20, {
+      align: 'center',
+    });
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
@@ -177,7 +199,9 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
     for (const category of allCategories) {
       const items = groups[category];
-      if (!items || items.length === 0) {continue;}
+      if (!items || items.length === 0) {
+        continue;
+      }
 
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
@@ -186,7 +210,15 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
       autoTable(doc, {
         startY: yPos,
-        head: [[t('shopping.article', 'Article'), t('shopping.brand', 'Marque'), t('shopping.qty', 'Qte'), t('shopping.unitPrice', 'Prix unit.'), t('shopping.total', 'Total')]],
+        head: [
+          [
+            t('shopping.article', 'Article'),
+            t('shopping.brand', 'Marque'),
+            t('shopping.qty', 'Qte'),
+            t('shopping.unitPrice', 'Prix unit.'),
+            t('shopping.total', 'Total'),
+          ],
+        ],
         body: items.map((item) => [
           item.name,
           item.brand || '-',
@@ -236,10 +268,14 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
 
   // ─── Print ─────────────────────────────────────────
   const handlePrint = useCallback(() => {
-    if (!panelRef.current) {return;}
+    if (!panelRef.current) {
+      return;
+    }
 
     const printWindow = window.open('', '_blank');
-    if (!printWindow) {return;}
+    if (!printWindow) {
+      return;
+    }
 
     const content = panelRef.current.innerHTML;
     const printTitle = t('shopping.pdfTitle', "Liste d'achats - KitchenXpert");
@@ -270,7 +306,9 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
     printWindow.print();
   }, [t]);
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   const groups = groupedItems();
   const orderedCategories = CATEGORY_ORDER.filter((c) => groups[c] && groups[c].length > 0);
@@ -283,7 +321,11 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
       <div
         className="fixed inset-0 bg-black/30 z-40"
         onClick={onClose}
-        onKeyDown={(e) => { if (e.key === 'Escape') {onClose();} }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            onClose();
+          }
+        }}
         role="button"
         tabIndex={-1}
         aria-label={t('common.closeBackdrop', 'Close')}
@@ -299,11 +341,21 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700 shrink-0">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+            <svg
+              className="w-5 h-5 text-blue-500"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
+              />
             </svg>
             <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200">
-              {t('designer.shoppingList.title', 'Liste d\'achats')}
+              {t('designer.shoppingList.title', "Liste d'achats")}
             </h2>
           </div>
           <button
@@ -311,7 +363,13 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
             className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             aria-label={t('common.close', 'Fermer')}
           >
-            <svg className="w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <svg
+              className="w-5 h-5 text-gray-500"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -335,7 +393,9 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
             <div className="space-y-4">
               {allCategories.map((category) => {
                 const items = groups[category];
-                if (!items || items.length === 0) {return null;}
+                if (!items || items.length === 0) {
+                  return null;
+                }
 
                 return (
                   <div key={category}>
@@ -413,8 +473,18 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
                 onClick={handleExportPDF}
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 {t('designer.shoppingList.exportPDF', 'Export PDF')}
               </button>
@@ -422,8 +492,18 @@ export default function ShoppingListPanel({ kitchenId, isOpen, onClose }: Shoppi
                 onClick={handlePrint}
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-medium bg-gray-800 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-900 dark:hover:bg-gray-500 transition-colors"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                  />
                 </svg>
                 {t('designer.shoppingList.print', 'Imprimer')}
               </button>

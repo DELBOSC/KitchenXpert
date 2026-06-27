@@ -108,28 +108,48 @@ const ZONE_COLORS: Record<string, string> = {
 // ─── Distance color helpers ─────────────────────────────────────────────────
 
 function getDistanceColor(distanceM: number): string {
-  if (distanceM <= 1.5) {return 'text-green-600 dark:text-green-400';}
-  if (distanceM <= 3.0) {return 'text-yellow-600 dark:text-yellow-400';}
+  if (distanceM <= 1.5) {
+    return 'text-green-600 dark:text-green-400';
+  }
+  if (distanceM <= 3.0) {
+    return 'text-yellow-600 dark:text-yellow-400';
+  }
   return 'text-red-500 dark:text-red-400';
 }
 
 function getDistanceBgColor(distanceM: number): string {
-  if (distanceM <= 1.5) {return 'bg-green-100 dark:bg-green-900/30';}
-  if (distanceM <= 3.0) {return 'bg-yellow-100 dark:bg-yellow-900/30';}
+  if (distanceM <= 1.5) {
+    return 'bg-green-100 dark:bg-green-900/30';
+  }
+  if (distanceM <= 3.0) {
+    return 'bg-yellow-100 dark:bg-yellow-900/30';
+  }
   return 'bg-red-100 dark:bg-red-900/30';
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) {return 'text-green-600 dark:text-green-400';}
-  if (score >= 60) {return 'text-yellow-600 dark:text-yellow-400';}
-  if (score >= 40) {return 'text-orange-500 dark:text-orange-400';}
+  if (score >= 80) {
+    return 'text-green-600 dark:text-green-400';
+  }
+  if (score >= 60) {
+    return 'text-yellow-600 dark:text-yellow-400';
+  }
+  if (score >= 40) {
+    return 'text-orange-500 dark:text-orange-400';
+  }
   return 'text-red-500 dark:text-red-400';
 }
 
 function getScoreBgColor(score: number): string {
-  if (score >= 80) {return 'bg-green-500';}
-  if (score >= 60) {return 'bg-yellow-500';}
-  if (score >= 40) {return 'bg-orange-500';}
+  if (score >= 80) {
+    return 'bg-green-500';
+  }
+  if (score >= 60) {
+    return 'bg-yellow-500';
+  }
+  if (score >= 40) {
+    return 'bg-orange-500';
+  }
   return 'bg-red-500';
 }
 
@@ -185,7 +205,7 @@ export default function WorkflowSimulator(): React.ReactElement {
           const payload = data.data;
           const kitchenList: Kitchen[] = Array.isArray(payload)
             ? payload
-            : payload?.kitchens ?? [];
+            : (payload?.kitchens ?? []);
           setKitchens(kitchenList);
 
           // Pre-select kitchen from URL if not already set
@@ -194,12 +214,16 @@ export default function WorkflowSimulator(): React.ReactElement {
           }
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         if (mountedRef.current) {
           setError(t('workflow.errorLoadingKitchens', 'Erreur lors du chargement des cuisines'));
         }
       } finally {
-        if (mountedRef.current) {setIsLoadingKitchens(false);}
+        if (mountedRef.current) {
+          setIsLoadingKitchens(false);
+        }
       }
     };
 
@@ -238,12 +262,16 @@ export default function WorkflowSimulator(): React.ReactElement {
           setScenarios(data.data ?? []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         if (mountedRef.current) {
           setError(t('workflow.errorLoadingScenarios', 'Erreur lors du chargement des scenarios'));
         }
       } finally {
-        if (mountedRef.current) {setIsLoadingScenarios(false);}
+        if (mountedRef.current) {
+          setIsLoadingScenarios(false);
+        }
       }
     };
 
@@ -258,7 +286,9 @@ export default function WorkflowSimulator(): React.ReactElement {
   // ─── Load history when kitchen changes ────────────────────────────────────
 
   useEffect(() => {
-    if (!selectedKitchenId) {return;}
+    if (!selectedKitchenId) {
+      return;
+    }
 
     mountedRef.current = true;
     const controller = new AbortController();
@@ -266,13 +296,10 @@ export default function WorkflowSimulator(): React.ReactElement {
     const loadHistory = async (): Promise<void> => {
       try {
         setIsLoadingHistory(true);
-        const response = await fetch(
-          `/api/v1/workflow-simulation/history/${selectedKitchenId}`,
-          {
-            credentials: 'include',
-            signal: controller.signal,
-          },
-        );
+        const response = await fetch(`/api/v1/workflow-simulation/history/${selectedKitchenId}`, {
+          credentials: 'include',
+          signal: controller.signal,
+        });
 
         if (!response.ok) {
           throw new Error('Failed to load history');
@@ -287,10 +314,14 @@ export default function WorkflowSimulator(): React.ReactElement {
           setHistory(data.data ?? []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         // Non-critical: silently ignore
       } finally {
-        if (mountedRef.current) {setIsLoadingHistory(false);}
+        if (mountedRef.current) {
+          setIsLoadingHistory(false);
+        }
       }
     };
 
@@ -305,7 +336,9 @@ export default function WorkflowSimulator(): React.ReactElement {
   // ─── Simulate ────────────────────────────────────────────────────────────
 
   const handleSimulate = useCallback(async (): Promise<void> => {
-    if (!selectedKitchenId || !selectedScenario) {return;}
+    if (!selectedKitchenId || !selectedScenario) {
+      return;
+    }
 
     setError(null);
     setSimulation(null);
@@ -324,9 +357,7 @@ export default function WorkflowSimulator(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const errorData = (await response
-          .json()
-          .catch(() => ({}))) as { error?: string };
+        const errorData = (await response.json().catch(() => ({}))) as { error?: string };
         throw new Error(errorData.error || 'Simulation failed');
       }
 
@@ -344,7 +375,7 @@ export default function WorkflowSimulator(): React.ReactElement {
       setError(
         err instanceof Error
           ? err.message
-          : t('workflow.simulationError', 'Erreur lors de la simulation'),
+          : t('workflow.simulationError', 'Erreur lors de la simulation')
       );
     } finally {
       setIsSimulating(false);
@@ -354,7 +385,9 @@ export default function WorkflowSimulator(): React.ReactElement {
   // ─── Optimize ────────────────────────────────────────────────────────────
 
   const handleOptimize = useCallback(async (): Promise<void> => {
-    if (!simulation) {return;}
+    if (!simulation) {
+      return;
+    }
 
     setOptimization(null);
     setIsOptimizing(true);
@@ -368,9 +401,7 @@ export default function WorkflowSimulator(): React.ReactElement {
       });
 
       if (!response.ok) {
-        const errorData = (await response
-          .json()
-          .catch(() => ({}))) as { error?: string };
+        const errorData = (await response.json().catch(() => ({}))) as { error?: string };
         throw new Error(errorData.error || 'Optimization failed');
       }
 
@@ -388,7 +419,7 @@ export default function WorkflowSimulator(): React.ReactElement {
       setError(
         err instanceof Error
           ? err.message
-          : t('workflow.optimizationError', 'Erreur lors de l\'optimisation'),
+          : t('workflow.optimizationError', "Erreur lors de l'optimisation")
       );
     } finally {
       setIsOptimizing(false);
@@ -426,7 +457,7 @@ export default function WorkflowSimulator(): React.ReactElement {
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             {t(
               'workflow.subtitle',
-              'Simulez un parcours de cuisine et optimisez votre agencement pour plus d\'efficacite.',
+              "Simulez un parcours de cuisine et optimisez votre agencement pour plus d'efficacite."
             )}
           </p>
         </header>
@@ -464,9 +495,7 @@ export default function WorkflowSimulator(): React.ReactElement {
             }}
             className="w-full max-w-md rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">
-              {t('workflow.chooseKitchen', '-- Choisir une cuisine --')}
-            </option>
+            <option value="">{t('workflow.chooseKitchen', '-- Choisir une cuisine --')}</option>
             {kitchens.map((k) => (
               <option key={k.id} value={k.id}>
                 {k.name} ({k.style} - {k.layout})
@@ -477,7 +506,7 @@ export default function WorkflowSimulator(): React.ReactElement {
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               {t(
                 'workflow.noKitchens',
-                'Aucune cuisine trouvee. Creez d\'abord un projet avec une cuisine.',
+                "Aucune cuisine trouvee. Creez d'abord un projet avec une cuisine."
               )}
             </p>
           )}
@@ -573,7 +602,7 @@ export default function WorkflowSimulator(): React.ReactElement {
                 {/* Efficiency score */}
                 <div className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {t('workflow.efficiencyScore', 'Score d\'efficacite')}
+                    {t('workflow.efficiencyScore', "Score d'efficacite")}
                   </p>
                   <div className="flex items-end gap-2 mt-1">
                     <p
@@ -715,22 +744,26 @@ export default function WorkflowSimulator(): React.ReactElement {
             {optimization && (
               <section>
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                  {t('workflow.optimizationSuggestions', 'Suggestions d\'optimisation')}
+                  {t('workflow.optimizationSuggestions', "Suggestions d'optimisation")}
                 </h2>
 
                 {/* Summary */}
                 <div className="mb-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-4">
                   <p className="text-emerald-800 dark:text-emerald-300 font-medium">
-                    {t('workflow.optimizationSummary', 'Distance optimisee')}: {optimization.optimizedTotalDistance.toFixed(1)}m
-                    ({optimization.percentImprovement > 0 ? '-' : ''}{optimization.percentImprovement}%)
+                    {t('workflow.optimizationSummary', 'Distance optimisee')}:{' '}
+                    {optimization.optimizedTotalDistance.toFixed(1)}m (
+                    {optimization.percentImprovement > 0 ? '-' : ''}
+                    {optimization.percentImprovement}%)
                   </p>
                   <div className="flex gap-4 mt-2 text-sm text-emerald-600 dark:text-emerald-400">
                     <span>
-                      {t('workflow.before', 'Avant')}: {optimization.currentTotalDistance.toFixed(1)}m
+                      {t('workflow.before', 'Avant')}:{' '}
+                      {optimization.currentTotalDistance.toFixed(1)}m
                     </span>
                     <span>&rarr;</span>
                     <span>
-                      {t('workflow.after', 'Apres')}: {optimization.optimizedTotalDistance.toFixed(1)}m
+                      {t('workflow.after', 'Apres')}:{' '}
+                      {optimization.optimizedTotalDistance.toFixed(1)}m
                     </span>
                   </div>
                 </div>
@@ -748,8 +781,7 @@ export default function WorkflowSimulator(): React.ReactElement {
                             {suggestion.description}
                           </h3>
                           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            {ZONE_LABELS[suggestion.currentZone] || suggestion.currentZone}
-                            {' '}&rarr;{' '}
+                            {ZONE_LABELS[suggestion.currentZone] || suggestion.currentZone} &rarr;{' '}
                             {ZONE_LABELS[suggestion.suggestedZone] || suggestion.suggestedZone}
                           </p>
                         </div>
@@ -778,7 +810,7 @@ export default function WorkflowSimulator(): React.ReactElement {
               className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
             >
               {showHistory
-                ? t('workflow.hideHistory', 'Masquer l\'historique')
+                ? t('workflow.hideHistory', "Masquer l'historique")
                 : t('workflow.showHistory', `Voir l'historique (${history.length})`)}
             </button>
 
@@ -795,13 +827,11 @@ export default function WorkflowSimulator(): React.ReactElement {
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         {sim.steps.length} {t('workflow.steps', 'etapes')} &middot;{' '}
-                        {sim.totalDistanceM.toFixed(1)}m &middot;{' '}
-                        {sim.totalTimeMinutes.toFixed(1)} min
+                        {sim.totalDistanceM.toFixed(1)}m &middot; {sim.totalTimeMinutes.toFixed(1)}{' '}
+                        min
                       </p>
                     </div>
-                    <span
-                      className={`text-lg font-bold ${getScoreColor(sim.efficiencyScore)}`}
-                    >
+                    <span className={`text-lg font-bold ${getScoreColor(sim.efficiencyScore)}`}>
                       {sim.efficiencyScore}/100
                     </span>
                   </div>
@@ -826,10 +856,14 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) {return;}
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) {return;}
+    if (!ctx) {
+      return;
+    }
 
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
@@ -841,7 +875,9 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
     // Find bounds of all positions
     const allPositions = simulation.steps.flatMap((s) => [s.position3D.from, s.position3D.to]);
 
-    if (allPositions.length === 0) {return;}
+    if (allPositions.length === 0) {
+      return;
+    }
 
     const minX = Math.min(...allPositions.map((p) => p.x));
     const maxX = Math.max(...allPositions.map((p) => p.x));
@@ -876,9 +912,13 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
 
       // Color based on distance
       let color: string;
-      if (step.distanceM <= 1.5) {color = '#22c55e';}
-      else if (step.distanceM <= 3.0) {color = '#eab308';}
-      else {color = '#ef4444';}
+      if (step.distanceM <= 1.5) {
+        color = '#22c55e';
+      } else if (step.distanceM <= 3.0) {
+        color = '#eab308';
+      } else {
+        color = '#ef4444';
+      }
 
       // Draw line
       ctx.beginPath();
@@ -897,12 +937,12 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
       ctx.moveTo(toX, toZ);
       ctx.lineTo(
         toX - arrowLen * Math.cos(angle - Math.PI / 6),
-        toZ - arrowLen * Math.sin(angle - Math.PI / 6),
+        toZ - arrowLen * Math.sin(angle - Math.PI / 6)
       );
       ctx.moveTo(toX, toZ);
       ctx.lineTo(
         toX - arrowLen * Math.cos(angle + Math.PI / 6),
-        toZ - arrowLen * Math.sin(angle + Math.PI / 6),
+        toZ - arrowLen * Math.sin(angle + Math.PI / 6)
       );
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
@@ -952,10 +992,8 @@ function KitchenPathView({ simulation }: KitchenPathViewProps): React.ReactEleme
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     for (const step of simulation.steps) {
-      const midX =
-        (toCanvasX(step.position3D.from.x) + toCanvasX(step.position3D.to.x)) / 2;
-      const midZ =
-        (toCanvasZ(step.position3D.from.z) + toCanvasZ(step.position3D.to.z)) / 2;
+      const midX = (toCanvasX(step.position3D.from.x) + toCanvasX(step.position3D.to.x)) / 2;
+      const midZ = (toCanvasZ(step.position3D.from.z) + toCanvasZ(step.position3D.to.z)) / 2;
       ctx.fillText(String(step.stepNumber), midX, midZ - 4);
     }
 

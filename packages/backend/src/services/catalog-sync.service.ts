@@ -5,7 +5,7 @@
  * into the local database. Uses Prisma to persist and Redis to cache.
  */
 
-import { type Prisma , type PrismaClient } from '@prisma/client';
+import { type Prisma, type PrismaClient } from '@prisma/client';
 
 import { cacheGet, cacheSet, cacheDel, CACHE_TTL } from '../database/redis-client';
 import { createModuleLogger } from '../utils/logger';
@@ -15,7 +15,11 @@ const logger = createModuleLogger('catalog-sync');
 export interface ProviderAdapter {
   providerId: string;
   providerName: string;
-  fetchProducts(options?: { category?: string; limit?: number; offset?: number }): Promise<ProviderProductData[]>;
+  fetchProducts(options?: {
+    category?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<ProviderProductData[]>;
   testConnection(): Promise<boolean>;
 }
 
@@ -126,12 +130,18 @@ export class CatalogSyncService {
         try {
           if (product.type === 'appliance') {
             const result = await this.upsertAppliance(product, dbProvider.id);
-            if (result === 'created') {productsAdded++;}
-            else if (result === 'updated') {productsUpdated++;}
+            if (result === 'created') {
+              productsAdded++;
+            } else if (result === 'updated') {
+              productsUpdated++;
+            }
           } else {
             const result = await this.upsertProduct(product, dbProvider.id);
-            if (result === 'created') {productsAdded++;}
-            else if (result === 'updated') {productsUpdated++;}
+            if (result === 'created') {
+              productsAdded++;
+            } else if (result === 'updated') {
+              productsUpdated++;
+            }
           }
         } catch (err: unknown) {
           const error = err instanceof Error ? err : new Error(String(err));
@@ -143,9 +153,13 @@ export class CatalogSyncService {
       await cacheDel(`catalog:${providerId}:products`, `catalog:${providerId}:meta`);
 
       // Cache sync metadata
-      const syncMeta = { lastSync: new Date().toISOString(), productsAdded, productsUpdated, totalProducts: products.length };
+      const syncMeta = {
+        lastSync: new Date().toISOString(),
+        productsAdded,
+        productsUpdated,
+        totalProducts: products.length,
+      };
       await cacheSet(`catalog:${providerId}:meta`, syncMeta, CACHE_TTL.SYNC_META);
-
     } catch (err: unknown) {
       const error = err instanceof Error ? err : new Error(String(err));
       errors.push(error.message);
@@ -193,19 +207,23 @@ export class CatalogSyncService {
    */
   async getProviderProducts(
     providerId: string,
-    options?: { category?: string; limit?: number; offset?: number },
+    options?: { category?: string; limit?: number; offset?: number }
   ): Promise<any[]> {
     const cacheKey = `catalog:${providerId}:products:${options?.category || 'all'}:${options?.offset || 0}:${options?.limit || 50}`;
 
     // Try cache first
     const cached = await cacheGet<any[]>(cacheKey);
-    if (cached) {return cached;}
+    if (cached) {
+      return cached;
+    }
 
     // Fetch from DB
     const dbProvider = await this.prisma.catalogProvider.findUnique({
       where: { code: providerId },
     });
-    if (!dbProvider) {return [];}
+    if (!dbProvider) {
+      return [];
+    }
 
     const products = await this.prisma.product.findMany({
       where: {
@@ -232,7 +250,9 @@ export class CatalogSyncService {
       where: { code: adapter.providerId },
     });
 
-    if (existing) {return existing;}
+    if (existing) {
+      return existing;
+    }
 
     return this.prisma.catalogProvider.create({
       data: {
@@ -248,7 +268,7 @@ export class CatalogSyncService {
    */
   private async upsertProduct(
     product: ProviderProductData,
-    dbProviderId: string,
+    dbProviderId: string
   ): Promise<'created' | 'updated'> {
     const sku = product.sku || `${product.providerId}-${product.id}`;
 
@@ -294,7 +314,7 @@ export class CatalogSyncService {
    */
   private async upsertAppliance(
     product: ProviderProductData,
-    dbProviderId: string,
+    dbProviderId: string
   ): Promise<'created' | 'updated'> {
     const brand = product.brand || product.providerId;
     const modelName = product.model || product.id;

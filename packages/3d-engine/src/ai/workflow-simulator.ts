@@ -52,7 +52,14 @@ interface ZoneData {
 }
 
 // Item type classification helpers
-const STORAGE_TYPES = ['refrigerator', 'fridge', 'fridge_freezer', 'tall_cabinet', 'tall', 'pantry'];
+const STORAGE_TYPES = [
+  'refrigerator',
+  'fridge',
+  'fridge_freezer',
+  'tall_cabinet',
+  'tall',
+  'pantry',
+];
 const PREP_TYPES = ['sink', 'sink_base', 'base_cabinet', 'base'];
 const COOKING_TYPES = ['cooktop', 'stove', 'hob', 'oven', 'microwave'];
 const SERVING_TYPES = ['island', 'peninsula', 'bar', 'counter'];
@@ -154,11 +161,31 @@ export class WorkflowSimulator {
     }
 
     const zones: ZoneData[] = [
-      { name: 'storage', items: storageItems, centroid: this.computeCentroid(storageItems, roomConfig, 'storage') },
-      { name: 'prep', items: prepItems, centroid: this.computeCentroid(prepItems, roomConfig, 'prep') },
-      { name: 'cooking', items: cookingItems, centroid: this.computeCentroid(cookingItems, roomConfig, 'cooking') },
-      { name: 'serving', items: servingItems, centroid: this.computeCentroid(servingItems, roomConfig, 'serving') },
-      { name: 'cleaning', items: cleaningItems, centroid: this.computeCentroid(cleaningItems, roomConfig, 'cleaning') },
+      {
+        name: 'storage',
+        items: storageItems,
+        centroid: this.computeCentroid(storageItems, roomConfig, 'storage'),
+      },
+      {
+        name: 'prep',
+        items: prepItems,
+        centroid: this.computeCentroid(prepItems, roomConfig, 'prep'),
+      },
+      {
+        name: 'cooking',
+        items: cookingItems,
+        centroid: this.computeCentroid(cookingItems, roomConfig, 'cooking'),
+      },
+      {
+        name: 'serving',
+        items: servingItems,
+        centroid: this.computeCentroid(servingItems, roomConfig, 'serving'),
+      },
+      {
+        name: 'cleaning',
+        items: cleaningItems,
+        centroid: this.computeCentroid(cleaningItems, roomConfig, 'cleaning'),
+      },
     ];
 
     return zones;
@@ -185,7 +212,7 @@ export class WorkflowSimulator {
         case 'serving':
           return { x: roomConfig.width / 2, z: roomConfig.depth * 0.7 };
         case 'cleaning':
-          return { x: roomConfig.width * 2 / 3, z: 0.3 };
+          return { x: (roomConfig.width * 2) / 3, z: 0.3 };
         default:
           return { x: roomConfig.width / 2, z: roomConfig.depth / 2 };
       }
@@ -261,7 +288,8 @@ export class WorkflowSimulator {
     ];
 
     return steps.map(({ step, distance }) => {
-      const isOptimal = distance >= OPTIMAL_ZONE_DISTANCE.min && distance <= OPTIMAL_ZONE_DISTANCE.max;
+      const isOptimal =
+        distance >= OPTIMAL_ZONE_DISTANCE.min && distance <= OPTIMAL_ZONE_DISTANCE.max;
       let suggestion: string | undefined;
 
       if (distance < OPTIMAL_ZONE_DISTANCE.min) {
@@ -287,7 +315,8 @@ export class WorkflowSimulator {
 
     // Build workflow path segments between consecutive zones
     const orderedZones = ['storage', 'prep', 'cooking', 'serving', 'cleaning'];
-    const pathSegments: Array<{ from: { x: number; z: number }; to: { x: number; z: number } }> = [];
+    const pathSegments: Array<{ from: { x: number; z: number }; to: { x: number; z: number } }> =
+      [];
 
     for (let i = 0; i < orderedZones.length; i++) {
       const fromZone = zones.find((z) => z.name === orderedZones[i])!;
@@ -302,8 +331,10 @@ export class WorkflowSimulator {
         if (i === 0 && j === pathSegments.length - 1) continue;
 
         const intersection = this.segmentIntersection(
-          pathSegments[i]!.from, pathSegments[i]!.to,
-          pathSegments[j]!.from, pathSegments[j]!.to
+          pathSegments[i]!.from,
+          pathSegments[i]!.to,
+          pathSegments[j]!.from,
+          pathSegments[j]!.to
         );
 
         if (intersection) {
@@ -480,10 +511,7 @@ export class WorkflowSimulator {
       let radius = 0.5; // minimum radius
       if (zone.items.length > 1) {
         const maxDist = zone.items.reduce((max, item) => {
-          const d = this.distance2D(
-            { x: item.position.x, z: item.position.z },
-            zone.centroid
-          );
+          const d = this.distance2D({ x: item.position.x, z: item.position.z }, zone.centroid);
           return Math.max(max, d);
         }, 0);
         radius = Math.max(radius, maxDist + 0.3);
@@ -587,10 +615,10 @@ export class WorkflowSimulator {
 
     // Distance to walls
     const wallDists = [
-      point.x,                        // left wall
-      roomConfig.width - point.x,     // right wall
-      point.z,                        // back wall
-      roomConfig.depth - point.z,     // front wall
+      point.x, // left wall
+      roomConfig.width - point.x, // right wall
+      point.z, // back wall
+      roomConfig.depth - point.z, // front wall
     ];
     for (const d of wallDists) {
       if (d < minDist) minDist = d;

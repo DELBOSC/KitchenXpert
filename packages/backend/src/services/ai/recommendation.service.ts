@@ -6,24 +6,39 @@ import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '') // Remove special chars
-    .replace(/\n/g, ' ')       // Flatten newlines
-    .slice(0, 200);            // Limit length
+    .replace(/\n/g, ' ') // Flatten newlines
+    .slice(0, 200); // Limit length
 }
 
 const RecommendationSchema = z.object({
-  recommendations: z.array(z.object({
-    productType: z.string().max(100),
-    reason: z.string().max(500),
-    priority: z.enum(['high', 'medium', 'low']),
-    suggestedBrand: z.string().max(100).optional().nullable().transform(v => v ?? undefined),
-    priceRange: z.object({
-      min: z.number().min(0),
-      max: z.number().min(0),
-    }).optional().nullable().transform(v => v ?? undefined),
-  })).max(10),
+  recommendations: z
+    .array(
+      z.object({
+        productType: z.string().max(100),
+        reason: z.string().max(500),
+        priority: z.enum(['high', 'medium', 'low']),
+        suggestedBrand: z
+          .string()
+          .max(100)
+          .optional()
+          .nullable()
+          .transform((v) => v ?? undefined),
+        priceRange: z
+          .object({
+            min: z.number().min(0),
+            max: z.number().min(0),
+          })
+          .optional()
+          .nullable()
+          .transform((v) => v ?? undefined),
+      })
+    )
+    .max(10),
 });
 
 interface RecommendationItem {
@@ -51,7 +66,7 @@ export class ProductRecommendationService {
     const safeItemType = sanitizeInput(options.lastAddedItem.type);
     const safeItemName = sanitizeInput(options.lastAddedItem.name);
     const safeStyle = sanitizeInput(options.style);
-    const safeItems = options.currentItems.map(i => sanitizeInput(i.type)).join(', ') || 'aucun';
+    const safeItems = options.currentItems.map((i) => sanitizeInput(i.type)).join(', ') || 'aucun';
     const safeBudget = options.budget
       ? `Budget: ${Math.max(0, Math.min(1000000, options.budget.min))}-${Math.max(0, Math.min(1000000, options.budget.max))}EUR`
       : '';

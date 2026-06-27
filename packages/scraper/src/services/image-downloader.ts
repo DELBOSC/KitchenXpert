@@ -104,7 +104,8 @@ const DEFAULT_OPTIONS: ImageDownloadOptions = {
   maxDimension: 2000,
   skipExisting: true,
   organizeByBrand: true,
-  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  userAgent:
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -127,7 +128,7 @@ export class ImageDownloader {
       maxRedirects: 5,
       headers: {
         'User-Agent': this.options.userAgent,
-        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
       },
@@ -219,7 +220,9 @@ export class ImageDownloader {
           finalFormat = 'webp';
           break;
         case 'jpeg':
-          processedBuffer = await image.jpeg({ quality: this.options.quality, mozjpeg: true }).toBuffer();
+          processedBuffer = await image
+            .jpeg({ quality: this.options.quality, mozjpeg: true })
+            .toBuffer();
           finalFormat = 'jpg';
           break;
         case 'png':
@@ -475,8 +478,7 @@ export class ImageDownloader {
 
       // Calculate dominant color from stats
       const dominantChannel = stats.channels.reduce(
-        (prev: { mean: number }, curr: { mean: number }) =>
-          curr.mean > prev.mean ? curr : prev
+        (prev: { mean: number }, curr: { mean: number }) => (curr.mean > prev.mean ? curr : prev)
       );
 
       return {

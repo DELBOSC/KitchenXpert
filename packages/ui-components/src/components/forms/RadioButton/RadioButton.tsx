@@ -47,8 +47,10 @@ export interface RadioGroupProps {
 }
 
 // Radio Button Props
-export interface RadioButtonProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
+export interface RadioButtonProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'size' | 'type'
+> {
   label?: ReactNode;
   description?: string;
   size?: RadioSize;
@@ -150,10 +152,8 @@ const RadioGroupLabel = styled.legend`
 
 const RadioGroupOptions = styled.div<{ $orientation: 'horizontal' | 'vertical' }>`
   display: flex;
-  flex-direction: ${({ $orientation }) =>
-    $orientation === 'horizontal' ? 'row' : 'column'};
-  gap: ${({ $orientation }) =>
-    $orientation === 'horizontal' ? '16px' : '8px'};
+  flex-direction: ${({ $orientation }) => ($orientation === 'horizontal' ? 'row' : 'column')};
+  gap: ${({ $orientation }) => ($orientation === 'horizontal' ? '16px' : '8px')};
   flex-wrap: wrap;
 `;
 
@@ -350,14 +350,10 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
           ref={ref}
           role="radiogroup"
           aria-label={ariaLabel || label}
-          aria-describedby={
-            ariaDescribedBy || (displayHelperText ? helperId : undefined)
-          }
+          aria-describedby={ariaDescribedBy || (displayHelperText ? helperId : undefined)}
         >
           {label && <RadioGroupLabel>{label}</RadioGroupLabel>}
-          <RadioGroupOptions $orientation={orientation}>
-            {children}
-          </RadioGroupOptions>
+          <RadioGroupOptions $orientation={orientation}>{children}</RadioGroupOptions>
           {displayHelperText && (
             <HelperText $state={displayState} id={helperId}>
               {displayHelperText}
@@ -405,9 +401,7 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
     const disabled = propDisabled ?? groupContext?.disabled ?? false;
 
     // Determine checked state
-    const isChecked = groupContext
-      ? groupContext.value === value
-      : propChecked ?? false;
+    const isChecked = groupContext ? groupContext.value === value : (propChecked ?? false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.checked) {
@@ -416,12 +410,8 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
       onChange?.(e);
     };
 
-    const describedBy = [
-      description ? descriptionId : null,
-      ariaDescribedBy,
-    ]
-      .filter(Boolean)
-      .join(' ') || undefined;
+    const describedBy =
+      [description ? descriptionId : null, ariaDescribedBy].filter(Boolean).join(' ') || undefined;
 
     return (
       <RadioWrapper>

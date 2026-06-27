@@ -32,7 +32,8 @@ const tiers: PricingTier[] = [
     periodKey: 'pricing.plans.free.period',
     periodDefault: '/mois',
     descriptionKey: 'pricing.plans.free.description',
-    descriptionDefault: 'Parfait pour decouvrir KitchenXpert et commencer votre premier projet de cuisine.',
+    descriptionDefault:
+      'Parfait pour decouvrir KitchenXpert et commencer votre premier projet de cuisine.',
     featureKeys: [
       { key: 'pricing.plans.free.features.projects', defaultValue: '2 projets maximum' },
       { key: 'pricing.plans.free.features.aiGenerations', defaultValue: '5 generations IA / mois' },
@@ -50,7 +51,8 @@ const tiers: PricingTier[] = [
     periodKey: 'pricing.plans.pro.period',
     periodDefault: '/mois',
     descriptionKey: 'pricing.plans.pro.description',
-    descriptionDefault: 'Pour les particuliers exigeants et les professionnels qui veulent des outils avances.',
+    descriptionDefault:
+      'Pour les particuliers exigeants et les professionnels qui veulent des outils avances.',
     featureKeys: [
       { key: 'pricing.plans.pro.features.projects', defaultValue: 'Projets illimites' },
       { key: 'pricing.plans.pro.features.aiGenerations', defaultValue: '50 generations IA / mois' },
@@ -71,13 +73,23 @@ const tiers: PricingTier[] = [
     periodKey: 'pricing.plans.enterprise.period',
     periodDefault: '/mois',
     descriptionKey: 'pricing.plans.enterprise.description',
-    descriptionDefault: 'Solution complete pour les agences, architectes et cuisinistes professionnels.',
+    descriptionDefault:
+      'Solution complete pour les agences, architectes et cuisinistes professionnels.',
     featureKeys: [
       { key: 'pricing.plans.enterprise.features.unlimited', defaultValue: 'Tout illimite' },
-      { key: 'pricing.plans.enterprise.features.aiGenerations', defaultValue: 'Generations IA illimitees' },
+      {
+        key: 'pricing.plans.enterprise.features.aiGenerations',
+        defaultValue: 'Generations IA illimitees',
+      },
       { key: 'pricing.plans.enterprise.features.branding', defaultValue: 'Branding personnalise' },
-      { key: 'pricing.plans.enterprise.features.chatMessages', defaultValue: 'Messages chat illimites' },
-      { key: 'pricing.plans.enterprise.features.collaborators', defaultValue: 'Collaborateurs illimites' },
+      {
+        key: 'pricing.plans.enterprise.features.chatMessages',
+        defaultValue: 'Messages chat illimites',
+      },
+      {
+        key: 'pricing.plans.enterprise.features.collaborators',
+        defaultValue: 'Collaborateurs illimites',
+      },
       { key: 'pricing.plans.enterprise.features.support', defaultValue: 'Support prioritaire' },
       { key: 'pricing.plans.enterprise.features.api', defaultValue: 'Acces API' },
     ],
@@ -102,55 +114,88 @@ interface FeatureRow {
 
 const featureComparison: FeatureRow[] = [
   {
-    nameKey: 'pricing.comparison.projects', nameDefault: 'Projects',
+    nameKey: 'pricing.comparison.projects',
+    nameDefault: 'Projects',
     free: { type: 'text', key: 'pricing.comparison.values.two', defaultValue: '2' },
     pro: { type: 'text', key: 'pricing.comparison.values.unlimited', defaultValue: 'Unlimited' },
-    enterprise: { type: 'text', key: 'pricing.comparison.values.unlimited', defaultValue: 'Unlimited' },
+    enterprise: {
+      type: 'text',
+      key: 'pricing.comparison.values.unlimited',
+      defaultValue: 'Unlimited',
+    },
   },
   {
-    nameKey: 'pricing.comparison.aiGenerations', nameDefault: 'AI Generations',
-    free: { type: 'text', key: 'pricing.comparison.values.fivePerMonth', defaultValue: '5 / month' },
-    pro: { type: 'text', key: 'pricing.comparison.values.fiftyPerMonth', defaultValue: '50 / month' },
-    enterprise: { type: 'text', key: 'pricing.comparison.values.unlimited', defaultValue: 'Unlimited' },
+    nameKey: 'pricing.comparison.aiGenerations',
+    nameDefault: 'AI Generations',
+    free: {
+      type: 'text',
+      key: 'pricing.comparison.values.fivePerMonth',
+      defaultValue: '5 / month',
+    },
+    pro: {
+      type: 'text',
+      key: 'pricing.comparison.values.fiftyPerMonth',
+      defaultValue: '50 / month',
+    },
+    enterprise: {
+      type: 'text',
+      key: 'pricing.comparison.values.unlimited',
+      defaultValue: 'Unlimited',
+    },
   },
   {
-    nameKey: 'pricing.comparison.chatMessages', nameDefault: 'AI Chat Messages',
+    nameKey: 'pricing.comparison.chatMessages',
+    nameDefault: 'AI Chat Messages',
     free: { type: 'text', key: 'pricing.comparison.values.twenty', defaultValue: '20' },
     pro: { type: 'text', key: 'pricing.comparison.values.twoHundred', defaultValue: '200' },
-    enterprise: { type: 'text', key: 'pricing.comparison.values.unlimited', defaultValue: 'Unlimited' },
+    enterprise: {
+      type: 'text',
+      key: 'pricing.comparison.values.unlimited',
+      defaultValue: 'Unlimited',
+    },
   },
   {
-    nameKey: 'pricing.comparison.exportPdf', nameDefault: 'PDF Export',
+    nameKey: 'pricing.comparison.exportPdf',
+    nameDefault: 'PDF Export',
     free: { type: 'text', key: 'pricing.comparison.values.basic', defaultValue: 'Basic' },
     pro: { type: 'text', key: 'pricing.comparison.values.full', defaultValue: 'Full' },
     enterprise: { type: 'text', key: 'pricing.comparison.values.full', defaultValue: 'Full' },
   },
   {
-    nameKey: 'pricing.comparison.collaborators', nameDefault: 'Collaborators',
+    nameKey: 'pricing.comparison.collaborators',
+    nameDefault: 'Collaborators',
     free: { type: 'none' },
     pro: { type: 'text', key: 'pricing.comparison.values.three', defaultValue: '3' },
-    enterprise: { type: 'text', key: 'pricing.comparison.values.unlimited', defaultValue: 'Unlimited' },
+    enterprise: {
+      type: 'text',
+      key: 'pricing.comparison.values.unlimited',
+      defaultValue: 'Unlimited',
+    },
   },
   {
-    nameKey: 'pricing.comparison.vr', nameDefault: 'VR / 3D Preview',
+    nameKey: 'pricing.comparison.vr',
+    nameDefault: 'VR / 3D Preview',
     free: { type: 'none' },
     pro: { type: 'boolean', value: true },
     enterprise: { type: 'boolean', value: true },
   },
   {
-    nameKey: 'pricing.comparison.branding', nameDefault: 'Custom Branding',
+    nameKey: 'pricing.comparison.branding',
+    nameDefault: 'Custom Branding',
     free: { type: 'none' },
     pro: { type: 'none' },
     enterprise: { type: 'boolean', value: true },
   },
   {
-    nameKey: 'pricing.comparison.support', nameDefault: 'Priority Support',
+    nameKey: 'pricing.comparison.support',
+    nameDefault: 'Priority Support',
     free: { type: 'none' },
     pro: { type: 'none' },
     enterprise: { type: 'boolean', value: true },
   },
   {
-    nameKey: 'pricing.comparison.api', nameDefault: 'API Access',
+    nameKey: 'pricing.comparison.api',
+    nameDefault: 'API Access',
     free: { type: 'none' },
     pro: { type: 'none' },
     enterprise: { type: 'boolean', value: true },
@@ -161,7 +206,12 @@ const featureComparison: FeatureRow[] = [
 
 function CheckIcon(): React.ReactElement {
   return (
-    <svg className="w-5 h-5 text-kx-brand-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg
+      className="w-5 h-5 text-kx-brand-accent flex-shrink-0"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
     </svg>
   );
@@ -173,9 +223,8 @@ function PricingCard({ tier, annual }: { tier: PricingTier; annual: boolean }): 
   const { t } = useTranslation();
   const isExternal = tier.ctaLink.startsWith('mailto:');
   const basePrice = parseFloat(tier.price);
-  const displayPrice = annual && basePrice > 0
-    ? Math.round(basePrice * 0.8 * 100) / 100
-    : basePrice;
+  const displayPrice =
+    annual && basePrice > 0 ? Math.round(basePrice * 0.8 * 100) / 100 : basePrice;
 
   return (
     <div
@@ -206,7 +255,8 @@ function PricingCard({ tier, annual }: { tier: PricingTier; annual: boolean }): 
       </div>
       {annual && basePrice > 0 && (
         <p className="mt-1 text-xs text-kx-fg/60">
-          {t('pricing.billing.billedAnnually', 'Billed annually')} ({Math.round(displayPrice * 12)}&euro;{t('pricing.billing.perYear', '/year')})
+          {t('pricing.billing.billedAnnually', 'Billed annually')} ({Math.round(displayPrice * 12)}
+          &euro;{t('pricing.billing.perYear', '/year')})
         </p>
       )}
 
@@ -257,11 +307,16 @@ function PricingCard({ tier, annual }: { tier: PricingTier; annual: boolean }): 
 
 // ── Feature Comparison Table ───────────────────────────────────────────────
 
-function renderCellValue(cell: CellValue, t: (key: string, defaultValue: string) => string): React.ReactNode {
+function renderCellValue(
+  cell: CellValue,
+  t: (key: string, defaultValue: string) => string
+): React.ReactNode {
   switch (cell.type) {
     case 'boolean':
       return cell.value ? (
-        <span className="inline-flex justify-center"><CheckIcon /></span>
+        <span className="inline-flex justify-center">
+          <CheckIcon />
+        </span>
       ) : (
         <span className="text-kx-fg/30">--</span>
       );
@@ -277,7 +332,10 @@ function FeatureComparisonTable(): React.ReactElement {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm" aria-label={t('pricing.comparison.tableLabel', 'Feature comparison across plans')}>
+      <table
+        className="w-full text-sm"
+        aria-label={t('pricing.comparison.tableLabel', 'Feature comparison across plans')}
+      >
         <thead>
           <tr className="border-b border-kx-fg/20">
             <th className="py-4 pr-4 text-left font-semibold text-kx-fg">
@@ -298,9 +356,7 @@ function FeatureComparisonTable(): React.ReactElement {
           {featureComparison.map((row, idx) => (
             <tr
               key={row.nameKey}
-              className={`border-b border-kx-fg/10 ${
-                idx % 2 === 0 ? 'bg-kx-fg/5' : ''
-              }`}
+              className={`border-b border-kx-fg/10 ${idx % 2 === 0 ? 'bg-kx-fg/5' : ''}`}
             >
               <td className="py-3 pr-4 text-kx-fg/80 font-medium">
                 {t(row.nameKey, row.nameDefault)}
@@ -308,9 +364,7 @@ function FeatureComparisonTable(): React.ReactElement {
               <td className="py-3 px-4 text-center text-kx-fg/70">
                 {renderCellValue(row.free, t)}
               </td>
-              <td className="py-3 px-4 text-center text-kx-fg/70">
-                {renderCellValue(row.pro, t)}
-              </td>
+              <td className="py-3 px-4 text-center text-kx-fg/70">{renderCellValue(row.pro, t)}</td>
               <td className="py-3 pl-4 text-center text-kx-fg/70">
                 {renderCellValue(row.enterprise, t)}
               </td>
@@ -342,7 +396,10 @@ const PricingPage: React.FC = () => {
             {t('pricing.title', 'Tarifs simples, sans surprise')}
           </h1>
           <p className="mt-4 text-lg text-kx-fg/70 max-w-2xl mx-auto">
-            {t('pricing.subtitle', 'Choisissez le plan qui correspond a vos besoins. Commencez gratuitement et evoluez quand vous le souhaitez.')}
+            {t(
+              'pricing.subtitle',
+              'Choisissez le plan qui correspond a vos besoins. Commencez gratuitement et evoluez quand vous le souhaitez.'
+            )}
           </p>
 
           {/* Billing toggle */}
@@ -403,7 +460,10 @@ const PricingPage: React.FC = () => {
         <div className="mt-16 text-center">
           <p className="text-kx-fg/60">
             {t('pricing.cta.questions', 'Des questions ? Contactez-nous a')}{' '}
-            <a href="mailto:contact@kitchenxpert.com" className="text-kx-brand-strong underline hover:text-kx-brand-to transition-colors dark:text-kx-brand-from">
+            <a
+              href="mailto:contact@kitchenxpert.com"
+              className="text-kx-brand-strong underline hover:text-kx-brand-to transition-colors dark:text-kx-brand-from"
+            >
               contact@kitchenxpert.com
             </a>
           </p>

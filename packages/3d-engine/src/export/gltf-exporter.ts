@@ -4,7 +4,7 @@ import * as THREE from 'three';
  * Options d'export GLTF
  */
 export interface GLTFExportOptions {
-  binary?: boolean;       // true = .glb, false = .gltf
+  binary?: boolean; // true = .glb, false = .gltf
   includeCustomProps?: boolean;
   onlyVisible?: boolean;
 }
@@ -17,7 +17,7 @@ export interface ScreenshotOptions {
   height: number;
   superSampling?: number; // 1, 2 or 4
   format?: 'image/png' | 'image/jpeg';
-  quality?: number;       // 0-1 pour jpeg
+  quality?: number; // 0-1 pour jpeg
   transparent?: boolean;
 }
 

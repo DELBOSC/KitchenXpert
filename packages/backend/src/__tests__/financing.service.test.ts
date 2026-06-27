@@ -63,7 +63,12 @@ jest.mock('../services/ai/prompt-templates', () => ({
 
 import { FinancingService } from '../services/financing/financing.service';
 
-import type { EcoAidsDto, SimulateDto, IncomeBracket, EquipmentType } from '../services/financing/financing.service';
+import type {
+  EcoAidsDto,
+  SimulateDto,
+  IncomeBracket,
+  EquipmentType,
+} from '../services/financing/financing.service';
 
 describe('FinancingService', () => {
   let service: FinancingService;
@@ -136,9 +141,9 @@ describe('FinancingService', () => {
         downPayment: 5000, // Down payment equals total
       };
 
-      await expect(
-        service.simulate(mockUser.userId, data),
-      ).rejects.toThrow('Loan amount must be positive after down payment');
+      await expect(service.simulate(mockUser.userId, data)).rejects.toThrow(
+        'Loan amount must be positive after down payment'
+      );
     });
 
     it('should throw when down payment exceeds total amount', async () => {
@@ -147,9 +152,9 @@ describe('FinancingService', () => {
         downPayment: 6000,
       };
 
-      await expect(
-        service.simulate(mockUser.userId, data),
-      ).rejects.toThrow('Loan amount must be positive after down payment');
+      await expect(service.simulate(mockUser.userId, data)).rejects.toThrow(
+        'Loan amount must be positive after down payment'
+      );
     });
 
     it('should store the simulation in the database', async () => {

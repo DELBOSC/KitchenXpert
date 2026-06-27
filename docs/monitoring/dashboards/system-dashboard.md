@@ -1,10 +1,10 @@
 # System Dashboard Documentation
 
-> Comprehensive guide to the KitchenXpert System Dashboard for infrastructure monitoring.
+> Comprehensive guide to the KitchenXpert System Dashboard for infrastructure
+> monitoring.
 
-**Last Updated:** 2026-01-10
-**Owner:** Platform Engineering Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Platform Engineering Team **Version:**
+1.0
 
 ---
 
@@ -26,22 +26,20 @@
 
 **Dashboard URL:** https://grafana.kitchenxpert.internal/d/system
 
-**Direct Links:**
-| Environment | URL |
-|-------------|-----|
-| Production | https://grafana.kitchenxpert.internal/d/system?var-env=production |
-| Staging | https://grafana.kitchenxpert.internal/d/system?var-env=staging |
-| Development | https://grafana.kitchenxpert.internal/d/system?var-env=development |
+**Direct Links:** | Environment | URL | |-------------|-----| | Production |
+https://grafana.kitchenxpert.internal/d/system?var-env=production | | Staging |
+https://grafana.kitchenxpert.internal/d/system?var-env=staging | | Development |
+https://grafana.kitchenxpert.internal/d/system?var-env=development |
 
 ### Access Requirements
 
-| Role | Access Level |
-|------|--------------|
-| Admin | Full edit access |
-| Platform Engineer | Full edit access |
-| Developer | View only |
-| Operations | View + annotations |
-| On-Call | View + annotations |
+| Role              | Access Level       |
+| ----------------- | ------------------ |
+| Admin             | Full edit access   |
+| Platform Engineer | Full edit access   |
+| Developer         | View only          |
+| Operations        | View + annotations |
+| On-Call           | View + annotations |
 
 ### Authentication
 
@@ -62,18 +60,17 @@
 **Description:** Shows green/yellow/red status for each critical service
 
 **Query:**
+
 ```promql
 # Service up status
 up{job=~"backend|ai-service|frontend|api-gateway"}
 ```
 
-**Thresholds:**
-| Color | Condition |
-|-------|-----------|
-| Green | Service up (1) |
-| Red | Service down (0) |
+**Thresholds:** | Color | Condition | |-------|-----------| | Green | Service up
+(1) | | Red | Service down (0) |
 
 **Layout:**
+
 ```
 +----------+----------+----------+----------+
 | Backend  | Frontend | AI Svc   | API GW   |
@@ -81,7 +78,8 @@ up{job=~"backend|ai-service|frontend|api-gateway"}
 +----------+----------+----------+----------+
 ```
 
-[Dashboard: Service Health Status Panel - Shows status indicators for all services]
+[Dashboard: Service Health Status Panel - Shows status indicators for all
+services]
 
 #### Panel 1.2: Active Alerts Count
 
@@ -90,12 +88,14 @@ up{job=~"backend|ai-service|frontend|api-gateway"}
 **Description:** Count of currently firing alerts by severity
 
 **Query:**
+
 ```promql
 # Active alerts by severity
 count(ALERTS{alertstate="firing"}) by (severity)
 ```
 
 **Layout:**
+
 ```
 +----------------+----------------+----------------+
 | Critical: 0    | Warning: 2     | Info: 5        |
@@ -113,17 +113,20 @@ count(ALERTS{alertstate="firing"}) by (severity)
 **Description:** CPU utilization across all nodes over time
 
 **Query:**
+
 ```promql
 # CPU usage percentage by node
 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
 ```
 
 **Visualization:**
+
 - Line graph with one series per node
 - Y-axis: 0-100%
 - Legend: Node names
 
 **Thresholds:**
+
 - Warning line at 70%
 - Critical line at 85%
 
@@ -136,17 +139,20 @@ count(ALERTS{alertstate="firing"}) by (severity)
 **Description:** Memory utilization across all nodes
 
 **Query:**
+
 ```promql
 # Memory usage percentage
 100 - ((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100)
 ```
 
 **Visualization:**
+
 - Stacked area chart
 - Y-axis: 0-100%
 - Color-coded by node
 
 **Thresholds:**
+
 - Warning line at 75%
 - Critical line at 90%
 
@@ -163,17 +169,20 @@ count(ALERTS{alertstate="firing"}) by (severity)
 **Description:** Total HTTP request rate across all services
 
 **Query:**
+
 ```promql
 # Total request rate
 sum(rate(http_requests_total[5m])) by (service)
 ```
 
 **Visualization:**
+
 - Line graph
 - Y-axis: requests per second
 - Stacked by service
 
 **Additional Metrics:**
+
 ```promql
 # Request rate by status code class
 sum(rate(http_requests_total[5m])) by (status_class)
@@ -189,6 +198,7 @@ sum(rate(http_requests_total[5m])) by (status_class)
 **Description:** HTTP error rate (5xx) as percentage of total requests
 
 **Query:**
+
 ```promql
 # Error rate percentage
 sum(rate(http_requests_total{status=~"5.."}[5m])) /
@@ -196,11 +206,13 @@ sum(rate(http_requests_total[5m])) * 100
 ```
 
 **Visualization:**
+
 - Line graph with fill below
 - Y-axis: 0-10% (auto-scale if needed)
 - Red fill for values above threshold
 
 **Thresholds:**
+
 - Warning: 1%
 - Critical: 5%
 
@@ -217,6 +229,7 @@ sum(rate(http_requests_total[5m])) * 100
 **Description:** Request latency percentiles over time
 
 **Queries:**
+
 ```promql
 # P50 latency
 histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
@@ -229,15 +242,13 @@ histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by 
 ```
 
 **Visualization:**
+
 - Three lines (P50, P90, P99)
 - Y-axis: seconds (or milliseconds)
 - Different colors for each percentile
 
-**Thresholds:**
-| Percentile | Warning | Critical |
-|------------|---------|----------|
-| P50 | 200ms | 500ms |
-| P90 | 500ms | 1s |
+**Thresholds:** | Percentile | Warning | Critical |
+|------------|---------|----------| | P50 | 200ms | 500ms | | P90 | 500ms | 1s |
 | P99 | 1s | 2s |
 
 [Dashboard: Latency Distribution - Shows P50/P90/P99 latency over time]
@@ -249,12 +260,14 @@ histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by 
 **Description:** Distribution of request latencies as a heatmap
 
 **Query:**
+
 ```promql
 # Latency histogram
 sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
 ```
 
 **Visualization:**
+
 - X-axis: Time
 - Y-axis: Latency buckets
 - Color intensity: Request count
@@ -272,6 +285,7 @@ sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
 **Description:** Current database connection pool usage
 
 **Query:**
+
 ```promql
 # PostgreSQL connections
 pg_stat_activity_count
@@ -281,16 +295,13 @@ pg_stat_activity_count / pg_settings_max_connections * 100
 ```
 
 **Visualization:**
+
 - Gauge showing current value
 - Small time series showing trend
 - Color-coded based on utilization
 
-**Thresholds:**
-| Usage | Color |
-|-------|-------|
-| 0-70% | Green |
-| 70-85% | Yellow |
-| 85-100% | Red |
+**Thresholds:** | Usage | Color | |-------|-------| | 0-70% | Green | | 70-85% |
+Yellow | | 85-100% | Red |
 
 [Dashboard: Database Connections Gauge - Shows connection pool utilization]
 
@@ -301,12 +312,14 @@ pg_stat_activity_count / pg_settings_max_connections * 100
 **Description:** Historical database connection count
 
 **Query:**
+
 ```promql
 # Connections over time
 pg_stat_activity_count
 ```
 
 **Additional Queries:**
+
 ```promql
 # Connections by state
 sum(pg_stat_activity_count) by (state)
@@ -326,6 +339,7 @@ sum(pg_stat_activity_count) by (state)
 **Description:** Redis cache hit ratio
 
 **Query:**
+
 ```promql
 # Cache hit rate
 rate(redis_keyspace_hits_total[5m]) /
@@ -333,15 +347,12 @@ rate(redis_keyspace_hits_total[5m]) /
 ```
 
 **Visualization:**
+
 - Large gauge showing current hit rate
 - Target indicator at 90%
 
-**Thresholds:**
-| Hit Rate | Color |
-|----------|-------|
-| 90-100% | Green |
-| 80-90% | Yellow |
-| 0-80% | Red |
+**Thresholds:** | Hit Rate | Color | |----------|-------| | 90-100% | Green | |
+80-90% | Yellow | | 0-80% | Red |
 
 [Dashboard: Cache Hit Rate Gauge - Shows Redis cache effectiveness]
 
@@ -352,12 +363,14 @@ rate(redis_keyspace_hits_total[5m]) /
 **Description:** Cache operations per second
 
 **Query:**
+
 ```promql
 # Cache operations
 sum(rate(redis_commands_total[5m])) by (cmd)
 ```
 
 **Visualization:**
+
 - Stacked area chart
 - Shows GET, SET, DEL operations
 - Y-axis: operations per second
@@ -375,12 +388,14 @@ sum(rate(redis_commands_total[5m])) by (cmd)
 **Description:** CPU usage per Kubernetes pod
 
 **Query:**
+
 ```promql
 # Container CPU usage
 sum(rate(container_cpu_usage_seconds_total{namespace="kitchenxpert"}[5m])) by (pod) * 100
 ```
 
 **Visualization:**
+
 - Line graph per pod
 - Y-axis: CPU percentage
 - Interactive legend for filtering
@@ -394,12 +409,14 @@ sum(rate(container_cpu_usage_seconds_total{namespace="kitchenxpert"}[5m])) by (p
 **Description:** Memory usage per Kubernetes pod
 
 **Query:**
+
 ```promql
 # Container memory usage (MB)
 sum(container_memory_working_set_bytes{namespace="kitchenxpert"}) by (pod) / 1024 / 1024
 ```
 
 **Visualization:**
+
 - Stacked area chart
 - Y-axis: Memory in MB
 - Color-coded by pod
@@ -413,12 +430,14 @@ sum(container_memory_working_set_bytes{namespace="kitchenxpert"}) by (pod) / 102
 **Description:** Container restart count
 
 **Query:**
+
 ```promql
 # Restart count in last 24 hours
 sum(increase(kube_pod_container_status_restarts_total{namespace="kitchenxpert"}[24h])) by (pod, container)
 ```
 
 **Visualization:**
+
 - Table showing pods with restarts
 - Red highlight for pods with > 0 restarts
 
@@ -430,14 +449,14 @@ sum(increase(kube_pod_container_status_restarts_total{namespace="kitchenxpert"}[
 
 ### Available Time Ranges
 
-| Range | Use Case |
-|-------|----------|
+| Range           | Use Case                      |
+| --------------- | ----------------------------- |
 | Last 15 minutes | Active incident investigation |
-| Last 1 hour | Recent issue analysis |
-| Last 6 hours | Shift review |
-| Last 24 hours | Daily patterns |
-| Last 7 days | Weekly trends |
-| Last 30 days | Monthly capacity planning |
+| Last 1 hour     | Recent issue analysis         |
+| Last 6 hours    | Shift review                  |
+| Last 24 hours   | Daily patterns                |
+| Last 7 days     | Weekly trends                 |
+| Last 30 days    | Monthly capacity planning     |
 
 ### Custom Time Range
 
@@ -451,6 +470,7 @@ sum(increase(kube_pod_container_status_restarts_total{namespace="kitchenxpert"}[
 **Default:** UTC
 
 **Options:**
+
 - UTC (recommended for cross-team collaboration)
 - Local browser time
 - Specific timezone (America/New_York, etc.)
@@ -464,12 +484,14 @@ sum(increase(kube_pod_container_status_restarts_total{namespace="kitchenxpert"}[
 **Variable:** `$env`
 
 **Options:**
+
 - All
 - production
 - staging
 - development
 
 **Query:**
+
 ```promql
 label_values(up, environment)
 ```
@@ -479,6 +501,7 @@ label_values(up, environment)
 **Variable:** `$service`
 
 **Options:**
+
 - All
 - backend
 - frontend
@@ -486,6 +509,7 @@ label_values(up, environment)
 - api-gateway
 
 **Query:**
+
 ```promql
 label_values(up{job=~".*"}, job)
 ```
@@ -495,6 +519,7 @@ label_values(up{job=~".*"}, job)
 **Variable:** `$instance`
 
 **Query:**
+
 ```promql
 label_values(node_cpu_seconds_total, instance)
 ```
@@ -506,6 +531,7 @@ label_values(node_cpu_seconds_total, instance)
 3. Dashboard automatically refreshes
 
 **URL Parameters:**
+
 ```
 ?var-env=production&var-service=backend&var-instance=backend-1
 ```
@@ -519,6 +545,7 @@ label_values(node_cpu_seconds_total, instance)
 **Action:** Click on a service status panel
 
 **Navigation:** Opens service-specific dashboard with:
+
 - Detailed metrics for that service
 - Recent deployments
 - Configuration changes
@@ -529,6 +556,7 @@ label_values(node_cpu_seconds_total, instance)
 **Action:** Click on a data point in graphs
 
 **Navigation:**
+
 - Filters dashboard to specific time range
 - Shows detailed breakdown by instance
 - Links to relevant logs in Kibana
@@ -538,6 +566,7 @@ label_values(node_cpu_seconds_total, instance)
 **Action:** Click "View Logs" annotation or button
 
 **Query Parameters Passed:**
+
 - Time range
 - Service name
 - Instance ID
@@ -548,6 +577,7 @@ label_values(node_cpu_seconds_total, instance)
 **Action:** Click request data points
 
 **Navigation:** Opens Jaeger with:
+
 - Time range filter
 - Service filter
 - Duration filter based on selected data
@@ -558,7 +588,8 @@ label_values(node_cpu_seconds_total, instance)
 
 ### Full Dashboard View
 
-[Dashboard: System Dashboard Full View - Complete dashboard layout with all panels visible]
+[Dashboard: System Dashboard Full View - Complete dashboard layout with all
+panels visible]
 
 ```
 +------------------------------------------------------------------+
@@ -583,7 +614,8 @@ label_values(node_cpu_seconds_total, instance)
 
 ### Alert State Example
 
-[Dashboard: System Dashboard with Active Alert - Shows warning state highlighting]
+[Dashboard: System Dashboard with Active Alert - Shows warning state
+highlighting]
 
 ### Incident Investigation View
 
@@ -623,4 +655,5 @@ For backup or version control:
 
 ---
 
-*For questions about the system dashboard, contact the Platform Engineering team at platform@kitchenxpert.com*
+_For questions about the system dashboard, contact the Platform Engineering team
+at platform@kitchenxpert.com_

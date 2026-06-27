@@ -98,7 +98,7 @@ router.post(
   renovationAnalysisRateLimiter,
   uploadSingleImage('photo'),
   handleUploadError as any,
-  renovationController.analyzePhoto,
+  renovationController.analyzePhoto
 );
 
 /**

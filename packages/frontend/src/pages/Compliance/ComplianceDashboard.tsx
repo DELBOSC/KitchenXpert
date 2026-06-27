@@ -70,7 +70,10 @@ interface ComplianceHistoryItem {
 // Severity badge helpers
 // ----------------------------------------------------------------
 
-function severityBadge(severity: string, t: (key: string, fallback: string) => string): { label: string; className: string } {
+function severityBadge(
+  severity: string,
+  t: (key: string, fallback: string) => string
+): { label: string; className: string } {
   switch (severity) {
     case 'error':
       return {
@@ -110,20 +113,40 @@ function statusIcon(status: 'passed' | 'failed' | 'warning'): React.ReactElement
   switch (status) {
     case 'passed':
       return (
-        <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="w-5 h-5 text-green-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       );
     case 'failed':
       return (
         <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       );
     case 'warning':
       return (
-        <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        <svg
+          className="w-5 h-5 text-yellow-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+          />
         </svg>
       );
   }
@@ -152,7 +175,9 @@ export default function ComplianceDashboard(): React.ReactElement {
 
   // ---- Load kitchens if no kitchenId ----
   useEffect(() => {
-    if (selectedKitchenId) {return;}
+    if (selectedKitchenId) {
+      return;
+    }
 
     const controller = new AbortController();
     setLoadingKitchens(true);
@@ -167,7 +192,9 @@ export default function ComplianceDashboard(): React.ReactElement {
           setKitchens(Array.isArray(response.data) ? response.data : []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         setError(t('compliance.errorLoadingKitchens', 'Failed to load kitchens'));
       } finally {
         if (!controller.signal.aborted) {
@@ -181,7 +208,9 @@ export default function ComplianceDashboard(): React.ReactElement {
 
   // ---- Load history when a kitchen is selected ----
   useEffect(() => {
-    if (!selectedKitchenId) {return;}
+    if (!selectedKitchenId) {
+      return;
+    }
 
     const controller = new AbortController();
 
@@ -189,14 +218,16 @@ export default function ComplianceDashboard(): React.ReactElement {
       try {
         const response = await api.get<ComplianceHistoryItem[]>(
           API_ENDPOINTS.COMPLIANCE.HISTORY(selectedKitchenId),
-          { signal: controller.signal },
+          { signal: controller.signal }
         );
 
         if (response.success && response.data) {
           setHistory(Array.isArray(response.data) ? response.data : []);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         // Non-critical: history load failure should not block the UI
       }
     })();
@@ -206,7 +237,9 @@ export default function ComplianceDashboard(): React.ReactElement {
 
   // ---- Run compliance check ----
   const runCheck = useCallback(async () => {
-    if (!selectedKitchenId) {return;}
+    if (!selectedKitchenId) {
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -214,34 +247,47 @@ export default function ComplianceDashboard(): React.ReactElement {
 
     try {
       const response = await api.post<ComplianceCheckResult>(
-        API_ENDPOINTS.COMPLIANCE.CHECK(selectedKitchenId),
+        API_ENDPOINTS.COMPLIANCE.CHECK(selectedKitchenId)
       );
 
       if (response.success && response.data) {
         setCheckResult(response.data);
       } else {
-        setError(response.error?.message || t('compliance.errorRunningCheck', 'Failed to run compliance check'));
+        setError(
+          response.error?.message ||
+            t('compliance.errorRunningCheck', 'Failed to run compliance check')
+        );
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('compliance.errorRunningCheck', 'Failed to run compliance check'));
+      setError(
+        err instanceof Error
+          ? err.message
+          : t('compliance.errorRunningCheck', 'Failed to run compliance check')
+      );
     } finally {
       setLoading(false);
     }
   }, [selectedKitchenId, t]);
 
   // ---- Select kitchen ----
-  const selectKitchen = useCallback((id: string) => {
-    setSelectedKitchenId(id);
-    setCheckResult(null);
-    setError(null);
-    navigate(`/compliance/${id}`, { replace: true });
-  }, [navigate]);
+  const selectKitchen = useCallback(
+    (id: string) => {
+      setSelectedKitchenId(id);
+      setCheckResult(null);
+      setError(null);
+      navigate(`/compliance/${id}`, { replace: true });
+    },
+    [navigate]
+  );
 
   // ---- Filter results ----
-  const filteredResults = checkResult?.results.filter(r => {
-    if (filter === 'all') {return true;}
-    return r.status === filter;
-  }) ?? [];
+  const filteredResults =
+    checkResult?.results.filter((r) => {
+      if (filter === 'all') {
+        return true;
+      }
+      return r.status === filter;
+    }) ?? [];
 
   // ── Kitchen Selector ──────────────────────────────────────────
   if (!selectedKitchenId) {
@@ -251,26 +297,51 @@ export default function ComplianceDashboard(): React.ReactElement {
           {t('compliance.title', 'Building Code Compliance')}
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mb-6">
-          {t('compliance.selectKitchenDescription', 'Select a kitchen to run compliance checks against French building codes (NF C 15-100, NF DTU 24.1, PMR).')}
+          {t(
+            'compliance.selectKitchenDescription',
+            'Select a kitchen to run compliance checks against French building codes (NF C 15-100, NF DTU 24.1, PMR).'
+          )}
         </p>
 
         {loadingKitchens ? (
           <div className="flex items-center justify-center py-12">
             <svg className="animate-spin h-8 w-8 text-blue-500" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
             </svg>
           </div>
         ) : kitchens.length === 0 ? (
           <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <svg className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <svg
+              className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
             </svg>
             <p className="text-gray-500 dark:text-gray-400 mb-4">
               {t('compliance.noKitchens', 'No kitchens found. Create a kitchen project first.')}
             </p>
             <button
-              onClick={() => setRetryCount(c => c + 1)}
+              onClick={() => setRetryCount((c) => c + 1)}
               className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
             >
               {t('compliance.retry', 'Retry')}
@@ -316,7 +387,11 @@ export default function ComplianceDashboard(): React.ReactElement {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <button
-              onClick={() => { setSelectedKitchenId(null); setCheckResult(null); navigate('/compliance', { replace: true }); }}
+              onClick={() => {
+                setSelectedKitchenId(null);
+                setCheckResult(null);
+                navigate('/compliance', { replace: true });
+              }}
               className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
             >
               &larr; {t('compliance.backToKitchens', 'Kitchens')}
@@ -343,12 +418,29 @@ export default function ComplianceDashboard(): React.ReactElement {
           >
             {loading ? (
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
             ) : (
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             )}
             {t('compliance.runCheck', 'Run Compliance Check')}
@@ -360,13 +452,23 @@ export default function ComplianceDashboard(): React.ReactElement {
       {error && (
         <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-5 h-5 text-red-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
           </div>
           <button
-            onClick={() => setRetryCount(c => c + 1)}
+            onClick={() => setRetryCount((c) => c + 1)}
             className="mt-2 text-sm text-red-600 dark:text-red-400 hover:underline"
           >
             {t('compliance.retry', 'Retry')}
@@ -387,15 +489,24 @@ export default function ComplianceDashboard(): React.ReactElement {
                 className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 text-sm"
               >
                 <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${h.status === 'passed' ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <span
+                    className={`w-2 h-2 rounded-full ${h.status === 'passed' ? 'bg-green-500' : 'bg-red-500'}`}
+                  />
                   <span className="text-gray-700 dark:text-gray-300">
-                    {new Date(h.checkedAt).toLocaleDateString()} {new Date(h.checkedAt).toLocaleTimeString()}
+                    {new Date(h.checkedAt).toLocaleDateString()}{' '}
+                    {new Date(h.checkedAt).toLocaleTimeString()}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs">
-                  <span className="text-green-600 dark:text-green-400">{h.passedRules} {t('compliance.passed', 'passed')}</span>
-                  <span className="text-red-600 dark:text-red-400">{h.failedRules} {t('compliance.failed', 'failed')}</span>
-                  <span className="text-yellow-600 dark:text-yellow-400">{h.warningRules} {t('compliance.warnings', 'warnings')}</span>
+                  <span className="text-green-600 dark:text-green-400">
+                    {h.passedRules} {t('compliance.passed', 'passed')}
+                  </span>
+                  <span className="text-red-600 dark:text-red-400">
+                    {h.failedRules} {t('compliance.failed', 'failed')}
+                  </span>
+                  <span className="text-yellow-600 dark:text-yellow-400">
+                    {h.warningRules} {t('compliance.warnings', 'warnings')}
+                  </span>
                 </div>
               </div>
             ))}
@@ -410,25 +521,33 @@ export default function ComplianceDashboard(): React.ReactElement {
             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
               {t('compliance.totalRules', 'Total Rules')}
             </p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{checkResult.totalRules}</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {checkResult.totalRules}
+            </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-green-200 dark:border-green-800">
             <p className="text-xs text-green-600 dark:text-green-400 uppercase tracking-wide">
               {t('compliance.passed', 'Passed')}
             </p>
-            <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{checkResult.passedRules}</p>
+            <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
+              {checkResult.passedRules}
+            </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-red-200 dark:border-red-800">
             <p className="text-xs text-red-600 dark:text-red-400 uppercase tracking-wide">
               {t('compliance.failed', 'Failed')}
             </p>
-            <p className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">{checkResult.failedRules}</p>
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">
+              {checkResult.failedRules}
+            </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-yellow-200 dark:border-yellow-800">
             <p className="text-xs text-yellow-600 dark:text-yellow-400 uppercase tracking-wide">
               {t('compliance.warnings', 'Warnings')}
             </p>
-            <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">{checkResult.warningRules}</p>
+            <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">
+              {checkResult.warningRules}
+            </p>
           </div>
         </div>
       )}
@@ -452,11 +571,16 @@ export default function ComplianceDashboard(): React.ReactElement {
                   ? t('compliance.filterFailed', 'Failed')
                   : f === 'warning'
                     ? t('compliance.filterWarnings', 'Warnings')
-                    : t('compliance.filterPassed', 'Passed')
-              }
+                    : t('compliance.filterPassed', 'Passed')}
               {f !== 'all' && checkResult && (
                 <span className="ml-1">
-                  ({f === 'failed' ? checkResult.failedRules : f === 'warning' ? checkResult.warningRules : checkResult.passedRules})
+                  (
+                  {f === 'failed'
+                    ? checkResult.failedRules
+                    : f === 'warning'
+                      ? checkResult.warningRules
+                      : checkResult.passedRules}
+                  )
                 </span>
               )}
             </button>
@@ -475,15 +599,15 @@ export default function ComplianceDashboard(): React.ReactElement {
                 className={`rounded-lg shadow-sm p-4 ${statusColor(result.status)} dark:border-opacity-50`}
               >
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex-shrink-0">
-                    {statusIcon(result.status)}
-                  </div>
+                  <div className="mt-0.5 flex-shrink-0">{statusIcon(result.status)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
                         {result.ruleName}
                       </h3>
-                      <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full ${badge.className}`}>
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full ${badge.className}`}
+                      >
                         {badge.label}
                       </span>
                       <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
@@ -495,8 +619,18 @@ export default function ComplianceDashboard(): React.ReactElement {
                     </p>
                     {result.fixSuggestion && result.status !== 'passed' && (
                       <div className="mt-2 flex items-start gap-1.5">
-                        <svg className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         <p className="text-xs text-blue-700 dark:text-blue-300">
                           {result.fixSuggestion}
@@ -547,7 +681,7 @@ export default function ComplianceDashboard(): React.ReactElement {
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
             {t(
               'compliance.readyDescription',
-              'Run a compliance check to verify your kitchen design against French building codes including electrical standards, safety distances, ventilation, and accessibility requirements.',
+              'Run a compliance check to verify your kitchen design against French building codes including electrical standards, safety distances, ventilation, and accessibility requirements.'
             )}
           </p>
           <button
@@ -564,8 +698,20 @@ export default function ComplianceDashboard(): React.ReactElement {
       {loading && (
         <div className="flex flex-col items-center justify-center py-16">
           <svg className="animate-spin h-10 w-10 text-blue-500 mb-4" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
           </svg>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {t('compliance.checking', 'Running compliance checks...')}

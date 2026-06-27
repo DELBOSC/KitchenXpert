@@ -10,11 +10,13 @@ const router: RouterType = Router();
 
 // ==================== ZOD SCHEMAS ====================
 
-const sectionDataSchema = z.object({
-  data: z.record(z.unknown()).refine((val) => Object.keys(val).length > 0, {
-    message: 'Section data must not be empty',
-  }),
-}).passthrough();
+const sectionDataSchema = z
+  .object({
+    data: z.record(z.unknown()).refine((val) => Object.keys(val).length > 0, {
+      message: 'Section data must not be empty',
+    }),
+  })
+  .passthrough();
 
 // All questionnaire routes require authentication
 router.use(authenticate);
@@ -92,7 +94,12 @@ router.get('/auto-bridge', questionnaireController.getAutoBridgeData);
 router.post('/auto-generate', aiRateLimiter, questionnaireController.autoGenerate);
 
 // Section endpoints -- GET (load) and POST (save) for each section
-const validSections = ['user-profile', 'spatial-constraints', 'style-preferences', 'budget-planning'];
+const validSections = [
+  'user-profile',
+  'spatial-constraints',
+  'style-preferences',
+  'budget-planning',
+];
 
 /**
  * @swagger
@@ -117,17 +124,22 @@ const validSections = ['user-profile', 'spatial-constraints', 'style-preferences
  *       401:
  *         description: Unauthorized
  */
-router.post('/:section/ai-tips', (req, res, next) => {
-  const section = req.params['section'] || '';
-  if (!validSections.includes(section)) {
-    res.status(400).json({
-      success: false,
-      error: `Invalid section. Must be one of: ${validSections.join(', ')}`,
-    });
-    return;
-  }
-  next();
-}, aiRateLimiter, questionnaireController.getAITips);
+router.post(
+  '/:section/ai-tips',
+  (req, res, next) => {
+    const section = req.params['section'] || '';
+    if (!validSections.includes(section)) {
+      res.status(400).json({
+        success: false,
+        error: `Invalid section. Must be one of: ${validSections.join(', ')}`,
+      });
+      return;
+    }
+    next();
+  },
+  aiRateLimiter,
+  questionnaireController.getAITips
+);
 
 /**
  * @swagger
@@ -152,17 +164,21 @@ router.post('/:section/ai-tips', (req, res, next) => {
  *       401:
  *         description: Unauthorized
  */
-router.get('/:section', (req, res, next) => {
-  const section = req.params['section'] || '';
-  if (!validSections.includes(section)) {
-    res.status(400).json({
-      success: false,
-      error: `Invalid section. Must be one of: ${validSections.join(', ')}`,
-    });
-    return;
-  }
-  next();
-}, questionnaireController.getSection);
+router.get(
+  '/:section',
+  (req, res, next) => {
+    const section = req.params['section'] || '';
+    if (!validSections.includes(section)) {
+      res.status(400).json({
+        success: false,
+        error: `Invalid section. Must be one of: ${validSections.join(', ')}`,
+      });
+      return;
+    }
+    next();
+  },
+  questionnaireController.getSection
+);
 
 /**
  * @swagger
@@ -197,16 +213,21 @@ router.get('/:section', (req, res, next) => {
  *       401:
  *         description: Unauthorized
  */
-router.post('/:section', (req, res, next) => {
-  const section = req.params['section'] || '';
-  if (!validSections.includes(section)) {
-    res.status(400).json({
-      success: false,
-      error: `Invalid section. Must be one of: ${validSections.join(', ')}`,
-    });
-    return;
-  }
-  next();
-}, validateBody(sectionDataSchema), questionnaireController.saveSection);
+router.post(
+  '/:section',
+  (req, res, next) => {
+    const section = req.params['section'] || '';
+    if (!validSections.includes(section)) {
+      res.status(400).json({
+        success: false,
+        error: `Invalid section. Must be one of: ${validSections.join(', ')}`,
+      });
+      return;
+    }
+    next();
+  },
+  validateBody(sectionDataSchema),
+  questionnaireController.saveSection
+);
 
 export default router;

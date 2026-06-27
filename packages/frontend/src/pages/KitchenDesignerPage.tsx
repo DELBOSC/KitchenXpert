@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 
-import { BRAND_PROFILES, getAllBrandIds, getBrandProfile, recomputeWithThickness, mmToM } from '@kitchenxpert/3d-engine';
+import {
+  BRAND_PROFILES,
+  getAllBrandIds,
+  getBrandProfile,
+  recomputeWithThickness,
+  mmToM,
+} from '@kitchenxpert/3d-engine';
 
 import AIAssistantPanel from '../components/designer/AIAssistantPanel';
 import BudgetBar from '../components/designer/BudgetBar';
@@ -149,7 +155,8 @@ function KitchenCreateForm(): React.ReactElement {
       let targetProjectId = projectId;
 
       if (createNewProject) {
-        const projName = newProjectName.trim() || t('designer.defaultProjectName', 'Mon projet cuisine');
+        const projName =
+          newProjectName.trim() || t('designer.defaultProjectName', 'Mon projet cuisine');
         const projRes = await api.post<{ id: string }>(API_ENDPOINTS.PROJECTS.BASE, {
           name: projName,
           description: t('designer.projectDescription', { defaultValue: 'Projet cuisine' }),
@@ -206,13 +213,17 @@ function KitchenCreateForm(): React.ReactElement {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 py-8">
       <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{t('designer.newKitchen')}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          {t('designer.newKitchen')}
+        </h1>
         <p className="text-gray-500 dark:text-gray-400 mb-6">{t('designer.configureBase')}</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Project selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('designer.project')}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {t('designer.project')}
+            </label>
             {loadingProjects ? (
               <p className="text-sm text-gray-400">{t('designer.loadingProjects')}</p>
             ) : projects.length > 0 && !createNewProject ? (
@@ -223,10 +234,16 @@ function KitchenCreateForm(): React.ReactElement {
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 >
                   {projects.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
                   ))}
                 </select>
-                <button type="button" onClick={() => setCreateNewProject(true)} className="text-sm text-blue-600 hover:underline">
+                <button
+                  type="button"
+                  onClick={() => setCreateNewProject(true)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
                   {t('designer.createNewProject')}
                 </button>
               </div>
@@ -240,7 +257,11 @@ function KitchenCreateForm(): React.ReactElement {
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 />
                 {projects.length > 0 && (
-                  <button type="button" onClick={() => setCreateNewProject(false)} className="text-sm text-blue-600 hover:underline">
+                  <button
+                    type="button"
+                    onClick={() => setCreateNewProject(false)}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
                     {t('designer.chooseExistingProject')}
                   </button>
                 )}
@@ -250,7 +271,9 @@ function KitchenCreateForm(): React.ReactElement {
 
           {/* Kitchen name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('designer.kitchenNameRequired')}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {t('designer.kitchenNameRequired')}
+            </label>
             <input
               type="text"
               value={name}
@@ -264,7 +287,9 @@ function KitchenCreateForm(): React.ReactElement {
 
           {/* Style */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('designer.style')}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('designer.style')}
+            </label>
             <div className="grid grid-cols-5 gap-2">
               {STYLES.map((s) => (
                 <button
@@ -277,7 +302,10 @@ function KitchenCreateForm(): React.ReactElement {
                       : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <div className="w-5 h-5 rounded-full border-2 border-gray-200" style={{ backgroundColor: s.color }} />
+                  <div
+                    className="w-5 h-5 rounded-full border-2 border-gray-200"
+                    style={{ backgroundColor: s.color }}
+                  />
                   <span className="truncate w-full text-center">{t(s.labelKey)}</span>
                 </button>
               ))}
@@ -286,7 +314,9 @@ function KitchenCreateForm(): React.ReactElement {
 
           {/* Layout */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('designer.layout')}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('designer.layout')}
+            </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {LAYOUTS.map((l) => (
                 <button
@@ -308,27 +338,58 @@ function KitchenCreateForm(): React.ReactElement {
 
           {/* Dimensions */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('designer.dimensions')}</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('designer.dimensions')}
+            </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{t('designer.width')} (mm)</label>
-                <input type="number" value={width} onChange={(e) => setWidth(Number(e.target.value))} min={500} max={15000}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  {t('designer.width')} (mm)
+                </label>
+                <input
+                  type="number"
+                  value={width}
+                  onChange={(e) => setWidth(Number(e.target.value))}
+                  min={500}
+                  max={15000}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{t('designer.depth')} (mm)</label>
-                <input type="number" value={length} onChange={(e) => setLength(Number(e.target.value))} min={500} max={15000}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  {t('designer.depth')} (mm)
+                </label>
+                <input
+                  type="number"
+                  value={length}
+                  onChange={(e) => setLength(Number(e.target.value))}
+                  min={500}
+                  max={15000}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{t('designer.height')} (mm)</label>
-                <input type="number" value={height} onChange={(e) => setHeight(Number(e.target.value))} min={2000} max={4000}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  {t('designer.height')} (mm)
+                </label>
+                <input
+                  type="number"
+                  value={height}
+                  onChange={(e) => setHeight(Number(e.target.value))}
+                  min={2000}
+                  max={4000}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                />
               </div>
             </div>
             <div className="mt-3 flex items-center justify-center">
-              <div className="border border-dashed border-blue-300 dark:border-blue-600 rounded bg-blue-50/50 dark:bg-blue-900/10 flex items-center justify-center text-xs text-blue-500"
-                style={{ width: `${Math.min(width / 50, 200)}px`, height: `${Math.min(length / 50, 120)}px` }}>
+              <div
+                className="border border-dashed border-blue-300 dark:border-blue-600 rounded bg-blue-50/50 dark:bg-blue-900/10 flex items-center justify-center text-xs text-blue-500"
+                style={{
+                  width: `${Math.min(width / 50, 200)}px`,
+                  height: `${Math.min(length / 50, 120)}px`,
+                }}
+              >
                 {width} x {length} mm
               </div>
             </div>
@@ -336,12 +397,18 @@ function KitchenCreateForm(): React.ReactElement {
 
           {/* Buttons */}
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={() => navigate(-1)}
-              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
               {t('common.cancel')}
             </button>
-            <button type="submit" disabled={submitting}
-              className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
               {submitting ? t('designer.creating') : t('designer.createAndOpen')}
             </button>
           </div>
@@ -369,7 +436,9 @@ function KitchenDesigner({
 
   // Warn about unsaved changes on page close/refresh
   useEffect(() => {
-    if (!hasChanges) {return;}
+    if (!hasChanges) {
+      return;
+    }
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = '';
@@ -391,7 +460,9 @@ function KitchenDesigner({
   // Budget tracking
   const [budgetTarget] = useState(25000);
   const [budgetSpent, setBudgetSpent] = useState(0);
-  const [budgetBreakdown, setBudgetBreakdown] = useState<{ category: string; amount: number }[]>([]);
+  const [budgetBreakdown, setBudgetBreakdown] = useState<{ category: string; amount: number }[]>(
+    []
+  );
 
   // UI panels
   const [isDragOver, setIsDragOver] = useState(false);
@@ -448,49 +519,74 @@ function KitchenDesigner({
   } = engineHook;
 
   // Drag-over visual feedback wrappers
-  const handleCanvasDragOver = useCallback((e: React.DragEvent) => {
-    handleDragOver(e);
-    setIsDragOver(true);
-  }, [handleDragOver]);
+  const handleCanvasDragOver = useCallback(
+    (e: React.DragEvent) => {
+      handleDragOver(e);
+      setIsDragOver(true);
+    },
+    [handleDragOver]
+  );
 
   const handleCanvasDragLeave = useCallback(() => {
     handleDragLeave();
     setIsDragOver(false);
   }, [handleDragLeave]);
 
-  const handleCanvasDrop = useCallback((e: React.DragEvent) => {
-    handleDrop(e);
-    setIsDragOver(false);
-  }, [handleDrop]);
+  const handleCanvasDrop = useCallback(
+    (e: React.DragEvent) => {
+      handleDrop(e);
+      setIsDragOver(false);
+    },
+    [handleDrop]
+  );
 
   // ─── Budget computation from engine scene ──────
-  const DEFAULT_PRICES: Record<string, number> = useMemo(() => ({
-    base_cabinet: 250, base: 250, wall_cabinet: 180, tall_cabinet: 450,
-    sink: 200, sink_base: 300, cooktop: 350, stove: 500, hood: 280,
-    range_hood: 280, refrigerator: 600, fridge: 600, dishwasher: 450,
-    oven: 400, worktop: 150,
-  }), []);
+  const DEFAULT_PRICES: Record<string, number> = useMemo(
+    () => ({
+      base_cabinet: 250,
+      base: 250,
+      wall_cabinet: 180,
+      tall_cabinet: 450,
+      sink: 200,
+      sink_base: 300,
+      cooktop: 350,
+      stove: 500,
+      hood: 280,
+      range_hood: 280,
+      refrigerator: 600,
+      fridge: 600,
+      dishwasher: 450,
+      oven: 400,
+      worktop: 150,
+    }),
+    []
+  );
 
-  const BUDGET_CATEGORY_MAP: Record<string, string> = useMemo(() => ({
-    base_cabinet: t('designer.budgetCategory.baseCabinets', 'Meubles bas'),
-    base: t('designer.budgetCategory.baseCabinets', 'Meubles bas'),
-    wall_cabinet: t('designer.budgetCategory.wallCabinets', 'Meubles hauts'),
-    tall_cabinet: t('designer.budgetCategory.tallCabinets', 'Colonnes'),
-    sink: t('designer.budgetCategory.sinks', 'Eviers'),
-    sink_base: t('designer.budgetCategory.sinks', 'Eviers'),
-    cooktop: t('designer.budgetCategory.appliances', 'Electromenager'),
-    stove: t('designer.budgetCategory.appliances', 'Electromenager'),
-    hood: t('designer.budgetCategory.appliances', 'Electromenager'),
-    range_hood: t('designer.budgetCategory.appliances', 'Electromenager'),
-    refrigerator: t('designer.budgetCategory.appliances', 'Electromenager'),
-    fridge: t('designer.budgetCategory.appliances', 'Electromenager'),
-    dishwasher: t('designer.budgetCategory.appliances', 'Electromenager'),
-    oven: t('designer.budgetCategory.appliances', 'Electromenager'),
-    worktop: t('designer.budgetCategory.worktops', 'Plans de travail'),
-  }), [t]);
+  const BUDGET_CATEGORY_MAP: Record<string, string> = useMemo(
+    () => ({
+      base_cabinet: t('designer.budgetCategory.baseCabinets', 'Meubles bas'),
+      base: t('designer.budgetCategory.baseCabinets', 'Meubles bas'),
+      wall_cabinet: t('designer.budgetCategory.wallCabinets', 'Meubles hauts'),
+      tall_cabinet: t('designer.budgetCategory.tallCabinets', 'Colonnes'),
+      sink: t('designer.budgetCategory.sinks', 'Eviers'),
+      sink_base: t('designer.budgetCategory.sinks', 'Eviers'),
+      cooktop: t('designer.budgetCategory.appliances', 'Electromenager'),
+      stove: t('designer.budgetCategory.appliances', 'Electromenager'),
+      hood: t('designer.budgetCategory.appliances', 'Electromenager'),
+      range_hood: t('designer.budgetCategory.appliances', 'Electromenager'),
+      refrigerator: t('designer.budgetCategory.appliances', 'Electromenager'),
+      fridge: t('designer.budgetCategory.appliances', 'Electromenager'),
+      dishwasher: t('designer.budgetCategory.appliances', 'Electromenager'),
+      oven: t('designer.budgetCategory.appliances', 'Electromenager'),
+      worktop: t('designer.budgetCategory.worktops', 'Plans de travail'),
+    }),
+    [t]
+  );
 
   const updateBudgetData = useCallback(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
     const categoryMap = new Map<string, number>();
     let total = 0;
     engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
@@ -500,8 +596,12 @@ function KitchenDesigner({
         isGenerated?: boolean;
         price?: number;
       };
-      if (!userData.id || userData.type === 'wall' || userData.type === 'floor') {return;}
-      if (userData.isGenerated) {return;}
+      if (!userData.id || userData.type === 'wall' || userData.type === 'floor') {
+        return;
+      }
+      if (userData.isGenerated) {
+        return;
+      }
       const itemType = userData.type ?? 'unknown';
       const price = userData.price ?? DEFAULT_PRICES[itemType] ?? 0;
       total += price;
@@ -517,7 +617,9 @@ function KitchenDesigner({
   }, [engine, DEFAULT_PRICES, BUDGET_CATEGORY_MAP]);
 
   useEffect(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
     updateBudgetData();
     engine.history.onChangeCallback(() => {
       updateBudgetData();
@@ -525,7 +627,12 @@ function KitchenDesigner({
   }, [engine, updateBudgetData]);
 
   // Collaboration: cursor tracking + presence
-  const { users: collabUsers, cursors: collabCursors, isConnected: collabConnected, error: collabError } = useCollaboration(kitchenId, engine);
+  const {
+    users: collabUsers,
+    cursors: collabCursors,
+    isConnected: collabConnected,
+    error: collabError,
+  } = useCollaboration(kitchenId, engine);
 
   // Build users map for CollaboratorCursors component
   const collabUsersMap = useMemo(() => {
@@ -571,13 +678,17 @@ function KitchenDesigner({
 
   // ─── Build Kitchen Scene ──────────────────────
   const buildKitchenScene = useCallback(() => {
-    if (!engine) {return;}
+    if (!engine) {
+      return;
+    }
     const scene = engine.scene.getThreeScene();
 
     // Remove old kitchen structure
     const toRemove: THREE.Object3D[] = [];
     scene.traverse((obj) => {
-      if (obj.userData.isKitchenStructure) {toRemove.push(obj);}
+      if (obj.userData.isKitchenStructure) {
+        toRemove.push(obj);
+      }
     });
     toRemove.forEach((obj) => scene.remove(obj));
 
@@ -676,13 +787,18 @@ function KitchenDesigner({
     engine.snapSystem.setWalls(walls);
 
     // Set camera to view the scene
-    engine.camera.applyPreset('perspective' as import('@kitchenxpert/3d-engine').CameraPreset, { width: w, depth: d });
+    engine.camera.applyPreset('perspective' as import('@kitchenxpert/3d-engine').CameraPreset, {
+      width: w,
+      depth: d,
+    });
     engine.controls.setOrbitTarget(new THREE.Vector3(w / 2, h * 0.3, d / 2));
   }, [engine, width, length, height, layout]);
 
   // Rebuild scene when dimensions/layout change
   useEffect(() => {
-    if (!isReady || loading) {return;}
+    if (!isReady || loading) {
+      return;
+    }
     buildKitchenScene();
   }, [isReady, loading, buildKitchenScene]);
 
@@ -712,7 +828,9 @@ function KitchenDesigner({
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip if user is typing in an input or textarea
       const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {return;}
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
 
       // Ctrl+S → save
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -776,14 +894,18 @@ function KitchenDesigner({
     return (
       <div className="h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" role="status" aria-label={t('designer.loadingKitchen')} />
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"
+            role="status"
+            aria-label={t('designer.loadingKitchen')}
+          />
           <p className="text-gray-500 dark:text-gray-400">{t('designer.loadingKitchen')}</p>
         </div>
       </div>
     );
   }
 
-  const layoutLabel = LAYOUTS.find(l => l.value === layout)?.labelKey;
+  const layoutLabel = LAYOUTS.find((l) => l.value === layout)?.labelKey;
 
   return (
     <div className="h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
@@ -791,7 +913,11 @@ function KitchenDesigner({
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/dashboard')} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl" title={t('common.back')}>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-xl"
+              title={t('common.back')}
+            >
               &larr;
             </button>
             <input
@@ -815,21 +941,40 @@ function KitchenDesigner({
             {/* Mobile sidebar toggles */}
             <div className="flex items-center gap-1 lg:hidden">
               <button
-                onClick={() => setShowCatalog(prev => !prev)}
+                onClick={() => setShowCatalog((prev) => !prev)}
                 className={`p-1.5 rounded transition-colors ${showCatalog ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                 aria-label={t('designer.toggleCatalog', 'Catalogue')}
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
                 </svg>
               </button>
               <button
-                onClick={() => setShowProperties(prev => !prev)}
+                onClick={() => setShowProperties((prev) => !prev)}
                 className={`p-1.5 rounded transition-colors ${showProperties ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                 aria-label={t('designer.toggleProperties', 'Proprietes')}
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                  />
                 </svg>
               </button>
             </div>
@@ -837,7 +982,9 @@ function KitchenDesigner({
             <button
               onClick={() => setShowAI(!showAI)}
               className={`px-3 py-1.5 text-sm rounded transition-colors ${
-                showAI ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                showAI
+                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
               title="IA"
             >
@@ -910,7 +1057,7 @@ function KitchenDesigner({
         onClearMeasurements={clearMeasurements}
         onSetLightingPreset={setLightingPreset}
         currentLightingPreset={currentLightingPreset}
-        onToggleChatPanel={() => setShowChatPanel(prev => !prev)}
+        onToggleChatPanel={() => setShowChatPanel((prev) => !prev)}
         showChatPanel={showChatPanel}
         onShowShortcuts={() => setShowShortcutsModal(true)}
         onShowShoppingList={() => setShowShoppingList(true)}
@@ -918,7 +1065,7 @@ function KitchenDesigner({
 
       {/* Presence Bar - shows connected collaborators */}
       <PresenceBar
-        users={collabUsers.map(u => ({
+        users={collabUsers.map((u) => ({
           userId: u.userId,
           email: u.email,
           displayName: u.displayName,
@@ -931,8 +1078,13 @@ function KitchenDesigner({
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Catalog */}
-        <div className={`${showCatalog ? 'block' : 'hidden'} lg:block ${showCatalog ? 'fixed left-0 top-28 bottom-0 z-20 shadow-lg lg:relative lg:top-0 lg:shadow-none' : ''}`}>
-          <CatalogPanel addObject={addObject} brandProfile={brandProfile ?? getBrandProfile(brandId)} />
+        <div
+          className={`${showCatalog ? 'block' : 'hidden'} lg:block ${showCatalog ? 'fixed left-0 top-28 bottom-0 z-20 shadow-lg lg:relative lg:top-0 lg:shadow-none' : ''}`}
+        >
+          <CatalogPanel
+            addObject={addObject}
+            brandProfile={brandProfile ?? getBrandProfile(brandId)}
+          />
         </div>
 
         {/* 3D Canvas */}
@@ -967,12 +1119,16 @@ function KitchenDesigner({
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-black/70 text-white rounded-lg px-5 py-3 flex items-center gap-4">
               <div className="flex items-center gap-3 text-xs">
                 <span className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 bg-white/20 rounded text-[10px] font-mono">WASD</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-white/20 rounded text-[10px] font-mono">
+                    WASD
+                  </kbd>
                   {t('designer.walkthrough.move', 'Deplacer')}
                 </span>
                 <span className="w-px h-4 bg-white/30" />
                 <span className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 bg-white/20 rounded text-[10px] font-mono">Mouse</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-white/20 rounded text-[10px] font-mono">
+                    Mouse
+                  </kbd>
                   {t('designer.walkthrough.look', 'Regarder')}
                 </span>
               </div>
@@ -990,15 +1146,25 @@ function KitchenDesigner({
             <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50 z-20">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 max-w-xs w-full mx-4">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" role="status" aria-label={t('designer.loading.engine', 'Initialisation du moteur 3D...')} />
+                  <div
+                    className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"
+                    role="status"
+                    aria-label={t('designer.loading.engine', 'Initialisation du moteur 3D...')}
+                  />
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
                     {t('designer.loading.engine', 'Initialisation du moteur 3D...')}
                   </p>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                    <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 animate-pulse" style={{ width: '60%' }} />
+                    <div
+                      className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 animate-pulse"
+                      style={{ width: '60%' }}
+                    />
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t('designer.loading.hint', 'Preparation de la scene, chargement des assets...')}
+                    {t(
+                      'designer.loading.hint',
+                      'Preparation de la scene, chargement des assets...'
+                    )}
                   </p>
                 </div>
               </div>
@@ -1007,16 +1173,14 @@ function KitchenDesigner({
 
           {/* Budget Bar - floating at bottom center */}
           {isReady && (
-            <BudgetBar
-              budget={budgetTarget}
-              spent={budgetSpent}
-              breakdown={budgetBreakdown}
-            />
+            <BudgetBar budget={budgetTarget} spent={budgetSpent} breakdown={budgetBreakdown} />
           )}
         </main>
 
         {/* Right Sidebar - Properties + Pricing */}
-        <div className={`${showProperties ? 'flex' : 'hidden'} lg:flex ${showProperties ? 'fixed right-0 top-28 bottom-0 z-20 shadow-lg lg:relative lg:top-0 lg:shadow-none' : ''}`}>
+        <div
+          className={`${showProperties ? 'flex' : 'hidden'} lg:flex ${showProperties ? 'fixed right-0 top-28 bottom-0 z-20 shadow-lg lg:relative lg:top-0 lg:shadow-none' : ''}`}
+        >
           <div className="w-72 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto flex flex-col">
             <PropertiesPanel
               selectedObject={selectedObject}
@@ -1031,15 +1195,32 @@ function KitchenDesigner({
                 {t('designer.roomDimensions', 'Dimensions')}
               </h2>
               <div className="space-y-2">
-                <DimensionInput label={t('designer.width', 'Largeur')} value={width} unit="mm" onChange={(v) => handleChange(setWidth, v)} />
-                <DimensionInput label={t('designer.depth', 'Profondeur')} value={length} unit="mm" onChange={(v) => handleChange(setLength, v)} />
-                <DimensionInput label={t('designer.height', 'Hauteur')} value={height} unit="mm" onChange={(v) => handleChange(setHeight, v)} />
+                <DimensionInput
+                  label={t('designer.width', 'Largeur')}
+                  value={width}
+                  unit="mm"
+                  onChange={(v) => handleChange(setWidth, v)}
+                />
+                <DimensionInput
+                  label={t('designer.depth', 'Profondeur')}
+                  value={length}
+                  unit="mm"
+                  onChange={(v) => handleChange(setLength, v)}
+                />
+                <DimensionInput
+                  label={t('designer.height', 'Hauteur')}
+                  value={height}
+                  unit="mm"
+                  onChange={(v) => handleChange(setHeight, v)}
+                />
               </div>
             </div>
 
             {/* Brand selector */}
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-              <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">{t('designer.brand', 'Marque')}</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">
+                {t('designer.brand', 'Marque')}
+              </h2>
               <select
                 value={brandId}
                 onChange={(e) => {
@@ -1051,7 +1232,9 @@ function KitchenDesigner({
                 className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
               >
                 {getAllBrandIds().map((bid) => (
-                  <option key={bid} value={bid}>{BRAND_PROFILES[bid].name}</option>
+                  <option key={bid} value={bid}>
+                    {BRAND_PROFILES[bid].name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -1077,36 +1260,48 @@ function KitchenDesigner({
                   }}
                   className="flex-1 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
                 >
-                  {(brandProfile ?? getBrandProfile(brandId)).worktop.availableThicknesses.map((t_mm) => (
-                    <option key={t_mm} value={t_mm}>{t_mm} mm</option>
-                  ))}
+                  {(brandProfile ?? getBrandProfile(brandId)).worktop.availableThicknesses.map(
+                    (t_mm) => (
+                      <option key={t_mm} value={t_mm}>
+                        {t_mm} mm
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
             </div>
 
             {/* Style & Layout selectors */}
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-              <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">{t('designer.style')}</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">
+                {t('designer.style')}
+              </h2>
               <select
                 value={style}
                 onChange={(e) => handleChange(setStyle, e.target.value)}
                 className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
               >
                 {STYLES.map((s) => (
-                  <option key={s.value} value={s.value}>{t(s.labelKey)}</option>
+                  <option key={s.value} value={s.value}>
+                    {t(s.labelKey)}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-              <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">{t('designer.layout')}</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">
+                {t('designer.layout')}
+              </h2>
               <select
                 value={layout}
                 onChange={(e) => handleChange(setLayout, e.target.value)}
                 className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
               >
                 {LAYOUTS.map((l) => (
-                  <option key={l.value} value={l.value}>{t(l.labelKey)}</option>
+                  <option key={l.value} value={l.value}>
+                    {t(l.labelKey)}
+                  </option>
                 ))}
               </select>
             </div>
@@ -1114,12 +1309,19 @@ function KitchenDesigner({
             {/* Score */}
             {kitchen?.score != null && (
               <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-                <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">{t('designer.score')}</h2>
+                <h2 className="font-semibold text-gray-900 dark:text-white mb-2 text-xs uppercase tracking-wider">
+                  {t('designer.score')}
+                </h2>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-green-500 rounded-full h-2" style={{ width: `${kitchen.score}%` }} />
+                    <div
+                      className="bg-green-500 rounded-full h-2"
+                      style={{ width: `${kitchen.score}%` }}
+                    />
                   </div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{kitchen.score}/100</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {kitchen.score}/100
+                  </span>
                 </div>
               </div>
             )}
@@ -1170,22 +1372,24 @@ function KitchenDesigner({
           // Reload kitchen data after restore
           setLoading(true);
           const controller = new AbortController();
-          void api.get<Kitchen>(API_ENDPOINTS.KITCHENS.BY_ID(kitchenId), { signal: controller.signal }).then((res) => {
-            if (res.success && res.data) {
-              const k = res.data;
-              setKitchen(k);
-              setKitchenName(k.name);
-              setStyle(k.style);
-              setLayout(k.layout);
-              setWidth(Math.round(Number(k.width) * 1000));
-              setLength(Math.round(Number(k.length) * 1000));
-              setHeight(Math.round(Number(k.height) * 1000));
-              if (k.metadata?.brandId) {
-                setBrandId(k.metadata.brandId as BrandId);
+          void api
+            .get<Kitchen>(API_ENDPOINTS.KITCHENS.BY_ID(kitchenId), { signal: controller.signal })
+            .then((res) => {
+              if (res.success && res.data) {
+                const k = res.data;
+                setKitchen(k);
+                setKitchenName(k.name);
+                setStyle(k.style);
+                setLayout(k.layout);
+                setWidth(Math.round(Number(k.width) * 1000));
+                setLength(Math.round(Number(k.length) * 1000));
+                setHeight(Math.round(Number(k.height) * 1000));
+                if (k.metadata?.brandId) {
+                  setBrandId(k.metadata.brandId as BrandId);
+                }
               }
-            }
-            setLoading(false);
-          });
+              setLoading(false);
+            });
         }}
       />
 
@@ -1198,7 +1402,13 @@ function KitchenDesigner({
               className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded transition-colors"
               aria-label={t('common.close', 'Close')}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -1216,7 +1426,13 @@ function KitchenDesigner({
               className="absolute top-2 right-2 z-10 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded transition-colors"
               aria-label={t('common.close', 'Close')}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -1239,7 +1455,12 @@ function KitchenDesigner({
           }}
           onCancel={() => setShowDimensionWizard(false)}
           initialDimensions={{
-            shape: layout === 'l_shaped' ? 'l_shaped' : layout === 'u_shaped' ? 'u_shaped' : 'rectangular',
+            shape:
+              layout === 'l_shaped'
+                ? 'l_shaped'
+                : layout === 'u_shaped'
+                  ? 'u_shaped'
+                  : 'rectangular',
             height: height / 10,
           }}
         />

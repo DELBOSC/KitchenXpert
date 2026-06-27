@@ -90,10 +90,7 @@ export function hasOnlyAllowedProperties(
 /**
  * Type guard pour vérifier la structure d'un objet
  */
-export function validateObjectStructure<T>(
-  obj: unknown,
-  schema: ObjectSchema
-): obj is T {
+export function validateObjectStructure<T>(obj: unknown, schema: ObjectSchema): obj is T {
   if (!isPlainObject(obj)) return false;
 
   for (const [key, validator] of Object.entries(schema)) {
@@ -189,7 +186,7 @@ export function deepValidate(
 export function mergeValidationResults(
   ...results: ObjectValidationResult[]
 ): ObjectValidationResult {
-  const allErrors = results.flatMap(r => r.errors);
+  const allErrors = results.flatMap((r) => r.errors);
   return {
     isValid: allErrors.length === 0,
     errors: allErrors,
@@ -220,11 +217,8 @@ export function deepEqual(obj1: unknown, obj2: unknown): boolean {
 
   if (keys1.length !== keys2.length) return false;
 
-  return keys1.every(key =>
-    deepEqual(
-      (obj1 as Record<string, unknown>)[key],
-      (obj2 as Record<string, unknown>)[key]
-    )
+  return keys1.every((key) =>
+    deepEqual((obj1 as Record<string, unknown>)[key], (obj2 as Record<string, unknown>)[key])
   );
 }
 
@@ -267,10 +261,10 @@ export function isImmutable(obj: unknown): boolean {
   if (!Object.isFrozen(obj)) return false;
 
   if (Array.isArray(obj)) {
-    return obj.every(item => isImmutable(item));
+    return obj.every((item) => isImmutable(item));
   }
 
-  return Object.values(obj).every(value => isImmutable(value));
+  return Object.values(obj).every((value) => isImmutable(value));
 }
 
 /**

@@ -157,7 +157,8 @@ export class PartnerController {
     res.status(200).json({
       success: true,
       data: { apiKey: newApiKey, apiSecret: newApiSecret },
-      message: 'API credentials regenerated successfully. Save these - they cannot be retrieved later.',
+      message:
+        'API credentials regenerated successfully. Save these - they cannot be retrieved later.',
     });
   });
 
@@ -221,10 +222,43 @@ export class PartnerController {
       try {
         const parsed = new URL(endpoint);
         const hostname = parsed.hostname.toLowerCase();
-        const blockedPatterns = ['localhost', '127.0.0.1', '0.0.0.0', '::1', '169.254.169.254', 'metadata.google.internal'];
-        const blockedPrefixes = ['10.', '172.16.', '172.17.', '172.18.', '172.19.', '172.20.', '172.21.', '172.22.', '172.23.', '172.24.', '172.25.', '172.26.', '172.27.', '172.28.', '172.29.', '172.30.', '172.31.', '192.168.'];
-        if (blockedPatterns.includes(hostname) || blockedPrefixes.some(p => hostname.startsWith(p)) || !['http:', 'https:'].includes(parsed.protocol)) {
-          res.status(400).json({ success: false, error: 'Invalid endpoint URL: private/internal addresses are not allowed' });
+        const blockedPatterns = [
+          'localhost',
+          '127.0.0.1',
+          '0.0.0.0',
+          '::1',
+          '169.254.169.254',
+          'metadata.google.internal',
+        ];
+        const blockedPrefixes = [
+          '10.',
+          '172.16.',
+          '172.17.',
+          '172.18.',
+          '172.19.',
+          '172.20.',
+          '172.21.',
+          '172.22.',
+          '172.23.',
+          '172.24.',
+          '172.25.',
+          '172.26.',
+          '172.27.',
+          '172.28.',
+          '172.29.',
+          '172.30.',
+          '172.31.',
+          '192.168.',
+        ];
+        if (
+          blockedPatterns.includes(hostname) ||
+          blockedPrefixes.some((p) => hostname.startsWith(p)) ||
+          !['http:', 'https:'].includes(parsed.protocol)
+        ) {
+          res.status(400).json({
+            success: false,
+            error: 'Invalid endpoint URL: private/internal addresses are not allowed',
+          });
           return;
         }
       } catch {
@@ -265,7 +299,10 @@ export class PartnerController {
     }
 
     // Verify integration belongs to this partner
-    const existing = await partnerRepository.findIntegrationByIdAndPartner(integrationId, partnerId);
+    const existing = await partnerRepository.findIntegrationByIdAndPartner(
+      integrationId,
+      partnerId
+    );
     if (!existing) {
       res.status(404).json({ success: false, error: 'Integration not found for this partner' });
       return;
@@ -295,7 +332,10 @@ export class PartnerController {
     const integrationId = req.params.integrationId as string;
 
     // Verify integration belongs to this partner
-    const existing = await partnerRepository.findIntegrationByIdAndPartner(integrationId, partnerId);
+    const existing = await partnerRepository.findIntegrationByIdAndPartner(
+      integrationId,
+      partnerId
+    );
     if (!existing) {
       res.status(404).json({ success: false, error: 'Integration not found for this partner' });
       return;
@@ -312,7 +352,9 @@ export class PartnerController {
   markIntegrationSynced = asyncHandler(async (req: Request, res: Response) => {
     const integrationId = req.params.integrationId as string;
     const integration = await partnerRepository.markIntegrationSynced(integrationId);
-    res.status(200).json({ success: true, data: integration, message: 'Integration marked as synced' });
+    res
+      .status(200)
+      .json({ success: true, data: integration, message: 'Integration marked as synced' });
   });
 
   /**

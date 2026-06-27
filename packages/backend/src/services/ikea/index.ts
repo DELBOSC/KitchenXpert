@@ -64,11 +64,7 @@ export type {
   ApiError,
 } from './types';
 
-export {
-  IKEA_CLIENT_IDS,
-  IKEA_AUTH_SECRET,
-  IKEA_ENDPOINTS,
-} from './types';
+export { IKEA_CLIENT_IDS, IKEA_AUTH_SECRET, IKEA_ENDPOINTS } from './types';
 
 export {
   parseItemCodes,

@@ -45,17 +45,57 @@ interface KitchenCategory {
  * Clés = identifiants passés à fetchProductsByCategory.
  */
 export const CASTORAMA_KITCHEN_CATEGORIES: Record<string, KitchenCategory> = {
-  plaque: { path: '/cuisine/electromenager/plaque-de-cuisson/cat_id_832.cat', slug: 'electromenager-cuisson', type: 'appliance' },
-  four: { path: '/cuisine/electromenager/four/cat_id_829.cat', slug: 'electromenager-cuisson', type: 'appliance' },
-  hotte: { path: '/cuisine/electromenager/hotte/cat_id_830.cat', slug: 'electromenager-cuisson', type: 'appliance' },
-  'lave-vaisselle': { path: '/cuisine/electromenager/lave-vaisselle/cat_id_831.cat', slug: 'electromenager-lavage', type: 'appliance' },
-  evier: { path: '/cuisine/evier-et-robinet-de-cuisine/evier-de-cuisine/cat_id_838.cat', slug: 'eviers-robinetterie', type: 'sink' },
-  robinet: { path: '/cuisine/evier-et-robinet-de-cuisine/robinet-de-cuisine/cat_id_865.cat', slug: 'eviers-robinetterie', type: 'tap' },
-  'meuble-bas': { path: '/cuisine/meuble-de-cuisine/meuble-bas-de-cuisine/cat_id_5087.cat', slug: 'meubles-bas', type: 'cabinet' },
-  'meuble-haut': { path: '/cuisine/meuble-de-cuisine/meuble-haut-de-cuisine/cat_id_5086.cat', slug: 'meubles-hauts', type: 'cabinet' },
+  plaque: {
+    path: '/cuisine/electromenager/plaque-de-cuisson/cat_id_832.cat',
+    slug: 'electromenager-cuisson',
+    type: 'appliance',
+  },
+  four: {
+    path: '/cuisine/electromenager/four/cat_id_829.cat',
+    slug: 'electromenager-cuisson',
+    type: 'appliance',
+  },
+  hotte: {
+    path: '/cuisine/electromenager/hotte/cat_id_830.cat',
+    slug: 'electromenager-cuisson',
+    type: 'appliance',
+  },
+  'lave-vaisselle': {
+    path: '/cuisine/electromenager/lave-vaisselle/cat_id_831.cat',
+    slug: 'electromenager-lavage',
+    type: 'appliance',
+  },
+  evier: {
+    path: '/cuisine/evier-et-robinet-de-cuisine/evier-de-cuisine/cat_id_838.cat',
+    slug: 'eviers-robinetterie',
+    type: 'sink',
+  },
+  robinet: {
+    path: '/cuisine/evier-et-robinet-de-cuisine/robinet-de-cuisine/cat_id_865.cat',
+    slug: 'eviers-robinetterie',
+    type: 'tap',
+  },
+  'meuble-bas': {
+    path: '/cuisine/meuble-de-cuisine/meuble-bas-de-cuisine/cat_id_5087.cat',
+    slug: 'meubles-bas',
+    type: 'cabinet',
+  },
+  'meuble-haut': {
+    path: '/cuisine/meuble-de-cuisine/meuble-haut-de-cuisine/cat_id_5086.cat',
+    slug: 'meubles-hauts',
+    type: 'cabinet',
+  },
   colonne: { path: '/colonne-de-cuisine/cat_id_0002254.cat', slug: 'colonnes', type: 'cabinet' },
-  facade: { path: '/cuisine/meuble-de-cuisine/facade-de-cuisine/cat_id_5088.cat', slug: 'facades', type: 'facade' },
-  'plan-travail': { path: '/cuisine/plan-de-travail-credence-et-fond-de-hotte/plan-de-travail/cat_id_857.cat', slug: 'plans-de-travail', type: 'worktop' },
+  facade: {
+    path: '/cuisine/meuble-de-cuisine/facade-de-cuisine/cat_id_5088.cat',
+    slug: 'facades',
+    type: 'facade',
+  },
+  'plan-travail': {
+    path: '/cuisine/plan-de-travail-credence-et-fond-de-hotte/plan-de-travail/cat_id_857.cat',
+    slug: 'plans-de-travail',
+    type: 'worktop',
+  },
 };
 
 export const CASTORAMA_KITCHEN_CATEGORY_KEYS = Object.keys(CASTORAMA_KITCHEN_CATEGORIES);
@@ -73,7 +113,7 @@ export class CastoramaStrategy implements IngestionStrategy {
 
   constructor(
     private readonly html: HtmlFetcher,
-    options: CastoramaStrategyOptions = {},
+    options: CastoramaStrategyOptions = {}
   ) {
     this.maxProducts = Math.max(1, options.maxProducts ?? 24);
   }
@@ -99,7 +139,11 @@ export class CastoramaStrategy implements IngestionStrategy {
         const page = await this.html.fetchText(url, { headers: UA_HEADERS });
         out.push(this.mapPdp(page, url, cat));
       } catch (e) {
-        out.push({ success: false, errors: [e instanceof Error ? e.message : String(e)], warnings: [] });
+        out.push({
+          success: false,
+          errors: [e instanceof Error ? e.message : String(e)],
+          warnings: [],
+        });
       }
     }
     return out;
@@ -153,7 +197,11 @@ export class CastoramaStrategy implements IngestionStrategy {
       try {
         out.push(await this.fetchProductByUrl(url));
       } catch (e) {
-        out.push({ success: false, errors: [e instanceof Error ? e.message : String(e)], warnings: [] });
+        out.push({
+          success: false,
+          errors: [e instanceof Error ? e.message : String(e)],
+          warnings: [],
+        });
       }
     }
     return out;
@@ -226,8 +274,14 @@ export class CastoramaStrategy implements IngestionStrategy {
   private fuseDims(
     spec: SpecTableResult,
     nameDims: ReturnType<typeof parseCastoramaDims>,
-    name: string,
-  ): { widthMm: number | null; heightMm: number | null; depthMm: number | null; confidence: number; rawMeasureText: string | null } {
+    name: string
+  ): {
+    widthMm: number | null;
+    heightMm: number | null;
+    depthMm: number | null;
+    confidence: number;
+    rawMeasureText: string | null;
+  } {
     if (spec.dimCount === 0) {
       return {
         widthMm: nameDims.widthMm,
@@ -265,7 +319,8 @@ export class CastoramaStrategy implements IngestionStrategy {
     if (/mitigeur|robinet/.test(hay)) return 'tap';
     if (/évier|evier|lavabo|vasque/.test(hay)) return 'sink';
     if (/spot|luminaire|éclairage|eclairage|applique|suspension/.test(hay)) return 'lighting';
-    if (/four|hotte|plaque|réfrigérateur|refrigerateur|lave-vaisselle|micro-ondes/.test(hay)) return 'appliance';
+    if (/four|hotte|plaque|réfrigérateur|refrigerateur|lave-vaisselle|micro-ondes/.test(hay))
+      return 'appliance';
     if (/poignée|poignee|bouton/.test(hay)) return 'handle';
     if (/façade|facade|porte|tiroir|front/.test(hay)) return 'facade';
     if (/caisson|colonne|meuble|élément|element|armoire|structure/.test(hay)) return 'cabinet';
@@ -286,7 +341,10 @@ export function parseCastoramaDims(name: string): {
   rawMeasureText: string | null;
 } {
   const grab = (label: string): number | null => {
-    const re = new RegExp(`(?:^|[^A-Za-zÀ-ÿ])${label}\\.?\\s*-?\\s*(\\d{1,4}(?:[.,]\\d+)?)\\s*(mm|cm)?`, 'i');
+    const re = new RegExp(
+      `(?:^|[^A-Za-zÀ-ÿ])${label}\\.?\\s*-?\\s*(\\d{1,4}(?:[.,]\\d+)?)\\s*(mm|cm)?`,
+      'i'
+    );
     const mm = name.match(re);
     if (!mm) return null;
     const val = parseFloat((mm[1] ?? '').replace(',', '.'));

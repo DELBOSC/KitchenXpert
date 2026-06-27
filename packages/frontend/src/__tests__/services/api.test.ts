@@ -222,9 +222,10 @@ describe('API Service', () => {
         ok: false,
         status: 400,
         statusText: 'Bad Request',
-        json: () => Promise.resolve({
-          error: { code: 'VALIDATION_ERROR', message: 'Invalid input' },
-        }),
+        json: () =>
+          Promise.resolve({
+            error: { code: 'VALIDATION_ERROR', message: 'Invalid input' },
+          }),
       });
 
       const result = await api.post('/test-endpoint', { invalid: 'data' });

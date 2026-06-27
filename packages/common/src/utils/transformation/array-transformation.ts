@@ -99,14 +99,17 @@ export function groupBy<T, K extends string | number | symbol>(
   arr: T[],
   keyFn: (item: T) => K
 ): Record<K, T[]> {
-  return arr.reduce((acc, item) => {
-    const key = keyFn(item);
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(item);
-    return acc;
-  }, {} as Record<K, T[]>);
+  return arr.reduce(
+    (acc, item) => {
+      const key = keyFn(item);
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    },
+    {} as Record<K, T[]>
+  );
 }
 
 /**
@@ -115,10 +118,7 @@ export function groupBy<T, K extends string | number | symbol>(
  * @param predicate - A function that returns true for items in the first group
  * @returns A tuple of two arrays [matches, nonMatches]
  */
-export function partition<T>(
-  arr: T[],
-  predicate: (item: T) => boolean
-): [T[], T[]] {
+export function partition<T>(arr: T[], predicate: (item: T) => boolean): [T[], T[]] {
   const matches: T[] = [];
   const nonMatches: T[] = [];
 

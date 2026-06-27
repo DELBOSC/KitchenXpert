@@ -17,7 +17,7 @@ const apiKeyConfig = {
   hashAlgorithm: 'sha256',
   defaultRateLimit: parseInt(process.env.API_KEY_RATE_LIMIT) || 1000, // requests per hour
   expirationDays: parseInt(process.env.API_KEY_EXPIRATION_DAYS) || 365, // 1 year
-  allowRotation: process.env.API_KEY_ALLOW_ROTATION !== 'false'
+  allowRotation: process.env.API_KEY_ALLOW_ROTATION !== 'false',
 };
 
 /**
@@ -29,43 +29,43 @@ const apiScopes = {
   READ: {
     name: 'read',
     description: 'Read-only access to public resources',
-    permissions: ['read:public', 'read:recipes', 'read:ingredients']
+    permissions: ['read:public', 'read:recipes', 'read:ingredients'],
   },
 
   // Write access
   WRITE: {
     name: 'write',
     description: 'Create and update resources',
-    permissions: ['read:public', 'write:recipes', 'write:ingredients', 'write:reviews']
+    permissions: ['read:public', 'write:recipes', 'write:ingredients', 'write:reviews'],
   },
 
   // Full access
   FULL: {
     name: 'full',
     description: 'Full access to all resources',
-    permissions: ['read:*', 'write:*', 'delete:*']
+    permissions: ['read:*', 'write:*', 'delete:*'],
   },
 
   // Admin access
   ADMIN: {
     name: 'admin',
     description: 'Administrative access',
-    permissions: ['admin:*', 'read:*', 'write:*', 'delete:*']
+    permissions: ['admin:*', 'read:*', 'write:*', 'delete:*'],
   },
 
   // Analytics access
   ANALYTICS: {
     name: 'analytics',
     description: 'Access to analytics and reporting',
-    permissions: ['read:analytics', 'read:statistics', 'read:reports']
+    permissions: ['read:analytics', 'read:statistics', 'read:reports'],
   },
 
   // Webhook access
   WEBHOOK: {
     name: 'webhook',
     description: 'Webhook event access',
-    permissions: ['webhook:send', 'webhook:receive']
-  }
+    permissions: ['webhook:send', 'webhook:receive'],
+  },
 };
 
 /**
@@ -78,7 +78,7 @@ const rateLimitTiers = {
     requestsPerHour: 100,
     requestsPerDay: 1000,
     requestsPerMonth: 10000,
-    concurrentRequests: 5
+    concurrentRequests: 5,
   },
 
   BASIC: {
@@ -86,7 +86,7 @@ const rateLimitTiers = {
     requestsPerHour: 1000,
     requestsPerDay: 10000,
     requestsPerMonth: 100000,
-    concurrentRequests: 10
+    concurrentRequests: 10,
   },
 
   PRO: {
@@ -94,7 +94,7 @@ const rateLimitTiers = {
     requestsPerHour: 5000,
     requestsPerDay: 50000,
     requestsPerMonth: 500000,
-    concurrentRequests: 25
+    concurrentRequests: 25,
   },
 
   ENTERPRISE: {
@@ -102,8 +102,8 @@ const rateLimitTiers = {
     requestsPerHour: -1, // Unlimited
     requestsPerDay: -1,
     requestsPerMonth: -1,
-    concurrentRequests: -1
-  }
+    concurrentRequests: -1,
+  },
 };
 
 /**
@@ -119,7 +119,7 @@ const generateApiKey = (options = {}) => {
     scopes = [apiScopes.READ.name],
     tier = 'FREE',
     expiresInDays = apiKeyConfig.expirationDays,
-    metadata = {}
+    metadata = {},
   } = options;
 
   // Generate random bytes
@@ -137,10 +137,7 @@ const generateApiKey = (options = {}) => {
   const apiKey = `${apiKeyConfig.prefix}_${publicKey}_${checksum}`;
 
   // Hash for storage (never store plain API key)
-  const hash = crypto
-    .createHash(apiKeyConfig.hashAlgorithm)
-    .update(apiKey)
-    .digest('hex');
+  const hash = crypto.createHash(apiKeyConfig.hashAlgorithm).update(apiKey).digest('hex');
 
   // Calculate expiration
   const expiresAt = new Date();
@@ -159,8 +156,8 @@ const generateApiKey = (options = {}) => {
       lastUsedAt: null,
       requestCount: 0,
       rateLimit: rateLimitTiers[tier] || rateLimitTiers.FREE,
-      ...metadata
-    }
+      ...metadata,
+    },
   };
 };
 
@@ -212,10 +209,7 @@ const validateApiKeyFormat = (apiKey) => {
  * @returns {string} Hash
  */
 const hashApiKey = (apiKey) => {
-  return crypto
-    .createHash(apiKeyConfig.hashAlgorithm)
-    .update(apiKey)
-    .digest('hex');
+  return crypto.createHash(apiKeyConfig.hashAlgorithm).update(apiKey).digest('hex');
 };
 
 /**
@@ -231,10 +225,10 @@ const hasPermission = (keyMetadata, requiredPermission) => {
 
   // Get all permissions for the key's scopes
   const permissions = new Set();
-  keyMetadata.scopes.forEach(scopeName => {
-    const scope = Object.values(apiScopes).find(s => s.name === scopeName);
+  keyMetadata.scopes.forEach((scopeName) => {
+    const scope = Object.values(apiScopes).find((s) => s.name === scopeName);
     if (scope) {
-      scope.permissions.forEach(p => permissions.add(p));
+      scope.permissions.forEach((p) => permissions.add(p));
     }
   });
 
@@ -309,7 +303,7 @@ const checkRateLimit = (keyMetadata, period = 'hour') => {
     allowed: remaining > 0,
     remaining,
     limit,
-    resetAt
+    resetAt,
   };
 };
 
@@ -332,8 +326,8 @@ const rotateApiKey = (oldKeyMetadata) => {
     metadata: {
       ...oldKeyMetadata,
       rotatedFrom: oldKeyMetadata.hash,
-      rotatedAt: new Date()
-    }
+      rotatedAt: new Date(),
+    },
   });
 };
 
@@ -369,7 +363,7 @@ const apiKeyAuthMiddleware = (options = {}) => {
     headerName = 'X-API-Key',
     queryParam = 'api_key',
     required = true,
-    getKeyFromDatabase = null // Function to retrieve key metadata
+    getKeyFromDatabase = null, // Function to retrieve key metadata
   } = options;
 
   return async (req, res, next) => {
@@ -382,7 +376,7 @@ const apiKeyAuthMiddleware = (options = {}) => {
           return res.status(401).json({
             success: false,
             error: 'API key required',
-            message: `Please provide an API key in the ${headerName} header or ${queryParam} query parameter`
+            message: `Please provide an API key in the ${headerName} header or ${queryParam} query parameter`,
           });
         }
         return next();
@@ -392,20 +386,18 @@ const apiKeyAuthMiddleware = (options = {}) => {
       if (!validateApiKeyFormat(apiKey)) {
         return res.status(401).json({
           success: false,
-          error: 'Invalid API key format'
+          error: 'Invalid API key format',
         });
       }
 
       // Hash and retrieve from database
       const hash = hashApiKey(apiKey);
-      const keyMetadata = getKeyFromDatabase
-        ? await getKeyFromDatabase(hash)
-        : null;
+      const keyMetadata = getKeyFromDatabase ? await getKeyFromDatabase(hash) : null;
 
       if (!keyMetadata) {
         return res.status(401).json({
           success: false,
-          error: 'Invalid API key'
+          error: 'Invalid API key',
         });
       }
 
@@ -413,7 +405,7 @@ const apiKeyAuthMiddleware = (options = {}) => {
       if (isExpired(keyMetadata)) {
         return res.status(401).json({
           success: false,
-          error: 'API key has expired'
+          error: 'API key has expired',
         });
       }
 
@@ -423,7 +415,7 @@ const apiKeyAuthMiddleware = (options = {}) => {
         return res.status(429).json({
           success: false,
           error: 'Rate limit exceeded',
-          resetAt: rateLimit.resetAt
+          resetAt: rateLimit.resetAt,
         });
       }
 
@@ -431,7 +423,7 @@ const apiKeyAuthMiddleware = (options = {}) => {
       req.apiKey = {
         hash,
         metadata: keyMetadata,
-        rateLimit
+        rateLimit,
       };
 
       // Set rate limit headers
@@ -446,7 +438,7 @@ const apiKeyAuthMiddleware = (options = {}) => {
       console.error('API key authentication error:', error);
       res.status(500).json({
         success: false,
-        error: 'Authentication error'
+        error: 'Authentication error',
       });
     }
   };
@@ -466,11 +458,11 @@ const requirePermission = (requiredPermissions) => {
     if (!req.apiKey || !req.apiKey.metadata) {
       return res.status(401).json({
         success: false,
-        error: 'API key required'
+        error: 'API key required',
       });
     }
 
-    const hasAllPermissions = permissions.every(permission =>
+    const hasAllPermissions = permissions.every((permission) =>
       hasPermission(req.apiKey.metadata, permission)
     );
 
@@ -478,7 +470,7 @@ const requirePermission = (requiredPermissions) => {
       return res.status(403).json({
         success: false,
         error: 'Insufficient permissions',
-        required: permissions
+        required: permissions,
       });
     }
 
@@ -510,5 +502,5 @@ module.exports = {
   // Configuration
   apiKeyConfig,
   apiScopes,
-  rateLimitTiers
+  rateLimitTiers,
 };

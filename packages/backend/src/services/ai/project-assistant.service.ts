@@ -6,7 +6,9 @@ import logger from '../../utils/logger';
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -79,7 +81,7 @@ Designs:
 ${options.designs
   .map(
     (d, i) =>
-      `${i + 1}. "${sanitizeInput(d.name)}" - Style: ${sanitizeInput(d.style)}, Budget: ${d.estimatedCost.min}-${d.estimatedCost.max}EUR, Score: ${d.score}/100, Features: ${d.features.map(f => sanitizeInput(f)).join(', ')}`
+      `${i + 1}. "${sanitizeInput(d.name)}" - Style: ${sanitizeInput(d.style)}, Budget: ${d.estimatedCost.min}-${d.estimatedCost.max}EUR, Score: ${d.score}/100, Features: ${d.features.map((f) => sanitizeInput(f)).join(', ')}`
   )
   .join('\n')}
 
@@ -133,7 +135,10 @@ Cree le: ${options.project.createdAt}
 Cuisines: ${
       options.project.kitchens.length > 0
         ? options.project.kitchens
-            .map((k) => `${sanitizeInput(k.name)} (style: ${sanitizeInput(k.style) || 'non defini'}, score: ${k.score ?? 'non evalue'})`)
+            .map(
+              (k) =>
+                `${sanitizeInput(k.name)} (style: ${sanitizeInput(k.style) || 'non defini'}, score: ${k.score ?? 'non evalue'})`
+            )
             .join(', ')
         : 'aucune'
     }

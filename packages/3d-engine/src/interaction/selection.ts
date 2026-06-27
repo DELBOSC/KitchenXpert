@@ -35,10 +35,12 @@ export class SelectionSystem {
   ) {
     this.scene = scene;
     this.camera = camera;
-    this.selectableFilter = selectableFilter || ((obj) => {
-      // By default, select objects that have an id and are not helpers
-      return !!(obj.userData.id) && !obj.name.startsWith('__');
-    });
+    this.selectableFilter =
+      selectableFilter ||
+      ((obj) => {
+        // By default, select objects that have an id and are not helpers
+        return !!obj.userData.id && !obj.name.startsWith('__');
+      });
   }
 
   /**
@@ -132,8 +134,10 @@ export class SelectionSystem {
         const projected = worldPos.project(this.camera);
 
         if (
-          projected.x >= min.x && projected.x <= max.x &&
-          projected.y >= min.y && projected.y <= max.y
+          projected.x >= min.x &&
+          projected.x <= max.x &&
+          projected.y >= min.y &&
+          projected.y <= max.y
         ) {
           inBox.push(obj);
         }
@@ -242,7 +246,7 @@ export class SelectionSystem {
    * Retourne le premier objet selectionne
    */
   getPrimarySelection(): THREE.Object3D | null {
-    return this.selected.size > 0 ? [...this.selected][0] ?? null : null;
+    return this.selected.size > 0 ? ([...this.selected][0] ?? null) : null;
   }
 
   /**

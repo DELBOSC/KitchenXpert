@@ -41,17 +41,16 @@ function pick<T>(variants: readonly T[]): T {
   return variants[Math.floor(Math.random() * variants.length)]!;
 }
 
-export function useABVariant<T extends string>(
-  experimentId: string,
-  variants: readonly T[],
-): T {
+export function useABVariant<T extends string>(experimentId: string, variants: readonly T[]): T {
   // Default to the FIRST variant to avoid hydration flicker. The real
   // variant is settled in the effect below — fast (synchronous read).
   // Caller guarantees variants.length > 0.
   const [variant, setVariant] = useState<T>(variants[0] as T);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {return;}
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     let chosen: T;
     try {
@@ -78,7 +77,9 @@ export function useABVariant<T extends string>(
         });
         sessionStorage.setItem(SESSION_KEY(experimentId), '1');
       }
-    } catch { /* no-op */ }
+    } catch {
+      /* no-op */
+    }
   }, [experimentId, variants]);
 
   return variant;
@@ -110,12 +111,18 @@ export type HeroABEvent =
  *   - SandboxMigrationBanner → 'sandbox_signup_completed_ab'
  */
 export function tagConversion(experimentId: string, eventName: HeroABEvent): void {
-  if (typeof window === 'undefined') {return;}
-  if (typeof window.plausible !== 'function') {return;}
+  if (typeof window === 'undefined') {
+    return;
+  }
+  if (typeof window.plausible !== 'function') {
+    return;
+  }
   let variant: string | null = null;
   try {
     variant = localStorage.getItem(KEY(experimentId));
-  } catch { /* */ }
+  } catch {
+    /* */
+  }
   window.plausible(eventName, {
     props: {
       experiment: experimentId,

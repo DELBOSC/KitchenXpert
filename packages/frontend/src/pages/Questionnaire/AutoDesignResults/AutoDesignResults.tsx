@@ -93,13 +93,16 @@ interface AutoGenerateResponse {
 // TIER STYLES CONFIG
 // ============================================================================
 
-const TIER_STYLES: Record<string, {
-  badge: string;
-  badgeBg: string;
-  border: string;
-  accent: string;
-  icon: string;
-}> = {
+const TIER_STYLES: Record<
+  string,
+  {
+    badge: string;
+    badgeBg: string;
+    border: string;
+    accent: string;
+    icon: string;
+  }
+> = {
   economique: {
     badge: 'text-green-800 dark:text-green-200',
     badgeBg: 'bg-green-100 dark:bg-green-900/50',
@@ -252,14 +255,33 @@ function CostPieChart({
   breakdown: CostBreakdownFlat;
   t: (key: string, defaultValue: string) => string;
 }): React.ReactElement {
-  const total = breakdown.cabinets + breakdown.countertops + breakdown.appliances + breakdown.installation;
-  if (total === 0) {return <div className="text-sm text-gray-400">--</div>;}
+  const total =
+    breakdown.cabinets + breakdown.countertops + breakdown.appliances + breakdown.installation;
+  if (total === 0) {
+    return <div className="text-sm text-gray-400">--</div>;
+  }
 
   const segments = [
-    { label: t('autoDesign.categories.cabinets', 'Caissons'), value: breakdown.cabinets, color: '#3B82F6' },
-    { label: t('autoDesign.categories.countertops', 'Plans de travail'), value: breakdown.countertops, color: '#06B6D4' },
-    { label: t('autoDesign.categories.appliances', 'Electromenager'), value: breakdown.appliances, color: '#EF4444' },
-    { label: t('autoDesign.categories.installation', 'Installation'), value: breakdown.installation, color: '#8B5CF6' },
+    {
+      label: t('autoDesign.categories.cabinets', 'Caissons'),
+      value: breakdown.cabinets,
+      color: '#3B82F6',
+    },
+    {
+      label: t('autoDesign.categories.countertops', 'Plans de travail'),
+      value: breakdown.countertops,
+      color: '#06B6D4',
+    },
+    {
+      label: t('autoDesign.categories.appliances', 'Electromenager'),
+      value: breakdown.appliances,
+      color: '#EF4444',
+    },
+    {
+      label: t('autoDesign.categories.installation', 'Installation'),
+      value: breakdown.installation,
+      color: '#8B5CF6',
+    },
   ];
 
   // Build conic gradient segments
@@ -272,7 +294,10 @@ function CostPieChart({
   });
 
   // SVG donut chart
-  const cx = 50, cy = 50, r = 40, rInner = 25;
+  const cx = 50,
+    cy = 50,
+    r = 40,
+    rInner = 25;
 
   function arcPath(startPct: number, endPct: number): string {
     const startAngle = (startPct / 100) * 2 * Math.PI - Math.PI / 2;
@@ -295,20 +320,20 @@ function CostPieChart({
     <div className="flex items-center gap-3">
       <svg viewBox="0 0 100 100" className="w-20 h-20 flex-shrink-0">
         {arcs.map((arc, i) => (
-          <path
-            key={i}
-            d={arcPath(arc.start, arc.end)}
-            fill={arc.color}
-            fillOpacity={0.8}
-          />
+          <path key={i} d={arcPath(arc.start, arc.end)} fill={arc.color} fillOpacity={0.8} />
         ))}
       </svg>
       <div className="flex-1 space-y-1">
         {arcs.map((arc, i) => (
           <div key={i} className="flex items-center gap-2 text-xs">
-            <div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: arc.color }} />
+            <div
+              className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
+              style={{ backgroundColor: arc.color }}
+            />
             <span className="text-gray-600 dark:text-gray-400 truncate">{arc.label}</span>
-            <span className="ml-auto font-medium text-gray-700 dark:text-gray-300">{Math.round(arc.pct)}%</span>
+            <span className="ml-auto font-medium text-gray-700 dark:text-gray-300">
+              {Math.round(arc.pct)}%
+            </span>
           </div>
         ))}
       </div>
@@ -359,8 +384,7 @@ const AutoDesignResults: React.FC = () => {
         if (!response.ok) {
           const errorData = (await response.json().catch(() => ({}))) as AutoGenerateResponse;
           throw new Error(
-            errorData.error ||
-            t('autoDesign.errors.generationFailed', 'Failed to generate designs'),
+            errorData.error || t('autoDesign.errors.generationFailed', 'Failed to generate designs')
           );
         }
 
@@ -369,10 +393,14 @@ const AutoDesignResults: React.FC = () => {
           setDesigns(result.data.designs);
           setGenerationId(result.data.generationId);
         } else {
-          throw new Error(result.error || t('autoDesign.errors.invalidResponse', 'Invalid response'));
+          throw new Error(
+            result.error || t('autoDesign.errors.invalidResponse', 'Invalid response')
+          );
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         const message = err instanceof Error ? err.message : String(err);
         setError(message);
         logger.error('Auto-generate designs failed', { error: message });
@@ -431,7 +459,7 @@ const AutoDesignResults: React.FC = () => {
       '',
       'Products:',
       ...design.products.map(
-        (p) => `  - ${p.name} (${p.brand}) x${p.qty}: ${formatCurrency(p.totalPrice)}`,
+        (p) => `  - ${p.name} (${p.brand}) x${p.qty}: ${formatCurrency(p.totalPrice)}`
       ),
       '',
       `Ergonomics: ${design.scores.ergonomics}/100`,
@@ -460,7 +488,9 @@ const AutoDesignResults: React.FC = () => {
 
   /** Generate comparison highlights between tiers */
   const getComparisonHighlights = (): string[] => {
-    if (designs.length < 2) {return [];}
+    if (designs.length < 2) {
+      return [];
+    }
     const highlights: string[] = [];
 
     const sorted = [...designs].sort((a, b) => a.totalCost - b.totalCost);
@@ -471,11 +501,15 @@ const AutoDesignResults: React.FC = () => {
       const storageDiff = mid.scores.storage - low.scores.storage;
       if (storageDiff > 0) {
         highlights.push(
-          t('autoDesign.comparison.storageUpgrade', 'Le {{tier}} offre {{storagePct}}% de rangement en plus pour seulement {{cost}} de plus', {
-            tier: TIER_LABELS[mid.tier] || mid.tier,
-            storagePct: storageDiff,
-            cost: formatCurrency(costDiff),
-          }),
+          t(
+            'autoDesign.comparison.storageUpgrade',
+            'Le {{tier}} offre {{storagePct}}% de rangement en plus pour seulement {{cost}} de plus',
+            {
+              tier: TIER_LABELS[mid.tier] || mid.tier,
+              storagePct: storageDiff,
+              cost: formatCurrency(costDiff),
+            }
+          )
         );
       }
     }
@@ -485,10 +519,14 @@ const AutoDesignResults: React.FC = () => {
       const aestheticDiff = high.scores.aesthetics - mid.scores.aesthetics;
       if (aestheticDiff > 0) {
         highlights.push(
-          t('autoDesign.comparison.aestheticsUpgrade', 'Le {{tier}} gagne {{points}} points en esthetique avec des materiaux haut de gamme', {
-            tier: TIER_LABELS[high.tier] || high.tier,
-            points: aestheticDiff,
-          }),
+          t(
+            'autoDesign.comparison.aestheticsUpgrade',
+            'Le {{tier}} gagne {{points}} points en esthetique avec des materiaux haut de gamme',
+            {
+              tier: TIER_LABELS[high.tier] || high.tier,
+              points: aestheticDiff,
+            }
+          )
         );
       }
     }
@@ -501,18 +539,35 @@ const AutoDesignResults: React.FC = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="relative mb-6">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 mx-auto" role="status" />
+            <div
+              className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 mx-auto"
+              role="status"
+            />
           </div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             {t('autoDesign.loading.title', 'Generation de vos 3 cuisines...')}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm">
-            {t('autoDesign.loading.subtitle', 'Notre IA analyse vos preferences et genere 3 concepts a differents budgets. Cela peut prendre 15-30 secondes.')}
+            {t(
+              'autoDesign.loading.subtitle',
+              'Notre IA analyse vos preferences et genere 3 concepts a differents budgets. Cela peut prendre 15-30 secondes.'
+            )}
           </p>
           <div className="mt-6 space-y-2">
-            {['Analyse du questionnaire', 'Generation Economique', 'Generation Confort', 'Generation Premium'].map((step, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <div className="animate-pulse w-2 h-2 rounded-full bg-blue-500" style={{ animationDelay: `${i * 0.5}s` }} />
+            {[
+              'Analyse du questionnaire',
+              'Generation Economique',
+              'Generation Confort',
+              'Generation Premium',
+            ].map((step, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
+              >
+                <div
+                  className="animate-pulse w-2 h-2 rounded-full bg-blue-500"
+                  style={{ animationDelay: `${i * 0.5}s` }}
+                />
                 {step}
               </div>
             ))}
@@ -528,8 +583,18 @@ const AutoDesignResults: React.FC = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-            <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-8 h-8 text-red-600 dark:text-red-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -567,7 +632,10 @@ const AutoDesignResults: React.FC = () => {
             {t('autoDesign.title', 'Vos 3 Concepts de Cuisine')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            {t('autoDesign.subtitle', 'Bases sur votre questionnaire, voici 3 concepts a differents niveaux de budget. Comparez et choisissez celui qui vous convient.')}
+            {t(
+              'autoDesign.subtitle',
+              'Bases sur votre questionnaire, voici 3 concepts a differents niveaux de budget. Comparez et choisissez celui qui vous convient.'
+            )}
           </p>
         </div>
 
@@ -579,8 +647,18 @@ const AutoDesignResults: React.FC = () => {
                 key={i}
                 className="flex items-start gap-2 px-4 py-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg text-sm text-indigo-800 dark:text-indigo-300"
               >
-                <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <span>{highlight}</span>
               </div>
@@ -602,31 +680,46 @@ const AutoDesignResults: React.FC = () => {
                 {/* Tier Badge + Price */}
                 <div className="p-5 pb-3">
                   <div className="flex items-center justify-between mb-3">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${tierStyle.badge} ${tierStyle.badgeBg}`}>
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tierStyle.icon} />
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${tierStyle.badge} ${tierStyle.badgeBg}`}
+                    >
+                      <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d={tierStyle.icon}
+                        />
                       </svg>
-                      {t(`autoDesign.tiers.${design.tier}`, TIER_LABELS[design.tier] || design.tier)}
+                      {t(
+                        `autoDesign.tiers.${design.tier}`,
+                        TIER_LABELS[design.tier] || design.tier
+                      )}
                     </span>
                     <span className="text-xs text-gray-400 dark:text-gray-500">
                       {design.scores.overall}/100
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{design.name}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                    {design.name}
+                  </h3>
                   <p className={`text-2xl font-extrabold ${tierStyle.accent}`}>
                     {formatCurrency(design.totalCost)}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{design.description}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                    {design.description}
+                  </p>
                 </div>
 
                 {/* Layout Diagram */}
                 <div className="px-5 pb-3">
-                  <LayoutGrid
-                    items={design.layout.items}
-                    roomWidth={400}
-                    roomDepth={350}
-                  />
+                  <LayoutGrid items={design.layout.items} roomWidth={400} roomDepth={350} />
                 </div>
 
                 {/* Score Bars */}
@@ -670,14 +763,30 @@ const AutoDesignResults: React.FC = () => {
                     {t('autoDesign.materials', 'Materiaux')}
                   </h4>
                   <div className="grid grid-cols-2 gap-1.5 text-xs">
-                    <div className="text-gray-500 dark:text-gray-400">{t('autoDesign.materialLabels.cabinets', 'Caissons')}</div>
-                    <div className="text-gray-700 dark:text-gray-300 font-medium">{design.materials.cabinets}</div>
-                    <div className="text-gray-500 dark:text-gray-400">{t('autoDesign.materialLabels.countertops', 'Plans')}</div>
-                    <div className="text-gray-700 dark:text-gray-300 font-medium">{design.materials.countertops}</div>
-                    <div className="text-gray-500 dark:text-gray-400">{t('autoDesign.materialLabels.backsplash', 'Credence')}</div>
-                    <div className="text-gray-700 dark:text-gray-300 font-medium">{design.materials.backsplash}</div>
-                    <div className="text-gray-500 dark:text-gray-400">{t('autoDesign.materialLabels.flooring', 'Sol')}</div>
-                    <div className="text-gray-700 dark:text-gray-300 font-medium">{design.materials.flooring}</div>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {t('autoDesign.materialLabels.cabinets', 'Caissons')}
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-300 font-medium">
+                      {design.materials.cabinets}
+                    </div>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {t('autoDesign.materialLabels.countertops', 'Plans')}
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-300 font-medium">
+                      {design.materials.countertops}
+                    </div>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {t('autoDesign.materialLabels.backsplash', 'Credence')}
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-300 font-medium">
+                      {design.materials.backsplash}
+                    </div>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {t('autoDesign.materialLabels.flooring', 'Sol')}
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-300 font-medium">
+                      {design.materials.flooring}
+                    </div>
                   </div>
                 </div>
 
@@ -715,7 +824,12 @@ const AutoDesignResults: React.FC = () => {
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                     {t('autoDesign.whyThisDesign', 'Pourquoi ce design ?')}
                   </button>
@@ -763,7 +877,12 @@ const AutoDesignResults: React.FC = () => {
                     className="w-full px-4 py-2 rounded-lg font-medium text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
                     </svg>
                     {t('autoDesign.exportPDF', 'Exporter en PDF')}
                   </button>

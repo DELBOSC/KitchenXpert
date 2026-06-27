@@ -56,12 +56,7 @@ module.exports = {
   /**
    * Ignore patterns
    */
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/build/',
-    '/__fixtures__/',
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/__fixtures__/'],
 
   // ============================================================
   // Test Environment
@@ -268,7 +263,9 @@ module.exports = {
     },
     // Integration test globals
     INTEGRATION_TEST: true,
-    TEST_DATABASE_URL: process.env.TEST_DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/kitchenxpert_test',
+    TEST_DATABASE_URL:
+      process.env.TEST_DATABASE_URL ||
+      'postgresql://postgres:postgres@localhost:5432/kitchenxpert_test',
     TEST_REDIS_URL: process.env.TEST_REDIS_URL || 'redis://localhost:6379/1',
     TEST_API_PORT: process.env.TEST_API_PORT || 3001,
     MOCK_EXTERNAL_SERVICES: true,

@@ -20,7 +20,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const API = (import.meta.env?.VITE_API_URL as string) || '/api/v1';
 
 const LOADING_STEPS = [
-  'Préparation de l\'image...',
+  "Préparation de l'image...",
   'Analyse Gemini Vision...',
   'Recherche dans le catalogue...',
   'Calcul des correspondances...',
@@ -63,24 +63,36 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [contextNote, setContextNote] = useState('');
-  const [source, setSource] = useState<'user-kitchen' | 'inspiration-pinterest' | 'inspiration-magazine'>('user-kitchen');
+  const [source, setSource] = useState<
+    'user-kitchen' | 'inspiration-pinterest' | 'inspiration-magazine'
+  >('user-kitchen');
   const [loadingStep, setLoadingStep] = useState<number | null>(null);
   const [result, setResult] = useState<ApiResponse['data'] | null>(null);
   const [selectedItem, setSelectedItem] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!open) {return;}
-    const onKey = (e: KeyboardEvent): void => { if (e.key === 'Escape') {onClose();} };
+    if (!open) {
+      return;
+    }
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  if (!open) {return null;}
+  if (!open) {
+    return null;
+  }
 
   const onPickFile = (file: File | null): void => {
     setError(null);
-    if (!file) {return;}
+    if (!file) {
+      return;
+    }
     if (!file.type.startsWith('image/')) {
       setError('Format non supporté — JPG, PNG ou WebP uniquement.');
       return;
@@ -96,7 +108,10 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
   };
 
   const submit = async (): Promise<void> => {
-    if (!imageFile) { setError('Choisis une image.'); return; }
+    if (!imageFile) {
+      setError('Choisis une image.');
+      return;
+    }
     setError(null);
     setResult(null);
 
@@ -112,16 +127,18 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
       const fd = new FormData();
       fd.append('file', imageFile);
       const up = await fetch(`${API}/uploads`, {
-        method: 'POST', credentials: 'include', body: fd,
+        method: 'POST',
+        credentials: 'include',
+        body: fd,
       });
       if (!up.ok) {
-        setError('Échec de l\'upload — réessaie.');
+        setError("Échec de l'upload — réessaie.");
         return;
       }
       const upJson = (await up.json()) as { data?: { url: string } };
       const imageUrl = upJson?.data?.url;
       if (!imageUrl) {
-        setError('URL d\'upload manquante côté serveur.');
+        setError("URL d'upload manquante côté serveur.");
         return;
       }
 
@@ -151,8 +168,11 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
   };
 
   const reset = (): void => {
-    setImageFile(null); setImagePreview(null); setResult(null);
-    setContextNote(''); setSelectedItem(null);
+    setImageFile(null);
+    setImagePreview(null);
+    setResult(null);
+    setContextNote('');
+    setSelectedItem(null);
   };
 
   return (
@@ -183,8 +203,8 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
           SnapIt — identifie depuis une photo
         </h2>
         <p className="mt-2 text-sm text-white/65">
-          Uploade une photo (cuisine actuelle ou inspiration) — l&apos;IA détecte les meubles + propose
-          les équivalents dans nos catalogues.
+          Uploade une photo (cuisine actuelle ou inspiration) — l&apos;IA détecte les meubles +
+          propose les équivalents dans nos catalogues.
         </p>
 
         {/* ── Pre-result : upload ──────────────────────────────────────── */}
@@ -192,7 +212,9 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
             {/* Left : drop zone */}
             <div
-              onDragOver={(e) => { e.preventDefault(); }}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
               onDrop={(e) => {
                 e.preventDefault();
                 onPickFile(e.dataTransfer.files?.[0] ?? null);
@@ -201,7 +223,11 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
             >
               {imagePreview ? (
                 <>
-                  <img src={imagePreview} alt="Aperçu" className="absolute inset-0 h-full w-full rounded-xl object-cover opacity-90" />
+                  <img
+                    src={imagePreview}
+                    alt="Aperçu"
+                    className="absolute inset-0 h-full w-full rounded-xl object-cover opacity-90"
+                  />
                   <button
                     type="button"
                     onClick={reset}
@@ -212,7 +238,9 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
                 </>
               ) : (
                 <>
-                  <div><Camera className="w-10 h-10 text-white/40" aria-hidden="true" /></div>
+                  <div>
+                    <Camera className="w-10 h-10 text-white/40" aria-hidden="true" />
+                  </div>
                   <div className="mt-3 text-sm font-medium text-white/85">Glisse une photo ici</div>
                   <div className="mt-1 text-xs text-white/40">JPG / PNG / WebP · 8 MB max</div>
                   <button
@@ -237,12 +265,21 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
             {/* Right : context + options */}
             <div className="flex flex-col gap-4">
               <div>
-                <span id="snapit-source-label" className="text-xs font-medium uppercase tracking-widest text-white/40">Type d&apos;image</span>
-                <div className="mt-2 grid grid-cols-1 gap-2" role="group" aria-labelledby="snapit-source-label">
+                <span
+                  id="snapit-source-label"
+                  className="text-xs font-medium uppercase tracking-widest text-white/40"
+                >
+                  Type d&apos;image
+                </span>
+                <div
+                  className="mt-2 grid grid-cols-1 gap-2"
+                  role="group"
+                  aria-labelledby="snapit-source-label"
+                >
                   {[
-                    { val: 'user-kitchen',          label: 'Ma cuisine actuelle' },
+                    { val: 'user-kitchen', label: 'Ma cuisine actuelle' },
                     { val: 'inspiration-pinterest', label: 'Inspiration Pinterest' },
-                    { val: 'inspiration-magazine',  label: 'Inspiration magazine / web' },
+                    { val: 'inspiration-magazine', label: 'Inspiration magazine / web' },
                   ].map((opt) => (
                     <button
                       key={opt.val}
@@ -257,7 +294,12 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
               </div>
 
               <div>
-                <label htmlFor="snapit-context-note" className="text-xs font-medium uppercase tracking-widest text-white/40">Note (optionnel)</label>
+                <label
+                  htmlFor="snapit-context-note"
+                  className="text-xs font-medium uppercase tracking-widest text-white/40"
+                >
+                  Note (optionnel)
+                </label>
                 <textarea
                   id="snapit-context-note"
                   value={contextNote}
@@ -270,7 +312,8 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
               </div>
 
               <p className="text-[11px] text-white/35">
-                La reconnaissance dépend de la qualité de la photo. Les correspondances sont des suggestions à valider.
+                La reconnaissance dépend de la qualité de la photo. Les correspondances sont des
+                suggestions à valider.
               </p>
             </div>
           </div>
@@ -292,38 +335,47 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
           </div>
         )}
 
-        {error && <p role="alert" className="mt-4 text-sm text-rose-300">{error}</p>}
+        {error && (
+          <p role="alert" className="mt-4 text-sm text-rose-300">
+            {error}
+          </p>
+        )}
 
         {/* ── Result : annotated image + matches ─────────────────────── */}
         {result && (
           <div className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
             <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black">
-              {imagePreview && (
-                <img src={imagePreview} alt="" className="block h-auto w-full" />
-              )}
+              {imagePreview && <img src={imagePreview} alt="" className="block h-auto w-full" />}
               {/* Markers overlaid via percentage positioning */}
-              {result.recognition.detectedItems.map((item, i) => item.bbox && (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setSelectedItem(i)}
-                  aria-label={item.description}
-                  className={`absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 text-xs font-bold transition ${selectedItem === i ? 'border-amber-400 bg-amber-400/30 text-white scale-125' : 'border-white/80 bg-black/60 text-white hover:scale-110'}`}
-                  style={{
-                    left:  `${(item.bbox.x + item.bbox.w / 2) * 100}%`,
-                    top:   `${(item.bbox.y + item.bbox.h / 2) * 100}%`,
-                  }}
-                >
-                  {i + 1}
-                </button>
-              ))}
+              {result.recognition.detectedItems.map(
+                (item, i) =>
+                  item.bbox && (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setSelectedItem(i)}
+                      aria-label={item.description}
+                      className={`absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 text-xs font-bold transition ${selectedItem === i ? 'border-amber-400 bg-amber-400/30 text-white scale-125' : 'border-white/80 bg-black/60 text-white hover:scale-110'}`}
+                      style={{
+                        left: `${(item.bbox.x + item.bbox.w / 2) * 100}%`,
+                        top: `${(item.bbox.y + item.bbox.h / 2) * 100}%`,
+                      }}
+                    >
+                      {i + 1}
+                    </button>
+                  )
+              )}
             </div>
 
             <div className="flex flex-col gap-3 overflow-y-auto">
               {result.recognition.sceneSummary.inferredStyle && (
                 <div className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
-                  <div className="text-[10px] uppercase tracking-widest text-white/40">Style détecté</div>
-                  <div className="text-sm font-medium text-white">{result.recognition.sceneSummary.inferredStyle}</div>
+                  <div className="text-[10px] uppercase tracking-widest text-white/40">
+                    Style détecté
+                  </div>
+                  <div className="text-sm font-medium text-white">
+                    {result.recognition.sceneSummary.inferredStyle}
+                  </div>
                 </div>
               )}
 
@@ -334,7 +386,12 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
                   tabIndex={0}
                   className={`rounded-lg border p-3 transition ${selectedItem === i ? 'border-amber-400/40 bg-amber-500/[0.05]' : 'border-white/10 bg-white/[0.02] hover:border-white/20'}`}
                   onClick={() => setSelectedItem(i)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedItem(i); } }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedItem(i);
+                    }
+                  }}
                 >
                   <div className="flex items-baseline justify-between gap-3">
                     <div className="text-sm text-white">
@@ -343,19 +400,27 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
                       </span>
                       {item.description}
                     </div>
-                    <span className="text-[11px] text-white/40">{Math.round(item.confidence * 100)} %</span>
+                    <span className="text-[11px] text-white/40">
+                      {Math.round(item.confidence * 100)} %
+                    </span>
                   </div>
                   {item.matches && item.matches.length > 0 ? (
                     <ul className="mt-2 space-y-1">
                       {item.matches.map((m) => (
                         <li key={m.sku} className="flex items-baseline justify-between text-xs">
-                          <span className="text-white/75">{m.brand} · {m.label}</span>
-                          <span className="font-medium tabular-nums text-white">{m.unitPriceEur} €</span>
+                          <span className="text-white/75">
+                            {m.brand} · {m.label}
+                          </span>
+                          <span className="font-medium tabular-nums text-white">
+                            {m.unitPriceEur} €
+                          </span>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <div className="mt-2 text-[11px] text-white/40 italic">Aucune correspondance — élargis ta cuisine ou tente une autre photo.</div>
+                    <div className="mt-2 text-[11px] text-white/40 italic">
+                      Aucune correspondance — élargis ta cuisine ou tente une autre photo.
+                    </div>
                   )}
                 </div>
               ))}
@@ -366,16 +431,29 @@ export function SnapItModal({ open, onClose }: SnapItModalProps): React.ReactEle
         <div className="mt-6 flex justify-end gap-2">
           {result ? (
             <>
-              <button type="button" onClick={reset} className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10">
+              <button
+                type="button"
+                onClick={reset}
+                className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
+              >
                 Nouvelle photo
               </button>
-              <button type="button" onClick={onClose} className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-white/90">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-white/90"
+              >
                 Fermer
               </button>
             </>
           ) : (
             <>
-              <button type="button" onClick={onClose} disabled={loadingStep !== null} className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={loadingStep !== null}
+                className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
+              >
                 Annuler
               </button>
               <button

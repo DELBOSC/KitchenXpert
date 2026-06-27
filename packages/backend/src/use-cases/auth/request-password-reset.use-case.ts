@@ -8,7 +8,10 @@ import type { UseCase } from '../../core/use-case';
 import type { PrismaClient } from '@prisma/client';
 
 export const RequestPasswordResetSchema = z.object({
-  email: z.string().email().transform((e) => e.toLowerCase()),
+  email: z
+    .string()
+    .email()
+    .transform((e) => e.toLowerCase()),
 });
 
 export type RequestPasswordResetInput = z.infer<typeof RequestPasswordResetSchema>;
@@ -26,7 +29,10 @@ const TOKEN_EXPIRY_MS = 60 * 60 * 1000;
  * can answer with a generic "if an account exists" message — preventing email
  * enumeration. The token is stored hashed.
  */
-export class RequestPasswordResetUseCase implements UseCase<RequestPasswordResetInput, RequestPasswordResetOutput> {
+export class RequestPasswordResetUseCase implements UseCase<
+  RequestPasswordResetInput,
+  RequestPasswordResetOutput
+> {
   constructor(private readonly prisma: PrismaClient) {}
 
   async execute({ email }: RequestPasswordResetInput): Promise<Result<RequestPasswordResetOutput>> {
@@ -34,7 +40,9 @@ export class RequestPasswordResetUseCase implements UseCase<RequestPasswordReset
       where: { email },
       select: { id: true, email: true, firstName: true },
     });
-    if (!user) {return ok({ token: null, user: null });}
+    if (!user) {
+      return ok({ token: null, user: null });
+    }
 
     const raw = crypto.randomBytes(32).toString('hex');
     const hashed = crypto.createHash('sha256').update(raw).digest('hex');

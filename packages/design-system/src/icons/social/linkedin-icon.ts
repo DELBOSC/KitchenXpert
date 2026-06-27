@@ -9,7 +9,8 @@ export interface IconProps {
   className?: string;
 }
 
-export const linkedinIconPath = 'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z M2 9h4v12H2z M4 6a2 2 0 100-4 2 2 0 000 4z';
+export const linkedinIconPath =
+  'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z M2 9h4v12H2z M4 6a2 2 0 100-4 2 2 0 000 4z';
 
 export function createLinkedInIcon(props: IconProps = {}): string {
   const { size = 24, color = 'currentColor' } = props;

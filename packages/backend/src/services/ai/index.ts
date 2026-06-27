@@ -12,13 +12,21 @@ export { ProductEnrichmentService } from './product-enrichment.service';
 export { CompatibilityGeneratorService } from './compatibility-generator.service';
 export { ProductMatcherService } from './product-matcher.service';
 export { CrossCategoryRecommenderService } from './cross-category-recommender.service';
-export type { CategoryRecommendations, PopularPairing, SelectedProduct } from './cross-category-recommender.service';
+export type {
+  CategoryRecommendations,
+  PopularPairing,
+  SelectedProduct,
+} from './cross-category-recommender.service';
 export { StyleTransferService } from './style-transfer.service';
 export type { StyleExtraction } from './style-transfer.service';
 export { PhotoRoomScannerService } from './photo-room-scanner.service';
 export type { RoomScanResult, FloorPlanData } from './photo-room-scanner.service';
 export { RenovationService } from './renovation.service';
-export type { ExistingKitchenAnalysis, ComparisonData, CreateRenovationDto } from './renovation.service';
+export type {
+  ExistingKitchenAnalysis,
+  ComparisonData,
+  CreateRenovationDto,
+} from './renovation.service';
 export { WorkflowSimulationService } from './workflow-simulation.service';
 export type {
   SimulationResult,

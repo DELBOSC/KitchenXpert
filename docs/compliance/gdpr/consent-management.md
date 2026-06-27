@@ -20,13 +20,20 @@
 
 ## Introduction
 
-Consent is one of the six lawful bases for processing personal data under GDPR. When KitchenXpert relies on consent as the legal basis for processing, we must ensure that consent meets all GDPR requirements: it must be freely given, specific, informed, and unambiguous.
+Consent is one of the six lawful bases for processing personal data under GDPR.
+When KitchenXpert relies on consent as the legal basis for processing, we must
+ensure that consent meets all GDPR requirements: it must be freely given,
+specific, informed, and unambiguous.
 
-This document outlines how KitchenXpert implements consent management across our platform, ensuring compliance with GDPR Article 7 (Conditions for Consent) and Article 8 (Conditions applicable to child's consent in relation to information society services).
+This document outlines how KitchenXpert implements consent management across our
+platform, ensuring compliance with GDPR Article 7 (Conditions for Consent) and
+Article 8 (Conditions applicable to child's consent in relation to information
+society services).
 
 ### Scope
 
 This policy applies to:
+
 - All consent-based processing activities
 - Cookie consent and tracking technologies
 - Marketing communications
@@ -39,27 +46,27 @@ This policy applies to:
 
 ### GDPR Article 7 - Conditions for Consent
 
-| Requirement | Description | KitchenXpert Implementation |
-|-------------|-------------|----------------------------|
-| **Freely Given** | Cannot be coerced or bundled | Separate consent requests; core service available without optional consents |
-| **Specific** | For specific, defined purposes | Granular consent options for each processing activity |
-| **Informed** | User must understand consent | Clear, plain-language descriptions; links to privacy policy |
-| **Unambiguous** | Clear affirmative action | Explicit checkboxes (unchecked by default); clear opt-in buttons |
-| **Demonstrable** | Must prove consent | Timestamped consent records; audit logs |
-| **Withdrawable** | Easy withdrawal | One-click unsubscribe; preference center access |
+| Requirement      | Description                    | KitchenXpert Implementation                                                 |
+| ---------------- | ------------------------------ | --------------------------------------------------------------------------- |
+| **Freely Given** | Cannot be coerced or bundled   | Separate consent requests; core service available without optional consents |
+| **Specific**     | For specific, defined purposes | Granular consent options for each processing activity                       |
+| **Informed**     | User must understand consent   | Clear, plain-language descriptions; links to privacy policy                 |
+| **Unambiguous**  | Clear affirmative action       | Explicit checkboxes (unchecked by default); clear opt-in buttons            |
+| **Demonstrable** | Must prove consent             | Timestamped consent records; audit logs                                     |
+| **Withdrawable** | Easy withdrawal                | One-click unsubscribe; preference center access                             |
 
 ### Consent vs. Other Legal Bases
 
-| Processing Activity | Legal Basis | Consent Required? |
-|--------------------|-------------|-------------------|
-| Account creation | Contract performance | No |
-| Storing kitchen designs | Contract performance | No |
-| Order processing | Contract performance | No |
-| Security monitoring | Legitimate interest | No |
-| Marketing emails | **Consent** | **Yes** |
-| Analytics cookies | **Consent** | **Yes** |
-| AI training on user designs | **Consent** | **Yes** |
-| Third-party marketing | **Consent** | **Yes** |
+| Processing Activity         | Legal Basis          | Consent Required? |
+| --------------------------- | -------------------- | ----------------- |
+| Account creation            | Contract performance | No                |
+| Storing kitchen designs     | Contract performance | No                |
+| Order processing            | Contract performance | No                |
+| Security monitoring         | Legitimate interest  | No                |
+| Marketing emails            | **Consent**          | **Yes**           |
+| Analytics cookies           | **Consent**          | **Yes**           |
+| AI training on user designs | **Consent**          | **Yes**           |
+| Third-party marketing       | **Consent**          | **Yes**           |
 
 ---
 
@@ -75,15 +82,18 @@ Data collected: email (required), password (hashed, required), name (optional).
 
 **Legal Basis:** Consent (Article 6(1)(a))
 
-Types: newsletters, design tips, partner offers, feature announcements, discounts.
+Types: newsletters, design tips, partner offers, feature announcements,
+discounts.
 
-Key implementation: checkboxes unchecked by default, each category separate, easy unsubscribe.
+Key implementation: checkboxes unchecked by default, each category separate,
+easy unsubscribe.
 
 ### 3. Analytics and Cookies (Cookie Consent Banner)
 
 **Legal Basis:** Consent (Article 6(1)(a)) for non-essential cookies
 
 Categories:
+
 - **Essential** (no consent): Session cookies, security tokens
 - **Functional** (consent required): Language, theme preferences
 - **Analytics** (consent required): Google Analytics, usage tracking
@@ -93,14 +103,16 @@ Categories:
 
 **Legal Basis:** Consent (Article 6(1)(a))
 
-Opt-in only, clear explanation, separate from core service, can be withdrawn anytime.
+Opt-in only, clear explanation, separate from core service, can be withdrawn
+anytime.
 
 ---
 
 ## Consent Collection Methods
 
 1. **Checkbox Consent**: Unchecked by default, clear labels
-2. **Cookie Consent Banners**: Before non-essential cookies, equal Accept/Reject prominence
+2. **Cookie Consent Banners**: Before non-essential cookies, equal Accept/Reject
+   prominence
 3. **Modal Dialogs**: Cannot dismiss without choice
 4. **Just-in-Time Consent**: Feature-specific during user journey
 
@@ -110,7 +122,9 @@ Opt-in only, clear explanation, separate from core service, can be withdrawn any
 
 ### Consent Record Fields
 
-id, userId, consentType, purpose, version, granted, timestamp, ipAddress, userAgent, collectionMethod, expirationDate, withdrawnAt, pageUrl, formId, consentTextHash
+id, userId, consentType, purpose, version, granted, timestamp, ipAddress,
+userAgent, collectionMethod, expirationDate, withdrawnAt, pageUrl, formId,
+consentTextHash
 
 ### Database Schema
 
@@ -162,11 +176,11 @@ language (1 year), theme (1 year), recent_designs (30 days)
 
 ### Analytics Cookies (Consent Required)
 
-_ga (2 years), _gid (24 hours), kx_session (session)
+\_ga (2 years), \_gid (24 hours), kx_session (session)
 
 ### Marketing Cookies (Consent Required)
 
-_fbp (90 days), _gcl_au (90 days), kx_affiliate (30 days)
+\_fbp (90 days), \_gcl_au (90 days), kx_affiliate (30 days)
 
 ---
 
@@ -174,9 +188,11 @@ _fbp (90 days), _gcl_au (90 days), kx_affiliate (30 days)
 
 **URL**: https://kitchenxpert.com/account/privacy/preferences
 
-**Features**: View all consents, modify consents, view history, download consent record
+**Features**: View all consents, modify consents, view history, download consent
+record
 
-**API Endpoints**: GET/PUT /api/v1/users/me/consent-preferences, GET consent-history, GET consent-export
+**API Endpoints**: GET/PUT /api/v1/users/me/consent-preferences, GET
+consent-history, GET consent-export
 
 ---
 
@@ -184,11 +200,13 @@ _fbp (90 days), _gcl_au (90 days), kx_affiliate (30 days)
 
 ### What is Logged
 
-Consent given/withdrawn, preference center access, cookie banner interaction, email unsubscribe
+Consent given/withdrawn, preference center access, cookie banner interaction,
+email unsubscribe
 
 ### Retention
 
-7 years, required for compliance, included in data export, append-only protection
+7 years, required for compliance, included in data export, append-only
+protection
 
 ---
 
@@ -196,11 +214,13 @@ Consent given/withdrawn, preference center access, cookie banner interaction, em
 
 ### Architecture
 
-Frontend UI, Consent API, Database, Cookie Storage, Event Publisher, Audit Logs, Third-Party Sync
+Frontend UI, Consent API, Database, Cookie Storage, Event Publisher, Audit Logs,
+Third-Party Sync
 
 ### Global Privacy Control (GPC)
 
-Respects GPC signal as opt-out for analytics, marketing cookies, and CCPA sale opt-out.
+Respects GPC signal as opt-out for analytics, marketing cookies, and CCPA sale
+opt-out.
 
 ---
 
@@ -218,14 +238,14 @@ Respects GPC signal as opt-out for analytics, marketing cookies, and CCPA sale o
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
-| Document Owner | Data Protection Officer |
-| Review Frequency | Quarterly |
-| Last Reviewed | 2026-01-10 |
-| Next Review | 2026-04-10 |
-| Version | 2.3 |
+| Property         | Value                   |
+| ---------------- | ----------------------- |
+| Document Owner   | Data Protection Officer |
+| Review Frequency | Quarterly               |
+| Last Reviewed    | 2026-01-10              |
+| Next Review      | 2026-04-10              |
+| Version          | 2.3                     |
 
 ---
 
-*For questions, contact privacy@kitchenxpert.com.*
+_For questions, contact privacy@kitchenxpert.com._

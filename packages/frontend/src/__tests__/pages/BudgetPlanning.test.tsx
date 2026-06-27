@@ -89,9 +89,7 @@ describe('BudgetPlanning', () => {
 
       await waitFor(() => {
         // t('questionnaire.budget.title', 'Budget Planning') - fallback
-        expect(
-          screen.getByRole('heading', { name: /budget planning/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /budget planning/i })).toBeInTheDocument();
       });
     });
 
@@ -99,9 +97,7 @@ describe('BudgetPlanning', () => {
       renderBudgetPlanning();
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/define your budget and spending priorities/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/define your budget and spending priorities/i)).toBeInTheDocument();
       });
     });
 
@@ -138,9 +134,7 @@ describe('BudgetPlanning', () => {
 
       await waitFor(() => {
         // t('questionnaire.completeQuestionnaire', 'Complete Questionnaire')
-        expect(
-          screen.getByRole('button', { name: /complete questionnaire/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /complete questionnaire/i })).toBeInTheDocument();
       });
     });
   });
@@ -185,9 +179,7 @@ describe('BudgetPlanning', () => {
       renderBudgetPlanning();
 
       await waitFor(() => {
-        const budgetInput = screen.getByPlaceholderText(
-          /enter your total budget/i
-        );
+        const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
         expect(budgetInput).toBeInTheDocument();
         expect(budgetInput).toHaveAttribute('type', 'number');
       });
@@ -198,14 +190,10 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
-      const budgetInput = screen.getByPlaceholderText(
-        /enter your total budget/i
-      );
+      const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
       await user.type(budgetInput, '25000');
 
       expect(budgetInput).toHaveValue(25000);
@@ -216,14 +204,10 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
-      const budgetInput = screen.getByPlaceholderText(
-        /enter your total budget/i
-      );
+      const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
       await user.type(budgetInput, '25000');
 
       await waitFor(() => {
@@ -237,20 +221,14 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: /complete questionnaire/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /complete questionnaire/i })).toBeInTheDocument();
       });
 
       // Submit without entering budget (default is 0)
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/please enter a valid budget amount/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/please enter a valid budget amount/i)).toBeInTheDocument();
       });
     });
   });
@@ -274,9 +252,7 @@ describe('BudgetPlanning', () => {
 
       await waitFor(() => {
         // The moderate button should have the selected styling (blue border)
-        const moderateButton = screen.getByText(
-          /10-15% over if needed/i
-        ).closest('button');
+        const moderateButton = screen.getByText(/10-15% over if needed/i).closest('button');
         expect(moderateButton).toHaveClass('border-blue-500');
       });
     });
@@ -289,9 +265,7 @@ describe('BudgetPlanning', () => {
         expect(screen.getByText(/cannot exceed budget/i)).toBeInTheDocument();
       });
 
-      const strictButton = screen.getByText(
-        /cannot exceed budget/i
-      ).closest('button')!;
+      const strictButton = screen.getByText(/cannot exceed budget/i).closest('button')!;
       await user.click(strictButton);
 
       expect(strictButton).toHaveClass('border-blue-500');
@@ -329,9 +303,7 @@ describe('BudgetPlanning', () => {
         expect(screen.getByText(/maximum storage/i)).toBeInTheDocument();
       });
 
-      const storageButton = screen.getByText(/maximum storage/i).closest(
-        'button'
-      )!;
+      const storageButton = screen.getByText(/maximum storage/i).closest('button')!;
       await user.click(storageButton);
 
       expect(storageButton).toHaveClass('border-blue-500');
@@ -343,14 +315,10 @@ describe('BudgetPlanning', () => {
       renderBudgetPlanning();
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/professional design & installation fees/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/professional design & installation fees/i)).toBeInTheDocument();
         expect(screen.getByText(/new appliances/i)).toBeInTheDocument();
         expect(screen.getByText(/lighting fixtures/i)).toBeInTheDocument();
-        expect(
-          screen.getByText(/flooring replacement/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/flooring replacement/i)).toBeInTheDocument();
       });
     });
 
@@ -363,9 +331,7 @@ describe('BudgetPlanning', () => {
         expect(checkboxes.length).toBe(5);
 
         // Count checked checkboxes (should be 4 includes)
-        const checkedCount = checkboxes.filter(
-          (cb) => (cb as HTMLInputElement).checked
-        ).length;
+        const checkedCount = checkboxes.filter((cb) => (cb as HTMLInputElement).checked).length;
         expect(checkedCount).toBe(4);
       });
     });
@@ -431,9 +397,7 @@ describe('BudgetPlanning', () => {
       renderBudgetPlanning();
 
       await waitFor(() => {
-        const standardButton = screen.getByText(/2-4 months/i).closest(
-          'button'
-        );
+        const standardButton = screen.getByText(/2-4 months/i).closest('button');
         expect(standardButton).toHaveClass('border-blue-500');
       });
     });
@@ -444,9 +408,7 @@ describe('BudgetPlanning', () => {
       renderBudgetPlanning();
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/interested in financing options/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/interested in financing options/i)).toBeInTheDocument();
       });
     });
 
@@ -454,9 +416,9 @@ describe('BudgetPlanning', () => {
       renderBudgetPlanning();
 
       await waitFor(() => {
-        const financingCheckbox = screen.getAllByRole('checkbox').find(
-          (cb) => (cb as HTMLInputElement).name === 'financingNeeded'
-        );
+        const financingCheckbox = screen
+          .getAllByRole('checkbox')
+          .find((cb) => (cb as HTMLInputElement).name === 'financingNeeded');
         expect(financingCheckbox).not.toBeChecked();
       });
     });
@@ -485,21 +447,15 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
       // Enter a valid budget
-      const budgetInput = screen.getByPlaceholderText(
-        /enter your total budget/i
-      );
+      const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
       await user.type(budgetInput, '20000');
 
       // Submit the form
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
@@ -528,26 +484,18 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
-      const budgetInput = screen.getByPlaceholderText(
-        /enter your total budget/i
-      );
+      const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
       await user.type(budgetInput, '20000');
 
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
         // Error alert should appear
         expect(screen.getByRole('alert')).toBeInTheDocument();
-        expect(
-          screen.getByText(/failed to save budget plan/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/failed to save budget plan/i)).toBeInTheDocument();
       });
     });
 
@@ -557,27 +505,19 @@ describe('BudgetPlanning', () => {
           ok: false,
           json: () => Promise.resolve({}),
         }) // Initial load
-        .mockImplementationOnce(
-          () => new Promise(() => {})
-        ); // POST never resolves
+        .mockImplementationOnce(() => new Promise(() => {})); // POST never resolves
 
       renderBudgetPlanning();
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
-      const budgetInput = screen.getByPlaceholderText(
-        /enter your total budget/i
-      );
+      const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
       await user.type(budgetInput, '20000');
 
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
         // fr.json: common.saving = not defined, fallback 'Saving...'
@@ -594,9 +534,7 @@ describe('BudgetPlanning', () => {
       renderBudgetPlanning();
 
       await waitFor(() => {
-        expect(window.localStorage.getItem).toHaveBeenCalledWith(
-          'questionnaire_budgetPlanning'
-        );
+        expect(window.localStorage.getItem).toHaveBeenCalledWith('questionnaire_budgetPlanning');
       });
     });
 
@@ -685,9 +623,7 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
       const budgetInput = screen.getByPlaceholderText(/enter your total budget/i);
@@ -701,7 +637,7 @@ describe('BudgetPlanning', () => {
           (c: unknown[]) =>
             typeof c[0] === 'string' &&
             (c[0] as string).includes('/budget-planning') &&
-            (c[1] as RequestInit | undefined)?.method === 'POST',
+            (c[1] as RequestInit | undefined)?.method === 'POST'
         );
         expect(planningCall).toBeDefined();
         expect(calls.length).toBeGreaterThan(1);
@@ -730,29 +666,16 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
-      await user.type(
-        screen.getByPlaceholderText(/enter your total budget/i),
-        '20000'
-      );
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.type(screen.getByPlaceholderText(/enter your total budget/i), '20000');
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith(
-          'questionnaire_budgetPlanning'
-        );
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith(
-          'questionnaire_currentStep'
-        );
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith(
-          'questionnaire_timestamp'
-        );
+        expect(window.localStorage.removeItem).toHaveBeenCalledWith('questionnaire_budgetPlanning');
+        expect(window.localStorage.removeItem).toHaveBeenCalledWith('questionnaire_currentStep');
+        expect(window.localStorage.removeItem).toHaveBeenCalledWith('questionnaire_timestamp');
       });
     });
 
@@ -762,26 +685,17 @@ describe('BudgetPlanning', () => {
           ok: false,
           json: () => Promise.resolve({}),
         }) // Initial load
-        .mockImplementationOnce(
-          () => new Promise(() => {})
-        ); // POST never resolves
+        .mockImplementationOnce(() => new Promise(() => {})); // POST never resolves
 
       renderBudgetPlanning();
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter your total budget/i)
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/enter your total budget/i)).toBeInTheDocument();
       });
 
-      await user.type(
-        screen.getByPlaceholderText(/enter your total budget/i),
-        '20000'
-      );
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.type(screen.getByPlaceholderText(/enter your total budget/i), '20000');
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
         const savingButton = screen.getByRole('button', {
@@ -862,14 +776,10 @@ describe('BudgetPlanning', () => {
       const user = userEvent.setup();
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: /complete questionnaire/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /complete questionnaire/i })).toBeInTheDocument();
       });
 
-      await user.click(
-        screen.getByRole('button', { name: /complete questionnaire/i })
-      );
+      await user.click(screen.getByRole('button', { name: /complete questionnaire/i }));
 
       await waitFor(() => {
         const alert = screen.getByRole('alert');

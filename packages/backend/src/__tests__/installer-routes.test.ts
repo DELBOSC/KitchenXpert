@@ -19,7 +19,10 @@ jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   createModuleLogger: jest.fn(() => ({
-    info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
   })),
 }));
 
@@ -53,7 +56,13 @@ jest.mock('../services/installer/installer.service', () => ({
 jest.mock('../database/client', () => ({ prisma: { $disconnect: jest.fn() } }));
 
 jest.mock('../config/app-config', () => ({
-  config: { corsOrigins: ['http://localhost:3000'], env: 'test', port: 3000, version: '1.0.0', rateLimit: { maxRequests: 100 } },
+  config: {
+    corsOrigins: ['http://localhost:3000'],
+    env: 'test',
+    port: 3000,
+    version: '1.0.0',
+    rateLimit: { maxRequests: 100 },
+  },
 }));
 
 jest.mock('../auth/token-blacklist', () => ({
@@ -69,7 +78,9 @@ jest.mock('../auth/token-blacklist', () => ({
 jest.mock('../auth/jwt.service', () => ({
   jwtService: {
     verifyAccessToken: jest.fn().mockReturnValue({
-      userId: 'test-user-id', email: 'test@test.com', role: 'user',
+      userId: 'test-user-id',
+      email: 'test@test.com',
+      role: 'user',
     }),
     generateTokens: jest.fn(),
   },
@@ -172,9 +183,7 @@ describe('Installer Routes', () => {
     });
 
     it('should return 401 when user is not authenticated', async () => {
-      const response = await request(app)
-        .get('/installers/search?postalCode=75001')
-        .expect(401);
+      const response = await request(app).get('/installers/search?postalCode=75001').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -192,7 +201,7 @@ describe('Installer Routes', () => {
           minRating: 4,
           page: 2,
           limit: 10,
-        }),
+        })
       );
     });
   });
@@ -201,9 +210,7 @@ describe('Installer Routes', () => {
     it('should return installer profile with 200 status', async () => {
       mockGetById.mockResolvedValue(mockInstaller);
 
-      const response = await authedRequest(app)
-        .get(`/installers/${validInstallerId}`)
-        .expect(200);
+      const response = await authedRequest(app).get(`/installers/${validInstallerId}`).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.companyName).toBe('KitchenPro');
@@ -212,9 +219,7 @@ describe('Installer Routes', () => {
     it('should return 404 when installer is not found', async () => {
       mockGetById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get(`/installers/${validInstallerId}`)
-        .expect(404);
+      const response = await authedRequest(app).get(`/installers/${validInstallerId}`).expect(404);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Installer not found');
@@ -246,7 +251,9 @@ describe('Installer Routes', () => {
 
     it('should return 404 when installer does not exist', async () => {
       const { InstallerServiceError } = require('../services/installer/installer.service');
-      mockAddReview.mockRejectedValue(new InstallerServiceError('Installer not found', 'INSTALLER_NOT_FOUND'));
+      mockAddReview.mockRejectedValue(
+        new InstallerServiceError('Installer not found', 'INSTALLER_NOT_FOUND')
+      );
 
       const response = await authedRequest(app)
         .post(`/installers/${validInstallerId}/reviews`)

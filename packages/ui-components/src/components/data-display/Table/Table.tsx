@@ -44,8 +44,10 @@ export interface TablePaginationProps {
   pageSizeOptions?: number[];
 }
 
-export interface TableProps<T = Record<string, unknown>>
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> {
+export interface TableProps<T = Record<string, unknown>> extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'onSelect'
+> {
   columns: TableColumn<T>[];
   data: T[];
   size?: TableSize;
@@ -156,7 +158,11 @@ const TableHeaderCell = styled.th<{
   white-space: nowrap;
   color: var(--color-text-secondary, #6b7280);
   border-bottom: 2px solid var(--color-border, #e5e7eb);
-  ${({ $width }) => $width && css`width: ${typeof $width === 'number' ? `${$width}px` : $width};`}
+  ${({ $width }) =>
+    $width &&
+    css`
+      width: ${typeof $width === 'number' ? `${$width}px` : $width};
+    `}
 
   ${({ $sortable }) =>
     $sortable &&
@@ -282,10 +288,8 @@ const PageButton = styled.button<{ $active?: boolean }>`
   padding: 0 8px;
   border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 6px;
-  background: ${({ $active }) =>
-    $active ? 'var(--color-primary, #2563eb)' : 'white'};
-  color: ${({ $active }) =>
-    $active ? 'white' : 'var(--color-text, #1f2937)'};
+  background: ${({ $active }) => ($active ? 'var(--color-primary, #2563eb)' : 'white')};
+  color: ${({ $active }) => ($active ? 'white' : 'var(--color-text, #1f2937)')};
   font-size: 13px;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -328,10 +332,7 @@ function getRowKey<T>(
 }
 
 // Helper function to get cell value
-function getCellValue<T>(
-  row: T,
-  column: TableColumn<T>
-): unknown {
+function getCellValue<T>(row: T, column: TableColumn<T>): unknown {
   if (column.accessor) {
     if (typeof column.accessor === 'function') {
       return column.accessor(row);
@@ -472,7 +473,7 @@ function TableInner<T extends Record<string, unknown>>(
     defaultSort || { key: '', direction: null }
   );
 
-  const currentSort = onSort ? (defaultSort || { key: '', direction: null }) : internalSort;
+  const currentSort = onSort ? defaultSort || { key: '', direction: null } : internalSort;
 
   const handleSort = useCallback(
     (columnKey: string) => {
@@ -483,8 +484,8 @@ function TableInner<T extends Record<string, unknown>>(
             ? currentSort.direction === 'asc'
               ? 'desc'
               : currentSort.direction === 'desc'
-              ? null
-              : 'asc'
+                ? null
+                : 'asc'
             : 'asc',
       };
 
@@ -502,9 +503,7 @@ function TableInner<T extends Record<string, unknown>>(
       if (!onSelectionChange) return;
 
       if (e.target.checked) {
-        const allKeys = new Set(
-          data.map((row, index) => getRowKey(row, index, rowKey))
-        );
+        const allKeys = new Set(data.map((row, index) => getRowKey(row, index, rowKey)));
         onSelectionChange(allKeys);
       } else {
         onSelectionChange(new Set());
@@ -551,9 +550,7 @@ function TableInner<T extends Record<string, unknown>>(
   const isAllSelected = useMemo(
     () =>
       data.length > 0 &&
-      data.every((row, index) =>
-        selectedRows.has(getRowKey(row, index, rowKey))
-      ),
+      data.every((row, index) => selectedRows.has(getRowKey(row, index, rowKey))),
     [data, selectedRows, rowKey]
   );
 
@@ -568,12 +565,7 @@ function TableInner<T extends Record<string, unknown>>(
         <TableHead>
           <tr>
             {selectable && (
-              <TableHeaderCell
-                $sortable={false}
-                $align="center"
-                $width={40}
-                scope="col"
-              >
+              <TableHeaderCell $sortable={false} $align="center" $width={40} scope="col">
                 <Checkbox
                   checked={isAllSelected}
                   ref={(el) => {
@@ -637,9 +629,7 @@ function TableInner<T extends Record<string, unknown>>(
               const key = getRowKey(row, rowIndex, rowKey);
               const isSelected = selectedRows.has(key);
               const className =
-                typeof rowClassName === 'function'
-                  ? rowClassName(row, rowIndex)
-                  : rowClassName;
+                typeof rowClassName === 'function' ? rowClassName(row, rowIndex) : rowClassName;
 
               return (
                 <TableRow

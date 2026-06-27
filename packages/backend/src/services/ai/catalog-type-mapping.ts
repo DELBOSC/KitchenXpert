@@ -22,14 +22,14 @@ const CABINETS: CategorySlug[] = ['meubles-bas', 'meubles-hauts', 'colonnes'];
 export const TYPE_TO_CATEGORY_SLUGS: Record<string, CategorySlug[]> = {
   // Électroménager
   appliance: APPLIANCE_ALL,
-  'électroménager': APPLIANCE_ALL,
+  électroménager: APPLIANCE_ALL,
   electromenager: APPLIANCE_ALL,
   dishwasher: ['electromenager-lavage'],
   'lave-vaisselle': ['electromenager-lavage'],
   fridge: ['electromenager-froid'],
   refrigerator: ['electromenager-froid'],
   frigo: ['electromenager-froid'],
-  'réfrigérateur': ['electromenager-froid'],
+  réfrigérateur: ['electromenager-froid'],
   refrigerateur: ['electromenager-froid'],
   oven: ['electromenager-cuisson'],
   four: ['electromenager-cuisson'],
@@ -51,14 +51,14 @@ export const TYPE_TO_CATEGORY_SLUGS: Record<string, CategorySlug[]> = {
   countertop: ['plans-de-travail'],
   'plan de travail': ['plans-de-travail'],
   sink: ['eviers-robinetterie'],
-  'évier': ['eviers-robinetterie'],
+  évier: ['eviers-robinetterie'],
   evier: ['eviers-robinetterie'],
   tap: ['eviers-robinetterie'],
   faucet: ['eviers-robinetterie'],
   robinet: ['eviers-robinetterie'],
   mitigeur: ['eviers-robinetterie'],
   facade: ['facades'],
-  'façade': ['facades'],
+  façade: ['facades'],
   // lighting/hardware/accessory : absents du référentiel (YAGNI) -> fallback legacy.
 };
 

@@ -81,7 +81,11 @@ export class LapeyreStrategy implements IngestionStrategy {
   async fetchProductByUrl(url: string): Promise<ParseResult> {
     const id = this.extractId(url);
     if (!id) {
-      return { success: false, errors: [`Could not extract Lapeyre id from URL: ${url}`], warnings: [] };
+      return {
+        success: false,
+        errors: [`Could not extract Lapeyre id from URL: ${url}`],
+        warnings: [],
+      };
     }
     const json = await this.api.fetchJson<WcsResponse>(`${LAPEYRE_SEARCH_API}/byId/${id}`);
     const entry = (json.catalogEntryView ?? [])[0];
@@ -156,7 +160,8 @@ export class LapeyreStrategy implements IngestionStrategy {
     if (/mitigeur|robinet|robinetterie/.test(hay)) return 'tap';
     if (/évier|evier|lavabo|vasque/.test(hay)) return 'sink';
     if (/spot|luminaire|éclairage|eclairage|applique|suspension/.test(hay)) return 'lighting';
-    if (/four|hotte|plaque|réfrigérateur|refrigerateur|lave-vaisselle|micro-ondes/.test(hay)) return 'appliance';
+    if (/four|hotte|plaque|réfrigérateur|refrigerateur|lave-vaisselle|micro-ondes/.test(hay))
+      return 'appliance';
     if (/poignée|poignee|bouton/.test(hay)) return 'handle';
     if (/façade|facade|porte|tiroir|front/.test(hay)) return 'facade';
     if (/cuisine|meuble|caisson|élément|element|colonne|armoire/.test(hay)) return 'cabinet';
@@ -200,11 +205,14 @@ export class LapeyreStrategy implements IngestionStrategy {
     const present = [widthMm, heightMm, depthMm].filter((v) => v != null).length;
     if (present === 0) return null;
     const confidence = present === 3 ? 1 : present === 2 ? 0.5 : 0.3;
-    const raw = [
-      widthMm != null ? `L${widthMm / 10}` : null,
-      heightMm != null ? `H${heightMm / 10}` : null,
-      depthMm != null ? `P${depthMm / 10}` : null,
-    ].filter(Boolean).join('×') + ' cm';
+    const raw =
+      [
+        widthMm != null ? `L${widthMm / 10}` : null,
+        heightMm != null ? `H${heightMm / 10}` : null,
+        depthMm != null ? `P${depthMm / 10}` : null,
+      ]
+        .filter(Boolean)
+        .join('×') + ' cm';
     return { widthMm, heightMm, depthMm, confidence, rawMeasureText: raw };
   }
 }

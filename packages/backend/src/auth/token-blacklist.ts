@@ -172,7 +172,9 @@ export class MemoryTokenBlacklist implements ITokenBlacklist {
     try {
       const { TokenBlacklistService } = await import('../services/token-blacklist.service.js');
       const result = await TokenBlacklistService.isBlacklisted(token);
-      if (result) {return true;}
+      if (result) {
+        return true;
+      }
     } catch {
       // Fall back to memory check
     }
@@ -339,11 +341,7 @@ export class RedisTokenBlacklist implements ITokenBlacklist {
     const invalidBefore = Date.now();
 
     if (ttl > 0) {
-      await this.redis.setex(
-        `${this.prefix}user:${userId}`,
-        ttl,
-        invalidBefore.toString()
-      );
+      await this.redis.setex(`${this.prefix}user:${userId}`, ttl, invalidBefore.toString());
     }
   }
 
@@ -383,11 +381,15 @@ export function getTokenBlacklist(): ITokenBlacklist {
         tokenBlacklistInstance = new RedisTokenBlacklist(redisClient);
         logger.info('[TokenBlacklist] Using Redis-backed token blacklist');
       } catch {
-        logger.warn('[TokenBlacklist] Failed to initialize Redis, falling back to memory-based blacklist');
+        logger.warn(
+          '[TokenBlacklist] Failed to initialize Redis, falling back to memory-based blacklist'
+        );
         tokenBlacklistInstance = new MemoryTokenBlacklist();
       }
     } else {
-      logger.warn('[TokenBlacklist] REDIS_URL not configured, using memory-based blacklist (not suitable for production)');
+      logger.warn(
+        '[TokenBlacklist] REDIS_URL not configured, using memory-based blacklist (not suitable for production)'
+      );
       tokenBlacklistInstance = new MemoryTokenBlacklist();
     }
   }
@@ -410,7 +412,9 @@ export function setTokenBlacklist(blacklist: ITokenBlacklist): void {
 export function getTokenExpiration(token: string): Date | null {
   try {
     const parts = token.split('.');
-    if (parts.length !== 3) {return null;}
+    if (parts.length !== 3) {
+      return null;
+    }
 
     const payload = JSON.parse(Buffer.from(parts[1]!, 'base64url').toString('utf8'));
     if (payload.exp) {
@@ -430,7 +434,9 @@ export function getTokenExpiration(token: string): Date | null {
 export function getTokenIssuedAt(token: string): Date | null {
   try {
     const parts = token.split('.');
-    if (parts.length !== 3) {return null;}
+    if (parts.length !== 3) {
+      return null;
+    }
 
     const payload = JSON.parse(Buffer.from(parts[1]!, 'base64url').toString('utf8'));
     if (payload.iat) {

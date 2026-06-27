@@ -32,7 +32,7 @@ export class PermissionRepository {
    */
   async findById(id: string): Promise<Permission | null> {
     return this.prisma.permission.findUnique({
-      where: { id }
+      where: { id },
     });
   }
 
@@ -41,7 +41,7 @@ export class PermissionRepository {
    */
   async findByName(name: string): Promise<Permission | null> {
     return this.prisma.permission.findUnique({
-      where: { name }
+      where: { name },
     });
   }
 
@@ -50,7 +50,7 @@ export class PermissionRepository {
    */
   async findByResourceAction(resource: string, action: string): Promise<Permission | null> {
     return this.prisma.permission.findUnique({
-      where: { resource_action: { resource, action } }
+      where: { resource_action: { resource, action } },
     });
   }
 
@@ -65,14 +65,14 @@ export class PermissionRepository {
         OR: [
           { name: { contains: filters.search, mode: 'insensitive' } },
           { description: { contains: filters.search, mode: 'insensitive' } },
-          { resource: { contains: filters.search, mode: 'insensitive' } }
-        ]
+          { resource: { contains: filters.search, mode: 'insensitive' } },
+        ],
       }),
     };
 
     return this.prisma.permission.findMany({
       where,
-      orderBy: [{ resource: 'asc' }, { action: 'asc' }]
+      orderBy: [{ resource: 'asc' }, { action: 'asc' }],
     });
   }
 
@@ -82,7 +82,7 @@ export class PermissionRepository {
   async findByResource(resource: string): Promise<Permission[]> {
     return this.prisma.permission.findMany({
       where: { resource },
-      orderBy: { action: 'asc' }
+      orderBy: { action: 'asc' },
     });
   }
 
@@ -93,9 +93,9 @@ export class PermissionRepository {
     const resources = await this.prisma.permission.findMany({
       select: { resource: true },
       distinct: ['resource'],
-      orderBy: { resource: 'asc' }
+      orderBy: { resource: 'asc' },
     });
-    return resources.map(r => r.resource);
+    return resources.map((r) => r.resource);
   }
 
   /**
@@ -105,9 +105,9 @@ export class PermissionRepository {
     const actions = await this.prisma.permission.findMany({
       select: { action: true },
       distinct: ['action'],
-      orderBy: { action: 'asc' }
+      orderBy: { action: 'asc' },
     });
-    return actions.map(a => a.action);
+    return actions.map((a) => a.action);
   }
 
   /**
@@ -120,7 +120,7 @@ export class PermissionRepository {
         resource: data.resource,
         action: data.action,
         description: data.description,
-      }
+      },
     });
   }
 
@@ -130,7 +130,7 @@ export class PermissionRepository {
   async createMany(permissions: CreatePermissionDto[]): Promise<{ count: number }> {
     return this.prisma.permission.createMany({
       data: permissions,
-      skipDuplicates: true
+      skipDuplicates: true,
     });
   }
 
@@ -143,7 +143,7 @@ export class PermissionRepository {
       data: {
         ...(data.name && { name: data.name }),
         ...(data.description !== undefined && { description: data.description }),
-      }
+      },
     });
   }
 
@@ -152,7 +152,7 @@ export class PermissionRepository {
    */
   async delete(id: string): Promise<Permission> {
     return this.prisma.permission.delete({
-      where: { id }
+      where: { id },
     });
   }
 
@@ -164,7 +164,7 @@ export class PermissionRepository {
       where: {
         ...(filters.resource && { resource: filters.resource }),
         ...(filters.action && { action: filters.action }),
-      }
+      },
     });
   }
 
@@ -173,7 +173,7 @@ export class PermissionRepository {
    */
   async exists(resource: string, action: string): Promise<boolean> {
     const count = await this.prisma.permission.count({
-      where: { resource, action }
+      where: { resource, action },
     });
     return count > 0;
   }
@@ -185,7 +185,7 @@ export class PermissionRepository {
     const permissions = await this.findAll();
     const grouped: Record<string, Permission[]> = {};
 
-    permissions.forEach(permission => {
+    permissions.forEach((permission) => {
       if (!grouped[permission.resource]) {
         grouped[permission.resource] = [];
       }
@@ -198,12 +198,15 @@ export class PermissionRepository {
   /**
    * Seed default permissions for a resource
    */
-  async seedResourcePermissions(resource: string, actions = ['create', 'read', 'update', 'delete']): Promise<{ count: number }> {
-    const permissions = actions.map(action => ({
+  async seedResourcePermissions(
+    resource: string,
+    actions = ['create', 'read', 'update', 'delete']
+  ): Promise<{ count: number }> {
+    const permissions = actions.map((action) => ({
       name: `${resource}:${action}`,
       resource,
       action,
-      description: `Permission to ${action} ${resource}`
+      description: `Permission to ${action} ${resource}`,
     }));
 
     return this.createMany(permissions);
@@ -214,9 +217,21 @@ export class PermissionRepository {
    */
   async seedDefaults(): Promise<void> {
     const resources = [
-      'user', 'project', 'kitchen', 'product', 'appliance',
-      'material', 'catalog', 'order', 'partner', 'webhook',
-      'audit', 'role', 'permission', 'locale', 'notification'
+      'user',
+      'project',
+      'kitchen',
+      'product',
+      'appliance',
+      'material',
+      'catalog',
+      'order',
+      'partner',
+      'webhook',
+      'audit',
+      'role',
+      'permission',
+      'locale',
+      'notification',
     ];
 
     for (const resource of resources) {
@@ -225,8 +240,18 @@ export class PermissionRepository {
 
     // Add special permissions
     await this.createMany([
-      { name: 'admin:access', resource: 'admin', action: 'access', description: 'Access admin panel' },
-      { name: 'analytics:view', resource: 'analytics', action: 'view', description: 'View analytics' },
+      {
+        name: 'admin:access',
+        resource: 'admin',
+        action: 'access',
+        description: 'Access admin panel',
+      },
+      {
+        name: 'analytics:view',
+        resource: 'analytics',
+        action: 'view',
+        description: 'View analytics',
+      },
       { name: 'export:data', resource: 'export', action: 'data', description: 'Export data' },
       { name: 'import:data', resource: 'import', action: 'data', description: 'Import data' },
     ]);

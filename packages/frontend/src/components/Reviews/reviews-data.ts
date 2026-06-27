@@ -18,21 +18,16 @@
  * generated from the same array.
  */
 
-export type ReviewPlatform =
-  | 'g2'
-  | 'capterra'
-  | 'trustpilot'
-  | 'avis_verifies'
-  | 'google_business';
+export type ReviewPlatform = 'g2' | 'capterra' | 'trustpilot' | 'avis_verifies' | 'google_business';
 
 export interface Review {
   id: string;
   platform: ReviewPlatform;
   author: string;
   role?: string;
-  rating: number;        // 1–5
-  date: string;          // ISO date
-  body: string;          // 50–300 chars
+  rating: number; // 1–5
+  date: string; // ISO date
+  body: string; // 50–300 chars
   /** Public profile URL on the source platform, when available. */
   sourceUrl?: string;
   /** Set if the user is a paying customer — surfaced as a small badge. */
@@ -91,7 +86,9 @@ export function fetchExternalReviews(): Promise<Review[]> {
 
 /** Average rating across the provided pool — null if pool is empty. */
 export function aggregateRating(reviews: Review[]): { average: number; count: number } | null {
-  if (reviews.length === 0) {return null;}
+  if (reviews.length === 0) {
+    return null;
+  }
   const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
   return {
     average: Math.round((sum / reviews.length) * 10) / 10, // 1 decimal

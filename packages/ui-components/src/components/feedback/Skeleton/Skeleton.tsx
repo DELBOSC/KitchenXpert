@@ -101,12 +101,7 @@ const BaseSkeleton = styled.div<{
         right: 0;
         bottom: 0;
         left: 0;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.4),
-          transparent
-        );
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
         animation: ${waveAnimation} 1.6s linear 0.5s infinite;
       }
     `}

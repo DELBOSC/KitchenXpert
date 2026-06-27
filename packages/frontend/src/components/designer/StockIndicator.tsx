@@ -7,7 +7,13 @@ import type { TFunction } from 'i18next';
 // Types
 // ----------------------------------------------------------------
 
-export type StockStatus = 'in_stock' | 'low_stock' | 'out_of_stock' | 'backordered' | 'discontinued' | 'checking';
+export type StockStatus =
+  | 'in_stock'
+  | 'low_stock'
+  | 'out_of_stock'
+  | 'backordered'
+  | 'discontinued'
+  | 'checking';
 
 export interface StockIndicatorProps {
   status: StockStatus;
@@ -24,7 +30,7 @@ export interface StockIndicatorProps {
 function getStatusConfig(
   status: StockStatus,
   t: TFunction,
-  quantity?: number,
+  quantity?: number
 ): {
   dotColor: string;
   darkDotColor: string;
@@ -45,9 +51,13 @@ function getStatusConfig(
       return {
         dotColor: 'bg-yellow-500',
         darkDotColor: 'dark:bg-yellow-400',
-        label: quantity != null
-          ? t('stock.lowStockQty', { count: quantity, defaultValue: 'Low stock ({{count}} left)' })
-          : t('stock.lowStock', 'Low stock'),
+        label:
+          quantity != null
+            ? t('stock.lowStockQty', {
+                count: quantity,
+                defaultValue: 'Low stock ({{count}} left)',
+              })
+            : t('stock.lowStock', 'Low stock'),
         textColor: 'text-yellow-700',
         darkTextColor: 'dark:text-yellow-300',
       };

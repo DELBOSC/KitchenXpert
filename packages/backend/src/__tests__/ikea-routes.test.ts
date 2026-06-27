@@ -18,7 +18,12 @@ import request from 'supertest';
 jest.mock('../utils/logger', () => ({
   __esModule: true,
   default: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
-  createModuleLogger: jest.fn(() => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() })),
+  createModuleLogger: jest.fn(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  })),
 }));
 
 jest.mock('../database/client', () => ({
@@ -40,7 +45,10 @@ const mockIkeaClient: any = {
   }),
   getProducts: jest.fn().mockResolvedValue({
     success: true,
-    data: [{ id: 'ikea-1', name: 'METOD' }, { id: 'ikea-2', name: 'KALLARP' }],
+    data: [
+      { id: 'ikea-1', name: 'METOD' },
+      { id: 'ikea-2', name: 'KALLARP' },
+    ],
   }),
   getStock: jest.fn().mockResolvedValue({
     success: true,
@@ -70,7 +78,10 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'user@test.com', role: 'user' };
     next();
@@ -111,7 +122,10 @@ describe('IKEA Routes', () => {
     });
     mockIkeaClient.getProducts.mockResolvedValue({
       success: true,
-      data: [{ id: 'ikea-1', name: 'METOD' }, { id: 'ikea-2', name: 'KALLARP' }],
+      data: [
+        { id: 'ikea-1', name: 'METOD' },
+        { id: 'ikea-2', name: 'KALLARP' },
+      ],
     });
     mockIkeaClient.getStock.mockResolvedValue({
       success: true,
@@ -127,9 +141,7 @@ describe('IKEA Routes', () => {
 
   describe('GET /ikea/search', () => {
     it('should search IKEA products with query', async () => {
-      const response = await request(app)
-        .get('/ikea/search?q=METOD')
-        .expect(200);
+      const response = await request(app).get('/ikea/search?q=METOD').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockIkeaClient.search).toHaveBeenCalledWith(
@@ -138,9 +150,7 @@ describe('IKEA Routes', () => {
     });
 
     it('should return 400 when query parameter is missing', async () => {
-      const response = await request(app)
-        .get('/ikea/search')
-        .expect(400);
+      const response = await request(app).get('/ikea/search').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.code).toBe('MISSING_QUERY');
@@ -148,9 +158,7 @@ describe('IKEA Routes', () => {
 
     it('should return 401 when not authenticated', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .get('/ikea/search?q=METOD')
-        .expect(401);
+      const response = await request(app).get('/ikea/search?q=METOD').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -158,9 +166,7 @@ describe('IKEA Routes', () => {
 
   describe('GET /ikea/products/:itemCode', () => {
     it('should return product details by item code', async () => {
-      const response = await request(app)
-        .get('/ikea/products/123.456.78')
-        .expect(200);
+      const response = await request(app).get('/ikea/products/123.456.78').expect(200);
       expect(response.body.success).toBe(true);
       expect(mockIkeaClient.getProduct).toHaveBeenCalledWith('123.456.78');
     });
@@ -171,9 +177,7 @@ describe('IKEA Routes', () => {
         error: 'Product not found',
       });
 
-      const response = await request(app)
-        .get('/ikea/products/000.000.00')
-        .expect(404);
+      const response = await request(app).get('/ikea/products/000.000.00').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -191,10 +195,7 @@ describe('IKEA Routes', () => {
     });
 
     it('should return 400 when itemCodes array is missing', async () => {
-      const response = await request(app)
-        .post('/ikea/products')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/ikea/products').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error.code).toBe('MISSING_ITEMS');

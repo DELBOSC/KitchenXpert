@@ -85,7 +85,11 @@ test.describe('Connexion (Login)', () => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ success: true, data: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } }),
+        body: JSON.stringify({
+          success: true,
+          data: [],
+          pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
+        }),
       })
     );
 
@@ -189,7 +193,11 @@ test.describe('Connexion (Login)', () => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ success: true, data: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } }),
+        body: JSON.stringify({
+          success: true,
+          data: [],
+          pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
+        }),
       })
     );
 
@@ -200,9 +208,7 @@ test.describe('Connexion (Login)', () => {
   });
 
   test('should handle network error gracefully', async ({ page }) => {
-    await page.route('**/api/v1/auth/login', (route) =>
-      route.abort('connectionrefused')
-    );
+    await page.route('**/api/v1/auth/login', (route) => route.abort('connectionrefused'));
 
     await page.goto('/login');
 

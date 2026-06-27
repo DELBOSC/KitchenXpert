@@ -99,14 +99,20 @@ let mockAuthenticated = true;
 jest.mock('../api/middleware/auth-middleware', () => ({
   authenticate: (req: any, res: any, next: any) => {
     if (!mockAuthenticated) {
-      return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } });
+      return res.status(401).json({
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Authentication required' },
+      });
     }
     req.user = { userId: 'test-user-1', email: 'admin@test.com', role: mockUserRole };
     next();
   },
   authorize: (roles: string[]) => (req: any, res: any, next: any) => {
     if (!roles.includes(req.user?.role)) {
-      return res.status(403).json({ success: false, error: { code: 'FORBIDDEN', message: 'Insufficient permissions' } });
+      return res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'Insufficient permissions' },
+      });
     }
     next();
   },
@@ -139,9 +145,7 @@ describe('Admin Routes', () => {
 
   describe('GET /admin/dashboard', () => {
     it('should return dashboard data for admin users', async () => {
-      const response = await request(app)
-        .get('/admin/dashboard')
-        .expect(200);
+      const response = await request(app).get('/admin/dashboard').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('totalUsers');
@@ -150,18 +154,14 @@ describe('Admin Routes', () => {
 
     it('should return 401 when not authenticated', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .get('/admin/dashboard')
-        .expect(401);
+      const response = await request(app).get('/admin/dashboard').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 403 for non-admin users', async () => {
       mockUserRole = 'user';
-      const response = await request(app)
-        .get('/admin/dashboard')
-        .expect(403);
+      const response = await request(app).get('/admin/dashboard').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -169,9 +169,7 @@ describe('Admin Routes', () => {
 
   describe('GET /admin/users', () => {
     it('should return paginated users list for admin', async () => {
-      const response = await request(app)
-        .get('/admin/users')
-        .expect(200);
+      const response = await request(app).get('/admin/users').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
@@ -180,18 +178,14 @@ describe('Admin Routes', () => {
 
     it('should return 403 for non-admin users', async () => {
       mockUserRole = 'user';
-      const response = await request(app)
-        .get('/admin/users')
-        .expect(403);
+      const response = await request(app).get('/admin/users').expect(403);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 when not authenticated', async () => {
       mockAuthenticated = false;
-      const response = await request(app)
-        .get('/admin/users')
-        .expect(401);
+      const response = await request(app).get('/admin/users').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -221,9 +215,7 @@ describe('Admin Routes', () => {
 
   describe('GET /admin/reports/usage', () => {
     it('should return usage report for admin', async () => {
-      const response = await request(app)
-        .get('/admin/reports/usage')
-        .expect(200);
+      const response = await request(app).get('/admin/reports/usage').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(mockAdminController.getUsageReport).toHaveBeenCalled();

@@ -23,7 +23,7 @@ const STANDARD_DIMENSIONS = {
   standardIslandWidth: 42,
   minimumIslandWidth: 24,
   seatingDepth: 24,
-  barStoolWidth: 24
+  barStoolWidth: 24,
 };
 
 /**
@@ -31,9 +31,24 @@ const STANDARD_DIMENSIONS = {
  */
 const SIZE_CATEGORIES = {
   small: { minSqFt: 0, maxSqFt: 100, label: 'Small', recommendations: ['one-wall', 'galley'] },
-  medium: { minSqFt: 100, maxSqFt: 150, label: 'Medium', recommendations: ['l-shaped', 'galley', 'peninsula'] },
-  large: { minSqFt: 150, maxSqFt: 250, label: 'Large', recommendations: ['l-shaped', 'u-shaped', 'island'] },
-  'very-large': { minSqFt: 250, maxSqFt: 1000, label: 'Very Large', recommendations: ['island', 'u-shaped', 'multiple-zones'] }
+  medium: {
+    minSqFt: 100,
+    maxSqFt: 150,
+    label: 'Medium',
+    recommendations: ['l-shaped', 'galley', 'peninsula'],
+  },
+  large: {
+    minSqFt: 150,
+    maxSqFt: 250,
+    label: 'Large',
+    recommendations: ['l-shaped', 'u-shaped', 'island'],
+  },
+  'very-large': {
+    minSqFt: 250,
+    maxSqFt: 1000,
+    label: 'Very Large',
+    recommendations: ['island', 'u-shaped', 'multiple-zones'],
+  },
 };
 
 /**
@@ -41,11 +56,11 @@ const SIZE_CATEGORIES = {
  */
 const LAYOUT_REQUIREMENTS = {
   'one-wall': { minLength: 8, minWidth: 6, minSqFt: 48 },
-  'galley': { minLength: 8, minWidth: 7, minSqFt: 56 },
+  galley: { minLength: 8, minWidth: 7, minSqFt: 56 },
   'l-shaped': { minLength: 10, minWidth: 10, minSqFt: 100 },
   'u-shaped': { minLength: 10, minWidth: 10, minSqFt: 100 },
-  'peninsula': { minLength: 10, minWidth: 10, minSqFt: 100 },
-  'island': { minLength: 12, minWidth: 12, minSqFt: 144 }
+  peninsula: { minLength: 10, minWidth: 10, minSqFt: 100 },
+  island: { minLength: 12, minWidth: 12, minSqFt: 144 },
 };
 
 /**
@@ -64,7 +79,7 @@ function calculateSquareFootage(length, width, unit = 'ft') {
     sqFt: Math.round(lengthFt * widthFt),
     sqM: Math.round(lengthFt * widthFt * 0.0929 * 100) / 100,
     lengthFt: Math.round(lengthFt * 100) / 100,
-    widthFt: Math.round(widthFt * 100) / 100
+    widthFt: Math.round(widthFt * 100) / 100,
   };
 }
 
@@ -77,14 +92,14 @@ function determineKitchenSize(sqFt) {
       return {
         category,
         label: config.label,
-        recommendedLayouts: config.recommendations
+        recommendedLayouts: config.recommendations,
       };
     }
   }
   return {
     category: 'large',
     label: 'Large',
-    recommendedLayouts: SIZE_CATEGORIES.large.recommendations
+    recommendedLayouts: SIZE_CATEGORIES.large.recommendations,
   };
 }
 
@@ -105,7 +120,7 @@ function checkLayoutFeasibility(length, width, desiredLayout) {
     feasible = false;
     warnings.push({
       code: 'INSUFFICIENT_AREA',
-      message: `This layout typically requires at least ${requirements.minSqFt} sq ft. Your space is ${sqFt} sq ft.`
+      message: `This layout typically requires at least ${requirements.minSqFt} sq ft. Your space is ${sqFt} sq ft.`,
     });
   }
 
@@ -113,7 +128,7 @@ function checkLayoutFeasibility(length, width, desiredLayout) {
     feasible = false;
     warnings.push({
       code: 'INSUFFICIENT_LENGTH',
-      message: `This layout needs at least ${requirements.minLength} ft in one dimension.`
+      message: `This layout needs at least ${requirements.minLength} ft in one dimension.`,
     });
   }
 
@@ -121,7 +136,7 @@ function checkLayoutFeasibility(length, width, desiredLayout) {
     feasible = false;
     warnings.push({
       code: 'INSUFFICIENT_WIDTH',
-      message: `This layout needs at least ${requirements.minWidth} ft width.`
+      message: `This layout needs at least ${requirements.minWidth} ft width.`,
     });
   }
 
@@ -132,7 +147,7 @@ function checkLayoutFeasibility(length, width, desiredLayout) {
       warnings.push({
         code: 'ISLAND_TOO_TIGHT',
         message: 'An island may make the space feel cramped. Consider a peninsula instead.',
-        severity: 'warning'
+        severity: 'warning',
       });
     }
   }
@@ -148,15 +163,15 @@ function calculateIslandOptions(length, width, desiredIslandType) {
   const minClearance = STANDARD_DIMENSIONS.minimumIslandClearance / 12;
 
   // Available space for island
-  const availableLength = length - (2 * clearance);
-  const availableWidth = width - (2 * clearance);
+  const availableLength = length - 2 * clearance;
+  const availableWidth = width - 2 * clearance;
 
   const result = {
     canFitIsland: false,
     canFitIslandWithMinClearance: false,
     recommendedIslandSize: null,
     seatingCapacity: 0,
-    recommendations: []
+    recommendations: [],
   };
 
   // Check if island fits with standard clearance
@@ -170,7 +185,7 @@ function calculateIslandOptions(length, width, desiredIslandType) {
     result.recommendedIslandSize = {
       length: Math.round(maxIslandLength * 10) / 10,
       width: Math.round(maxIslandWidth * 10) / 10,
-      unit: 'ft'
+      unit: 'ft',
     };
 
     // Calculate seating
@@ -182,7 +197,8 @@ function calculateIslandOptions(length, width, desiredIslandType) {
     result.canFitIslandWithMinClearance = true;
     result.recommendations.push({
       type: 'warning',
-      message: 'An island is possible but will have minimum clearance. Consider a smaller or mobile island.'
+      message:
+        'An island is possible but will have minimum clearance. Consider a smaller or mobile island.',
     });
   }
 
@@ -190,7 +206,7 @@ function calculateIslandOptions(length, width, desiredIslandType) {
   if (!result.canFitIsland) {
     result.recommendations.push({
       type: 'alternative',
-      message: 'Consider a peninsula or mobile cart for additional workspace.'
+      message: 'Consider a peninsula or mobile cart for additional workspace.',
     });
   }
 
@@ -218,22 +234,26 @@ function calculateWorkTriangle(sinkPos, stovePos, fridgePos) {
     legs: {
       sinkToStove: Math.round(sinkToStove * 10) / 10,
       stoveToFridge: Math.round(stoveToFridge * 10) / 10,
-      fridgeToSink: Math.round(fridgeToSink * 10) / 10
+      fridgeToSink: Math.round(fridgeToSink * 10) / 10,
     },
     efficiency: 'optimal',
     score: 100,
-    recommendations: []
+    recommendations: [],
   };
 
   // Check against standards
   if (totalInches < STANDARD_DIMENSIONS.workTriangleMin) {
     result.efficiency = 'too-compact';
     result.score = 70;
-    result.recommendations.push('Work triangle is too compact. Consider spreading appliances further apart.');
+    result.recommendations.push(
+      'Work triangle is too compact. Consider spreading appliances further apart.'
+    );
   } else if (totalInches > STANDARD_DIMENSIONS.workTriangleMax) {
     result.efficiency = 'too-spread';
     result.score = 60;
-    result.recommendations.push('Work triangle is too spread out. You\'ll walk more than necessary.');
+    result.recommendations.push(
+      "Work triangle is too spread out. You'll walk more than necessary."
+    );
   }
 
   // Check individual legs
@@ -263,11 +283,11 @@ function calculateStorageCapacity(layout, dimensions, ceilingHeight) {
   // Base cabinet linear feet by layout
   const cabinetLinearFeet = {
     'one-wall': length,
-    'galley': length * 2,
+    galley: length * 2,
     'l-shaped': length + width,
-    'u-shaped': length + (width * 2),
-    'peninsula': length + width + 3,
-    'island': length + width + 4
+    'u-shaped': length + width * 2,
+    peninsula: length + width + 3,
+    island: length + width + 4,
   };
 
   const linearFeet = cabinetLinearFeet[layout] || length;
@@ -285,9 +305,9 @@ function calculateStorageCapacity(layout, dimensions, ceilingHeight) {
     linearCabinetFeet: Math.round(linearFeet),
     baseCabinetStorage: Math.round(baseCabinetCuFt),
     upperCabinetStorage: Math.round(upperCabinetCuFt * ceilingMultiplier),
-    totalStorage: Math.round(baseCabinetCuFt + (upperCabinetCuFt * ceilingMultiplier)),
+    totalStorage: Math.round(baseCabinetCuFt + upperCabinetCuFt * ceilingMultiplier),
     unit: 'cubic feet',
-    storageLevel: sqFt > 200 ? 'high' : sqFt > 120 ? 'medium' : 'limited'
+    storageLevel: sqFt > 200 ? 'high' : sqFt > 120 ? 'medium' : 'limited',
   };
 }
 
@@ -303,7 +323,7 @@ function generateLayoutRecommendations(params) {
     islandPreference,
     structuralConstraints,
     openConcept,
-    storageNeeds
+    storageNeeds,
   } = params;
 
   const recommendations = [];
@@ -322,7 +342,7 @@ function generateLayoutRecommendations(params) {
         id: 'layout-alternative',
         priority: 'high',
         title: 'Consider Alternative Layout',
-        description: `Your desired ${desiredLayout} layout may not fit well. Consider: ${SIZE_CATEGORIES[kitchenSize]?.recommendations.join(', ')}`
+        description: `Your desired ${desiredLayout} layout may not fit well. Consider: ${SIZE_CATEGORIES[kitchenSize]?.recommendations.join(', ')}`,
       });
     }
   }
@@ -342,7 +362,7 @@ function generateLayoutRecommendations(params) {
         id: 'island-alternative',
         priority: 'medium',
         title: 'Island Alternatives',
-        description: 'Consider a peninsula or mobile cart instead of a fixed island.'
+        description: 'Consider a peninsula or mobile cart instead of a fixed island.',
       });
     }
   }
@@ -354,7 +374,8 @@ function generateLayoutRecommendations(params) {
         id: 'structural-review',
         priority: 'high',
         title: 'Structural Review Needed',
-        description: 'Opening up the kitchen may require structural engineering review and beam installation.'
+        description:
+          'Opening up the kitchen may require structural engineering review and beam installation.',
       });
     }
 
@@ -363,7 +384,7 @@ function generateLayoutRecommendations(params) {
         id: 'plumbing-consideration',
         priority: 'medium',
         title: 'Plumbing Constraints',
-        description: 'Keep sink near existing plumbing to minimize relocation costs.'
+        description: 'Keep sink near existing plumbing to minimize relocation costs.',
       });
     }
   }
@@ -374,14 +395,14 @@ function generateLayoutRecommendations(params) {
       id: 'maximize-storage',
       priority: 'medium',
       title: 'Maximize Storage',
-      description: 'Consider tall pantry cabinets, pull-outs, and upper cabinets to ceiling.'
+      description: 'Consider tall pantry cabinets, pull-outs, and upper cabinets to ceiling.',
     });
   }
 
   return {
     recommendations,
     feasibility,
-    optimalLayouts: SIZE_CATEGORIES[kitchenSize]?.recommendations || ['l-shaped']
+    optimalLayouts: SIZE_CATEGORIES[kitchenSize]?.recommendations || ['l-shaped'],
   };
 }
 
@@ -395,7 +416,7 @@ function convertUnits(value, fromUnit, toUnit) {
     'in-cm': value * 2.54,
     'cm-in': value / 2.54,
     'sqft-sqm': value * 0.0929,
-    'sqm-sqft': value / 0.0929
+    'sqm-sqft': value / 0.0929,
   };
 
   const key = `${fromUnit}-${toUnit}`;
@@ -413,5 +434,5 @@ module.exports = {
   convertUnits,
   STANDARD_DIMENSIONS,
   SIZE_CATEGORIES,
-  LAYOUT_REQUIREMENTS
+  LAYOUT_REQUIREMENTS,
 };

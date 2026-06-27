@@ -311,7 +311,9 @@ function seedAsJson() {
   log.info(`Total users: ${users.length}`);
   log.info('');
   log.info('User breakdown:');
-  log.info(`  - Admins: ${users.filter((u) => u.role === 'admin' || u.role === 'superadmin').length}`);
+  log.info(
+    `  - Admins: ${users.filter((u) => u.role === 'admin' || u.role === 'superadmin').length}`
+  );
   log.info(`  - Partners: ${users.filter((u) => u.role === 'partner').length}`);
   log.info(`  - Customers: ${users.filter((u) => u.role === 'customer').length}`);
   log.info(`  - Designers: ${users.filter((u) => u.role === 'designer').length}`);

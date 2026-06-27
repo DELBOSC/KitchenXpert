@@ -101,9 +101,14 @@ export async function getRedisClient(): Promise<RedisClientType> {
       connectionFailed = true;
       pendingConnect = null;
       const message = err instanceof Error ? err.message : String(err);
-      logger.warn('[Redis] Connect failed; circuit open', { error: message, cooldownMs: COOLDOWN_MS });
+      logger.warn('[Redis] Connect failed; circuit open', {
+        error: message,
+        cooldownMs: COOLDOWN_MS,
+      });
       // node-redis keeps its own reconnect loop alive on the client; force-stop it.
-      void client.disconnect().catch(() => { /* swallow */ });
+      void client.disconnect().catch(() => {
+        /* swallow */
+      });
       redisClient = null;
       throw err;
     }
@@ -156,7 +161,9 @@ export function resetRedisConnection(): void {
  */
 async function getSafeClient(): Promise<RedisClientType | null> {
   // Fast paths: sticky failure flag, or circuit open. Both avoid the 8s reconnect cycle.
-  if (connectionFailed && circuitOpenUntil > Date.now()) {return null;}
+  if (connectionFailed && circuitOpenUntil > Date.now()) {
+    return null;
+  }
 
   try {
     return await getRedisClient();
@@ -175,7 +182,9 @@ async function getSafeClient(): Promise<RedisClientType | null> {
  */
 export async function cacheGet<T>(key: string): Promise<T | null> {
   const client = await getSafeClient();
-  if (!client) {return null;}
+  if (!client) {
+    return null;
+  }
 
   try {
     const value = await client.get(`${KEY_PREFIX}${key}`);
@@ -190,9 +199,15 @@ export async function cacheGet<T>(key: string): Promise<T | null> {
 /**
  * Set a value in Redis cache with TTL (in seconds)
  */
-export async function cacheSet(key: string, value: unknown, ttlSeconds: number = 3600): Promise<boolean> {
+export async function cacheSet(
+  key: string,
+  value: unknown,
+  ttlSeconds: number = 3600
+): Promise<boolean> {
   const client = await getSafeClient();
-  if (!client) {return false;}
+  if (!client) {
+    return false;
+  }
 
   try {
     await client.setEx(`${KEY_PREFIX}${key}`, ttlSeconds, JSON.stringify(value));
@@ -209,7 +224,9 @@ export async function cacheSet(key: string, value: unknown, ttlSeconds: number =
  */
 export async function cacheDel(...keys: string[]): Promise<number> {
   const client = await getSafeClient();
-  if (!client) {return 0;}
+  if (!client) {
+    return 0;
+  }
 
   try {
     const prefixedKeys = keys.map((k) => `${KEY_PREFIX}${k}`);

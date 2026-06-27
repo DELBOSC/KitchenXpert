@@ -223,9 +223,7 @@ export function fatal(message: string, ...args: unknown[]): void {
  * @returns A logger object
  */
 export function createLogger(prefix: string) {
-  const childPrefix = currentConfig.prefix
-    ? `${currentConfig.prefix}:${prefix}`
-    : prefix;
+  const childPrefix = currentConfig.prefix ? `${currentConfig.prefix}:${prefix}` : prefix;
 
   return {
     trace: (message: string, ...args: unknown[]) => {

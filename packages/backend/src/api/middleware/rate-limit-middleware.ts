@@ -245,7 +245,7 @@ export const renovationAnalysisRateLimiter: RateLimitRequestHandler = rateLimit(
   max: 10,
   message: {
     success: false,
-    error: { code: 'RATE_LIMIT', message: 'Trop d\'analyses. Réessayez dans une heure.' },
+    error: { code: 'RATE_LIMIT', message: "Trop d'analyses. Réessayez dans une heure." },
   },
 });
 
@@ -264,8 +264,10 @@ export const aiUnauthRateLimiter: RateLimitRequestHandler = rateLimit({
   max: 5,
   keyGenerator: (req: Request): string => req.ip || req.socket.remoteAddress || 'unknown',
   skip: (req: Request): boolean => {
-    if (skipFunction(req)) {return true;}          // /health + INTERNAL_API_KEY
-    return Boolean(req.user?.userId);            // logged-in user → use aiRateLimiter
+    if (skipFunction(req)) {
+      return true;
+    } // /health + INTERNAL_API_KEY
+    return Boolean(req.user?.userId); // logged-in user → use aiRateLimiter
   },
   message: 'AI usage limit reached — sign in to continue using the assistant',
 });

@@ -6,7 +6,10 @@
 
 import crypto from 'crypto';
 
-import nodemailer, { type Transporter , type SendMailOptions as NodemailerOptions } from 'nodemailer';
+import nodemailer, {
+  type Transporter,
+  type SendMailOptions as NodemailerOptions,
+} from 'nodemailer';
 
 import {
   welcomeEmail,
@@ -120,11 +123,7 @@ export class MailServiceError extends Error {
   public readonly code: string;
   public override readonly cause?: Error;
 
-  constructor(
-    code: string,
-    message: string,
-    cause?: Error
-  ) {
+  constructor(code: string, message: string, cause?: Error) {
     super(message);
     this.name = 'MailServiceError';
     this.code = code;
@@ -144,16 +143,20 @@ function getDefaultConfig(): MailServiceConfig {
       email: mailConfig?.from || 'noreply@kitchenxpert.com',
       name: 'KitchenXpert',
     },
-    smtp: mailConfig?.smtp ? {
-      host: mailConfig.smtp.host || '',
-      port: mailConfig.smtp.port || 587,
-      secure: mailConfig.smtp.secure || false,
-      user: mailConfig.smtp.user || '',
-      pass: mailConfig.smtp.pass || '',
-    } : undefined,
-    sendgrid: mailConfig?.sendgrid ? {
-      apiKey: mailConfig.sendgrid.apiKey || '',
-    } : undefined,
+    smtp: mailConfig?.smtp
+      ? {
+          host: mailConfig.smtp.host || '',
+          port: mailConfig.smtp.port || 587,
+          secure: mailConfig.smtp.secure || false,
+          user: mailConfig.smtp.user || '',
+          pass: mailConfig.smtp.pass || '',
+        }
+      : undefined,
+    sendgrid: mailConfig?.sendgrid
+      ? {
+          apiKey: mailConfig.sendgrid.apiKey || '',
+        }
+      : undefined,
     templates: {},
   };
 }
@@ -190,7 +193,7 @@ function createSmtpTransport(smtpConfig: NonNullable<MailServiceConfig['smtp']>)
 
       try {
         const recipients = Array.isArray(options.to) ? options.to : [options.to];
-        const toAddresses = recipients.map(r => r.name ? `"${r.name}" <${r.email}>` : r.email);
+        const toAddresses = recipients.map((r) => (r.name ? `"${r.name}" <${r.email}>` : r.email));
 
         const mailOptions: NodemailerOptions = {
           from: from.name ? `"${from.name}" <${from.email}>` : from.email,
@@ -198,15 +201,15 @@ function createSmtpTransport(smtpConfig: NonNullable<MailServiceConfig['smtp']>)
           subject: options.subject,
           html: options.html,
           text: options.text,
-          attachments: options.attachments?.map(att => ({
+          attachments: options.attachments?.map((att) => ({
             filename: att.filename,
             content: att.content,
             contentType: att.contentType,
             cid: att.cid,
             path: att.path,
           })),
-          cc: options.cc?.map(r => r.name ? `"${r.name}" <${r.email}>` : r.email).join(', '),
-          bcc: options.bcc?.map(r => r.name ? `"${r.name}" <${r.email}>` : r.email).join(', '),
+          cc: options.cc?.map((r) => (r.name ? `"${r.name}" <${r.email}>` : r.email)).join(', '),
+          bcc: options.bcc?.map((r) => (r.name ? `"${r.name}" <${r.email}>` : r.email)).join(', '),
           replyTo: options.replyTo?.name
             ? `"${options.replyTo.name}" <${options.replyTo.email}>`
             : options.replyTo?.email,
@@ -269,7 +272,9 @@ function createSmtpTransport(smtpConfig: NonNullable<MailServiceConfig['smtp']>)
 /**
  * Create SendGrid transport
  */
-function createSendGridTransport(sendgridConfig: NonNullable<MailServiceConfig['sendgrid']>): MailTransport {
+function createSendGridTransport(
+  sendgridConfig: NonNullable<MailServiceConfig['sendgrid']>
+): MailTransport {
   // Dynamic import for SendGrid to make it optional
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let sgMailClient: any = null;
@@ -301,16 +306,18 @@ function createSendGridTransport(sendgridConfig: NonNullable<MailServiceConfig['
         const recipients = Array.isArray(options.to) ? options.to : [options.to];
 
         const msg = {
-          to: recipients.map(r => ({ email: r.email, name: r.name })),
+          to: recipients.map((r) => ({ email: r.email, name: r.name })),
           from: { email: from.email, name: from.name },
           subject: options.subject || '',
           html: options.html,
           text: options.text,
-          cc: options.cc?.map(r => ({ email: r.email, name: r.name })),
-          bcc: options.bcc?.map(r => ({ email: r.email, name: r.name })),
-          replyTo: options.replyTo ? { email: options.replyTo.email, name: options.replyTo.name } : undefined,
+          cc: options.cc?.map((r) => ({ email: r.email, name: r.name })),
+          bcc: options.bcc?.map((r) => ({ email: r.email, name: r.name })),
+          replyTo: options.replyTo
+            ? { email: options.replyTo.email, name: options.replyTo.name }
+            : undefined,
           headers: options.headers,
-          attachments: options.attachments?.map(att => ({
+          attachments: options.attachments?.map((att) => ({
             filename: att.filename,
             content: typeof att.content === 'string' ? att.content : att.content.toString('base64'),
             type: att.contentType,
@@ -326,7 +333,7 @@ function createSendGridTransport(sendgridConfig: NonNullable<MailServiceConfig['
 
         logger.info('Email sent via SendGrid', {
           messageId,
-          to: recipients.map(r => r.email),
+          to: recipients.map((r) => r.email),
           subject: options.subject,
           statusCode: response.statusCode,
           duration,
@@ -374,23 +381,29 @@ function createConsoleTransport(): MailTransport {
   return {
     async send(options: SendMailOptions, from: MailAddress): Promise<SendMailResult> {
       const recipients = Array.isArray(options.to) ? options.to : [options.to];
-      const toStr = recipients.map(r => r.name ? `${r.name} <${r.email}>` : r.email).join(', ');
+      const toStr = recipients.map((r) => (r.name ? `${r.name} <${r.email}>` : r.email)).join(', ');
       const messageId = `console-${crypto.randomBytes(12).toString('base64url')}`;
 
-      logger.info(`\n${  '='.repeat(70)}`);
+      logger.info(`\n${'='.repeat(70)}`);
       logger.info('[MAIL SERVICE - DEVELOPMENT MODE]');
       logger.info('='.repeat(70));
       logger.info(`Message ID: ${messageId}`);
       logger.info(`From:       ${from.name ? `${from.name} <${from.email}>` : from.email}`);
       logger.info(`To:         ${toStr}`);
       if (options.cc?.length) {
-        logger.info(`CC:         ${options.cc.map(r => r.name ? `${r.name} <${r.email}>` : r.email).join(', ')}`);
+        logger.info(
+          `CC:         ${options.cc.map((r) => (r.name ? `${r.name} <${r.email}>` : r.email)).join(', ')}`
+        );
       }
       if (options.bcc?.length) {
-        logger.info(`BCC:        ${options.bcc.map(r => r.name ? `${r.name} <${r.email}>` : r.email).join(', ')}`);
+        logger.info(
+          `BCC:        ${options.bcc.map((r) => (r.name ? `${r.name} <${r.email}>` : r.email)).join(', ')}`
+        );
       }
       if (options.replyTo) {
-        logger.info(`Reply-To:   ${options.replyTo.name ? `${options.replyTo.name} <${options.replyTo.email}>` : options.replyTo.email}`);
+        logger.info(
+          `Reply-To:   ${options.replyTo.name ? `${options.replyTo.name} <${options.replyTo.email}>` : options.replyTo.email}`
+        );
       }
       logger.info(`Subject:    ${options.subject}`);
       logger.info('-'.repeat(70));
@@ -404,25 +417,26 @@ function createConsoleTransport(): MailTransport {
       if (options.html) {
         logger.info('HTML BODY:');
         // Log a truncated version in dev mode
-        const htmlPreview = options.html.length > 1000
-          ? `${options.html.substring(0, 1000)  }\n... [truncated]`
-          : options.html;
+        const htmlPreview =
+          options.html.length > 1000
+            ? `${options.html.substring(0, 1000)}\n... [truncated]`
+            : options.html;
         logger.info(htmlPreview);
       }
 
       if (options.attachments?.length) {
         logger.info('-'.repeat(70));
         logger.info('ATTACHMENTS:');
-        options.attachments.forEach(att => {
+        options.attachments.forEach((att) => {
           logger.info(`  - ${att.filename} (${att.contentType || 'unknown type'})`);
         });
       }
 
-      logger.info(`${'='.repeat(70)  }\n`);
+      logger.info(`${'='.repeat(70)}\n`);
 
       logger.info('Email logged to console (development mode)', {
         messageId,
-        to: recipients.map(r => r.email),
+        to: recipients.map((r) => r.email),
         subject: options.subject,
       });
 
@@ -500,7 +514,10 @@ export class MailService {
     }
 
     if (!options.html && !options.text && !options.template) {
-      throw new MailServiceError('INVALID_OPTIONS', 'Email must have content (html, text, or template)');
+      throw new MailServiceError(
+        'INVALID_OPTIONS',
+        'Email must have content (html, text, or template)'
+      );
     }
 
     return this.transport.send(options, this.config.from);
@@ -571,7 +588,10 @@ export class MailService {
   /**
    * Send order confirmation email
    */
-  async sendOrderConfirmation(to: MailAddress, orderDetails: OrderDetails): Promise<SendMailResult> {
+  async sendOrderConfirmation(
+    to: MailAddress,
+    orderDetails: OrderDetails
+  ): Promise<SendMailResult> {
     return this.send({
       to,
       subject: `Commande confirmee #${orderDetails.orderNumber} - KitchenXpert`,
@@ -595,7 +615,12 @@ export class MailService {
     return this.send({
       to,
       subject: `${data.ownerName} a partage un projet avec vous - KitchenXpert`,
-      html: projectSharedEmail(data.recipientName, data.ownerName, data.projectName, data.projectUrl),
+      html: projectSharedEmail(
+        data.recipientName,
+        data.ownerName,
+        data.projectName,
+        data.projectUrl
+      ),
     });
   }
 

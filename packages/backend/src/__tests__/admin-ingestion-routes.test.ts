@@ -30,10 +30,19 @@ jest.mock('../repositories/product-repository', () => ({
 
 // Strategy renvoyée par l'orchestrateur : 1 produit valide + 1 invalide.
 const okProduct = {
-  sku: 'A1', name: 'Four', brand: 'Bosch', type: 'appliance',
-  widthMm: 600, heightMm: 595, depthMm: 550, dimensionConfidence: 1,
-  priceEurCents: null, currency: 'EUR', sourceLevel: 1,
-  sourceUrl: 'https://eprel.ec.europa.eu/screen/product/ovens/1', lastVerifiedAt: new Date(),
+  sku: 'A1',
+  name: 'Four',
+  brand: 'Bosch',
+  type: 'appliance',
+  widthMm: 600,
+  heightMm: 595,
+  depthMm: 550,
+  dimensionConfidence: 1,
+  priceEurCents: null,
+  currency: 'EUR',
+  sourceLevel: 1,
+  sourceUrl: 'https://eprel.ec.europa.eu/screen/product/ovens/1',
+  lastVerifiedAt: new Date(),
   specifications: {},
 };
 const mockStrategy = {
@@ -81,9 +90,11 @@ function createTestApp(): Application {
   app.use('/admin/ingestion', adminIngestionRoutes);
   // error handler minimal : respecte le statusCode des erreurs typées
   // (ApiValidationError -> 400), comme le handler global du vrai app.
-  app.use((err: Error & { statusCode?: number }, _req: Request, res: Response, _next: NextFunction) => {
-    res.status(err.statusCode ?? 500).json({ success: false, error: { message: err.message } });
-  });
+  app.use(
+    (err: Error & { statusCode?: number }, _req: Request, res: Response, _next: NextFunction) => {
+      res.status(err.statusCode ?? 500).json({ success: false, error: { message: err.message } });
+    }
+  );
   return app;
 }
 
@@ -98,16 +109,25 @@ describe('POST /admin/ingestion/run', () => {
 
   it('401 sans authentification', async () => {
     mockAuthenticated = false;
-    await request(app).post('/admin/ingestion/run').send({ brand: 'eprel', query: 'ovens' }).expect(401);
+    await request(app)
+      .post('/admin/ingestion/run')
+      .send({ brand: 'eprel', query: 'ovens' })
+      .expect(401);
   });
 
   it('403 pour un utilisateur non-admin', async () => {
     mockUserRole = 'user';
-    await request(app).post('/admin/ingestion/run').send({ brand: 'eprel', query: 'ovens' }).expect(403);
+    await request(app)
+      .post('/admin/ingestion/run')
+      .send({ brand: 'eprel', query: 'ovens' })
+      .expect(403);
   });
 
   it('400 si brand invalide (Zod réel)', async () => {
-    await request(app).post('/admin/ingestion/run').send({ brand: 'leroy-merlin', query: 'cuisine' }).expect(400);
+    await request(app)
+      .post('/admin/ingestion/run')
+      .send({ brand: 'leroy-merlin', query: 'cuisine' })
+      .expect(400);
   });
 
   it('400 si query manquante (Zod réel)', async () => {

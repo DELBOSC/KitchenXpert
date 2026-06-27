@@ -35,7 +35,7 @@ async function loadOptionalPlugins(): Promise<PluginOption[]> {
           gzipSize: true,
           brotliSize: true,
           template: 'treemap',
-        }) as PluginOption,
+        }) as PluginOption
       );
     } catch {
       console.warn('[vite] rollup-plugin-visualizer not installed — skipping');
@@ -56,7 +56,7 @@ async function loadOptionalPlugins(): Promise<PluginOption[]> {
     const compression = (await import('vite-plugin-compression2')).default;
     plugins.push(
       compression({ algorithm: 'gzip', threshold: 1024 }) as PluginOption,
-      compression({ algorithm: 'brotliCompress', threshold: 1024 }) as PluginOption,
+      compression({ algorithm: 'brotliCompress', threshold: 1024 }) as PluginOption
     );
   } catch {
     /* not installed — fine */
@@ -119,16 +119,12 @@ export default defineConfig(async () => {
           manualChunks: (id: string): string | undefined => {
             if (!id.includes('node_modules')) return undefined;
 
-            if (id.includes('three') || id.includes('@react-three'))
-              return 'three';
-            if (id.includes('@kitchenxpert/3d-engine'))
-              return '3d-engine';
-            if (id.includes('framer-motion'))
-              return 'framer';
+            if (id.includes('three') || id.includes('@react-three')) return 'three';
+            if (id.includes('@kitchenxpert/3d-engine')) return '3d-engine';
+            if (id.includes('framer-motion')) return 'framer';
             if (id.includes('@stripe/stripe-js') || id.includes('@stripe/react-stripe-js'))
               return 'stripe';
-            if (id.includes('react-i18next') || id.includes('i18next'))
-              return 'i18n';
+            if (id.includes('react-i18next') || id.includes('i18next')) return 'i18n';
             return 'vendor';
           },
         },

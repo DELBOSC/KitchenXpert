@@ -39,18 +39,19 @@ module.exports = {
   },
 
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)$': ['ts-jest', {
-      tsconfig: {
-        jsx: 'react-jsx',
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true,
+    '^.+\\.(ts|tsx|js|jsx)$': [
+      'ts-jest',
+      {
+        tsconfig: {
+          jsx: 'react-jsx',
+          esModuleInterop: true,
+          allowSyntheticDefaultImports: true,
+        },
       },
-    }],
+    ],
   },
 
-  transformIgnorePatterns: [
-    'node_modules/(?!(three|@react-three|react-spring)/)',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!(three|@react-three|react-spring)/)'],
 
   coveragePathIgnorePatterns: [
     '/node_modules/',

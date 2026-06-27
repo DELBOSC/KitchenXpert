@@ -34,14 +34,38 @@ interface GeneratedDesign {
  * Style descriptions for generated design names/descriptions (fallback algorithm)
  */
 const styleDescriptions: Record<string, { name: string; features: string[] }> = {
-  modern: { name: 'Moderne', features: ['Lignes epurees', 'Finitions laquees', 'Eclairage LED integre'] },
-  traditional: { name: 'Traditionnelle', features: ['Moulures classiques', 'Bois massif', 'Poignees ornees'] },
-  transitional: { name: 'Transitionnelle', features: ['Mix moderne/classique', 'Materiaux nobles', 'Silhouettes simples'] },
-  farmhouse: { name: 'Campagne', features: ['Bois naturel', 'Evier a tablier', 'Etageres ouvertes'] },
-  industrial: { name: 'Industrielle', features: ['Metal brut', 'Beton cire', 'Eclairage suspendu'] },
-  scandinavian: { name: 'Scandinave', features: ['Bois clair', 'Blanc dominant', 'Rangements fonctionnels'] },
-  contemporary: { name: 'Contemporaine', features: ['Tendances actuelles', 'Accents audacieux', 'Technologie integree'] },
-  mediterranean: { name: 'Mediterraneenne', features: ['Couleurs chaudes', 'Carrelage artisanal', 'Voutes decoratives'] },
+  modern: {
+    name: 'Moderne',
+    features: ['Lignes epurees', 'Finitions laquees', 'Eclairage LED integre'],
+  },
+  traditional: {
+    name: 'Traditionnelle',
+    features: ['Moulures classiques', 'Bois massif', 'Poignees ornees'],
+  },
+  transitional: {
+    name: 'Transitionnelle',
+    features: ['Mix moderne/classique', 'Materiaux nobles', 'Silhouettes simples'],
+  },
+  farmhouse: {
+    name: 'Campagne',
+    features: ['Bois naturel', 'Evier a tablier', 'Etageres ouvertes'],
+  },
+  industrial: {
+    name: 'Industrielle',
+    features: ['Metal brut', 'Beton cire', 'Eclairage suspendu'],
+  },
+  scandinavian: {
+    name: 'Scandinave',
+    features: ['Bois clair', 'Blanc dominant', 'Rangements fonctionnels'],
+  },
+  contemporary: {
+    name: 'Contemporaine',
+    features: ['Tendances actuelles', 'Accents audacieux', 'Technologie integree'],
+  },
+  mediterranean: {
+    name: 'Mediterraneenne',
+    features: ['Couleurs chaudes', 'Carrelage artisanal', 'Voutes decoratives'],
+  },
 };
 
 const layoutDescriptions: Record<string, string> = {
@@ -50,7 +74,7 @@ const layoutDescriptions: Record<string, string> = {
   'u-shaped': 'en U',
   open: 'ouverte',
   island: 'avec ilot',
-  peninsula: 'avec presqu\'ile',
+  peninsula: "avec presqu'ile",
 };
 
 /**
@@ -119,7 +143,7 @@ export class AIGeneratorController {
         applianceGrade: 'standard',
         storageEmphasis: 'moderate',
         lightingMood: 'bright',
-        ...(prefs.materialPreferences as Record<string, unknown> || {}),
+        ...((prefs.materialPreferences as Record<string, unknown>) || {}),
       },
     });
   });
@@ -179,7 +203,9 @@ export class AIGeneratorController {
             socialUsage: questionnaire.socialUsage as Record<string, unknown> | undefined,
             futureNeeds: questionnaire.futureNeeds as Record<string, unknown> | undefined,
             technologyPrefs: questionnaire.technologyPrefs as Record<string, unknown> | undefined,
-            environmentalPrefs: questionnaire.environmentalPrefs as Record<string, unknown> | undefined,
+            environmentalPrefs: questionnaire.environmentalPrefs as
+              | Record<string, unknown>
+              | undefined,
             maintenancePrefs: questionnaire.maintenancePrefs as Record<string, unknown> | undefined,
           };
         }
@@ -194,29 +220,31 @@ export class AIGeneratorController {
       const aiDesigns = await this.designGeneratorService.generateDesigns(
         preferences,
         numberOfDesigns,
-        questionnaireData,
+        questionnaireData
       );
 
       // Map AIGeneratedDesign to GeneratedDesign
-      designs = aiDesigns.map((d: AIGeneratedDesign): GeneratedDesign => ({
-        id: d.id,
-        name: d.name,
-        description: d.description,
-        thumbnailUrl: d.thumbnailUrl,
-        fullImageUrl: d.fullImageUrl,
-        style: d.style,
-        estimatedCost: d.estimatedCost,
-        features: d.features,
-        materials: d.materials,
-        layout: d.layout,
-        score: d.score,
-        createdAt: d.createdAt,
-        isAIGenerated: true,
-        materialRationale: d.materialRationale,
-        layoutExplanation: d.layoutExplanation,
-        tradeoffs: d.tradeoffs,
-        costBreakdown: d.costBreakdown,
-      }));
+      designs = aiDesigns.map(
+        (d: AIGeneratedDesign): GeneratedDesign => ({
+          id: d.id,
+          name: d.name,
+          description: d.description,
+          thumbnailUrl: d.thumbnailUrl,
+          fullImageUrl: d.fullImageUrl,
+          style: d.style,
+          estimatedCost: d.estimatedCost,
+          features: d.features,
+          materials: d.materials,
+          layout: d.layout,
+          score: d.score,
+          createdAt: d.createdAt,
+          isAIGenerated: true,
+          materialRationale: d.materialRationale,
+          layoutExplanation: d.layoutExplanation,
+          tradeoffs: d.tradeoffs,
+          costBreakdown: d.costBreakdown,
+        })
+      );
       isAIGenerated = true;
 
       logger.info('[AIGenerator] AI generation completed successfully', {
@@ -244,7 +272,8 @@ export class AIGeneratorController {
           where: { id: generationId },
           data: {
             status: 'failed',
-            errorMessage: fallbackError instanceof Error ? fallbackError.message : 'Generation failed',
+            errorMessage:
+              fallbackError instanceof Error ? fallbackError.message : 'Generation failed',
           },
         });
 
@@ -370,7 +399,7 @@ export class AIGeneratorController {
 
     // Find the design in the stored designs JSON
     const designs = generation.designs as unknown as GeneratedDesign[];
-    const design = designs.find(d => d.id === designId);
+    const design = designs.find((d) => d.id === designId);
     if (!design) {
       res.status(404).json({ success: false, error: 'Design not found' });
       return;
@@ -385,24 +414,24 @@ export class AIGeneratorController {
 
     // Map layout string to Prisma LayoutType enum
     const layoutMap: Record<string, string> = {
-      'galley': 'galley',
+      galley: 'galley',
       'l-shaped': 'l_shaped',
       'u-shaped': 'u_shaped',
-      'open': 'open_plan',
-      'island': 'island',
-      'peninsula': 'peninsula',
+      open: 'open_plan',
+      island: 'island',
+      peninsula: 'peninsula',
     };
 
     // Map style string to Prisma KitchenStyle enum
     const styleMap: Record<string, string> = {
-      'modern': 'modern',
-      'traditional': 'traditional',
-      'transitional': 'transitional',
-      'farmhouse': 'farmhouse',
-      'industrial': 'industrial',
-      'scandinavian': 'scandinavian',
-      'contemporary': 'contemporary',
-      'mediterranean': 'mediterranean',
+      modern: 'modern',
+      traditional: 'traditional',
+      transitional: 'transitional',
+      farmhouse: 'farmhouse',
+      industrial: 'industrial',
+      scandinavian: 'scandinavian',
+      contemporary: 'contemporary',
+      mediterranean: 'mediterranean',
     };
 
     // Create Kitchen record
@@ -418,17 +447,19 @@ export class AIGeneratorController {
         height: 250,
         isGenerated: true,
         score: design.score,
-        metadata: JSON.parse(JSON.stringify({
-          generationId,
-          designId,
-          estimatedCost: design.estimatedCost,
-          features: design.features,
-          isAIGenerated: design.isAIGenerated,
-          costBreakdown: design.costBreakdown,
-          materialRationale: design.materialRationale,
-          layoutExplanation: design.layoutExplanation,
-          tradeoffs: design.tradeoffs,
-        })),
+        metadata: JSON.parse(
+          JSON.stringify({
+            generationId,
+            designId,
+            estimatedCost: design.estimatedCost,
+            features: design.features,
+            isAIGenerated: design.isAIGenerated,
+            costBreakdown: design.costBreakdown,
+            materialRationale: design.materialRationale,
+            layoutExplanation: design.layoutExplanation,
+            tradeoffs: design.tradeoffs,
+          })
+        ),
         thumbnail: design.thumbnailUrl || undefined,
       },
     });
@@ -462,12 +493,12 @@ export class AIGeneratorController {
    */
   private generateDesignsFallback(
     preferences: Record<string, unknown>,
-    count: number,
+    count: number
   ): GeneratedDesign[] {
     const style = (preferences.kitchenStyle as string) || 'modern';
     const layout = (preferences.layoutPreference as string) || 'l-shaped';
     const grade = (preferences.applianceGrade as string) || 'standard';
-    const includeIsland = preferences.includeIsland as boolean || false;
+    const includeIsland = (preferences.includeIsland as boolean) || false;
     const storage = (preferences.storageEmphasis as string) || 'moderate';
 
     const basePrice = grade === 'professional' ? 25000 : grade === 'premium' ? 15000 : 8000;
@@ -484,11 +515,26 @@ export class AIGeneratorController {
       { suffix: 'Sur Mesure', priceMultiplier: 2.0, scoreBonus: 15 },
     ];
 
-    const defaultMaterials = { cabinets: 'Melamine', countertops: 'Stratifie', backsplash: 'Faience', flooring: 'Vinyle' };
+    const defaultMaterials = {
+      cabinets: 'Melamine',
+      countertops: 'Stratifie',
+      backsplash: 'Faience',
+      flooring: 'Vinyle',
+    };
     const materialsByGrade: Record<string, typeof defaultMaterials> = {
       standard: defaultMaterials,
-      premium: { cabinets: 'Laque mate', countertops: 'Quartz', backsplash: 'Carrelage metro', flooring: 'Parquet stratifie' },
-      professional: { cabinets: 'Bois massif', countertops: 'Granit', backsplash: 'Pierre naturelle', flooring: 'Parquet massif' },
+      premium: {
+        cabinets: 'Laque mate',
+        countertops: 'Quartz',
+        backsplash: 'Carrelage metro',
+        flooring: 'Parquet stratifie',
+      },
+      professional: {
+        cabinets: 'Bois massif',
+        countertops: 'Granit',
+        backsplash: 'Pierre naturelle',
+        flooring: 'Parquet massif',
+      },
     };
 
     for (let i = 0; i < count; i++) {
@@ -498,12 +544,24 @@ export class AIGeneratorController {
       const baseScore = 65 + Math.floor(Math.random() * 15);
 
       const features = [...(styleInfo?.features || [])];
-      if (includeIsland) {features.push('Ilot central');}
-      if (storage === 'maximum') {features.push('Rangements optimises');}
-      if (preferences.sustainableOptions) {features.push('Materiaux eco-responsables');}
-      if (preferences.smartHomeIntegration) {features.push('Domotique integree');}
-      if (preferences.includePantry) {features.push('Cellier integre');}
-      if (preferences.includeBreakfastNook) {features.push('Coin petit-dejeuner');}
+      if (includeIsland) {
+        features.push('Ilot central');
+      }
+      if (storage === 'maximum') {
+        features.push('Rangements optimises');
+      }
+      if (preferences.sustainableOptions) {
+        features.push('Materiaux eco-responsables');
+      }
+      if (preferences.smartHomeIntegration) {
+        features.push('Domotique integree');
+      }
+      if (preferences.includePantry) {
+        features.push('Cellier integre');
+      }
+      if (preferences.includeBreakfastNook) {
+        features.push('Coin petit-dejeuner');
+      }
 
       designs.push({
         id: crypto.randomUUID(),

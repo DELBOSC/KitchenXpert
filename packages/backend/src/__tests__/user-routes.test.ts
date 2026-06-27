@@ -139,16 +139,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -174,14 +176,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -235,26 +233,19 @@ describe('User Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /users/me', async () => {
-      const response = await request(app)
-        .get('/users/me')
-        .expect(401);
+      const response = await request(app).get('/users/me').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to PUT /users/me', async () => {
-      const response = await request(app)
-        .put('/users/me')
-        .send({ name: 'Test' })
-        .expect(401);
+      const response = await request(app).put('/users/me').send({ name: 'Test' }).expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to GET /users/me/preferences', async () => {
-      const response = await request(app)
-        .get('/users/me/preferences')
-        .expect(401);
+      const response = await request(app).get('/users/me/preferences').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -266,9 +257,7 @@ describe('User Routes', () => {
     it('should return current user profile', async () => {
       mockUserRepository.findById.mockResolvedValue(mockUser);
 
-      const response = await authedRequest(app)
-        .get('/users/me')
-        .expect(200);
+      const response = await authedRequest(app).get('/users/me').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.email).toBe('test@test.com');
@@ -279,9 +268,7 @@ describe('User Routes', () => {
     it('should not expose password in the response', async () => {
       mockUserRepository.findById.mockResolvedValue(mockUser);
 
-      const response = await authedRequest(app)
-        .get('/users/me')
-        .expect(200);
+      const response = await authedRequest(app).get('/users/me').expect(200);
 
       expect(response.body.data.password).toBeUndefined();
       expect(JSON.stringify(response.body)).not.toContain('hashed-password-should-not-leak');
@@ -290,9 +277,7 @@ describe('User Routes', () => {
     it('should return 404 when user not found in database', async () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/users/me')
-        .expect(404);
+      const response = await authedRequest(app).get('/users/me').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('User not found');
@@ -368,9 +353,7 @@ describe('User Routes', () => {
     it('should return user preferences', async () => {
       mockUserRepository.findById.mockResolvedValue(mockUser);
 
-      const response = await authedRequest(app)
-        .get('/users/me/preferences')
-        .expect(200);
+      const response = await authedRequest(app).get('/users/me/preferences').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.language).toBe('fr');
@@ -380,9 +363,7 @@ describe('User Routes', () => {
     it('should return 404 when user not found', async () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/users/me/preferences')
-        .expect(404);
+      const response = await authedRequest(app).get('/users/me/preferences').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -430,9 +411,7 @@ describe('User Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockUserRepository.findById.mockResolvedValue(otherUser);
 
-      const response = await authedRequest(app)
-        .get('/users/other-user-99')
-        .expect(200);
+      const response = await authedRequest(app).get('/users/other-user-99').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.email).toBe('other@test.com');
@@ -442,17 +421,13 @@ describe('User Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockUserRepository.findById.mockResolvedValue(otherUser);
 
-      const response = await authedRequest(app)
-        .get('/users/other-user-99')
-        .expect(200);
+      const response = await authedRequest(app).get('/users/other-user-99').expect(200);
 
       expect(response.body.data.password).toBeUndefined();
     });
 
     it('should return 403 when non-admin tries to access', async () => {
-      const response = await authedRequest(app)
-        .get('/users/other-user-99')
-        .expect(403);
+      const response = await authedRequest(app).get('/users/other-user-99').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -461,9 +436,7 @@ describe('User Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockUserRepository.findById.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get('/users/nonexistent-user')
-        .expect(404);
+      const response = await authedRequest(app).get('/users/nonexistent-user').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('User not found');
@@ -480,21 +453,15 @@ describe('User Routes', () => {
         total: 2,
       });
 
-      const response = await authedRequest(app)
-        .get('/users')
-        .expect(200);
+      const response = await authedRequest(app).get('/users').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
-      expect(response.body.meta).toEqual(
-        expect.objectContaining({ page: 1, total: 2 })
-      );
+      expect(response.body.meta).toEqual(expect.objectContaining({ page: 1, total: 2 }));
     });
 
     it('should return 403 when non-admin tries to list users', async () => {
-      const response = await authedRequest(app)
-        .get('/users')
-        .expect(403);
+      const response = await authedRequest(app).get('/users').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -507,9 +474,7 @@ describe('User Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockUserRepository.softDelete.mockResolvedValue(undefined);
 
-      const response = await authedRequest(app)
-        .delete('/users/other-user-99')
-        .expect(200);
+      const response = await authedRequest(app).delete('/users/other-user-99').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');
@@ -517,9 +482,7 @@ describe('User Routes', () => {
     });
 
     it('should return 403 when non-admin tries to delete', async () => {
-      const response = await authedRequest(app)
-        .delete('/users/other-user-99')
-        .expect(403);
+      const response = await authedRequest(app).delete('/users/other-user-99').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -532,18 +495,14 @@ describe('User Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockUserRepository.count.mockResolvedValue(42);
 
-      const response = await authedRequest(app)
-        .get('/users/stats')
-        .expect(200);
+      const response = await authedRequest(app).get('/users/stats').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.total).toBe(42);
     });
 
     it('should return 403 when non-admin tries to access stats', async () => {
-      const response = await authedRequest(app)
-        .get('/users/stats')
-        .expect(403);
+      const response = await authedRequest(app).get('/users/stats').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -570,10 +529,7 @@ describe('User Routes', () => {
     it('should handle empty body on profile update gracefully', async () => {
       mockUserRepository.updateProfile.mockResolvedValue(mockUser);
 
-      const response = await authedRequest(app)
-        .put('/users/me')
-        .send({})
-        .expect(200);
+      const response = await authedRequest(app).put('/users/me').send({}).expect(200);
 
       expect(response.body.success).toBe(true);
     });

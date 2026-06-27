@@ -43,10 +43,12 @@ export function createApp(): Application {
   // Placed early so all subsequent responses benefit from compression.
   // threshold: 1024 — skip compressing responses smaller than 1KB (overhead not worth it)
   // level: 6 — balanced trade-off between compression ratio and CPU usage
-  app.use(compression({
-    threshold: 1024,
-    level: 6,
-  }));
+  app.use(
+    compression({
+      threshold: 1024,
+      level: 6,
+    })
+  );
 
   // Structured request logging (JSON in production, colored dev format in development)
   // Placed early to capture full response lifecycle including response time.

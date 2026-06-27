@@ -89,9 +89,11 @@ export async function connectDatabase(): Promise<Pool> {
     database: config.database.name,
     user: config.database.user,
     password: config.database.password,
-    ssl: config.database.ssl ? {
-      rejectUnauthorized: process.env.NODE_ENV === 'production'
-    } : false,
+    ssl: config.database.ssl
+      ? {
+          rejectUnauthorized: process.env.NODE_ENV === 'production',
+        }
+      : false,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,

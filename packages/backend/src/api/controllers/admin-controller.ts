@@ -96,7 +96,10 @@ export class AdminController {
     if (role) {
       const allowedRoles = ['admin', 'user', 'partner', 'designer'];
       if (!allowedRoles.includes(role as string)) {
-        res.status(400).json({ success: false, error: `Invalid role filter. Allowed: ${allowedRoles.join(', ')}` });
+        res.status(400).json({
+          success: false,
+          error: `Invalid role filter. Allowed: ${allowedRoles.join(', ')}`,
+        });
         return;
       }
       where.role = role as string;
@@ -223,7 +226,9 @@ export class AdminController {
     }
 
     if (!['suspend', 'activate', 'changeRole'].includes(action)) {
-      res.status(400).json({ success: false, error: 'Invalid action. Use: suspend, activate, changeRole' });
+      res
+        .status(400)
+        .json({ success: false, error: 'Invalid action. Use: suspend, activate, changeRole' });
       return;
     }
 
@@ -237,7 +242,9 @@ export class AdminController {
         break;
       case 'changeRole':
         if (!value || !['user', 'admin', 'partner', 'designer'].includes(value)) {
-          res.status(400).json({ success: false, error: 'Valid role is required for changeRole action' });
+          res
+            .status(400)
+            .json({ success: false, error: 'Valid role is required for changeRole action' });
           return;
         }
         updateData = { role: value };
@@ -297,27 +304,18 @@ export class AdminController {
    * Get database statistics
    */
   getDatabaseStats = asyncHandler(async (_req: Request, res: Response) => {
-    const [
-      users,
-      projects,
-      kitchens,
-      products,
-      materials,
-      orders,
-      webhooks,
-      auditLogs,
-      metrics,
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.project.count(),
-      prisma.kitchen.count(),
-      prisma.product.count(),
-      prisma.material.count(),
-      prisma.order.count(),
-      prisma.webhook.count(),
-      prisma.auditLog.count(),
-      prisma.metric.count(),
-    ]);
+    const [users, projects, kitchens, products, materials, orders, webhooks, auditLogs, metrics] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.project.count(),
+        prisma.kitchen.count(),
+        prisma.product.count(),
+        prisma.material.count(),
+        prisma.order.count(),
+        prisma.webhook.count(),
+        prisma.auditLog.count(),
+        prisma.metric.count(),
+      ]);
 
     res.status(200).json({
       success: true,
@@ -333,7 +331,16 @@ export class AdminController {
           auditLogs,
           metrics,
         },
-        total: users + projects + kitchens + products + materials + orders + webhooks + auditLogs + metrics,
+        total:
+          users +
+          projects +
+          kitchens +
+          products +
+          materials +
+          orders +
+          webhooks +
+          auditLogs +
+          metrics,
         timestamp: new Date().toISOString(),
       },
     });
@@ -349,8 +356,13 @@ export class AdminController {
     const allowedTasks = ['sessions', 'metrics', 'auditLogs', 'webhookEvents'];
     const { tasks = ['sessions', 'metrics', 'auditLogs'] } = req.body;
 
-    if (!Array.isArray(tasks) || tasks.some((t: unknown) => typeof t !== 'string' || !allowedTasks.includes(t))) {
-      res.status(400).json({ success: false, error: `Invalid tasks. Allowed: ${allowedTasks.join(', ')}` });
+    if (
+      !Array.isArray(tasks) ||
+      tasks.some((t: unknown) => typeof t !== 'string' || !allowedTasks.includes(t))
+    ) {
+      res
+        .status(400)
+        .json({ success: false, error: `Invalid tasks. Allowed: ${allowedTasks.join(', ')}` });
       return;
     }
 
@@ -398,7 +410,16 @@ export class AdminController {
     const results: Record<string, string> = {};
 
     // Reindex all major tables using Prisma's $executeRawUnsafe
-    const tables = ['User', 'Kitchen', 'KitchenItem', 'Project', 'Product', 'Appliance', 'Material', 'Order'];
+    const tables = [
+      'User',
+      'Kitchen',
+      'KitchenItem',
+      'Project',
+      'Product',
+      'Appliance',
+      'Material',
+      'Order',
+    ];
 
     for (const table of tables) {
       try {
@@ -459,7 +480,9 @@ export class AdminController {
    */
   getUsageReport = asyncHandler(async (req: Request, res: Response) => {
     const { startDate, endDate } = req.query;
-    const start = startDate ? new Date(startDate as string) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const start = startDate
+      ? new Date(startDate as string)
+      : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const end = endDate ? new Date(endDate as string) : new Date();
 
     const [newUsers, newProjects, newKitchens, activeUsers] = await Promise.all([

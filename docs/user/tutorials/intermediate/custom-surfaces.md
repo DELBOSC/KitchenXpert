@@ -1,8 +1,7 @@
 # Working with Custom Surfaces
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Intermediate
-**Estimated Time:** 45-60 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Intermediate **Estimated
+Time:** 45-60 minutes
 
 ## Learning Objectives
 
@@ -27,18 +26,21 @@ By the end of this tutorial, you will be able to:
 ## Introduction to Custom Surfaces
 
 **Standard Materials:**
+
 - Readily available from catalogs
 - Fixed pricing and specifications
 - Quick lead times (2-4 weeks)
 - Limited customization
 
 **Custom Materials:**
+
 - Unique appearance and character
 - Variable pricing based on complexity
 - Longer lead times (4-12 weeks)
 - Unlimited customization possibilities
 
-This tutorial covers designing with custom surfaces that make your kitchen truly one-of-a-kind.
+This tutorial covers designing with custom surfaces that make your kitchen truly
+one-of-a-kind.
 
 ## Step-by-Step Instructions
 
@@ -98,7 +100,8 @@ COUNTERTOP EDGES:
    - Lead time estimates
    - Fabricator requirements
 
-> **TIP:** Custom surfaces typically add 25-100% to material costs but can make a dramatic visual impact.
+> **TIP:** Custom surfaces typically add 25-100% to material costs but can make
+> a dramatic visual impact.
 
 ### Step 2: Design a Waterfall Edge Countertop
 
@@ -116,6 +119,7 @@ One of the most popular custom features.
 [Screenshot: Waterfall edge selector]
 
 6. Configure waterfall:
+
    ```
    WATERFALL EDGE CONFIGURATION
 
@@ -154,7 +158,8 @@ One of the most popular custom features.
 
 [Screenshot: Close-up of waterfall edge with seam indicators]
 
-> **TIP:** Waterfall edges work best with materials that have veining or patterns that flow naturally (marble-look quartz, real marble, quartzite).
+> **TIP:** Waterfall edges work best with materials that have veining or
+> patterns that flow naturally (marble-look quartz, real marble, quartzite).
 
 ### Step 3: Create a Custom Mosaic Backsplash
 
@@ -195,6 +200,7 @@ Design a unique mosaic pattern.
    - Grout width: 1/8" (standard)
 
 9. **Calculate quantities and cost:**
+
    ```
    CUSTOM MOSAIC COST BREAKDOWN
 
@@ -226,7 +232,8 @@ Design a unique mosaic pattern.
 10. Click **"Apply Custom Mosaic"**
 11. Backsplash updates with detailed mosaic pattern
 
-> **WARNING:** Complex mosaics require skilled installers. Verify your installer's experience with pattern work before committing.
+> **WARNING:** Complex mosaics require skilled installers. Verify your
+> installer's experience with pattern work before committing.
 
 ### Step 4: Work with Live-Edge Wood Countertops
 
@@ -239,6 +246,7 @@ Create an organic, natural focal point.
 [Screenshot: Custom wood slab configuration panel]
 
 4. **Configure wood slab:**
+
    ```
    LIVE-EDGE WOOD SLAB CONFIGURATION
 
@@ -298,7 +306,8 @@ Create an organic, natural focal point.
    - Breakfast bar: Black walnut live edge
    - Mixed materials create visual interest
 
-> **TIP:** Live-edge wood needs clearance from sinks and cooktops. Keep wood surfaces at least 12" from water sources.
+> **TIP:** Live-edge wood needs clearance from sinks and cooktops. Keep wood
+> surfaces at least 12" from water sources.
 
 ### Step 5: Design Concrete Countertops
 
@@ -311,6 +320,7 @@ Modern, industrial aesthetic.
 [Screenshot: Concrete countertop configurator]
 
 4. **Configure concrete mix:**
+
    ```
    CUSTOM CONCRETE COUNTERTOP DESIGN
 
@@ -371,7 +381,8 @@ Modern, industrial aesthetic.
 
 [Screenshot: Full kitchen with mixed custom materials]
 
-> **WARNING:** Concrete requires proper sealing and maintenance. Acidic foods (lemon, tomato) can etch the surface if not sealed properly. Re-seal annually.
+> **WARNING:** Concrete requires proper sealing and maintenance. Acidic foods
+> (lemon, tomato) can etch the surface if not sealed properly. Re-seal annually.
 
 ### Step 6: Upload Custom Textures
 
@@ -383,6 +394,7 @@ Apply a specific material you've found elsewhere.
 [Screenshot: Custom texture upload interface]
 
 3. **Upload process:**
+
    ```
    CUSTOM TEXTURE UPLOAD
 
@@ -430,7 +442,8 @@ Apply a specific material you've found elsewhere.
 
 9. Save texture to **"My Custom Materials Library"** for future projects
 
-> **TIP:** Take photos of materials in natural lighting without flash. Avoid shadows and reflections. Straight-on angle works best.
+> **TIP:** Take photos of materials in natural lighting without flash. Avoid
+> shadows and reflections. Straight-on angle works best.
 
 ### Step 7: Create Custom Cabinet Paint Color
 
@@ -443,6 +456,7 @@ Match specific color or create unique finish.
 [Screenshot: Custom cabinet paint interface]
 
 4. **Create custom color - Method 1: Color Picker**
+
    ```
    CUSTOM CABINET COLOR
 
@@ -465,6 +479,7 @@ Match specific color or create unique finish.
    ```
 
 5. **Create custom color - Method 2: Color Match**
+
    ```
    Method 2: Match existing color
 
@@ -481,6 +496,7 @@ Match specific color or create unique finish.
    ```
 
 6. **Create custom color - Method 3: Two-Tone Custom**
+
    ```
    Method 3: Two-tone with custom colors
 
@@ -499,7 +515,8 @@ Match specific color or create unique finish.
 
 [Screenshot: Kitchen with custom two-tone cabinet colors]
 
-> **TIP:** Order a cabinet door sample in custom color before committing to full kitchen. Colors look different under your home's lighting.
+> **TIP:** Order a cabinet door sample in custom color before committing to full
+> kitchen. Colors look different under your home's lighting.
 
 ### Step 8: Design Custom Edge Profiles
 
@@ -521,6 +538,7 @@ Decorative countertop edges.
 
 5. Select **"Custom Carved"** for the concrete
 6. **Design custom edge:**
+
    ```
    CUSTOM CARVED EDGE DESIGN
 
@@ -549,7 +567,8 @@ Decorative countertop edges.
 
 [Screenshot: CNC edge profile applied to countertop]
 
-> **TIP:** Decorative edges add cost but minimal square footage. Good way to add custom touch without huge expense.
+> **TIP:** Decorative edges add cost but minimal square footage. Good way to add
+> custom touch without huge expense.
 
 ### Step 9: Generate Fabricator Drawings
 
@@ -565,6 +584,7 @@ Professional documentation for custom work.
 [Screenshot: Fabrication drawing export options]
 
 3. **Configure drawing details:**
+
    ```
    FABRICATION DRAWING SPECIFICATIONS
 
@@ -625,6 +645,7 @@ Page 4: DETAILS & SECTIONS
 6. Export as PDF: `Kitchen_Custom_Fabrication_Drawings.pdf` (18 pages)
 
 7. **Also generate material specifications sheet:**
+
    ```
    CUSTOM MATERIALS SPECIFICATION
 
@@ -656,7 +677,8 @@ Page 4: DETAILS & SECTIONS
 
 8. Share both drawings and specs with fabricators for accurate quotes
 
-> **TIP:** Get quotes from 3+ fabricators. Custom work pricing varies widely. Ensure they have specific experience with your chosen materials.
+> **TIP:** Get quotes from 3+ fabricators. Custom work pricing varies widely.
+> Ensure they have specific experience with your chosen materials.
 
 ### Step 10: Calculate Total Custom Surface Costs
 
@@ -736,7 +758,8 @@ VALUE ASSESSMENT:
    - Saves $3,246, keeps signature features
    - New total: $33,342 (18% premium vs. standard)
 
-> **TIP:** Prioritize 2-3 custom elements for maximum impact. Too many custom features can feel overwhelming and balloon budgets.
+> **TIP:** Prioritize 2-3 custom elements for maximum impact. Too many custom
+> features can feel overwhelming and balloon budgets.
 
 ### Step 11: Work with Custom Fabricators
 
@@ -790,6 +813,7 @@ CUSTOM MOSAICS:
 5. Receive quotes within 3-5 business days
 
 6. **Review and compare quotes:**
+
    ```
    FABRICATOR QUOTES RECEIVED
 
@@ -805,7 +829,8 @@ CUSTOM MOSAICS:
 7. Click **"Accept Quote"** to proceed
 8. Schedule on-site consultation for template/measurements
 
-> **TIP:** Custom fabricators often negotiate. If you're doing multiple custom elements, ask for package pricing.
+> **TIP:** Custom fabricators often negotiate. If you're doing multiple custom
+> elements, ask for package pricing.
 
 ## What You Learned
 
@@ -853,9 +878,12 @@ Avoid these pitfalls:
 
 Continue your intermediate education:
 
-1. **[Budget Optimization](budget-optimization.md)** - Balance custom features with budget
-2. **[Multi-Brand Design](multi-brand-design.md)** - Mix custom and catalog materials
-3. **[Phased Implementation](../advanced/phased-implementation.md)** - Phase custom work for budget management
+1. **[Budget Optimization](budget-optimization.md)** - Balance custom features
+   with budget
+2. **[Multi-Brand Design](multi-brand-design.md)** - Mix custom and catalog
+   materials
+3. **[Phased Implementation](../advanced/phased-implementation.md)** - Phase
+   custom work for budget management
 
 ## Additional Resources
 
@@ -868,6 +896,7 @@ Continue your intermediate education:
 ## Feedback
 
 Help us improve custom surface tools:
+
 - Email: custom-surfaces@kitchenxpert.com
 - Share your custom kitchen: [Photo submission]
 - Suggest new materials: [Material request form]
@@ -875,13 +904,14 @@ Help us improve custom surface tools:
 ---
 
 **Related Tutorials:**
+
 - [Creating Your First Kitchen Design](../beginner/first-design.md)
 - [Budget Optimization](budget-optimization.md)
 - [Multi-Brand Design](multi-brand-design.md)
 
 **Documentation:**
+
 - [Custom Materials Guide](../../guides/custom-materials.md)
 - [Fabricator Network](../../reference/fabricator-network.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1

@@ -129,15 +129,17 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -163,14 +165,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -257,9 +255,7 @@ describe('Design Version Routes', () => {
     });
 
     it('should return 401 for unauthenticated request to GET /design-versions/:kitchenId', async () => {
-      const response = await request(app)
-        .get(`/design-versions/${VALID_KITCHEN_ID}`)
-        .expect(401);
+      const response = await request(app).get(`/design-versions/${VALID_KITCHEN_ID}`).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -329,10 +325,7 @@ describe('Design Version Routes', () => {
     });
 
     it('should return 400 when kitchenId is missing', async () => {
-      const response = await authedRequest(app)
-        .post('/design-versions')
-        .send({})
-        .expect(400);
+      const response = await authedRequest(app).post('/design-versions').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -407,9 +400,27 @@ describe('Design Version Routes', () => {
     it('should list all versions for an owned kitchen (newest first)', async () => {
       mockPrisma.kitchen.findFirst.mockResolvedValue(ownedKitchen);
       const versions = [
-        { id: 'dv-3', version: 3, label: 'Final', thumbnail: null, createdAt: new Date('2024-03-01') },
-        { id: 'dv-2', version: 2, label: 'Revision', thumbnail: null, createdAt: new Date('2024-02-01') },
-        { id: 'dv-1', version: 1, label: 'Initial', thumbnail: null, createdAt: new Date('2024-01-01') },
+        {
+          id: 'dv-3',
+          version: 3,
+          label: 'Final',
+          thumbnail: null,
+          createdAt: new Date('2024-03-01'),
+        },
+        {
+          id: 'dv-2',
+          version: 2,
+          label: 'Revision',
+          thumbnail: null,
+          createdAt: new Date('2024-02-01'),
+        },
+        {
+          id: 'dv-1',
+          version: 1,
+          label: 'Initial',
+          thumbnail: null,
+          createdAt: new Date('2024-01-01'),
+        },
       ];
       mockPrisma.designVersion.findMany.mockResolvedValue(versions);
 
@@ -435,9 +446,7 @@ describe('Design Version Routes', () => {
     });
 
     it('should return 400 for invalid kitchenId UUID', async () => {
-      const response = await authedRequest(app)
-        .get(`/design-versions/${INVALID_UUID}`)
-        .expect(400);
+      const response = await authedRequest(app).get(`/design-versions/${INVALID_UUID}`).expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -550,9 +559,7 @@ describe('Design Version Routes', () => {
       mockPrisma.kitchen.findFirst.mockResolvedValue(ownedKitchen);
       mockPrisma.designVersion.findUnique.mockResolvedValue(mockDesignVersion);
 
-      await authedRequest(app)
-        .get(`/design-versions/${VALID_KITCHEN_ID}/1`)
-        .expect(200);
+      await authedRequest(app).get(`/design-versions/${VALID_KITCHEN_ID}/1`).expect(200);
 
       expect(mockPrisma.designVersion.findUnique).toHaveBeenCalledWith({
         where: {
@@ -648,9 +655,7 @@ describe('Design Version Routes', () => {
         });
       });
 
-      await authedRequest(app)
-        .post(`/design-versions/${VALID_KITCHEN_ID}/1/restore`)
-        .expect(200);
+      await authedRequest(app).post(`/design-versions/${VALID_KITCHEN_ID}/1/restore`).expect(200);
 
       expect(mockPrisma.$transaction).toHaveBeenCalledTimes(1);
     });
@@ -748,9 +753,7 @@ describe('Design Version Routes', () => {
       mockPrisma.designVersion.findUnique.mockResolvedValue(mockDesignVersion);
       mockPrisma.designVersion.delete.mockResolvedValue(mockDesignVersion);
 
-      await authedRequest(app)
-        .delete(`/design-versions/${VALID_KITCHEN_ID}/1`)
-        .expect(200);
+      await authedRequest(app).delete(`/design-versions/${VALID_KITCHEN_ID}/1`).expect(200);
 
       expect(mockPrisma.designVersion.delete).toHaveBeenCalledWith({
         where: {
@@ -823,9 +826,7 @@ describe('Design Version Routes', () => {
       mockPrisma.kitchen.findFirst.mockResolvedValue(ownedKitchen);
       mockPrisma.designVersion.findUnique.mockResolvedValue(mockDesignVersion);
 
-      await authedRequest(app)
-        .get(`/design-versions/${VALID_KITCHEN_ID}/1`)
-        .expect(200);
+      await authedRequest(app).get(`/design-versions/${VALID_KITCHEN_ID}/1`).expect(200);
 
       // The version should be passed as a number, not string
       expect(mockPrisma.designVersion.findUnique).toHaveBeenCalledWith({

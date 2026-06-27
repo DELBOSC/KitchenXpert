@@ -17,7 +17,7 @@ export function localizeUnknownLangPath(
   pathname: string,
   search = '',
   hash = '',
-  defaultLang = 'fr',
+  defaultLang = 'fr'
 ): string {
   return `/${defaultLang}${pathname}${search}${hash}`;
 }

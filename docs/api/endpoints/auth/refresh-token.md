@@ -2,10 +2,11 @@
 
 ## Overview
 
-Obtain a new access token using a valid refresh token. Implements token rotation strategy where each refresh token is single-use and a new one is issued with each refresh.
+Obtain a new access token using a valid refresh token. Implements token rotation
+strategy where each refresh token is single-use and a new one is issued with
+each refresh.
 
-**Endpoint:** 
-**Authentication Required:** Yes (Refresh Token)
+**Endpoint:** **Authentication Required:** Yes (Refresh Token)
 
 **Rate Limiting:** 20 requests per hour per user
 
@@ -17,9 +18,9 @@ Obtain a new access token using a valid refresh token. Implements token rotation
 
 ### Request Body Schema
 
-| Field | Type | Required | Description | Constraints |
-|-------|------|----------|-------------|-------------|
-| \ | string | Yes | Valid refresh token | Must be active and not expired |
+| Field | Type   | Required | Description         | Constraints                    |
+| ----- | ------ | -------- | ------------------- | ------------------------------ |
+| \     | string | Yes      | Valid refresh token | Must be active and not expired |
 
 ### Request Body Example
 
@@ -60,12 +61,14 @@ Obtain a new access token using a valid refresh token. Implements token rotation
 ## Security Considerations
 
 ### Token Rotation Strategy
+
 - Each refresh token is single-use only
 - Old refresh token invalidated when used
 - New refresh token issued with each refresh
 - Prevents token replay attacks
 
 ### Token Theft Detection
+
 - If a used token is reused, indicates potential theft
 - All user sessions automatically revoked
 - Security alert sent to user's email

@@ -2,11 +2,13 @@
 
 ## Architecture
 
-Ce système utilise un **pattern Factory** pour gérer les 183 intégrations de catalogues de manière standardisée et éviter la duplication de code.
+Ce système utilise un **pattern Factory** pour gérer les 183 intégrations de
+catalogues de manière standardisée et éviter la duplication de code.
 
 ## 🚀 Nouveautés - Ajout Simplifié de Produits
 
-Le système a été amélioré pour permettre l'ajout **facile et rapide** de produits depuis diverses sources :
+Le système a été amélioré pour permettre l'ajout **facile et rapide** de
+produits depuis diverses sources :
 
 ### ✨ Fonctionnalités principales
 
@@ -50,12 +52,11 @@ catalog-providers/
 
 ## Avantages
 
-✅ **Zéro duplication** - Code partagé dans `common/`
-✅ **Type-safe** - TypeScript strict avec interfaces
-✅ **Extensible** - Surcharger uniquement ce qui diffère
-✅ **Rate limiting** - Intégré dans BaseApiClient
-✅ **Retry automatique** - Avec exponential backoff
-✅ **Validation standardisée** - Erreurs cohérentes
+✅ **Zéro duplication** - Code partagé dans `common/` ✅ **Type-safe** -
+TypeScript strict avec interfaces ✅ **Extensible** - Surcharger uniquement ce
+qui diffère ✅ **Rate limiting** - Intégré dans BaseApiClient ✅ **Retry
+automatique** - Avec exponential backoff ✅ **Validation standardisée** -
+Erreurs cohérentes
 
 ## Utilisation
 
@@ -121,7 +122,6 @@ export class MonProviderTransformer extends BaseTransformer {
   // - transformPrice()
   // - transformImages()
   // - transformSpecifications()
-
   // Surcharger uniquement si format spécial
 }
 
@@ -172,7 +172,7 @@ const config: ProviderConfig = {
   apiKey: 'xxx',
   timeout: 5000,
   retryAttempts: 3,
-  rateLimit: { maxRequests: 100, windowMs: 60000 }
+  rateLimit: { maxRequests: 100, windowMs: 60000 },
 };
 
 const provider = ProviderFactory.create('ikea', config);
@@ -196,6 +196,7 @@ const product = await provider.fetchProduct('12345');
 ## BaseTransformer Features
 
 Transformations communes pour:
+
 - **Dimensions**: formats multiples (object, array, string "WxDxH")
 - **Prix**: formats multiples (object, number, avec/sans devise)
 - **Images**: URL simple, array d'URLs, array d'objets
@@ -249,6 +250,7 @@ pnpm tsx catalog-providers/cli/generate-provider.ts
 ```
 
 Le générateur crée automatiquement :
+
 - ✅ `api-client.ts` ou `file-client.ts` selon le type
 - ✅ `schema-mapper.ts` avec mapping de base
 - ✅ `transformer.ts` et `validator.ts`
@@ -271,7 +273,10 @@ Pour les sources simples, utilisez le mapping déclaratif :
 
 ```typescript
 // catalog-providers/furniture-providers/simple-provider/mapping.config.ts
-import { MappingConfig, CommonTransforms } from '../../common/adapters/declarative-mapper';
+import {
+  MappingConfig,
+  CommonTransforms,
+} from '../../common/adapters/declarative-mapper';
 
 export const mapping: MappingConfig = {
   // Valeurs constantes pour tous les produits
@@ -304,7 +309,7 @@ export const mapping: MappingConfig = {
     },
 
     dimensions: {
-      source: 'dimensions_string',  // Ex: "80x60x200"
+      source: 'dimensions_string', // Ex: "80x60x200"
       transform: CommonTransforms.toDimensions,
     },
 
@@ -331,16 +336,16 @@ const catalogItem = mapper.map(sourceProduct, 'my-provider');
 ### Transformations disponibles
 
 ```typescript
-CommonTransforms.toNumber(value)      // Converti en nombre
-CommonTransforms.toPrice(value)       // Extrait prix + devise
-CommonTransforms.toDimensions(value)  // Parse "WxDxH" ou array
-CommonTransforms.toArray(value)       // Convertit en array
-CommonTransforms.toImages(value)      // Normalise URLs images
-CommonTransforms.toStatus(value)      // Normalise le statut
-CommonTransforms.toBoolean(value)     // Convertit en boolean
-CommonTransforms.trim(value)          // Nettoie les espaces
-CommonTransforms.lowercase(value)     // Minuscules
-CommonTransforms.uppercase(value)     // Majuscules
+CommonTransforms.toNumber(value); // Converti en nombre
+CommonTransforms.toPrice(value); // Extrait prix + devise
+CommonTransforms.toDimensions(value); // Parse "WxDxH" ou array
+CommonTransforms.toArray(value); // Convertit en array
+CommonTransforms.toImages(value); // Normalise URLs images
+CommonTransforms.toStatus(value); // Normalise le statut
+CommonTransforms.toBoolean(value); // Convertit en boolean
+CommonTransforms.trim(value); // Nettoie les espaces
+CommonTransforms.lowercase(value); // Minuscules
+CommonTransforms.uppercase(value); // Majuscules
 ```
 
 ## 🔄 Synchronisation Incrémentale
@@ -355,9 +360,9 @@ const syncManager = new IncrementalSyncManager();
 // Sync incrémentale (uniquement les changements)
 const result = await syncManager.sync(
   'ikea',
-  currentProducts,    // Produits actuels depuis l'API
-  previousProducts,   // Produits en DB
-  'hash'             // Stratégie: 'hash' | 'timestamp' | 'full'
+  currentProducts, // Produits actuels depuis l'API
+  previousProducts, // Produits en DB
+  'hash' // Stratégie: 'hash' | 'timestamp' | 'full'
 );
 
 console.log(`Ajoutés: ${result.added.length}`);
@@ -383,7 +388,7 @@ const previewManager = new ImportPreviewManager({
   checkDuplicates: true,
   priceLimits: { min: 0, max: 50000 },
   requiredFields: ['name', 'price', 'model'],
-  strict: false,  // true = rejette si warnings
+  strict: false, // true = rejette si warnings
   previewLimit: 100,
 });
 
@@ -418,7 +423,7 @@ console.log(previewManager.formatPreviewForConsole(preview));
 // Procéder uniquement si satisfait
 if (preview.invalidProducts.length === 0) {
   // Import en DB
-  await saveToDatabase(preview.validProducts.map(p => p.mapped));
+  await saveToDatabase(preview.validProducts.map((p) => p.mapped));
 }
 ```
 
@@ -477,6 +482,7 @@ providerRegistry.register({
 ## Ajout d'un nouveau provider - Checklist
 
 ### Méthode rapide (CLI)
+
 - [ ] Lancer `pnpm tsx catalog-providers/cli/generate-provider.ts`
 - [ ] Répondre aux questions interactives
 - [ ] Ajuster le mapping si nécessaire
@@ -484,8 +490,10 @@ providerRegistry.register({
 - [ ] Lancer la synchronisation
 
 ### Méthode manuelle (si besoin de customisation)
+
 - [ ] Créer le dossier `catalog-providers/{type}-providers/{nom}/`
-- [ ] Implémenter `api-client.ts` (étendre `BaseApiClient` ou `FileBasedApiClient`)
+- [ ] Implémenter `api-client.ts` (étendre `BaseApiClient` ou
+      `FileBasedApiClient`)
 - [ ] Créer `mapping.config.ts` (utiliser `DeclarativeMapper`)
 - [ ] Implémenter `transformer.ts` et `validator.ts` si nécessaire
 - [ ] Créer `index.ts` et enregistrer dans `providerRegistry`
@@ -497,43 +505,52 @@ providerRegistry.register({
 
 ### Général
 
-**Q: Dois-je implémenter toutes les méthodes de BaseTransformer ?**
-R: Non, `BaseTransformer` fournit déjà toutes les méthodes. Surcharger uniquement si format spécifique.
+**Q: Dois-je implémenter toutes les méthodes de BaseTransformer ?** R: Non,
+`BaseTransformer` fournit déjà toutes les méthodes. Surcharger uniquement si
+format spécifique.
 
-**Q: Comment gérer les formats de données différents ?**
-R: `BaseTransformer` supporte déjà plusieurs formats. Sinon, surcharger la méthode.
+**Q: Comment gérer les formats de données différents ?** R: `BaseTransformer`
+supporte déjà plusieurs formats. Sinon, surcharger la méthode.
 
-**Q: Que faire si l'API du provider a une pagination différente ?**
-R: Implémenter la logique dans `api-client.ts`, le reste reste identique.
+**Q: Que faire si l'API du provider a une pagination différente ?** R:
+Implémenter la logique dans `api-client.ts`, le reste reste identique.
 
-**Q: Comment gérer les erreurs API ?**
-R: `BaseApiClient` gère automatiquement retry et timeout. Les erreurs remontent via exceptions.
+**Q: Comment gérer les erreurs API ?** R: `BaseApiClient` gère automatiquement
+retry et timeout. Les erreurs remontent via exceptions.
 
 ### Nouvelles fonctionnalités
 
-**Q: Dois-je écrire du code pour mapper mes données ?**
-R: Non ! Utilisez `DeclarativeMapper` avec une configuration JSON. Seulement ~20 lignes de config au lieu de 200 lignes de code.
+**Q: Dois-je écrire du code pour mapper mes données ?** R: Non ! Utilisez
+`DeclarativeMapper` avec une configuration JSON. Seulement ~20 lignes de config
+au lieu de 200 lignes de code.
 
-**Q: Peut-on importer depuis un fichier Excel ?**
-R: Oui, utilisez `FileBasedApiClient` avec `sourceType: 'excel'`. Support .xlsx et .xls automatique.
+**Q: Peut-on importer depuis un fichier Excel ?** R: Oui, utilisez
+`FileBasedApiClient` avec `sourceType: 'excel'`. Support .xlsx et .xls
+automatique.
 
-**Q: Comment éviter de re-synchroniser tous les produits à chaque fois ?**
-R: Utilisez `IncrementalSyncManager` qui détecte automatiquement les changements via hash ou timestamp.
+**Q: Comment éviter de re-synchroniser tous les produits à chaque fois ?** R:
+Utilisez `IncrementalSyncManager` qui détecte automatiquement les changements
+via hash ou timestamp.
 
-**Q: Comment vérifier mes données avant de les insérer en base ?**
-R: Utilisez `ImportPreviewManager` pour avoir un aperçu complet avec statistiques, erreurs et recommandations.
+**Q: Comment vérifier mes données avant de les insérer en base ?** R: Utilisez
+`ImportPreviewManager` pour avoir un aperçu complet avec statistiques, erreurs
+et recommandations.
 
-**Q: Le générateur CLI supporte-t-il les APIs avec authentification OAuth ?**
-R: Actuellement, le générateur supporte API key, Bearer token et Basic auth. OAuth nécessite une implémentation manuelle.
+**Q: Le générateur CLI supporte-t-il les APIs avec authentification OAuth ?** R:
+Actuellement, le générateur supporte API key, Bearer token et Basic auth. OAuth
+nécessite une implémentation manuelle.
 
-**Q: Puis-je utiliser plusieurs sources pour le même provider ?**
-R: Oui, créez plusieurs clients (ex: `APIClient` pour les nouveautés, `CSVClient` pour le catalogue complet) et fusionnez les résultats.
+**Q: Puis-je utiliser plusieurs sources pour le même provider ?** R: Oui, créez
+plusieurs clients (ex: `APIClient` pour les nouveautés, `CSVClient` pour le
+catalogue complet) et fusionnez les résultats.
 
-**Q: Les transformations `CommonTransforms` couvrent-elles tous les cas ?**
-R: Elles couvrent 90% des cas. Pour des transformations complexes, créez une fonction custom dans votre mapping config.
+**Q: Les transformations `CommonTransforms` couvrent-elles tous les cas ?** R:
+Elles couvrent 90% des cas. Pour des transformations complexes, créez une
+fonction custom dans votre mapping config.
 
 **Q: La synchronisation incrémentale fonctionne-t-elle avec des fichiers CSV ?**
-R: Oui, elle compare les hash même pour des fichiers. Mais `timestamp` nécessite que votre CSV ait une colonne `updatedAt`.
+R: Oui, elle compare les hash même pour des fichiers. Mais `timestamp` nécessite
+que votre CSV ait une colonne `updatedAt`.
 
 ## 🚀 Quick Start
 

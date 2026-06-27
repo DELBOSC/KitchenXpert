@@ -51,13 +51,22 @@ const CreateProject: React.FC = () => {
     if (!formData.name.trim()) {
       newErrors.name = t('projects.validation.nameRequired', 'Project name is required');
     } else if (formData.name.length < 3) {
-      newErrors.name = t('projects.validation.nameMinLength', 'Project name must be at least 3 characters');
+      newErrors.name = t(
+        'projects.validation.nameMinLength',
+        'Project name must be at least 3 characters'
+      );
     } else if (formData.name.length > 100) {
-      newErrors.name = t('projects.validation.nameMaxLength', 'Project name must be less than 100 characters');
+      newErrors.name = t(
+        'projects.validation.nameMaxLength',
+        'Project name must be less than 100 characters'
+      );
     }
 
     if (formData.description && formData.description.length > 500) {
-      newErrors.description = t('projects.validation.descriptionMaxLength', 'Description must be less than 500 characters');
+      newErrors.description = t(
+        'projects.validation.descriptionMaxLength',
+        'Description must be less than 500 characters'
+      );
     }
 
     if (formData.budget.total < 0) {
@@ -69,7 +78,10 @@ const CreateProject: React.FC = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (targetDate < today) {
-        newErrors.targetCompletionDate = t('projects.validation.datePast', 'Target date cannot be in the past');
+        newErrors.targetCompletionDate = t(
+          'projects.validation.datePast',
+          'Target date cannot be in the past'
+        );
       }
     }
 
@@ -147,7 +159,10 @@ const CreateProject: React.FC = () => {
       const newProject = (await response.json()) as { id: string };
       navigate(`/projects/${newProject.id}`);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('common.unexpectedError', 'An unexpected error occurred');
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : t('common.unexpectedError', 'An unexpected error occurred');
       setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -166,19 +181,29 @@ const CreateProject: React.FC = () => {
               </Link>
             </li>
             <li>/</li>
-            <li className="text-gray-900 dark:text-white font-medium">{t('projects.createNew', 'Create New Project')}</li>
+            <li className="text-gray-900 dark:text-white font-medium">
+              {t('projects.createNew', 'Create New Project')}
+            </li>
           </ol>
         </nav>
 
         {/* Form Card */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('projects.createNew', 'Create New Project')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            {t('projects.createNew', 'Create New Project')}
+          </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {t('projects.createDescription', 'Start a new kitchen design project. You can add kitchens after creating the project.')}
+            {t(
+              'projects.createDescription',
+              'Start a new kitchen design project. You can add kitchens after creating the project.'
+            )}
           </p>
 
           {submitError && (
-            <div className="p-3 mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" role="alert">
+            <div
+              className="p-3 mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+              role="alert"
+            >
               <p className="text-sm text-red-600 dark:text-red-400">{submitError}</p>
             </div>
           )}
@@ -186,7 +211,10 @@ const CreateProject: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Project Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('projects.projectName', 'Project Name')} <span className="text-red-500">*</span>
               </label>
               <input
@@ -200,17 +228,28 @@ const CreateProject: React.FC = () => {
                 aria-invalid={!!errors.name}
                 aria-describedby={errors.name ? 'create-name-error' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors dark:bg-gray-700 dark:text-white ${
-                  errors.name ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                  errors.name
+                    ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                    : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               {errors.name && (
-                <p id="create-name-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{errors.name}</p>
+                <p
+                  id="create-name-error"
+                  className="mt-1 text-sm text-red-600 dark:text-red-400"
+                  role="alert"
+                >
+                  {errors.name}
+                </p>
               )}
             </div>
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('common.description', 'Description')}
               </label>
               <textarea
@@ -219,16 +258,27 @@ const CreateProject: React.FC = () => {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                placeholder={t('projects.descriptionPlaceholder', 'Decrivez vos objectifs et besoins...')}
+                placeholder={t(
+                  'projects.descriptionPlaceholder',
+                  'Decrivez vos objectifs et besoins...'
+                )}
                 aria-invalid={!!errors.description}
                 aria-describedby={errors.description ? 'create-description-error' : undefined}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors resize-none dark:bg-gray-700 dark:text-white ${
-                  errors.description ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                  errors.description
+                    ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                    : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               <div className="mt-1 flex justify-between">
                 {errors.description ? (
-                  <p id="create-description-error" className="text-sm text-red-600 dark:text-red-400" role="alert">{errors.description}</p>
+                  <p
+                    id="create-description-error"
+                    className="text-sm text-red-600 dark:text-red-400"
+                    role="alert"
+                  >
+                    {errors.description}
+                  </p>
                 ) : (
                   <span />
                 )}
@@ -265,18 +315,25 @@ const CreateProject: React.FC = () => {
                   min="0"
                   step="100"
                   className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors dark:bg-gray-700 dark:text-white ${
-                    errors.budget ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                    errors.budget
+                      ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                      : 'border-gray-300 dark:border-gray-600'
                   }`}
                 />
               </div>
               {errors.budget && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{errors.budget}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+                  {errors.budget}
+                </p>
               )}
             </div>
 
             {/* Target Completion Date */}
             <div>
-              <label htmlFor="targetCompletionDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label
+                htmlFor="targetCompletionDate"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 {t('projects.targetDate', 'Target Completion Date (Optional)')}
               </label>
               <input
@@ -286,11 +343,15 @@ const CreateProject: React.FC = () => {
                 value={formData.targetCompletionDate}
                 onChange={handleInputChange}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors dark:bg-gray-700 dark:text-white ${
-                  errors.targetCompletionDate ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
+                  errors.targetCompletionDate
+                    ? 'border-red-300 bg-red-50 dark:border-red-500 dark:bg-red-900/20'
+                    : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               {errors.targetCompletionDate && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{errors.targetCompletionDate}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+                  {errors.targetCompletionDate}
+                </p>
               )}
             </div>
 
@@ -313,7 +374,9 @@ const CreateProject: React.FC = () => {
                 {isSubmitting && (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 )}
-                {isSubmitting ? t('projects.creating', 'Creating...') : t('projects.createProject', 'Create Project')}
+                {isSubmitting
+                  ? t('projects.creating', 'Creating...')
+                  : t('projects.createProject', 'Create Project')}
               </button>
             </div>
           </form>
@@ -321,12 +384,38 @@ const CreateProject: React.FC = () => {
 
         {/* Tips */}
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-          <h3 className="font-medium text-blue-900 dark:text-blue-300 mb-2">{t('projects.tips.title', 'Tips for a Great Project')}</h3>
+          <h3 className="font-medium text-blue-900 dark:text-blue-300 mb-2">
+            {t('projects.tips.title', 'Tips for a Great Project')}
+          </h3>
           <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
-            <li>- {t('projects.tips.descriptiveName', 'Choose a descriptive name that reflects your design goals')}</li>
-            <li>- {t('projects.tips.budgetInfo', 'Include budget information to help with material selection')}</li>
-            <li>- {t('projects.tips.realisticDate', 'Set a realistic target date for project completion')}</li>
-            <li>- {t('projects.tips.multipleKitchens', 'You can add multiple kitchens to a single project')}</li>
+            <li>
+              -{' '}
+              {t(
+                'projects.tips.descriptiveName',
+                'Choose a descriptive name that reflects your design goals'
+              )}
+            </li>
+            <li>
+              -{' '}
+              {t(
+                'projects.tips.budgetInfo',
+                'Include budget information to help with material selection'
+              )}
+            </li>
+            <li>
+              -{' '}
+              {t(
+                'projects.tips.realisticDate',
+                'Set a realistic target date for project completion'
+              )}
+            </li>
+            <li>
+              -{' '}
+              {t(
+                'projects.tips.multipleKitchens',
+                'You can add multiple kitchens to a single project'
+              )}
+            </li>
           </ul>
         </div>
       </div>

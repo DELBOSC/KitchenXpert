@@ -17,7 +17,8 @@ export const ProjectsSeed: Seed = {
   async run(tx: Transaction): Promise<void> {
     const now = new Date().toISOString();
 
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Project" (id, "userId", name, description, status, budget, currency, metadata, "createdAt", "updatedAt")
       VALUES
         ('pr100000-0000-0000-0000-000000000001',
@@ -52,10 +53,13 @@ export const ProjectsSeed: Seed = {
          '{"purpose": "showroom", "location": "Lyon"}',
          $1, $1)
       ON CONFLICT DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     // Collaborators
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "ProjectCollaborator" (id, "projectId", email, role, "invitedAt", "acceptedAt")
       VALUES
         (gen_random_uuid(), 'pr100000-0000-0000-0000-000000000003',
@@ -63,7 +67,9 @@ export const ProjectsSeed: Seed = {
         (gen_random_uuid(), 'pr100000-0000-0000-0000-000000000004',
          'jean.dupont@cuisines-pro.fr', 'editor', $1, $1)
       ON CONFLICT ("projectId", email) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     logger.info('[Seed] Created 4 sample projects with collaborators');
   },

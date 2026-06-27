@@ -76,41 +76,44 @@ export function createProviderRoutes(config: ProviderRouteConfig): Router {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/info', asyncHandler(async (_req: Request, res: Response) => {
-    const provider = await prisma.catalogProvider.findFirst({
-      where: { code: config.providerCode },
-      include: {
-        _count: {
-          select: {
-            products: true,
-            appliances: true,
-            catalogs: true,
+  router.get(
+    '/info',
+    asyncHandler(async (_req: Request, res: Response) => {
+      const provider = await prisma.catalogProvider.findFirst({
+        where: { code: config.providerCode },
+        include: {
+          _count: {
+            select: {
+              products: true,
+              appliances: true,
+              catalogs: true,
+            },
           },
         },
-      },
-    });
-
-    if (!provider) {
-      res.status(404).json({
-        success: false,
-        error: `Provider '${config.displayName}' not configured`,
       });
-      return;
-    }
 
-    res.status(200).json({
-      success: true,
-      data: {
-        id: provider.id,
-        name: provider.name,
-        code: provider.code,
-        isActive: provider.isActive,
-        productCount: provider._count.products,
-        applianceCount: provider._count.appliances,
-        catalogCount: provider._count.catalogs,
-      },
-    });
-  }));
+      if (!provider) {
+        res.status(404).json({
+          success: false,
+          error: `Provider '${config.displayName}' not configured`,
+        });
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          id: provider.id,
+          name: provider.name,
+          code: provider.code,
+          isActive: provider.isActive,
+          productCount: provider._count.products,
+          applianceCount: provider._count.appliances,
+          catalogCount: provider._count.catalogs,
+        },
+      });
+    })
+  );
 
   if (config.type === 'furniture') {
     addFurnitureRoutes(router, config);
@@ -144,34 +147,38 @@ export function createProviderRoutes(config: ProviderRouteConfig): Router {
    *       404:
    *         description: Provider not found
    */
-  router.get('/sync/status', authenticate, asyncHandler(async (_req: Request, res: Response) => {
-    const provider = await prisma.catalogProvider.findFirst({
-      where: { code: config.providerCode },
-      include: {
-        catalogs: {
-          orderBy: { lastSyncAt: 'desc' },
-          take: 1,
+  router.get(
+    '/sync/status',
+    authenticate,
+    asyncHandler(async (_req: Request, res: Response) => {
+      const provider = await prisma.catalogProvider.findFirst({
+        where: { code: config.providerCode },
+        include: {
+          catalogs: {
+            orderBy: { lastSyncAt: 'desc' },
+            take: 1,
+          },
         },
-      },
-    });
+      });
 
-    if (!provider) {
-      res.status(404).json({ success: false, error: 'Provider not found' });
-      return;
-    }
+      if (!provider) {
+        res.status(404).json({ success: false, error: 'Provider not found' });
+        return;
+      }
 
-    const lastCatalog = provider.catalogs[0];
-    res.status(200).json({
-      success: true,
-      data: {
-        providerId: provider.id,
-        providerCode: config.providerCode,
-        isActive: provider.isActive,
-        lastSyncAt: lastCatalog?.lastSyncAt || null,
-        catalogVersion: lastCatalog?.version || null,
-      },
-    });
-  }));
+      const lastCatalog = provider.catalogs[0];
+      res.status(200).json({
+        success: true,
+        data: {
+          providerId: provider.id,
+          providerCode: config.providerCode,
+          isActive: provider.isActive,
+          lastSyncAt: lastCatalog?.lastSyncAt || null,
+          catalogVersion: lastCatalog?.version || null,
+        },
+      });
+    })
+  );
 
   /**
    * @swagger
@@ -199,31 +206,36 @@ export function createProviderRoutes(config: ProviderRouteConfig): Router {
    *       404:
    *         description: Provider not found
    */
-  router.post('/sync/trigger', authenticate, authorize(['admin']), asyncHandler(async (_req: Request, res: Response) => {
-    const provider = await prisma.catalogProvider.findFirst({
-      where: { code: config.providerCode },
-    });
+  router.post(
+    '/sync/trigger',
+    authenticate,
+    authorize(['admin']),
+    asyncHandler(async (_req: Request, res: Response) => {
+      const provider = await prisma.catalogProvider.findFirst({
+        where: { code: config.providerCode },
+      });
 
-    if (!provider) {
-      res.status(404).json({ success: false, error: 'Provider not found' });
-      return;
-    }
+      if (!provider) {
+        res.status(404).json({ success: false, error: 'Provider not found' });
+        return;
+      }
 
-    // Run the sync inline. Each provider has at most a few hundred rows so
-    // this stays well under request budget. Heavy real-scraping should be
-    // delegated to the @kitchenxpert/scraper BullMQ pipeline via
-    // SCRAPER_BRIDGE_ENABLED=1 — see jobs/sync-sources/scraper-bridge-source.ts.
-    const [stats] = await runProviderSync(prisma, { providers: [config.providerCode] });
+      // Run the sync inline. Each provider has at most a few hundred rows so
+      // this stays well under request budget. Heavy real-scraping should be
+      // delegated to the @kitchenxpert/scraper BullMQ pipeline via
+      // SCRAPER_BRIDGE_ENABLED=1 — see jobs/sync-sources/scraper-bridge-source.ts.
+      const [stats] = await runProviderSync(prisma, { providers: [config.providerCode] });
 
-    res.status(202).json({
-      success: true,
-      data: {
-        providerId: provider.id,
-        providerCode: config.providerCode,
-        ...stats,
-      },
-    });
-  }));
+      res.status(202).json({
+        success: true,
+        data: {
+          providerId: provider.id,
+          providerCode: config.providerCode,
+          ...stats,
+        },
+      });
+    })
+  );
 
   return router;
 }
@@ -305,57 +317,60 @@ function addFurnitureRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/products', asyncHandler(async (req: Request, res: Response) => {
-    const {
-      page = '1',
-      limit = '20',
-      categoryId,
-      material,
-      color,
-      minPrice,
-      maxPrice,
-      sortBy = 'name',
-      sortOrder = 'asc',
-    } = req.query;
+  router.get(
+    '/products',
+    asyncHandler(async (req: Request, res: Response) => {
+      const {
+        page = '1',
+        limit = '20',
+        categoryId,
+        material,
+        color,
+        minPrice,
+        maxPrice,
+        sortBy = 'name',
+        sortOrder = 'asc',
+      } = req.query;
 
-    const provider = await prisma.catalogProvider.findFirst({
-      where: { code: config.providerCode },
-    });
+      const provider = await prisma.catalogProvider.findFirst({
+        where: { code: config.providerCode },
+      });
 
-    if (!provider) {
-      res.status(404).json({ success: false, error: 'Provider not found' });
-      return;
-    }
-
-    const result = await productRepository.findAll(
-      {
-        providerId: provider.id,
-        categoryId: categoryId as string,
-        material: material as string,
-        color: color as string,
-        minPrice: minPrice ? Number(minPrice) : undefined,
-        maxPrice: maxPrice ? Number(maxPrice) : undefined,
-      },
-      {
-        page: Number(page),
-        limit: Math.min(Number(limit), 100),
-        sortBy: sortBy as string,
-        sortOrder: sortOrder as 'asc' | 'desc',
+      if (!provider) {
+        res.status(404).json({ success: false, error: 'Provider not found' });
+        return;
       }
-    );
 
-    res.status(200).json({
-      success: true,
-      data: result.data,
-      meta: {
-        page: result.page,
-        limit: Math.min(Number(limit), 100),
-        total: result.total,
-        totalPages: result.totalPages,
-        provider: config.providerCode,
-      },
-    });
-  }));
+      const result = await productRepository.findAll(
+        {
+          providerId: provider.id,
+          categoryId: categoryId as string,
+          material: material as string,
+          color: color as string,
+          minPrice: minPrice ? Number(minPrice) : undefined,
+          maxPrice: maxPrice ? Number(maxPrice) : undefined,
+        },
+        {
+          page: Number(page),
+          limit: Math.min(Number(limit), 100),
+          sortBy: sortBy as string,
+          sortOrder: sortOrder as 'asc' | 'desc',
+        }
+      );
+
+      res.status(200).json({
+        success: true,
+        data: result.data,
+        meta: {
+          page: result.page,
+          limit: Math.min(Number(limit), 100),
+          total: result.total,
+          totalPages: result.totalPages,
+          provider: config.providerCode,
+        },
+      });
+    })
+  );
 
   /**
    * @swagger
@@ -394,41 +409,44 @@ function addFurnitureRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/products/search', asyncHandler(async (req: Request, res: Response) => {
-    const { q, limit = '20' } = req.query;
+  router.get(
+    '/products/search',
+    asyncHandler(async (req: Request, res: Response) => {
+      const { q, limit = '20' } = req.query;
 
-    if (!q) {
-      res.status(400).json({
-        success: false,
-        error: { code: 'MISSING_QUERY', message: 'Query parameter "q" is required' },
+      if (!q) {
+        res.status(400).json({
+          success: false,
+          error: { code: 'MISSING_QUERY', message: 'Query parameter "q" is required' },
+        });
+        return;
+      }
+
+      const provider = await prisma.catalogProvider.findFirst({
+        where: { code: config.providerCode },
       });
-      return;
-    }
 
-    const provider = await prisma.catalogProvider.findFirst({
-      where: { code: config.providerCode },
-    });
+      if (!provider) {
+        res.status(404).json({ success: false, error: 'Provider not found' });
+        return;
+      }
 
-    if (!provider) {
-      res.status(404).json({ success: false, error: 'Provider not found' });
-      return;
-    }
+      // Search within this provider's products
+      const products = await productRepository.findAll(
+        {
+          providerId: provider.id,
+          search: q as string,
+        },
+        { page: 1, limit: Math.min(Number(limit), 100) }
+      );
 
-    // Search within this provider's products
-    const products = await productRepository.findAll(
-      {
-        providerId: provider.id,
-        search: q as string,
-      },
-      { page: 1, limit: Math.min(Number(limit), 100) }
-    );
-
-    res.status(200).json({
-      success: true,
-      data: products.data,
-      meta: { total: products.total, provider: config.providerCode },
-    });
-  }));
+      res.status(200).json({
+        success: true,
+        data: products.data,
+        meta: { total: products.total, provider: config.providerCode },
+      });
+    })
+  );
 
   /**
    * @swagger
@@ -458,17 +476,20 @@ function addFurnitureRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/products/:id', asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params['id'] || '';
-    const product = await productRepository.findById(id);
+  router.get(
+    '/products/:id',
+    asyncHandler(async (req: Request, res: Response) => {
+      const id = req.params['id'] || '';
+      const product = await productRepository.findById(id);
 
-    if (!product) {
-      res.status(404).json({ success: false, error: 'Product not found' });
-      return;
-    }
+      if (!product) {
+        res.status(404).json({ success: false, error: 'Product not found' });
+        return;
+      }
 
-    res.status(200).json({ success: true, data: product });
-  }));
+      res.status(200).json({ success: true, data: product });
+    })
+  );
 
   /**
    * @swagger
@@ -492,33 +513,36 @@ function addFurnitureRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/categories', asyncHandler(async (_req: Request, res: Response) => {
-    const provider = await prisma.catalogProvider.findFirst({
-      where: { code: config.providerCode },
-    });
+  router.get(
+    '/categories',
+    asyncHandler(async (_req: Request, res: Response) => {
+      const provider = await prisma.catalogProvider.findFirst({
+        where: { code: config.providerCode },
+      });
 
-    if (!provider) {
-      res.status(404).json({ success: false, error: 'Provider not found' });
-      return;
-    }
+      if (!provider) {
+        res.status(404).json({ success: false, error: 'Provider not found' });
+        return;
+      }
 
-    // Get categories that have products from this provider
-    const categories = await prisma.productCategory.findMany({
-      where: {
-        products: {
-          some: { providerId: provider.id },
+      // Get categories that have products from this provider
+      const categories = await prisma.productCategory.findMany({
+        where: {
+          products: {
+            some: { providerId: provider.id },
+          },
         },
-      },
-      include: {
-        _count: {
-          select: { products: true },
+        include: {
+          _count: {
+            select: { products: true },
+          },
         },
-      },
-      orderBy: { sortOrder: 'asc' },
-    });
+        orderBy: { sortOrder: 'asc' },
+      });
 
-    res.status(200).json({ success: true, data: categories });
-  }));
+      res.status(200).json({ success: true, data: categories });
+    })
+  );
 }
 
 // ==================== APPLIANCE ROUTES ====================
@@ -578,39 +602,35 @@ function addApplianceRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/appliances', asyncHandler(async (req: Request, res: Response) => {
-    const {
-      page = '1',
-      limit = '20',
-      type,
-      energyRating,
-      minPrice,
-      maxPrice,
-    } = req.query;
+  router.get(
+    '/appliances',
+    asyncHandler(async (req: Request, res: Response) => {
+      const { page = '1', limit = '20', type, energyRating, minPrice, maxPrice } = req.query;
 
-    const result = await applianceRepository.findAll(
-      {
-        brand: config.displayName,
-        type: type as string,
-        energyRating: energyRating as string,
-        minPrice: minPrice ? Number(minPrice) : undefined,
-        maxPrice: maxPrice ? Number(maxPrice) : undefined,
-      },
-      { page: Number(page), limit: Math.min(Number(limit), 100) }
-    );
+      const result = await applianceRepository.findAll(
+        {
+          brand: config.displayName,
+          type: type as string,
+          energyRating: energyRating as string,
+          minPrice: minPrice ? Number(minPrice) : undefined,
+          maxPrice: maxPrice ? Number(maxPrice) : undefined,
+        },
+        { page: Number(page), limit: Math.min(Number(limit), 100) }
+      );
 
-    res.status(200).json({
-      success: true,
-      data: result.data,
-      meta: {
-        page: result.page,
-        limit: Math.min(Number(limit), 100),
-        total: result.total,
-        totalPages: result.totalPages,
-        provider: config.providerCode,
-      },
-    });
-  }));
+      res.status(200).json({
+        success: true,
+        data: result.data,
+        meta: {
+          page: result.page,
+          limit: Math.min(Number(limit), 100),
+          total: result.total,
+          totalPages: result.totalPages,
+          provider: config.providerCode,
+        },
+      });
+    })
+  );
 
   /**
    * @swagger
@@ -647,29 +667,32 @@ function addApplianceRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/appliances/search', asyncHandler(async (req: Request, res: Response) => {
-    const { q, limit = '20' } = req.query;
+  router.get(
+    '/appliances/search',
+    asyncHandler(async (req: Request, res: Response) => {
+      const { q, limit = '20' } = req.query;
 
-    if (!q) {
-      res.status(400).json({
-        success: false,
-        error: { code: 'MISSING_QUERY', message: 'Query parameter "q" is required' },
+      if (!q) {
+        res.status(400).json({
+          success: false,
+          error: { code: 'MISSING_QUERY', message: 'Query parameter "q" is required' },
+        });
+        return;
+      }
+
+      // Search scoped to this brand via repository
+      const appliances = await applianceRepository.search(
+        `${config.displayName} ${q as string}`,
+        Math.min(Number(limit), 100)
+      );
+
+      res.status(200).json({
+        success: true,
+        data: appliances,
+        meta: { provider: config.providerCode },
       });
-      return;
-    }
-
-    // Search scoped to this brand via repository
-    const appliances = await applianceRepository.search(
-      `${config.displayName} ${q as string}`,
-      Math.min(Number(limit), 100)
-    );
-
-    res.status(200).json({
-      success: true,
-      data: appliances,
-      meta: { provider: config.providerCode },
-    });
-  }));
+    })
+  );
 
   /**
    * @swagger
@@ -691,10 +714,13 @@ function addApplianceRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/appliances/types', asyncHandler(async (_req: Request, res: Response) => {
-    const types = await applianceRepository.getTypes();
-    res.status(200).json({ success: true, data: types });
-  }));
+  router.get(
+    '/appliances/types',
+    asyncHandler(async (_req: Request, res: Response) => {
+      const types = await applianceRepository.getTypes();
+      res.status(200).json({ success: true, data: types });
+    })
+  );
 
   /**
    * @swagger
@@ -724,15 +750,18 @@ function addApplianceRoutes(router: Router, config: ProviderRouteConfig): void {
    *       429:
    *         description: Rate limit exceeded
    */
-  router.get('/appliances/:id', asyncHandler(async (req: Request, res: Response) => {
-    const id = req.params['id'] || '';
-    const appliance = await applianceRepository.findById(id);
+  router.get(
+    '/appliances/:id',
+    asyncHandler(async (req: Request, res: Response) => {
+      const id = req.params['id'] || '';
+      const appliance = await applianceRepository.findById(id);
 
-    if (!appliance) {
-      res.status(404).json({ success: false, error: 'Appliance not found' });
-      return;
-    }
+      if (!appliance) {
+        res.status(404).json({ success: false, error: 'Appliance not found' });
+        return;
+      }
 
-    res.status(200).json({ success: true, data: appliance });
-  }));
+      res.status(200).json({ success: true, data: appliance });
+    })
+  );
 }

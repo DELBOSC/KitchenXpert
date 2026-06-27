@@ -9,7 +9,12 @@ import { Queue, Worker, Job, QueueEvents, QueueScheduler } from 'bullmq';
 import Redis from 'ioredis';
 import { EventEmitter } from 'events';
 import { createScraper, hasScraperFor, getAvailableScrapers } from '../scrapers/index.js';
-import { BRANDS_CONFIG, getBrandConfig, getEnabledBrands, getBrandsByPriority } from '../config/brands.config.js';
+import {
+  BRANDS_CONFIG,
+  getBrandConfig,
+  getEnabledBrands,
+  getBrandsByPriority,
+} from '../config/brands.config.js';
 import { logger, createBrandLogger } from '../utils/logger.js';
 import { DataNormalizer, createDataNormalizer } from './data-normalizer.js';
 import { ImageDownloader, createImageDownloader } from './image-downloader.js';
@@ -175,26 +180,23 @@ export class ScrapeManager extends EventEmitter {
     const connection = this.redis;
 
     // Scraping queue
-    this.scrapingQueue = new Queue<ScrapeJobData, ScrapeJobResult>(
-      this.config.queues.scraping,
-      {
-        connection,
-        defaultJobOptions: {
-          attempts: 3,
-          backoff: {
-            type: 'exponential',
-            delay: 60000, // 1 minute
-          },
-          removeOnComplete: {
-            age: 86400, // 24 hours
-            count: 100,
-          },
-          removeOnFail: {
-            age: 604800, // 7 days
-          },
+    this.scrapingQueue = new Queue<ScrapeJobData, ScrapeJobResult>(this.config.queues.scraping, {
+      connection,
+      defaultJobOptions: {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 60000, // 1 minute
         },
-      }
-    );
+        removeOnComplete: {
+          age: 86400, // 24 hours
+          count: 100,
+        },
+        removeOnFail: {
+          age: 604800, // 7 days
+        },
+      },
+    });
 
     // Images queue
     this.imagesQueue = new Queue(this.config.queues.images, {
@@ -270,10 +272,13 @@ export class ScrapeManager extends EventEmitter {
       }
     });
 
-    this.scrapingWorker.on('progress', (job: Job<ScrapeJobData>, progress: number | object | string) => {
-      logger.debug(`Job progress: ${job.data.brandId}`, { progress });
-      this.emit('job:progress', job, progress as ScrapeProgress);
-    });
+    this.scrapingWorker.on(
+      'progress',
+      (job: Job<ScrapeJobData>, progress: number | object | string) => {
+        logger.debug(`Job progress: ${job.data.brandId}`, { progress });
+        this.emit('job:progress', job, progress as ScrapeProgress);
+      }
+    );
 
     logger.info('Workers initialized');
   }
@@ -312,13 +317,16 @@ export class ScrapeManager extends EventEmitter {
 
   private getCircuitBreaker(brandId: string): CircuitBreaker {
     if (!this.brandCircuitBreakers.has(brandId)) {
-      this.brandCircuitBreakers.set(brandId, new CircuitBreaker({
-        failureThreshold: 5,
-        resetTimeout: 60000,
-        // Allow 3 test requests in half-open state for a more reliable sample before deciding recovery
-        halfOpenMax: 3,
-        name: `scraper:${brandId}`,
-      }));
+      this.brandCircuitBreakers.set(
+        brandId,
+        new CircuitBreaker({
+          failureThreshold: 5,
+          resetTimeout: 60000,
+          // Allow 3 test requests in half-open state for a more reliable sample before deciding recovery
+          halfOpenMax: 3,
+          name: `scraper:${brandId}`,
+        })
+      );
     }
     return this.brandCircuitBreakers.get(brandId)!;
   }
@@ -422,7 +430,10 @@ export class ScrapeManager extends EventEmitter {
     };
   }
 
-  private normalizeProduct(normalizer: DataNormalizer, product: ScrapedProduct): ScrapedProduct | null {
+  private normalizeProduct(
+    normalizer: DataNormalizer,
+    product: ScrapedProduct
+  ): ScrapedProduct | null {
     try {
       switch (product.type) {
         case 'cabinet': {
@@ -523,7 +534,12 @@ export class ScrapeManager extends EventEmitter {
           await prisma.scrapeLog.create({
             data: {
               brandId,
-              status: summary.status === 'success' ? 'completed' : summary.status === 'partial' ? 'partial' : 'failed',
+              status:
+                summary.status === 'success'
+                  ? 'completed'
+                  : summary.status === 'partial'
+                    ? 'partial'
+                    : 'failed',
               startedAt: summary.startedAt,
               completedAt: summary.completedAt || new Date(),
               pagesScraped: summary.stats.pagesScraped,
@@ -816,7 +832,9 @@ export class ScrapeManager extends EventEmitter {
                         break;
 
                       default:
-                        logger.warn(`Unknown product type: ${(product as ScrapedProduct).type}`, { brandId });
+                        logger.warn(`Unknown product type: ${(product as ScrapedProduct).type}`, {
+                          brandId,
+                        });
                         break;
                     }
                   }
@@ -825,18 +843,32 @@ export class ScrapeManager extends EventEmitter {
               } catch (transactionError) {
                 retryAttempt++;
                 if (retryAttempt < MAX_TRANSACTION_RETRIES) {
-                  logger.warn(`Transaction failed for batch starting at ${batchStart}, retrying (${retryAttempt}/${MAX_TRANSACTION_RETRIES})`, {
-                    error: transactionError instanceof Error ? transactionError.message : String(transactionError),
-                    brandId,
-                  });
+                  logger.warn(
+                    `Transaction failed for batch starting at ${batchStart}, retrying (${retryAttempt}/${MAX_TRANSACTION_RETRIES})`,
+                    {
+                      error:
+                        transactionError instanceof Error
+                          ? transactionError.message
+                          : String(transactionError),
+                      brandId,
+                    }
+                  );
                   // Exponential backoff before retry
-                  await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryAttempt) * 1000));
+                  await new Promise((resolve) =>
+                    setTimeout(resolve, Math.pow(2, retryAttempt) * 1000)
+                  );
                 } else {
-                  logger.error(`Transaction failed for batch starting at ${batchStart} after ${MAX_TRANSACTION_RETRIES} retries`, {
-                    error: transactionError instanceof Error ? transactionError.message : String(transactionError),
-                    brandId,
-                    batchSize: batch.length,
-                  });
+                  logger.error(
+                    `Transaction failed for batch starting at ${batchStart} after ${MAX_TRANSACTION_RETRIES} retries`,
+                    {
+                      error:
+                        transactionError instanceof Error
+                          ? transactionError.message
+                          : String(transactionError),
+                      brandId,
+                      batchSize: batch.length,
+                    }
+                  );
                 }
               }
             }
@@ -844,7 +876,9 @@ export class ScrapeManager extends EventEmitter {
 
           // Queue products for AI enrichment
           if (products.length > 0) {
-            const getProductMeta = (p: ScrapedProduct): { reference: string; name: string; description?: string } => {
+            const getProductMeta = (
+              p: ScrapedProduct
+            ): { reference: string; name: string; description?: string } => {
               const data = p.data as Record<string, unknown>;
               return {
                 reference: (data.reference as string) || (data.externalId as string) || 'unknown',
@@ -860,7 +894,7 @@ export class ScrapeManager extends EventEmitter {
                 `enrich:${brandId}:${i}`,
                 {
                   brandId,
-                  products: batch.map(p => {
+                  products: batch.map((p) => {
                     const meta = getProductMeta(p);
                     return {
                       type: p.type,
@@ -877,17 +911,19 @@ export class ScrapeManager extends EventEmitter {
           }
 
           // Update brand stats
-          await prisma.brand.update({
-            where: { id: brandId },
-            data: {
-              lastScrapedAt: new Date(),
-              productsCount: {
-                increment: productsStored - productsUpdated,
+          await prisma.brand
+            .update({
+              where: { id: brandId },
+              data: {
+                lastScrapedAt: new Date(),
+                productsCount: {
+                  increment: productsStored - productsUpdated,
+                },
               },
-            },
-          }).catch(() => {
-            // Brand might not exist, ignore
-          });
+            })
+            .catch(() => {
+              // Brand might not exist, ignore
+            });
 
           logger.info(`Stored ${productsStored} products in database for ${brandId}`);
         } catch (dbError) {
@@ -920,14 +956,10 @@ export class ScrapeManager extends EventEmitter {
       triggeredBy: 'manual',
     };
 
-    const job = await this.scrapingQueue.add(
-      `scrape:${brandId}`,
-      jobData,
-      {
-        priority: priority || this.getBrandPriority(brandId),
-        jobId: `scrape:${brandId}:${Date.now()}`,
-      }
-    );
+    const job = await this.scrapingQueue.add(`scrape:${brandId}`, jobData, {
+      priority: priority || this.getBrandPriority(brandId),
+      jobId: `scrape:${brandId}:${Date.now()}`,
+    });
 
     logger.info(`Added scraping job for ${brandId}`, { jobId: job.id });
     return job;
@@ -1057,7 +1089,13 @@ export class ScrapeManager extends EventEmitter {
     const resultKeys: string[] = [];
     let cursor = '0';
     do {
-      const [nextCursor, keys] = await this.redis.scan(cursor, 'MATCH', 'scrape:results:*', 'COUNT', 100);
+      const [nextCursor, keys] = await this.redis.scan(
+        cursor,
+        'MATCH',
+        'scrape:results:*',
+        'COUNT',
+        100
+      );
       cursor = nextCursor;
       resultKeys.push(...keys);
     } while (cursor !== '0');

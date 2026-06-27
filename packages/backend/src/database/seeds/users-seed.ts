@@ -17,7 +17,6 @@ import logger from '../../utils/logger';
 
 import type { Seed, Transaction } from './seed-runner';
 
-
 const SALT_ROUNDS = 12;
 
 export const UsersSeed: Seed = {
@@ -26,7 +25,8 @@ export const UsersSeed: Seed = {
   order: 15,
 
   async run(tx: Transaction): Promise<void> {
-    const seedPassword = process.env.SEED_USER_PASSWORD || crypto.randomBytes(12).toString('base64');
+    const seedPassword =
+      process.env.SEED_USER_PASSWORD || crypto.randomBytes(12).toString('base64');
 
     if (!process.env.SEED_USER_PASSWORD && process.env.NODE_ENV !== 'production') {
       logger.info('[Seed] Generated random password for seed users (not logged for security)');
@@ -36,7 +36,8 @@ export const UsersSeed: Seed = {
     const passwordHash = await bcrypt.hash(seedPassword, SALT_ROUNDS);
     const now = new Date().toISOString();
 
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "User" (id, email, password, "firstName", "lastName", role, status, "emailVerified", language, timezone, phone, "createdAt", "updatedAt")
       VALUES
         -- Super Admin
@@ -61,7 +62,9 @@ export const UsersSeed: Seed = {
         ('77777777-7777-7777-7777-777777777777', 'demo@kitchenxpert.com', $1,
          'Demo', 'User', 'user', 'active', false, 'fr', 'UTC', NULL, $2, $2)
       ON CONFLICT (email) DO NOTHING
-    `, [passwordHash, now]);
+    `,
+      [passwordHash, now]
+    );
 
     logger.info('[Seed] Created 7 sample users');
   },

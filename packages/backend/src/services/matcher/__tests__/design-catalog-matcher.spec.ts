@@ -5,20 +5,29 @@ import type { MatcherDb, ProductRow, SlotInput } from '../design-catalog-matcher
 function makeDb(rows: Partial<ProductRow>[]) {
   const findMany = jest.fn().mockResolvedValue(
     rows.map((r, i) => ({
-      id: `p${i + 1}`, sku: `SKU${i + 1}`, brand: 'Bosch', price: 200,
-      width: 59.5, height: 59.5, depth: 55, availability: 'in_stock', dimensionConfidence: 1,
+      id: `p${i + 1}`,
+      sku: `SKU${i + 1}`,
+      brand: 'Bosch',
+      price: 200,
+      width: 59.5,
+      height: 59.5,
+      depth: 55,
+      availability: 'in_stock',
+      dimensionConfidence: 1,
       ...r,
-    })),
+    }))
   );
   return { db: { product: { findMany } } as unknown as MatcherDb, findMany };
 }
 
 const ovenSlot = (over: Partial<SlotInput> = {}): SlotInput => ({
-  type: 'oven', dimensions: { width: 60, height: 60, depth: 55 }, ...over,
+  type: 'oven',
+  dimensions: { width: 60, height: 60, depth: 55 },
+  ...over,
 });
 
 describe('DesignCatalogMatcher.findMatchingProducts', () => {
-  it("exact_match : slot 60x60x55, candidat 59.5x59.5x55 (5mm <= tol exacte)", async () => {
+  it('exact_match : slot 60x60x55, candidat 59.5x59.5x55 (5mm <= tol exacte)', async () => {
     const { db } = makeDb([{ width: 59.5, height: 59.5, depth: 55 }]);
     const r = await new DesignCatalogMatcher(db).findMatchingProducts(ovenSlot());
     expect(r.status).toBe('exact_match');
@@ -33,7 +42,9 @@ describe('DesignCatalogMatcher.findMatchingProducts', () => {
 
   it('matched_over_budget : cotes OK mais prix > budget.max', async () => {
     const { db } = makeDb([{ width: 60, height: 60, depth: 55, price: 700 }]);
-    const r = await new DesignCatalogMatcher(db).findMatchingProducts(ovenSlot({ budget: { max: 500 } }));
+    const r = await new DesignCatalogMatcher(db).findMatchingProducts(
+      ovenSlot({ budget: { max: 500 } })
+    );
     expect(r.status).toBe('matched_over_budget');
     expect(r.productId).toBe('p1');
   });
@@ -62,7 +73,9 @@ describe('DesignCatalogMatcher.findMatchingProducts', () => {
       { width: 60, height: 60, depth: 55, brand: 'Bosch' },
       { width: 60, height: 60, depth: 55, brand: 'IKEA' },
     ]);
-    const r = await new DesignCatalogMatcher(db).findMatchingProducts(ovenSlot({ brandPreference: ['IKEA'] }));
+    const r = await new DesignCatalogMatcher(db).findMatchingProducts(
+      ovenSlot({ brandPreference: ['IKEA'] })
+    );
     expect(r.product?.brand).toBe('IKEA');
     expect(r.alternatives.map((a) => a.brand)).toContain('Bosch'); // non exclu, juste dépriorisé
   });
@@ -70,18 +83,24 @@ describe('DesignCatalogMatcher.findMatchingProducts', () => {
   it('seuil conf PAR TYPE : electro -> gte 0.7 ; meuble -> gte 0.5 (dans le where)', async () => {
     const { db: dbE, findMany: fE } = makeDb([]);
     await new DesignCatalogMatcher(dbE).findMatchingProducts(ovenSlot());
-    expect((fE.mock.calls[0][0].where).dimensionConfidence.gte).toBe(0.7);
-    expect((fE.mock.calls[0][0].where).category.slug).toBe('electromenager-cuisson');
+    expect(fE.mock.calls[0][0].where.dimensionConfidence.gte).toBe(0.7);
+    expect(fE.mock.calls[0][0].where.category.slug).toBe('electromenager-cuisson');
 
     const { db: dbM, findMany: fM } = makeDb([]);
-    await new DesignCatalogMatcher(dbM).findMatchingProducts({ type: 'base_cabinet', dimensions: { width: 60 } });
-    expect((fM.mock.calls[0][0].where).dimensionConfidence.gte).toBe(0.5);
-    expect((fM.mock.calls[0][0].where).category.slug).toBe('meubles-bas');
+    await new DesignCatalogMatcher(dbM).findMatchingProducts({
+      type: 'base_cabinet',
+      dimensions: { width: 60 },
+    });
+    expect(fM.mock.calls[0][0].where.dimensionConfidence.gte).toBe(0.5);
+    expect(fM.mock.calls[0][0].where.category.slug).toBe('meubles-bas');
   });
 
   it("slot 'hob' : pool vide -> no_match + where exclut ovens/rangehoods", async () => {
     const { db, findMany } = makeDb([]);
-    const r = await new DesignCatalogMatcher(db).findMatchingProducts({ type: 'hob', dimensions: { width: 60 } });
+    const r = await new DesignCatalogMatcher(db).findMatchingProducts({
+      type: 'hob',
+      dimensions: { width: 60 },
+    });
     expect(r.status).toBe('no_match');
     const where = findMany.mock.calls[0][0].where;
     expect(where.category.slug).toBe('electromenager-cuisson');
@@ -105,7 +124,7 @@ describe('DesignCatalogMatcher.findMatchingProducts', () => {
   it('P6 structurel : le where envoyé à findMany contient isCanonical=true', async () => {
     const { db, findMany } = makeDb([]);
     await new DesignCatalogMatcher(db).findMatchingProducts(ovenSlot());
-    expect((findMany.mock.calls[0][0].where).isCanonical).toBe(true);
+    expect(findMany.mock.calls[0][0].where.isCanonical).toBe(true);
   });
 
   it('P6 comportemental : seul le canonique remonte, le variant couleur est exclu', async () => {
@@ -117,13 +136,40 @@ describe('DesignCatalogMatcher.findMatchingProducts', () => {
     // return both, VARIANT would win on price, and these assertions would fail.
     // This is what makes the test guard the filter rather than be a no-op.
     const pool: Array<Partial<ProductRow> & { isCanonical: boolean; parentSku: string | null }> = [
-      { id: 'canon', sku: 'CANON', brand: 'Vicco', price: 200, width: 60, height: 60, depth: 55, availability: 'in_stock', dimensionConfidence: 1, isCanonical: true, parentSku: null },
-      { id: 'variant', sku: 'VARIANT', brand: 'Vicco', price: 180, width: 60, height: 60, depth: 55, availability: 'in_stock', dimensionConfidence: 1, isCanonical: false, parentSku: 'CANON' },
+      {
+        id: 'canon',
+        sku: 'CANON',
+        brand: 'Vicco',
+        price: 200,
+        width: 60,
+        height: 60,
+        depth: 55,
+        availability: 'in_stock',
+        dimensionConfidence: 1,
+        isCanonical: true,
+        parentSku: null,
+      },
+      {
+        id: 'variant',
+        sku: 'VARIANT',
+        brand: 'Vicco',
+        price: 180,
+        width: 60,
+        height: 60,
+        depth: 55,
+        availability: 'in_stock',
+        dimensionConfidence: 1,
+        isCanonical: false,
+        parentSku: 'CANON',
+      },
     ];
-    const findMany = jest.fn().mockImplementation(
-      ({ where }: { where: { isCanonical?: boolean } }) =>
-        Promise.resolve(pool.filter((r) => where.isCanonical === undefined || r.isCanonical === where.isCanonical)),
-    );
+    const findMany = jest
+      .fn()
+      .mockImplementation(({ where }: { where: { isCanonical?: boolean } }) =>
+        Promise.resolve(
+          pool.filter((r) => where.isCanonical === undefined || r.isCanonical === where.isCanonical)
+        )
+      );
     const db = { product: { findMany } } as unknown as MatcherDb;
 
     const r = await new DesignCatalogMatcher(db).findMatchingProducts(ovenSlot());

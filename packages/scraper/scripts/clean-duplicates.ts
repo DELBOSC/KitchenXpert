@@ -121,7 +121,9 @@ Matching strategies:
   6. Composite scoring with configurable weights
 
 Available brands:
-  ${BRANDS_CONFIG.filter(b => b.enabled).map(b => b.id).join(', ')}
+  ${BRANDS_CONFIG.filter((b) => b.enabled)
+    .map((b) => b.id)
+    .join(', ')}
 
 Examples:
   npm run clean:duplicates
@@ -380,7 +382,7 @@ async function main(): Promise<void> {
     const brandConfig = getBrandConfig(options.brand);
     if (!brandConfig) {
       console.error(`Error: Brand "${options.brand}" not found in configuration`);
-      console.error('Available brands:', BRANDS_CONFIG.map(b => b.id).join(', '));
+      console.error('Available brands:', BRANDS_CONFIG.map((b) => b.id).join(', '));
       process.exit(1);
     }
   }

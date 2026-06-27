@@ -25,7 +25,7 @@ export class CacheService {
     try {
       const redis = await getRedisClient();
       const data = await redis.get(`${CACHE_PREFIX}${key}`);
-      return data ? JSON.parse(data) as T : null;
+      return data ? (JSON.parse(data) as T) : null;
     } catch {
       return null;
     }
@@ -93,7 +93,9 @@ export class CacheService {
     ttlSeconds: number = 300
   ): Promise<T> {
     const cached = await CacheService.get<T>(key);
-    if (cached !== null) {return cached;}
+    if (cached !== null) {
+      return cached;
+    }
 
     const value = await computeFn();
     await CacheService.set(key, value, ttlSeconds);

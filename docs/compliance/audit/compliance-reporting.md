@@ -19,7 +19,9 @@
 
 ## Introduction
 
-This document describes the compliance reporting capabilities of KitchenXpert audit system. Reports are generated from audit logs to demonstrate compliance with regulatory requirements.
+This document describes the compliance reporting capabilities of KitchenXpert
+audit system. Reports are generated from audit logs to demonstrate compliance
+with regulatory requirements.
 
 ### Reporting Objectives
 
@@ -34,22 +36,22 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 
 ### Scheduled Reports
 
-| Report | Frequency | Recipients |
-|--------|-----------|------------|
-| Daily Security Summary | Daily | Security Team |
-| Weekly Access Report | Weekly | IT Management |
-| Monthly Compliance Dashboard | Monthly | Compliance Officer |
-| Quarterly Audit Report | Quarterly | Executive Team |
-| Annual Compliance Report | Annually | Board, Auditors |
+| Report                       | Frequency | Recipients         |
+| ---------------------------- | --------- | ------------------ |
+| Daily Security Summary       | Daily     | Security Team      |
+| Weekly Access Report         | Weekly    | IT Management      |
+| Monthly Compliance Dashboard | Monthly   | Compliance Officer |
+| Quarterly Audit Report       | Quarterly | Executive Team     |
+| Annual Compliance Report     | Annually  | Board, Auditors    |
 
 ### On-Demand Reports
 
-| Report | Purpose | Requesters |
-|--------|---------|------------|
-| User Activity Report | Investigation | Security, Legal |
-| Data Access Report | Audit | Compliance |
-| Incident Report | Breach response | Security |
-| Custom Query Report | Ad-hoc analysis | Authorized users |
+| Report               | Purpose         | Requesters       |
+| -------------------- | --------------- | ---------------- |
+| User Activity Report | Investigation   | Security, Legal  |
+| Data Access Report   | Audit           | Compliance       |
+| Incident Report      | Breach response | Security         |
+| Custom Query Report  | Ad-hoc analysis | Authorized users |
 
 ---
 
@@ -60,6 +62,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Document all processing activities per Article 30
 
 **Contents**:
+
 - Processing activities list
 - Data categories processed
 - Legal basis for each activity
@@ -73,6 +76,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Track DSR fulfillment
 
 **Contents**:
+
 - Requests received by type
 - Average response time
 - Completion rate
@@ -86,6 +90,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Track consent status
 
 **Contents**:
+
 - Consent collection by type
 - Consent withdrawal rate
 - Active consent count
@@ -102,6 +107,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Track CCPA request fulfillment
 
 **Contents**:
+
 - Requests by type (know, delete, opt-out)
 - Verification success rate
 - Response timeline
@@ -114,6 +120,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Track opt-out compliance
 
 **Contents**:
+
 - Opt-out requests received
 - GPC signals honored
 - Third-party sharing stopped
@@ -130,6 +137,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Document access management
 
 **Contents**:
+
 - User provisioning/deprovisioning
 - Access reviews conducted
 - Privileged access usage
@@ -142,6 +150,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Document system changes
 
 **Contents**:
+
 - Changes by type
 - Approval records
 - Testing evidence
@@ -154,6 +163,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Document security incidents
 
 **Contents**:
+
 - Incidents by severity
 - Response times
 - Resolution status
@@ -170,6 +180,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Monitor authentication security
 
 **Contents**:
+
 - Login success/failure rates
 - MFA adoption rate
 - Suspicious login attempts
@@ -182,6 +193,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Document security threats
 
 **Contents**:
+
 - Threats detected
 - Attack vectors
 - Blocked attempts
@@ -194,6 +206,7 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 **Purpose**: Monitor admin activities
 
 **Contents**:
+
 - Admin actions performed
 - Impersonation usage
 - Setting changes
@@ -207,11 +220,11 @@ This document describes the compliance reporting capabilities of KitchenXpert au
 
 ### Automated Generation
 
-| Time | Reports |
-|------|---------|
-| 00:00 UTC | Daily reports |
-| Sunday 00:00 | Weekly reports |
-| 1st of month | Monthly reports |
+| Time           | Reports           |
+| -------------- | ----------------- |
+| 00:00 UTC      | Daily reports     |
+| Sunday 00:00   | Weekly reports    |
+| 1st of month   | Monthly reports   |
 | End of quarter | Quarterly reports |
 
 ### Manual Generation
@@ -226,12 +239,12 @@ Authorized users can generate reports on-demand:
 
 ### Report Parameters
 
-| Parameter | Description |
-|-----------|-------------|
-| Date Range | Start and end dates |
-| Scope | All data or filtered |
-| Format | PDF, CSV, JSON |
-| Recipients | Distribution list |
+| Parameter  | Description          |
+| ---------- | -------------------- |
+| Date Range | Start and end dates  |
+| Scope      | All data or filtered |
+| Format     | PDF, CSV, JSON       |
+| Recipients | Distribution list    |
 
 ---
 
@@ -239,22 +252,22 @@ Authorized users can generate reports on-demand:
 
 ### Distribution Methods
 
-| Method | Use Case |
-|--------|----------|
-| Email | Scheduled reports |
-| Dashboard | Real-time access |
-| Secure Portal | Auditor access |
-| API | Integration |
+| Method        | Use Case          |
+| ------------- | ----------------- |
+| Email         | Scheduled reports |
+| Dashboard     | Real-time access  |
+| Secure Portal | Auditor access    |
+| API           | Integration       |
 
 ### Access Control
 
-| Role | Access Level |
-|------|--------------|
-| Compliance Officer | All reports |
-| Security Team | Security reports |
-| IT Management | Operational reports |
-| Auditors | Designated reports |
-| Executives | Summary reports |
+| Role               | Access Level        |
+| ------------------ | ------------------- |
+| Compliance Officer | All reports         |
+| Security Team      | Security reports    |
+| IT Management      | Operational reports |
+| Auditors           | Designated reports  |
+| Executives         | Summary reports     |
 
 ### Secure Distribution
 
@@ -270,23 +283,23 @@ Authorized users can generate reports on-demand:
 
 ### Retention Periods
 
-| Report Type | Retention |
-|-------------|-----------|
-| Daily Reports | 90 days |
-| Weekly Reports | 1 year |
-| Monthly Reports | 3 years |
-| Quarterly Reports | 7 years |
-| Annual Reports | 10 years |
-| Incident Reports | 7 years |
+| Report Type       | Retention |
+| ----------------- | --------- |
+| Daily Reports     | 90 days   |
+| Weekly Reports    | 1 year    |
+| Monthly Reports   | 3 years   |
+| Quarterly Reports | 7 years   |
+| Annual Reports    | 10 years  |
+| Incident Reports  | 7 years   |
 
 ### Storage
 
-| Period | Storage Location |
-|--------|------------------|
-| 0-90 days | Hot storage (S3) |
-| 90 days - 1 year | Warm storage (S3-IA) |
-| 1-7 years | Cold storage (Glacier) |
-| 7+ years | Archive (Glacier Deep) |
+| Period           | Storage Location       |
+| ---------------- | ---------------------- |
+| 0-90 days        | Hot storage (S3)       |
+| 90 days - 1 year | Warm storage (S3-IA)   |
+| 1-7 years        | Cold storage (Glacier) |
+| 7+ years         | Archive (Glacier Deep) |
 
 ---
 
@@ -302,12 +315,12 @@ Authorized users can generate reports on-demand:
 
 ## Document Control
 
-| Property | Value |
-|----------|-------|
+| Property       | Value              |
+| -------------- | ------------------ |
 | Document Owner | Compliance Officer |
-| Last Reviewed | 2026-01-10 |
-| Version | 2.0 |
+| Last Reviewed  | 2026-01-10         |
+| Version        | 2.0                |
 
 ---
 
-*For questions, contact compliance@kitchenxpert.com.*
+_For questions, contact compliance@kitchenxpert.com._

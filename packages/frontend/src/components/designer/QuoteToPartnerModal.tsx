@@ -60,13 +60,21 @@ async function fetchNearbyPartners(params: {
   postalCode?: string;
 }): Promise<PartnerInfo[]> {
   const query = new URLSearchParams();
-  if (params.lat !== undefined) {query.set('lat', String(params.lat));}
-  if (params.lng !== undefined) {query.set('lng', String(params.lng));}
-  if (params.postalCode) {query.set('postalCode', params.postalCode);}
+  if (params.lat !== undefined) {
+    query.set('lat', String(params.lat));
+  }
+  if (params.lng !== undefined) {
+    query.set('lng', String(params.lng));
+  }
+  if (params.postalCode) {
+    query.set('postalCode', params.postalCode);
+  }
 
   const url = `${API_BASE_URL}${API_ENDPOINTS.QUOTES.NEARBY_PARTNERS}?${query.toString()}`;
   const res = await fetch(url, { credentials: 'include' });
-  if (!res.ok) {throw new Error('Failed to fetch partners');}
+  if (!res.ok) {
+    throw new Error('Failed to fetch partners');
+  }
   const data = (await res.json()) as { data?: PartnerInfo[] };
   return data.data || [];
 }
@@ -86,7 +94,9 @@ async function sendQuoteRequest(body: {
     body: JSON.stringify(body),
   });
   if (!res.ok) {
-    const err = (await res.json().catch(() => ({ error: 'Failed to send quote' }))) as { error?: string };
+    const err = (await res.json().catch(() => ({ error: 'Failed to send quote' }))) as {
+      error?: string;
+    };
     throw new Error(err.error || 'Failed to send quote');
   }
   const data = (await res.json()) as { data?: { reference?: string; partnerName?: string } };
@@ -126,8 +136,17 @@ function PackageSummary({
 
       <div className="space-y-2 mb-6">
         {packageItems.map((item) => (
-          <div key={item.label} className="flex items-center gap-3 p-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <div
+            key={item.label}
+            className="flex items-center gap-3 p-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+          >
+            <svg
+              className="w-4 h-4 text-green-500 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
             <span className="text-sm text-gray-700 dark:text-gray-300">{item.label}</span>
@@ -203,8 +222,18 @@ function PartnerSelection({
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-500 disabled:opacity-50"
             aria-label={t('quote.searchPartner', 'Search')}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </button>
         </div>
@@ -215,9 +244,23 @@ function PartnerSelection({
           className="px-3 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors disabled:opacity-50 whitespace-nowrap"
         >
           <span className="flex items-center gap-1">
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
             {t('quote.findNearest', 'Find Nearest')}
           </span>
@@ -228,14 +271,28 @@ function PartnerSelection({
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
           <svg className="w-6 h-6 text-blue-500 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
           </svg>
         </div>
       ) : partners.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-sm text-gray-400 dark:text-gray-500">
-            {t('quote.noPartners', 'No partners found. Try searching by postal code or finding the nearest.')}
+            {t(
+              'quote.noPartners',
+              'No partners found. Try searching by postal code or finding the nearest.'
+            )}
           </p>
         </div>
       ) : (
@@ -371,7 +428,9 @@ function DetailsForm({
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
         >
           {timelineOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
         </select>
       </div>
@@ -395,7 +454,10 @@ function DetailsForm({
           value={message}
           onChange={(e) => onMessageChange(e.target.value)}
           rows={3}
-          placeholder={t('quote.messagePlaceholder', 'Any special requirements, accessibility needs, preferred brands...')}
+          placeholder={t(
+            'quote.messagePlaceholder',
+            'Any special requirements, accessibility needs, preferred brands...'
+          )}
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
         />
       </div>
@@ -417,7 +479,13 @@ function ConfirmationScreen({
   return (
     <div className="flex flex-col items-center justify-center py-6 text-center">
       <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
-        <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <svg
+          className="w-8 h-8 text-green-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+        >
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       </div>
@@ -427,9 +495,8 @@ function ConfirmationScreen({
       <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
         {t(
           'quote.sentDescription',
-          `Your quote request has been sent to ${partnerName}. They will respond within 48h.`,
-        )
-          .replace('${partnerName}', partnerName)}
+          `Your quote request has been sent to ${partnerName}. They will respond within 48h.`
+        ).replace('${partnerName}', partnerName)}
       </p>
       <div className="mt-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
         <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -466,7 +533,10 @@ export default function QuoteToPartnerModal({
   const [timeline, setTimeline] = useState<Timeline>('flexible');
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
-  const [confirmation, setConfirmation] = useState<{ partnerName: string; reference: string } | null>(null);
+  const [confirmation, setConfirmation] = useState<{
+    partnerName: string;
+    reference: string;
+  } | null>(null);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -491,7 +561,9 @@ export default function QuoteToPartnerModal({
 
   // Fetch partners by postal code
   const handleSearchPostalCode = useCallback(async () => {
-    if (!postalCode.trim()) {return;}
+    if (!postalCode.trim()) {
+      return;
+    }
     setIsLoadingPartners(true);
     try {
       const result = await fetchNearbyPartners({ postalCode: postalCode.trim() });
@@ -533,7 +605,9 @@ export default function QuoteToPartnerModal({
   }, []);
 
   const handleSend = useCallback(async () => {
-    if (!selectedPartnerId || !contactInfo.email) {return;}
+    if (!selectedPartnerId || !contactInfo.email) {
+      return;
+    }
 
     setIsSending(true);
     setSendError(null);
@@ -558,32 +632,51 @@ export default function QuoteToPartnerModal({
   // Navigation
   const canGoNext = useMemo(() => {
     switch (step) {
-      case 'summary': return true;
-      case 'partner': return !!selectedPartnerId;
-      case 'details': return !!contactInfo.email.trim();
-      case 'confirm': return false; // no next from confirmation
-      default: return false;
+      case 'summary':
+        return true;
+      case 'partner':
+        return !!selectedPartnerId;
+      case 'details':
+        return !!contactInfo.email.trim();
+      case 'confirm':
+        return false; // no next from confirmation
+      default:
+        return false;
     }
   }, [step, selectedPartnerId, contactInfo.email]);
 
   const handleNext = useCallback(() => {
     switch (step) {
-      case 'summary': setStep('partner'); break;
-      case 'partner': setStep('details'); break;
-      case 'details': void handleSend(); break;
-      default: break;
+      case 'summary':
+        setStep('partner');
+        break;
+      case 'partner':
+        setStep('details');
+        break;
+      case 'details':
+        void handleSend();
+        break;
+      default:
+        break;
     }
   }, [step, handleSend]);
 
   const handleBack = useCallback(() => {
     switch (step) {
-      case 'partner': setStep('summary'); break;
-      case 'details': setStep('partner'); break;
-      default: break;
+      case 'partner':
+        setStep('summary');
+        break;
+      case 'details':
+        setStep('partner');
+        break;
+      default:
+        break;
     }
   }, [step]);
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   const stepLabels: Record<ModalStep, string> = {
     summary: t('quote.stepSummary', 'Package'),
@@ -611,7 +704,13 @@ export default function QuoteToPartnerModal({
             className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg transition-colors"
             aria-label={t('common.close', 'Close')}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -623,36 +722,48 @@ export default function QuoteToPartnerModal({
             <div className="flex items-center gap-1">
               {steps.slice(0, -1).map((s, idx) => (
                 <React.Fragment key={s}>
-                  <div className={`flex items-center gap-1 ${idx <= currentStepIndex ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'}`}>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                      idx < currentStepIndex
-                        ? 'bg-blue-500 text-white'
-                        : idx === currentStepIndex
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-400'
-                    }`}>
+                  <div
+                    className={`flex items-center gap-1 ${idx <= currentStepIndex ? 'text-blue-500' : 'text-gray-300 dark:text-gray-600'}`}
+                  >
+                    <div
+                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                        idx < currentStepIndex
+                          ? 'bg-blue-500 text-white'
+                          : idx === currentStepIndex
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-200 dark:bg-gray-600 text-gray-400'
+                      }`}
+                    >
                       {idx < currentStepIndex ? (
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          strokeWidth={3}
+                        >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
                         idx + 1
                       )}
                     </div>
-                    <span className={`text-xs font-medium hidden sm:inline ${
-                      idx <= currentStepIndex
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-gray-400 dark:text-gray-500'
-                    }`}>
+                    <span
+                      className={`text-xs font-medium hidden sm:inline ${
+                        idx <= currentStepIndex
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-gray-400 dark:text-gray-500'
+                      }`}
+                    >
                       {stepLabels[s]}
                     </span>
                   </div>
                   {idx < steps.length - 2 && (
-                    <div className={`flex-1 h-0.5 ${
-                      idx < currentStepIndex
-                        ? 'bg-blue-500'
-                        : 'bg-gray-200 dark:bg-gray-600'
-                    }`} />
+                    <div
+                      className={`flex-1 h-0.5 ${
+                        idx < currentStepIndex ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-600'
+                      }`}
+                    />
                   )}
                 </React.Fragment>
               ))}
@@ -734,8 +845,19 @@ export default function QuoteToPartnerModal({
               >
                 {isSending && (
                   <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 )}
                 {step === 'details'

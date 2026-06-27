@@ -55,7 +55,7 @@ export interface GenerateLayoutResult {
 }
 
 export async function generateLayoutFromPrompt(
-  args: GenerateLayoutArgs,
+  args: GenerateLayoutArgs
 ): Promise<GenerateLayoutResult> {
   const input = AutoLayoutInputSchema.parse(args.input);
 
@@ -105,15 +105,30 @@ export async function generateLayoutFromPrompt(
     }
     for (const item of proposal.items) {
       if (
-        item.position.x < 0 || item.position.x > proposal.room.widthCm ||
-        item.position.y < 0 || item.position.y > proposal.room.depthCm ||
-        item.position.z < 0 || item.position.z > proposal.room.heightCm
+        item.position.x < 0 ||
+        item.position.x > proposal.room.widthCm ||
+        item.position.y < 0 ||
+        item.position.y > proposal.room.depthCm ||
+        item.position.z < 0 ||
+        item.position.z > proposal.room.heightCm
       ) {
-        logger.warn('auto-layout: item out of bounds (clipped)', { userId: args.userId, sku: item.sku });
+        logger.warn('auto-layout: item out of bounds (clipped)', {
+          userId: args.userId,
+          sku: item.sku,
+        });
         // Clip to the wall — better than rejecting the whole proposal.
-        item.position.x = Math.max(0, Math.min(item.position.x, proposal.room.widthCm - item.size.w));
-        item.position.y = Math.max(0, Math.min(item.position.y, proposal.room.depthCm - item.size.d));
-        item.position.z = Math.max(0, Math.min(item.position.z, proposal.room.heightCm - item.size.h));
+        item.position.x = Math.max(
+          0,
+          Math.min(item.position.x, proposal.room.widthCm - item.size.w)
+        );
+        item.position.y = Math.max(
+          0,
+          Math.min(item.position.y, proposal.room.depthCm - item.size.d)
+        );
+        item.position.z = Math.max(
+          0,
+          Math.min(item.position.z, proposal.room.heightCm - item.size.h)
+        );
       }
     }
   }
@@ -136,9 +151,10 @@ export async function generateLayoutFromPrompt(
 
   // 6. (Optional) Gemini previews — TODO when the image pipeline ships.
   //    For now we return undefined and the frontend renders a placeholder.
-  const previewUrls = args.generatePreviews && (args.tier === 'premium' || args.tier === 'studio')
-    ? await generatePreviewsStub(parsed)
-    : undefined;
+  const previewUrls =
+    args.generatePreviews && (args.tier === 'premium' || args.tier === 'studio')
+      ? await generatePreviewsStub(parsed)
+      : undefined;
 
   return {
     layouts: parsed,
@@ -157,14 +173,24 @@ function buildUserPrompt(input: AutoLayoutInput): string {
 
   if (input.room) {
     lines.push(`<room>`);
-    if (input.room.widthCm)  {lines.push(`  width_cm: ${input.room.widthCm}`);}
-    if (input.room.depthCm)  {lines.push(`  depth_cm: ${input.room.depthCm}`);}
+    if (input.room.widthCm) {
+      lines.push(`  width_cm: ${input.room.widthCm}`);
+    }
+    if (input.room.depthCm) {
+      lines.push(`  depth_cm: ${input.room.depthCm}`);
+    }
     lines.push(`  height_cm: ${input.room.heightCm ?? 270}`);
     lines.push(`</room>`);
   }
-  if (input.preferredLayout) {lines.push(`<preferred_layout>${input.preferredLayout}</preferred_layout>`);}
-  if (input.budgetEur)       {lines.push(`<budget_eur>${input.budgetEur}</budget_eur>`);}
-  if (input.preferredBrand)  {lines.push(`<preferred_brand>${input.preferredBrand}</preferred_brand>`);}
+  if (input.preferredLayout) {
+    lines.push(`<preferred_layout>${input.preferredLayout}</preferred_layout>`);
+  }
+  if (input.budgetEur) {
+    lines.push(`<budget_eur>${input.budgetEur}</budget_eur>`);
+  }
+  if (input.preferredBrand) {
+    lines.push(`<preferred_brand>${input.preferredBrand}</preferred_brand>`);
+  }
 
   lines.push('');
   lines.push('Produis exactement 3 propositions au format JSON spécifié dans le system prompt.');
@@ -189,7 +215,10 @@ async function generatePreviewsStub(_parsed: AutoLayoutResponse): Promise<string
 
 function getCapForTier(tier: AiTier): number | null {
   const caps: Record<AiTier, number | null> = {
-    sandbox: 0.20, free: 1.00, premium: 20.00, studio: null,
+    sandbox: 0.2,
+    free: 1.0,
+    premium: 20.0,
+    studio: null,
   };
   return caps[tier];
 }

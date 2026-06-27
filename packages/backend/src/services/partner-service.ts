@@ -317,7 +317,13 @@ export class PartnerService {
     }
 
     // Don't allow changing certain fields directly
-    const { id: _id, slug: _slug, integration: _integration, subscription: _subscription, ...updateData } = data;
+    const {
+      id: _id,
+      slug: _slug,
+      integration: _integration,
+      subscription: _subscription,
+      ...updateData
+    } = data;
 
     return this.repository.update(id, {
       ...updateData,
@@ -343,10 +349,7 @@ export class PartnerService {
   /**
    * Upgrade/downgrade subscription
    */
-  async updateSubscription(
-    id: string,
-    plan: SubscriptionPlan
-  ): Promise<Partner | null> {
+  async updateSubscription(id: string, plan: SubscriptionPlan): Promise<Partner | null> {
     const partner = await this.repository.findById(id);
     if (!partner) {
       return null;
@@ -426,7 +429,10 @@ export class PartnerService {
     }
 
     if (!partner.integration?.syncEnabled) {
-      throw new PartnerServiceError('SYNC_DISABLED', 'Product sync is not enabled for this partner');
+      throw new PartnerServiceError(
+        'SYNC_DISABLED',
+        'Product sync is not enabled for this partner'
+      );
     }
 
     return this.repository.syncProduct(partnerId, {
@@ -448,7 +454,10 @@ export class PartnerService {
    */
   async createOrder(
     partnerId: string,
-    orderData: Omit<PartnerOrder, 'id' | 'partnerId' | 'orderNumber' | 'status' | 'createdAt' | 'updatedAt'>
+    orderData: Omit<
+      PartnerOrder,
+      'id' | 'partnerId' | 'orderNumber' | 'status' | 'createdAt' | 'updatedAt'
+    >
   ): Promise<PartnerOrder> {
     const partner = await this.repository.findById(partnerId);
     if (!partner) {
@@ -523,13 +532,13 @@ export class PartnerService {
       };
     }
 
-    const completedOrders = orders.filter(o => o.status === 'delivered');
+    const completedOrders = orders.filter((o) => o.status === 'delivered');
     const totalRevenue = completedOrders.reduce((sum, o) => sum + o.total, 0);
     const completionRate = (completedOrders.length / orders.length) * 100;
 
     // Find most recent order
-    const sortedOrders = orders.sort((a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    const sortedOrders = orders.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     return {
@@ -574,11 +583,11 @@ export class PartnerService {
   }
 
   private generateApiKey(): string {
-    return `kx_${  crypto.randomBytes(24).toString('base64url')}`;
+    return `kx_${crypto.randomBytes(24).toString('base64url')}`;
   }
 
   private generateWebhookSecret(): string {
-    return `whsec_${  crypto.randomBytes(18).toString('base64url')}`;
+    return `whsec_${crypto.randomBytes(18).toString('base64url')}`;
   }
 
   private generateOrderNumber(partnerId: string): string {
@@ -591,8 +600,23 @@ export class PartnerService {
   private getPlanFeatures(plan: SubscriptionPlan): string[] {
     const features: Record<SubscriptionPlan, string[]> = {
       starter: ['catalog_sync', 'basic_analytics'],
-      professional: ['catalog_sync', 'order_sync', 'inventory_sync', 'analytics', 'priority_support'],
-      enterprise: ['catalog_sync', 'order_sync', 'inventory_sync', 'pricing_sync', 'analytics', 'white_label', 'dedicated_support', 'custom_integration'],
+      professional: [
+        'catalog_sync',
+        'order_sync',
+        'inventory_sync',
+        'analytics',
+        'priority_support',
+      ],
+      enterprise: [
+        'catalog_sync',
+        'order_sync',
+        'inventory_sync',
+        'pricing_sync',
+        'analytics',
+        'white_label',
+        'dedicated_support',
+        'custom_integration',
+      ],
       custom: ['all_features'],
     };
     return features[plan];
@@ -628,12 +652,10 @@ export class PartnerService {
     return limits[plan];
   }
 
-  private async sendWebhook(
-    partner: Partner,
-    event: string,
-    payload: unknown
-  ): Promise<void> {
-    if (!partner.integration?.webhookUrl) {return;}
+  private async sendWebhook(partner: Partner, event: string, payload: unknown): Promise<void> {
+    if (!partner.integration?.webhookUrl) {
+      return;
+    }
 
     // In real implementation, would send HTTP request with signature
     logger.info(`[Webhook] Sending ${event} to ${partner.integration.webhookUrl}`, { payload });

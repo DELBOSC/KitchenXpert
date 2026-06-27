@@ -255,8 +255,11 @@ export const listProducts = async (
     const status = req.query.status as string | undefined;
 
     let isActive: boolean | undefined;
-    if (status === 'active') {isActive = true;}
-    else if (status === 'inactive') {isActive = false;}
+    if (status === 'active') {
+      isActive = true;
+    } else if (status === 'inactive') {
+      isActive = false;
+    }
 
     const where = {
       providerId: { in: providerIds },
@@ -643,11 +646,7 @@ export const listOrders = async (
  * GET /partner/orders/:id
  * Return full details of a single order, verifying it contains the partner's products.
  */
-export const getOrder = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const getOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const partner = getPartner(req);
     const { id } = req.params;
@@ -896,7 +895,9 @@ export const getSalesAnalytics = async (
       { id: string; name: string; revenue: number; units: number }
     >();
     for (const item of orderItems) {
-      if (!item.productId) {continue;}
+      if (!item.productId) {
+        continue;
+      }
       if (!productMap.has(item.productId)) {
         productMap.set(item.productId, {
           id: item.productId,
@@ -1006,9 +1007,11 @@ export const getProductAnalytics = async (
  */
 function maskEmail(email: string): string {
   const [local, domain] = email.split('@');
-  if (!domain) {return email;}
+  if (!domain) {
+    return email;
+  }
   const [domainName, ...tldParts] = domain.split('.');
-  const maskedLocal = `${(local ?? '').charAt(0)  }***`;
-  const maskedDomain = `${domainName?.charAt(0) ?? ''  }***`;
+  const maskedLocal = `${(local ?? '').charAt(0)}***`;
+  const maskedDomain = `${domainName?.charAt(0) ?? ''}***`;
   return `${maskedLocal}@${maskedDomain}.${tldParts.join('.')}`;
 }

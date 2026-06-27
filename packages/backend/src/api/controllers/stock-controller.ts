@@ -46,7 +46,7 @@ export class StockController {
     // If storeId was provided, filter store availability
     if (storeId && result?.storeAvailability) {
       result.storeAvailability = result.storeAvailability.filter(
-        (store) => store.storeId === storeId,
+        (store) => store.storeId === storeId
       );
     }
 
@@ -67,7 +67,9 @@ export class StockController {
 
     const { items } = req.body;
     if (!Array.isArray(items) || items.length === 0) {
-      res.status(400).json({ success: false, error: 'items array is required and must not be empty' });
+      res
+        .status(400)
+        .json({ success: false, error: 'items array is required and must not be empty' });
       return;
     }
 

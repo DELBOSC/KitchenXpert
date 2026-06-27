@@ -50,7 +50,9 @@ export interface FormContextValue {
   resetForm: () => void;
   getFieldProps: (name: string) => {
     value: unknown;
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+    onChange: (
+      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    ) => void;
     onBlur: () => void;
     name: string;
     'aria-invalid'?: boolean;
@@ -75,7 +77,10 @@ export const useOptionalFormContext = (): FormContextValue | null => {
 };
 
 // Form Props
-export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onError'> {
+export interface FormProps extends Omit<
+  FormHTMLAttributes<HTMLFormElement>,
+  'onSubmit' | 'onError'
+> {
   children: ReactNode;
   onSubmit?: (values: FormValues) => void | Promise<void>;
   onError?: (errors: FormErrors) => void;
@@ -252,9 +257,10 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(
           onChange: (
             e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
           ) => {
-            const newValue = e.target.type === 'checkbox'
-              ? (e.target as HTMLInputElement).checked
-              : e.target.value;
+            const newValue =
+              e.target.type === 'checkbox'
+                ? (e.target as HTMLInputElement).checked
+                : e.target.value;
             setValue(name, newValue);
           },
           onBlur: () => {

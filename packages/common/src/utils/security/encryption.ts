@@ -135,9 +135,7 @@ export async function encrypt(
   // Encrypt the plaintext
   const plaintextBuffer = stringToArrayBuffer(plaintext);
   const ciphertextBuffer = await crypto.subtle.encrypt(
-    algorithm === 'AES-GCM'
-      ? { name: 'AES-GCM', iv }
-      : { name: 'AES-CBC', iv },
+    algorithm === 'AES-GCM' ? { name: 'AES-GCM', iv } : { name: 'AES-CBC', iv },
     key,
     plaintextBuffer
   );
@@ -156,10 +154,7 @@ export async function encrypt(
  * @param password - The password
  * @returns A promise that resolves to the decrypted plaintext
  */
-export async function decrypt(
-  encryptedData: EncryptedData,
-  password: string
-): Promise<string> {
+export async function decrypt(encryptedData: EncryptedData, password: string): Promise<string> {
   const { ciphertext, iv, salt, algorithm } = encryptedData;
 
   if (!salt) {
@@ -176,9 +171,7 @@ export async function decrypt(
 
   // Decrypt the ciphertext
   const plaintextBuffer = await crypto.subtle.decrypt(
-    algorithm === 'AES-GCM'
-      ? { name: 'AES-GCM', iv: ivBuffer }
-      : { name: 'AES-CBC', iv: ivBuffer },
+    algorithm === 'AES-GCM' ? { name: 'AES-GCM', iv: ivBuffer } : { name: 'AES-CBC', iv: ivBuffer },
     key,
     ciphertextBuffer
   );
@@ -222,11 +215,7 @@ export async function decryptFromString(
  * @returns A promise that resolves to the generated key
  */
 export async function generateKey(length: 128 | 192 | 256 = 256): Promise<CryptoKey> {
-  return crypto.subtle.generateKey(
-    { name: 'AES-GCM', length },
-    true,
-    ['encrypt', 'decrypt']
-  );
+  return crypto.subtle.generateKey({ name: 'AES-GCM', length }, true, ['encrypt', 'decrypt']);
 }
 
 /**
@@ -250,13 +239,10 @@ export async function importKey(
   algorithm: EncryptionAlgorithm = 'AES-GCM'
 ): Promise<CryptoKey> {
   const keyBuffer = base64ToArrayBuffer(keyString);
-  return crypto.subtle.importKey(
-    'raw',
-    keyBuffer,
-    { name: algorithm },
-    true,
-    ['encrypt', 'decrypt']
-  );
+  return crypto.subtle.importKey('raw', keyBuffer, { name: algorithm }, true, [
+    'encrypt',
+    'decrypt',
+  ]);
 }
 
 /**
@@ -275,9 +261,7 @@ export async function encryptWithKey(
   const plaintextBuffer = stringToArrayBuffer(plaintext);
 
   const ciphertextBuffer = await crypto.subtle.encrypt(
-    algorithm === 'AES-GCM'
-      ? { name: 'AES-GCM', iv }
-      : { name: 'AES-CBC', iv },
+    algorithm === 'AES-GCM' ? { name: 'AES-GCM', iv } : { name: 'AES-CBC', iv },
     key,
     plaintextBuffer
   );
@@ -306,16 +290,13 @@ export async function decryptWithKey(
   const ciphertextBuffer = base64ToArrayBuffer(ciphertext);
 
   const plaintextBuffer = await crypto.subtle.decrypt(
-    algorithm === 'AES-GCM'
-      ? { name: 'AES-GCM', iv: ivBuffer }
-      : { name: 'AES-CBC', iv: ivBuffer },
+    algorithm === 'AES-GCM' ? { name: 'AES-GCM', iv: ivBuffer } : { name: 'AES-CBC', iv: ivBuffer },
     key,
     ciphertextBuffer
   );
 
   return arrayBufferToString(plaintextBuffer);
 }
-
 
 /**
  * Checks if the Web Crypto API is available.

@@ -22,16 +22,26 @@ const positions = {
  * Lightweight hover tooltip. Shows on hover and keyboard focus. For complex
  * content / portal placement, we can later graduate to Radix's primitive.
  */
-export function Tooltip({ label, children, side = 'top', delay = 300, className }: TooltipProps): React.ReactElement {
+export function Tooltip({
+  label,
+  children,
+  side = 'top',
+  delay = 300,
+  className,
+}: TooltipProps): React.ReactElement {
   const [visible, setVisible] = useState(false);
   const timerRef = React.useRef<number | null>(null);
 
   const show = (): void => {
-    if (timerRef.current) {window.clearTimeout(timerRef.current);}
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
     timerRef.current = window.setTimeout(() => setVisible(true), delay);
   };
   const hide = (): void => {
-    if (timerRef.current) {window.clearTimeout(timerRef.current);}
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
     setVisible(false);
   };
 
@@ -54,7 +64,7 @@ export function Tooltip({ label, children, side = 'top', delay = 300, className 
             className={cn(
               'pointer-events-none absolute z-50 whitespace-nowrap rounded-md border border-white/10 bg-[#0d0d14] px-2.5 py-1 text-xs text-white shadow-lg',
               positions[side],
-              className,
+              className
             )}
           >
             {label}

@@ -13,9 +13,21 @@
       "action": {
         "type": "highlight-options",
         "targets": [
-          { "questionId": "cabinet-style", "values": ["flat-panel"], "label": "Recommended for Modern" },
-          { "questionId": "hardware-style", "values": ["handleless", "bar-pulls"], "label": "Best match" },
-          { "questionId": "countertop-material", "values": ["quartz", "concrete", "stainless-steel"], "label": "Popular choice" }
+          {
+            "questionId": "cabinet-style",
+            "values": ["flat-panel"],
+            "label": "Recommended for Modern"
+          },
+          {
+            "questionId": "hardware-style",
+            "values": ["handleless", "bar-pulls"],
+            "label": "Best match"
+          },
+          {
+            "questionId": "countertop-material",
+            "values": ["quartz", "concrete", "stainless-steel"],
+            "label": "Popular choice"
+          }
         ]
       }
     },
@@ -30,9 +42,21 @@
       "action": {
         "type": "highlight-options",
         "targets": [
-          { "questionId": "cabinet-style", "values": ["raised-panel", "beadboard"], "label": "Classic choice" },
-          { "questionId": "hardware-style", "values": ["knobs", "cup-pulls"], "label": "Traditional match" },
-          { "questionId": "countertop-material", "values": ["granite", "marble"], "label": "Elegant pairing" }
+          {
+            "questionId": "cabinet-style",
+            "values": ["raised-panel", "beadboard"],
+            "label": "Classic choice"
+          },
+          {
+            "questionId": "hardware-style",
+            "values": ["knobs", "cup-pulls"],
+            "label": "Traditional match"
+          },
+          {
+            "questionId": "countertop-material",
+            "values": ["granite", "marble"],
+            "label": "Elegant pairing"
+          }
         ]
       }
     },
@@ -47,9 +71,21 @@
       "action": {
         "type": "highlight-options",
         "targets": [
-          { "questionId": "cabinet-style", "values": ["shaker", "beadboard"], "label": "Farmhouse favorite" },
-          { "questionId": "hardware-style", "values": ["cup-pulls", "knobs"], "label": "Rustic charm" },
-          { "questionId": "countertop-material", "values": ["butcher-block", "quartz"], "label": "Country kitchen" }
+          {
+            "questionId": "cabinet-style",
+            "values": ["shaker", "beadboard"],
+            "label": "Farmhouse favorite"
+          },
+          {
+            "questionId": "hardware-style",
+            "values": ["cup-pulls", "knobs"],
+            "label": "Rustic charm"
+          },
+          {
+            "questionId": "countertop-material",
+            "values": ["butcher-block", "quartz"],
+            "label": "Country kitchen"
+          }
         ]
       }
     },
@@ -106,8 +142,16 @@
       "condition": {
         "operator": "and",
         "conditions": [
-          { "questionId": "kitchen-style", "operator": "equals", "value": "traditional" },
-          { "questionId": "color-preference", "operator": "equals", "value": "neutral-dark" }
+          {
+            "questionId": "kitchen-style",
+            "operator": "equals",
+            "value": "traditional"
+          },
+          {
+            "questionId": "color-preference",
+            "operator": "equals",
+            "value": "neutral-dark"
+          }
         ]
       },
       "action": {

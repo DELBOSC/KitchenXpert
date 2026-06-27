@@ -116,16 +116,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -151,14 +153,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -171,10 +169,14 @@ const mockCsvResult = {
 };
 
 const mockJsonResult = {
-  data: JSON.stringify([
-    { id: '1', email: 'john@test.com', name: 'John' },
-    { id: '2', email: 'jane@test.com', name: 'Jane' },
-  ], null, 2),
+  data: JSON.stringify(
+    [
+      { id: '1', email: 'john@test.com', name: 'John' },
+      { id: '2', email: 'jane@test.com', name: 'Jane' },
+    ],
+    null,
+    2
+  ),
   filename: 'users_export_2024-01-15.json',
   contentType: 'application/json',
 };
@@ -203,17 +205,13 @@ describe('Export Routes', () => {
 
   describe('Authentication guard', () => {
     it('should return 401 for unauthenticated request to GET /export/users', async () => {
-      const response = await request(app)
-        .get('/export/users')
-        .expect(401);
+      const response = await request(app).get('/export/users').expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to GET /export/orders', async () => {
-      const response = await request(app)
-        .get('/export/orders')
-        .expect(401);
+      const response = await request(app).get('/export/orders').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -221,9 +219,7 @@ describe('Export Routes', () => {
     it('should return 403 for non-admin user on GET /export/users', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .get('/export/users')
-        .expect(403);
+      const response = await authedRequest(app).get('/export/users').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -231,9 +227,7 @@ describe('Export Routes', () => {
     it('should return 403 for non-admin user on GET /export/orders', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .get('/export/orders')
-        .expect(403);
+      const response = await authedRequest(app).get('/export/orders').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -241,9 +235,7 @@ describe('Export Routes', () => {
     it('should return 403 for non-admin user on GET /export/projects', async () => {
       currentTestUser = { userId: 'test-user-1', email: 'test@test.com', role: 'user' };
 
-      const response = await authedRequest(app)
-        .get('/export/projects')
-        .expect(403);
+      const response = await authedRequest(app).get('/export/projects').expect(403);
 
       expect(response.body.success).toBe(false);
     });
@@ -255,9 +247,7 @@ describe('Export Routes', () => {
     it('should export users as CSV by default', async () => {
       mockExportData.mockResolvedValue(mockCsvResult);
 
-      const response = await authedRequest(app)
-        .get('/export/users')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/users').expect(200);
 
       expect(response.headers['content-type']).toContain('text/csv');
       expect(response.headers['content-disposition']).toContain('users_export');
@@ -268,9 +258,7 @@ describe('Export Routes', () => {
     it('should export orders as CSV', async () => {
       mockExportData.mockResolvedValue(mockOrdersCsvResult);
 
-      const response = await authedRequest(app)
-        .get('/export/orders?format=csv')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/orders?format=csv').expect(200);
 
       expect(response.headers['content-type']).toContain('text/csv');
       expect(mockExportData).toHaveBeenCalledWith('orders', 'csv');
@@ -283,9 +271,7 @@ describe('Export Routes', () => {
         contentType: 'text/csv; charset=utf-8',
       });
 
-      const response = await authedRequest(app)
-        .get('/export/projects?format=csv')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/projects?format=csv').expect(200);
 
       expect(response.headers['content-type']).toContain('text/csv');
       expect(mockExportData).toHaveBeenCalledWith('projects', 'csv');
@@ -298,9 +284,7 @@ describe('Export Routes', () => {
         contentType: 'text/csv; charset=utf-8',
       });
 
-      const response = await authedRequest(app)
-        .get('/export/kitchens?format=csv')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/kitchens?format=csv').expect(200);
 
       expect(mockExportData).toHaveBeenCalledWith('kitchens', 'csv');
     });
@@ -312,9 +296,7 @@ describe('Export Routes', () => {
         contentType: 'text/csv; charset=utf-8',
       });
 
-      const response = await authedRequest(app)
-        .get('/export/products?format=csv')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/products?format=csv').expect(200);
 
       expect(mockExportData).toHaveBeenCalledWith('products', 'csv');
     });
@@ -326,9 +308,7 @@ describe('Export Routes', () => {
     it('should export users as JSON', async () => {
       mockExportData.mockResolvedValue(mockJsonResult);
 
-      const response = await authedRequest(app)
-        .get('/export/users?format=json')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/users?format=json').expect(200);
 
       expect(response.headers['content-type']).toContain('application/json');
       expect(response.headers['content-disposition']).toContain('users_export');
@@ -343,9 +323,7 @@ describe('Export Routes', () => {
         contentType: 'application/json',
       });
 
-      const response = await authedRequest(app)
-        .get('/export/orders?format=json')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/orders?format=json').expect(200);
 
       expect(mockExportData).toHaveBeenCalledWith('orders', 'json');
     });
@@ -355,34 +333,26 @@ describe('Export Routes', () => {
 
   describe('Validation', () => {
     it('should return 400 for invalid entity', async () => {
-      const response = await authedRequest(app)
-        .get('/export/invalid-entity')
-        .expect(400);
+      const response = await authedRequest(app).get('/export/invalid-entity').expect(400);
 
       expect(JSON.stringify(response.body)).toContain('Invalid entity');
       expect(JSON.stringify(response.body)).toContain('users');
     });
 
     it('should return 400 for unknown entity type', async () => {
-      const response = await authedRequest(app)
-        .get('/export/subscriptions')
-        .expect(400);
+      const response = await authedRequest(app).get('/export/subscriptions').expect(400);
 
       expect(JSON.stringify(response.body)).toContain('Invalid entity');
     });
 
     it('should return 400 for invalid format', async () => {
-      const response = await authedRequest(app)
-        .get('/export/users?format=xml')
-        .expect(400);
+      const response = await authedRequest(app).get('/export/users?format=xml').expect(400);
 
       expect(JSON.stringify(response.body)).toContain('Invalid format');
     });
 
     it('should return 400 for another invalid format', async () => {
-      const response = await authedRequest(app)
-        .get('/export/users?format=pdf')
-        .expect(400);
+      const response = await authedRequest(app).get('/export/users?format=pdf').expect(400);
 
       expect(JSON.stringify(response.body)).toContain('Invalid format');
     });
@@ -394,9 +364,7 @@ describe('Export Routes', () => {
     it('should return 500 when ExportService throws', async () => {
       mockExportData.mockRejectedValue(new Error('Database connection failed'));
 
-      const response = await authedRequest(app)
-        .get('/export/users')
-        .expect(500);
+      const response = await authedRequest(app).get('/export/users').expect(500);
 
       expect(JSON.stringify(response.body)).toContain('Export failed');
     });
@@ -404,9 +372,7 @@ describe('Export Routes', () => {
     it('should return 500 for unexpected service errors', async () => {
       mockExportData.mockRejectedValue(new Error('Unexpected error'));
 
-      const response = await authedRequest(app)
-        .get('/export/orders?format=json')
-        .expect(500);
+      const response = await authedRequest(app).get('/export/orders?format=json').expect(500);
 
       expect(JSON.stringify(response.body)).toContain('Export failed');
     });
@@ -418,9 +384,7 @@ describe('Export Routes', () => {
     it('should set Content-Disposition header with attachment filename for CSV', async () => {
       mockExportData.mockResolvedValue(mockCsvResult);
 
-      const response = await authedRequest(app)
-        .get('/export/users')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/users').expect(200);
 
       expect(response.headers['content-disposition']).toContain('attachment');
       expect(response.headers['content-disposition']).toContain('filename=');
@@ -429,9 +393,7 @@ describe('Export Routes', () => {
     it('should set Content-Disposition header with attachment filename for JSON', async () => {
       mockExportData.mockResolvedValue(mockJsonResult);
 
-      const response = await authedRequest(app)
-        .get('/export/users?format=json')
-        .expect(200);
+      const response = await authedRequest(app).get('/export/users?format=json').expect(200);
 
       expect(response.headers['content-disposition']).toContain('attachment');
       expect(response.headers['content-disposition']).toContain('filename=');

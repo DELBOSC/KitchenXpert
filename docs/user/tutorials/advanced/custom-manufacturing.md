@@ -1,8 +1,7 @@
 # Custom Manufacturing Integration
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Advanced
-**Estimated Time:** 60-90 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Advanced **Estimated Time:**
+60-90 minutes
 
 ## Learning Objectives
 
@@ -28,9 +27,11 @@ By the end of this tutorial, you will be able to:
 
 ## What is Custom Manufacturing Integration?
 
-Traditional approach: Hand measurements → manual shop drawings → manual fabrication
+Traditional approach: Hand measurements → manual shop drawings → manual
+fabrication
 
 Custom manufacturing integration:
+
 - Digital design → automated file generation → CNC fabrication
 - Reduces errors from manual transcription
 - Speeds production dramatically
@@ -38,6 +39,7 @@ Custom manufacturing integration:
 - Ensures design intent translates perfectly to final product
 
 **Use Cases:**
+
 - Custom cabinet shops using CNC routers
 - Stone fabricators with waterjet cutters
 - Metal shops creating custom range hoods
@@ -103,7 +105,8 @@ Fix issues before exporting?  [Resolve Now] [Export Anyway]
 
 5. Re-run readiness check: **"All systems ready for CNC export"** ✓
 
-> **TIP:** Resolving issues before export prevents fabrication errors. CNC machines will cut exactly what you specify - including mistakes.
+> **TIP:** Resolving issues before export prevents fabrication errors. CNC
+> machines will cut exactly what you specify - including mistakes.
 
 ### Step 2: Generate Cabinet Cutting Lists
 
@@ -198,7 +201,8 @@ CB-003,36" Sink Base,Back Panel,34.5,29.25,0.25,1,Birch Plywood,None,Rabbeted in
 ...
 ```
 
-> **TIP:** CNC cutting saves enormous time and money for custom cabinet projects. The precision is also far superior to hand cutting.
+> **TIP:** CNC cutting saves enormous time and money for custom cabinet
+> projects. The precision is also far superior to hand cutting.
 
 ### Step 3: Export CNC Toolpaths for Cabinet Doors
 
@@ -243,6 +247,7 @@ Time estimate:
 4. Processing: "Creating G-code for 28 doors..." (2 minutes)
 
 5. **Review generated files:**
+
    ```
    Generated toolpath files (28 doors):
 
@@ -279,7 +284,8 @@ Time estimate:
 
 [Screenshot: 3D toolpath visualization]
 
-> **WARNING:** Always run toolpath simulation before cutting real material. Catches programming errors that could damage bits or spoil material.
+> **WARNING:** Always run toolpath simulation before cutting real material.
+> Catches programming errors that could damage bits or spoil material.
 
 ### Step 4: Export Countertop Template for CNC
 
@@ -347,7 +353,8 @@ Include:
    - Opened in AutoCAD for verification
    - Sent to fabricator via email
 
-> **TIP:** Include a PDF version alongside DXF files. Fabricators can print PDF for manual verification before cutting.
+> **TIP:** Include a PDF version alongside DXF files. Fabricators can print PDF
+> for manual verification before cutting.
 
 ### Step 5: Generate Parametric Cabinet Models
 
@@ -413,7 +420,9 @@ Current configuration: 36"W × 24"D × 30"H
 
 [Screenshot: Parametric model opened in Fusion 360]
 
-> **TIP:** Parametric models are powerful for kitchen designers who serve builders. Create one parametric cabinet family, resize for each project rather than designing from scratch.
+> **TIP:** Parametric models are powerful for kitchen designers who serve
+> builders. Create one parametric cabinet family, resize for each project rather
+> than designing from scratch.
 
 ### Step 6: Create CNC-Ready Custom Backsplash
 
@@ -482,7 +491,8 @@ Export format:
    - Typical turnaround: 1-2 weeks
    - Cost: ~$18/sq ft cut (vs. $8/sq ft for standard tile)
 
-> **TIP:** Waterjet-cut mosaics create stunning custom designs impossible with standard tiles. Worth the premium for focal areas.
+> **TIP:** Waterjet-cut mosaics create stunning custom designs impossible with
+> standard tiles. Worth the premium for focal areas.
 
 ### Step 7: Export Live-Edge Wood for CNC Surfacing
 
@@ -525,6 +535,7 @@ Estimated CNC time: 2.5 hours (large slab surfacing)
 4. Click **"Generate Surfacing Toolpath"**
 
 5. **Toolpath created:**
+
    ```
    File: Walnut_LiveEdge_Surfacing.nc
 
@@ -547,6 +558,7 @@ Estimated CNC time: 2.5 hours (large slab surfacing)
 [Screenshot: 3D model of live-edge slab]
 
 7. **Include finishing notes:**
+
    ```
    POST-CNC FINISHING INSTRUCTIONS:
 
@@ -563,7 +575,9 @@ Estimated CNC time: 2.5 hours (large slab surfacing)
    - Seal edges with same finish as top
    ```
 
-> **WARNING:** Live-edge wood varies piece-to-piece. CNC surfacing uses idealized model. Actual slab may have knots, voids, or thickness variations requiring adjustment.
+> **WARNING:** Live-edge wood varies piece-to-piece. CNC surfacing uses
+> idealized model. Actual slab may have knots, voids, or thickness variations
+> requiring adjustment.
 
 ### Step 8: Integrate with Digital Twin Production Tracking
 
@@ -618,6 +632,7 @@ Cost: $0 (included in Professional tier)
    - Digital twin updates instantly
 
 5. **Production dashboard shows:**
+
    ```
    JOHNSON KITCHEN - PRODUCTION STATUS
 
@@ -660,6 +675,7 @@ Cost: $0 (included in Professional tier)
    - Flags issues for review
 
 7. **Example quality check:**
+
    ```
    Component: Cabinet Door #14
    Status: Complete
@@ -677,7 +693,8 @@ Cost: $0 (included in Professional tier)
 
 [Screenshot: AI quality inspection report with photo]
 
-> **TIP:** Digital twin tracking dramatically reduces surprises. Know exactly when components will be ready for installation.
+> **TIP:** Digital twin tracking dramatically reduces surprises. Know exactly
+> when components will be ready for installation.
 
 ### Step 9: Generate Assembly Instructions
 
@@ -781,7 +798,8 @@ Total assembly time: 45-60 minutes per cabinet
    - Include access to interactive 3D if needed
    - Installer has zero ambiguity about assembly
 
-> **TIP:** Detailed assembly instructions prevent costly mistakes. Worth the time to generate even for experienced installers.
+> **TIP:** Detailed assembly instructions prevent costly mistakes. Worth the
+> time to generate even for experienced installers.
 
 ### Step 10: Calculate Material Waste and Optimize
 
@@ -844,6 +862,7 @@ Your efficiency: Better than average ✓
 [Screenshot: Waste percentage chart by material]
 
 2. **Click waste reduction suggestions:**
+
    ```
    WASTE REDUCTION STRATEGIES
 
@@ -880,7 +899,8 @@ Your efficiency: Better than average ✓
    Total value gained: $210
    ```
 
-> **TIP:** Waste optimization is free money. Spending 30 minutes on optimization often saves $200-500 on materials.
+> **TIP:** Waste optimization is free money. Spending 30 minutes on optimization
+> often saves $200-500 on materials.
 
 ## What You Learned
 
@@ -928,9 +948,12 @@ Avoid these mistakes:
 
 Complete your advanced education:
 
-1. **[VR Collaboration](vr-collaboration.md)** - Review CNC files in VR before fabrication
-2. **[Phased Implementation](phased-implementation.md)** - Phase custom manufacturing across time
-3. **[Professional Workflows](../../guides/professional-workflows.md)** - Integrate into business operations
+1. **[VR Collaboration](vr-collaboration.md)** - Review CNC files in VR before
+   fabrication
+2. **[Phased Implementation](phased-implementation.md)** - Phase custom
+   manufacturing across time
+3. **[Professional Workflows](../../guides/professional-workflows.md)** -
+   Integrate into business operations
 
 ## Additional Resources
 
@@ -943,6 +966,7 @@ Complete your advanced education:
 ## Feedback
 
 Help us improve manufacturing integration:
+
 - Email: manufacturing@kitchenxpert.com
 - Report file export issues: [Bug report]
 - Request CAM software support: [Software request]
@@ -951,13 +975,14 @@ Help us improve manufacturing integration:
 ---
 
 **Related Tutorials:**
+
 - [Custom Surfaces](../intermediate/custom-surfaces.md)
 - [VR Collaboration](vr-collaboration.md)
 - [Phased Implementation](phased-implementation.md)
 
 **Documentation:**
+
 - [Export Formats Reference](../../reference/export-formats.md)
 - [CNC Toolpath Standards](../../reference/cnc-standards.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1

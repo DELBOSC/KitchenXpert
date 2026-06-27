@@ -243,16 +243,14 @@ describe('CertifiedQuoteService', () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.getById('00000000-0000-0000-0000-000000000000', testUserId),
+        service.getById('00000000-0000-0000-0000-000000000000', testUserId)
       ).rejects.toThrow('Quote not found');
     });
 
     it('should throw "Access denied" when user does not own the quote (IDOR)', async () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(mockQuote);
 
-      await expect(
-        service.getById('quote-1', otherUserId),
-      ).rejects.toThrow('Access denied');
+      await expect(service.getById('quote-1', otherUserId)).rejects.toThrow('Access denied');
     });
   });
 
@@ -286,7 +284,12 @@ describe('CertifiedQuoteService', () => {
   describe('sign', () => {
     it('should sign a draft quote with SHA-256 hash and set status to signed', async () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(mockQuote);
-      const signedQuote = { ...mockQuote, status: 'signed', signatureHash: 'abc123', signedAt: new Date() };
+      const signedQuote = {
+        ...mockQuote,
+        status: 'signed',
+        signatureHash: 'abc123',
+        signedAt: new Date(),
+      };
       mockPrisma.certifiedQuote.update.mockResolvedValue(signedQuote);
 
       const result = await service.sign('quote-1', testUserId);
@@ -306,7 +309,9 @@ describe('CertifiedQuoteService', () => {
     it('should throw when quote is not found', async () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
-      await expect(service.sign('00000000-0000-0000-0000-000000000000', testUserId)).rejects.toThrow('Quote not found');
+      await expect(
+        service.sign('00000000-0000-0000-0000-000000000000', testUserId)
+      ).rejects.toThrow('Quote not found');
     });
 
     it('should throw "Access denied" when user does not own the quote', async () => {
@@ -331,7 +336,7 @@ describe('CertifiedQuoteService', () => {
       });
 
       await expect(service.sign('quote-1', testUserId)).rejects.toThrow(
-        'Cannot sign an expired or cancelled quote',
+        'Cannot sign an expired or cancelled quote'
       );
     });
 
@@ -342,7 +347,7 @@ describe('CertifiedQuoteService', () => {
       });
 
       await expect(service.sign('quote-1', testUserId)).rejects.toThrow(
-        'Cannot sign an expired or cancelled quote',
+        'Cannot sign an expired or cancelled quote'
       );
     });
   });
@@ -364,7 +369,9 @@ describe('CertifiedQuoteService', () => {
     it('should throw when quote is not found', async () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
-      await expect(service.generatePDF('00000000-0000-0000-0000-000000000000', testUserId)).rejects.toThrow('Quote not found');
+      await expect(
+        service.generatePDF('00000000-0000-0000-0000-000000000000', testUserId)
+      ).rejects.toThrow('Quote not found');
     });
 
     it('should throw "Access denied" when user does not own the quote', async () => {
@@ -389,7 +396,7 @@ describe('CertifiedQuoteService', () => {
         expect.objectContaining({
           to: { email: 'jean@example.com', name: 'Jean Dupont' },
           subject: expect.stringContaining('KX-2026-00001'),
-        }),
+        })
       );
       expect(mockPrisma.certifiedQuote.update).toHaveBeenCalledWith({
         where: { id: 'quote-1' },
@@ -401,16 +408,16 @@ describe('CertifiedQuoteService', () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.send('00000000-0000-0000-0000-000000000000', testUserId, 'test@test.com'),
+        service.send('00000000-0000-0000-0000-000000000000', testUserId, 'test@test.com')
       ).rejects.toThrow('Quote not found');
     });
 
     it('should throw "Access denied" when user does not own the quote', async () => {
       mockPrisma.certifiedQuote.findUnique.mockResolvedValue(mockQuote);
 
-      await expect(
-        service.send('quote-1', otherUserId, 'test@test.com'),
-      ).rejects.toThrow('Access denied');
+      await expect(service.send('quote-1', otherUserId, 'test@test.com')).rejects.toThrow(
+        'Access denied'
+      );
     });
   });
 });

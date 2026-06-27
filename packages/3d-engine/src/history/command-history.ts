@@ -281,11 +281,19 @@ export class ChangePropertyCommand implements Command {
   }
 
   execute(): void {
-    this.setNestedProperty(this.object as unknown as Record<string, unknown>, this.property, this.newValue);
+    this.setNestedProperty(
+      this.object as unknown as Record<string, unknown>,
+      this.property,
+      this.newValue
+    );
   }
 
   undo(): void {
-    this.setNestedProperty(this.object as unknown as Record<string, unknown>, this.property, this.oldValue);
+    this.setNestedProperty(
+      this.object as unknown as Record<string, unknown>,
+      this.property,
+      this.oldValue
+    );
   }
 
   private setNestedProperty(obj: Record<string, unknown>, path: string, value: unknown): void {

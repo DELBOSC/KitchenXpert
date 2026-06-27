@@ -2,8 +2,8 @@
 
 ## Overview
 
-This document provides an analysis of all packages in the KitchenXpert monorepo, their
-dependencies, and architectural relationships.
+This document provides an analysis of all packages in the KitchenXpert monorepo,
+their dependencies, and architectural relationships.
 
 ## Package Dependency Graph
 
@@ -162,37 +162,38 @@ dependencies, and architectural relationships.
 The packages must be built in the following order to respect dependencies:
 
 1. `@kitchenxpert/common`
-2. `@kitchenxpert/api-client`, `@kitchenxpert/design-system`, `@kitchenxpert/3d-engine`,
-   `@kitchenxpert/scraper` (parallel)
+2. `@kitchenxpert/api-client`, `@kitchenxpert/design-system`,
+   `@kitchenxpert/3d-engine`, `@kitchenxpert/scraper` (parallel)
 3. `@kitchenxpert/ui-components`
-4. `@kitchenxpert/frontend`, `@kitchenxpert/partner-portal`, `@kitchenxpert/backend` (parallel)
+4. `@kitchenxpert/frontend`, `@kitchenxpert/partner-portal`,
+   `@kitchenxpert/backend` (parallel)
 
 ## Scripts
 
-| Command               | Description                     |
-| --------------------- | ------------------------------- |
-| `pnpm build`          | Build all packages              |
-| `pnpm dev`            | Start development servers       |
-| `pnpm test`           | Run all tests                   |
-| `pnpm lint`           | Lint all packages               |
-| `pnpm type-check`     | TypeScript type checking        |
-| `pnpm clean`          | Clean all build artifacts       |
-| `pnpm format`         | Format code with Prettier       |
+| Command           | Description               |
+| ----------------- | ------------------------- |
+| `pnpm build`      | Build all packages        |
+| `pnpm dev`        | Start development servers |
+| `pnpm test`       | Run all tests             |
+| `pnpm lint`       | Lint all packages         |
+| `pnpm type-check` | TypeScript type checking  |
+| `pnpm clean`      | Clean all build artifacts |
+| `pnpm format`     | Format code with Prettier |
 
 ## Package Statistics
 
-| Package          | Type       | Size (src) | Dependencies |
-| ---------------- | ---------- | ---------- | ------------ |
-| common           | Library    | ~50 files  | 0            |
-| api-client       | Library    | ~20 files  | 1            |
-| design-system    | Library    | ~30 files  | 1            |
-| 3d-engine        | Library    | ~40 files  | 1            |
-| ui-components    | Library    | ~60 files  | 2            |
-| frontend         | App        | ~100 files | 5            |
-| partner-portal   | App        | ~80 files  | 4            |
-| backend          | App        | ~120 files | 1            |
-| scraper          | App        | ~80 files  | 1            |
-| ai-modules       | Python     | ~40 files  | 0            |
+| Package        | Type    | Size (src) | Dependencies |
+| -------------- | ------- | ---------- | ------------ |
+| common         | Library | ~50 files  | 0            |
+| api-client     | Library | ~20 files  | 1            |
+| design-system  | Library | ~30 files  | 1            |
+| 3d-engine      | Library | ~40 files  | 1            |
+| ui-components  | Library | ~60 files  | 2            |
+| frontend       | App     | ~100 files | 5            |
+| partner-portal | App     | ~80 files  | 4            |
+| backend        | App     | ~120 files | 1            |
+| scraper        | App     | ~80 files  | 1            |
+| ai-modules     | Python  | ~40 files  | 0            |
 
 ## Configuration Files
 

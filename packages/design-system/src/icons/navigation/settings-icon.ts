@@ -23,7 +23,5 @@ export function createSettingsIcon(props: IconProps = {}): string {
 
 export const SettingsIconData = {
   viewBox: '0 0 24 24',
-  paths: [
-    { type: 'circle', cx: 12, cy: 12, r: 3 },
-  ],
+  paths: [{ type: 'circle', cx: 12, cy: 12, r: 3 }],
 } as const;

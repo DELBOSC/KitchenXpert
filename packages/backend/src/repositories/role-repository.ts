@@ -1,4 +1,10 @@
-import { type PrismaClient, type Role, type Permission, type RolePermission, type UserRole } from '@prisma/client';
+import {
+  type PrismaClient,
+  type Role,
+  type Permission,
+  type RolePermission,
+  type UserRole,
+} from '@prisma/client';
 
 /**
  * Role Repository
@@ -35,8 +41,8 @@ export class RoleRepository {
       where: { id },
       include: {
         rolePermissions: { include: { permission: true } },
-        _count: { select: { userRoles: true } }
-      }
+        _count: { select: { userRoles: true } },
+      },
     });
   }
 
@@ -46,7 +52,7 @@ export class RoleRepository {
   async findByName(name: string): Promise<Role | null> {
     return this.prisma.role.findUnique({
       where: { name },
-      include: { rolePermissions: { include: { permission: true } } }
+      include: { rolePermissions: { include: { permission: true } } },
     });
   }
 
@@ -57,9 +63,9 @@ export class RoleRepository {
     return this.prisma.role.findMany({
       include: {
         rolePermissions: { include: { permission: true } },
-        _count: { select: { userRoles: true } }
+        _count: { select: { userRoles: true } },
       },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
   }
 
@@ -73,15 +79,15 @@ export class RoleRepository {
           name: data.name,
           description: data.description,
           isSystem: data.isSystem || false,
-        }
+        },
       });
 
       if (data.permissionIds && data.permissionIds.length > 0) {
         await tx.rolePermission.createMany({
-          data: data.permissionIds.map(permissionId => ({
+          data: data.permissionIds.map((permissionId) => ({
             roleId: role.id,
-            permissionId
-          }))
+            permissionId,
+          })),
         });
       }
 
@@ -94,8 +100,12 @@ export class RoleRepository {
    */
   async update(id: string, data: UpdateRoleDto): Promise<Role> {
     const role = await this.findById(id);
-    if (!role) {throw new Error('Role not found');}
-    if (role.isSystem) {throw new Error('Cannot modify system role');}
+    if (!role) {
+      throw new Error('Role not found');
+    }
+    if (role.isSystem) {
+      throw new Error('Cannot modify system role');
+    }
 
     return this.prisma.$transaction(async (tx) => {
       const updated = await tx.role.update({
@@ -103,17 +113,17 @@ export class RoleRepository {
         data: {
           ...(data.name && { name: data.name }),
           ...(data.description !== undefined && { description: data.description }),
-        }
+        },
       });
 
       if (data.permissionIds !== undefined) {
         await tx.rolePermission.deleteMany({ where: { roleId: id } });
         if (data.permissionIds.length > 0) {
           await tx.rolePermission.createMany({
-            data: data.permissionIds.map(permissionId => ({
+            data: data.permissionIds.map((permissionId) => ({
               roleId: id,
-              permissionId
-            }))
+              permissionId,
+            })),
           });
         }
       }
@@ -127,8 +137,12 @@ export class RoleRepository {
    */
   async delete(id: string): Promise<Role> {
     const role = await this.findById(id);
-    if (!role) {throw new Error('Role not found');}
-    if (role.isSystem) {throw new Error('Cannot delete system role');}
+    if (!role) {
+      throw new Error('Role not found');
+    }
+    if (role.isSystem) {
+      throw new Error('Cannot delete system role');
+    }
     if (role._count && role._count.userRoles > 0) {
       throw new Error('Cannot delete role with assigned users');
     }
@@ -150,7 +164,7 @@ export class RoleRepository {
    */
   async addPermission(roleId: string, permissionId: string): Promise<RolePermission> {
     return this.prisma.rolePermission.create({
-      data: { roleId, permissionId }
+      data: { roleId, permissionId },
     });
   }
 
@@ -159,7 +173,7 @@ export class RoleRepository {
    */
   async removePermission(roleId: string, permissionId: string): Promise<RolePermission> {
     return this.prisma.rolePermission.delete({
-      where: { roleId_permissionId: { roleId, permissionId } }
+      where: { roleId_permissionId: { roleId, permissionId } },
     });
   }
 
@@ -169,9 +183,9 @@ export class RoleRepository {
   async getPermissions(roleId: string): Promise<Permission[]> {
     const rolePerms = await this.prisma.rolePermission.findMany({
       where: { roleId },
-      include: { permission: true }
+      include: { permission: true },
     });
-    return rolePerms.map(rp => rp.permission);
+    return rolePerms.map((rp) => rp.permission);
   }
 
   /**
@@ -181,8 +195,8 @@ export class RoleRepository {
     await this.prisma.$transaction([
       this.prisma.rolePermission.deleteMany({ where: { roleId } }),
       this.prisma.rolePermission.createMany({
-        data: permissionIds.map(permissionId => ({ roleId, permissionId }))
-      })
+        data: permissionIds.map((permissionId) => ({ roleId, permissionId })),
+      }),
     ]);
   }
 
@@ -193,7 +207,7 @@ export class RoleRepository {
    */
   async assignToUser(userId: string, roleId: string): Promise<UserRole> {
     return this.prisma.userRole.create({
-      data: { userId, roleId }
+      data: { userId, roleId },
     });
   }
 
@@ -202,7 +216,7 @@ export class RoleRepository {
    */
   async removeFromUser(userId: string, roleId: string): Promise<UserRole> {
     return this.prisma.userRole.delete({
-      where: { userId_roleId: { userId, roleId } }
+      where: { userId_roleId: { userId, roleId } },
     });
   }
 
@@ -212,9 +226,9 @@ export class RoleRepository {
   async getUserRoles(userId: string): Promise<Role[]> {
     const userRoles = await this.prisma.userRole.findMany({
       where: { userId },
-      include: { role: { include: { rolePermissions: { include: { permission: true } } } } }
+      include: { role: { include: { rolePermissions: { include: { permission: true } } } } },
     });
-    return userRoles.map(ur => ur.role);
+    return userRoles.map((ur) => ur.role);
   }
 
   /**
@@ -223,9 +237,9 @@ export class RoleRepository {
   async getUsersWithRole(roleId: string): Promise<string[]> {
     const userRoles = await this.prisma.userRole.findMany({
       where: { roleId },
-      select: { userId: true }
+      select: { userId: true },
     });
-    return userRoles.map(ur => ur.userId);
+    return userRoles.map((ur) => ur.userId);
   }
 
   /**
@@ -235,8 +249,8 @@ export class RoleRepository {
     const count = await this.prisma.userRole.count({
       where: {
         userId,
-        role: { name: roleName }
-      }
+        role: { name: roleName },
+      },
     });
     return count > 0;
   }
@@ -250,15 +264,15 @@ export class RoleRepository {
       include: {
         role: {
           include: {
-            rolePermissions: { include: { permission: true } }
-          }
-        }
-      }
+            rolePermissions: { include: { permission: true } },
+          },
+        },
+      },
     });
 
     const permissions = new Map<string, Permission>();
-    userRoles.forEach(ur => {
-      ur.role.rolePermissions.forEach(rp => {
+    userRoles.forEach((ur) => {
+      ur.role.rolePermissions.forEach((rp) => {
         permissions.set(rp.permission.id, rp.permission);
       });
     });

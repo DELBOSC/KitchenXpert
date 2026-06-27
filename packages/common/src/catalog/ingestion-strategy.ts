@@ -20,10 +20,7 @@ import type { ParseResult, SourceLevel } from './unified-product.schema';
  * concrete HTTP client and from the heavy scraper package.
  */
 export interface JsonFetcher {
-  fetchJson<T = unknown>(
-    url: string,
-    options?: { headers?: Record<string, string> },
-  ): Promise<T>;
+  fetchJson<T = unknown>(url: string, options?: { headers?: Record<string, string> }): Promise<T>;
 }
 
 export interface IngestionStrategy {

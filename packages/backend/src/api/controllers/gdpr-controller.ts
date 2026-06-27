@@ -27,13 +27,19 @@ export class GDPRController {
       return;
     }
     const [user, kitchens, projects, orders, auditEvents] = await Promise.all([
-      prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, createdAt: true, status: true, emailVerified: true } }),
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, email: true, createdAt: true, status: true, emailVerified: true },
+      }),
       prisma.kitchen.count({ where: { userId } }),
       prisma.project.count({ where: { userId } }),
       prisma.order.count({ where: { userId } }),
       prisma.auditLog.count({ where: { userId } }),
     ]);
-    if (!user) { res.status(404).json({ success: false, error: 'User not found' }); return; }
+    if (!user) {
+      res.status(404).json({ success: false, error: 'User not found' });
+      return;
+    }
     res.json({
       success: true,
       data: {
@@ -65,16 +71,29 @@ export class GDPRController {
       prisma.user.findUnique({
         where: { id: userId },
         select: {
-          id: true, email: true, firstName: true, lastName: true, phone: true,
-          avatar: true, language: true, timezone: true, role: true, status: true,
-          emailVerified: true, lastLoginAt: true, createdAt: true, updatedAt: true,
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          avatar: true,
+          language: true,
+          timezone: true,
+          role: true,
+          status: true,
+          emailVerified: true,
+          lastLoginAt: true,
+          createdAt: true,
+          updatedAt: true,
         },
       }),
       prisma.kitchen.findMany({ where: { userId }, include: { configuration: true, items: true } }),
       prisma.project.findMany({ where: { userId } }),
       prisma.order.findMany({ where: { userId } }),
       prisma.userPreference.findFirst({ where: { userId } }).catch(() => null),
-      prisma.notification.findMany({ where: { userId }, take: 500, orderBy: { createdAt: 'desc' } }).catch(() => []),
+      prisma.notification
+        .findMany({ where: { userId }, take: 500, orderBy: { createdAt: 'desc' } })
+        .catch(() => []),
     ]);
 
     if (!user) {
@@ -96,18 +115,23 @@ export class GDPRController {
       notifications,
     };
 
-    await prisma.auditLog.create({
-      data: {
-        userId,
-        action: 'export',
-        resource: 'user',
-        resourceId: userId,
-        metadata: { kind: 'gdpr_export_art_20' },
-      },
-    }).catch((err) => logger.warn('audit log failed for gdpr_export', { err: String(err) }));
+    await prisma.auditLog
+      .create({
+        data: {
+          userId,
+          action: 'export',
+          resource: 'user',
+          resourceId: userId,
+          metadata: { kind: 'gdpr_export_art_20' },
+        },
+      })
+      .catch((err) => logger.warn('audit log failed for gdpr_export', { err: String(err) }));
 
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="kitchenxpert-export-${userId}-${Date.now()}.json"`);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="kitchenxpert-export-${userId}-${Date.now()}.json"`
+    );
     res.status(200).send(JSON.stringify(payload, null, 2));
   });
 
@@ -159,7 +183,8 @@ export class GDPRController {
     res.status(200).json({
       success: true,
       data: {
-        message: 'Compte anonymisé. Les données seront définitivement purgées après la période de conservation légale.',
+        message:
+          'Compte anonymisé. Les données seront définitivement purgées après la période de conservation légale.',
         scheduledHardDeleteAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       },
     });

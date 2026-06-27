@@ -25,7 +25,9 @@ export class GetKitchenUseCase implements UseCase<GetKitchenInput, unknown> {
         project: { select: { id: true, name: true, userId: true } },
       },
     });
-    if (!kitchen) {return err(DomainErrors.notFound('Kitchen'));}
+    if (!kitchen) {
+      return err(DomainErrors.notFound('Kitchen'));
+    }
     // Ownership: admins always pass; otherwise the kitchen must belong to the caller.
     if (kitchen.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this kitchen'));

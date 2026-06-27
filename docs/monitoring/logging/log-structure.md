@@ -1,10 +1,10 @@
 # Log Structure Documentation
 
-> Comprehensive guide to structured logging format and standards for KitchenXpert.
+> Comprehensive guide to structured logging format and standards for
+> KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** Platform Engineering Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Platform Engineering Team **Version:**
+1.0
 
 ---
 
@@ -24,7 +24,8 @@
 
 ### Standard JSON Log Format
 
-All KitchenXpert services MUST use structured JSON logging with the following base format:
+All KitchenXpert services MUST use structured JSON logging with the following
+base format:
 
 ```json
 {
@@ -43,28 +44,28 @@ All KitchenXpert services MUST use structured JSON logging with the following ba
 
 ### Required Fields
 
-| Field | Type | Description | Example |
-|-------|------|-------------|---------|
-| `timestamp` | ISO 8601 string | UTC timestamp with milliseconds | `"2026-01-10T14:30:45.123Z"` |
-| `level` | string | Log level (lowercase) | `"info"`, `"error"`, `"warn"` |
-| `service` | string | Service identifier | `"backend"`, `"ai-service"` |
-| `message` | string | Human-readable description | `"User logged in successfully"` |
+| Field       | Type            | Description                     | Example                         |
+| ----------- | --------------- | ------------------------------- | ------------------------------- |
+| `timestamp` | ISO 8601 string | UTC timestamp with milliseconds | `"2026-01-10T14:30:45.123Z"`    |
+| `level`     | string          | Log level (lowercase)           | `"info"`, `"error"`, `"warn"`   |
+| `service`   | string          | Service identifier              | `"backend"`, `"ai-service"`     |
+| `message`   | string          | Human-readable description      | `"User logged in successfully"` |
 
 ### Optional Standard Fields
 
-| Field | Type | Description | When to Include |
-|-------|------|-------------|-----------------|
-| `traceId` | UUID string | Distributed trace identifier | All requests |
-| `spanId` | hex string | Current span identifier | All requests |
-| `userId` | string | Authenticated user ID | When authenticated |
-| `requestId` | UUID string | Unique request identifier | All HTTP requests |
-| `sessionId` | string | User session identifier | When available |
-| `context` | object | Additional structured data | As needed |
-| `error` | object | Error details | On errors |
-| `duration` | number | Operation duration (ms) | Timed operations |
-| `method` | string | HTTP method | HTTP requests |
-| `path` | string | Request path | HTTP requests |
-| `statusCode` | number | HTTP status code | HTTP responses |
+| Field        | Type        | Description                  | When to Include    |
+| ------------ | ----------- | ---------------------------- | ------------------ |
+| `traceId`    | UUID string | Distributed trace identifier | All requests       |
+| `spanId`     | hex string  | Current span identifier      | All requests       |
+| `userId`     | string      | Authenticated user ID        | When authenticated |
+| `requestId`  | UUID string | Unique request identifier    | All HTTP requests  |
+| `sessionId`  | string      | User session identifier      | When available     |
+| `context`    | object      | Additional structured data   | As needed          |
+| `error`      | object      | Error details                | On errors          |
+| `duration`   | number      | Operation duration (ms)      | Timed operations   |
+| `method`     | string      | HTTP method                  | HTTP requests      |
+| `path`       | string      | Request path                 | HTTP requests      |
+| `statusCode` | number      | HTTP status code             | HTTP responses     |
 
 ### Context Object Structure
 
@@ -144,13 +145,13 @@ For error logs, include detailed error information:
 
 #### Backend-Specific Fields
 
-| Field | Description |
-|-------|-------------|
-| `designId` | Design resource identifier |
-| `projectId` | Project resource identifier |
-| `partnerId` | Partner catalog identifier |
-| `productId` | Product catalog identifier |
-| `operationType` | CRUD operation type |
+| Field           | Description                 |
+| --------------- | --------------------------- |
+| `designId`      | Design resource identifier  |
+| `projectId`     | Project resource identifier |
+| `partnerId`     | Partner catalog identifier  |
+| `productId`     | Product catalog identifier  |
+| `operationType` | CRUD operation type         |
 
 ### Frontend Service (Browser)
 
@@ -180,15 +181,15 @@ For error logs, include detailed error information:
 
 #### Frontend-Specific Fields
 
-| Field | Description |
-|-------|-------------|
-| `page` | Current page/route |
-| `component` | React component name |
-| `browser` | Browser name and version |
-| `os` | Operating system |
-| `viewport` | Screen dimensions |
-| `webglSupported` | WebGL capability |
-| `fps` | Current frame rate |
+| Field            | Description              |
+| ---------------- | ------------------------ |
+| `page`           | Current page/route       |
+| `component`      | React component name     |
+| `browser`        | Browser name and version |
+| `os`             | Operating system         |
+| `viewport`       | Screen dimensions        |
+| `webglSupported` | WebGL capability         |
+| `fps`            | Current frame rate       |
 
 ### AI Service (Python)
 
@@ -216,14 +217,14 @@ For error logs, include detailed error information:
 
 #### AI Service-Specific Fields
 
-| Field | Description |
-|-------|-------------|
-| `modelName` | AI model identifier |
-| `modelVersion` | Model version |
+| Field           | Description             |
+| --------------- | ----------------------- |
+| `modelName`     | AI model identifier     |
+| `modelVersion`  | Model version           |
 | `inferenceTime` | Inference duration (ms) |
-| `gpuMemoryUsed` | GPU memory (MB) |
-| `batchSize` | Batch size used |
-| `confidence` | Model confidence score |
+| `gpuMemoryUsed` | GPU memory (MB)         |
+| `batchSize`     | Batch size used         |
+| `confidence`    | Model confidence score  |
 
 ### Database Operations
 
@@ -254,12 +255,12 @@ KitchenXpert uses W3C Trace Context standard for distributed tracing:
 
 #### HTTP Headers
 
-| Header | Description | Example |
-|--------|-------------|---------|
-| `traceparent` | W3C trace context | `00-a1b2c3d4...-1234...-01` |
-| `tracestate` | Vendor-specific data | `kitchenxpert=sampling:1` |
-| `X-Request-ID` | Request identifier | `req_xyz789` |
-| `X-Correlation-ID` | Correlation ID | `corr_abc123` |
+| Header             | Description          | Example                     |
+| ------------------ | -------------------- | --------------------------- |
+| `traceparent`      | W3C trace context    | `00-a1b2c3d4...-1234...-01` |
+| `tracestate`       | Vendor-specific data | `kitchenxpert=sampling:1`   |
+| `X-Request-ID`     | Request identifier   | `req_xyz789`                |
+| `X-Correlation-ID` | Correlation ID       | `corr_abc123`               |
 
 #### TraceId Format
 
@@ -343,7 +344,7 @@ const logger = winston.createLogger({
       return info;
     })(),
     winston.format.json()
-  )
+  ),
 });
 ```
 
@@ -353,13 +354,13 @@ const logger = winston.createLogger({
 
 ### Data Classification
 
-| Classification | Examples | Handling |
-|----------------|----------|----------|
-| **PII** | Email, name, phone, address | Always redact |
-| **Credentials** | Passwords, API keys, tokens | Never log |
-| **Financial** | Credit cards, bank accounts | Always redact |
-| **Health** | Medical information | Never log |
-| **Internal** | User IDs, design IDs | Log as-is |
+| Classification  | Examples                    | Handling      |
+| --------------- | --------------------------- | ------------- |
+| **PII**         | Email, name, phone, address | Always redact |
+| **Credentials** | Passwords, API keys, tokens | Never log     |
+| **Financial**   | Credit cards, bank accounts | Always redact |
+| **Health**      | Medical information         | Never log     |
+| **Internal**    | User IDs, design IDs        | Log as-is     |
 
 ### Redaction Rules
 
@@ -388,12 +389,12 @@ These fields should be masked when logged:
 
 ```javascript
 const REDACTED_FIELDS = [
-  'email',           // user@[REDACTED].com
-  'phone',           // +1***-***-1234
-  'address',         // [REDACTED]
-  'name',            // J*** D***
-  'dateOfBirth',     // [REDACTED]
-  'ipAddress',       // 192.168.XXX.XXX
+  'email', // user@[REDACTED].com
+  'phone', // +1***-***-1234
+  'address', // [REDACTED]
+  'name', // J*** D***
+  'dateOfBirth', // [REDACTED]
+  'ipAddress', // 192.168.XXX.XXX
 ];
 ```
 
@@ -429,7 +430,7 @@ function redactSensitiveData(obj, path = '') {
     const lowerKey = key.toLowerCase();
 
     // Check if field should be blocked
-    if (BLOCKED_FIELDS.some(f => lowerKey.includes(f.toLowerCase()))) {
+    if (BLOCKED_FIELDS.some((f) => lowerKey.includes(f.toLowerCase()))) {
       continue; // Don't include in output
     }
 
@@ -451,6 +452,7 @@ function redactSensitiveData(obj, path = '') {
 ### Example Redacted Log
 
 **Before Redaction:**
+
 ```json
 {
   "message": "User registration completed",
@@ -465,6 +467,7 @@ function redactSensitiveData(obj, path = '') {
 ```
 
 **After Redaction:**
+
 ```json
 {
   "message": "User registration completed",
@@ -588,7 +591,7 @@ function enrichLog(logEntry) {
     business: {
       tier: getCurrentUserTier(),
       subscription: getSubscriptionType(),
-    }
+    },
   };
 }
 ```
@@ -629,9 +632,9 @@ const logger = winston.createLogger({
     new winston.transports.File({
       filename: '/var/log/kitchenxpert/backend.log',
       maxsize: 100 * 1024 * 1024, // 100MB
-      maxFiles: 10
-    })
-  ]
+      maxFiles: 10,
+    }),
+  ],
 });
 
 // Usage
@@ -641,8 +644,8 @@ logger.info('Design created', {
   context: {
     designId: design.id,
     objectCount: design.objects.length,
-    duration: Date.now() - startTime
-  }
+    duration: Date.now() - startTime,
+  },
 });
 ```
 
@@ -736,7 +739,11 @@ class FrontendLogger {
     this.send(entry);
   }
 
-  error(message: string, error: Error, context?: Record<string, unknown>): void {
+  error(
+    message: string,
+    error: Error,
+    context?: Record<string, unknown>
+  ): void {
     const entry = this.createEntry('error', message, context, error);
     this.send(entry);
   }
@@ -759,4 +766,5 @@ class FrontendLogger {
 
 ---
 
-*For questions about log structure, contact the Platform Engineering team at platform@kitchenxpert.com*
+_For questions about log structure, contact the Platform Engineering team at
+platform@kitchenxpert.com_

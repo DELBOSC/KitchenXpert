@@ -126,16 +126,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -162,14 +164,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -274,7 +272,9 @@ describe('AI Project Routes', () => {
 
   describe('POST /ai-project/describe', () => {
     it('should generate a project description successfully', async () => {
-      mockGenerateProjectDescription.mockResolvedValue('A beautiful modern kitchen with clean lines and premium materials.');
+      mockGenerateProjectDescription.mockResolvedValue(
+        'A beautiful modern kitchen with clean lines and premium materials.'
+      );
 
       const response = await authedRequest(app)
         .post('/ai-project/describe')
@@ -303,7 +303,10 @@ describe('AI Project Routes', () => {
     });
 
     it('should include questionnaire data when projectId is provided and owned by user', async () => {
-      mockPrisma.project.findUnique.mockResolvedValue({ id: validProjectId, userId: 'test-user-1' });
+      mockPrisma.project.findUnique.mockResolvedValue({
+        id: validProjectId,
+        userId: 'test-user-1',
+      });
       mockPrisma.questionnaireResponse.findUnique.mockResolvedValue(mockQuestionnaireResponse);
       mockGenerateProjectDescription.mockResolvedValue('Rich description with questionnaire data.');
 
@@ -324,7 +327,10 @@ describe('AI Project Routes', () => {
     });
 
     it('should not include questionnaire data when project belongs to another user (IDOR prevention)', async () => {
-      mockPrisma.project.findUnique.mockResolvedValue({ id: validProjectId, userId: 'other-user-99' });
+      mockPrisma.project.findUnique.mockResolvedValue({
+        id: validProjectId,
+        userId: 'other-user-99',
+      });
       mockGenerateProjectDescription.mockResolvedValue('Description without questionnaire.');
 
       const response = await authedRequest(app)
@@ -344,7 +350,10 @@ describe('AI Project Routes', () => {
 
     it('should allow admin to access questionnaire data of any project', async () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
-      mockPrisma.project.findUnique.mockResolvedValue({ id: validProjectId, userId: 'other-user-99' });
+      mockPrisma.project.findUnique.mockResolvedValue({
+        id: validProjectId,
+        userId: 'other-user-99',
+      });
       mockPrisma.questionnaireResponse.findUnique.mockResolvedValue(mockQuestionnaireResponse);
       mockGenerateProjectDescription.mockResolvedValue('Admin description.');
 
@@ -547,9 +556,7 @@ describe('AI Project Routes', () => {
       mockPrisma.questionnaireResponse.findUnique.mockResolvedValue(mockQuestionnaireResponse);
       mockGetProgressRecommendations.mockResolvedValue({ recommendations: [] });
 
-      await authedRequest(app)
-        .get(`/ai-project/recommendations/${validProjectId}`)
-        .expect(200);
+      await authedRequest(app).get(`/ai-project/recommendations/${validProjectId}`).expect(200);
 
       expect(mockGetProgressRecommendations).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -563,17 +570,13 @@ describe('AI Project Routes', () => {
     it('should set hasDesigns to false when no kitchens have scores', async () => {
       const projectNoScores = {
         ...mockProject,
-        kitchens: [
-          { name: 'Kitchen A', style: 'modern', score: null },
-        ],
+        kitchens: [{ name: 'Kitchen A', style: 'modern', score: null }],
       };
       mockPrisma.project.findUnique.mockResolvedValue(projectNoScores);
       mockPrisma.questionnaireResponse.findUnique.mockResolvedValue(null);
       mockGetProgressRecommendations.mockResolvedValue({ recommendations: [] });
 
-      await authedRequest(app)
-        .get(`/ai-project/recommendations/${validProjectId}`)
-        .expect(200);
+      await authedRequest(app).get(`/ai-project/recommendations/${validProjectId}`).expect(200);
 
       expect(mockGetProgressRecommendations).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -600,9 +603,7 @@ describe('AI Project Routes', () => {
       mockPrisma.questionnaireResponse.findUnique.mockResolvedValue(null);
       mockGetProgressRecommendations.mockResolvedValue({ recommendations: [] });
 
-      await authedRequest(app)
-        .get(`/ai-project/recommendations/${validProjectId}`)
-        .expect(200);
+      await authedRequest(app).get(`/ai-project/recommendations/${validProjectId}`).expect(200);
 
       expect(mockGetProgressRecommendations).toHaveBeenCalledWith(
         expect.objectContaining({

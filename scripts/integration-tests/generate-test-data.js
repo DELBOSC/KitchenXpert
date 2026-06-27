@@ -57,28 +57,82 @@ const generators = {
 
   firstName() {
     const names = [
-      'Alice', 'Bob', 'Charlie', 'Diana', 'Edward', 'Fiona', 'George', 'Hannah',
-      'Ivan', 'Julia', 'Kevin', 'Laura', 'Michael', 'Nina', 'Oscar', 'Patricia',
-      'Quentin', 'Rachel', 'Samuel', 'Tina', 'Ulrich', 'Victoria', 'William', 'Xena',
-      'Yves', 'Zoe', 'André', 'Béatrice', 'Claude', 'Delphine'
+      'Alice',
+      'Bob',
+      'Charlie',
+      'Diana',
+      'Edward',
+      'Fiona',
+      'George',
+      'Hannah',
+      'Ivan',
+      'Julia',
+      'Kevin',
+      'Laura',
+      'Michael',
+      'Nina',
+      'Oscar',
+      'Patricia',
+      'Quentin',
+      'Rachel',
+      'Samuel',
+      'Tina',
+      'Ulrich',
+      'Victoria',
+      'William',
+      'Xena',
+      'Yves',
+      'Zoe',
+      'André',
+      'Béatrice',
+      'Claude',
+      'Delphine',
     ];
     return names[Math.floor(Math.random() * names.length)];
   },
 
   lastName() {
     const names = [
-      'Martin', 'Bernard', 'Dubois', 'Thomas', 'Robert', 'Richard', 'Petit', 'Durand',
-      'Leroy', 'Moreau', 'Simon', 'Laurent', 'Lefebvre', 'Michel', 'Garcia', 'David',
-      'Bertrand', 'Roux', 'Vincent', 'Fournier', 'Morel', 'Girard', 'Andre', 'Mercier'
+      'Martin',
+      'Bernard',
+      'Dubois',
+      'Thomas',
+      'Robert',
+      'Richard',
+      'Petit',
+      'Durand',
+      'Leroy',
+      'Moreau',
+      'Simon',
+      'Laurent',
+      'Lefebvre',
+      'Michel',
+      'Garcia',
+      'David',
+      'Bertrand',
+      'Roux',
+      'Vincent',
+      'Fournier',
+      'Morel',
+      'Girard',
+      'Andre',
+      'Mercier',
     ];
     return names[Math.floor(Math.random() * names.length)];
   },
 
   address() {
     const streets = [
-      'Rue de la Paix', 'Avenue des Champs-Élysées', 'Boulevard Saint-Germain',
-      'Rue du Faubourg Saint-Honoré', 'Place de la Concorde', 'Rue de Rivoli',
-      'Avenue Montaigne', 'Rue Saint-Denis', 'Boulevard Haussmann', 'Rue Lafayette'
+      'Rue de la Paix',
+      'Avenue des Champs-Élysées',
+      'Boulevard Saint-Germain',
+      'Rue du Faubourg Saint-Honoré',
+      'Place de la Concorde',
+      'Rue de Rivoli',
+      'Avenue Montaigne',
+      'Rue Saint-Denis',
+      'Boulevard Haussmann',
+      'Rue Lafayette',
     ];
     const cities = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice', 'Nantes', 'Bordeaux'];
     const street = streets[Math.floor(Math.random() * streets.length)];
@@ -203,7 +257,7 @@ function generateProducts(count) {
 
   const products = [];
   const categories = ['cabinets', 'worktops', 'appliances', 'sinks', 'accessories'];
-  const brands = ['Schmidt', 'Mobalpa', 'IKEA', 'Leroy Merlin', 'Cuisinella', 'SoCoo\'c'];
+  const brands = ['Schmidt', 'Mobalpa', 'IKEA', 'Leroy Merlin', 'Cuisinella', "SoCoo'c"];
 
   for (let i = 0; i < count; i++) {
     const category = categories[i % categories.length];
@@ -259,7 +313,7 @@ function generateKitchens(count, users, products) {
     }
 
     const totalPrice = selectedProducts.reduce((sum, item) => {
-      const product = products.find(p => p.id === item.productId);
+      const product = products.find((p) => p.id === item.productId);
       return sum + (product ? product.price * item.quantity : 0);
     }, 0);
 
@@ -305,7 +359,7 @@ function generateOrders(count, users, kitchens, partners) {
       userId: user.id,
       kitchenId: kitchen.id,
       partnerId: partner.id,
-      items: kitchen.products.map(p => ({
+      items: kitchen.products.map((p) => ({
         productId: p.productId,
         quantity: p.quantity,
         unitPrice: generators.price(100, 2000),
@@ -342,9 +396,24 @@ function generateTestCredentials(users) {
 
   // Add known test accounts
   testUsers.unshift(
-    { email: 'admin@test.com', password: 'Admin123!@#', role: 'admin', description: 'Admin test account' },
-    { email: 'partner@test.com', password: 'Partner123!@#', role: 'partner', description: 'Partner test account' },
-    { email: 'customer@test.com', password: 'Customer123!@#', role: 'customer', description: 'Customer test account' }
+    {
+      email: 'admin@test.com',
+      password: 'Admin123!@#',
+      role: 'admin',
+      description: 'Admin test account',
+    },
+    {
+      email: 'partner@test.com',
+      password: 'Partner123!@#',
+      role: 'partner',
+      description: 'Partner test account',
+    },
+    {
+      email: 'customer@test.com',
+      password: 'Customer123!@#',
+      role: 'customer',
+      description: 'Customer test account',
+    }
   );
 
   log('SUCCESS', `Generated ${testUsers.length} test credentials`);
@@ -359,9 +428,15 @@ async function saveData(data, filename) {
 
 async function main() {
   console.log('');
-  console.log(`${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.blue}║${colors.reset}       KitchenXpert - Test Data Generator                   ${colors.blue}║${colors.reset}`);
-  console.log(`${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}║${colors.reset}       KitchenXpert - Test Data Generator                   ${colors.blue}║${colors.reset}`
+  );
+  console.log(
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
 
   // Create output directory
@@ -404,9 +479,15 @@ async function main() {
   await saveData(summary, 'summary.json');
 
   console.log('');
-  console.log(`${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.green}║${colors.reset}        Test Data Generation Complete                       ${colors.green}║${colors.reset}`);
-  console.log(`${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`);
+  console.log(
+    `${colors.green}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+  );
+  console.log(
+    `${colors.green}║${colors.reset}        Test Data Generation Complete                       ${colors.green}║${colors.reset}`
+  );
+  console.log(
+    `${colors.green}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+  );
   console.log('');
   console.log('  Generated:');
   console.log(`    Users:    ${users.length}`);

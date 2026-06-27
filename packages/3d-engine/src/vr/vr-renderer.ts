@@ -107,9 +107,8 @@ export class VRARRenderer {
       throw new Error('AR not supported on this device');
     }
 
-    const overlayRoot = config.overlayRoot
-      || document.getElementById('ar-overlay')
-      || document.body;
+    const overlayRoot =
+      config.overlayRoot || document.getElementById('ar-overlay') || document.body;
 
     const requiredFeatures: string[] = ['hit-test', 'dom-overlay'];
     const optionalFeatures: string[] = [];
@@ -188,9 +187,7 @@ export class VRARRenderer {
   async exportAsUSDZ(): Promise<Blob> {
     try {
       // Try to use Three.js USDZExporter
-      const { USDZExporter } = await import(
-        'three/examples/jsm/exporters/USDZExporter.js'
-      );
+      const { USDZExporter } = await import('three/examples/jsm/exporters/USDZExporter.js');
       const exporter = new USDZExporter();
       const usdzArrayBuffer = await exporter.parse(this.scene);
       return new Blob([usdzArrayBuffer as BlobPart], {
@@ -216,11 +213,7 @@ export class VRARRenderer {
     const rotation = this.reticle.quaternion.clone();
 
     this.scene.children.forEach((child) => {
-      if (
-        child === this.reticle ||
-        child instanceof THREE.Light ||
-        child instanceof THREE.Camera
-      ) {
+      if (child === this.reticle || child instanceof THREE.Light || child instanceof THREE.Camera) {
         return;
       }
       child.position.add(offset);
@@ -281,9 +274,7 @@ export class VRARRenderer {
    * Create the placement reticle (a ring on the floor showing where the model will go).
    */
   private createReticle(): void {
-    const geometry = new THREE.RingGeometry(0.15, 0.2, 32).rotateX(
-      -Math.PI / 2
-    );
+    const geometry = new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2);
     const material = new THREE.MeshBasicMaterial({
       color: 0x00ff88,
       transparent: true,

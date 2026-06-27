@@ -120,16 +120,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -155,14 +157,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -238,17 +236,13 @@ describe('Carbon Routes', () => {
     });
 
     it('should return 401 for unauthenticated request to GET /carbon/report/:kitchenId', async () => {
-      const response = await request(app)
-        .get(`/carbon/report/${validKitchenId}`)
-        .expect(401);
+      const response = await request(app).get(`/carbon/report/${validKitchenId}`).expect(401);
 
       expect(response.body.success).toBe(false);
     });
 
     it('should return 401 for unauthenticated request to GET /carbon/eco-score/:kitchenId', async () => {
-      const response = await request(app)
-        .get(`/carbon/eco-score/${validKitchenId}`)
-        .expect(401);
+      const response = await request(app).get(`/carbon/eco-score/${validKitchenId}`).expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -351,9 +345,7 @@ describe('Carbon Routes', () => {
     it('should return a saved carbon report', async () => {
       mockPrisma.carbonReport.findUnique.mockResolvedValue(mockSavedReport);
 
-      const response = await authedRequest(app)
-        .get(`/carbon/report/${validKitchenId}`)
-        .expect(200);
+      const response = await authedRequest(app).get(`/carbon/report/${validKitchenId}`).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('totalCO2kg');
@@ -362,20 +354,16 @@ describe('Carbon Routes', () => {
     it('should return 404 when no report exists for kitchen', async () => {
       mockPrisma.carbonReport.findUnique.mockResolvedValue(null);
 
-      const response = await authedRequest(app)
-        .get(`/carbon/report/${validKitchenId}`)
-        .expect(404);
+      const response = await authedRequest(app).get(`/carbon/report/${validKitchenId}`).expect(404);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Carbon report not found');
     });
 
-    it('should return 403 when trying to access another user\'s report (IDOR prevention)', async () => {
+    it("should return 403 when trying to access another user's report (IDOR prevention)", async () => {
       mockPrisma.carbonReport.findUnique.mockResolvedValue(otherUserReport);
 
-      const response = await authedRequest(app)
-        .get(`/carbon/report/${validKitchenId}`)
-        .expect(403);
+      const response = await authedRequest(app).get(`/carbon/report/${validKitchenId}`).expect(403);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('do not have access');
@@ -385,17 +373,13 @@ describe('Carbon Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockPrisma.carbonReport.findUnique.mockResolvedValue(otherUserReport);
 
-      const response = await authedRequest(app)
-        .get(`/carbon/report/${validKitchenId}`)
-        .expect(200);
+      const response = await authedRequest(app).get(`/carbon/report/${validKitchenId}`).expect(200);
 
       expect(response.body.success).toBe(true);
     });
 
     it('should return 400 for invalid kitchenId format (not UUID)', async () => {
-      const response = await authedRequest(app)
-        .get('/carbon/report/not-a-valid-uuid')
-        .expect(400);
+      const response = await authedRequest(app).get('/carbon/report/not-a-valid-uuid').expect(400);
 
       expect(response.body.success).toBe(false);
     });
@@ -504,7 +488,7 @@ describe('Carbon Routes', () => {
       expect(response.body.data.message).toContain('No carbon report available');
     });
 
-    it('should return 403 when trying to access another user\'s eco score (IDOR prevention)', async () => {
+    it("should return 403 when trying to access another user's eco score (IDOR prevention)", async () => {
       mockPrisma.carbonReport.findUnique.mockResolvedValue(otherUserReport);
 
       const response = await authedRequest(app)

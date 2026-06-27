@@ -63,7 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
           setUser(null);
         }
       } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {return;}
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -106,37 +108,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
     }
   }, []);
 
-  const register = useCallback(async (email: string, password: string, firstName: string, lastName: string): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('/api/v1/auth/register', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, firstName, lastName }),
-      });
+  const register = useCallback(
+    async (email: string, password: string, firstName: string, lastName: string): Promise<void> => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/v1/auth/register', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, firstName, lastName }),
+        });
 
-      if (!response.ok) {
-        const data = (await response.json().catch(() => null)) as ApiErrorEnvelope | null;
-        const message = data?.error?.message || data?.message || 'Registration failed';
-        setError(message);
-        throw new Error(message);
-      }
+        if (!response.ok) {
+          const data = (await response.json().catch(() => null)) as ApiErrorEnvelope | null;
+          const message = data?.error?.message || data?.message || 'Registration failed';
+          setError(message);
+          throw new Error(message);
+        }
 
-      const data = (await response.json()) as AuthEnvelope;
-      if (data.data?.user) {
-        setUser(data.data.user);
+        const data = (await response.json()) as AuthEnvelope;
+        if (data.data?.user) {
+          setUser(data.data.user);
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        }
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      }
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const logout = useCallback(async (): Promise<void> => {
     setError(null);
@@ -169,7 +174,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
       setUser(data.data);
     } else {
       setUser((prev) => {
-        if (!prev) {return null;}
+        if (!prev) {
+          return null;
+        }
         return { ...prev, ...userData };
       });
     }

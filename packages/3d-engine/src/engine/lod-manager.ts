@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
 export interface LODConfig {
-  highDetailDistance: number;    // 0-5m: full detail
-  mediumDetailDistance: number;  // 5-15m: reduced
-  lowDetailDistance: number;     // 15m+: simple box
+  highDetailDistance: number; // 0-5m: full detail
+  mediumDetailDistance: number; // 5-15m: reduced
+  lowDetailDistance: number; // 15m+: simple box
   enabled: boolean;
 }
 
@@ -19,7 +19,7 @@ export class LODManager {
       mediumDetailDistance: 15,
       lowDetailDistance: 30,
       enabled: true,
-      ...config
+      ...config,
     };
   }
 
@@ -59,9 +59,10 @@ export class LODManager {
         box.getCenter(center);
 
         const geo = new THREE.BoxGeometry(size.x, size.y, size.z);
-        const mat = child.material instanceof THREE.Material
-          ? child.material.clone()
-          : new THREE.MeshStandardMaterial({ color: 0xcccccc });
+        const mat =
+          child.material instanceof THREE.Material
+            ? child.material.clone()
+            : new THREE.MeshStandardMaterial({ color: 0xcccccc });
         const mesh = new THREE.Mesh(geo, mat);
         mesh.position.copy(center);
         group.add(mesh);

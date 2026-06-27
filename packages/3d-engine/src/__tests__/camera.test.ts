@@ -13,7 +13,12 @@ jest.mock('three', () => {
       x,
       y,
       z,
-      set: jest.fn(function (this: { x: number; y: number; z: number }, nx: number, ny: number, nz: number) {
+      set: jest.fn(function (
+        this: { x: number; y: number; z: number },
+        nx: number,
+        ny: number,
+        nz: number
+      ) {
         this.x = nx;
         this.y = ny;
         this.z = nz;
@@ -22,19 +27,28 @@ jest.mock('three', () => {
       clone: jest.fn(function (this: { x: number; y: number; z: number }) {
         return mockVector3(this.x, this.y, this.z);
       }),
-      copy: jest.fn(function (this: { x: number; y: number; z: number }, v2: { x: number; y: number; z: number }) {
+      copy: jest.fn(function (
+        this: { x: number; y: number; z: number },
+        v2: { x: number; y: number; z: number }
+      ) {
         this.x = v2.x;
         this.y = v2.y;
         this.z = v2.z;
         return this;
       }),
-      add: jest.fn(function (this: { x: number; y: number; z: number }, v2: { x: number; y: number; z: number }) {
+      add: jest.fn(function (
+        this: { x: number; y: number; z: number },
+        v2: { x: number; y: number; z: number }
+      ) {
         this.x += v2.x;
         this.y += v2.y;
         this.z += v2.z;
         return this;
       }),
-      sub: jest.fn(function (this: { x: number; y: number; z: number }, v2: { x: number; y: number; z: number }) {
+      sub: jest.fn(function (
+        this: { x: number; y: number; z: number },
+        v2: { x: number; y: number; z: number }
+      ) {
         this.x -= v2.x;
         this.y -= v2.y;
         this.z -= v2.z;

@@ -1,28 +1,33 @@
 # KitchenXpert 3D Engine
 
-Moteur de visualisation 3D basé sur Three.js pour la conception interactive de cuisines.
+Moteur de visualisation 3D basé sur Three.js pour la conception interactive de
+cuisines.
 
 ## 🎯 Fonctionnalités Implémentées
 
 ### ✅ Architecture de base
+
 - Gestion de scène 3D complète
 - Système de caméra avec 4 presets (Top, Isometric, Front, Perspective)
 - Renderer WebGL optimisé avec ombres et tone mapping
 - Système d'éclairage réaliste (ambient + directional + hemisphere)
 
 ### ✅ Génération de layouts de cuisine
+
 - **6 formes supportées** : L, U, I, G, Island, Peninsula
 - Génération automatique des murs, sol
 - **Points d'ancrage intelligents** pour placement d'objets
 - Conversion automatique des unités (mm, cm, m, ft, in)
 
 ### ✅ Système de collision et contraintes
+
 - Détection de collision entre objets (Box3)
 - Contraintes de placement configurables
 - **Snap-to-grid** automatique
 - Recherche de position valide la plus proche
 
 ### ✅ Manipulation d'objets
+
 - **Drag & drop** avec validation de collision
 - Rotation et échelle
 - Sélection avec surbrillance
@@ -45,7 +50,10 @@ const engine = new KitchenEngine(container);
 
 // 2. Générer un layout en L
 const layout = engine.layoutGenerator.generateLayout('L', {
-  width: 400, length: 300, height: 250, unit: 'cm'
+  width: 400,
+  length: 300,
+  height: 250,
+  unit: 'cm',
 });
 
 // 3. Ajouter à la scène
@@ -57,7 +65,8 @@ engine.scene.addObject('floor', layout.floor);
 
 // 4. Vue isométrique
 engine.camera.applyPreset(CameraPreset.ISOMETRIC, {
-  width: 4, depth: 3
+  width: 4,
+  depth: 3,
 });
 
 // 5. Démarrer
@@ -66,14 +75,14 @@ engine.start();
 
 ## 📐 Formes de Cuisine
 
-| Forme | Description | Use Case |
-|-------|-------------|----------|
-| **I** | Une paroi | Petits espaces, studios |
-| **L** | Deux parois perpendiculaires | Cuisines moyennes |
-| **U** | Trois parois | Cuisines spacieuses |
-| **G** | U + péninsule | Grandes cuisines ouvertes |
-| **Island** | Mur + îlot central | Cuisines américaines |
-| **Peninsula** | L + péninsule | Séparation espace |
+| Forme         | Description                  | Use Case                  |
+| ------------- | ---------------------------- | ------------------------- |
+| **I**         | Une paroi                    | Petits espaces, studios   |
+| **L**         | Deux parois perpendiculaires | Cuisines moyennes         |
+| **U**         | Trois parois                 | Cuisines spacieuses       |
+| **G**         | U + péninsule                | Grandes cuisines ouvertes |
+| **Island**    | Mur + îlot central           | Cuisines américaines      |
+| **Peninsula** | L + péninsule                | Séparation espace         |
 
 ## 🎮 Manipulation Interactive
 
@@ -123,7 +132,7 @@ camera.applyPreset(CameraPreset.PERSPECTIVE, kitchenSize);
 const lighting = new KitchenLighting(scene, {
   ambient: { intensity: 0.7 },
   directional: { castShadow: true, intensity: 0.8 },
-  hemisphere: { skyColor: 0x87ceeb }
+  hemisphere: { skyColor: 0x87ceeb },
 });
 ```
 
@@ -131,10 +140,10 @@ const lighting = new KitchenLighting(scene, {
 
 ```typescript
 const collision = new CollisionSystem({
-  minDistanceToWall: 0.1,     // 10cm
+  minDistanceToWall: 0.1, // 10cm
   snapToGrid: true,
-  gridSize: 0.05,             // 5cm grid
-  allowOverlap: false
+  gridSize: 0.05, // 5cm grid
+  allowOverlap: false,
 });
 ```
 
@@ -142,10 +151,7 @@ const collision = new CollisionSystem({
 
 ```typescript
 // Export
-const model = scene.toKitchenModel(
-  camera.getPosition(),
-  camera.getTarget()
-);
+const model = scene.toKitchenModel(camera.getPosition(), camera.getTarget());
 const json = JSON.stringify(model);
 
 // Import
@@ -157,11 +163,11 @@ await scene.fromKitchenModel(JSON.parse(json));
 Les layouts génèrent automatiquement des points où placer les objets :
 
 ```typescript
-layout.anchorPoints.forEach(anchor => {
-  console.log(anchor.type);      // 'wall', 'corner', 'island'
-  console.log(anchor.position);  // Vector3
-  console.log(anchor.normal);    // Direction de placement
-  console.log(anchor.wallId);    // Identifiant du mur
+layout.anchorPoints.forEach((anchor) => {
+  console.log(anchor.type); // 'wall', 'corner', 'island'
+  console.log(anchor.position); // Vector3
+  console.log(anchor.normal); // Direction de placement
+  console.log(anchor.wallId); // Identifiant du mur
 });
 ```
 
@@ -174,7 +180,8 @@ layout.anchorPoints.forEach(anchor => {
 
 ## 📝 API Reference
 
-Voir la documentation complète dans [../../docs/3d-engine/](../../docs/3d-engine/)
+Voir la documentation complète dans
+[../../docs/3d-engine/](../../docs/3d-engine/)
 
 ## 🤝 Contribution
 

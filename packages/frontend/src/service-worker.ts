@@ -32,10 +32,7 @@ const API_CACHE_MAX = 100;
 
 // ────────────────────────────── App Shell Files ──────────────────────────────
 
-const APP_SHELL_FILES = [
-  '/',
-  '/index.html',
-];
+const APP_SHELL_FILES = ['/', '/index.html'];
 
 // ────────────────────────────── Install ──────────────────────────────
 
@@ -105,7 +102,9 @@ async function cacheFirst(request: Request, cacheName: string): Promise<Response
     if (request.headers.get('accept')?.includes('text/html')) {
       const fallbackCache = await caches.open(APP_SHELL_CACHE);
       const fallback = await fallbackCache.match('/index.html');
-      if (fallback) {return fallback;}
+      if (fallback) {
+        return fallback;
+      }
     }
     return new Response('Offline', {
       status: 503,

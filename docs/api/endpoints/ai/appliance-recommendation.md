@@ -2,7 +2,8 @@
 
 ## Overview
 
-Get AI-powered appliance recommendations based on kitchen information, cooking habits, and budget with scored recommendations and detailed analysis.
+Get AI-powered appliance recommendations based on kitchen information, cooking
+habits, and budget with scored recommendations and detailed analysis.
 
 **Endpoint:** `POST /api/v1/ai/appliance-recommendation`
 
@@ -23,23 +24,23 @@ Content-Type: application/json
 
 ### Request Body Schema
 
-| Field | Type | Required | Description | Constraints |
-|-------|------|----------|-------------|-------------|
-| `kitchenInfo` | object | Yes | Kitchen information | - |
-| `kitchenInfo.dimensions` | object | Yes | Kitchen dimensions in cm | - |
-| `kitchenInfo.dimensions.length` | number | Yes | Length in cm | 100-1000 |
-| `kitchenInfo.dimensions.width` | number | Yes | Width in cm | 100-1000 |
-| `kitchenInfo.style` | string | No | Design style | modern, traditional, minimalist, rustic, industrial, scandinavian |
-| `kitchenInfo.existingAppliances` | array | No | Existing appliances | Array of product IDs |
-| `cookingHabits` | object | Yes | Cooking preferences | - |
-| `cookingHabits.frequency` | string | Yes | Cooking frequency | rarely, occasionally, frequently, daily |
-| `cookingHabits.techniques` | array | Yes | Cooking techniques used | baking, grilling, steaming, frying, slow_cooking, pressure_cooking |
-| `cookingHabits.householdSize` | number | Yes | Number of people | 1-20 |
-| `budget` | object | Yes | Budget constraints | - |
-| `budget.min` | number | No | Minimum budget USD | >= 0 |
-| `budget.max` | number | Yes | Maximum budget USD | > min |
-| `budget.flexible` | boolean | No | Budget flexibility | Default: false |
-| `priorities` | array | Yes | Recommendation priorities | energy_efficiency, performance, brand, aesthetics, warranty, smart_features |
+| Field                            | Type    | Required | Description               | Constraints                                                                 |
+| -------------------------------- | ------- | -------- | ------------------------- | --------------------------------------------------------------------------- |
+| `kitchenInfo`                    | object  | Yes      | Kitchen information       | -                                                                           |
+| `kitchenInfo.dimensions`         | object  | Yes      | Kitchen dimensions in cm  | -                                                                           |
+| `kitchenInfo.dimensions.length`  | number  | Yes      | Length in cm              | 100-1000                                                                    |
+| `kitchenInfo.dimensions.width`   | number  | Yes      | Width in cm               | 100-1000                                                                    |
+| `kitchenInfo.style`              | string  | No       | Design style              | modern, traditional, minimalist, rustic, industrial, scandinavian           |
+| `kitchenInfo.existingAppliances` | array   | No       | Existing appliances       | Array of product IDs                                                        |
+| `cookingHabits`                  | object  | Yes      | Cooking preferences       | -                                                                           |
+| `cookingHabits.frequency`        | string  | Yes      | Cooking frequency         | rarely, occasionally, frequently, daily                                     |
+| `cookingHabits.techniques`       | array   | Yes      | Cooking techniques used   | baking, grilling, steaming, frying, slow_cooking, pressure_cooking          |
+| `cookingHabits.householdSize`    | number  | Yes      | Number of people          | 1-20                                                                        |
+| `budget`                         | object  | Yes      | Budget constraints        | -                                                                           |
+| `budget.min`                     | number  | No       | Minimum budget USD        | >= 0                                                                        |
+| `budget.max`                     | number  | Yes      | Maximum budget USD        | > min                                                                       |
+| `budget.flexible`                | boolean | No       | Budget flexibility        | Default: false                                                              |
+| `priorities`                     | array   | Yes      | Recommendation priorities | energy_efficiency, performance, brand, aesthetics, warranty, smart_features |
 
 ### Request Body Example
 
@@ -304,7 +305,8 @@ Content-Type: application/json
 
 Recommendations are scored 0-100 based on weighted criteria:
 
-- **Priority Alignment (40%):** How well the product matches user's stated priorities
+- **Priority Alignment (40%):** How well the product matches user's stated
+  priorities
 - **Budget Fit (20%):** Value for money and price within budget
 - **Feature Match (20%):** Compatibility with cooking habits and techniques
 - **Energy Efficiency (10%):** Energy rating and operational costs
@@ -357,9 +359,9 @@ const getRecommendations = async (criteria) => {
     criteria,
     {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        'Content-Type': 'application/json',
+      },
     }
   );
 
@@ -369,36 +371,35 @@ const getRecommendations = async (criteria) => {
 // Usage
 const criteria = {
   kitchenInfo: {
-    dimensions: {length: 450, width: 350},
+    dimensions: { length: 450, width: 350 },
     style: 'modern',
-    existingAppliances: []
+    existingAppliances: [],
   },
   cookingHabits: {
     frequency: 'frequently',
     techniques: ['baking', 'steaming', 'grilling'],
-    householdSize: 4
+    householdSize: 4,
   },
   budget: {
     min: 1000,
     max: 5000,
-    flexible: true
+    flexible: true,
   },
-  priorities: ['energy_efficiency', 'performance', 'warranty']
+  priorities: ['energy_efficiency', 'performance', 'warranty'],
 };
 
-getRecommendations(criteria)
-  .then(data => {
-    console.log(`Found ${data.recommendations.length} recommendations`);
-    console.log(`Total cost: $${data.totalEstimatedCost}`);
-    console.log(`Budget utilization: ${data.budgetUtilization}%`);
+getRecommendations(criteria).then((data) => {
+  console.log(`Found ${data.recommendations.length} recommendations`);
+  console.log(`Total cost: $${data.totalEstimatedCost}`);
+  console.log(`Budget utilization: ${data.budgetUtilization}%`);
 
-    data.recommendations.forEach(rec => {
-      console.log(`
+  data.recommendations.forEach((rec) => {
+    console.log(`
 ${rec.name} (Score: ${rec.score})`);
-      console.log(`Price: $${rec.price}`);
-      console.log('Match reasons:', rec.matchReasons.join(', '));
-    });
+    console.log(`Price: $${rec.price}`);
+    console.log('Match reasons:', rec.matchReasons.join(', '));
   });
+});
 ```
 
 ### Python (Requests)
@@ -456,18 +457,24 @@ for rec in result['recommendations']:
 
 ## Related Endpoints
 
-- [Product Details](../catalog/product-details.md) - Get detailed product information
+- [Product Details](../catalog/product-details.md) - Get detailed product
+  information
 - [Design Generation](./design-generation.md) - Generate complete kitchen design
-- [Compatibility Check](./compatibility-check.md) - Check appliance compatibility
+- [Compatibility Check](./compatibility-check.md) - Check appliance
+  compatibility
 
 ---
 
 ## Notes
 
-- **Personalized Recommendations:** Results tailored to your specific cooking habits and preferences
-- **Budget Flexibility:** Setting `flexible: true` may show items slightly above budget if they offer significant value
-- **Energy Savings:** Includes analysis of long-term savings from energy-efficient appliances
-- **Alternative Categories:** Suggests additional appliance categories you might not have considered
+- **Personalized Recommendations:** Results tailored to your specific cooking
+  habits and preferences
+- **Budget Flexibility:** Setting `flexible: true` may show items slightly above
+  budget if they offer significant value
+- **Energy Savings:** Includes analysis of long-term savings from
+  energy-efficient appliances
+- **Alternative Categories:** Suggests additional appliance categories you might
+  not have considered
 - **Real-time Pricing:** Prices and availability updated hourly
 
 ---

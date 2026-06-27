@@ -1,8 +1,7 @@
 # Optimizing Your Kitchen Budget
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Intermediate
-**Estimated Time:** 35-50 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Intermediate **Estimated
+Time:** 35-50 minutes
 
 ## Learning Objectives
 
@@ -19,21 +18,25 @@ By the end of this tutorial, you will be able to:
 
 ## Prerequisites
 
-- Completed [Creating Your First Kitchen Design](../beginner/first-design.md) tutorial
+- Completed [Creating Your First Kitchen Design](../beginner/first-design.md)
+  tutorial
 - Existing kitchen design with budget estimate
 - Understanding of basic kitchen components
 - Realistic budget constraints or targets
 
 ## Introduction to Budget Optimization
 
-Most kitchen remodels exceed initial budgets by 10-20%. Budget optimization helps you:
+Most kitchen remodels exceed initial budgets by 10-20%. Budget optimization
+helps you:
 
 - **Stay within budget** through informed trade-offs
 - **Maximize value** by investing in high-impact elements
 - **Avoid regrets** by understanding where not to cut corners
 - **Phase projects** to spread costs across time
 
-This tutorial uses a realistic scenario: You have a $35,000 design but only a $28,000 budget. We'll optimize to hit your target without compromising essential features.
+This tutorial uses a realistic scenario: You have a $35,000 design but only a
+$28,000 budget. We'll optimize to hit your target without compromising essential
+features.
 
 ## Step-by-Step Instructions
 
@@ -70,7 +73,9 @@ This tutorial uses a realistic scenario: You have a $35,000 design but only a $2
    - "Six pendant lights over island could be reduced to three ($420 savings)"
    - "Engineered hardwood flooring is $18/sq ft premium over LVP"
 
-> **TIP:** Focus on categories over 15% of total budget first. Small optimizations in large categories yield bigger savings than major cuts in small ones.
+> **TIP:** Focus on categories over 15% of total budget first. Small
+> optimizations in large categories yield bigger savings than major cuts in
+> small ones.
 
 ### Step 2: Set Budget Optimization Goals
 
@@ -103,7 +108,8 @@ This tutorial uses a realistic scenario: You have a $35,000 design but only a $2
 
 6. Click **"Generate Optimization Scenarios"**
 
-> **TIP:** Being honest about priorities helps the AI make trade-offs you'll be happy with. If you mark everything as 5, optimization becomes impossible.
+> **TIP:** Being honest about priorities helps the AI make trade-offs you'll be
+> happy with. If you mark everything as 5, optimization becomes impossible.
 
 ### Step 3: Review AI Optimization Scenarios
 
@@ -112,18 +118,21 @@ The AI generates three budget scenarios:
 [Screenshot: Three optimization scenario cards]
 
 **Scenario A: "Strategic Substitutions"**
+
 - New total: **$28,200** (meets target!)
 - Savings: **$6,800**
 - Approach: Replace premium products with high-value alternatives
 - Compromise level: **Low** (minimal aesthetic impact)
 
 **Scenario B: "Value Engineering"**
+
 - New total: **$26,500** (under target)
 - Savings: **$8,500**
 - Approach: Simplify design, reduce custom elements
 - Compromise level: **Medium** (noticeable but smart trade-offs)
 
 **Scenario C: "Phased Implementation"**
+
 - Phase 1 total: **$21,000**
 - Phase 2 total: **$7,000** (18 months later)
 - Approach: Do essentials now, upgrades later
@@ -197,7 +206,8 @@ MAINTAINED:
 4. Side-by-side 3D views show minimal aesthetic difference
 5. Click **"Apply Scenario A"** to preview in your design
 
-> **TIP:** This scenario proves that brand names often add 20-30% cost for similar quality. Most homeowners can't tell the difference once installed.
+> **TIP:** This scenario proves that brand names often add 20-30% cost for
+> similar quality. Most homeowners can't tell the difference once installed.
 
 ### Step 5: Examine Scenario B - Value Engineering
 
@@ -285,7 +295,8 @@ COMPROMISED:
 4. Trade-off: More noticeable aesthetic compromises
 5. Best for: Those prioritizing function over form
 
-> **WARNING:** Laminate countertops can look great initially but don't age as well as quartz. Consider this a 10-year solution vs. lifetime.
+> **WARNING:** Laminate countertops can look great initially but don't age as
+> well as quartz. Consider this a 10-year solution vs. lifetime.
 
 ### Step 6: Examine Scenario C - Phased Implementation
 
@@ -340,7 +351,8 @@ CONSIDERATIONS:
 4. Phase 1 delivers a fully functional, attractive kitchen
 5. Phase 2 adds the "wow factor" upgrades
 
-> **TIP:** Phasing works well if you're disciplined about saving for Phase 2. Set aside $390/month for 18 months and you'll be ready.
+> **TIP:** Phasing works well if you're disciplined about saving for Phase 2.
+> Set aside $390/month for 18 months and you'll be ready.
 
 ### Step 7: Compare Scenarios Side-by-Side
 
@@ -383,10 +395,13 @@ Best For:
 
 [Screenshot: Recommendation matrix]
 
-2. **KitchenXpert AI Recommendation:**
-   "Based on your priorities (layout=5, storage=5, cabinet quality=4), we recommend **Scenario A: Strategic Substitutions**. You maintain all functionality and aesthetics while hitting budget through smart brand selections rather than design compromises."
+2. **KitchenXpert AI Recommendation:** "Based on your priorities (layout=5,
+   storage=5, cabinet quality=4), we recommend **Scenario A: Strategic
+   Substitutions**. You maintain all functionality and aesthetics while hitting
+   budget through smart brand selections rather than design compromises."
 
-> **TIP:** Scenario A is most popular among users. It proves you don't need premium brands for premium results.
+> **TIP:** Scenario A is most popular among users. It proves you don't need
+> premium brands for premium results.
 
 ### Step 8: Apply Your Chosen Scenario
 
@@ -420,7 +435,9 @@ This action can be undone. A version snapshot will be created first.
 10. Your design now reflects all Scenario A changes
 11. Budget shows new total: **$28,200**
 
-> **TIP:** Always review the backup version name. Mine was saved as "Pre-Optimization Backup - 2026-01-10". You can restore it anytime from version history.
+> **TIP:** Always review the backup version name. Mine was saved as
+> "Pre-Optimization Backup - 2026-01-10". You can restore it anytime from
+> version history.
 
 ### Step 9: Fine-Tune the Optimization
 
@@ -442,7 +459,8 @@ This action can be undone. A version snapshot will be created first.
 10. New total: **$27,920** (under budget by $80!)
 11. You've successfully optimized to hit your target
 
-> **TIP:** The last $500-$1,000 of optimization is often best done manually with small tweaks rather than blanket changes.
+> **TIP:** The last $500-$1,000 of optimization is often best done manually with
+> small tweaks rather than blanket changes.
 
 ### Step 10: Identify Splurge vs. Save Opportunities
 
@@ -519,7 +537,8 @@ Final recommendation: Accept being $430 over on these high-value upgrades
 3. This analysis helps you invest wisely
 4. Key insight: **Quality infrastructure > aesthetic trends**
 
-> **TIP:** Splurge on things you touch daily (cabinet hardware, faucet, drawer glides). Save on things you just see (decorative details).
+> **TIP:** Splurge on things you touch daily (cabinet hardware, faucet, drawer
+> glides). Save on things you just see (decorative details).
 
 ### Step 11: Create What-If Budget Scenarios
 
@@ -530,6 +549,7 @@ Final recommendation: Accept being $430 over on these high-value upgrades
 [Screenshot: What-If scenario builder]
 
 4. AI generates recommendation:
+
    ```
    WITH ADDITIONAL $4,000 BUDGET:
 
@@ -575,7 +595,8 @@ Final recommendation: Accept being $430 over on these high-value upgrades
 
 [Screenshot: What-If scenario comparison]
 
-> **TIP:** Use What-If scenarios when discussing budget with spouse or getting contractor quotes that differ from estimate.
+> **TIP:** Use What-If scenarios when discussing budget with spouse or getting
+> contractor quotes that differ from estimate.
 
 ### Step 12: Generate Value Engineering Report
 
@@ -609,7 +630,8 @@ Final recommendation: Accept being $430 over on these high-value upgrades
 
 7. Share this with contractors for accurate quotes based on optimized design
 
-> **TIP:** Professional-looking reports help contractors understand your thinking and make informed counter-suggestions.
+> **TIP:** Professional-looking reports help contractors understand your
+> thinking and make informed counter-suggestions.
 
 ### Step 13: Use the Budget Calculator
 
@@ -650,7 +672,8 @@ Recommendation: Ensure quality in high-use areas (faucet, drawer glides, hinges)
 2. This helps set realistic expectations
 3. Compare your design to typical spending patterns
 
-> **TIP:** If your budget is significantly below typical range, focus on DIY where possible (demo, painting, simple installations) to save on labor.
+> **TIP:** If your budget is significantly below typical range, focus on DIY
+> where possible (demo, painting, simple installations) to save on labor.
 
 ### Step 14: Track Budget Throughout Project
 
@@ -675,14 +698,17 @@ Recommendation: Ensure quality in high-use areas (faucet, drawer glides, hinges)
 6. Get alerts when approaching budget limits
 7. Contingency automatically reallocates if category goes over
 
-> **TIP:** Track everything, even small purchases. $50 here and there adds up to thousands by project end.
+> **TIP:** Track everything, even small purchases. $50 here and there adds up to
+> thousands by project end.
 
 ## What You Learned
 
-Excellent work! You've mastered budget optimization for kitchen design. You can now:
+Excellent work! You've mastered budget optimization for kitchen design. You can
+now:
 
 - **Analyze budgets** to identify high-cost areas and optimization opportunities
-- **Generate AI optimization scenarios** exploring different cost-reduction strategies
+- **Generate AI optimization scenarios** exploring different cost-reduction
+  strategies
 - **Compare scenarios** using objective criteria (cost, quality, timeline)
 - **Apply optimizations** to designs while maintaining priorities
 - **Fine-tune manually** to hit exact budget targets
@@ -696,9 +722,12 @@ Excellent work! You've mastered budget optimization for kitchen design. You can 
 
 Remember these key principles:
 
-1. **Infrastructure over aesthetics:** Invest in quality cabinet boxes, not decorative details
-2. **Daily-use items matter:** Splurge on faucets, drawer glides, and hardware you touch
-3. **Trends fade, classics endure:** Save money with timeless choices (subway tile, shaker cabinets)
+1. **Infrastructure over aesthetics:** Invest in quality cabinet boxes, not
+   decorative details
+2. **Daily-use items matter:** Splurge on faucets, drawer glides, and hardware
+   you touch
+3. **Trends fade, classics endure:** Save money with timeless choices (subway
+   tile, shaker cabinets)
 4. **Brand names ≠ quality:** Mid-tier brands often match premium quality
 5. **Phasing is powerful:** Spread costs over time for bigger overall budget
 6. **Function first:** Never compromise layout for finishes
@@ -719,9 +748,12 @@ Remember these key principles:
 
 Continue optimizing your kitchen design:
 
-1. **[Multi-Brand Design](multi-brand-design.md)** - Mix brands strategically for best value
-2. **[Custom Surfaces](custom-surfaces.md)** - Work with custom elements within budget
-3. **[Phased Implementation](../advanced/phased-implementation.md)** - Deep dive into multi-phase projects
+1. **[Multi-Brand Design](multi-brand-design.md)** - Mix brands strategically
+   for best value
+2. **[Custom Surfaces](custom-surfaces.md)** - Work with custom elements within
+   budget
+3. **[Phased Implementation](../advanced/phased-implementation.md)** - Deep dive
+   into multi-phase projects
 
 ## Additional Resources
 
@@ -734,6 +766,7 @@ Continue optimizing your kitchen design:
 ## Feedback
 
 Help us improve budget optimization tools:
+
 - Email: budget-tools@kitchenxpert.com
 - Share your savings story: [Success story form]
 - Suggest features: [Feature request]
@@ -741,13 +774,14 @@ Help us improve budget optimization tools:
 ---
 
 **Related Tutorials:**
+
 - [Creating Your First Kitchen Design](../beginner/first-design.md)
 - [Exploring Product Catalogs](../beginner/exploring-catalogs.md)
 - [Multi-Brand Design](multi-brand-design.md)
 
 **Documentation:**
+
 - [Budget Planning Guide](../../guides/budget-planning.md)
 - [Cost Estimation Methodology](../../reference/cost-estimation.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1

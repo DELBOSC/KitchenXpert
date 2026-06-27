@@ -19,7 +19,8 @@ export const RolesSeed: Seed = {
     const now = new Date().toISOString();
 
     // Create default roles
-    await tx.execute(`
+    await tx.execute(
+      `
       INSERT INTO "Role" (id, name, description, "isSystem", "createdAt", "updatedAt")
       VALUES
         ('r0000000-0000-0000-0000-000000000001', 'super_admin', 'Super administrateur avec tous les droits', true, $1, $1),
@@ -28,7 +29,9 @@ export const RolesSeed: Seed = {
         ('r0000000-0000-0000-0000-000000000004', 'user', 'Utilisateur standard', true, $1, $1),
         ('r0000000-0000-0000-0000-000000000005', 'guest', 'Visiteur avec accès limité', true, $1, $1)
       ON CONFLICT (name) DO NOTHING
-    `, [now]);
+    `,
+      [now]
+    );
 
     logger.info('[Seed] Created 5 default roles');
   },

@@ -132,9 +132,10 @@ export class CatalogEndpoints {
   }
 
   async getBrands(): Promise<Array<{ name: string; slug: string; count: number }>> {
-    const response = await this.client.get<Array<{ name: string; slug: string; count: number }>>(
-      '/catalog/brands'
-    );
+    const response =
+      await this.client.get<Array<{ name: string; slug: string; count: number }>>(
+        '/catalog/brands'
+      );
     return response.data;
   }
 
@@ -142,10 +143,9 @@ export class CatalogEndpoints {
     brandSlug: string,
     params?: Omit<CatalogSearchParams, 'brand'>
   ): Promise<PaginatedCatalog> {
-    const response = await this.client.get<PaginatedCatalog>(
-      `/catalog/brands/${brandSlug}/items`,
-      { params: params as Record<string, unknown> | undefined }
-    );
+    const response = await this.client.get<PaginatedCatalog>(`/catalog/brands/${brandSlug}/items`, {
+      params: params as Record<string, unknown> | undefined,
+    });
     return response.data;
   }
 
@@ -155,18 +155,16 @@ export class CatalogEndpoints {
   }
 
   async getRelatedItems(itemId: string, limit = 5): Promise<CatalogItem[]> {
-    const response = await this.client.get<CatalogItem[]>(
-      `/catalog/items/${itemId}/related`,
-      { params: { limit } }
-    );
+    const response = await this.client.get<CatalogItem[]>(`/catalog/items/${itemId}/related`, {
+      params: { limit },
+    });
     return response.data;
   }
 
   async getSimilarItems(itemId: string, limit = 5): Promise<CatalogItem[]> {
-    const response = await this.client.get<CatalogItem[]>(
-      `/catalog/items/${itemId}/similar`,
-      { params: { limit } }
-    );
+    const response = await this.client.get<CatalogItem[]>(`/catalog/items/${itemId}/similar`, {
+      params: { limit },
+    });
     return response.data;
   }
 

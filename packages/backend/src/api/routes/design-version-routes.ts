@@ -57,11 +57,7 @@ router.use(authenticate);
  *       401:
  *         description: Unauthorized
  */
-router.post(
-  '/',
-  validateBody(createVersionSchema),
-  designVersionController.create,
-);
+router.post('/', validateBody(createVersionSchema), designVersionController.create);
 
 /**
  * @swagger
@@ -86,11 +82,7 @@ router.post(
  *       404:
  *         description: Kitchen not found
  */
-router.get(
-  '/:kitchenId',
-  validateParams(kitchenIdParam),
-  designVersionController.listVersions,
-);
+router.get('/:kitchenId', validateParams(kitchenIdParam), designVersionController.listVersions);
 
 /**
  * @swagger
@@ -124,7 +116,7 @@ router.get(
 router.get(
   '/:kitchenId/:version',
   validateParams(kitchenVersionParams),
-  designVersionController.getVersion,
+  designVersionController.getVersion
 );
 
 /**
@@ -159,7 +151,7 @@ router.get(
 router.post(
   '/:kitchenId/:version/restore',
   validateParams(kitchenVersionParams),
-  designVersionController.restoreVersion,
+  designVersionController.restoreVersion
 );
 
 /**
@@ -194,7 +186,7 @@ router.post(
 router.delete(
   '/:kitchenId/:version',
   validateParams(kitchenVersionParams),
-  designVersionController.deleteVersion,
+  designVersionController.deleteVersion
 );
 
 export default router;

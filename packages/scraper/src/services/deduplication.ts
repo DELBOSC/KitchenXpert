@@ -201,7 +201,9 @@ export class DeduplicationService {
       product.width,
       product.height,
       product.depth,
-    ].filter(Boolean).join('|');
+    ]
+      .filter(Boolean)
+      .join('|');
 
     const contentHash = crypto
       .createHash('sha256')
@@ -517,7 +519,8 @@ export class DeduplicationService {
 
     // Levenshtein-based similarity for short names
     if (name1.length < 50 && name2.length < 50) {
-      const levenshteinSimilarity = 1 - this.levenshteinDistance(name1, name2) / Math.max(name1.length, name2.length);
+      const levenshteinSimilarity =
+        1 - this.levenshteinDistance(name1, name2) / Math.max(name1.length, name2.length);
       return Math.max(jaccardSimilarity, levenshteinSimilarity);
     }
 
@@ -626,14 +629,39 @@ export class DeduplicationService {
   private tokenizeName(name: string): string[] {
     // Remove common stop words
     const stopWords = new Set([
-      'de', 'la', 'le', 'les', 'du', 'des', 'un', 'une', 'et', 'en', 'avec',
-      'pour', 'sur', 'dans', 'par', 'au', 'aux', 'ce', 'cette', 'ces',
-      'the', 'a', 'an', 'and', 'or', 'for', 'with', 'in', 'on', 'at',
+      'de',
+      'la',
+      'le',
+      'les',
+      'du',
+      'des',
+      'un',
+      'une',
+      'et',
+      'en',
+      'avec',
+      'pour',
+      'sur',
+      'dans',
+      'par',
+      'au',
+      'aux',
+      'ce',
+      'cette',
+      'ces',
+      'the',
+      'a',
+      'an',
+      'and',
+      'or',
+      'for',
+      'with',
+      'in',
+      'on',
+      'at',
     ]);
 
-    return name
-      .split(/\s+/)
-      .filter((token) => token.length > 1 && !stopWords.has(token));
+    return name.split(/\s+/).filter((token) => token.length > 1 && !stopWords.has(token));
   }
 
   private normalizeReference(ref: string): string {
@@ -643,7 +671,10 @@ export class DeduplicationService {
       .trim();
   }
 
-  private generateReasoning(matchedFields: string[], scores: Record<string, number | undefined>): string {
+  private generateReasoning(
+    matchedFields: string[],
+    scores: Record<string, number | undefined>
+  ): string {
     const parts: string[] = [];
 
     if (matchedFields.includes('name') && scores.name !== undefined) {

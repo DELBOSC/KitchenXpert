@@ -7,23 +7,61 @@ jest.mock('three', () => {
   const actual = jest.requireActual('../test/__mocks__/three');
   return {
     ...actual,
-    Sprite: class extends actual.Object3D { constructor() { super(); } },
-    SpriteMaterial: class { constructor(_p?: any) {} dispose = jest.fn(); },
-    CanvasTexture: class { constructor(_c?: any) {} dispose = jest.fn(); },
-    CircleGeometry: class extends actual.BufferGeometry { constructor() { super(); } },
-    LineBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
+    Sprite: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    SpriteMaterial: class {
+      constructor(_p?: any) {}
+      dispose = jest.fn();
+    },
+    CanvasTexture: class {
+      constructor(_c?: any) {}
+      dispose = jest.fn();
+    },
+    CircleGeometry: class extends actual.BufferGeometry {
+      constructor() {
+        super();
+      }
+    },
+    LineBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
     LineDashedMaterial: class extends actual.Material {
-      constructor(_p?: any) { super(); }
+      constructor(_p?: any) {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
     LineLoop: class extends actual.Object3D {
-      constructor() { super(); }
+      constructor() {
+        super();
+      }
       computeLineDistances = jest.fn();
     },
-    MeshBasicMaterial: class extends actual.Material { constructor(_p?: any) { super(); } },
-    Group: class extends actual.Object3D { constructor() { super(); } },
-    PointLight: class extends actual.Light { constructor() { super(); } },
-    RectAreaLight: class extends actual.Light { constructor() { super(); } },
+    MeshBasicMaterial: class extends actual.Material {
+      constructor(_p?: any) {
+        super();
+      }
+    },
+    Group: class extends actual.Object3D {
+      constructor() {
+        super();
+      }
+    },
+    PointLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
+    RectAreaLight: class extends actual.Light {
+      constructor() {
+        super();
+      }
+    },
   };
 });
 
@@ -114,9 +152,7 @@ describe('WallAnalyzer', () => {
     it('should have reduced usable segments when items are placed against a wall', () => {
       const room = makeRoom(4, 3);
       // Place a cabinet against the back wall (z close to 0)
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 2.0, 0.3, 0.6, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 2.0, 0.3, 0.6, 0.6)];
 
       const analysis = analyzer.analyzeRoom(room, items);
 
@@ -132,9 +168,7 @@ describe('WallAnalyzer', () => {
     it('should correctly split wall into usable and non-usable segments', () => {
       const room = makeRoom(4, 3);
       // Place item centered at x=2 on back wall
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 2.0, 0.3, 0.6, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 2.0, 0.3, 0.6, 0.6)];
 
       const analysis = analyzer.analyzeRoom(room, items);
       const backSegments = analysis.segments.filter((s) => s.wallSide === 'back');
@@ -154,14 +188,10 @@ describe('WallAnalyzer', () => {
       const room = makeRoom(4, 3);
       const emptyAnalysis = analyzer.analyzeRoom(room, []);
 
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 2.0, 0.3, 1.0, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 2.0, 0.3, 1.0, 0.6)];
       const withObstacleAnalysis = analyzer.analyzeRoom(room, items);
 
-      expect(withObstacleAnalysis.totalUsableLength).toBeLessThan(
-        emptyAnalysis.totalUsableLength
-      );
+      expect(withObstacleAnalysis.totalUsableLength).toBeLessThan(emptyAnalysis.totalUsableLength);
     });
   });
 
@@ -227,9 +257,7 @@ describe('WallAnalyzer', () => {
     it('should not include items that are not against this wall', () => {
       const room = makeRoom(4, 3);
       // Place item against front wall (z ~ 3), not back wall
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 2.0, 2.7, 0.6, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 2.0, 2.7, 0.6, 0.6)];
 
       const backSegments = analyzer.findUsableSegments('back', room, items);
       // Should have one usable segment (the item is not against the back wall)
@@ -240,9 +268,7 @@ describe('WallAnalyzer', () => {
     it('should detect item against the front wall', () => {
       const room = makeRoom(4, 3);
       // Place item against front wall (z + halfDepth > room.depth - 0.5)
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 2.0, 2.8, 0.6, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 2.0, 2.8, 0.6, 0.6)];
 
       const frontSegments = analyzer.findUsableSegments('front', room, items);
       const obstacleSegs = frontSegments.filter((s) => !s.usable);
@@ -253,9 +279,7 @@ describe('WallAnalyzer', () => {
   describe('segment properties', () => {
     it('segments should have valid start and end positions', () => {
       const room = makeRoom(4, 3);
-      const items: PlacedItem3D[] = [
-        makeItem('cab1', 'base_cabinet', 2.0, 0.3, 0.6, 0.6),
-      ];
+      const items: PlacedItem3D[] = [makeItem('cab1', 'base_cabinet', 2.0, 0.3, 0.6, 0.6)];
 
       const analysis = analyzer.analyzeRoom(room, items);
 

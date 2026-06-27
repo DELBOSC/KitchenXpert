@@ -108,4 +108,4 @@ export const iconRegistry = {
 } as const;
 
 export type IconCategory = keyof typeof iconRegistry;
-export type IconName<C extends IconCategory> = keyof typeof iconRegistry[C];
+export type IconName<C extends IconCategory> = keyof (typeof iconRegistry)[C];

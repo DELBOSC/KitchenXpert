@@ -33,7 +33,9 @@ export class UpdateKitchenUseCase implements UseCase<UpdateKitchenInput, unknown
       where: { id: kitchenId, deletedAt: null },
       select: { userId: true },
     });
-    if (!kitchen) {return err(DomainErrors.notFound('Kitchen'));}
+    if (!kitchen) {
+      return err(DomainErrors.notFound('Kitchen'));
+    }
     if (kitchen.userId !== userId && role !== 'admin') {
       return err(DomainErrors.forbidden('You do not have access to this kitchen'));
     }

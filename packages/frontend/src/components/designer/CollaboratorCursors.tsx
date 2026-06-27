@@ -54,21 +54,28 @@ export default function CollaboratorCursors({
 
     for (const [userId, cursor] of cursors) {
       // Skip current user
-      if (userId === currentUserId) {continue;}
+      if (userId === currentUserId) {
+        continue;
+      }
 
       const user = users.get(userId);
-      if (!user) {continue;}
+      if (!user) {
+        continue;
+      }
 
       // Calculate age for fade-out
       const age = now - cursor.timestamp;
-      if (age > CURSOR_STALE_MS) {continue;}
+      if (age > CURSOR_STALE_MS) {
+        continue;
+      }
 
       // Opacity fades from 1.0 to 0.0 over the last 3 seconds of the stale window
       const fadeStart = CURSOR_STALE_MS - 3000;
       const opacity = age < fadeStart ? 1 : Math.max(0, 1 - (age - fadeStart) / 3000);
 
       // Project 3D position to 2D screen coordinates
-      let x = 0, y = 0;
+      let x = 0,
+        y = 0;
       if (camera && containerRef?.current) {
         const vec = new THREE.Vector3(cursor.x, cursor.y, cursor.z);
         vec.project(camera);
@@ -77,7 +84,9 @@ export default function CollaboratorCursors({
         y = (-vec.y * 0.5 + 0.5) * rect.height;
 
         // Skip if behind camera or outside visible bounds (with small margin)
-        if (vec.z > 1 || x < -20 || x > rect.width + 20 || y < -20 || y > rect.height + 20) {continue;}
+        if (vec.z > 1 || x < -20 || x > rect.width + 20 || y < -20 || y > rect.height + 20) {
+          continue;
+        }
       } else {
         // Cannot project without a camera and container reference
         continue;
@@ -98,10 +107,7 @@ export default function CollaboratorCursors({
   }, [cursors, users, camera, containerRef, currentUserId, now]);
 
   return (
-    <div
-      className="absolute inset-0 pointer-events-none overflow-hidden"
-      aria-hidden="true"
-    >
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
       {visibleCursors.map((cursor) => (
         <div
           key={cursor.userId}

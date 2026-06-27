@@ -47,8 +47,8 @@ export interface ComplianceCheckResult {
 
 export interface KitchenElement {
   id: string;
-  type: string;        // e.g. "hob", "oven", "dishwasher", "fridge", "hood", "sink", "outlet", "cabinet"
-  subType?: string;    // e.g. "gas", "induction", "electric"
+  type: string; // e.g. "hob", "oven", "dishwasher", "fridge", "hood", "sink", "outlet", "cabinet"
+  subType?: string; // e.g. "gas", "induction", "electric"
   position: { x: number; y: number; z?: number };
   dimensions?: { width: number; depth: number; height: number };
   rotation?: number;
@@ -57,16 +57,16 @@ export interface KitchenElement {
 
 export interface KitchenConfig {
   id: string;
-  width: number;       // cm
-  length: number;      // cm
-  height: number;      // cm
+  width: number; // cm
+  length: number; // cm
+  height: number; // cm
   elements: KitchenElement[];
   hasGas?: boolean;
-  vmcFlowRate?: number;     // m3/h
+  vmcFlowRate?: number; // m3/h
   hasAirIntake?: boolean;
-  passageWidth?: number;    // cm — narrowest passage between cabinets
-  isPMR?: boolean;          // accessibility mode
-  worktopHeight?: number;   // cm
+  passageWidth?: number; // cm — narrowest passage between cabinets
+  isPMR?: boolean; // accessibility mode
+  worktopHeight?: number; // cm
   metadata?: Record<string, unknown>;
 }
 
@@ -102,7 +102,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'NF_C_15_100',
     category: 'electrical',
     name: 'Circuit dédié plaque de cuisson 32A',
-    description: 'La plaque de cuisson doit être alimentée par un circuit dédié 32A selon NF C 15-100.',
+    description:
+      'La plaque de cuisson doit être alimentée par un circuit dédié 32A selon NF C 15-100.',
     condition: { type: 'dedicated_circuit', source: 'hob', amperage: 32, circuit: 'dedicated' },
     severity: 'error',
   },
@@ -119,14 +120,19 @@ const DEFAULT_RULES: DefaultRule[] = [
     category: 'electrical',
     name: 'Circuit dédié lave-vaisselle 16A',
     description: 'Le lave-vaisselle doit être sur un circuit dédié 16A.',
-    condition: { type: 'dedicated_circuit', source: 'dishwasher', amperage: 16, circuit: 'dedicated' },
+    condition: {
+      type: 'dedicated_circuit',
+      source: 'dishwasher',
+      amperage: 16,
+      circuit: 'dedicated',
+    },
     severity: 'error',
   },
   {
     code: 'NF_C_15_100',
     category: 'electrical',
     name: 'Circuit réfrigérateur 16A',
-    description: 'Le réfrigérateur doit disposer d\'un circuit 16A.',
+    description: "Le réfrigérateur doit disposer d'un circuit 16A.",
     condition: { type: 'dedicated_circuit', source: 'fridge', amperage: 16, circuit: 'dedicated' },
     severity: 'error',
   },
@@ -141,8 +147,9 @@ const DEFAULT_RULES: DefaultRule[] = [
   {
     code: 'NF_C_15_100',
     category: 'electrical',
-    name: 'Pas de prise au-dessus de l\'évier',
-    description: 'Aucune prise ne doit se trouver à moins de 60 cm horizontalement de l\'évier (NF C 15-100, volume 1).',
+    name: "Pas de prise au-dessus de l'évier",
+    description:
+      "Aucune prise ne doit se trouver à moins de 60 cm horizontalement de l'évier (NF C 15-100, volume 1).",
     condition: { type: 'min_distance', source: 'outlet', target: 'sink', minCm: 60 },
     severity: 'error',
   },
@@ -158,7 +165,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'NF_C_15_100',
     category: 'electrical',
     name: 'Différentiel 30mA obligatoire',
-    description: 'Toutes les prises cuisine doivent être protégées par un différentiel 30mA (GFCI).',
+    description:
+      'Toutes les prises cuisine doivent être protégées par un différentiel 30mA (GFCI).',
     condition: { type: 'gfci_required', source: 'outlet', threshold: 30 },
     severity: 'error',
   },
@@ -174,7 +182,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'NF_C_15_100',
     category: 'electrical',
     name: 'Minimum 6 prises en cuisine',
-    description: 'NF C 15-100 impose un minimum de 6 prises de courant dans une cuisine de plus de 4 m².',
+    description:
+      'NF C 15-100 impose un minimum de 6 prises de courant dans une cuisine de plus de 4 m².',
     condition: { type: 'min_count', source: 'outlet', minCount: 6 },
     severity: 'warning',
   },
@@ -183,8 +192,9 @@ const DEFAULT_RULES: DefaultRule[] = [
   {
     code: 'NF_EN_1116',
     category: 'safety',
-    name: 'Distance min plaque — point d\'eau (60 cm)',
-    description: 'La plaque de cuisson doit être à au moins 60 cm de tout point d\'eau (évier, robinet).',
+    name: "Distance min plaque — point d'eau (60 cm)",
+    description:
+      "La plaque de cuisson doit être à au moins 60 cm de tout point d'eau (évier, robinet).",
     condition: { type: 'min_distance', source: 'hob', target: 'sink', minCm: 60 },
     severity: 'error',
   },
@@ -192,23 +202,36 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'NF_EN_1116',
     category: 'safety',
     name: 'Distance hotte — plaque gaz (65 cm)',
-    description: 'La hotte doit être à au moins 65 cm au-dessus d\'une plaque à gaz.',
-    condition: { type: 'min_vertical_distance', source: 'hood', target: 'hob', subType: 'gas', minCm: 65 },
+    description: "La hotte doit être à au moins 65 cm au-dessus d'une plaque à gaz.",
+    condition: {
+      type: 'min_vertical_distance',
+      source: 'hood',
+      target: 'hob',
+      subType: 'gas',
+      minCm: 65,
+    },
     severity: 'error',
   },
   {
     code: 'NF_EN_1116',
     category: 'safety',
     name: 'Distance hotte — plaque électrique/induction (55 cm)',
-    description: 'La hotte doit être à au moins 55 cm au-dessus d\'une plaque électrique ou induction.',
-    condition: { type: 'min_vertical_distance', source: 'hood', target: 'hob', subType: 'electric_or_induction', minCm: 55 },
+    description:
+      "La hotte doit être à au moins 55 cm au-dessus d'une plaque électrique ou induction.",
+    condition: {
+      type: 'min_vertical_distance',
+      source: 'hood',
+      target: 'hob',
+      subType: 'electric_or_induction',
+      minCm: 55,
+    },
     severity: 'error',
   },
   {
     code: 'NF_EN_1116',
     category: 'safety',
     name: 'Distance plaque — mur latéral (40 cm)',
-    description: 'La plaque de cuisson doit être à au moins 40 cm d\'un mur latéral.',
+    description: "La plaque de cuisson doit être à au moins 40 cm d'un mur latéral.",
     condition: { type: 'min_distance_to_wall', source: 'hob', minCm: 40 },
     severity: 'warning',
   },
@@ -216,7 +239,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'NF_EN_1116',
     category: 'safety',
     name: 'Ventilation derrière réfrigérateur (5 cm)',
-    description: 'Un espace d\'au moins 5 cm doit être maintenu derrière le réfrigérateur pour la ventilation.',
+    description:
+      "Un espace d'au moins 5 cm doit être maintenu derrière le réfrigérateur pour la ventilation.",
     condition: { type: 'min_distance_to_wall', source: 'fridge', minCm: 5 },
     severity: 'warning',
   },
@@ -224,7 +248,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'NF_EN_1116',
     category: 'safety',
     name: 'Plaque non adjacente à fenêtre ouvrable',
-    description: 'La plaque de cuisson ne doit pas être placée directement sous ou à côté d\'une fenêtre ouvrable (courants d\'air dangereux).',
+    description:
+      "La plaque de cuisson ne doit pas être placée directement sous ou à côté d'une fenêtre ouvrable (courants d'air dangereux).",
     condition: { type: 'min_distance', source: 'hob', target: 'window', minCm: 40 },
     severity: 'warning',
   },
@@ -234,15 +259,17 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'NF_DTU_24_1',
     category: 'ventilation',
     name: 'VMC extraction 120 m³/h minimum',
-    description: 'La cuisine doit disposer d\'une extraction mécanique d\'au moins 120 m³/h (NF DTU 24.1).',
+    description:
+      "La cuisine doit disposer d'une extraction mécanique d'au moins 120 m³/h (NF DTU 24.1).",
     condition: { type: 'min_flow_rate', flowRate: 120 },
     severity: 'error',
   },
   {
     code: 'NF_DTU_24_1',
     category: 'ventilation',
-    name: 'Amenée d\'air obligatoire si gaz',
-    description: 'Si des appareils gaz sont présents, une amenée d\'air (grille basse) est obligatoire.',
+    name: "Amenée d'air obligatoire si gaz",
+    description:
+      "Si des appareils gaz sont présents, une amenée d'air (grille basse) est obligatoire.",
     condition: { type: 'air_intake_if_gas' },
     severity: 'error',
   },
@@ -252,7 +279,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'PMR',
     category: 'accessibility',
     name: 'Passage min 90 cm entre meubles',
-    description: 'Le passage entre deux rangées de meubles doit être d\'au moins 90 cm pour l\'accessibilité PMR.',
+    description:
+      "Le passage entre deux rangées de meubles doit être d'au moins 90 cm pour l'accessibilité PMR.",
     condition: { type: 'min_passage', minCm: 90 },
     severity: 'error',
   },
@@ -260,7 +288,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'PMR',
     category: 'accessibility',
     name: 'Cercle de rotation fauteuil 150 cm',
-    description: 'Un espace libre de 150 cm de diamètre doit permettre la rotation d\'un fauteuil roulant.',
+    description:
+      "Un espace libre de 150 cm de diamètre doit permettre la rotation d'un fauteuil roulant.",
     condition: { type: 'turning_circle', minCm: 150 },
     severity: 'error',
   },
@@ -268,7 +297,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'PMR',
     category: 'accessibility',
     name: 'Plan de travail entre 75-85 cm pour PMR',
-    description: 'Le plan de travail doit être entre 75 et 85 cm de hauteur pour l\'accessibilité PMR.',
+    description:
+      "Le plan de travail doit être entre 75 et 85 cm de hauteur pour l'accessibilité PMR.",
     condition: { type: 'worktop_height_range', minCm: 75, maxCm: 85 },
     severity: 'error',
   },
@@ -276,7 +306,8 @@ const DEFAULT_RULES: DefaultRule[] = [
     code: 'PMR',
     category: 'accessibility',
     name: 'Prises entre 40-130 cm du sol',
-    description: 'Les prises électriques doivent être placées entre 40 et 130 cm du sol pour l\'accessibilité PMR.',
+    description:
+      "Les prises électriques doivent être placées entre 40 et 130 cm du sol pour l'accessibilité PMR.",
     condition: { type: 'outlet_height_range', minCm: 40, maxCm: 130 },
     severity: 'warning',
   },
@@ -290,10 +321,7 @@ export class ComplianceService {
   /**
    * Run all active compliance rules against a kitchen configuration.
    */
-  async checkKitchenCompliance(
-    kitchenId: string,
-    userId: string,
-  ): Promise<ComplianceCheckResult> {
+  async checkKitchenCompliance(kitchenId: string, userId: string): Promise<ComplianceCheckResult> {
     // 1. Load kitchen from DB
     const kitchen = await prisma.kitchen.findUnique({
       where: { id: kitchenId },
@@ -313,7 +341,10 @@ export class ComplianceService {
     });
 
     if (rules.length === 0) {
-      throw new ComplianceServiceError('NO_RULES', 'No active compliance rules found. Run seed first.');
+      throw new ComplianceServiceError(
+        'NO_RULES',
+        'No active compliance rules found. Run seed first.'
+      );
     }
 
     // 4. Evaluate each rule
@@ -326,7 +357,9 @@ export class ComplianceService {
     }
 
     // 5. If we have unresolved complex checks, attempt AI fallback
-    const unresolvedCount = results.filter(r => r.status === 'warning' && r.message.includes('[needs-spatial-analysis]')).length;
+    const unresolvedCount = results.filter(
+      (r) => r.status === 'warning' && r.message.includes('[needs-spatial-analysis]')
+    ).length;
     if (unresolvedCount > 0 && kitchenConfig.elements.length > 0) {
       try {
         await this.aiSpatialFallback(kitchenConfig, results);
@@ -338,9 +371,9 @@ export class ComplianceService {
     }
 
     // 6. Compute summary
-    const passed = results.filter(r => r.status === 'passed').length;
-    const failed = results.filter(r => r.status === 'failed').length;
-    const warnings = results.filter(r => r.status === 'warning').length;
+    const passed = results.filter((r) => r.status === 'passed').length;
+    const failed = results.filter((r) => r.status === 'failed').length;
+    const warnings = results.filter((r) => r.status === 'warning').length;
     const overallStatus = failed > 0 ? 'failed' : 'passed';
 
     // 7. Store in DB
@@ -467,10 +500,12 @@ export class ComplianceService {
           type: elementType,
           subType: this.inferSubType(product?.name, product?.category, item.metadata),
           position: position ?? { x: 0, y: 0 },
-          dimensions: product?.dimensions as { width: number; depth: number; height: number } | undefined,
+          dimensions: product?.dimensions as
+            | { width: number; depth: number; height: number }
+            | undefined,
           rotation: item.rotation ?? 0,
           metadata: {
-            ...(item.metadata as Record<string, unknown> || {}),
+            ...((item.metadata as Record<string, unknown>) || {}),
             productName: product?.name,
             productCategory: product?.category,
           },
@@ -483,7 +518,7 @@ export class ComplianceService {
     if (kitchenMeta?.elements && Array.isArray(kitchenMeta.elements)) {
       for (const el of kitchenMeta.elements as KitchenElement[]) {
         // Avoid duplicates
-        if (!elements.find(e => e.id === el.id)) {
+        if (!elements.find((e) => e.id === el.id)) {
           elements.push(el);
         }
       }
@@ -495,7 +530,8 @@ export class ComplianceService {
       length: kitchen.length ?? 400,
       height: kitchen.height ?? 250,
       elements,
-      hasGas: kitchenMeta?.hasGas as boolean | undefined ?? elements.some(e => e.subType === 'gas'),
+      hasGas:
+        (kitchenMeta?.hasGas as boolean | undefined) ?? elements.some((e) => e.subType === 'gas'),
       vmcFlowRate: kitchenMeta?.vmcFlowRate as number | undefined,
       hasAirIntake: kitchenMeta?.hasAirIntake as boolean | undefined,
       passageWidth: kitchenMeta?.passageWidth as number | undefined,
@@ -509,18 +545,52 @@ export class ComplianceService {
     const cat = (category || '').toLowerCase();
     const nm = (name || '').toLowerCase();
     const meta = metadata as Record<string, unknown> | undefined;
-    const metaType = (meta?.elementType as string || '').toLowerCase();
+    const metaType = ((meta?.elementType as string) || '').toLowerCase();
 
-    if (metaType) {return metaType;}
-    if (cat.includes('hob') || cat.includes('plaque') || cat.includes('cooktop') || nm.includes('plaque')) {return 'hob';}
-    if (cat.includes('oven') || cat.includes('four') || nm.includes('four')) {return 'oven';}
-    if (cat.includes('dishwasher') || cat.includes('lave-vaisselle') || nm.includes('lave-vaisselle')) {return 'dishwasher';}
-    if (cat.includes('fridge') || cat.includes('réfrigérateur') || cat.includes('refriger') || nm.includes('réfrigérateur')) {return 'fridge';}
-    if (cat.includes('hood') || cat.includes('hotte') || nm.includes('hotte')) {return 'hood';}
-    if (cat.includes('sink') || cat.includes('évier') || nm.includes('évier')) {return 'sink';}
-    if (cat.includes('outlet') || cat.includes('prise') || nm.includes('prise')) {return 'outlet';}
-    if (cat.includes('window') || cat.includes('fenêtre') || nm.includes('fenêtre')) {return 'window';}
-    if (cat.includes('cabinet') || cat.includes('meuble') || nm.includes('meuble')) {return 'cabinet';}
+    if (metaType) {
+      return metaType;
+    }
+    if (
+      cat.includes('hob') ||
+      cat.includes('plaque') ||
+      cat.includes('cooktop') ||
+      nm.includes('plaque')
+    ) {
+      return 'hob';
+    }
+    if (cat.includes('oven') || cat.includes('four') || nm.includes('four')) {
+      return 'oven';
+    }
+    if (
+      cat.includes('dishwasher') ||
+      cat.includes('lave-vaisselle') ||
+      nm.includes('lave-vaisselle')
+    ) {
+      return 'dishwasher';
+    }
+    if (
+      cat.includes('fridge') ||
+      cat.includes('réfrigérateur') ||
+      cat.includes('refriger') ||
+      nm.includes('réfrigérateur')
+    ) {
+      return 'fridge';
+    }
+    if (cat.includes('hood') || cat.includes('hotte') || nm.includes('hotte')) {
+      return 'hood';
+    }
+    if (cat.includes('sink') || cat.includes('évier') || nm.includes('évier')) {
+      return 'sink';
+    }
+    if (cat.includes('outlet') || cat.includes('prise') || nm.includes('prise')) {
+      return 'outlet';
+    }
+    if (cat.includes('window') || cat.includes('fenêtre') || nm.includes('fenêtre')) {
+      return 'window';
+    }
+    if (cat.includes('cabinet') || cat.includes('meuble') || nm.includes('meuble')) {
+      return 'cabinet';
+    }
     return 'unknown';
   }
 
@@ -529,10 +599,22 @@ export class ComplianceService {
     const meta = metadata as Record<string, unknown> | undefined;
     const metaSubType = meta?.subType as string | undefined;
 
-    if (metaSubType) {return metaSubType;}
-    if (combined.includes('gaz') || combined.includes('gas')) {return 'gas';}
-    if (combined.includes('induction')) {return 'induction';}
-    if (combined.includes('électrique') || combined.includes('electric') || combined.includes('vitrocéramique')) {return 'electric';}
+    if (metaSubType) {
+      return metaSubType;
+    }
+    if (combined.includes('gaz') || combined.includes('gas')) {
+      return 'gas';
+    }
+    if (combined.includes('induction')) {
+      return 'induction';
+    }
+    if (
+      combined.includes('électrique') ||
+      combined.includes('electric') ||
+      combined.includes('vitrocéramique')
+    ) {
+      return 'electric';
+    }
     return undefined;
   }
 
@@ -543,7 +625,7 @@ export class ComplianceService {
   private evaluateRule(
     rule: { id: string; code: string; name: string; severity: string; description: string },
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
     const base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'> = {
       ruleId: rule.id,
@@ -610,11 +692,16 @@ export class ComplianceService {
   private checkDedicatedCircuit(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const appliances = kitchen.elements.filter(e => e.type === condition.source);
+    const appliances = kitchen.elements.filter((e) => e.type === condition.source);
     if (appliances.length === 0) {
-      return { ...base, status: 'passed', message: `Aucun ${condition.source} détecté — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `Aucun ${condition.source} détecté — règle non applicable.`,
+        position: null,
+      };
     }
 
     // Check metadata for circuit info
@@ -628,7 +715,11 @@ export class ComplianceService {
           ...base,
           status: 'failed',
           message: `${base.ruleName}: Le ${condition.source} n'est pas sur un circuit dédié.`,
-          position: { x: appliance.position.x, y: appliance.position.y, z: appliance.position.z ?? 0 },
+          position: {
+            x: appliance.position.x,
+            y: appliance.position.y,
+            z: appliance.position.z ?? 0,
+          },
           fixSuggestion: `Installer un circuit dédié ${condition.amperage}A pour le ${condition.source}.`,
         };
       }
@@ -638,7 +729,11 @@ export class ComplianceService {
           ...base,
           status: 'failed',
           message: `${base.ruleName}: Circuit ${amperage}A insuffisant (${condition.amperage}A requis).`,
-          position: { x: appliance.position.x, y: appliance.position.y, z: appliance.position.z ?? 0 },
+          position: {
+            x: appliance.position.x,
+            y: appliance.position.y,
+            z: appliance.position.z ?? 0,
+          },
           fixSuggestion: `Remplacer le disjoncteur par un ${condition.amperage}A et vérifier la section du câble.`,
         };
       }
@@ -650,14 +745,19 @@ export class ComplianceService {
   private checkMinDistance(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const sources = kitchen.elements.filter(e => e.type === condition.source);
-    const targets = kitchen.elements.filter(e => e.type === condition.target);
+    const sources = kitchen.elements.filter((e) => e.type === condition.source);
+    const targets = kitchen.elements.filter((e) => e.type === condition.target);
     const minCm = condition.minCm ?? (condition.minMm ? condition.minMm / 10 : 0);
 
     if (sources.length === 0 || targets.length === 0) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Éléments non présents — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Éléments non présents — règle non applicable.`,
+        position: null,
+      };
     }
 
     for (const src of sources) {
@@ -681,13 +781,18 @@ export class ComplianceService {
   private checkNoOutletAbove(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     _condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const outlets = kitchen.elements.filter(e => e.type === 'outlet');
-    const hobs = kitchen.elements.filter(e => e.type === 'hob');
+    const outlets = kitchen.elements.filter((e) => e.type === 'outlet');
+    const hobs = kitchen.elements.filter((e) => e.type === 'hob');
 
     if (outlets.length === 0 || hobs.length === 0) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Éléments non présents — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Éléments non présents — règle non applicable.`,
+        position: null,
+      };
     }
 
     for (const outlet of outlets) {
@@ -695,7 +800,7 @@ export class ComplianceService {
         // Check if outlet is roughly above the hob (within 40cm horizontal, and higher Z)
         const horizDist = this.distance2D(outlet.position, hob.position);
         const outletZ = outlet.position.z ?? 110; // default outlet height ~110cm
-        const hobZ = hob.position.z ?? 90;         // default hob height ~90cm
+        const hobZ = hob.position.z ?? 90; // default hob height ~90cm
 
         if (horizDist < 40 && outletZ > hobZ) {
           return {
@@ -715,11 +820,16 @@ export class ComplianceService {
   private checkGFCI(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     _condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const outlets = kitchen.elements.filter(e => e.type === 'outlet');
+    const outlets = kitchen.elements.filter((e) => e.type === 'outlet');
     if (outlets.length === 0) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Aucune prise détectée — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Aucune prise détectée — règle non applicable.`,
+        position: null,
+      };
     }
 
     for (const outlet of outlets) {
@@ -743,13 +853,18 @@ export class ComplianceService {
   private checkMinHeight(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const elements = kitchen.elements.filter(e => e.type === condition.source);
+    const elements = kitchen.elements.filter((e) => e.type === condition.source);
     const minCm = condition.minCm ?? 0;
 
     if (elements.length === 0) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Aucun ${condition.source} détecté.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Aucun ${condition.source} détecté.`,
+        position: null,
+      };
     }
 
     for (const el of elements) {
@@ -771,13 +886,18 @@ export class ComplianceService {
   private checkMinCount(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const elements = kitchen.elements.filter(e => e.type === condition.source);
+    const elements = kitchen.elements.filter((e) => e.type === condition.source);
     const minCount = (condition as any).minCount ?? 0;
 
     if (elements.length >= minCount) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: ${elements.length} ${condition.source}(s) — conforme.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: ${elements.length} ${condition.source}(s) — conforme.`,
+        position: null,
+      };
     }
 
     return {
@@ -792,15 +912,15 @@ export class ComplianceService {
   private checkMinVerticalDistance(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const sources = kitchen.elements.filter(e => e.type === condition.source);
-    const targets = kitchen.elements.filter(e => e.type === condition.target);
+    const sources = kitchen.elements.filter((e) => e.type === condition.source);
+    const targets = kitchen.elements.filter((e) => e.type === condition.target);
     const minCm = condition.minCm ?? 0;
 
     // Filter targets by subType if specified
     const filteredTargets = condition.subType
-      ? targets.filter(t => {
+      ? targets.filter((t) => {
           if (condition.subType === 'electric_or_induction') {
             return t.subType === 'electric' || t.subType === 'induction' || !t.subType;
           }
@@ -809,13 +929,18 @@ export class ComplianceService {
       : targets;
 
     if (sources.length === 0 || filteredTargets.length === 0) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Éléments non présents — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Éléments non présents — règle non applicable.`,
+        position: null,
+      };
     }
 
     for (const src of sources) {
       for (const tgt of filteredTargets) {
         const srcZ = src.position.z ?? 200; // hood default ~200cm
-        const tgtZ = tgt.position.z ?? 90;  // hob default ~90cm
+        const tgtZ = tgt.position.z ?? 90; // hob default ~90cm
         const vertDist = Math.abs(srcZ - tgtZ);
 
         // Only check if they're horizontally close (above each other)
@@ -838,13 +963,18 @@ export class ComplianceService {
   private checkMinDistanceToWall(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
-    const elements = kitchen.elements.filter(e => e.type === condition.source);
+    const elements = kitchen.elements.filter((e) => e.type === condition.source);
     const minCm = condition.minCm ?? 0;
 
     if (elements.length === 0) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Aucun ${condition.source} détecté.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Aucun ${condition.source} détecté.`,
+        position: null,
+      };
     }
 
     for (const el of elements) {
@@ -872,7 +1002,7 @@ export class ComplianceService {
   private checkMinFlowRate(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
     const required = condition.flowRate ?? 120;
 
@@ -896,16 +1026,26 @@ export class ComplianceService {
       };
     }
 
-    return { ...base, status: 'passed', message: `${base.ruleName}: Conforme (${kitchen.vmcFlowRate} m³/h).`, position: null };
+    return {
+      ...base,
+      status: 'passed',
+      message: `${base.ruleName}: Conforme (${kitchen.vmcFlowRate} m³/h).`,
+      position: null,
+    };
   }
 
   private checkAirIntakeIfGas(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     _condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
     if (!kitchen.hasGas) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Pas d'appareil gaz — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Pas d'appareil gaz — règle non applicable.`,
+        position: null,
+      };
     }
 
     if (kitchen.hasAirIntake == null) {
@@ -914,7 +1054,7 @@ export class ComplianceService {
         status: 'warning',
         message: `${base.ruleName}: Présence de gaz détectée mais information sur l'amenée d'air non renseignée.`,
         position: null,
-        fixSuggestion: 'Vérifier la présence d\'une grille d\'amenée d\'air dans la cuisine.',
+        fixSuggestion: "Vérifier la présence d'une grille d'amenée d'air dans la cuisine.",
       };
     }
 
@@ -924,7 +1064,8 @@ export class ComplianceService {
         status: 'failed',
         message: `${base.ruleName}: Gaz présent sans amenée d'air obligatoire.`,
         position: null,
-        fixSuggestion: 'Installer une grille d\'amenée d\'air basse (section min 100 cm²) dans un mur extérieur.',
+        fixSuggestion:
+          "Installer une grille d'amenée d'air basse (section min 100 cm²) dans un mur extérieur.",
       };
     }
 
@@ -934,10 +1075,15 @@ export class ComplianceService {
   private checkMinPassage(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
     if (!kitchen.isPMR) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`,
+        position: null,
+      };
     }
 
     const minCm = condition.minCm ?? 90;
@@ -962,16 +1108,26 @@ export class ComplianceService {
       };
     }
 
-    return { ...base, status: 'passed', message: `${base.ruleName}: Conforme (${kitchen.passageWidth} cm).`, position: null };
+    return {
+      ...base,
+      status: 'passed',
+      message: `${base.ruleName}: Conforme (${kitchen.passageWidth} cm).`,
+      position: null,
+    };
   }
 
   private checkTurningCircle(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
     if (!kitchen.isPMR) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`,
+        position: null,
+      };
     }
 
     const minCm = condition.minCm ?? 150;
@@ -1000,10 +1156,15 @@ export class ComplianceService {
   private checkWorktopHeightRange(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
     if (!kitchen.isPMR) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`,
+        position: null,
+      };
     }
 
     const minCm = condition.minCm ?? 75;
@@ -1029,24 +1190,39 @@ export class ComplianceService {
       };
     }
 
-    return { ...base, status: 'passed', message: `${base.ruleName}: Conforme (${kitchen.worktopHeight} cm).`, position: null };
+    return {
+      ...base,
+      status: 'passed',
+      message: `${base.ruleName}: Conforme (${kitchen.worktopHeight} cm).`,
+      position: null,
+    };
   }
 
   private checkOutletHeightRange(
     base: Omit<ComplianceResultItem, 'status' | 'message' | 'fixSuggestion' | 'position'>,
     condition: RuleCondition,
-    kitchen: KitchenConfig,
+    kitchen: KitchenConfig
   ): ComplianceResultItem {
     if (!kitchen.isPMR) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Mode PMR non activé — règle non applicable.`,
+        position: null,
+      };
     }
 
-    const outlets = kitchen.elements.filter(e => e.type === 'outlet');
+    const outlets = kitchen.elements.filter((e) => e.type === 'outlet');
     const minCm = condition.minCm ?? 40;
     const maxCm = condition.maxCm ?? 130;
 
     if (outlets.length === 0) {
-      return { ...base, status: 'passed', message: `${base.ruleName}: Aucune prise détectée.`, position: null };
+      return {
+        ...base,
+        status: 'passed',
+        message: `${base.ruleName}: Aucune prise détectée.`,
+        position: null,
+      };
     }
 
     for (const outlet of outlets) {
@@ -1071,33 +1247,38 @@ export class ComplianceService {
 
   private async aiSpatialFallback(
     kitchen: KitchenConfig,
-    results: ComplianceResultItem[],
+    results: ComplianceResultItem[]
   ): Promise<void> {
     const ai = AnthropicService.getInstance();
 
     const unresolvedResults = results.filter(
-      r => r.status === 'warning' && r.message.includes('[needs-spatial-analysis]'),
+      (r) => r.status === 'warning' && r.message.includes('[needs-spatial-analysis]')
     );
 
-    if (unresolvedResults.length === 0) {return;}
+    if (unresolvedResults.length === 0) {
+      return;
+    }
 
     const prompt = `Analyze this kitchen configuration for building code compliance.
 Kitchen dimensions: ${kitchen.width}cm x ${kitchen.length}cm x ${kitchen.height}cm
-Elements: ${JSON.stringify(kitchen.elements.map(e => ({ id: e.id, type: e.type, subType: e.subType, position: e.position, dimensions: e.dimensions })))}
+Elements: ${JSON.stringify(kitchen.elements.map((e) => ({ id: e.id, type: e.type, subType: e.subType, position: e.position, dimensions: e.dimensions })))}
 
 For each of these unresolved rules, determine if they pass or fail:
-${unresolvedResults.map(r => `- ${r.ruleId}: ${r.ruleName}`).join('\n')}
+${unresolvedResults.map((r) => `- ${r.ruleId}: ${r.ruleName}`).join('\n')}
 
 Respond in JSON format:
 [{ "ruleId": "...", "status": "passed" | "failed" | "warning", "message": "...", "fixSuggestion": "..." }]`;
 
-    const result = await ai.generateJSON<Array<{
-      ruleId: string;
-      status: 'passed' | 'failed' | 'warning';
-      message: string;
-      fixSuggestion?: string;
-    }>>({
-      system: 'You are a French building code compliance expert. Analyze kitchen configurations against NF C 15-100, NF DTU 24.1, NF EN 1116, and NF P 99-611 standards. Return only valid JSON.',
+    const result = await ai.generateJSON<
+      Array<{
+        ruleId: string;
+        status: 'passed' | 'failed' | 'warning';
+        message: string;
+        fixSuggestion?: string;
+      }>
+    >({
+      system:
+        'You are a French building code compliance expert. Analyze kitchen configurations against NF C 15-100, NF DTU 24.1, NF EN 1116, and NF P 99-611 standards. Return only valid JSON.',
       messages: [{ role: 'user', content: prompt }],
       maxTokens: 2000,
       parse: (text) => JSON.parse(text),
@@ -1105,7 +1286,7 @@ Respond in JSON format:
 
     // Update results in-place with AI analysis
     for (const aiResult of result.data) {
-      const idx = results.findIndex(r => r.ruleId === aiResult.ruleId);
+      const idx = results.findIndex((r) => r.ruleId === aiResult.ruleId);
       if (idx !== -1) {
         results[idx] = {
           ...results[idx]!,
@@ -1121,10 +1302,7 @@ Respond in JSON format:
   // Private: Geometry helpers
   // ----------------------------------------------------------------
 
-  private distance2D(
-    a: { x: number; y: number },
-    b: { x: number; y: number },
-  ): number {
+  private distance2D(a: { x: number; y: number }, b: { x: number; y: number }): number {
     return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
   }
 }
@@ -1136,7 +1314,7 @@ Respond in JSON format:
 export class ComplianceServiceError extends Error {
   constructor(
     public readonly code: string,
-    message: string,
+    message: string
   ) {
     super(message);
     this.name = 'ComplianceServiceError';

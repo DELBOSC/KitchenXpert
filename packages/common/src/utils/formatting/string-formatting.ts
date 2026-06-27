@@ -25,11 +25,7 @@ export function titleCase(str: string): string {
 /**
  * Tronque une chaîne à une longueur maximale
  */
-export function truncate(
-  str: string,
-  maxLength: number,
-  options?: TruncateOptions
-): string {
+export function truncate(str: string, maxLength: number, options?: TruncateOptions): string {
   const { suffix = '...', wordBoundary = false } = options || {};
 
   if (!str || str.length <= maxLength) return str;
@@ -69,11 +65,7 @@ export function slugify(str: string): string {
 /**
  * Pluralise un mot en fonction d'un compteur
  */
-export function pluralize(
-  word: string,
-  count: number,
-  options?: PluralizeOptions
-): string {
+export function pluralize(word: string, count: number, options?: PluralizeOptions): string {
   const { plural, showCount = true, locale = 'fr' } = options || {};
 
   const pluralWord = plural || getPluralForm(word, locale);
@@ -107,8 +99,13 @@ function getPluralForm(word: string, locale: string): string {
   if (word.endsWith('y') && !/[aeiou]y$/.test(word)) {
     return word.slice(0, -1) + 'ies';
   }
-  if (word.endsWith('s') || word.endsWith('x') || word.endsWith('z') ||
-      word.endsWith('ch') || word.endsWith('sh')) {
+  if (
+    word.endsWith('s') ||
+    word.endsWith('x') ||
+    word.endsWith('z') ||
+    word.endsWith('ch') ||
+    word.endsWith('sh')
+  ) {
     return word + 'es';
   }
   return word + 's';
@@ -143,7 +140,10 @@ export function unescapeHtml(str: string): string {
     '&#x2F;': '/',
   };
 
-  return str.replace(/&(?:amp|lt|gt|quot|#39|#x27|#x2F);/g, (entity) => htmlEntities[entity] || entity);
+  return str.replace(
+    /&(?:amp|lt|gt|quot|#39|#x27|#x2F);/g,
+    (entity) => htmlEntities[entity] || entity
+  );
 }
 
 /**
@@ -156,16 +156,8 @@ export function stripHtml(str: string): string {
 /**
  * Masque une partie d'une chaîne (emails, phones, etc.)
  */
-export function mask(
-  str: string,
-  options?: MaskOptions
-): string {
-  const {
-    visibleStart = 3,
-    visibleEnd = 3,
-    maskChar = '*',
-    minMaskLength = 3,
-  } = options || {};
+export function mask(str: string, options?: MaskOptions): string {
+  const { visibleStart = 3, visibleEnd = 3, maskChar = '*', minMaskLength = 3 } = options || {};
 
   if (str.length <= visibleStart + visibleEnd + minMaskLength) {
     return str;
@@ -202,10 +194,7 @@ export function maskEmail(email: string): string {
 /**
  * Formate des initiales
  */
-export function getInitials(
-  name: string,
-  maxLength = 2
-): string {
+export function getInitials(name: string, maxLength = 2): string {
   return name
     .split(' ')
     .filter(Boolean)
@@ -217,22 +206,14 @@ export function getInitials(
 /**
  * Pad une chaîne à gauche
  */
-export function padLeft(
-  str: string,
-  length: number,
-  char = '0'
-): string {
+export function padLeft(str: string, length: number, char = '0'): string {
   return str.padStart(length, char);
 }
 
 /**
  * Pad une chaîne à droite
  */
-export function padRight(
-  str: string,
-  length: number,
-  char = ' '
-): string {
+export function padRight(str: string, length: number, char = ' '): string {
   return str.padEnd(length, char);
 }
 
@@ -253,11 +234,7 @@ export function toLines(str: string): string[] {
 /**
  * Génère un extrait d'un texte
  */
-export function excerpt(
-  text: string,
-  query: string,
-  options?: ExcerptOptions
-): string {
+export function excerpt(text: string, query: string, options?: ExcerptOptions): string {
   const { length = 150, highlightTag = 'mark' } = options || {};
 
   const lowerText = text.toLowerCase();

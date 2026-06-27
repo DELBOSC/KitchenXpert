@@ -12,7 +12,15 @@ export interface CutListItem {
   /** Reference to the parent cabinet (name or ID) */
   cabinetRef: string;
   /** Part name describing the panel's role */
-  partName: 'side_left' | 'side_right' | 'top' | 'bottom' | 'back' | 'shelf' | 'door' | 'drawer_front';
+  partName:
+    | 'side_left'
+    | 'side_right'
+    | 'top'
+    | 'bottom'
+    | 'back'
+    | 'shelf'
+    | 'door'
+    | 'drawer_front';
   /** Material description */
   material: string;
   /** Panel length in mm (along the longer dimension) */
@@ -56,8 +64,8 @@ export interface CutList {
   /** Material breakdown summary */
   materialBreakdown: Array<{
     material: string;
-    area: number;      // total area in mm^2
-    sheets: number;    // estimated sheets needed
+    area: number; // total area in mm^2
+    sheets: number; // estimated sheets needed
   }>;
 }
 
@@ -88,14 +96,14 @@ const STANDARD_SHEET_AREA = STANDARD_SHEET_WIDTH * STANDARD_SHEET_HEIGHT;
 
 /** Standard panel thicknesses */
 const CARCASS_THICKNESS = 16; // mm
-const DOOR_THICKNESS = 18;   // mm
-const BACK_THICKNESS = 3;    // mm
+const DOOR_THICKNESS = 18; // mm
+const BACK_THICKNESS = 3; // mm
 
 /** Standard cabinet dimensions (in mm) */
 export const BASE_CABINET_HEIGHT = 720;
-export const BASE_CABINET_DEPTH = 560;   // 600mm total - 40mm for door gap
+export const BASE_CABINET_DEPTH = 560; // 600mm total - 40mm for door gap
 export const WALL_CABINET_HEIGHT = 720;
-export const WALL_CABINET_DEPTH = 300;   // 320mm - adjustments
+export const WALL_CABINET_DEPTH = 300; // 320mm - adjustments
 export const TALL_CABINET_HEIGHT = 2100;
 export const TALL_CABINET_DEPTH = 560;
 
@@ -127,9 +135,9 @@ type CabinetType = 'base' | 'wall' | 'tall' | 'unknown';
 interface CabinetData {
   name: string;
   type: CabinetType;
-  width: number;   // mm
-  height: number;  // mm
-  depth: number;   // mm
+  width: number; // mm
+  height: number; // mm
+  depth: number; // mm
   material: string;
   doorCount: number;
   drawerCount: number;
@@ -176,12 +184,11 @@ export class CNCExporter {
     const materialBreakdown = this.calculateMaterialBreakdown(panels);
 
     // Calculate totals
-    const totalArea = panels.reduce((sum, p) => sum + (p.length * p.width * p.quantity), 0);
+    const totalArea = panels.reduce((sum, p) => sum + p.length * p.width * p.quantity, 0);
     const totalSheets = Math.ceil(totalArea / STANDARD_SHEET_AREA);
     const actualSheetArea = totalSheets * STANDARD_SHEET_AREA;
-    const wastePercentage = actualSheetArea > 0
-      ? ((actualSheetArea - totalArea) / actualSheetArea) * 100
-      : 0;
+    const wastePercentage =
+      actualSheetArea > 0 ? ((actualSheetArea - totalArea) / actualSheetArea) * 100 : 0;
 
     return {
       panels,
@@ -213,7 +220,7 @@ export class CNCExporter {
       'Grain',
     ].join(',');
 
-    const rows = cutList.panels.map(panel => {
+    const rows = cutList.panels.map((panel) => {
       return [
         panel.id,
         `"${panel.cabinetRef.replace(/"/g, '""')}"`,
@@ -236,8 +243,8 @@ export class CNCExporter {
       '',
       'Material Summary',
       'Material,Total Area (m2),Estimated Sheets',
-      ...cutList.materialBreakdown.map(m =>
-        `"${m.material}",${(m.area / 1_000_000).toFixed(2)},${m.sheets}`
+      ...cutList.materialBreakdown.map(
+        (m) => `"${m.material}",${(m.area / 1_000_000).toFixed(2)},${m.sheets}`
       ),
       '',
       `Total Sheets,${cutList.totalSheets}`,
@@ -339,7 +346,9 @@ export class CNCExporter {
         lines.push(`G0 X${drill.x.toFixed(1)} Y${drill.y.toFixed(1)} ; Position`);
 
         if (drill.type === 'through') {
-          lines.push(`G1 Z-${(opts.materialThickness + 1).toFixed(1)} F${opts.plungeRate} ; Drill through`);
+          lines.push(
+            `G1 Z-${(opts.materialThickness + 1).toFixed(1)} F${opts.plungeRate} ; Drill through`
+          );
         } else {
           lines.push(`G1 Z-${drill.depth.toFixed(1)} F${opts.plungeRate} ; Drill blind`);
         }
@@ -370,14 +379,20 @@ export class CNCExporter {
     link.href = url;
     link.download = `${filename}.csv`;
     link.click();
-    requestAnimationFrame(() => { setTimeout(() => URL.revokeObjectURL(url), 0); });
+    requestAnimationFrame(() => {
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
   }
 
   /**
    * Export G-code for all panels and trigger a browser download as a ZIP-like combined file.
    * Each panel's G-code is separated by a header comment.
    */
-  downloadGCode(cutList: CutList, filename: string = 'kitchen-gcode', options?: GCodeOptions): void {
+  downloadGCode(
+    cutList: CutList,
+    filename: string = 'kitchen-gcode',
+    options?: GCodeOptions
+  ): void {
     const allGCode: string[] = [];
 
     allGCode.push('; ========================================');
@@ -402,7 +417,9 @@ export class CNCExporter {
     link.href = url;
     link.download = `${filename}.nc`;
     link.click();
-    requestAnimationFrame(() => { setTimeout(() => URL.revokeObjectURL(url), 0); });
+    requestAnimationFrame(() => {
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
   }
 
   // ---------- Cabinet data collection ----------
@@ -418,8 +435,14 @@ export class CNCExporter {
       if (!objType) continue;
 
       // Skip non-cabinet types
-      if (objType === 'wall' || objType === 'floor' || objType === 'ceiling' ||
-          objType === 'technical_point' || objType === 'countertop' || objType === 'worktop') {
+      if (
+        objType === 'wall' ||
+        objType === 'floor' ||
+        objType === 'ceiling' ||
+        objType === 'technical_point' ||
+        objType === 'countertop' ||
+        objType === 'worktop'
+      ) {
         continue;
       }
       if (obj.name.startsWith('__')) continue;
@@ -488,82 +511,124 @@ export class CNCExporter {
    */
   private decomposeBaseCabinet(cabinet: CabinetData): CutListItem[] {
     const panels: CutListItem[] = [];
-    const innerWidth = cabinet.width - (2 * CARCASS_THICKNESS);
+    const innerWidth = cabinet.width - 2 * CARCASS_THICKNESS;
     const innerDepth = cabinet.depth - BACK_THICKNESS;
 
     // Left side panel
-    panels.push(this.createPanel(
-      cabinet.name, 'side_left', cabinet.material,
-      cabinet.height, cabinet.depth - BACK_THICKNESS,
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: true, right: false },
-      'lengthwise',
-      this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_left',
+        cabinet.material,
+        cabinet.height,
+        cabinet.depth - BACK_THICKNESS,
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: true, right: false },
+        'lengthwise',
+        this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0)
+      )
+    );
 
     // Right side panel
-    panels.push(this.createPanel(
-      cabinet.name, 'side_right', cabinet.material,
-      cabinet.height, cabinet.depth - BACK_THICKNESS,
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: true },
-      'lengthwise',
-      this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_right',
+        cabinet.material,
+        cabinet.height,
+        cabinet.depth - BACK_THICKNESS,
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: true },
+        'lengthwise',
+        this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0)
+      )
+    );
 
     // Bottom panel
-    panels.push(this.createPanel(
-      cabinet.name, 'bottom', cabinet.material,
-      innerWidth, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: false },
-      'none',
-      this.generateCamLockHoles(innerWidth),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'bottom',
+        cabinet.material,
+        innerWidth,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: false },
+        'none',
+        this.generateCamLockHoles(innerWidth)
+      )
+    );
 
     // Back panel (thin)
-    panels.push(this.createPanel(
-      cabinet.name, 'back', cabinet.material.includes('White') ? 'HDF 3mm White' : 'HDF 3mm',
-      cabinet.width - 6, cabinet.height - 6, // inset 3mm each side
-      BACK_THICKNESS, 1,
-      { top: false, bottom: false, left: false, right: false },
-      'none',
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'back',
+        cabinet.material.includes('White') ? 'HDF 3mm White' : 'HDF 3mm',
+        cabinet.width - 6,
+        cabinet.height - 6, // inset 3mm each side
+        BACK_THICKNESS,
+        1,
+        { top: false, bottom: false, left: false, right: false },
+        'none'
+      )
+    );
 
     // Shelves
     for (let i = 0; i < cabinet.shelfCount; i++) {
-      panels.push(this.createPanel(
-        cabinet.name, 'shelf', cabinet.material,
-        innerWidth - 2, innerDepth - 20, // slightly smaller for clearance
-        CARCASS_THICKNESS, 1,
-        { top: true, bottom: false, left: false, right: false },
-        'none',
-      ));
+      panels.push(
+        this.createPanel(
+          cabinet.name,
+          'shelf',
+          cabinet.material,
+          innerWidth - 2,
+          innerDepth - 20, // slightly smaller for clearance
+          CARCASS_THICKNESS,
+          1,
+          { top: true, bottom: false, left: false, right: false },
+          'none'
+        )
+      );
     }
 
     // Doors or drawer fronts
     if (cabinet.drawerCount > 0) {
       const drawerFrontHeight = Math.round((cabinet.height - 4) / cabinet.drawerCount);
       for (let i = 0; i < cabinet.drawerCount; i++) {
-        panels.push(this.createPanel(
-          cabinet.name, 'drawer_front', cabinet.material,
-          cabinet.width - 4, drawerFrontHeight - 2,
-          DOOR_THICKNESS, 1,
-          { top: true, bottom: true, left: true, right: true },
-          'lengthwise',
-        ));
+        panels.push(
+          this.createPanel(
+            cabinet.name,
+            'drawer_front',
+            cabinet.material,
+            cabinet.width - 4,
+            drawerFrontHeight - 2,
+            DOOR_THICKNESS,
+            1,
+            { top: true, bottom: true, left: true, right: true },
+            'lengthwise'
+          )
+        );
       }
     } else if (cabinet.doorCount > 0) {
       const doorWidth = Math.round((cabinet.width - 4) / cabinet.doorCount);
       for (let i = 0; i < cabinet.doorCount; i++) {
-        panels.push(this.createPanel(
-          cabinet.name, 'door', cabinet.material,
-          cabinet.height - 4, doorWidth - 2,
-          DOOR_THICKNESS, 1,
-          { top: true, bottom: true, left: true, right: true },
-          'lengthwise',
-          this.generateDoorHingeHoles(cabinet.height - 4),
-        ));
+        panels.push(
+          this.createPanel(
+            cabinet.name,
+            'door',
+            cabinet.material,
+            cabinet.height - 4,
+            doorWidth - 2,
+            DOOR_THICKNESS,
+            1,
+            { top: true, bottom: true, left: true, right: true },
+            'lengthwise',
+            this.generateDoorHingeHoles(cabinet.height - 4)
+          )
+        );
       }
     }
 
@@ -576,70 +641,106 @@ export class CNCExporter {
    */
   private decomposeWallCabinet(cabinet: CabinetData): CutListItem[] {
     const panels: CutListItem[] = [];
-    const innerWidth = cabinet.width - (2 * CARCASS_THICKNESS);
+    const innerWidth = cabinet.width - 2 * CARCASS_THICKNESS;
     const innerDepth = cabinet.depth - BACK_THICKNESS;
 
     // Left side
-    panels.push(this.createPanel(
-      cabinet.name, 'side_left', cabinet.material,
-      cabinet.height, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: false, bottom: false, left: true, right: false },
-      'lengthwise',
-      this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_left',
+        cabinet.material,
+        cabinet.height,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: false, bottom: false, left: true, right: false },
+        'lengthwise',
+        this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0)
+      )
+    );
 
     // Right side
-    panels.push(this.createPanel(
-      cabinet.name, 'side_right', cabinet.material,
-      cabinet.height, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: false, bottom: false, left: false, right: true },
-      'lengthwise',
-      this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_right',
+        cabinet.material,
+        cabinet.height,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: false, bottom: false, left: false, right: true },
+        'lengthwise',
+        this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0)
+      )
+    );
 
     // Top panel
-    panels.push(this.createPanel(
-      cabinet.name, 'top', cabinet.material,
-      innerWidth, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: false },
-      'none',
-      this.generateCamLockHoles(innerWidth),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'top',
+        cabinet.material,
+        innerWidth,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: false },
+        'none',
+        this.generateCamLockHoles(innerWidth)
+      )
+    );
 
     // Bottom panel
-    panels.push(this.createPanel(
-      cabinet.name, 'bottom', cabinet.material,
-      innerWidth, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: false },
-      'none',
-      this.generateCamLockHoles(innerWidth),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'bottom',
+        cabinet.material,
+        innerWidth,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: false },
+        'none',
+        this.generateCamLockHoles(innerWidth)
+      )
+    );
 
     // Back panel
-    panels.push(this.createPanel(
-      cabinet.name, 'back', cabinet.material.includes('White') ? 'HDF 3mm White' : 'HDF 3mm',
-      cabinet.width - 6, cabinet.height - 6,
-      BACK_THICKNESS, 1,
-      { top: false, bottom: false, left: false, right: false },
-      'none',
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'back',
+        cabinet.material.includes('White') ? 'HDF 3mm White' : 'HDF 3mm',
+        cabinet.width - 6,
+        cabinet.height - 6,
+        BACK_THICKNESS,
+        1,
+        { top: false, bottom: false, left: false, right: false },
+        'none'
+      )
+    );
 
     // Doors
     if (cabinet.doorCount > 0) {
       const doorWidth = Math.round((cabinet.width - 4) / cabinet.doorCount);
       for (let i = 0; i < cabinet.doorCount; i++) {
-        panels.push(this.createPanel(
-          cabinet.name, 'door', cabinet.material,
-          cabinet.height - 4, doorWidth - 2,
-          DOOR_THICKNESS, 1,
-          { top: true, bottom: true, left: true, right: true },
-          'lengthwise',
-          this.generateDoorHingeHoles(cabinet.height - 4),
-        ));
+        panels.push(
+          this.createPanel(
+            cabinet.name,
+            'door',
+            cabinet.material,
+            cabinet.height - 4,
+            doorWidth - 2,
+            DOOR_THICKNESS,
+            1,
+            { top: true, bottom: true, left: true, right: true },
+            'lengthwise',
+            this.generateDoorHingeHoles(cabinet.height - 4)
+          )
+        );
       }
     }
 
@@ -652,81 +753,123 @@ export class CNCExporter {
    */
   private decomposeTallCabinet(cabinet: CabinetData): CutListItem[] {
     const panels: CutListItem[] = [];
-    const innerWidth = cabinet.width - (2 * CARCASS_THICKNESS);
+    const innerWidth = cabinet.width - 2 * CARCASS_THICKNESS;
     const innerDepth = cabinet.depth - BACK_THICKNESS;
 
     // Left side
-    panels.push(this.createPanel(
-      cabinet.name, 'side_left', cabinet.material,
-      cabinet.height, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: false, bottom: false, left: true, right: false },
-      'lengthwise',
-      this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_left',
+        cabinet.material,
+        cabinet.height,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: false, bottom: false, left: true, right: false },
+        'lengthwise',
+        this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0)
+      )
+    );
 
     // Right side
-    panels.push(this.createPanel(
-      cabinet.name, 'side_right', cabinet.material,
-      cabinet.height, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: false, bottom: false, left: false, right: true },
-      'lengthwise',
-      this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_right',
+        cabinet.material,
+        cabinet.height,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: false, bottom: false, left: false, right: true },
+        'lengthwise',
+        this.generateSideHingeHoles(cabinet.height, cabinet.doorCount > 0)
+      )
+    );
 
     // Top panel
-    panels.push(this.createPanel(
-      cabinet.name, 'top', cabinet.material,
-      innerWidth, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: false },
-      'none',
-      this.generateCamLockHoles(innerWidth),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'top',
+        cabinet.material,
+        innerWidth,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: false },
+        'none',
+        this.generateCamLockHoles(innerWidth)
+      )
+    );
 
     // Bottom panel
-    panels.push(this.createPanel(
-      cabinet.name, 'bottom', cabinet.material,
-      innerWidth, innerDepth,
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: false },
-      'none',
-      this.generateCamLockHoles(innerWidth),
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'bottom',
+        cabinet.material,
+        innerWidth,
+        innerDepth,
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: false },
+        'none',
+        this.generateCamLockHoles(innerWidth)
+      )
+    );
 
     // Back panel (may be split for tall cabinets)
-    panels.push(this.createPanel(
-      cabinet.name, 'back', cabinet.material.includes('White') ? 'HDF 3mm White' : 'HDF 3mm',
-      cabinet.width - 6, cabinet.height - 6,
-      BACK_THICKNESS, 1,
-      { top: false, bottom: false, left: false, right: false },
-      'none',
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'back',
+        cabinet.material.includes('White') ? 'HDF 3mm White' : 'HDF 3mm',
+        cabinet.width - 6,
+        cabinet.height - 6,
+        BACK_THICKNESS,
+        1,
+        { top: false, bottom: false, left: false, right: false },
+        'none'
+      )
+    );
 
     // Shelves
     for (let i = 0; i < cabinet.shelfCount; i++) {
-      panels.push(this.createPanel(
-        cabinet.name, 'shelf', cabinet.material,
-        innerWidth - 2, innerDepth - 20,
-        CARCASS_THICKNESS, 1,
-        { top: true, bottom: false, left: false, right: false },
-        'none',
-      ));
+      panels.push(
+        this.createPanel(
+          cabinet.name,
+          'shelf',
+          cabinet.material,
+          innerWidth - 2,
+          innerDepth - 20,
+          CARCASS_THICKNESS,
+          1,
+          { top: true, bottom: false, left: false, right: false },
+          'none'
+        )
+      );
     }
 
     // Doors
     if (cabinet.doorCount > 0) {
       const doorWidth = Math.round((cabinet.width - 4) / cabinet.doorCount);
       for (let i = 0; i < cabinet.doorCount; i++) {
-        panels.push(this.createPanel(
-          cabinet.name, 'door', cabinet.material,
-          cabinet.height - 4, doorWidth - 2,
-          DOOR_THICKNESS, 1,
-          { top: true, bottom: true, left: true, right: true },
-          'lengthwise',
-          this.generateDoorHingeHoles(cabinet.height - 4),
-        ));
+        panels.push(
+          this.createPanel(
+            cabinet.name,
+            'door',
+            cabinet.material,
+            cabinet.height - 4,
+            doorWidth - 2,
+            DOOR_THICKNESS,
+            1,
+            { top: true, bottom: true, left: true, right: true },
+            'lengthwise',
+            this.generateDoorHingeHoles(cabinet.height - 4)
+          )
+        );
       }
     }
 
@@ -738,49 +881,79 @@ export class CNCExporter {
    */
   private decomposeGenericCabinet(cabinet: CabinetData): CutListItem[] {
     const panels: CutListItem[] = [];
-    const innerWidth = cabinet.width - (2 * CARCASS_THICKNESS);
+    const innerWidth = cabinet.width - 2 * CARCASS_THICKNESS;
     const innerDepth = cabinet.depth - BACK_THICKNESS;
 
     // Two sides
-    panels.push(this.createPanel(
-      cabinet.name, 'side_left', cabinet.material,
-      cabinet.height, Math.max(innerDepth, 100),
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: true, right: false },
-      'lengthwise',
-    ));
-    panels.push(this.createPanel(
-      cabinet.name, 'side_right', cabinet.material,
-      cabinet.height, Math.max(innerDepth, 100),
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: true },
-      'lengthwise',
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_left',
+        cabinet.material,
+        cabinet.height,
+        Math.max(innerDepth, 100),
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: true, right: false },
+        'lengthwise'
+      )
+    );
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'side_right',
+        cabinet.material,
+        cabinet.height,
+        Math.max(innerDepth, 100),
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: true },
+        'lengthwise'
+      )
+    );
 
     // Top and bottom
-    panels.push(this.createPanel(
-      cabinet.name, 'top', cabinet.material,
-      Math.max(innerWidth, 100), Math.max(innerDepth, 100),
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: false },
-      'none',
-    ));
-    panels.push(this.createPanel(
-      cabinet.name, 'bottom', cabinet.material,
-      Math.max(innerWidth, 100), Math.max(innerDepth, 100),
-      CARCASS_THICKNESS, 1,
-      { top: true, bottom: false, left: false, right: false },
-      'none',
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'top',
+        cabinet.material,
+        Math.max(innerWidth, 100),
+        Math.max(innerDepth, 100),
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: false },
+        'none'
+      )
+    );
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'bottom',
+        cabinet.material,
+        Math.max(innerWidth, 100),
+        Math.max(innerDepth, 100),
+        CARCASS_THICKNESS,
+        1,
+        { top: true, bottom: false, left: false, right: false },
+        'none'
+      )
+    );
 
     // Back
-    panels.push(this.createPanel(
-      cabinet.name, 'back', 'HDF 3mm',
-      Math.max(cabinet.width - 6, 100), Math.max(cabinet.height - 6, 100),
-      BACK_THICKNESS, 1,
-      { top: false, bottom: false, left: false, right: false },
-      'none',
-    ));
+    panels.push(
+      this.createPanel(
+        cabinet.name,
+        'back',
+        'HDF 3mm',
+        Math.max(cabinet.width - 6, 100),
+        Math.max(cabinet.height - 6, 100),
+        BACK_THICKNESS,
+        1,
+        { top: false, bottom: false, left: false, right: false },
+        'none'
+      )
+    );
 
     return panels;
   }
@@ -800,7 +973,7 @@ export class CNCExporter {
     quantity: number,
     edgeBanding: CutListItem['edgeBanding'],
     grain: CutListItem['grain'],
-    drilling?: CutListItem['drilling'],
+    drilling?: CutListItem['drilling']
   ): CutListItem {
     return {
       id: this.generatePanelId(),
@@ -823,10 +996,7 @@ export class CNCExporter {
    * Generates hinge bore holes for a side panel.
    * Standard 32mm system, hinges at ~100mm from top/bottom edges.
    */
-  private generateSideHingeHoles(
-    panelHeight: number,
-    hasDoor: boolean
-  ): CutListItem['drilling'] {
+  private generateSideHingeHoles(panelHeight: number, hasDoor: boolean): CutListItem['drilling'] {
     if (!hasDoor) return [];
 
     const holes: NonNullable<CutListItem['drilling']> = [];
@@ -982,7 +1152,8 @@ export class CNCExporter {
 
     // Explicit type names
     if (lower.includes('wall') && lower.includes('cabinet')) return 'wall';
-    if (lower.includes('tall') || lower.includes('pantry') || lower.includes('column')) return 'tall';
+    if (lower.includes('tall') || lower.includes('pantry') || lower.includes('column'))
+      return 'tall';
     if (lower.includes('base') && lower.includes('cabinet')) return 'base';
 
     // Classify by dimensions
@@ -992,9 +1163,21 @@ export class CNCExporter {
 
     // Appliances are treated like base cabinets for panel decomposition
     const applianceTypes = [
-      'appliance', 'oven', 'dishwasher', 'refrigerator', 'fridge',
-      'fridge_freezer', 'microwave', 'cooktop', 'stove', 'hob',
-      'hood', 'washer', 'dryer', 'freezer', 'induction',
+      'appliance',
+      'oven',
+      'dishwasher',
+      'refrigerator',
+      'fridge',
+      'fridge_freezer',
+      'microwave',
+      'cooktop',
+      'stove',
+      'hob',
+      'hood',
+      'washer',
+      'dryer',
+      'freezer',
+      'induction',
     ];
     if (applianceTypes.includes(lower)) return 'base';
 
@@ -1030,10 +1213,14 @@ export class CNCExporter {
    */
   private estimateShelfCount(type: CabinetType, height: number): number {
     switch (type) {
-      case 'base': return 1;
-      case 'wall': return height > 600 ? 2 : 1;
-      case 'tall': return Math.max(2, Math.floor(height / 500));
-      default: return 1;
+      case 'base':
+        return 1;
+      case 'wall':
+        return height > 600 ? 2 : 1;
+      case 'tall':
+        return Math.max(2, Math.floor(height / 500));
+      default:
+        return 1;
     }
   }
 }

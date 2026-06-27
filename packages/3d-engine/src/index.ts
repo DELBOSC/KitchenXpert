@@ -45,7 +45,10 @@ import { MeasurementTools as MeasurementToolsClass } from './visualization/measu
 import { AnimationSystem as AnimationSystemClass } from './interaction/animation-system';
 import { PathTracerPreview as PathTracerPreviewClass } from './engine/path-tracer';
 import { getBrandProfile } from './config/brand-profiles';
-import type { BrandId as BrandIdType, BrandProfile as BrandProfileType } from './config/brand-profiles';
+import type {
+  BrandId as BrandIdType,
+  BrandProfile as BrandProfileType,
+} from './config/brand-profiles';
 
 // Core engine
 export { KitchenScene } from './engine/scene';
@@ -157,9 +160,21 @@ export type { LightingPresetName, LightingPresetConfig } from './engine/lighting
 
 // AI
 export { AIAssistant } from './ai/ai-assistant';
-export type { WorkTriangleResult, ConfigurationScore, Suggestion, PlacedItem3D, RoomConfig, AutoCompleteResult } from './ai/ai-assistant';
+export type {
+  WorkTriangleResult,
+  ConfigurationScore,
+  Suggestion,
+  PlacedItem3D,
+  RoomConfig,
+  AutoCompleteResult,
+} from './ai/ai-assistant';
 export { SmartPlacement } from './ai/smart-placement';
-export type { SuggestedPosition, PlacementValidation, UserBiometrics, PersonalizedRecommendations } from './ai/smart-placement';
+export type {
+  SuggestedPosition,
+  PlacementValidation,
+  UserBiometrics,
+  PersonalizedRecommendations,
+} from './ai/smart-placement';
 export { AccessibilityChecker, AccessibilityStandard } from './ai/accessibility-checker';
 export type {
   AccessibilityConfig,
@@ -180,16 +195,39 @@ export type { AcousticResult, OpenPlanConfig } from './ai/acoustic-planner';
 
 // Generative design
 export { LayoutGenerator } from './ai/layout-generator';
-export type { LayoutProposal, GenerationConstraints, LayoutStrategy, LayoutStrategyType } from './ai/layout-generator';
+export type {
+  LayoutProposal,
+  GenerationConstraints,
+  LayoutStrategy,
+  LayoutStrategyType,
+} from './ai/layout-generator';
 export { WallAnalyzer } from './ai/wall-analysis';
 export type { WallSide, WallSegment, WallAnalysis } from './ai/wall-analysis';
 export { CabinetSolver } from './ai/cabinet-solver';
 
 // Realistic lighting
-export { SolarCalculator, CITY_LOCATIONS, CITY_ENTRIES, CITY_REGIONS } from './engine/solar-position';
-export type { GeoLocation, TimeOfDay, SolarPosition, CityRegion, CityEntry } from './engine/solar-position';
+export {
+  SolarCalculator,
+  CITY_LOCATIONS,
+  CITY_ENTRIES,
+  CITY_REGIONS,
+} from './engine/solar-position';
+export type {
+  GeoLocation,
+  TimeOfDay,
+  SolarPosition,
+  CityRegion,
+  CityEntry,
+} from './engine/solar-position';
 export { RealisticLighting } from './engine/realistic-lighting';
-export type { RealisticLightingConfig, WindowDefinition, LightingPresetId, SolarLocation, ShadowWindowPosition, ShadowAnalysis } from './engine/realistic-lighting';
+export type {
+  RealisticLightingConfig,
+  WindowDefinition,
+  LightingPresetId,
+  SolarLocation,
+  ShadowWindowPosition,
+  ShadowAnalysis,
+} from './engine/realistic-lighting';
 
 // Performance optimizations
 export { LODManager } from './engine/lod-manager';
@@ -264,7 +302,14 @@ export { CNCExporter } from './export/cnc-exporter';
 export type { CutList, CutListItem, GCodeOptions } from './export/cnc-exporter';
 
 // Brand profiles
-export { getBrandProfile, BRAND_PROFILES, mmToM, mToMm, getAllBrandIds, recomputeWithThickness } from './config/brand-profiles';
+export {
+  getBrandProfile,
+  BRAND_PROFILES,
+  mmToM,
+  mToMm,
+  getAllBrandIds,
+  recomputeWithThickness,
+} from './config/brand-profiles';
 export type { BrandProfile, BrandId } from './config/brand-profiles';
 
 /**
@@ -358,18 +403,21 @@ export class KitchenEngine {
     this.dimensionLabels = new DimensionLabelsClass(this.scene.getThreeScene());
 
     // Generators (with brand profile)
-    this.worktopGenerator = new WorktopGeneratorClass(this.scene.getThreeScene(), this.brandProfile);
-    this.accessoriesGenerator = new AccessoriesGeneratorClass(this.scene.getThreeScene(), this.brandProfile);
+    this.worktopGenerator = new WorktopGeneratorClass(
+      this.scene.getThreeScene(),
+      this.brandProfile
+    );
+    this.accessoriesGenerator = new AccessoriesGeneratorClass(
+      this.scene.getThreeScene(),
+      this.brandProfile
+    );
 
     // Views
     this.planView2D = new PlanView2DClass(this.scene.getThreeScene());
     this.elevationView = new ElevationViewClass(this.scene.getThreeScene());
 
     // Walkthrough
-    this.walkthroughCamera = new WalkthroughCameraClass(
-      this.camera.getThreeCamera(),
-      container
-    );
+    this.walkthroughCamera = new WalkthroughCameraClass(this.camera.getThreeCamera(), container);
 
     // Measurement
     this.measurementTool = new MeasurementToolClass(
@@ -436,22 +484,18 @@ export class KitchenEngine {
    * Démarre la boucle de rendu
    */
   start(): void {
-    this.renderer.startRenderLoop(
-      this.scene.getThreeScene(),
-      this.camera.getThreeCamera(),
-      () => {
-        this.controls.update();
-        // Update walkthrough camera if active
-        if (this.walkthroughCamera.isActive()) {
-          this.walkthroughCamera.update(1 / 60);
-        }
-        // Update cabinet/appliance animations
-        this.animationSystem.update();
-        // Update performance optimization managers
-        this.lodManager.update();
-        this.frustumCuller.update();
+    this.renderer.startRenderLoop(this.scene.getThreeScene(), this.camera.getThreeCamera(), () => {
+      this.controls.update();
+      // Update walkthrough camera if active
+      if (this.walkthroughCamera.isActive()) {
+        this.walkthroughCamera.update(1 / 60);
       }
-    );
+      // Update cabinet/appliance animations
+      this.animationSystem.update();
+      // Update performance optimization managers
+      this.lodManager.update();
+      this.frustumCuller.update();
+    });
   }
 
   /**
@@ -471,7 +515,10 @@ export class KitchenEngine {
   /**
    * Active le mode accessibilite PMR (overlay visuel)
    */
-  enableAccessibilityMode(items: import('./ai/ai-assistant').PlacedItem3D[], room: import('./ai/ai-assistant').RoomConfig): void {
+  enableAccessibilityMode(
+    items: import('./ai/ai-assistant').PlacedItem3D[],
+    room: import('./ai/ai-assistant').RoomConfig
+  ): void {
     this.accessibilityOverlay.show(items, room, this.accessibilityChecker);
   }
 
@@ -552,14 +599,8 @@ export class KitchenEngine {
     if (this.pathTracerPreview) {
       this.pathTracerPreview.dispose();
     }
-    this.pathTracerPreview = new PathTracerPreviewClass(
-      this.renderer.getThreeRenderer(),
-      options
-    );
-    this.pathTracerPreview.startRender(
-      this.scene.getThreeScene(),
-      this.camera.getThreeCamera()
-    );
+    this.pathTracerPreview = new PathTracerPreviewClass(this.renderer.getThreeRenderer(), options);
+    this.pathTracerPreview.startRender(this.scene.getThreeScene(), this.camera.getThreeCamera());
   }
 
   /**
@@ -612,7 +653,9 @@ export class KitchenEngine {
         enabledSnaps.clear();
       } else {
         // Restore previously enabled snaps (or all by default)
-        const restore = this._lastEnabledSnaps ?? new Set<SnapTypeInternal>(['grid', 'wall', 'corner', 'alignment', 'face', 'anchor']);
+        const restore =
+          this._lastEnabledSnaps ??
+          new Set<SnapTypeInternal>(['grid', 'wall', 'corner', 'alignment', 'face', 'anchor']);
         this.snapSystem.updateConfig({ enabledSnaps: restore });
       }
     });

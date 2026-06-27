@@ -187,19 +187,41 @@ export const CatalogsMigration: Migration = {
     `);
 
     // Create indexes
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_categories_parent ON catalog_categories(parent_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_categories_slug ON catalog_categories(slug)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_items_category ON catalog_items(category_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_items_brand ON catalog_items(brand_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_items_type ON catalog_items(product_type)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_categories_parent ON catalog_categories(parent_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_categories_slug ON catalog_categories(slug)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_items_category ON catalog_items(category_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_items_brand ON catalog_items(brand_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_items_type ON catalog_items(product_type)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_items_sku ON catalog_items(sku)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_items_active ON catalog_items(is_active)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_items_featured ON catalog_items(is_featured)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_items_active ON catalog_items(is_active)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_items_featured ON catalog_items(is_featured)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_items_price ON catalog_items(price)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_variants_item ON catalog_item_variants(item_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_reviews_item ON catalog_reviews(item_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_reviews_user ON catalog_reviews(user_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_catalog_related_item ON catalog_related_items(item_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_variants_item ON catalog_item_variants(item_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_reviews_item ON catalog_reviews(item_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_reviews_user ON catalog_reviews(user_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_catalog_related_item ON catalog_related_items(item_id)`
+    );
 
     // Full-text search index
     await tx.execute(`

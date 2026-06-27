@@ -1,10 +1,10 @@
 # Centralized Logging Setup
 
-> Comprehensive guide to the ELK Stack architecture and centralized logging infrastructure for KitchenXpert.
+> Comprehensive guide to the ELK Stack architecture and centralized logging
+> infrastructure for KitchenXpert.
 
-**Last Updated:** 2026-01-10
-**Owner:** Platform Engineering Team
-**Version:** 1.0
+**Last Updated:** 2026-01-10 **Owner:** Platform Engineering Team **Version:**
+1.0
 
 ---
 
@@ -23,7 +23,8 @@
 
 ### Overview
 
-The ELK Stack (Elasticsearch, Logstash, Kibana) provides centralized log management for all KitchenXpert services.
+The ELK Stack (Elasticsearch, Logstash, Kibana) provides centralized log
+management for all KitchenXpert services.
 
 ### Architecture Diagram
 
@@ -85,6 +86,7 @@ The ELK Stack (Elasticsearch, Logstash, Kibana) provides centralized log managem
 **Purpose:** Log storage, indexing, and full-text search
 
 **Cluster Configuration:**
+
 ```yaml
 # elasticsearch.yml
 cluster.name: kitchenxpert-logs
@@ -114,14 +116,11 @@ xpack.security.transport.ssl.enabled: true
 xpack.security.http.ssl.enabled: true
 ```
 
-**Cluster Topology:**
-| Node Type | Count | CPU | Memory | Storage |
-|-----------|-------|-----|--------|---------|
-| Master | 3 | 2 cores | 4GB | 50GB SSD |
-| Hot Data | 3 | 8 cores | 32GB | 1TB NVMe |
-| Warm Data | 2 | 4 cores | 16GB | 4TB HDD |
-| Cold Data | 2 | 2 cores | 8GB | 8TB HDD |
-| Coordinating | 2 | 4 cores | 8GB | 100GB SSD |
+**Cluster Topology:** | Node Type | Count | CPU | Memory | Storage |
+|-----------|-------|-----|--------|---------| | Master | 3 | 2 cores | 4GB |
+50GB SSD | | Hot Data | 3 | 8 cores | 32GB | 1TB NVMe | | Warm Data | 2 | 4
+cores | 16GB | 4TB HDD | | Cold Data | 2 | 2 cores | 8GB | 8TB HDD | |
+Coordinating | 2 | 4 cores | 8GB | 100GB SSD |
 
 **Access URL:** https://elasticsearch.kitchenxpert.internal:9200
 
@@ -130,6 +129,7 @@ xpack.security.http.ssl.enabled: true
 **Purpose:** Log processing, parsing, enrichment, and transformation
 
 **Pipeline Configuration:**
+
 ```ruby
 # logstash.conf
 
@@ -251,6 +251,7 @@ output {
 ```
 
 **Scaling:**
+
 - 4 Logstash nodes for high availability
 - Auto-scaling based on queue depth
 - Pipeline workers: 8 per node
@@ -260,28 +261,29 @@ output {
 **Purpose:** Log visualization, search, and analysis
 
 **Configuration:**
+
 ```yaml
 # kibana.yml
 server.name: kibana
-server.host: "0.0.0.0"
+server.host: '0.0.0.0'
 server.port: 5601
 
 elasticsearch.hosts:
-  - "https://elasticsearch.kitchenxpert.internal:9200"
-elasticsearch.username: "${ES_USER}"
-elasticsearch.password: "${ES_PASSWORD}"
-elasticsearch.ssl.certificateAuthorities: ["/etc/kibana/ssl/ca.crt"]
+  - 'https://elasticsearch.kitchenxpert.internal:9200'
+elasticsearch.username: '${ES_USER}'
+elasticsearch.password: '${ES_PASSWORD}'
+elasticsearch.ssl.certificateAuthorities: ['/etc/kibana/ssl/ca.crt']
 
 # Security
 xpack.security.enabled: true
-xpack.encryptedSavedObjects.encryptionKey: "${ENCRYPTION_KEY}"
+xpack.encryptedSavedObjects.encryptionKey: '${ENCRYPTION_KEY}'
 
 # Spaces
 xpack.spaces.enabled: true
 
 # Reporting
 xpack.reporting.enabled: true
-xpack.reporting.kibanaServer.hostname: "kibana.kitchenxpert.internal"
+xpack.reporting.kibanaServer.hostname: 'kibana.kitchenxpert.internal'
 
 # Monitoring
 monitoring.enabled: true
@@ -299,6 +301,7 @@ monitoring.kibana.collection.enabled: true
 **Purpose:** Ships log files from application servers to the logging pipeline
 
 **Configuration:**
+
 ```yaml
 # filebeat.yml
 
@@ -323,7 +326,7 @@ filebeat.inputs:
     # Fields
     fields:
       log_type: application
-      environment: "${ENVIRONMENT}"
+      environment: '${ENVIRONMENT}'
     fields_under_root: true
 
     # Harvester settings
@@ -350,10 +353,10 @@ processors:
 # Output to Kafka
 output.kafka:
   hosts:
-    - "kafka-1:9092"
-    - "kafka-2:9092"
-    - "kafka-3:9092"
-  topic: "kitchenxpert-logs"
+    - 'kafka-1:9092'
+    - 'kafka-2:9092'
+    - 'kafka-3:9092'
+  topic: 'kitchenxpert-logs'
   partition.round_robin:
     reachable_only: true
   required_acks: 1
@@ -364,10 +367,11 @@ output.kafka:
 monitoring:
   enabled: true
   elasticsearch:
-    hosts: ["https://elasticsearch.kitchenxpert.internal:9200"]
+    hosts: ['https://elasticsearch.kitchenxpert.internal:9200']
 ```
 
 **Deployment:**
+
 - Deployed as DaemonSet on all application nodes
 - Resource limits: 200m CPU, 256MB memory
 
@@ -376,6 +380,7 @@ monitoring:
 **Purpose:** Collects and forwards container logs from Kubernetes
 
 **Configuration:**
+
 ```yaml
 # fluent.conf
 
@@ -453,6 +458,7 @@ monitoring:
 ```
 
 **Deployment:**
+
 ```yaml
 # Kubernetes DaemonSet
 apiVersion: apps/v1
@@ -663,22 +669,22 @@ PUT _ilm/policy/kitchenxpert-logs-policy
 
 ### Lifecycle Phases Summary
 
-| Phase | Age | Storage | Actions |
-|-------|-----|---------|---------|
-| **Hot** | 0-7 days | NVMe SSD | Full indexing, fastest queries |
-| **Warm** | 7-30 days | SSD | Shrink, force merge, reduced replicas |
-| **Cold** | 30-90 days | HDD | Frozen, searchable but slow |
-| **Delete** | > 365 days | - | Permanently deleted |
+| Phase      | Age        | Storage  | Actions                               |
+| ---------- | ---------- | -------- | ------------------------------------- |
+| **Hot**    | 0-7 days   | NVMe SSD | Full indexing, fastest queries        |
+| **Warm**   | 7-30 days  | SSD      | Shrink, force merge, reduced replicas |
+| **Cold**   | 30-90 days | HDD      | Frozen, searchable but slow           |
+| **Delete** | > 365 days | -        | Permanently deleted                   |
 
 ### Retention by Log Type
 
-| Log Type | Hot | Warm | Cold | Delete |
-|----------|-----|------|------|--------|
-| Application logs | 7d | 30d | 90d | 365d |
-| Audit logs | 30d | 90d | 365d | 7 years |
-| Security logs | 30d | 90d | 365d | 7 years |
-| Debug logs | 3d | 7d | - | 30d |
-| Access logs | 7d | 30d | 90d | 365d |
+| Log Type         | Hot | Warm | Cold | Delete  |
+| ---------------- | --- | ---- | ---- | ------- |
+| Application logs | 7d  | 30d  | 90d  | 365d    |
+| Audit logs       | 30d | 90d  | 365d | 7 years |
+| Security logs    | 30d | 90d  | 365d | 7 years |
+| Debug logs       | 3d  | 7d   | -    | 30d     |
+| Access logs      | 7d  | 30d  | 90d  | 365d    |
 
 ---
 
@@ -711,9 +717,7 @@ PUT _ilm/policy/kitchenxpert-logs-policy
       ]
     }
   },
-  "sort": [
-    { "@timestamp": "desc" }
-  ]
+  "sort": [{ "@timestamp": "desc" }]
 }
 ```
 
@@ -744,9 +748,7 @@ PUT _ilm/policy/kitchenxpert-logs-policy
       ]
     }
   },
-  "sort": [
-    { "context.duration": "desc" }
-  ]
+  "sort": [{ "context.duration": "desc" }]
 }
 ```
 
@@ -768,9 +770,7 @@ PUT _ilm/policy/kitchenxpert-logs-policy
       ]
     }
   },
-  "sort": [
-    { "@timestamp": "asc" }
-  ]
+  "sort": [{ "@timestamp": "asc" }]
 }
 ```
 
@@ -805,13 +805,13 @@ PUT _ilm/policy/kitchenxpert-logs-policy
 
 ### Saved Search URLs
 
-| Search | URL |
-|--------|-----|
-| All Errors | https://kibana.kitchenxpert.internal/app/discover#/view/errors-all |
-| Backend Errors | https://kibana.kitchenxpert.internal/app/discover#/view/errors-backend |
-| Slow Requests | https://kibana.kitchenxpert.internal/app/discover#/view/slow-requests |
-| Authentication | https://kibana.kitchenxpert.internal/app/discover#/view/auth-logs |
-| Database Queries | https://kibana.kitchenxpert.internal/app/discover#/view/database-logs |
+| Search           | URL                                                                    |
+| ---------------- | ---------------------------------------------------------------------- |
+| All Errors       | https://kibana.kitchenxpert.internal/app/discover#/view/errors-all     |
+| Backend Errors   | https://kibana.kitchenxpert.internal/app/discover#/view/errors-backend |
+| Slow Requests    | https://kibana.kitchenxpert.internal/app/discover#/view/slow-requests  |
+| Authentication   | https://kibana.kitchenxpert.internal/app/discover#/view/auth-logs      |
+| Database Queries | https://kibana.kitchenxpert.internal/app/discover#/view/database-logs  |
 
 ---
 
@@ -819,14 +819,14 @@ PUT _ilm/policy/kitchenxpert-logs-policy
 
 ### Role-Based Access
 
-| Role | Indices | Kibana Access |
-|------|---------|---------------|
-| Admin | All | Full access |
-| Platform Engineer | All | Full access |
-| Developer | Service-specific | Discover, Dashboards |
-| Operations | All production | Discover, Dashboards |
-| Security | audit-*, security-* | Discover, Dashboards |
-| Business Analyst | logs-frontend-* | Dashboards only |
+| Role              | Indices             | Kibana Access        |
+| ----------------- | ------------------- | -------------------- |
+| Admin             | All                 | Full access          |
+| Platform Engineer | All                 | Full access          |
+| Developer         | Service-specific    | Discover, Dashboards |
+| Operations        | All production      | Discover, Dashboards |
+| Security          | audit-_, security-_ | Discover, Dashboards |
+| Business Analyst  | logs-frontend-\*    | Dashboards only      |
 
 ### Elasticsearch Roles
 
@@ -852,12 +852,12 @@ PUT _security/role/developer
 
 ### Kibana Spaces
 
-| Space | Purpose | Access |
-|-------|---------|--------|
-| Production | Production logs | Platform, Operations |
-| Development | Dev/staging logs | Developers |
-| Security | Security/audit logs | Security team |
-| Business | Business metrics | Business users |
+| Space       | Purpose             | Access               |
+| ----------- | ------------------- | -------------------- |
+| Production  | Production logs     | Platform, Operations |
+| Development | Dev/staging logs    | Developers           |
+| Security    | Security/audit logs | Security team        |
+| Business    | Business metrics    | Business users       |
 
 ### Authentication
 
@@ -869,6 +869,7 @@ PUT _security/role/developer
 ### Audit Logging
 
 All Kibana access is logged:
+
 - User login/logout
 - Search queries executed
 - Dashboard views
@@ -885,4 +886,5 @@ All Kibana access is logged:
 
 ---
 
-*For questions about centralized logging, contact the Platform Engineering team at platform@kitchenxpert.com*
+_For questions about centralized logging, contact the Platform Engineering team
+at platform@kitchenxpert.com_

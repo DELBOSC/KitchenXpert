@@ -144,16 +144,18 @@ jest.mock('../api/middleware/auth-middleware', () => {
       }
       next();
     },
-    requireRole: (...roles: string[]) => (req: any, _res: any, next: any) => {
-      if (!req.user) {
-        return next(new UnauthorizedError('Authentication required'));
-      }
-      if (!roles.includes(req.user.role)) {
-        const { ForbiddenError } = require('@kitchenxpert/common');
-        return next(new ForbiddenError('Access denied'));
-      }
-      next();
-    },
+    requireRole:
+      (...roles: string[]) =>
+      (req: any, _res: any, next: any) => {
+        if (!req.user) {
+          return next(new UnauthorizedError('Authentication required'));
+        }
+        if (!roles.includes(req.user.role)) {
+          const { ForbiddenError } = require('@kitchenxpert/common');
+          return next(new ForbiddenError('Access denied'));
+        }
+        next();
+      },
   };
 });
 
@@ -179,14 +181,10 @@ function createTestApp(): Application {
 
 function authedRequest(app: Application) {
   return {
-    get: (url: string) =>
-      request(app).get(url).set('Cookie', ['accessToken=test-token']),
-    post: (url: string) =>
-      request(app).post(url).set('Cookie', ['accessToken=test-token']),
-    put: (url: string) =>
-      request(app).put(url).set('Cookie', ['accessToken=test-token']),
-    delete: (url: string) =>
-      request(app).delete(url).set('Cookie', ['accessToken=test-token']),
+    get: (url: string) => request(app).get(url).set('Cookie', ['accessToken=test-token']),
+    post: (url: string) => request(app).post(url).set('Cookie', ['accessToken=test-token']),
+    put: (url: string) => request(app).put(url).set('Cookie', ['accessToken=test-token']),
+    delete: (url: string) => request(app).delete(url).set('Cookie', ['accessToken=test-token']),
   };
 }
 
@@ -266,9 +264,7 @@ describe('Product Routes', () => {
         totalPages: 1,
       });
 
-      const response = await request(app)
-        .get('/products')
-        .expect(200);
+      const response = await request(app).get('/products').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(2);
@@ -307,18 +303,14 @@ describe('Product Routes', () => {
     it('should return search results', async () => {
       mockProductRepository.search.mockResolvedValue([mockProduct]);
 
-      const response = await request(app)
-        .get('/products/search?q=sink')
-        .expect(200);
+      const response = await request(app).get('/products/search?q=sink').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
     });
 
     it('should return 400 when search query is missing', async () => {
-      const response = await request(app)
-        .get('/products/search')
-        .expect(400);
+      const response = await request(app).get('/products/search').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(JSON.stringify(response.body)).toContain('Search query is required');
@@ -332,9 +324,7 @@ describe('Product Routes', () => {
       mockProductRepository.getColors.mockResolvedValue(['Silver', 'Chrome']);
       mockProductRepository.getPriceRange.mockResolvedValue({ min: 50, max: 500 });
 
-      const response = await request(app)
-        .get('/products/filters')
-        .expect(200);
+      const response = await request(app).get('/products/filters').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('brands');
@@ -348,9 +338,7 @@ describe('Product Routes', () => {
     it('should return all categories', async () => {
       mockProductRepository.getCategories.mockResolvedValue([mockCategory]);
 
-      const response = await request(app)
-        .get('/products/categories')
-        .expect(200);
+      const response = await request(app).get('/products/categories').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -361,9 +349,7 @@ describe('Product Routes', () => {
     it('should return category by slug', async () => {
       mockProductRepository.findCategoryBySlug.mockResolvedValue(mockCategory);
 
-      const response = await request(app)
-        .get('/products/categories/sinks')
-        .expect(200);
+      const response = await request(app).get('/products/categories/sinks').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.slug).toBe('sinks');
@@ -372,9 +358,7 @@ describe('Product Routes', () => {
     it('should return 404 for unknown category slug', async () => {
       mockProductRepository.findCategoryBySlug.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/products/categories/unknown')
-        .expect(404);
+      const response = await request(app).get('/products/categories/unknown').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -384,9 +368,7 @@ describe('Product Routes', () => {
     it('should return products by category ID', async () => {
       mockProductRepository.findByCategory.mockResolvedValue([mockProduct]);
 
-      const response = await request(app)
-        .get('/products/category/cat-1')
-        .expect(200);
+      const response = await request(app).get('/products/category/cat-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -397,9 +379,7 @@ describe('Product Routes', () => {
     it('should return product by SKU', async () => {
       mockProductRepository.findBySku.mockResolvedValue(mockProduct);
 
-      const response = await request(app)
-        .get('/products/sku/SKU-001')
-        .expect(200);
+      const response = await request(app).get('/products/sku/SKU-001').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.sku).toBe('SKU-001');
@@ -408,9 +388,7 @@ describe('Product Routes', () => {
     it('should return 404 for unknown SKU', async () => {
       mockProductRepository.findBySku.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/products/sku/UNKNOWN')
-        .expect(404);
+      const response = await request(app).get('/products/sku/UNKNOWN').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -420,9 +398,7 @@ describe('Product Routes', () => {
     it('should return product by ID', async () => {
       mockProductRepository.findById.mockResolvedValue(mockProduct);
 
-      const response = await request(app)
-        .get('/products/product-1')
-        .expect(200);
+      const response = await request(app).get('/products/product-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.name).toBe('Premium Kitchen Sink');
@@ -431,9 +407,7 @@ describe('Product Routes', () => {
     it('should return 404 for non-existent product', async () => {
       mockProductRepository.findById.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/products/nonexistent')
-        .expect(404);
+      const response = await request(app).get('/products/nonexistent').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -443,9 +417,7 @@ describe('Product Routes', () => {
     it('should return related products', async () => {
       mockProductRepository.getRelated.mockResolvedValue([mockProduct2]);
 
-      const response = await request(app)
-        .get('/products/product-1/related')
-        .expect(200);
+      const response = await request(app).get('/products/product-1/related').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveLength(1);
@@ -454,9 +426,7 @@ describe('Product Routes', () => {
     it('should respect limit query parameter', async () => {
       mockProductRepository.getRelated.mockResolvedValue([mockProduct2]);
 
-      await request(app)
-        .get('/products/product-1/related?limit=3')
-        .expect(200);
+      await request(app).get('/products/product-1/related?limit=3').expect(200);
 
       expect(mockProductRepository.getRelated).toHaveBeenCalledWith('product-1', 3);
     });
@@ -466,9 +436,7 @@ describe('Product Routes', () => {
     it('should return compatibility data for existing product', async () => {
       mockProductRepository.findById.mockResolvedValue(mockProduct);
 
-      const response = await request(app)
-        .get('/products/product-1/compatibility')
-        .expect(200);
+      const response = await request(app).get('/products/product-1/compatibility').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data.productId).toBe('product-1');
@@ -478,9 +446,7 @@ describe('Product Routes', () => {
     it('should return 404 when product not found', async () => {
       mockProductRepository.findById.mockResolvedValue(null);
 
-      const response = await request(app)
-        .get('/products/nonexistent/compatibility')
-        .expect(404);
+      const response = await request(app).get('/products/nonexistent/compatibility').expect(404);
 
       expect(response.body.success).toBe(false);
     });
@@ -519,9 +485,7 @@ describe('Product Routes', () => {
     });
 
     it('should return 401 for unauthenticated DELETE /products/:id', async () => {
-      const response = await request(app)
-        .delete('/products/product-1')
-        .expect(401);
+      const response = await request(app).delete('/products/product-1').expect(401);
 
       expect(response.body.success).toBe(false);
     });
@@ -590,9 +554,7 @@ describe('Product Routes', () => {
       currentTestUser = { userId: 'admin-1', email: 'admin@test.com', role: 'admin' };
       mockProductRepository.delete.mockResolvedValue(undefined);
 
-      const response = await authedRequest(app)
-        .delete('/products/product-1')
-        .expect(200);
+      const response = await authedRequest(app).delete('/products/product-1').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('deleted');

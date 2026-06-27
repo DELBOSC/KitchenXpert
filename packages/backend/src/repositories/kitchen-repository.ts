@@ -7,7 +7,14 @@
 
 import crypto from 'crypto';
 
-import type { PrismaClient, Kitchen, KitchenConfiguration, KitchenItem, KitchenStyle, LayoutType } from '@prisma/client';
+import type {
+  PrismaClient,
+  Kitchen,
+  KitchenConfiguration,
+  KitchenItem,
+  KitchenStyle,
+  LayoutType,
+} from '@prisma/client';
 
 export interface KitchenWithRelations {
   id: string;
@@ -79,15 +86,17 @@ export class KitchenRepository {
   async findById(id: string, includeRelations = false): Promise<KitchenWithRelations | null> {
     const result = await this.prisma.kitchen.findUnique({
       where: { id, deletedAt: null },
-      include: includeRelations ? {
-        configuration: true,
-        items: {
-          include: { product: true, appliance: true },
-          orderBy: { createdAt: 'asc' },
-        },
-        project: { select: { id: true, name: true, userId: true } },
-        user: { select: { id: true, email: true, firstName: true, lastName: true } }
-      } : undefined
+      include: includeRelations
+        ? {
+            configuration: true,
+            items: {
+              include: { product: true, appliance: true },
+              orderBy: { createdAt: 'asc' },
+            },
+            project: { select: { id: true, name: true, userId: true } },
+            user: { select: { id: true, email: true, firstName: true, lastName: true } },
+          }
+        : undefined,
     });
     return result as unknown as KitchenWithRelations | null;
   }
@@ -119,17 +128,17 @@ export class KitchenRepository {
         orderBy: { [sortBy]: sortOrder },
         include: {
           configuration: true,
-          _count: { select: { items: true } }
-        }
+          _count: { select: { items: true } },
+        },
       }),
-      this.prisma.kitchen.count({ where })
+      this.prisma.kitchen.count({ where }),
     ]);
 
     return {
       data,
       total,
       page,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
     };
   }
 
@@ -140,7 +149,7 @@ export class KitchenRepository {
     return this.prisma.kitchen.findMany({
       where: { userId, deletedAt: null },
       include: { configuration: true },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -151,7 +160,7 @@ export class KitchenRepository {
     return this.prisma.kitchen.findMany({
       where: { projectId, deletedAt: null },
       include: { configuration: true, items: true },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -171,7 +180,7 @@ export class KitchenRepository {
         height: data.height || 2.5,
         metadata: data.metadata as any,
       },
-      include: { configuration: true }
+      include: { configuration: true },
     });
   }
 
@@ -181,21 +190,41 @@ export class KitchenRepository {
   async update(id: string, data: UpdateKitchenDto): Promise<Kitchen> {
     const updateData: Record<string, any> = {};
 
-    if (data.name !== undefined) {updateData.name = data.name;}
-    if (data.style !== undefined) {updateData.style = data.style;}
-    if (data.layout !== undefined) {updateData.layout = data.layout;}
-    if (data.width !== undefined) {updateData.width = data.width;}
-    if (data.length !== undefined) {updateData.length = data.length;}
-    if (data.height !== undefined) {updateData.height = data.height;}
-    if (data.isGenerated !== undefined) {updateData.isGenerated = data.isGenerated;}
-    if (data.score !== undefined) {updateData.score = data.score;}
-    if (data.thumbnail !== undefined) {updateData.thumbnail = data.thumbnail;}
-    if (data.metadata !== undefined) {updateData.metadata = data.metadata;}
+    if (data.name !== undefined) {
+      updateData.name = data.name;
+    }
+    if (data.style !== undefined) {
+      updateData.style = data.style;
+    }
+    if (data.layout !== undefined) {
+      updateData.layout = data.layout;
+    }
+    if (data.width !== undefined) {
+      updateData.width = data.width;
+    }
+    if (data.length !== undefined) {
+      updateData.length = data.length;
+    }
+    if (data.height !== undefined) {
+      updateData.height = data.height;
+    }
+    if (data.isGenerated !== undefined) {
+      updateData.isGenerated = data.isGenerated;
+    }
+    if (data.score !== undefined) {
+      updateData.score = data.score;
+    }
+    if (data.thumbnail !== undefined) {
+      updateData.thumbnail = data.thumbnail;
+    }
+    if (data.metadata !== undefined) {
+      updateData.metadata = data.metadata;
+    }
 
     return this.prisma.kitchen.update({
       where: { id },
       data: updateData,
-      include: { configuration: true }
+      include: { configuration: true },
     });
   }
 
@@ -205,7 +234,7 @@ export class KitchenRepository {
   async delete(id: string): Promise<Kitchen> {
     return this.prisma.kitchen.update({
       where: { id },
-      data: { deletedAt: new Date() }
+      data: { deletedAt: new Date() },
     });
   }
 
@@ -214,7 +243,7 @@ export class KitchenRepository {
    */
   async hardDelete(id: string): Promise<Kitchen> {
     return this.prisma.kitchen.delete({
-      where: { id }
+      where: { id },
     });
   }
 
@@ -229,7 +258,7 @@ export class KitchenRepository {
         ...(filters.projectId && { projectId: filters.projectId }),
         ...(filters.style && { style: filters.style as KitchenStyle }),
         ...(filters.isGenerated !== undefined && { isGenerated: filters.isGenerated }),
-      }
+      },
     });
   }
 
@@ -240,7 +269,7 @@ export class KitchenRepository {
    */
   async getConfiguration(kitchenId: string): Promise<KitchenConfiguration | null> {
     return this.prisma.kitchenConfiguration.findUnique({
-      where: { kitchenId }
+      where: { kitchenId },
     });
   }
 
@@ -255,9 +284,9 @@ export class KitchenRepository {
       where: { kitchenId },
       create: {
         kitchenId,
-        ...data
+        ...data,
       },
-      update: data
+      update: data,
     });
   }
 
@@ -270,7 +299,7 @@ export class KitchenRepository {
     return this.prisma.kitchenItem.findMany({
       where: { kitchenId },
       include: { product: true, appliance: true },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -281,8 +310,8 @@ export class KitchenRepository {
     return this.prisma.kitchenItem.create({
       data: {
         kitchenId,
-        ...item
-      } as any
+        ...item,
+      } as any,
     });
   }
 
@@ -291,7 +320,7 @@ export class KitchenRepository {
    */
   async findItemInKitchen(kitchenId: string, itemId: string): Promise<KitchenItem | null> {
     return this.prisma.kitchenItem.findFirst({
-      where: { id: itemId, kitchenId }
+      where: { id: itemId, kitchenId },
     });
   }
 
@@ -301,7 +330,7 @@ export class KitchenRepository {
   async updateItem(itemId: string, data: Record<string, any>): Promise<KitchenItem> {
     return this.prisma.kitchenItem.update({
       where: { id: itemId },
-      data
+      data,
     });
   }
 
@@ -310,7 +339,7 @@ export class KitchenRepository {
    */
   async removeItem(itemId: string): Promise<KitchenItem> {
     return this.prisma.kitchenItem.delete({
-      where: { id: itemId }
+      where: { id: itemId },
     });
   }
 
@@ -319,7 +348,7 @@ export class KitchenRepository {
    */
   async clearItems(kitchenId: string): Promise<{ count: number }> {
     return this.prisma.kitchenItem.deleteMany({
-      where: { kitchenId }
+      where: { kitchenId },
     });
   }
 
@@ -344,13 +373,13 @@ export class KitchenRepository {
       }),
       this.prisma.kitchen.aggregate({
         where: { userId, deletedAt: null, score: { not: null } },
-        _avg: { score: true }
+        _avg: { score: true },
       }),
       this.prisma.kitchen.groupBy({
         by: ['style'],
         where: { userId, deletedAt: null },
-        _count: { style: true }
-      })
+        _count: { style: true },
+      }),
     ]);
 
     let totalKitchens = 0;
@@ -371,7 +400,7 @@ export class KitchenRepository {
       totalKitchens,
       generatedKitchens,
       averageScore: avgScore._avg.score,
-      styleBreakdown
+      styleBreakdown,
     };
   }
 
@@ -397,17 +426,23 @@ export class KitchenRepository {
           length: original.length,
           height: original.height,
           metadata: original.metadata,
-        }
+        },
       });
 
       // Copy configuration if exists
       if (original.configuration) {
-        const { id: _id, kitchenId: _kitchenId, createdAt: _createdAt, updatedAt: _updatedAt, ...configData } = original.configuration;
+        const {
+          id: _id,
+          kitchenId: _kitchenId,
+          createdAt: _createdAt,
+          updatedAt: _updatedAt,
+          ...configData
+        } = original.configuration;
         await tx.kitchenConfiguration.create({
           data: {
             kitchenId: newKitchen.id,
-            ...configData
-          }
+            ...configData,
+          },
         });
       }
 
@@ -431,7 +466,7 @@ export class KitchenRepository {
             height: item.height,
             price: item.price,
             metadata: item.metadata,
-          }))
+          })),
         });
       }
 
@@ -453,9 +488,12 @@ export class KitchenRepository {
     if (!existing) {
       throw new Error('Kitchen not found');
     }
-    const existingMetadata = (existing.metadata && typeof existing.metadata === 'object' && !Array.isArray(existing.metadata))
-      ? existing.metadata as Record<string, any>
-      : {};
+    const existingMetadata =
+      existing.metadata &&
+      typeof existing.metadata === 'object' &&
+      !Array.isArray(existing.metadata)
+        ? (existing.metadata as Record<string, any>)
+        : {};
     return this.prisma.kitchen.update({
       where: { id },
       data: {
@@ -463,8 +501,8 @@ export class KitchenRepository {
           ...existingMetadata,
           archivedAt: new Date().toISOString(),
           isArchived: true,
-        }
-      }
+        },
+      },
     });
   }
 
@@ -485,7 +523,7 @@ export class KitchenRepository {
     if (kitchen.deletedAt) {
       return this.prisma.kitchen.update({
         where: { id },
-        data: { deletedAt: null }
+        data: { deletedAt: null },
       });
     }
 
@@ -496,7 +534,7 @@ export class KitchenRepository {
 
     return this.prisma.kitchen.update({
       where: { id },
-      data: { metadata }
+      data: { metadata },
     });
   }
 
@@ -511,9 +549,9 @@ export class KitchenRepository {
         metadata: {
           path: ['isArchived'],
           equals: true,
-        }
+        },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -552,7 +590,12 @@ export class KitchenRepository {
       version: '1.0',
     };
 
-    return { kitchen: kitchen as unknown as Kitchen, items: items as unknown as KitchenItem[], configuration, modelData };
+    return {
+      kitchen: kitchen as unknown as Kitchen,
+      items: items as unknown as KitchenItem[],
+      configuration,
+      modelData,
+    };
   }
 
   /**
@@ -569,7 +612,10 @@ export class KitchenRepository {
    * Uses findById with relations to load all data in a single query
    * instead of 3 separate queries.
    */
-  async exportData(kitchenId: string, format: 'json' | 'pdf' | 'csv' = 'json'): Promise<{
+  async exportData(
+    kitchenId: string,
+    format: 'json' | 'pdf' | 'csv' = 'json'
+  ): Promise<{
     data: Record<string, any>;
     format: string;
     filename: string;
@@ -637,11 +683,14 @@ export class KitchenRepository {
   /**
    * Create a share link for a kitchen
    */
-  async createShareLink(kitchenId: string, options: {
-    expiresIn?: number; // hours
-    allowEdit?: boolean;
-    password?: string;
-  } = {}): Promise<{
+  async createShareLink(
+    kitchenId: string,
+    options: {
+      expiresIn?: number; // hours
+      allowEdit?: boolean;
+      password?: string;
+    } = {}
+  ): Promise<{
     shareId: string;
     shareUrl: string;
     expiresAt: Date | null;

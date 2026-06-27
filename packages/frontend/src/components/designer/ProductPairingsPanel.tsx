@@ -73,14 +73,48 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
-function getMatchScoreColor(score: number): { bg: string; text: string; darkBg: string; darkText: string } {
-  if (score >= 0.9) {return { bg: 'bg-emerald-100', text: 'text-emerald-700', darkBg: 'dark:bg-emerald-900/30', darkText: 'dark:text-emerald-300' };}
-  if (score >= 0.7) {return { bg: 'bg-green-100', text: 'text-green-700', darkBg: 'dark:bg-green-900/30', darkText: 'dark:text-green-300' };}
-  if (score >= 0.5) {return { bg: 'bg-yellow-100', text: 'text-yellow-700', darkBg: 'dark:bg-yellow-900/30', darkText: 'dark:text-yellow-300' };}
-  return { bg: 'bg-orange-100', text: 'text-orange-700', darkBg: 'dark:bg-orange-900/30', darkText: 'dark:text-orange-300' };
+function getMatchScoreColor(score: number): {
+  bg: string;
+  text: string;
+  darkBg: string;
+  darkText: string;
+} {
+  if (score >= 0.9) {
+    return {
+      bg: 'bg-emerald-100',
+      text: 'text-emerald-700',
+      darkBg: 'dark:bg-emerald-900/30',
+      darkText: 'dark:text-emerald-300',
+    };
+  }
+  if (score >= 0.7) {
+    return {
+      bg: 'bg-green-100',
+      text: 'text-green-700',
+      darkBg: 'dark:bg-green-900/30',
+      darkText: 'dark:text-green-300',
+    };
+  }
+  if (score >= 0.5) {
+    return {
+      bg: 'bg-yellow-100',
+      text: 'text-yellow-700',
+      darkBg: 'dark:bg-yellow-900/30',
+      darkText: 'dark:text-yellow-300',
+    };
+  }
+  return {
+    bg: 'bg-orange-100',
+    text: 'text-orange-700',
+    darkBg: 'dark:bg-orange-900/30',
+    darkText: 'dark:text-orange-300',
+  };
 }
 
-function getCategoryLabel(category: string, t: (key: string, defaultValue: string) => string): string {
+function getCategoryLabel(
+  category: string,
+  t: (key: string, defaultValue: string) => string
+): string {
   const labels: Record<string, string> = {
     countertop: t('pairings.categories.countertop', 'Countertops'),
     backsplash: t('pairings.categories.backsplash', 'Backsplash'),
@@ -105,7 +139,7 @@ export default function ProductPairingsPanel({
 }: ProductPairingsPanelProps): React.ReactElement {
   const { t } = useTranslation();
   const [expandedCategory, setExpandedCategory] = useState<string | null>(
-    recommendations[0]?.category || null,
+    recommendations[0]?.category || null
   );
 
   const toggleCategory = (category: string) => {
@@ -114,7 +148,7 @@ export default function ProductPairingsPanel({
 
   const totalRecommendations = useMemo(
     () => recommendations.reduce((sum, cat) => sum + cat.recommendations.length, 0),
-    [recommendations],
+    [recommendations]
   );
 
   return (
@@ -162,120 +196,118 @@ export default function ProductPairingsPanel({
               />
             </svg>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              {t('pairings.empty', 'Select a cabinet style to see complementary product recommendations.')}
+              {t(
+                'pairings.empty',
+                'Select a cabinet style to see complementary product recommendations.'
+              )}
             </p>
           </div>
         )}
 
         {/* Category Recommendations */}
-        {!isLoading && recommendations.map((catRec) => {
-          const isExpanded = expandedCategory === catRec.category;
-          const icon = CATEGORY_ICONS[catRec.category] || CATEGORY_ICONS.countertop;
+        {!isLoading &&
+          recommendations.map((catRec) => {
+            const isExpanded = expandedCategory === catRec.category;
+            const icon = CATEGORY_ICONS[catRec.category] || CATEGORY_ICONS.countertop;
 
-          return (
-            <div key={catRec.category} className="border-b border-gray-100 dark:border-gray-700">
-              {/* Category Header */}
-              <button
-                onClick={() => toggleCategory(catRec.category)}
-                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
-                aria-expanded={isExpanded}
-              >
-                <span className="text-gray-500 dark:text-gray-400">{icon}</span>
-                <span className="flex-1 text-left">
-                  {getCategoryLabel(catRec.category, t)}
-                </span>
-                <span className="text-xs text-gray-400">{catRec.recommendations.length}</span>
-                <svg
-                  className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
+            return (
+              <div key={catRec.category} className="border-b border-gray-100 dark:border-gray-700">
+                {/* Category Header */}
+                <button
+                  onClick={() => toggleCategory(catRec.category)}
+                  className="w-full flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                  aria-expanded={isExpanded}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+                  <span className="text-gray-500 dark:text-gray-400">{icon}</span>
+                  <span className="flex-1 text-left">{getCategoryLabel(catRec.category, t)}</span>
+                  <span className="text-xs text-gray-400">{catRec.recommendations.length}</span>
+                  <svg
+                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
 
-              {/* Recommendations */}
-              {isExpanded && (
-                <div className="px-3 pb-3 space-y-2">
-                  {catRec.recommendations.map((rec, index) => {
-                    const scoreColors = getMatchScoreColor(rec.matchScore);
-                    return (
-                      <div
-                        key={`${catRec.category}-${index}`}
-                        className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-100 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors group"
-                      >
-                        {/* Product header with color swatch */}
-                        <div className="flex items-start gap-2">
-                          {/* Color swatch / thumbnail placeholder */}
-                          <div
-                            className="w-10 h-10 rounded-md flex-shrink-0 border border-gray-200 dark:border-gray-500"
-                            style={{ backgroundColor: rec.color }}
-                            title={rec.material}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-medium text-gray-800 dark:text-gray-200 truncate">
-                              {rec.name}
-                            </p>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                              {rec.material}
-                              {rec.brand && (
-                                <span className="ml-1">
-                                  &middot; {rec.brand}
-                                </span>
+                {/* Recommendations */}
+                {isExpanded && (
+                  <div className="px-3 pb-3 space-y-2">
+                    {catRec.recommendations.map((rec, index) => {
+                      const scoreColors = getMatchScoreColor(rec.matchScore);
+                      return (
+                        <div
+                          key={`${catRec.category}-${index}`}
+                          className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-100 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 transition-colors group"
+                        >
+                          {/* Product header with color swatch */}
+                          <div className="flex items-start gap-2">
+                            {/* Color swatch / thumbnail placeholder */}
+                            <div
+                              className="w-10 h-10 rounded-md flex-shrink-0 border border-gray-200 dark:border-gray-500"
+                              style={{ backgroundColor: rec.color }}
+                              title={rec.material}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium text-gray-800 dark:text-gray-200 truncate">
+                                {rec.name}
+                              </p>
+                              <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                                {rec.material}
+                                {rec.brand && <span className="ml-1">&middot; {rec.brand}</span>}
+                              </p>
+                            </div>
+
+                            {/* Match score badge */}
+                            <span
+                              className={`flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${scoreColors.bg} ${scoreColors.text} ${scoreColors.darkBg} ${scoreColors.darkText}`}
+                              title={t('pairings.matchScore', 'Match score')}
+                            >
+                              {Math.round(rec.matchScore * 100)}%
+                            </span>
+                          </div>
+
+                          {/* Match reason */}
+                          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
+                            {rec.matchReason}
+                          </p>
+
+                          {/* Price + Actions */}
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-[10px] font-medium text-green-600 dark:text-green-400">
+                              {rec.priceRange.min}-{rec.priceRange.max} EUR
+                            </span>
+                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              {onPreviewRecommendation && (
+                                <button
+                                  onClick={() => onPreviewRecommendation(catRec.category, rec)}
+                                  className="text-[10px] px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                                  title={t('pairings.preview', 'Preview')}
+                                >
+                                  {t('pairings.preview', 'Preview')}
+                                </button>
                               )}
-                            </p>
-                          </div>
-
-                          {/* Match score badge */}
-                          <span
-                            className={`flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${scoreColors.bg} ${scoreColors.text} ${scoreColors.darkBg} ${scoreColors.darkText}`}
-                            title={t('pairings.matchScore', 'Match score')}
-                          >
-                            {Math.round(rec.matchScore * 100)}%
-                          </span>
-                        </div>
-
-                        {/* Match reason */}
-                        <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
-                          {rec.matchReason}
-                        </p>
-
-                        {/* Price + Actions */}
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="text-[10px] font-medium text-green-600 dark:text-green-400">
-                            {rec.priceRange.min}-{rec.priceRange.max} EUR
-                          </span>
-                          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {onPreviewRecommendation && (
-                              <button
-                                onClick={() => onPreviewRecommendation(catRec.category, rec)}
-                                className="text-[10px] px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
-                                title={t('pairings.preview', 'Preview')}
-                              >
-                                {t('pairings.preview', 'Preview')}
-                              </button>
-                            )}
-                            {onApplyRecommendation && (
-                              <button
-                                onClick={() => onApplyRecommendation(catRec.category, rec)}
-                                className="text-[10px] px-2 py-0.5 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                                title={t('pairings.apply', 'Apply')}
-                              >
-                                {t('pairings.apply', 'Apply')}
-                              </button>
-                            )}
+                              {onApplyRecommendation && (
+                                <button
+                                  onClick={() => onApplyRecommendation(catRec.category, rec)}
+                                  className="text-[10px] px-2 py-0.5 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                                  title={t('pairings.apply', 'Apply')}
+                                >
+                                  {t('pairings.apply', 'Apply')}
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </div>
     </div>
   );

@@ -342,7 +342,11 @@ router.get('/translations', i18nController.getTranslations);
  *       403:
  *         description: Forbidden - admin only
  */
-router.post('/translations', validateBody(createTranslationSchema), i18nController.createTranslation);
+router.post(
+  '/translations',
+  validateBody(createTranslationSchema),
+  i18nController.createTranslation
+);
 
 /**
  * @swagger
@@ -377,7 +381,11 @@ router.post('/translations', validateBody(createTranslationSchema), i18nControll
  *       403:
  *         description: Forbidden - admin only
  */
-router.put('/translations', validateBody(createTranslationSchema), i18nController.upsertTranslation);
+router.put(
+  '/translations',
+  validateBody(createTranslationSchema),
+  i18nController.upsertTranslation
+);
 
 /**
  * @swagger
@@ -472,7 +480,11 @@ router.delete('/translations/:id', i18nController.deleteTranslation);
  *       403:
  *         description: Forbidden - admin only
  */
-router.post('/translations/bulk', validateBody(bulkTranslationsSchema), i18nController.bulkCreateTranslations);
+router.post(
+  '/translations/bulk',
+  validateBody(bulkTranslationsSchema),
+  i18nController.bulkCreateTranslations
+);
 
 /**
  * @swagger
@@ -501,7 +513,10 @@ router.post('/translations/bulk', validateBody(bulkTranslationsSchema), i18nCont
  *       403:
  *         description: Forbidden - admin only
  */
-router.delete('/translations/namespace/:localeId/:namespace', i18nController.deleteNamespaceTranslations);
+router.delete(
+  '/translations/namespace/:localeId/:namespace',
+  i18nController.deleteNamespaceTranslations
+);
 
 // Utilities
 

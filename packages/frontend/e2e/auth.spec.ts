@@ -31,7 +31,7 @@ const ADMIN_USER = {
 /** Intercept auth/me so the app sees an unauthenticated session. */
 async function mockUnauthenticated(page: Page): Promise<void> {
   await page.route('**/api/v1/auth/me', (route) =>
-    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' }),
+    route.fulfill({ status: 401, contentType: 'application/json', body: '{}' })
   );
 }
 
@@ -42,7 +42,7 @@ async function mockAuthenticated(page: Page, user = TEST_USER): Promise<void> {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ success: true, data: user }),
-    }),
+    })
   );
 }
 
@@ -57,7 +57,7 @@ async function stubDashboardData(page: Page): Promise<void> {
         data: [],
         pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
       }),
-    }),
+    })
   );
 }
 
@@ -122,7 +122,7 @@ test.describe('Login flow', () => {
         status: 401,
         contentType: 'application/json',
         body: JSON.stringify({ error: { message: 'Invalid credentials' } }),
-      }),
+      })
     );
 
     await page.goto('/login');
@@ -276,7 +276,7 @@ test.describe('Registration flow', () => {
         status: 409,
         contentType: 'application/json',
         body: JSON.stringify({ error: { message: 'Email already exists' } }),
-      }),
+      })
     );
 
     await page.goto('/register');
@@ -339,8 +339,16 @@ test.describe('Logout flow', () => {
     await expect(page).toHaveURL(/\/dashboard/);
 
     // Find and click the logout button/link (typically in header or profile menu)
-    const logoutButton = page.locator('button:has-text("logout"), button:has-text("Logout"), button:has-text("Deconnexion"), button:has-text("deconnexion"), a:has-text("Logout"), a:has-text("logout")').first();
-    const profileMenuButton = page.locator('[aria-label="Profile"], [aria-label="profile"], [aria-label="User menu"], button:has-text("Profile"), button:has-text("profile")').first();
+    const logoutButton = page
+      .locator(
+        'button:has-text("logout"), button:has-text("Logout"), button:has-text("Deconnexion"), button:has-text("deconnexion"), a:has-text("Logout"), a:has-text("logout")'
+      )
+      .first();
+    const profileMenuButton = page
+      .locator(
+        '[aria-label="Profile"], [aria-label="profile"], [aria-label="User menu"], button:has-text("Profile"), button:has-text("profile")'
+      )
+      .first();
 
     // Try opening profile menu first if logout button is not directly visible
     if (await profileMenuButton.isVisible({ timeout: 2_000 }).catch(() => false)) {
@@ -380,14 +388,18 @@ test.describe('Protected route redirection', () => {
   ];
 
   for (const path of protectedPaths) {
-    test(`unauthenticated user visiting ${path} should be redirected to /login`, async ({ page }) => {
+    test(`unauthenticated user visiting ${path} should be redirected to /login`, async ({
+      page,
+    }) => {
       await page.goto(path);
 
       await expect(page).toHaveURL(/\/login/, { timeout: 10_000 });
     });
   }
 
-  test('non-admin user visiting /admin/users should be redirected to /dashboard', async ({ page }) => {
+  test('non-admin user visiting /admin/users should be redirected to /dashboard', async ({
+    page,
+  }) => {
     await page.unroute('**/api/v1/auth/me');
     await mockAuthenticated(page); // role = 'user'
     await stubDashboardData(page);
@@ -398,7 +410,9 @@ test.describe('Protected route redirection', () => {
     await expect(page).toHaveURL(/\/dashboard/, { timeout: 10_000 });
   });
 
-  test('unauthenticated user visiting /admin/users should be redirected to /login', async ({ page }) => {
+  test('unauthenticated user visiting /admin/users should be redirected to /login', async ({
+    page,
+  }) => {
     await page.goto('/admin/users');
 
     await expect(page).toHaveURL(/\/login/, { timeout: 10_000 });
@@ -429,7 +443,7 @@ test.describe('Forgot Password flow', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ success: true }),
-      }),
+      })
     );
 
     await page.goto('/forgot-password');
@@ -438,9 +452,9 @@ test.describe('Forgot Password flow', () => {
     await page.locator('button[type="submit"]').click();
 
     // The page should show the success state with a green confirmation block
-    await expect(
-      page.locator('text=If an account exists with this email'),
-    ).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('text=If an account exists with this email')).toBeVisible({
+      timeout: 5_000,
+    });
   });
 
   test('should show validation error when email is empty', async ({ page }) => {
@@ -460,7 +474,7 @@ test.describe('Forgot Password flow', () => {
         status: 500,
         contentType: 'application/json',
         body: JSON.stringify({ error: { message: 'Server error' } }),
-      }),
+      })
     );
 
     await page.goto('/forgot-password');

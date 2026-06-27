@@ -18,7 +18,9 @@
 
 ## Overview
 
-KitchenXpert follows a **Git Flow** workflow with modifications for modern CI/CD practices. This ensures clean history, easy collaboration, and safe production deployments.
+KitchenXpert follows a **Git Flow** workflow with modifications for modern CI/CD
+practices. This ensures clean history, easy collaboration, and safe production
+deployments.
 
 ### Workflow Visualization
 
@@ -218,16 +220,16 @@ gh pr create --base develop
 
 ### Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `feature/` | New feature development | `feature/3d-model-export` |
-| `bugfix/` | Bug fixes | `bugfix/catalog-filter-crash` |
-| `hotfix/` | Critical production fixes | `hotfix/payment-gateway-timeout` |
-| `docs/` | Documentation only | `docs/deployment-guide` |
-| `refactor/` | Code refactoring | `refactor/database-queries` |
-| `test/` | Test additions/fixes | `test/e2e-design-flow` |
-| `chore/` | Maintenance tasks | `chore/update-dependencies` |
-| `perf/` | Performance improvements | `perf/optimize-3d-rendering` |
+| Type        | Description               | Example                          |
+| ----------- | ------------------------- | -------------------------------- |
+| `feature/`  | New feature development   | `feature/3d-model-export`        |
+| `bugfix/`   | Bug fixes                 | `bugfix/catalog-filter-crash`    |
+| `hotfix/`   | Critical production fixes | `hotfix/payment-gateway-timeout` |
+| `docs/`     | Documentation only        | `docs/deployment-guide`          |
+| `refactor/` | Code refactoring          | `refactor/database-queries`      |
+| `test/`     | Test additions/fixes      | `test/e2e-design-flow`           |
+| `chore/`    | Maintenance tasks         | `chore/update-dependencies`      |
+| `perf/`     | Performance improvements  | `perf/optimize-3d-rendering`     |
 
 ### Naming Rules
 
@@ -240,6 +242,7 @@ gh pr create --base develop
 ### Examples
 
 **Good:**
+
 ```
 feature/ai-design-recommendations
 bugfix/3d-texture-loading
@@ -249,6 +252,7 @@ refactor/product-service
 ```
 
 **Bad:**
+
 ```
 new-feature          # Missing type prefix
 Feature/MyFeature    # Wrong case
@@ -271,19 +275,19 @@ feature/this-is-a-very-long-branch-name-that-describes-everything  # Too long
 
 ### Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `feat` | New feature | `feat(api): add user statistics endpoint` |
-| `fix` | Bug fix | `fix(auth): resolve token expiration issue` |
-| `docs` | Documentation | `docs(api): add authentication examples` |
-| `style` | Code style changes | `style(frontend): format with prettier` |
-| `refactor` | Code refactoring | `refactor(services): simplify user service` |
-| `test` | Add/update tests | `test(api): add user endpoint tests` |
-| `chore` | Maintenance | `chore(deps): update dependencies` |
-| `perf` | Performance | `perf(3d): optimize texture loading` |
-| `ci` | CI/CD changes | `ci(actions): add deployment workflow` |
-| `build` | Build system | `build(vite): update build config` |
-| `revert` | Revert commit | `revert: feat(api): add statistics` |
+| Type       | Description        | Example                                     |
+| ---------- | ------------------ | ------------------------------------------- |
+| `feat`     | New feature        | `feat(api): add user statistics endpoint`   |
+| `fix`      | Bug fix            | `fix(auth): resolve token expiration issue` |
+| `docs`     | Documentation      | `docs(api): add authentication examples`    |
+| `style`    | Code style changes | `style(frontend): format with prettier`     |
+| `refactor` | Code refactoring   | `refactor(services): simplify user service` |
+| `test`     | Add/update tests   | `test(api): add user endpoint tests`        |
+| `chore`    | Maintenance        | `chore(deps): update dependencies`          |
+| `perf`     | Performance        | `perf(3d): optimize texture loading`        |
+| `ci`       | CI/CD changes      | `ci(actions): add deployment workflow`      |
+| `build`    | Build system       | `build(vite): update build config`          |
+| `revert`   | Revert commit      | `revert: feat(api): add statistics`         |
 
 ### Scopes
 
@@ -407,8 +411,8 @@ module.exports = {
         'perf',
         'ci',
         'build',
-        'revert'
-      ]
+        'revert',
+      ],
     ],
     'scope-enum': [
       2,
@@ -423,12 +427,12 @@ module.exports = {
         'auth',
         'database',
         'security',
-        'deps'
-      ]
+        'deps',
+      ],
     ],
     'subject-max-length': [2, 'always', 72],
-    'body-max-line-length': [2, 'always', 72]
-  }
+    'body-max-line-length': [2, 'always', 72],
+  },
 };
 ```
 
@@ -502,24 +506,30 @@ EOF
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality to
+      not work as expected)
 - [ ] Documentation update
 - [ ] Performance improvement
 - [ ] Code refactoring
 
 ## Related Issue
+
 Closes #
 
 ## Changes Made
+
 -
 -
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] E2E tests pass (if applicable)
@@ -527,8 +537,8 @@ Closes #
 
 ## Screenshots (if applicable)
 
-
 ## Checklist
+
 - [ ] My code follows the project's style guidelines
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -542,12 +552,14 @@ Closes #
 ### PR Size Guidelines
 
 **Optimal PR size:**
+
 - **Small**: < 200 lines changed (ideal)
 - **Medium**: 200-500 lines changed (acceptable)
 - **Large**: 500-1000 lines changed (needs justification)
 - **Too large**: > 1000 lines (split into multiple PRs)
 
 **Tips for smaller PRs:**
+
 - Break features into smaller chunks
 - Separate refactoring from feature work
 - Split frontend and backend changes if possible
@@ -585,26 +597,31 @@ git push origin feature/user-statistics
 #### What to Look For
 
 **Functionality:**
+
 - Does the code work as intended?
 - Are edge cases handled?
 - Are there potential bugs?
 
 **Code Quality:**
+
 - Is the code readable and maintainable?
 - Are names descriptive?
 - Is there unnecessary complexity?
 
 **Tests:**
+
 - Are there adequate tests?
 - Do tests cover edge cases?
 - Are tests maintainable?
 
 **Performance:**
+
 - Are there performance concerns?
 - Any N+1 queries?
 - Unnecessary re-renders?
 
 **Security:**
+
 - Are inputs validated?
 - Is authentication/authorization correct?
 - Any security vulnerabilities?
@@ -612,6 +629,7 @@ git push origin feature/user-statistics
 #### Review Etiquette
 
 **Good feedback:**
+
 ```
 ❌ This is wrong.
 ✅ Consider using a Map here for O(1) lookups instead of filtering the array, which is O(n).
@@ -624,6 +642,7 @@ git push origin feature/user-statistics
 ```
 
 **Review comments categories:**
+
 - **Required:** Must be addressed before merge
 - **Suggestion:** Optional improvement
 - **Question:** Need clarification
@@ -643,6 +662,7 @@ git push origin feature/user-statistics
 **Use for:** Most feature branches
 
 **Benefits:**
+
 - Clean, linear history
 - One commit per feature
 - Easy to revert
@@ -662,6 +682,7 @@ feat(api): add user statistics endpoint (#123)
 **Use for:** Clean commit history already exists
 
 **Benefits:**
+
 - Preserves individual commits
 - Linear history
 - Good for tracking incremental changes
@@ -677,6 +698,7 @@ git push --force-with-lease
 **Use for:** Release branches, hotfixes
 
 **Benefits:**
+
 - Preserves branch history
 - Shows when features were merged
 - Easy to see feature scope
@@ -855,12 +877,14 @@ git push origin v1.2.1
 ### Commit Size
 
 **Good commit:**
+
 - Single logical change
 - All tests pass
 - Code compiles/runs
 - Can be reverted independently
 
 **Bad commit:**
+
 - Multiple unrelated changes
 - Half-finished work
 - Broken tests

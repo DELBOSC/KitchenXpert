@@ -11,7 +11,10 @@ export class AIChatController {
   // POST /ai-chat/stream -- SSE streaming with tool_use support
   streamChat = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
-    if (!userId) { res.status(401).json({ success: false, error: 'Not authenticated' }); return; }
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
     const { message, sceneContext, conversationHistory } = req.body;
     if (!message || !sceneContext) {
@@ -49,7 +52,10 @@ export class AIChatController {
   // POST /ai-chat/message -- non-streaming
   sendMessage = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
-    if (!userId) { res.status(401).json({ success: false, error: 'Not authenticated' }); return; }
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
     const { message, sceneContext, conversationHistory } = req.body;
     if (!message || !sceneContext) {
@@ -70,7 +76,10 @@ export class AIChatController {
   // POST /ai-chat/sessions -- create a new chat session
   createSession = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
-    if (!userId) { res.status(401).json({ success: false, error: 'Not authenticated' }); return; }
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
     const { title, kitchenId, sceneContext } = req.body;
 
@@ -90,7 +99,10 @@ export class AIChatController {
   // GET /ai-chat/sessions -- list user's chat sessions
   listSessions = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
-    if (!userId) { res.status(401).json({ success: false, error: 'Not authenticated' }); return; }
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
     const sessions = await prisma.aIChatSession.findMany({
       where: { userId },
@@ -110,7 +122,10 @@ export class AIChatController {
   // PUT /ai-chat/sessions/:id -- update session messages
   updateSession = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
-    if (!userId) { res.status(401).json({ success: false, error: 'Not authenticated' }); return; }
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
     const { id } = req.params;
     if (!id) {
@@ -132,9 +147,15 @@ export class AIChatController {
     const { messages, title, sceneContext } = req.body;
 
     const updateData: Record<string, unknown> = {};
-    if (messages !== undefined) {updateData.messages = messages;}
-    if (title !== undefined) {updateData.title = title;}
-    if (sceneContext !== undefined) {updateData.sceneContext = JSON.parse(JSON.stringify(sceneContext));}
+    if (messages !== undefined) {
+      updateData.messages = messages;
+    }
+    if (title !== undefined) {
+      updateData.title = title;
+    }
+    if (sceneContext !== undefined) {
+      updateData.sceneContext = JSON.parse(JSON.stringify(sceneContext));
+    }
 
     const session = await prisma.aIChatSession.update({
       where: { id },
@@ -147,7 +168,10 @@ export class AIChatController {
   // GET /ai-chat/history/:sessionId -- load chat history from DB
   getHistory = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
-    if (!userId) { res.status(401).json({ success: false, error: 'Not authenticated' }); return; }
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
 
     const { sessionId } = req.params;
     if (!sessionId) {

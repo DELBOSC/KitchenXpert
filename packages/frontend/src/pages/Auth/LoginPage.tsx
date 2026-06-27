@@ -27,8 +27,12 @@ export default function LoginPage(): React.ReactElement {
   const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     const next: typeof errors = {};
-    if (!email) {next.email = t('auth.emailRequired', 'Email requis');}
-    if (!password) {next.password = t('auth.passwordRequired', 'Mot de passe requis');}
+    if (!email) {
+      next.email = t('auth.emailRequired', 'Email requis');
+    }
+    if (!password) {
+      next.password = t('auth.passwordRequired', 'Mot de passe requis');
+    }
     if (Object.keys(next).length > 0) {
       setErrors(next);
       return;
@@ -43,7 +47,8 @@ export default function LoginPage(): React.ReactElement {
       // LocaleAwareShell). Without this the user stayed on /login after login.
       navigate(withPrefix('/dashboard'));
     } catch (err) {
-      const message = err instanceof Error ? err.message : t('auth.loginError', 'Identifiants invalides');
+      const message =
+        err instanceof Error ? err.message : t('auth.loginError', 'Identifiants invalides');
       setErrors({ form: message });
     } finally {
       setLoading(false);
@@ -57,82 +62,115 @@ export default function LoginPage(): React.ReactElement {
         description="Connectez-vous à KitchenXpert pour retrouver vos cuisines, devis et collaborations en cours."
         canonical="https://kitchenxpert.com/login"
       />
-    <AuthLayout
-      title={t('auth.welcomeBack', 'Bon retour parmi nous')}
-      subtitle={t('auth.loginSubtitle', 'Connectez-vous pour retrouver vos projets et vos cuisines.')}
-      footer={
-        <>
-          {t('auth.noAccount', "Pas encore de compte ?")}{' '}
-          <Link to="/register" className="font-medium text-white underline-offset-4 hover:underline">
-            {t('auth.registerAction', 'Créer un compte')}
-          </Link>
-        </>
-      }
-    >
-      <form onSubmit={onSubmit} noValidate className="space-y-4">
-        {errors.form && (
-          <div role="alert" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
-            {errors.form}
-          </div>
+      <AuthLayout
+        title={t('auth.welcomeBack', 'Bon retour parmi nous')}
+        subtitle={t(
+          'auth.loginSubtitle',
+          'Connectez-vous pour retrouver vos projets et vos cuisines.'
         )}
-
-        <Input
-          type="email"
-          autoComplete="email"
-          label={t('common.email', 'Email')}
-          placeholder="vous@exemple.com"
-          value={email}
-          onChange={(e) => { setEmail(e.target.value); if (errors.email) {setErrors((p) => ({ ...p, email: undefined }));} }}
-          error={errors.email}
-          leftIcon={<Mail className="h-4 w-4" />}
-          required
-        />
-
-        <Input
-          type={showPassword ? 'text' : 'password'}
-          autoComplete="current-password"
-          label={t('common.password', 'Mot de passe')}
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => { setPassword(e.target.value); if (errors.password) {setErrors((p) => ({ ...p, password: undefined }));} }}
-          error={errors.password}
-          leftIcon={<Lock className="h-4 w-4" />}
-          rightIcon={
-            <button
-              type="button"
-              onClick={() => setShowPassword((s) => !s)}
-              className="kx-focus rounded p-0.5 text-white/50 hover:text-white"
-              aria-label={showPassword ? 'Masquer' : 'Afficher'}
+        footer={
+          <>
+            {t('auth.noAccount', 'Pas encore de compte ?')}{' '}
+            <Link
+              to="/register"
+              className="font-medium text-white underline-offset-4 hover:underline"
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          }
-          required
-        />
+              {t('auth.registerAction', 'Créer un compte')}
+            </Link>
+          </>
+        }
+      >
+        <form onSubmit={onSubmit} noValidate className="space-y-4">
+          {errors.form && (
+            <div
+              role="alert"
+              className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200"
+            >
+              {errors.form}
+            </div>
+          )}
 
-        <div className="flex items-center justify-between pt-1">
-          <Checkbox label={t('auth.rememberMe', 'Se souvenir de moi')} checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-          <Link to="/forgot-password" className="text-sm text-white/70 hover:text-white">
-            {t('auth.forgotPassword', 'Oublié ?')}
-          </Link>
-        </div>
+          <Input
+            type="email"
+            autoComplete="email"
+            label={t('common.email', 'Email')}
+            placeholder="vous@exemple.com"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (errors.email) {
+                setErrors((p) => ({ ...p, email: undefined }));
+              }
+            }}
+            error={errors.email}
+            leftIcon={<Mail className="h-4 w-4" />}
+            required
+          />
 
-        <Button type="submit" loading={loading} fullWidth size="lg">
-          {t('auth.loginAction', 'Se connecter')}
-        </Button>
+          <Input
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="current-password"
+            label={t('common.password', 'Mot de passe')}
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (errors.password) {
+                setErrors((p) => ({ ...p, password: undefined }));
+              }
+            }}
+            error={errors.password}
+            leftIcon={<Lock className="h-4 w-4" />}
+            rightIcon={
+              <button
+                type="button"
+                onClick={() => setShowPassword((s) => !s)}
+                className="kx-focus rounded p-0.5 text-white/50 hover:text-white"
+                aria-label={showPassword ? 'Masquer' : 'Afficher'}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            }
+            required
+          />
 
-        <Separator label={t('common.or', 'OU')} className="my-6" />
+          <div className="flex items-center justify-between pt-1">
+            <Checkbox
+              label={t('auth.rememberMe', 'Se souvenir de moi')}
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            />
+            <Link to="/forgot-password" className="text-sm text-white/70 hover:text-white">
+              {t('auth.forgotPassword', 'Oublié ?')}
+            </Link>
+          </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" type="button" size="md" onClick={() => toast.info('SSO bientôt disponible')}>
-            Google
+          <Button type="submit" loading={loading} fullWidth size="lg">
+            {t('auth.loginAction', 'Se connecter')}
           </Button>
-          <Button variant="outline" type="button" size="md" onClick={() => toast.info('SSO bientôt disponible')}>
-            Apple
-          </Button>
-        </div>
-      </form>
-    </AuthLayout>
+
+          <Separator label={t('common.or', 'OU')} className="my-6" />
+
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              type="button"
+              size="md"
+              onClick={() => toast.info('SSO bientôt disponible')}
+            >
+              Google
+            </Button>
+            <Button
+              variant="outline"
+              type="button"
+              size="md"
+              onClick={() => toast.info('SSO bientôt disponible')}
+            >
+              Apple
+            </Button>
+          </div>
+        </form>
+      </AuthLayout>
     </>
   );
 }

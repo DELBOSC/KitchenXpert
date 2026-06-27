@@ -149,42 +149,58 @@ export class AbandonmentDetectorService {
     // Factor 1: Long idle periods
     const idleFactor = this.checkLongIdle(sorted);
     factors.push(idleFactor);
-    if (idleFactor.detected) {totalRisk += idleFactor.weight;}
+    if (idleFactor.detected) {
+      totalRisk += idleFactor.weight;
+    }
 
     // Factor 2: High undo rate
     const undoFactor = this.checkHighUndoRate(undoRate, actionsCount);
     factors.push(undoFactor);
-    if (undoFactor.detected) {totalRisk += undoFactor.weight;}
+    if (undoFactor.detected) {
+      totalRisk += undoFactor.weight;
+    }
 
     // Factor 3: Rapid option switching
     const switchFactor = this.checkRapidSwitching(sorted);
     factors.push(switchFactor);
-    if (switchFactor.detected) {totalRisk += switchFactor.weight;}
+    if (switchFactor.detected) {
+      totalRisk += switchFactor.weight;
+    }
 
     // Factor 4: Deletion without replacement
     const deletionFactor = this.checkDeletionWithoutReplacement(sorted);
     factors.push(deletionFactor);
-    if (deletionFactor.detected) {totalRisk += deletionFactor.weight;}
+    if (deletionFactor.detected) {
+      totalRisk += deletionFactor.weight;
+    }
 
     // Factor 5: No save in 10+ min
     const noSaveFactor = this.checkNoSave(sorted, timeInSession);
     factors.push(noSaveFactor);
-    if (noSaveFactor.detected) {totalRisk += noSaveFactor.weight;}
+    if (noSaveFactor.detected) {
+      totalRisk += noSaveFactor.weight;
+    }
 
     // Factor 6: Frequent panel switching
     const panelFactor = this.checkFrequentPanelSwitching(sorted);
     factors.push(panelFactor);
-    if (panelFactor.detected) {totalRisk += panelFactor.weight;}
+    if (panelFactor.detected) {
+      totalRisk += panelFactor.weight;
+    }
 
     // Factor 7: Empty canvas after 5+ min
     const emptyFactor = this.checkEmptyCanvas(sorted, timeInSession);
     factors.push(emptyFactor);
-    if (emptyFactor.detected) {totalRisk += emptyFactor.weight;}
+    if (emptyFactor.detected) {
+      totalRisk += emptyFactor.weight;
+    }
 
     // Factor 8: Long session with few objects
     const longSessionFactor = this.checkLongSessionFewObjects(sorted, timeInSession);
     factors.push(longSessionFactor);
-    if (longSessionFactor.detected) {totalRisk += longSessionFactor.weight;}
+    if (longSessionFactor.detected) {
+      totalRisk += longSessionFactor.weight;
+    }
 
     // Clamp risk score
     const riskScore = Math.min(100, Math.max(0, totalRisk));
@@ -193,8 +209,10 @@ export class AbandonmentDetectorService {
     const riskLevel = this.getRiskLevel(riskScore);
     const suggestedIntervention = this.getInterventionType(riskScore, factors);
 
-    logger.debug(`[Abandonment] Session analyzed: score=${riskScore}, level=${riskLevel}, ` +
-      `factors=${factors.filter(f => f.detected).length}/${factors.length}`);
+    logger.debug(
+      `[Abandonment] Session analyzed: score=${riskScore}, level=${riskLevel}, ` +
+        `factors=${factors.filter((f) => f.detected).length}/${factors.length}`
+    );
 
     return {
       riskScore,
@@ -228,7 +246,8 @@ export class AbandonmentDetectorService {
         return {
           type: 'toast',
           title: 'Tip: Simplified Mode',
-          message: 'Feeling overwhelmed? Try our simplified mode for a guided kitchen design experience.',
+          message:
+            'Feeling overwhelmed? Try our simplified mode for a guided kitchen design experience.',
           action: {
             label: 'Switch to Simplified Mode',
             handler: 'enableSimplifiedMode',
@@ -254,16 +273,19 @@ export class AbandonmentDetectorService {
     let maxIdleGap = 0;
     for (let i = 1; i < events.length; i++) {
       const gap = events[i]!.timestamp - events[i - 1]!.timestamp;
-      if (gap > maxIdleGap) {maxIdleGap = gap;}
+      if (gap > maxIdleGap) {
+        maxIdleGap = gap;
+      }
     }
 
     return {
       factor: 'long_idle',
       weight: 20,
       detected: maxIdleGap >= IDLE_THRESHOLD_MS,
-      description: maxIdleGap >= IDLE_THRESHOLD_MS
-        ? `User was idle for ${Math.round(maxIdleGap / 60000)} minutes`
-        : 'No extended idle periods detected',
+      description:
+        maxIdleGap >= IDLE_THRESHOLD_MS
+          ? `User was idle for ${Math.round(maxIdleGap / 60000)} minutes`
+          : 'No extended idle periods detected',
     };
   }
 
@@ -293,7 +315,8 @@ export class AbandonmentDetectorService {
       (e) =>
         e.type === 'view_change' ||
         (e.type === 'object_move' && e.data?.material) ||
-        (e.data?.property === 'material' || e.data?.property === 'style')
+        e.data?.property === 'material' ||
+        e.data?.property === 'style'
     );
 
     let maxSwitchesInWindow = 0;
@@ -307,16 +330,19 @@ export class AbandonmentDetectorService {
           break;
         }
       }
-      if (count > maxSwitchesInWindow) {maxSwitchesInWindow = count;}
+      if (count > maxSwitchesInWindow) {
+        maxSwitchesInWindow = count;
+      }
     }
 
     return {
       factor: 'rapid_switching',
       weight: 15,
       detected: maxSwitchesInWindow >= RAPID_SWITCH_COUNT,
-      description: maxSwitchesInWindow >= RAPID_SWITCH_COUNT
-        ? `${maxSwitchesInWindow} option changes in under 1 minute`
-        : 'No excessive option switching detected',
+      description:
+        maxSwitchesInWindow >= RAPID_SWITCH_COUNT
+          ? `${maxSwitchesInWindow} option changes in under 1 minute`
+          : 'No excessive option switching detected',
     };
   }
 
@@ -330,7 +356,9 @@ export class AbandonmentDetectorService {
     for (const event of events) {
       if (event.type === 'object_add') {
         currentCount++;
-        if (currentCount > peakCount) {peakCount = currentCount;}
+        if (currentCount > peakCount) {
+          peakCount = currentCount;
+        }
       } else if (event.type === 'object_remove') {
         currentCount = Math.max(0, currentCount - 1);
       }
@@ -367,9 +395,7 @@ export class AbandonmentDetectorService {
       .sort((a, b) => b.timestamp - a.timestamp)[0];
 
     const sessionEnd = events[events.length - 1]!.timestamp;
-    const timeSinceLastSave = lastSave
-      ? sessionEnd - lastSave.timestamp
-      : timeInSession;
+    const timeSinceLastSave = lastSave ? sessionEnd - lastSave.timestamp : timeInSession;
 
     const detected = timeSinceLastSave >= NO_SAVE_THRESHOLD_MS;
 
@@ -387,9 +413,7 @@ export class AbandonmentDetectorService {
    * Factor 6: Frequent panel switching (>6 open/close in 30 seconds).
    */
   private checkFrequentPanelSwitching(events: DesignEvent[]): RiskFactor {
-    const panelEvents = events.filter(
-      (e) => e.type === 'panel_open' || e.type === 'panel_close'
-    );
+    const panelEvents = events.filter((e) => e.type === 'panel_open' || e.type === 'panel_close');
 
     let maxPanelSwitches = 0;
     for (let i = 0; i < panelEvents.length; i++) {
@@ -402,16 +426,19 @@ export class AbandonmentDetectorService {
           break;
         }
       }
-      if (count > maxPanelSwitches) {maxPanelSwitches = count;}
+      if (count > maxPanelSwitches) {
+        maxPanelSwitches = count;
+      }
     }
 
     return {
       factor: 'frequent_panel_switching',
       weight: 10,
       detected: maxPanelSwitches >= RAPID_PANEL_COUNT,
-      description: maxPanelSwitches >= RAPID_PANEL_COUNT
-        ? `${maxPanelSwitches} panel toggles in 30 seconds`
-        : 'Panel usage is normal',
+      description:
+        maxPanelSwitches >= RAPID_PANEL_COUNT
+          ? `${maxPanelSwitches} panel toggles in 30 seconds`
+          : 'Panel usage is normal',
     };
   }
 
@@ -431,8 +458,12 @@ export class AbandonmentDetectorService {
     // Check if there are any objects on the canvas
     let objectCount = 0;
     for (const event of events) {
-      if (event.type === 'object_add') {objectCount++;}
-      if (event.type === 'object_remove') {objectCount = Math.max(0, objectCount - 1);}
+      if (event.type === 'object_add') {
+        objectCount++;
+      }
+      if (event.type === 'object_remove') {
+        objectCount = Math.max(0, objectCount - 1);
+      }
     }
 
     const detected = objectCount === 0;
@@ -462,8 +493,12 @@ export class AbandonmentDetectorService {
 
     let objectCount = 0;
     for (const event of events) {
-      if (event.type === 'object_add') {objectCount++;}
-      if (event.type === 'object_remove') {objectCount = Math.max(0, objectCount - 1);}
+      if (event.type === 'object_add') {
+        objectCount++;
+      }
+      if (event.type === 'object_remove') {
+        objectCount = Math.max(0, objectCount - 1);
+      }
     }
 
     const detected = objectCount < MIN_OBJECTS_FOR_LONG_SESSION;
@@ -484,9 +519,15 @@ export class AbandonmentDetectorService {
    * Determine risk level from score.
    */
   private getRiskLevel(score: number): 'low' | 'medium' | 'high' | 'critical' {
-    if (score >= 70) {return 'critical';}
-    if (score >= 50) {return 'high';}
-    if (score >= 30) {return 'medium';}
+    if (score >= 70) {
+      return 'critical';
+    }
+    if (score >= 50) {
+      return 'high';
+    }
+    if (score >= 30) {
+      return 'medium';
+    }
     return 'low';
   }
 
@@ -497,14 +538,22 @@ export class AbandonmentDetectorService {
     score: number,
     factors: RiskFactor[]
   ): AbandonmentRisk['suggestedIntervention'] {
-    if (score < 30) {return 'none';}
+    if (score < 30) {
+      return 'none';
+    }
 
     // Special case: frequent panel switching suggests UI complexity
     const panelFactor = factors.find((f) => f.factor === 'frequent_panel_switching');
-    if (panelFactor?.detected && score < 50) {return 'simplify_ui';}
+    if (panelFactor?.detected && score < 50) {
+      return 'simplify_ui';
+    }
 
-    if (score >= 70) {return 'design_expert';}
-    if (score >= 50) {return 'ai_suggestion';}
+    if (score >= 70) {
+      return 'design_expert';
+    }
+    if (score >= 50) {
+      return 'ai_suggestion';
+    }
     return 'help_tip';
   }
 
@@ -519,7 +568,8 @@ export class AbandonmentDetectorService {
       return {
         type: 'toast',
         title: 'Need help with your design?',
-        message: 'It looks like you\'re experimenting with different options. Try our AI assistant for layout suggestions that match your room.',
+        message:
+          "It looks like you're experimenting with different options. Try our AI assistant for layout suggestions that match your room.",
         action: {
           label: 'Get AI help',
           handler: 'openAIChat',
@@ -531,7 +581,8 @@ export class AbandonmentDetectorService {
       return {
         type: 'toast',
         title: 'Getting started?',
-        message: 'Not sure where to begin? Our quick-start templates let you start from a pre-made layout and customize from there.',
+        message:
+          'Not sure where to begin? Our quick-start templates let you start from a pre-made layout and customize from there.',
         action: {
           label: 'View templates',
           handler: 'openTemplates',
@@ -542,7 +593,8 @@ export class AbandonmentDetectorService {
     return {
       type: 'toast',
       title: 'Need help?',
-      message: 'Our AI assistant can suggest layouts, help you choose materials, and answer design questions.',
+      message:
+        'Our AI assistant can suggest layouts, help you choose materials, and answer design questions.',
       action: {
         label: 'Open assistant',
         handler: 'openAIChat',
@@ -560,7 +612,8 @@ export class AbandonmentDetectorService {
       return {
         type: 'modal',
         title: 'Let AI help you redesign',
-        message: 'It seems like you\'re rethinking your layout. Based on your room dimensions, here are 3 quick-start layouts that might inspire you. Each one is optimized for your space.',
+        message:
+          "It seems like you're rethinking your layout. Based on your room dimensions, here are 3 quick-start layouts that might inspire you. Each one is optimized for your space.",
         action: {
           label: 'See AI layouts',
           handler: 'generateAILayouts',
@@ -572,7 +625,8 @@ export class AbandonmentDetectorService {
       return {
         type: 'modal',
         title: 'Overwhelmed by choices?',
-        message: 'There are many options to choose from! Our AI can narrow it down based on your style preferences and budget. Let it suggest a curated selection.',
+        message:
+          'There are many options to choose from! Our AI can narrow it down based on your style preferences and budget. Let it suggest a curated selection.',
         action: {
           label: 'Get personalized suggestions',
           handler: 'openStyleQuiz',
@@ -583,7 +637,8 @@ export class AbandonmentDetectorService {
     return {
       type: 'modal',
       title: 'AI Design Suggestions',
-      message: 'Based on your room, here are 3 quick-start layouts. Each is optimized for workflow, storage, and style.',
+      message:
+        'Based on your room, here are 3 quick-start layouts. Each is optimized for workflow, storage, and style.',
       action: {
         label: 'View suggestions',
         handler: 'generateAILayouts',
@@ -598,7 +653,8 @@ export class AbandonmentDetectorService {
     return {
       type: 'modal',
       title: 'Chat with a Kitchen Design Expert',
-      message: 'Designing a kitchen can be complex. Would you like to connect with one of our professional kitchen designers? They can help you make the right choices for your space, needs, and budget. First consultation is free!',
+      message:
+        'Designing a kitchen can be complex. Would you like to connect with one of our professional kitchen designers? They can help you make the right choices for your space, needs, and budget. First consultation is free!',
       action: {
         label: 'Chat with an expert',
         handler: 'connectDesignExpert',

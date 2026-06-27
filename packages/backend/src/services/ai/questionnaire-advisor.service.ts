@@ -18,14 +18,16 @@ const sectionAnalysisSchema = z.object({
   tips: z.array(z.string().max(500)).max(5).default([]),
   warnings: z.array(z.string().max(500)).max(5).default([]),
   suggestions: z.array(z.string().max(500)).max(5).default([]),
-  budgetReality: z.object({
-    isRealistic: z.boolean(),
-    explanation: z.string().max(1000),
-    suggestedRange: z.object({
-      min: z.number().nonnegative(),
-      max: z.number().nonnegative(),
-    }),
-  }).optional(),
+  budgetReality: z
+    .object({
+      isRealistic: z.boolean(),
+      explanation: z.string().max(1000),
+      suggestedRange: z.object({
+        min: z.number().nonnegative(),
+        max: z.number().nonnegative(),
+      }),
+    })
+    .optional(),
 });
 
 type SectionAnalysis = z.infer<typeof sectionAnalysisSchema>;
@@ -33,8 +35,14 @@ type SectionAnalysis = z.infer<typeof sectionAnalysisSchema>;
 /** Zod schema for AutoBridgePreferences AI output */
 const autoBridgeSchema = z.object({
   kitchenStyle: z.enum([
-    'modern', 'traditional', 'transitional', 'farmhouse',
-    'industrial', 'scandinavian', 'contemporary', 'mediterranean',
+    'modern',
+    'traditional',
+    'transitional',
+    'farmhouse',
+    'industrial',
+    'scandinavian',
+    'contemporary',
+    'mediterranean',
   ]),
   colorPalette: z.array(z.string().max(50)).min(1).max(10),
   layoutPreference: z.enum(['galley', 'l-shaped', 'u-shaped', 'open']),
@@ -62,9 +70,10 @@ export class QuestionnaireAdvisorService {
     userId: string;
   }): Promise<SectionAnalysis> {
     const sanitizedSection = sanitizeQuestionnaireText(options.sectionData, 1500);
-    const sanitizedPrevious = Object.keys(options.previousSections).length > 0
-      ? sanitizeQuestionnaireText(options.previousSections, 3000)
-      : null;
+    const sanitizedPrevious =
+      Object.keys(options.previousSections).length > 0
+        ? sanitizeQuestionnaireText(options.previousSections, 3000)
+        : null;
 
     const prompt = `Analyse ces reponses au questionnaire de conception de cuisine.
 
@@ -107,7 +116,7 @@ Regles:
         section: options.section,
       });
       return {
-        tips: ['Une erreur est survenue lors de l\'analyse. Vos donnees ont bien ete enregistrees.'],
+        tips: ["Une erreur est survenue lors de l'analyse. Vos donnees ont bien ete enregistrees."],
         warnings: [],
         suggestions: ['Vous pouvez continuer vers la section suivante.'],
       };
@@ -116,7 +125,7 @@ Regles:
 
   async generateAutoBridgePreferences(
     questionnaireData: Record<string, unknown>,
-    userId: string,
+    userId: string
   ): Promise<AutoBridgePreferences> {
     const sanitizedData = sanitizeQuestionnaireText(questionnaireData, 3000);
 

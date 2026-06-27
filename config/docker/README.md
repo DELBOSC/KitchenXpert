@@ -1,6 +1,7 @@
 # KitchenXpert Docker Configuration
 
-Complete Docker setup for KitchenXpert platform with development, production, and test environments.
+Complete Docker setup for KitchenXpert platform with development, production,
+and test environments.
 
 ## Directory Structure
 
@@ -28,17 +29,20 @@ config/docker/
 ### Development Environment
 
 1. Copy environment variables:
+
 ```bash
 cp config/docker/.env.example .env
 # Edit .env with your development values
 ```
 
 2. Start development environment:
+
 ```bash
 docker-compose -f config/docker/docker-compose.dev.yml up
 ```
 
 This will start:
+
 - Backend API (port 3000) with hot reload
 - Frontend (port 3001) with hot reload
 - Partner Portal (port 3002) with hot reload
@@ -52,12 +56,14 @@ This will start:
 ### Production Environment
 
 1. Set production environment variables:
+
 ```bash
 cp config/docker/.env.example .env.production
 # Edit .env.production with secure production values
 ```
 
 2. Build and start production:
+
 ```bash
 docker-compose -f config/docker/docker-compose.prod.yml up -d
 ```
@@ -73,24 +79,28 @@ docker-compose -f config/docker/docker-compose.test.yml up --abort-on-container-
 ## Services
 
 ### Frontend (React Application)
+
 - **Port**: 8080 (prod), 3001 (dev)
 - **Dockerfile**: `Dockerfile.frontend`
 - **Features**: Multi-stage build, nginx serving, hot reload in dev
 - **Health Check**: `http://localhost:8080/health`
 
 ### Partner Portal
+
 - **Port**: 8081 (prod), 3002 (dev)
 - **Dockerfile**: `Dockerfile.partner-portal`
 - **Features**: Enhanced security headers, isolated build
 - **Health Check**: `http://localhost:8081/health`
 
 ### Backend API
+
 - **Port**: 3000
 - **Dockerfile**: `Dockerfile.backend`
 - **Features**: Express.js, PostgreSQL, Redis integration
 - **Health Check**: `http://localhost:3000/health`
 
 ### AI Services
+
 - **Port**: 8000
 - **Dockerfile**: `Dockerfile.ai`
 - **Features**: Python 3.11, PyTorch, Transformers, FastAPI
@@ -98,6 +108,7 @@ docker-compose -f config/docker/docker-compose.test.yml up --abort-on-container-
 - **Resource Limits**: 4 CPU, 8GB RAM (production)
 
 ### Data Exchange Service
+
 - **Port**: 3001
 - **Dockerfile**: `Dockerfile.data-exchange`
 - **Features**: CSV/Excel processing, catalog imports
@@ -128,11 +139,13 @@ See `.env.example` for full configuration options.
 ## Volume Management
 
 ### Development Volumes
+
 - Source code mounted for hot reload
 - Database data persisted
 - No cleanup between restarts
 
 ### Production Volumes
+
 ```bash
 # List volumes
 docker volume ls | grep kitchenxpert
@@ -145,23 +158,26 @@ docker-compose -f config/docker/docker-compose.prod.yml down -v
 ```
 
 ### Test Volumes
+
 - Automatically cleaned up after test run
 - Use tmpfs for database (no disk I/O)
 
 ## Resource Limits
 
 ### Production Limits
-| Service | CPU Limit | Memory Limit | CPU Reserved | Memory Reserved |
-|---------|-----------|--------------|--------------|-----------------|
-| Backend | 2 cores | 2GB | 0.5 cores | 512MB |
-| Frontend | 1 core | 512MB | 0.25 cores | 128MB |
-| AI Services | 4 cores | 8GB | 2 cores | 4GB |
-| PostgreSQL | 2 cores | 2GB | 1 core | 1GB |
-| Redis | 1 core | 1GB | 0.25 cores | 256MB |
+
+| Service     | CPU Limit | Memory Limit | CPU Reserved | Memory Reserved |
+| ----------- | --------- | ------------ | ------------ | --------------- |
+| Backend     | 2 cores   | 2GB          | 0.5 cores    | 512MB           |
+| Frontend    | 1 core    | 512MB        | 0.25 cores   | 128MB           |
+| AI Services | 4 cores   | 8GB          | 2 cores      | 4GB             |
+| PostgreSQL  | 2 cores   | 2GB          | 1 core       | 1GB             |
+| Redis       | 1 core    | 1GB          | 0.25 cores   | 256MB           |
 
 ## Security Features
 
 ### All Services
+
 - Run as non-root user
 - Multi-stage builds (minimal attack surface)
 - Health checks enabled
@@ -169,6 +185,7 @@ docker-compose -f config/docker/docker-compose.prod.yml down -v
 - Logging with rotation
 
 ### Frontend & Partner Portal
+
 - Nginx security headers
 - CSP (Content Security Policy)
 - HSTS ready
@@ -176,6 +193,7 @@ docker-compose -f config/docker/docker-compose.prod.yml down -v
 - Clickjacking prevention
 
 ### Databases
+
 - Password-protected
 - Network isolation
 - Regular health checks
@@ -184,22 +202,26 @@ docker-compose -f config/docker/docker-compose.prod.yml down -v
 ## Troubleshooting
 
 ### Check service logs
+
 ```bash
 docker-compose -f config/docker/docker-compose.prod.yml logs -f backend
 ```
 
 ### Restart a service
+
 ```bash
 docker-compose -f config/docker/docker-compose.prod.yml restart backend
 ```
 
 ### Check service health
+
 ```bash
 docker ps
 # Look for (healthy) status
 ```
 
 ### Database connection issues
+
 ```bash
 # Connect to database
 docker exec -it kitchenxpert-postgres-prod psql -U postgres -d kitchenxpert_prod
@@ -209,6 +231,7 @@ docker exec kitchenxpert-postgres-prod pg_isready
 ```
 
 ### Clear everything and restart
+
 ```bash
 # Development
 docker-compose -f config/docker/docker-compose.dev.yml down -v
@@ -222,16 +245,19 @@ docker-compose -f config/docker/docker-compose.prod.yml up -d --build
 ## Building Images
 
 ### Build specific service
+
 ```bash
 docker-compose -f config/docker/docker-compose.prod.yml build frontend
 ```
 
 ### Build all services
+
 ```bash
 docker-compose -f config/docker/docker-compose.prod.yml build
 ```
 
 ### Build without cache
+
 ```bash
 docker-compose -f config/docker/docker-compose.prod.yml build --no-cache
 ```
@@ -239,9 +265,12 @@ docker-compose -f config/docker/docker-compose.prod.yml build --no-cache
 ## CI/CD Integration
 
 ### GitHub Actions Example
+
 ```yaml
 - name: Run tests
-  run: docker-compose -f config/docker/docker-compose.test.yml up --abort-on-container-exit
+  run:
+    docker-compose -f config/docker/docker-compose.test.yml up
+    --abort-on-container-exit
 
 - name: Build production images
   run: docker-compose -f config/docker/docker-compose.prod.yml build
@@ -253,19 +282,24 @@ docker-compose -f config/docker/docker-compose.prod.yml build --no-cache
 ## Monitoring
 
 ### Health Checks
+
 All services include health checks:
+
 - Interval: 30s
 - Timeout: 3-10s
 - Retries: 3-5
 - Start period: 5-90s
 
 ### Logs
+
 - JSON format
 - Size limits (5-20MB per file)
 - Rotation (3-5 files)
 
 ### Metrics
+
 Production services expose:
+
 - Health endpoints
 - Prometheus metrics (if enabled)
 - Application logs
@@ -273,16 +307,19 @@ Production services expose:
 ## Backup & Restore
 
 ### Backup Database
+
 ```bash
 docker exec kitchenxpert-postgres-prod pg_dump -U postgres kitchenxpert_prod > backup-$(date +%Y%m%d).sql
 ```
 
 ### Restore Database
+
 ```bash
 cat backup-20260110.sql | docker exec -i kitchenxpert-postgres-prod psql -U postgres -d kitchenxpert_prod
 ```
 
 ### Backup Volumes
+
 ```bash
 docker run --rm -v kitchenxpert-postgres-prod-data:/data -v $(pwd):/backup alpine tar czf /backup/postgres-data.tar.gz /data
 ```
@@ -290,11 +327,13 @@ docker run --rm -v kitchenxpert-postgres-prod-data:/data -v $(pwd):/backup alpin
 ## Performance Tuning
 
 ### Development
+
 - Use volume mounting for hot reload
 - Disable production optimizations
 - Enable debug logging
 
 ### Production
+
 - Use built images (no volumes)
 - Enable all optimizations
 - Resource limits enforced
@@ -303,6 +342,7 @@ docker run --rm -v kitchenxpert-postgres-prod-data:/data -v $(pwd):/backup alpin
 ## Support
 
 For issues and questions:
+
 1. Check logs: `docker-compose logs -f <service>`
 2. Verify health: `docker ps`
 3. Check environment variables

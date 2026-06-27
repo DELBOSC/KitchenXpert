@@ -1,8 +1,7 @@
 # Phased Kitchen Implementation
 
-**Last Updated:** 2026-01-10
-**Difficulty Level:** Advanced
-**Estimated Time:** 55-75 minutes
+**Last Updated:** 2026-01-10 **Difficulty Level:** Advanced **Estimated Time:**
+55-75 minutes
 
 ## Learning Objectives
 
@@ -30,18 +29,21 @@ By the end of this tutorial, you will be able to:
 ## What is Phased Implementation?
 
 **Traditional approach:** Complete remodel in one intensive period
+
 - Duration: 3-6 weeks
 - Cost: Full budget required upfront
 - Disruption: Kitchen completely unusable during work
 - Risk: All-or-nothing - can't stop midway easily
 
 **Phased approach:** Remodel in strategic stages
+
 - Duration: Spans months or years
 - Cost: Spread across time, easier budgeting
 - Disruption: Kitchen remains functional between phases (mostly)
 - Flexibility: Can pause, adjust, or change plans between phases
 
 **Ideal for:**
+
 - Limited budgets (spreading cost over time)
 - Homeowners who want to "test drive" layouts before full commitment
 - Rental properties (improve gradually while collecting rent)
@@ -87,7 +89,9 @@ Reasons:
 
 2. Click **"Create Phased Plan"**
 
-> **TIP:** Not all kitchens phase well. Open-concept kitchens with extensive structural work are harder to phase than standard layouts with cosmetic updates.
+> **TIP:** Not all kitchens phase well. Open-concept kitchens with extensive
+> structural work are harder to phase than standard layouts with cosmetic
+> updates.
 
 ### Step 2: Define Phase Boundaries
 
@@ -183,7 +187,8 @@ DISADVANTAGES:
 
 [Screenshot: Custom phase editor with drag-and-drop]
 
-> **TIP:** Phase 1 should always create a fully functional kitchen. You don't want to live with an unusable kitchen for months.
+> **TIP:** Phase 1 should always create a fully functional kitchen. You don't
+> want to live with an unusable kitchen for months.
 
 ### Step 3: Optimize Phase 1 for Independent Value
 
@@ -229,6 +234,7 @@ Reason: Avoid rework, better long-term value
 4. This increases Phase 1 cost but reduces total project cost
 
 5. **Decision 2: Countertop strategy:**
+
 ```
 Decision 2: Temporary vs. Permanent Counters
 
@@ -257,6 +263,7 @@ Reason: Counters are expensive to replace twice. Do once, do right.
 6. Select **Option B: Quartz now**
 
 7. **Revised Phase 1:**
+
 ```
 PHASE 1 OPTIMIZED
 
@@ -281,7 +288,9 @@ Philosophy: Invest in permanent infrastructure (cabinets, counters, layout)
 
 [Screenshot: Updated Phase 1 budget]
 
-> **TIP:** The rule of thumb: If it's expensive to replace, do it right in Phase 1. If it's easy to swap (appliances, lighting), that's what you upgrade later.
+> **TIP:** The rule of thumb: If it's expensive to replace, do it right in
+> Phase 1. If it's easy to swap (appliances, lighting), that's what you upgrade
+> later.
 
 ### Step 4: Plan Interim Functionality
 
@@ -323,6 +332,7 @@ You'll notice: Missing backsplash, basic lighting
    - Basic lighting (darker task areas)
 
 4. **Mitigation strategies:**
+
 ```
 INTERIM LIVABILITY IMPROVEMENTS
 
@@ -353,7 +363,8 @@ Livability increase: 70% → 85%
 5. Budget $250 for interim solutions
 6. Makes 12-18 month gap much more comfortable
 
-> **TIP:** Peel-and-stick backsplash tiles are surprisingly good for temporary use. Easy to remove when ready for real tile.
+> **TIP:** Peel-and-stick backsplash tiles are surprisingly good for temporary
+> use. Easy to remove when ready for real tile.
 
 ### Step 5: Create Phase Transition Plan
 
@@ -415,6 +426,7 @@ Temporary kitchen arrangements:
 [Screenshot: Daily timeline with usability indicators]
 
 2. **Plan for storage during work:**
+
 ```
 PHASE 2 PREP: TEMPORARY STORAGE
 
@@ -432,6 +444,7 @@ Estimated cleanup/reorganization: 3 hours
 ```
 
 3. **Contingency planning:**
+
 ```
 PHASE 2 CONTINGENCIES
 
@@ -455,7 +468,8 @@ What if you hate the backsplash tile?
 - Lesson: Always order samples 1 month before Phase 2
 ```
 
-> **WARNING:** Always order material samples before committing to Phase 2 purchases. You might change your mind after living with Phase 1.
+> **WARNING:** Always order material samples before committing to Phase 2
+> purchases. You might change your mind after living with Phase 1.
 
 ### Step 6: Budget Phase Financing
 
@@ -515,6 +529,7 @@ Reason: Avoid interest costs, maintain flexibility
    - Track progress in KitchenXpert dashboard
 
 3. **Track savings progress:**
+
 ```
 PHASE 2 SAVINGS TRACKER
 
@@ -540,7 +555,8 @@ Can we accelerate?
 
 [Screenshot: Savings progress bar]
 
-> **TIP:** Treat phase savings like a bill - automatic transfer on payday. Makes it easier to stick with the plan.
+> **TIP:** Treat phase savings like a bill - automatic transfer on payday. Makes
+> it easier to stick with the plan.
 
 ### Step 7: Plan Phase Dependencies
 
@@ -617,7 +633,9 @@ DANGEROUS to defer:
 
 [Screenshot: Phase 1 updated with island sink rough-in]
 
-> **WARNING:** The most expensive phrase in phased remodeling: "I wish we'd roughed that in during Phase 1." Spend the extra $200-500 now to enable future flexibility.
+> **WARNING:** The most expensive phrase in phased remodeling: "I wish we'd
+> roughed that in during Phase 1." Spend the extra $200-500 now to enable future
+> flexibility.
 
 ### Step 8: Create Contractor Communication Plan
 
@@ -647,6 +665,7 @@ Special instructions for phased project:
 ```
 
 2. **Generated scope of work excerpt:**
+
 ```
 SCOPE OF WORK - PHASE 1 ONLY
 Johnson Residence Kitchen Remodel
@@ -736,6 +755,7 @@ CRITICAL: Please protect the following for future work:
 4. Send to 3-5 contractors for Phase 1 bids
 
 5. **Common contractor questions:**
+
 ```
 Q: "Why rough-in plumbing for island sink if not installing?"
 A: "Enables future Phase 3 addition without opening floor/walls again."
@@ -750,7 +770,8 @@ Q: "Can I give you a price on all 3 phases now?"
 A: "Phase 1 firm price needed. Phases 2/3 are estimates - we may change plans."
 ```
 
-> **TIP:** Contractors appreciate knowing the full plan. Helps them avoid conflicts with future work and potentially offer package pricing.
+> **TIP:** Contractors appreciate knowing the full plan. Helps them avoid
+> conflicts with future work and potentially offer package pricing.
 
 ### Step 9: Track Multi-Phase Progress
 
@@ -823,6 +844,7 @@ Currently living in: Phase 1 (functional and happy)
    - Inform Phase 2/3 decisions
 
 3. **Lessons learned tracker:**
+
 ```
 LESSONS LEARNED (Update continuously)
 
@@ -836,7 +858,9 @@ Phase 1 insights:
 These insights will improve Phase 2/3 plans!
 ```
 
-> **TIP:** Living with Phase 1 for 12-18 months teaches you how you actually use your kitchen. Often different from how you thought you'd use it. Use this knowledge to refine later phases.
+> **TIP:** Living with Phase 1 for 12-18 months teaches you how you actually use
+> your kitchen. Often different from how you thought you'd use it. Use this
+> knowledge to refine later phases.
 
 ### Step 10: Adjust Phases Based on Reality
 
@@ -890,6 +914,7 @@ Can start Phase 2 earlier: July 2027 (2 months sooner!)
    - Dependencies verified (no conflicts)
 
 5. **Knock-on effects:**
+
 ```
 PHASE ADJUSTMENT IMPACTS
 
@@ -913,7 +938,8 @@ New Phase 3: $10,300 (same as original plan)
 6. Accept recommendations
 7. All phases updated and rebalanced
 
-> **TIP:** Phased projects are forgiving. You can adjust future phases based on how you actually live with earlier phases. It's a feature, not a bug!
+> **TIP:** Phased projects are forgiving. You can adjust future phases based on
+> how you actually live with earlier phases. It's a feature, not a bug!
 
 ## What You Learned
 
@@ -936,7 +962,8 @@ Congratulations! You've mastered phased kitchen implementation. You can now:
 Remember these principles:
 
 1. **Phase 1 must be livable:** Never create an unusable kitchen for months
-2. **Invest in infrastructure:** Rough-in everything Phase 1, even if not using yet
+2. **Invest in infrastructure:** Rough-in everything Phase 1, even if not using
+   yet
 3. **Temporary should still be quality:** You'll live with it 12+ months
 4. **Save systematically:** Treat phase savings like a mortgage payment
 5. **Document everything:** Photos, notes, lessons learned inform future phases
@@ -948,26 +975,26 @@ Remember these principles:
 
 Avoid these pitfalls:
 
-**Mistake:** Creating unusable Phase 1
-**Fix:** Always ensure functional cooking, cleaning, storage
+**Mistake:** Creating unusable Phase 1 **Fix:** Always ensure functional
+cooking, cleaning, storage
 
-**Mistake:** Skipping rough-in for future phases
-**Fix:** Spend extra $500 Phase 1 to enable future flexibility
+**Mistake:** Skipping rough-in for future phases **Fix:** Spend extra $500 Phase
+1 to enable future flexibility
 
-**Mistake:** Using truly cheap temporary materials
-**Fix:** Temporary should still be quality (you'll live with it longer than you think)
+**Mistake:** Using truly cheap temporary materials **Fix:** Temporary should
+still be quality (you'll live with it longer than you think)
 
-**Mistake:** No savings discipline
-**Fix:** Automatic transfers, treat like a bill
+**Mistake:** No savings discipline **Fix:** Automatic transfers, treat like a
+bill
 
-**Mistake:** Starting Phase 2 too soon
-**Fix:** Live with Phase 1 for 6-12 months minimum, learn from experience
+**Mistake:** Starting Phase 2 too soon **Fix:** Live with Phase 1 for 6-12
+months minimum, learn from experience
 
-**Mistake:** Not protecting Phase 1 finishes
-**Fix:** Explicit contractor instructions to protect completed work
+**Mistake:** Not protecting Phase 1 finishes **Fix:** Explicit contractor
+instructions to protect completed work
 
-**Mistake:** Rigid phase plans
-**Fix:** Review and adjust phases based on real experience
+**Mistake:** Rigid phase plans **Fix:** Review and adjust phases based on real
+experience
 
 ## Real-World Phased Timeline Example
 
@@ -1011,6 +1038,7 @@ You've completed all KitchenXpert tutorials! Next:
 ## Feedback
 
 Help us improve phased planning tools:
+
 - Email: phased-planning@kitchenxpert.com
 - Share your phased project story: [Case study form]
 - Suggest improvements: [Feature request]
@@ -1018,29 +1046,34 @@ Help us improve phased planning tools:
 ---
 
 **Related Tutorials:**
+
 - [Budget Optimization](../intermediate/budget-optimization.md)
 - [Custom Manufacturing Integration](custom-manufacturing.md)
 - [VR Collaboration](vr-collaboration.md)
 
 **Documentation:**
+
 - [Phased Project Management](../../guides/phased-projects.md)
 - [Construction Sequencing](../../reference/construction-sequencing.md)
 
-**Last Updated:** 2026-01-10
-**Tutorial Version:** 2.1
+**Last Updated:** 2026-01-10 **Tutorial Version:** 2.1
 
 ---
 
 **Congratulations on completing all KitchenXpert tutorials!**
 
-You've progressed from creating your first simple design to mastering advanced techniques like VR collaboration, custom manufacturing integration, and phased implementation. You're now equipped to tackle any kitchen design challenge.
+You've progressed from creating your first simple design to mastering advanced
+techniques like VR collaboration, custom manufacturing integration, and phased
+implementation. You're now equipped to tackle any kitchen design challenge.
 
 **Your Journey:**
+
 - **Beginner:** First design, AI questionnaire, product catalogs
 - **Intermediate:** Budget optimization, multi-brand design, custom surfaces
 - **Advanced:** VR collaboration, custom manufacturing, phased implementation
 
 **What's Next:**
+
 - Start your real kitchen project
 - Explore the reference documentation
 - Join the KitchenXpert community

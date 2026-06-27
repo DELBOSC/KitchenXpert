@@ -38,8 +38,16 @@
       "condition": {
         "operator": "and",
         "conditions": [
-          { "questionId": "total-budget", "operator": "equals", "value": "under-10k" },
-          { "questionId": "appliance-budget", "operator": "in", "value": ["10k-20k", "20k-35k", "over-35k"] }
+          {
+            "questionId": "total-budget",
+            "operator": "equals",
+            "value": "under-10k"
+          },
+          {
+            "questionId": "appliance-budget",
+            "operator": "in",
+            "value": ["10k-20k", "20k-35k", "over-35k"]
+          }
         ]
       },
       "action": {
@@ -95,7 +103,12 @@
       },
       "action": {
         "type": "add-tag",
-        "tags": ["resale-focused", "neutral-colors", "timeless-design", "broad-appeal"]
+        "tags": [
+          "resale-focused",
+          "neutral-colors",
+          "timeless-design",
+          "broad-appeal"
+        ]
       }
     },
     {
@@ -158,7 +171,12 @@
     "validationMode": "on-section-complete"
   },
   "calculations": {
-    "triggerOn": ["total-budget", "appliance-budget", "priority-spending", "savings-areas"],
+    "triggerOn": [
+      "total-budget",
+      "appliance-budget",
+      "priority-spending",
+      "savings-areas"
+    ],
     "calculator": "budget-calculator.js",
     "outputFields": ["allocations", "warnings", "recommendations"]
   }

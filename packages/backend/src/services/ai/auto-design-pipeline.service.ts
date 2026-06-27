@@ -211,7 +211,9 @@ const ThreeTierDesignSchema = z.object({
 
 /** Sanitize user input to prevent prompt injection */
 function sanitizeInput(input: string | undefined | null): string {
-  if (!input) {return '';}
+  if (!input) {
+    return '';
+  }
   return input
     .replace(/[<>{}[\]]/g, '')
     .replace(/\n/g, ' ')
@@ -222,7 +224,7 @@ function sanitizeInput(input: string | undefined | null): string {
 export function safeStringify(obj: unknown, maxLen = 500): string {
   try {
     const str = JSON.stringify(obj);
-    return str.length > maxLen ? `${str.slice(0, maxLen)  }...` : str;
+    return str.length > maxLen ? `${str.slice(0, maxLen)}...` : str;
   } catch {
     return '{}';
   }
@@ -241,14 +243,16 @@ const TIER_CONFIGS: TierConfig[] = [
     name: 'Cuisine Confort',
     multiplier: 1.0,
     brandProfile: 'IKEA METOD haut de gamme, Schmidt, Mobalpa entree/milieu de gamme',
-    finishLevel: 'Laque ou plaque, quartz ou stratifie premium, electromenager milieu de gamme (Bosch, Siemens)',
+    finishLevel:
+      'Laque ou plaque, quartz ou stratifie premium, electromenager milieu de gamme (Bosch, Siemens)',
   },
   {
     tier: 'premium',
     name: 'Cuisine Premium',
     multiplier: 1.4,
     brandProfile: 'Schmidt, Mobalpa, SieMatic, Poggenpohl - gamme premium',
-    finishLevel: 'Laque vernis, quartz ou granit, electromenager haut de gamme (Miele, Gaggenau, Bora)',
+    finishLevel:
+      'Laque vernis, quartz ou granit, electromenager haut de gamme (Miele, Gaggenau, Bora)',
   },
 ];
 
@@ -275,7 +279,7 @@ export class AutoDesignPipelineService {
    */
   async generateFromQuestionnaire(
     userId: string,
-    questionnaireData: QuestionnaireData,
+    questionnaireData: QuestionnaireData
   ): Promise<AutoDesignResult> {
     const startTime = Date.now();
     const generationId = crypto.randomUUID();
@@ -359,11 +363,11 @@ export class AutoDesignPipelineService {
    * Extract design constraints from raw questionnaire data.
    */
   private extractConstraints(data: QuestionnaireData): DesignConstraints {
-    const spatial = (data.spatialData ?? {});
-    const budget = (data.budgetData ?? {});
-    const aesthetic = (data.aestheticPrefs ?? {});
-    const profile = (data.userProfile ?? {});
-    const cooking = (data.cookingHabits ?? {});
+    const spatial = data.spatialData ?? {};
+    const budget = data.budgetData ?? {};
+    const aesthetic = data.aestheticPrefs ?? {};
+    const profile = data.userProfile ?? {};
+    const cooking = data.cookingHabits ?? {};
 
     // Extract room dimensions (defaulting to typical French kitchen)
     const roomWidth = Number(spatial.width || spatial.roomWidth || 350);
@@ -380,7 +384,7 @@ export class AutoDesignPipelineService {
 
     // Extract style
     const style = String(
-      aesthetic.kitchenStyle || aesthetic.style || profile.preferredStyle || 'modern',
+      aesthetic.kitchenStyle || aesthetic.style || profile.preferredStyle || 'modern'
     );
 
     // Extract priorities
@@ -404,12 +408,10 @@ export class AutoDesignPipelineService {
       ? (aesthetic.colorPalette as string[])
       : [];
 
-    const layoutPreference = String(
-      aesthetic.layoutPreference || spatial.layoutPreference || '',
-    );
+    const layoutPreference = String(aesthetic.layoutPreference || spatial.layoutPreference || '');
 
     const additionalNotes = sanitizeInput(
-      String(aesthetic.additionalRequirements || profile.additionalNotes || ''),
+      String(aesthetic.additionalRequirements || profile.additionalNotes || '')
     );
 
     return {
@@ -440,7 +442,7 @@ export class AutoDesignPipelineService {
    */
   private async generateAllTiers(
     constraints: DesignConstraints,
-    generationId: string,
+    generationId: string
   ): Promise<SingleDesignResult[]> {
     const prompt = this.buildThreeTierPrompt(constraints);
 
@@ -504,7 +506,9 @@ export class AutoDesignPipelineService {
 
     // Room data
     sections.push('=== PIECE ===');
-    sections.push(`- Dimensions: ${constraints.roomWidth}cm x ${constraints.roomDepth}cm, hauteur ${constraints.roomHeight}cm`);
+    sections.push(
+      `- Dimensions: ${constraints.roomWidth}cm x ${constraints.roomDepth}cm, hauteur ${constraints.roomHeight}cm`
+    );
     sections.push(`- Forme: ${constraints.roomShape}`);
     if (constraints.layoutPreference) {
       sections.push(`- Disposition preferee: ${constraints.layoutPreference}`);
@@ -542,7 +546,9 @@ export class AutoDesignPipelineService {
     sections.push('=== 3 NIVEAUX A GENERER ===');
     for (const config of TIER_CONFIGS) {
       const tierBudget = Math.round(constraints.budgetMax * config.multiplier);
-      sections.push(`\n--- ${config.tier.toUpperCase()} (budget: ~${tierBudget} ${constraints.budgetCurrency}) ---`);
+      sections.push(
+        `\n--- ${config.tier.toUpperCase()} (budget: ~${tierBudget} ${constraints.budgetCurrency}) ---`
+      );
       sections.push(`- Marques cibles: ${config.brandProfile}`);
       sections.push(`- Niveau de finition: ${config.finishLevel}`);
     }
@@ -550,7 +556,9 @@ export class AutoDesignPipelineService {
 
     // Output format
     sections.push('=== FORMAT DE SORTIE ===');
-    sections.push('Reponds avec un objet JSON contenant 3 cles: "economique", "confort", "premium".');
+    sections.push(
+      'Reponds avec un objet JSON contenant 3 cles: "economique", "confort", "premium".'
+    );
     sections.push('Chaque cle doit avoir EXACTEMENT cette structure:');
     sections.push(`{
   "name": "Nom du concept (en francais)",
@@ -612,9 +620,13 @@ export class AutoDesignPipelineService {
     sections.push('- Le total des produits doit correspondre au totalCost');
     sections.push('- costBreakdown.cabinets + countertops + appliances + installation = totalCost');
     sections.push('- Les layoutItems doivent respecter les dimensions de la piece');
-    sections.push('- Chaque tier doit avoir une philosophie distincte (economie vs qualite vs luxe)');
+    sections.push(
+      '- Chaque tier doit avoir une philosophie distincte (economie vs qualite vs luxe)'
+    );
     sections.push('- Le tier economique doit etre fonctionnel malgre le budget reduit');
-    sections.push('- Le tier premium doit justifier son surplus par des materiaux et equipements superieurs');
+    sections.push(
+      '- Le tier premium doit justifier son surplus par des materiaux et equipements superieurs'
+    );
     sections.push('- Reponds UNIQUEMENT avec le JSON, sans texte avant ou apres');
 
     return sections.join('\n');

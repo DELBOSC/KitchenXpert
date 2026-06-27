@@ -32,7 +32,10 @@ export class ErrorInterceptor {
    * Intercepte et traite les erreurs de réponse
    */
   handleError(status: number, data: unknown): void {
-    const errorData = (data && typeof data === 'object' && 'code' in data) ? data as ApiErrorResponse : {} as ApiErrorResponse;
+    const errorData =
+      data && typeof data === 'object' && 'code' in data
+        ? (data as ApiErrorResponse)
+        : ({} as ApiErrorResponse);
 
     switch (status) {
       case 400:
@@ -76,7 +79,10 @@ export class ErrorInterceptor {
    * Formate une erreur pour l'affichage utilisateur
    */
   formatErrorMessage(status: number, data: unknown): string {
-    const errorData = (data && typeof data === 'object' && 'message' in data) ? data as ApiErrorResponse : {} as ApiErrorResponse;
+    const errorData =
+      data && typeof data === 'object' && 'message' in data
+        ? (data as ApiErrorResponse)
+        : ({} as ApiErrorResponse);
 
     if (errorData.message) {
       return errorData.message;
@@ -87,7 +93,7 @@ export class ErrorInterceptor {
       401: 'Authentification requise',
       403: 'Accès non autorisé',
       404: 'Ressource non trouvée',
-      408: 'Délai d\'attente dépassé',
+      408: "Délai d'attente dépassé",
       429: 'Trop de requêtes, veuillez réessayer plus tard',
       500: 'Erreur serveur',
       502: 'Service temporairement indisponible',

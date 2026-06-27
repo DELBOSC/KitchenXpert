@@ -161,9 +161,7 @@ class TranslationValidator {
       const missingPlaceholders = defaultPlaceholders.filter(
         (p) => !targetPlaceholders.includes(p)
       );
-      const extraPlaceholders = targetPlaceholders.filter(
-        (p) => !defaultPlaceholders.includes(p)
-      );
+      const extraPlaceholders = targetPlaceholders.filter((p) => !defaultPlaceholders.includes(p));
 
       if (missingPlaceholders.length > 0) {
         this.errors.push(
@@ -240,12 +238,10 @@ class TranslationValidator {
     console.log('');
 
     // Get all locales
-    const locales = fs
-      .readdirSync(config.localesDir)
-      .filter((f) => {
-        const stat = fs.statSync(path.join(config.localesDir, f));
-        return stat.isDirectory() && f !== config.defaultLocale;
-      });
+    const locales = fs.readdirSync(config.localesDir).filter((f) => {
+      const stat = fs.statSync(path.join(config.localesDir, f));
+      return stat.isDirectory() && f !== config.defaultLocale;
+    });
 
     this.stats.locales = locales.length + 1;
 
@@ -265,12 +261,7 @@ class TranslationValidator {
 
       // Check for missing namespaces
       for (const namespace of namespaces) {
-        this.validateNamespace(
-          namespace,
-          defaultTranslations,
-          targetTranslations,
-          locale
-        );
+        this.validateNamespace(namespace, defaultTranslations, targetTranslations, locale);
       }
     }
 
@@ -325,7 +316,9 @@ class TranslationValidator {
     if (this.errors.length === 0) {
       console.log(`  ${colors.green}✓ All translations are valid!${colors.reset}`);
     } else {
-      console.log(`  ${colors.red}✗ Validation failed with ${this.errors.length} error(s)${colors.reset}`);
+      console.log(
+        `  ${colors.red}✗ Validation failed with ${this.errors.length} error(s)${colors.reset}`
+      );
     }
     console.log('');
   }

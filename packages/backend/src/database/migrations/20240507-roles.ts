@@ -93,9 +93,15 @@ export const RolesMigration: Migration = {
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_roles_priority ON roles(priority)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_roles_user ON user_roles(user_id)`);
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_roles_role ON user_roles(role_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_user_roles_primary ON user_roles(user_id, is_primary)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_role_hierarchy_parent ON role_hierarchy(parent_role_id)`);
-    await tx.execute(`CREATE INDEX IF NOT EXISTS idx_role_hierarchy_child ON role_hierarchy(child_role_id)`);
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_user_roles_primary ON user_roles(user_id, is_primary)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_role_hierarchy_parent ON role_hierarchy(parent_role_id)`
+    );
+    await tx.execute(
+      `CREATE INDEX IF NOT EXISTS idx_role_hierarchy_child ON role_hierarchy(child_role_id)`
+    );
     await tx.execute(`CREATE INDEX IF NOT EXISTS idx_role_changes_user ON role_changes(user_id)`);
 
     // Trigger for updated_at
