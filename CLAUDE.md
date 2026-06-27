@@ -578,7 +578,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 | **Phase 1 P1** | ✅ Terminée (actionnable) | 0 tâche actionnable restante (7 résolues cumulées + 1 résolue 22/05 [poster Hero] + 1 écartée 22/05 [Hero3DInteractive — décision d'architecture, §11 P1]) |
 | **Phase 1 P2** | 🟡 En cours | **2 tâches actionnables restantes** : #2 SandboxMigrationBanner Card/Toast + **Backend dotenv cleanup (reclassé P3→P2 le 31/05/26 après audit, cf §12 31/05)**. Cumul résolu : 2 le 17/05 (HeroVideo + Backend 500) + 2 fermées par décision 22/05 (#3 guides hors scope + #4 TrustStack caduque alignée §8.2) + 1 résolue 23/05 (#1 HowItWorks → Card polymorphique, commits 594c63b+ee1869c). |
 | **Phase 1 P3** | 🟡 Entamée (couches CI 02-03/06) | **~27 tâches actionnables internes**. Recompte 02/06 : baseline ≈ 27 (la ligne "20" du 31/05 matin n'intégrait pas les 7 dettes du 31/05 soir) ; −2 résolues (#3 PR #75, #4 PR #76), −1 résolue (#5 PR #77), −1 caduque (#7), −1 reclassée BLOQUÉ EXTERNE (#2 CodeQL), +5 nouvelles 02/06 = 27. **03/06 : −1 (couche 6) +1 (7b) = 27. 06/06 : couche 7 INFRA résolue — 7b/7c/7d/7e-verify + #92 préfixe-locale (cause racine) = 6 PRs (#86-#90, #92). 07/06 : couche 7f facettes 1+2 RÉSOLUES — selectors (#97), color-contrast 14 pages (#98), blockers niveau A link-in-text-block+select-name (#99). 08/06 : couche 7f facette 3 login 401 RÉSOLUE (#102 backdoor status:active + #103 LoginPage redirect, flow-2+3b verts) + visual-regression baselines générées sur runner (#104, job dédié 5/5). 10/06 (STACK-UP) : ROOT CAUSE `<Provider store>` jamais câblé (#109, crash dashboard/catalog/designer, flow-2 2/2) + kitchen-fields flow-4/5/6 (#110) + span-click flow-1 (#106). Reste 7f facette 3 = longue traîne per-flow (flow-6 quote, flow-8 RGPD tab) + dur/externe (flow-5 WebGL, flow-4 IKEA live, flow-7 Stripe) = chantier LOCAL/mock. 10/06 (audit câblages) : verdict A providers + #112 (10 slices redux non enregistrés = piège latent désamorcé) ; reliquat mineur react-query inutilisé. 10/06 (5 dettes CI 02/06) : #114 turbo + #115 false-green + #116 minimatch override toxique → ESLint+coverage débloqués (coverage istanbul exit 0/1226 tests). Reste : ~1551 erreurs lint réelles (chantier) + 102 vulns security (Lot 4). **18-20/06 (sessions catalogue) : 4 PRs livrées** — #182 audit qualité cooking (264 actifs, méthodo §15.8.2), #183 matcher déterministe (DesignCatalogMatcher TS standalone, cascade 4 niveaux), #184 parseSpecTable v2 (regex dep-free common, 6 mappings, sanity bounds), #185 doc §15.8.3 (Castorama re-ingestion v2 incomplet 7497 SKU, déséquilibre volumétrique acté) + §15.8.4 (pivot stratégique chatbot couleur, archi 3 niveaux gammes/variants/rendu, POC dédup conservé bloc réutilisable 7497→6081 canoniques, PAS appliqué en DB).** **21-23/06 : séquence catalogue P4-P6 (#186-#189) + 2 fixes CI #190/#191 (--coverage + job Type Check) ; main HEAD 77a6488.** **24-25/06 : Lint backend nettoye (#193) ; P7 Phase 1 cœur livre — normalizeColor + VariantResolverService (#195/#196), graphe parentSku -> offre couleur, ~394 gammes, sans cle LLM. main HEAD e01d794.** **25-26/06 : P7 Phase 2 chatbot couleur livre (chaine backend, #198-#201) — resolveColors any-sku, endpoint REST /colors, instance partagee, tool LLM resolve_colors + anti-hallucination. Validation conversationnelle frontend = a faire. main HEAD 8c3c1a0.** **26/06 : BOM-a — generateBOM deterministe (vrais SKU/prix DB, zero LLM, totaux calcules + split ferme/estime), §15.7 P4 resolu pour lignes catalog. 7 tests greenfield. main HEAD e98f6df.** **26/06 : cleanup #205 (SYSTEM_PROMPTS.BOM_GENERATOR orphelin retire). BOM-b AUDITE et BLOQUE par prerequis data (SlotType ne couvre pas sol/credence/quincaillerie ; config sans dimensions ; catalogue sans ces familles) -> re-scope chantier d'ingestion, pas de matching. main HEAD b1290b0.** |
-| **§14 Roadmap Production** | ⏳ Non démarrée | 13 items (3 sécurité secrets, 5 infra, 2 CI/CD, 3 CORS/SSL/cookies). **Bloque le déploiement prod.** |
+| **§14 Roadmap Production** | 🔧 Code prêt, infra à provisionner | Durcissement backend FAIT (cookies, CORS-mécanisme, helmet, rate-limit, health, trust-proxy, OTEL). Blocage réel = infra + secrets hors-repo (Supabase/Upstash prod, hébergeur, domaine), à faire sur dashboards. |
 | **§14.5 Chantier Dependabot** | 🟢 Lot 1 complet | **Lot 1 ✅ 11/11.** Lot 2 débloqué après résolution facturation Actions 31/05 soir (§14.3) — PR #15 (dotenv 16→17) prouvée safe en isolat 31/05 matin, peut être mergée après `chore/dotenv-17-minimal` audit. Reste : 5 PRs Lot 2 + 5 PRs Lot 3 + 8 PRs Lot 4. |
 
 **Branches actives** :
@@ -627,9 +627,9 @@ Tout secret qui a été visible en dev local ou historisé dans des sessions de 
 
 ### 14.4 CORS / domaine / SSL / cookies prod
 
-- [ ] **Domaine de prod** (`kitchenxpert.com` ?) : acheter / pointer. Vérifier la cohérence avec `ORGANIZATION_JSONLD`, `WEBSITE_JSONLD`, `SOFTWARE_JSONLD` (URLs canoniques, OG images, schema.org).
-- [ ] **CORS strict** : configurer `CORS_ORIGINS` en `.env` prod pour autoriser uniquement le domaine de prod (pas de wildcard, pas de `localhost`). Tester avec un navigateur fresh sans cache.
-- [ ] **Cookies httpOnly + secure + sameSite** : vérifier que `secure: true` est bien forcé en prod (cf `auth-middleware.ts`) et que `sameSite: 'lax'` ou `'strict'` est aligné avec le domaine frontend. SSL géré automatiquement par Vercel (frontend) + plateforme backend choisie. Supabase n'accepte déjà que SSL (`DB_SSL=true`).
+- [ ] **Domaine de prod (acheter/pointer)** : vrai TODO infra. Bloque la valeur `CORS_ORIGINS` prod + l'URL frontend. (Voir 14.2.) Vérifier la cohérence avec `ORGANIZATION_JSONLD`, `WEBSITE_JSONLD`, `SOFTWARE_JSONLD` (URLs canoniques, OG images, schema.org).
+- [~] **CORS strict — mécanisme FAIT, reste la valeur prod** : `cors-middleware.ts` lit `CORS_ORIGINS` (CSV, anti-wildcard). Le code est complet ; il reste seulement à **fournir la valeur de prod** dans le `.env` prod (dépend de l'infra/domaine, donc traité avec 14.2). Tester avec un navigateur fresh sans cache.
+- [x] **Cookies httpOnly + secure + sameSite (FAIT en code)** : configurés dans `auth-controller.ts` — `httpOnly:true` + `secure:isProduction` (auto-ON en prod) + `sameSite:'strict'`. Rien à coder ; le durcissement cookies est en place. SSL géré automatiquement par Vercel (frontend) + plateforme backend choisie. Supabase n'accepte déjà que SSL (`DB_SSL=true`).
 
 ### 14.5 Mise à jour des dépendances (chantier Dependabot)
 
@@ -683,6 +683,22 @@ Tout secret qui a été visible en dev local ou historisé dans des sessions de 
 - Si une régression apparaît, **isoler par bisect** (re-tester chaque PR du paquet une par une) — c'est ce qui a permis d'identifier l'override path-to-regexp comme cause racine (pas une PR Dependabot elle-même).
 - Réflexe `git pull` : si conflit sur `pnpm-lock.yaml`, faire `git checkout -- pnpm-lock.yaml` avant pull, puis `pnpm install` après pull (le cloud main est source de vérité).
 - Tenir à jour la coche `[x]` au fur et à mesure des merges.
+
+### 14.6 Déjà en place (durcissement backend) — NON listé avant, mais implémenté
+
+Le code est plus avancé que cette roadmap ne le laissait croire. Sont **déjà en place** (audit 27/06) et ne nécessitent aucun travail prod :
+- **Helmet / CSP / security headers** (`security-headers.ts`, câblé `app.ts`)
+- **Rate-limiting** (`rate-limit-middleware.ts`, appliqué)
+- **Healthchecks** (`/health`, `/detailed`, `/ready`, `/live`)
+- **Trust-proxy** (`app.ts`, via `TRUST_PROXY` — requis pour les secure cookies derrière reverse-proxy)
+- **OpenTelemetry** (`core/telemetry.ts`, câblé dans `index.ts`)
+- **SSL/HTTPS** : délégué à l'hébergeur (Vercel/plateforme) — correct, pas de serveur HTTPS à coder.
+
+→ **Le vrai blocage déploiement n'est PAS le code** (le durcissement est fait), **mais l'infra + les secrets** (14.1 + 14.2 + domaine), à provisionner sur les dashboards.
+
+### 14.7 Procédure secrets prod (mémo pour le déploiement)
+
+Quand l'infra sera créée : copier `.env.example` (la checklist, #213) comme modèle, puis renseigner les **vraies valeurs** dans le `.env` prod (gitignored) **ou** directement dans les variables d'environnement de l'hébergeur (Railway/Render/Vercel — interface chiffrée, rien de committé). Générer les secrets avec `openssl rand -hex 32` (JWT_*, INTERNAL_API_KEY, DATA_ENCRYPTION_KEY). **Ne JAMAIS committer de vraie valeur** — `.env.example` garde ses placeholders pour toujours.
 
 ---
 
