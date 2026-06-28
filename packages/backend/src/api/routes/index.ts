@@ -62,6 +62,7 @@ import uploadRoutes from './upload-routes';
 import userRoutes from './user-routes';
 import webhookRoutes from './webhook-routes';
 import workflowSimulationRoutes from './workflow-simulation-routes';
+import { optionalAuth } from '../middleware/auth-middleware';
 import { catalogRateLimiter, aiUnauthRateLimiter } from '../middleware/rate-limit-middleware';
 
 const router: RouterType = Router();
@@ -114,11 +115,15 @@ router.use('/questionnaire', questionnaireRoutes);
 router.use('/uploads', uploadRoutes);
 router.use('/room-scan', roomScanRoutes);
 
-// AI chat/search are expensive (Anthropic + Gemini). Apply the
-// unauthenticated limiter first; authenticated requests skip it via the
-// in-handler aiRateLimiter (20/hour/user).
-router.use('/ai-chat', aiUnauthRateLimiter, aiChatRoutes);
-router.use('/ai-search', aiUnauthRateLimiter, aiSearchRoutes);
+// AI chat/search are expensive (Anthropic + Gemini). `optionalAuth` runs
+// FIRST (tolerant — never 401s) so req.user is populated BEFORE the
+// unauthenticated limiter; its skip() then lets logged-in users through to
+// the per-route aiRateLimiter (20/hour/user), while anonymous requests stay
+// capped at 5/hour/IP and are 401'd by the per-route `authenticate`.
+// (Without optionalAuth, req.user is undefined at mount → skip never fires →
+// authenticated users were wrongly capped at 5/hour. cf CLAUDE.md §11 P3.)
+router.use('/ai-chat', optionalAuth, aiUnauthRateLimiter, aiChatRoutes);
+router.use('/ai-search', optionalAuth, aiUnauthRateLimiter, aiSearchRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/subscriptions', subscriptionRoutes);
 router.use('/ai-project', aiProjectRoutes);
