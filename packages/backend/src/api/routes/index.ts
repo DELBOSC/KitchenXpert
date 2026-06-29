@@ -62,8 +62,7 @@ import uploadRoutes from './upload-routes';
 import userRoutes from './user-routes';
 import webhookRoutes from './webhook-routes';
 import workflowSimulationRoutes from './workflow-simulation-routes';
-import { optionalAuth } from '../middleware/auth-middleware';
-import { catalogRateLimiter, aiUnauthRateLimiter } from '../middleware/rate-limit-middleware';
+import { catalogRateLimiter } from '../middleware/rate-limit-middleware';
 
 const router: RouterType = Router();
 
@@ -115,15 +114,14 @@ router.use('/questionnaire', questionnaireRoutes);
 router.use('/uploads', uploadRoutes);
 router.use('/room-scan', roomScanRoutes);
 
-// AI chat/search are expensive (Anthropic + Gemini). `optionalAuth` runs
-// FIRST (tolerant — never 401s) so req.user is populated BEFORE the
-// unauthenticated limiter; its skip() then lets logged-in users through to
-// the per-route aiRateLimiter (20/hour/user), while anonymous requests stay
-// capped at 5/hour/IP and are 401'd by the per-route `authenticate`.
-// (Without optionalAuth, req.user is undefined at mount → skip never fires →
-// authenticated users were wrongly capped at 5/hour. cf CLAUDE.md §11 P3.)
-router.use('/ai-chat', optionalAuth, aiUnauthRateLimiter, aiChatRoutes);
-router.use('/ai-search', optionalAuth, aiUnauthRateLimiter, aiSearchRoutes);
+// AI chat/search are expensive (Anthropic + Gemini), but every route here is
+// `authenticate`/401 — no anonymous Anthropic cost is reachable. Product
+// decision (Option C, cf CLAUDE.md §11 P3): no anonymous tier. Authenticated
+// abuse is capped per-user by the in-handler aiRateLimiter (20/hour/user);
+// raw request volume is bounded for everyone by the global /api/ limiter
+// (app.ts, 100/15min/IP), which also covers anonymous 401 floods.
+router.use('/ai-chat', aiChatRoutes);
+router.use('/ai-search', aiSearchRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/subscriptions', subscriptionRoutes);
 router.use('/ai-project', aiProjectRoutes);
