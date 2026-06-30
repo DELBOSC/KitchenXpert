@@ -16,6 +16,7 @@ interface CatalogPanelProps {
 
 interface CatalogItem {
   id: string;
+  sku?: string; // real catalog SKU (undefined for local/primitive items) — fed to userData.sku
   type: string;
   name: string;
   width: number; // mm
@@ -37,6 +38,7 @@ type CatalogCategory =
 /** Shape of a product returned by the catalog/products API (only fields consumed here). */
 interface CatalogProduct {
   id: string;
+  sku?: string;
   type?: string;
   name: string;
   width?: number;
@@ -383,6 +385,7 @@ export default function CatalogPanel({
         if (res.success && res.data?.data && res.data.data.length > 0) {
           const mapped: CatalogItem[] = res.data.data.map((p) => ({
             id: p.id,
+            sku: p.sku,
             type: p.type || 'base_cabinet',
             name: p.name,
             width: p.width || 600,
@@ -456,6 +459,7 @@ export default function CatalogPanel({
       id: objectId,
       type: item.type,
       catalogId: item.id,
+      sku: item.sku, // real catalog SKU (undefined for local/primitive items) — used by /colors + IFC export
       name: item.name,
       dimensions,
       price: item.price,
