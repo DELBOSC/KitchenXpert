@@ -9,6 +9,14 @@ import {
   type KitchenMaterial,
 } from '@kitchenxpert/3d-engine';
 
+import { buildCatalogMaterial } from './build-catalog-material';
+import CatalogColorSection, {
+  type CatalogColorStatus,
+  type ColorOption,
+} from './CatalogColorSection';
+import { api } from '../../services/api/api';
+import { API_ENDPOINTS } from '../../services/api/endpoints';
+
 interface PropertiesPanelProps {
   selectedObject: THREE.Object3D | null;
   engine: KitchenEngine | null;
@@ -30,7 +38,12 @@ interface KitchenObjectUserData {
   type?: string;
   id?: string;
   name?: string;
+  /** Real catalog SKU set by CatalogPanel (#219) — drives the /colors fetch. */
+  sku?: string;
 }
+
+/** Internal fetch lifecycle for the catalog colors (superset of the rendered states). */
+type CatalogFetchStatus = 'idle' | 'loading' | 'loaded' | 'empty' | 'notfound' | 'error';
 
 function getUserData(object: THREE.Object3D): KitchenObjectUserData {
   return object.userData as KitchenObjectUserData;
@@ -147,6 +160,13 @@ export default function PropertiesPanel({
   const [materialSectionOpen, setMaterialSectionOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // Catalog colors (Palier 2) — fetched from /colors when the selected object
+  // carries a real SKU (#219). Drives Option B: catalog primary / Matériau demoted.
+  const [catalogColors, setCatalogColors] = useState<ColorOption[]>([]);
+  const [catalogStatus, setCatalogStatus] = useState<CatalogFetchStatus>('idle');
+  const [showColorSkeleton, setShowColorSkeleton] = useState(false);
+  const [colorReloadNonce, setColorReloadNonce] = useState(0);
+
   // Close delete confirmation on Escape key
   useEffect(() => {
     if (!showDeleteConfirm) {
@@ -247,6 +267,73 @@ export default function PropertiesPanel({
     [selectedObject]
   );
 
+  // Apply a catalog color: buildCatalogMaterial(key) → engine tint. Sets
+  // userData.materialId = 'catalog-<key>' (R2: single source of truth — this
+  // deselects any generic KITCHEN_MATERIALS choice, and vice versa).
+  const applyCatalogColor = useCallback(
+    (key: string) => {
+      if (!selectedObject) {
+        return;
+      }
+      const material = buildCatalogMaterial(key);
+      materialLibrary.applyMaterial(selectedObject, material);
+      selectedObject.userData.materialId = material.id;
+      setSelectedMaterialId(material.id);
+    },
+    [selectedObject]
+  );
+
+  // Fetch /colors on selection of an object with a SKU (no SKU → skip). The
+  // `active` guard drops stale responses on fast re-selection (the api client
+  // owns its own timeout signal, so it isn't aborted — ignoring is enough).
+  useEffect(() => {
+    const sku = selectedObject ? getUserData(selectedObject).sku : undefined;
+    if (!sku) {
+      setCatalogStatus('idle');
+      setCatalogColors([]);
+      return;
+    }
+
+    let active = true;
+    setCatalogStatus('loading');
+    setShowColorSkeleton(false);
+    const skeletonTimer = setTimeout(() => {
+      if (active) {
+        setShowColorSkeleton(true);
+      }
+    }, 150);
+
+    api
+      .get<ColorOption[]>(`${API_ENDPOINTS.CATALOG.PRODUCTS}/${encodeURIComponent(sku)}/colors`)
+      .then((res) => {
+        if (!active) {
+          return;
+        }
+        if (res.success && Array.isArray(res.data)) {
+          if (res.data.length === 0) {
+            setCatalogStatus('empty');
+          } else {
+            setCatalogColors(res.data);
+            setCatalogStatus('loaded');
+          }
+        } else {
+          const code = typeof res.error === 'object' && res.error ? res.error.code : '';
+          setCatalogStatus(code === 'NETWORK_ERROR' || code === 'TIMEOUT' ? 'error' : 'notfound');
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setCatalogStatus('error');
+        }
+      })
+      .finally(() => clearTimeout(skeletonTimer));
+
+    return () => {
+      active = false;
+      clearTimeout(skeletonTimer);
+    };
+  }, [selectedObject, colorReloadNonce]);
+
   if (!selectedObject) {
     return (
       <div className="w-72 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 h-full flex flex-col">
@@ -269,6 +356,21 @@ export default function PropertiesPanel({
   const objectType = userData.type ?? t('designer.properties.unknownType', 'Inconnu');
   const objectId = userData.id ?? selectedObject.uuid.slice(0, 8);
   const objectName = userData.name ?? objectType;
+
+  // Option B: catalog colors take the primary slot while loading / loaded /
+  // error (retryable). empty [] / 404 / no-SKU → section hidden, Matériau primary.
+  const catalogActive =
+    catalogStatus === 'loading' || catalogStatus === 'loaded' || catalogStatus === 'error';
+
+  // R2 — single source of truth: the generic "Personnaliser" summary/highlight
+  // reflects a KITCHEN_MATERIALS choice only. When a catalog color is active
+  // (id `catalog-*`), no generic material is selected → summary stays neutral.
+  const genericSelectedId =
+    selectedMaterialId && !selectedMaterialId.startsWith('catalog-') ? selectedMaterialId : null;
+
+  // Without a catalog section, Matériau is the sole finish control → open by
+  // default. Demoted under "Personnaliser" (catalog active) → user-toggled.
+  const materialOpen = catalogActive ? materialSectionOpen : true;
 
   return (
     <div className="w-72 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 h-full flex flex-col overflow-hidden">
@@ -358,32 +460,53 @@ export default function PropertiesPanel({
           />
         </div>
 
-        {/* Material selector */}
-        <SectionHeader>{t('designer.properties.material', 'Materiau')}</SectionHeader>
+        {/* Catalog colors (Option B primary — real purchasable variants) */}
+        {catalogActive && (
+          <CatalogColorSection
+            colors={catalogColors}
+            status={catalogStatus as CatalogColorStatus}
+            showSkeleton={showColorSkeleton}
+            selectedMaterialId={selectedMaterialId}
+            onApply={applyCatalogColor}
+            onRetry={() => setColorReloadNonce((n) => n + 1)}
+          />
+        )}
+
+        {/* Material selector — demoted to "Personnaliser" when catalog colors lead */}
+        <SectionHeader>
+          {catalogActive
+            ? t('designer.properties.customize', 'Personnaliser')
+            : t('designer.properties.material', 'Materiau')}
+        </SectionHeader>
+        {catalogActive && (
+          <p className="-mt-1 mb-2 text-[10px] text-gray-400 dark:text-gray-500">
+            {t('designer.properties.customizeHint', 'Appliquer une teinte libre (hors catalogue)')}
+          </p>
+        )}
         <button
           onClick={() => setMaterialSectionOpen(!materialSectionOpen)}
           className="w-full flex items-center justify-between px-3 py-2 text-xs border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors mb-2"
         >
           <span className="flex items-center gap-2">
-            {selectedMaterialId && (
+            {genericSelectedId && (
               <span
                 className="w-4 h-4 rounded-sm border border-gray-300 dark:border-gray-500 inline-block"
                 style={{
                   backgroundColor:
-                    KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === selectedMaterialId)
-                      ?.color || '#888',
+                    KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === genericSelectedId)
+                      ?.color ?? '#888',
                 }}
               />
             )}
             <span className="text-gray-700 dark:text-gray-300">
-              {selectedMaterialId
-                ? KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === selectedMaterialId)
-                    ?.name || t('designer.properties.unknownMaterial', 'Inconnu')
+              {genericSelectedId
+                ? (KITCHEN_MATERIALS.find((m: KitchenMaterial) => m.id === genericSelectedId)
+                    ?.name ?? t('designer.properties.unknownMaterial', 'Inconnu'))
                 : t('designer.properties.selectMaterial', 'Choisir un materiau')}
             </span>
           </span>
           <svg
-            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${materialSectionOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${materialOpen ? 'rotate-180' : ''}`}
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -393,7 +516,7 @@ export default function PropertiesPanel({
           </svg>
         </button>
 
-        {materialSectionOpen && (
+        {materialOpen && (
           <div className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden mb-3">
             {MATERIAL_TYPES.map((group) => {
               const materials = KITCHEN_MATERIALS.filter(
@@ -418,7 +541,7 @@ export default function PropertiesPanel({
                         onClick={() => applyMaterial(mat)}
                         title={mat.name}
                         className={`flex flex-col items-center gap-0.5 p-1 rounded-md border-2 transition-all duration-150 ${
-                          selectedMaterialId === mat.id
+                          genericSelectedId === mat.id
                             ? 'border-blue-500 ring-1 ring-blue-300 scale-105'
                             : 'border-gray-200 dark:border-gray-600 hover:border-blue-300 hover:scale-105'
                         }`}
