@@ -2,7 +2,10 @@ import { MaterialLibrary } from '@kitchenxpert/3d-engine';
 import * as THREE from 'three';
 import { describe, it, expect } from 'vitest';
 
-import { CATALOG_COLOR_PALETTE, type ColorKey } from '../../../components/designer/catalog-color-palette';
+import {
+  CATALOG_COLOR_PALETTE,
+  type ColorKey,
+} from '../../../components/designer/catalog-color-palette';
 import { buildCatalogMaterial } from '../../../components/designer/build-catalog-material';
 
 /**
@@ -14,11 +17,39 @@ import { buildCatalogMaterial } from '../../../components/designer/build-catalog
  * list proves full coverage).
  */
 const COLOR_NORMALIZE_KEYS: ColorKey[] = [
-  'blanc', 'noir', 'gris', 'bleu', 'vert', 'rouge', 'beige', 'marron', 'anthracite',
-  'creme', 'rose', 'terracotta', 'taupe', 'dore', 'argent', 'camel', 'champagne',
-  'graphite', 'bordeaux', 'ivoire', 'jaune', 'orange',
-  'chene', 'bois', 'noyer', 'sonoma', 'hetre', 'beton', 'ciment', 'marbre', 'inox',
-  'naturel', 'metal',
+  'blanc',
+  'noir',
+  'gris',
+  'bleu',
+  'vert',
+  'rouge',
+  'beige',
+  'marron',
+  'anthracite',
+  'creme',
+  'rose',
+  'terracotta',
+  'taupe',
+  'dore',
+  'argent',
+  'camel',
+  'champagne',
+  'graphite',
+  'bordeaux',
+  'ivoire',
+  'jaune',
+  'orange',
+  'chene',
+  'bois',
+  'noyer',
+  'sonoma',
+  'hetre',
+  'beton',
+  'ciment',
+  'marbre',
+  'inox',
+  'naturel',
+  'metal',
 ];
 
 const VALID_TYPES = ['wood', 'stone', 'metal', 'laminate', 'glass', 'ceramic'];
