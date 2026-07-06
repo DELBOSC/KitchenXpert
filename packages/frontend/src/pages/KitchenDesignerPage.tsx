@@ -160,10 +160,10 @@ function KitchenCreateForm(): React.ReactElement {
         const projRes = await api.post<{ id: string }>(API_ENDPOINTS.PROJECTS.BASE, {
           name: projName,
           description: t('designer.projectDescription', { defaultValue: 'Projet cuisine' }),
-          status: 'active',
+          status: 'draft',
         });
         if (!projRes.success || !projRes.data) {
-          toast.error(t('designer.projectCreateError'));
+          toast.error(projRes.error?.message || t('designer.projectCreateError'));
           setSubmitting(false);
           return;
         }
