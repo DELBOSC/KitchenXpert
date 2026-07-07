@@ -231,7 +231,7 @@ function KitchenCreateForm(): React.ReactElement {
                 <select
                   value={projectId}
                   onChange={(e) => setProjectId(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                 >
                   {projects.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -254,7 +254,7 @@ function KitchenCreateForm(): React.ReactElement {
                   value={newProjectName}
                   onChange={(e) => setNewProjectName(e.target.value)}
                   placeholder={t('designer.newProjectPlaceholder')}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                 />
                 {projects.length > 0 && (
                   <button
@@ -281,7 +281,7 @@ function KitchenCreateForm(): React.ReactElement {
               placeholder={t('designer.kitchenNamePlaceholder')}
               required
               aria-required="true"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white text-gray-900 dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             />
           </div>
 
@@ -352,7 +352,7 @@ function KitchenCreateForm(): React.ReactElement {
                   onChange={(e) => setWidth(Number(e.target.value))}
                   min={500}
                   max={15000}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                 />
               </div>
               <div>
@@ -365,7 +365,7 @@ function KitchenCreateForm(): React.ReactElement {
                   onChange={(e) => setLength(Number(e.target.value))}
                   min={500}
                   max={15000}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                 />
               </div>
               <div>
@@ -378,7 +378,7 @@ function KitchenCreateForm(): React.ReactElement {
                   onChange={(e) => setHeight(Number(e.target.value))}
                   min={2000}
                   max={4000}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                 />
               </div>
             </div>
@@ -1229,7 +1229,7 @@ function KitchenDesigner({
                   engine?.setBrandProfile(newBrandId);
                   setHasChanges(true);
                 }}
-                className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
+                className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
               >
                 {getAllBrandIds().map((bid) => (
                   <option key={bid} value={bid}>
@@ -1258,7 +1258,7 @@ function KitchenDesigner({
                     }
                     setHasChanges(true);
                   }}
-                  className="flex-1 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
+                  className="flex-1 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                 >
                   {(brandProfile ?? getBrandProfile(brandId)).worktop.availableThicknesses.map(
                     (t_mm) => (
@@ -1279,7 +1279,7 @@ function KitchenDesigner({
               <select
                 value={style}
                 onChange={(e) => handleChange(setStyle, e.target.value)}
-                className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
+                className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
               >
                 {STYLES.map((s) => (
                   <option key={s.value} value={s.value}>
@@ -1296,7 +1296,7 @@ function KitchenDesigner({
               <select
                 value={layout}
                 onChange={(e) => handleChange(setLayout, e.target.value)}
-                className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm dark:bg-gray-700 dark:text-white"
+                className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
               >
                 {LAYOUTS.map((l) => (
                   <option key={l.value} value={l.value}>
@@ -1542,7 +1542,7 @@ function DimensionInput({
           onChange={(e) => onChange(Number(e.target.value))}
           min={500}
           max={15000}
-          className="flex-1 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-l text-sm dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-blue-500 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:outline-none"
+          className="flex-1 px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-l text-sm bg-white text-gray-900 dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-blue-500 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:outline-none"
         />
         <span className="px-2 py-1.5 bg-gray-100 dark:bg-gray-600 border border-l-0 border-gray-300 dark:border-gray-600 rounded-r text-sm text-gray-600 dark:text-gray-300">
           {unit}
