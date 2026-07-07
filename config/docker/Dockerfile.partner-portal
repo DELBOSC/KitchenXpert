@@ -66,7 +66,7 @@ RUN pnpm --filter partner-portal build
 # ============================================
 # Stage 3: Production
 # ============================================
-FROM nginx:1.25-alpine AS production
+FROM nginx:1.31-alpine AS production
 
 LABEL maintainer="KitchenXpert Team"
 LABEL description="Production Partner Portal for KitchenXpert"
