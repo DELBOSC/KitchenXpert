@@ -12,7 +12,7 @@ import { useLanguage } from '../../i18n/LanguageProvider';
 
 export default function LoginPage(): React.ReactElement {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
   const { withPrefix } = useLanguage();
@@ -23,6 +23,26 @@ export default function LoginPage(): React.ReactElement {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
+  const [resetting, setResetting] = useState(false);
+
+  // Escape hatch for a stuck session: a stale/expired cookie (e.g. after a JWT
+  // secret rotation) makes the app see you as logged-out, so the Header shows no
+  // logout — yet the dead httpOnly cookie lingers and blocks a clean login.
+  // logout() hits the now-PUBLIC /auth/logout, which clears the cookie regardless
+  // of token validity. See auth-routes.ts (optionalAuth).
+  const handleResetSession = async (): Promise<void> => {
+    setResetting(true);
+    try {
+      await logout();
+      toast.success(
+        t('auth.sessionReset', 'Session réinitialisée — vous pouvez vous reconnecter.')
+      );
+    } catch {
+      toast.error(t('auth.sessionResetError', 'Échec de la réinitialisation de la session.'));
+    } finally {
+      setResetting(false);
+    }
+  };
 
   const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -169,6 +189,16 @@ export default function LoginPage(): React.ReactElement {
               Apple
             </Button>
           </div>
+
+          {/* Stuck-session escape hatch — clears a stale cookie via public logout */}
+          <button
+            type="button"
+            onClick={handleResetSession}
+            disabled={resetting}
+            className="mt-6 block w-full text-center text-xs text-white/40 transition-colors hover:text-white/70 disabled:opacity-50"
+          >
+            {t('auth.resetSession', 'Session bloquée ? Réinitialiser')}
+          </button>
         </form>
       </AuthLayout>
     </>
