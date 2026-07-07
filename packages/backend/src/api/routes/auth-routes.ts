@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { prisma } from '../../database/client';
 import logger from '../../utils/logger';
 import { authController } from '../controllers/auth-controller';
-import { authenticate } from '../middleware/auth-middleware';
+import { authenticate, optionalAuth } from '../middleware/auth-middleware';
 import {
   loginRateLimiter,
   authRateLimiter,
@@ -349,7 +349,12 @@ router.get(
  *       401:
  *         description: Unauthorized
  */
-router.post('/logout', authenticate, authController.logout);
+// Logout is intentionally PUBLIC (optionalAuth, not authenticate): logging out
+// must never require a valid session. A stale/expired cookie (e.g. after a JWT
+// secret rotation) would 401 on `authenticate` → the httpOnly cookie could never
+// be cleared by the app (a catch-22). optionalAuth lets the handler run: it
+// blacklists the token if present and clears the cookies unconditionally.
+router.post('/logout', optionalAuth, authController.logout);
 
 /**
  * @swagger
