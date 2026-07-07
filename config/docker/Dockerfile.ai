@@ -1,7 +1,7 @@
 # ============================================
 # Stage 1: Base Python Dependencies
 # ============================================
-FROM python:3.11-slim AS python-deps
+FROM python:3.14-slim AS python-deps
 
 LABEL maintainer="KitchenXpert Team"
 LABEL description="AI/ML Services for KitchenXpert"
@@ -43,7 +43,7 @@ RUN pip install --upgrade pip setuptools wheel && \
 # ============================================
 # Stage 2: Builder
 # ============================================
-FROM python:3.11-slim AS builder
+FROM python:3.14-slim AS builder
 
 WORKDIR /app
 
@@ -65,7 +65,7 @@ RUN mkdir -p /app/models /app/cache /app/logs
 # ============================================
 # Stage 3: Production
 # ============================================
-FROM python:3.11-slim AS production
+FROM python:3.14-slim AS production
 
 LABEL maintainer="KitchenXpert Team"
 LABEL description="Production AI Services for KitchenXpert"
