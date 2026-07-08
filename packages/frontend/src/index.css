@@ -59,6 +59,30 @@ body {
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
+/* --------------------------------------------------------------------------
+ * Form controls — theme-aware default text colour.
+ *
+ * The Tailwind preflight sets `input,textarea,select { color: inherit }`, and
+ * <body> carries a hard-coded `text-white` (the dark-DA base) that overrides the
+ * theme-aware `body { color: var(--kx-fg) }` above. On a light surface a form
+ * control with no explicit colour therefore inherits white → typed text is
+ * invisible. Give raw controls a theme-aware default here: element specificity
+ * (0,0,1) beats the preflight `inherit` by source order, but ANY `text-*`
+ * utility (e.g. the Input primitive's `text-white`, or `text-gray-900`) still
+ * wins — so styled inputs are untouched, only un-coloured ones are rescued.
+ * (The full body-level theme-aware fix is a separate DA task.)
+ * ------------------------------------------------------------------------ */
+input,
+textarea,
+select {
+  color: #111827; /* gray-900 — light mode */
+}
+.dark input,
+.dark textarea,
+.dark select {
+  color: #f9fafb; /* gray-50 — dark mode */
+}
+
 ::selection {
   background: rgb(var(--kx-brand-from) / 0.3);
   color: rgb(var(--kx-fg));
