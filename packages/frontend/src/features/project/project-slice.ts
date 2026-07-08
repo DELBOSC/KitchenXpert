@@ -5,7 +5,9 @@ export interface Project {
   userId: string;
   name: string;
   description?: string;
-  status: 'draft' | 'active' | 'completed' | 'archived';
+  // Mirrors the backend ProjectStatus enum (Prisma/Zod). 'active' was invalid
+  // (rejected 400 on create) — the backend never emits it.
+  status: 'draft' | 'in_progress' | 'review' | 'approved' | 'completed' | 'archived';
   budget?: number;
   timeline?: { start?: string; end?: string };
   collaborators?: {

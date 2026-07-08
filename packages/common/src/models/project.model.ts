@@ -16,7 +16,15 @@ import {
   ID,
 } from '../types';
 
-export type ProjectStatus = 'draft' | 'in_progress' | 'completed' | 'archived';
+// Mirrors the backend Prisma `ProjectStatus` enum (schema.prisma) — the source
+// of truth. Keep in sync with packages/backend project-routes.ts Zod enum.
+export type ProjectStatus =
+  | 'draft'
+  | 'in_progress'
+  | 'review'
+  | 'approved'
+  | 'completed'
+  | 'archived';
 
 export interface ProjectCreateInput {
   userId: ID;

@@ -27,7 +27,8 @@ export interface KitchenProject extends BaseEntity {
   dimensions: KitchenDimensions;
   budget?: number | null;
   currency?: string;
-  status: 'draft' | 'in_progress' | 'completed' | 'archived';
+  // Mirrors the backend Prisma ProjectStatus enum (source of truth).
+  status: 'draft' | 'in_progress' | 'review' | 'approved' | 'completed' | 'archived';
   thumbnailUrl?: string | null;
   modelData?: KitchenModel3D | null;
   appliances: ApplianceSelection[];
