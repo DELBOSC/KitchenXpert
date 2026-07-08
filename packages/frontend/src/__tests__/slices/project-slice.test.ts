@@ -35,7 +35,7 @@ describe('Project Slice', () => {
     userId: 'user-123',
     name: 'Kitchen Renovation 2024',
     description: 'Complete kitchen redesign project',
-    status: 'active',
+    status: 'in_progress',
     budget: 25000,
     timeline: {
       start: '2024-01-01',
@@ -80,7 +80,7 @@ describe('Project Slice', () => {
   describe('Synchronous Actions', () => {
     describe('setFilters', () => {
       it('should set filters correctly', () => {
-        const filters = { status: 'active', search: 'kitchen' };
+        const filters = { status: 'in_progress', search: 'kitchen' };
         store.dispatch(setFilters(filters));
 
         const state = store.getState().project;
@@ -90,7 +90,7 @@ describe('Project Slice', () => {
 
     describe('clearFilters', () => {
       it('should clear all filters', () => {
-        store.dispatch(setFilters({ status: 'active', search: 'test' }));
+        store.dispatch(setFilters({ status: 'in_progress', search: 'test' }));
         store.dispatch(clearFilters());
 
         const state = store.getState().project;
@@ -211,12 +211,12 @@ describe('Project Slice', () => {
           fetchProjects({
             page: 1,
             limit: 20,
-            filters: { status: 'active', search: 'kitchen' },
+            filters: { status: 'in_progress', search: 'kitchen' },
           })
         );
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining('status=active'),
+          expect.stringContaining('status=in_progress'),
           expect.any(Object)
         );
         expect(mockFetch).toHaveBeenCalledWith(
@@ -484,7 +484,7 @@ describe('Project Slice', () => {
           },
         });
 
-        const activatedProject = { ...draftProject, status: 'active' as const };
+        const activatedProject = { ...draftProject, status: 'in_progress' as const };
 
         mockFetch.mockResolvedValueOnce({
           ok: true,
@@ -494,12 +494,12 @@ describe('Project Slice', () => {
         await store.dispatch(
           updateProjectStatus({
             id: 'project-123',
-            status: 'active',
+            status: 'in_progress',
           })
         );
 
         const state = store.getState().project;
-        expect(state.projects[0].status).toBe('active');
+        expect(state.projects[0].status).toBe('in_progress');
       });
     });
   });
@@ -511,7 +511,7 @@ describe('Project Slice', () => {
         currentProject: mockProject,
         isLoading: true,
         error: 'Some error',
-        filters: { status: 'active' },
+        filters: { status: 'in_progress' },
         pagination: { page: 1, limit: 20, total: 1, totalPages: 1 },
       },
     };

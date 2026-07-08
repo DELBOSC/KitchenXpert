@@ -69,7 +69,7 @@ export default function DashboardPage(): React.ReactElement {
   const recent = projects.slice(0, 6);
   const stats = {
     projects: projects.length,
-    inProgress: projects.filter((p) => p.status === 'active').length,
+    inProgress: projects.filter((p) => p.status === 'in_progress').length,
     completed: projects.filter((p) => p.status === 'completed').length,
     totalBudget: projects.reduce((acc, p) => acc + (p.budget || 0), 0),
   };
