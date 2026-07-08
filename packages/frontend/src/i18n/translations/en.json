@@ -207,7 +207,7 @@
     "kitchenNameError": "Please give your kitchen a name",
     "style": "Style",
     "layout": "Layout",
-    "dimensions": "Dimensions (cm)",
+    "dimensions": "Dimensions (mm)",
     "width": "Width",
     "depth": "Depth",
     "height": "Height",

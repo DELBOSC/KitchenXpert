@@ -207,7 +207,7 @@
     "kitchenNameError": "Veuillez donner un nom à votre cuisine",
     "style": "Style",
     "layout": "Disposition",
-    "dimensions": "Dimensions (cm)",
+    "dimensions": "Dimensions (mm)",
     "width": "Largeur",
     "depth": "Profondeur",
     "height": "Hauteur",
