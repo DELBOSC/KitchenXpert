@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../../contexts/AuthContext';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { useLanguage } from '../../../i18n/LanguageProvider';
 import { LanguageSwitcher } from '../../../i18n/LanguageSwitcher';
 import { LocalizedLink as Link } from '../../../i18n/LocalizedLink';
 
@@ -16,10 +17,14 @@ export default function Header({ onToggleSidebar }: HeaderProps): React.ReactEle
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { resolvedTheme, toggleTheme } = useTheme();
+  const { withPrefix } = useLanguage();
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    // Locale-aware: navigate('/login') (non-prefixed) hits LocaleAwareShell,
+    // which reads 'login' as a locale and redirects to /fr/ (home). withPrefix
+    // keeps the current locale → the user lands on the login form after logout.
+    navigate(withPrefix('/login'));
   };
 
   return (
