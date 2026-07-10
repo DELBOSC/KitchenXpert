@@ -16,7 +16,7 @@
  *
  *   async addToBlacklist(token: string, expiresAt: Date): Promise<void> {
  *     const ttl = Math.max(0, Math.floor((expiresAt.getTime() - Date.now()) / 1000));
- *     await this.redis.setex(`blacklist:${this.hashToken(token)}`, ttl, '1');
+ *     await this.redis.setEx(`blacklist:${this.hashToken(token)}`, ttl, '1');
  *   }
  *
  *   async isBlacklisted(token: string): Promise<boolean> {
@@ -33,6 +33,7 @@
 
 import crypto from 'crypto';
 
+import { getRedisClient } from '../database/redis-client';
 import logger from '../utils/logger';
 
 /**
@@ -306,14 +307,13 @@ export class MemoryTokenBlacklist implements ITokenBlacklist {
  * - High-traffic applications
  * - Applications requiring persistence across restarts
  *
- * Requires: ioredis package and a running Redis instance
+ * Uses the shared node-redis singleton (redis-client.ts, with circuit breaker)
+ * and a running Redis instance. Fail-open on outage (see method bodies).
  */
 export class RedisTokenBlacklist implements ITokenBlacklist {
-  private redis: any; // ioredis client
   private prefix: string;
 
-  constructor(redisClient: any, prefix = 'token_blacklist:') {
-    this.redis = redisClient;
+  constructor(prefix = 'token_blacklist:') {
     this.prefix = prefix;
   }
 
@@ -324,35 +324,72 @@ export class RedisTokenBlacklist implements ITokenBlacklist {
   async addToBlacklist(token: string, expiresAt: Date): Promise<void> {
     const tokenHash = this.hashToken(token);
     const ttl = Math.max(0, Math.floor((expiresAt.getTime() - Date.now()) / 1000));
-
-    if (ttl > 0) {
-      await this.redis.setex(`${this.prefix}token:${tokenHash}`, ttl, '1');
+    if (ttl <= 0) {
+      return;
+    }
+    try {
+      const redis = await getRedisClient();
+      await redis.setEx(`${this.prefix}token:${tokenHash}`, ttl, '1');
+    } catch (err) {
+      // Fail-open write: a Redis outage (circuit open) must not crash logout.
+      // The token's own short expiry bounds how long a revoked token stays valid.
+      logger.warn(
+        '[TokenBlacklist] Redis unavailable — token revocation NOT persisted (natural expiry applies)',
+        { error: err instanceof Error ? err.message : String(err) }
+      );
     }
   }
 
   async isBlacklisted(token: string): Promise<boolean> {
     const tokenHash = this.hashToken(token);
-    const result = await this.redis.get(`${this.prefix}token:${tokenHash}`);
-    return result !== null;
+    try {
+      const redis = await getRedisClient();
+      const result = await redis.get(`${this.prefix}token:${tokenHash}`);
+      return result !== null;
+    } catch (err) {
+      // Fail-open read: circuit open / Redis unreachable → the token is NOT
+      // checked against the blacklist and treated as not-blacklisted
+      // (availability over strict revocation; bounded by the token's short TTL).
+      logger.warn(
+        '[TokenBlacklist] Redis unavailable (circuit open?) — token NOT checked against blacklist, treating as not-blacklisted (fail-open)',
+        { error: err instanceof Error ? err.message : String(err) }
+      );
+      return false;
+    }
   }
 
   async blacklistUserTokens(userId: string, expiresAt: Date): Promise<void> {
     const ttl = Math.max(0, Math.floor((expiresAt.getTime() - Date.now()) / 1000));
     const invalidBefore = Date.now();
-
-    if (ttl > 0) {
-      await this.redis.setex(`${this.prefix}user:${userId}`, ttl, invalidBefore.toString());
+    if (ttl <= 0) {
+      return;
+    }
+    try {
+      const redis = await getRedisClient();
+      await redis.setEx(`${this.prefix}user:${userId}`, ttl, invalidBefore.toString());
+    } catch (err) {
+      logger.warn(
+        '[TokenBlacklist] Redis unavailable — user token revocation NOT persisted (natural expiry applies)',
+        { error: err instanceof Error ? err.message : String(err) }
+      );
     }
   }
 
   async isUserBlacklisted(userId: string, tokenIssuedAt: Date): Promise<boolean> {
-    const invalidBefore = await this.redis.get(`${this.prefix}user:${userId}`);
-
-    if (!invalidBefore) {
+    try {
+      const redis = await getRedisClient();
+      const invalidBefore = await redis.get(`${this.prefix}user:${userId}`);
+      if (!invalidBefore) {
+        return false;
+      }
+      return tokenIssuedAt.getTime() < parseInt(invalidBefore, 10);
+    } catch (err) {
+      logger.warn(
+        '[TokenBlacklist] Redis unavailable (circuit open?) — user NOT checked against blacklist (fail-open)',
+        { error: err instanceof Error ? err.message : String(err) }
+      );
       return false;
     }
-
-    return tokenIssuedAt.getTime() < parseInt(invalidBefore, 10);
   }
 
   async cleanup(): Promise<number> {
@@ -373,19 +410,11 @@ export function getTokenBlacklist(): ITokenBlacklist {
     const redisUrl = process.env.REDIS_URL;
 
     if (redisUrl) {
-      try {
-        // Dynamic import to avoid requiring ioredis when not used
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-        const Redis = require('ioredis');
-        const redisClient = new Redis(redisUrl);
-        tokenBlacklistInstance = new RedisTokenBlacklist(redisClient);
-        logger.info('[TokenBlacklist] Using Redis-backed token blacklist');
-      } catch {
-        logger.warn(
-          '[TokenBlacklist] Failed to initialize Redis, falling back to memory-based blacklist'
-        );
-        tokenBlacklistInstance = new MemoryTokenBlacklist();
-      }
+      // Redis-backed via the shared node-redis singleton (redis-client.ts) — it
+      // owns the circuit breaker; each call lazily fetches the client and
+      // fail-opens on outage. No injected client, no ioredis dependency.
+      tokenBlacklistInstance = new RedisTokenBlacklist();
+      logger.info('[TokenBlacklist] Using Redis-backed token blacklist (node-redis singleton)');
     } else {
       logger.warn(
         '[TokenBlacklist] REDIS_URL not configured, using memory-based blacklist (not suitable for production)'
