@@ -7,9 +7,12 @@ import jwt from 'jsonwebtoken';
 
 import {
   MemoryTokenBlacklist,
+  RedisTokenBlacklist,
   getTokenExpiration,
   getTokenIssuedAt,
 } from '../auth/token-blacklist';
+import { getRedisClient } from '../database/redis-client';
+import logger from '../utils/logger';
 
 jest.mock('../utils/logger', () => ({
   __esModule: true,
@@ -19,6 +22,12 @@ jest.mock('../utils/logger', () => ({
     error: jest.fn(),
     debug: jest.fn(),
   },
+}));
+
+// The Redis-backed blacklist now uses the shared node-redis singleton — mock it
+// so we can drive both normal operation and the circuit-open (throw) path.
+jest.mock('../database/redis-client', () => ({
+  getRedisClient: jest.fn(),
 }));
 
 describe('MemoryTokenBlacklist', () => {
@@ -202,5 +211,91 @@ describe('getTokenIssuedAt', () => {
 
   it('should return null for invalid token', () => {
     expect(getTokenIssuedAt('invalid')).toBeNull();
+  });
+});
+
+describe('RedisTokenBlacklist', () => {
+  const mockGetRedisClient = getRedisClient as jest.MockedFunction<typeof getRedisClient>;
+  const warn = (logger as unknown as { warn: jest.Mock }).warn;
+
+  let redisMock: { setEx: jest.Mock; get: jest.Mock };
+  let blacklist: RedisTokenBlacklist;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    redisMock = { setEx: jest.fn().mockResolvedValue('OK'), get: jest.fn() };
+    mockGetRedisClient.mockResolvedValue(redisMock as never);
+    blacklist = new RedisTokenBlacklist();
+  });
+
+  describe('normal operation (client reachable)', () => {
+    it('addToBlacklist writes via setEx (key, positive ttl, "1")', async () => {
+      await blacklist.addToBlacklist('tok', new Date(Date.now() + 60_000));
+      expect(redisMock.setEx).toHaveBeenCalledTimes(1);
+      const [key, ttl, val] = redisMock.setEx.mock.calls[0] as [string, number, string];
+      expect(key).toMatch(/^token_blacklist:token:/);
+      expect(ttl).toBeGreaterThan(0);
+      expect(ttl).toBeLessThanOrEqual(60);
+      expect(val).toBe('1');
+    });
+
+    it('does NOT write when the token is already expired (ttl <= 0)', async () => {
+      await blacklist.addToBlacklist('tok', new Date(Date.now() - 1000));
+      expect(redisMock.setEx).not.toHaveBeenCalled();
+    });
+
+    it('isBlacklisted → true when the key exists, false when null', async () => {
+      redisMock.get.mockResolvedValueOnce('1');
+      await expect(blacklist.isBlacklisted('tok')).resolves.toBe(true);
+      redisMock.get.mockResolvedValueOnce(null);
+      await expect(blacklist.isBlacklisted('tok')).resolves.toBe(false);
+    });
+
+    it('isUserBlacklisted compares tokenIssuedAt to the stored invalidBefore', async () => {
+      const invalidBefore = Date.now();
+      redisMock.get.mockResolvedValue(String(invalidBefore));
+      // issued before the cutoff → blacklisted
+      await expect(blacklist.isUserBlacklisted('u1', new Date(invalidBefore - 1000))).resolves.toBe(
+        true
+      );
+      // issued after → not
+      await expect(blacklist.isUserBlacklisted('u1', new Date(invalidBefore + 1000))).resolves.toBe(
+        false
+      );
+    });
+  });
+
+  describe('circuit-open / Redis unreachable (fail-open, per audit decision)', () => {
+    beforeEach(() => {
+      // Mirrors getRedisClient throwing RedisCircuitOpenError when the breaker is open.
+      mockGetRedisClient.mockRejectedValue(
+        new Error('Redis circuit open (500ms ago); retry after cooldown')
+      );
+    });
+
+    it('isBlacklisted → false (fail-open) + logs a warning (never silent)', async () => {
+      await expect(blacklist.isBlacklisted('tok')).resolves.toBe(false);
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0][0]).toMatch(/fail-open|NOT checked/i);
+    });
+
+    it('isUserBlacklisted → false (fail-open) + warning', async () => {
+      await expect(blacklist.isUserBlacklisted('u1', new Date())).resolves.toBe(false);
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('addToBlacklist does NOT throw on outage (logout stays functional) + warning', async () => {
+      await expect(
+        blacklist.addToBlacklist('tok', new Date(Date.now() + 60_000))
+      ).resolves.toBeUndefined();
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('blacklistUserTokens does NOT throw on outage + warning', async () => {
+      await expect(
+        blacklist.blacklistUserTokens('u1', new Date(Date.now() + 60_000))
+      ).resolves.toBeUndefined();
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
   });
 });
