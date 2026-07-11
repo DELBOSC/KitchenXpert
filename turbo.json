@@ -35,7 +35,8 @@
         "NEXT_PUBLIC_API_URL",
         "NEXT_PUBLIC_WS_URL",
         "NEXT_PUBLIC_STRIPE_PUBLIC_KEY",
-        "NEXT_PUBLIC_GA_ID"
+        "NEXT_PUBLIC_GA_ID",
+        "VITE_DEV_GALLERY"
       ]
     },
 
