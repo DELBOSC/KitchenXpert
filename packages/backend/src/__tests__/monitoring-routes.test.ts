@@ -113,9 +113,20 @@ jest.mock('../api/middleware/auth-middleware', () => ({
 }));
 
 // ---------------------------------------------------------------------------
+// Mock Redis circuit state — getRedisCircuitState is mocked so we can drive the
+// three states; sanitizeRedisError stays REAL (requireActual) so we can prove a
+// raw Upstash URL/host never leaks through it.
+// ---------------------------------------------------------------------------
+jest.mock('../database/redis-client', () => {
+  const actual = jest.requireActual('../database/redis-client');
+  return { ...actual, getRedisCircuitState: jest.fn() };
+});
+
+// ---------------------------------------------------------------------------
 // Import controller AFTER mocks
 // ---------------------------------------------------------------------------
 import { MonitoringController } from '../api/controllers/monitoring-controller';
+import { getRedisCircuitState, sanitizeRedisError } from '../database/redis-client';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -238,6 +249,57 @@ describe('MonitoringController', () => {
 
       const response = jsonMock.mock.calls[0][0];
       expect(response.responseTime).toMatch(/^\d+\.\d+ms$/);
+    });
+  });
+
+  // ==========================================================================
+  // GET /health/redis (Redis circuit-breaker observability — always 200)
+  // ==========================================================================
+  describe('redisHealthCheck', () => {
+    const mockGetState = getRedisCircuitState as jest.Mock;
+
+    it.each([
+      ['up', null],
+      ['down', null],
+      ['cooldown', 1_800_000_000_000],
+    ] as const)('returns 200 with status "%s" and the checks shape', async (state, openUntil) => {
+      mockGetState.mockReturnValue({
+        state,
+        circuitOpenUntil: openUntil,
+        cooldownMs: 30_000,
+        lastError: null,
+      });
+      const req = createMockReq();
+      const { res, statusMock, jsonMock } = createMockRes();
+
+      await controller.redisHealthCheck(req as Request, res as Response);
+
+      // ALWAYS 200 (observability, not readiness) — even for down/cooldown.
+      expect(statusMock).toHaveBeenCalledWith(200);
+      expect(jsonMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: true,
+          status: state,
+          checks: { redis: state },
+          circuitOpenUntil: openUntil,
+          cooldownMs: 30_000,
+          lastError: null,
+        })
+      );
+    });
+
+    it('passes the (already-sanitized) lastError through to the body', async () => {
+      mockGetState.mockReturnValue({
+        state: 'cooldown',
+        circuitOpenUntil: 1_800_000_000_000,
+        cooldownMs: 30_000,
+        lastError: 'ECONNREFUSED',
+      });
+      const { res, jsonMock } = createMockRes();
+      await controller.redisHealthCheck(createMockReq() as Request, res as Response);
+      expect(jsonMock).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 'cooldown', lastError: 'ECONNREFUSED' })
+      );
     });
   });
 
@@ -811,5 +873,42 @@ describe('MonitoringController', () => {
       const isAuthorized = ['admin'].includes(testUser.role);
       expect(isAuthorized).toBe(false);
     });
+  });
+});
+
+// ===========================================================================
+// sanitizeRedisError — PUBLIC-ENDPOINT SAFETY: never leak Upstash host / creds.
+// (Real implementation via requireActual — not the mocked getRedisCircuitState.)
+// ===========================================================================
+describe('sanitizeRedisError (no infra leak on the public endpoint)', () => {
+  const UPSTASH_HOST = 'giving-bird-134810.upstash.io';
+
+  it('prefers the infra-safe error code when present', () => {
+    const err = Object.assign(new Error(`connect ECONNREFUSED ${UPSTASH_HOST}:6379`), {
+      code: 'ECONNREFUSED',
+    });
+    expect(sanitizeRedisError(err)).toBe('ECONNREFUSED');
+  });
+
+  it('redacts a rediss:// connection string (URL + credentials) from the message', () => {
+    const err = new Error(`AUTH failed for rediss://default:SUPERSECRETTOKEN@${UPSTASH_HOST}:6379`);
+    const out = sanitizeRedisError(err);
+    expect(out).not.toContain(UPSTASH_HOST);
+    expect(out).not.toContain('SUPERSECRETTOKEN');
+    expect(out).not.toContain('rediss://');
+    expect(out).not.toContain('upstash.io');
+  });
+
+  it('redacts a bare host:port and hostname from a codeless message', () => {
+    const err = new Error(`getaddrinfo ENOTFOUND ${UPSTASH_HOST}`);
+    const out = sanitizeRedisError(err);
+    expect(out).not.toContain(UPSTASH_HOST);
+    expect(out).not.toContain('upstash.io');
+  });
+
+  it('redacts an IPv4 host:port', () => {
+    const err = new Error('connect ETIMEDOUT 52.19.123.45:6379');
+    const out = sanitizeRedisError(err);
+    expect(out).not.toContain('52.19.123.45');
   });
 });

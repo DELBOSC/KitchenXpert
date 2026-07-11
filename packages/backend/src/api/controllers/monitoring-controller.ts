@@ -3,6 +3,7 @@ import os from 'os';
 import { type Request, type Response } from 'express';
 
 import { prisma } from '../../database/client';
+import { getRedisCircuitState } from '../../database/redis-client';
 import { MetricRepository } from '../../repositories/metric-repository';
 import { asyncHandler } from '../middleware/error-middleware';
 const metricRepository = new MetricRepository(prisma);
@@ -52,6 +53,32 @@ export class MonitoringController {
         database: databaseStatus,
       },
       responseTime: `${responseTime}ms`,
+    });
+  });
+
+  /**
+   * GET /health/redis
+   * Redis circuit-breaker OBSERVABILITY probe. Unlike detailedHealthCheck /
+   * readinessCheck (which return 503 when a dependency is down), this ALWAYS
+   * returns 200 and reports the state in the body. Redis is non-critical: since
+   * #231 the app fail-opens (token-blacklist / CSRF / cache all work without
+   * Redis), so a 503 here would wrongly pull the instance out of the load
+   * balancer for a non-fatal Redis blip. Monitors read the `status` field.
+   * Public (no auth), consistent with the other health probes. lastError is
+   * sanitized in redis-client (no host/credentials leak).
+   */
+  redisHealthCheck = asyncHandler(async (_req: Request, res: Response) => {
+    const circuit = getRedisCircuitState();
+    res.status(200).json({
+      success: true,
+      status: circuit.state, // 'up' | 'down' | 'cooldown'
+      timestamp: new Date().toISOString(),
+      checks: {
+        redis: circuit.state,
+      },
+      circuitOpenUntil: circuit.circuitOpenUntil,
+      cooldownMs: circuit.cooldownMs,
+      lastError: circuit.lastError,
     });
   });
 
