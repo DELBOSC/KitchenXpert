@@ -24,6 +24,18 @@ const CatalogPage = lazy(() => import('./pages/CatalogPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
+// Dev-only primitives visual gallery. The dynamic import lives in a branch
+// guarded by the build-time flag so that, when the flag is off, Vite/esbuild
+// constant-folds `import.meta.env.VITE_DEV_GALLERY` → the `import()` is dead
+// code and the page chunk is NOT emitted at all (verified: no chunk in prod
+// dist). When on, it loads the real gallery.
+const PrimitivesGalleryPage = lazy(
+  (): Promise<{ default: React.ComponentType }> =>
+    import.meta.env.VITE_DEV_GALLERY
+      ? import('./pages/PrimitivesGalleryPage')
+      : Promise.resolve({ default: () => null })
+);
+
 // Projects
 const ProjectsList = lazy(() => import('./pages/Projects/ProjectsList/ProjectsList'));
 const ProjectDetail = lazy(() => import('./pages/Projects/ProjectDetail/ProjectDetail'));
@@ -827,6 +839,12 @@ export function AppRouter(): React.ReactElement {
   return (
     <Suspense fallback={<LoadingSpinner fullScreen />}>
       <Routes>
+        {/* Dev-only visual-regression gallery. Registered only when the build
+            flag is set (CI visual job) so it stays out of the prod deploy. Must
+            precede `/:lang/*`, else "dev" is parsed as a locale. */}
+        {import.meta.env.VITE_DEV_GALLERY ? (
+          <Route path="/dev/primitives" element={<PrimitivesGalleryPage />} />
+        ) : null}
         <Route path="/:lang/*" element={<LocaleAwareShell />} />
         <Route path="*" element={<RedirectToLang />} />
       </Routes>

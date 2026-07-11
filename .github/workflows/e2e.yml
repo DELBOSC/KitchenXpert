@@ -203,3 +203,49 @@ jobs:
           name: visual-diffs-${{ github.run_id }}
           path: packages/frontend/test-results/
           retention-days: 7
+
+  primitives-visual:
+    name: Visual regression (primitives)
+    runs-on: ubuntu-latest
+    # Self-contained like `visual-regression`, but builds with VITE_DEV_GALLERY=1
+    # so the dev-only /dev/primitives route exists in the preview build (it is
+    # tree-shaken out of prod). Independent job → its 3 primitive baselines stay
+    # GREEN regardless of the 5 page baselines above (stale = separate debt).
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 8.15.0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter frontend exec playwright install --with-deps chromium
+
+      - name: Build + start frontend (with dev gallery route)
+        env:
+          VITE_DEV_GALLERY: '1'
+        run: |
+          pnpm turbo run build --filter @kitchenxpert/frontend
+          (cd packages/frontend && pnpm preview --port 3005 --strictPort &)
+          npx wait-on http://localhost:3005 --timeout 60000
+
+      - name: Run primitives visual regression
+        env:
+          E2E_BASE_URL: http://localhost:3005
+          PLAYWRIGHT_SUITE: critical
+        run: |
+          pnpm --filter frontend exec playwright test \
+            e2e-critical/primitives-gallery.spec.ts \
+            --project=chromium-desktop \
+            --reporter=line
+
+      - name: Upload visual diffs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: primitives-visual-diffs-${{ github.run_id }}
+          path: packages/frontend/test-results/
+          retention-days: 7

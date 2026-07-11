@@ -7,6 +7,8 @@
 interface ImportMetaEnv {
   readonly VITE_API_URL?: string;
   readonly VITE_WS_URL?: string;
+  /** Build-time flag: when set, registers the dev-only /dev/primitives visual gallery. */
+  readonly VITE_DEV_GALLERY?: string;
 }
 
 interface ImportMeta {
