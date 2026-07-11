@@ -74,6 +74,18 @@ router.get('/health/detailed', monitoringController.detailedHealthCheck);
 
 /**
  * @swagger
+ * /api/v1/health/redis:
+ *   get:
+ *     summary: Redis circuit-breaker state (observability, always 200)
+ *     tags: [Monitoring]
+ *     responses:
+ *       200:
+ *         description: Redis circuit state (up | down | cooldown)
+ */
+router.get('/redis', monitoringController.redisHealthCheck);
+
+/**
+ * @swagger
  * /api/v1/monitoring/health/ready:
  *   get:
  *     summary: Readiness check for load balancers

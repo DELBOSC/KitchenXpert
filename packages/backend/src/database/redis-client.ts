@@ -29,12 +29,70 @@ let redisClient: RedisClientType | null = null;
 let connectionFailed = false;
 let circuitOpenUntil = 0;
 let pendingConnect: Promise<RedisClientType> | null = null;
+// Last connection failure, SANITIZED (never the raw message — see getRedisCircuitState,
+// exposed on the public /health/redis endpoint; a raw error can carry the Upstash
+// host/credentials). Reset to null on a successful connect.
+let lastError: string | null = null;
 
 class RedisCircuitOpenError extends Error {
   constructor(msSinceOpen: number) {
     super(`Redis circuit open (${msSinceOpen}ms ago); retry after cooldown`);
     this.name = 'RedisCircuitOpenError';
   }
+}
+
+/** Read-only snapshot of the Redis circuit breaker, for the /health/redis probe. */
+export interface RedisCircuitState {
+  /** up = connected; cooldown = circuit open (waiting); down = not connected, no cooldown. */
+  state: 'up' | 'down' | 'cooldown';
+  /** Epoch ms until which the circuit stays open, or null if closed. */
+  circuitOpenUntil: number | null;
+  cooldownMs: number;
+  /** Sanitized last connection error (never raw — no host/credentials). */
+  lastError: string | null;
+}
+
+/**
+ * Sanitize a Redis error for PUBLIC exposure: never leak the Upstash host,
+ * credentials or connection string. Prefer the infra-safe error code
+ * (ECONNREFUSED / ENOTFOUND / ETIMEDOUT / WRONGPASS…); otherwise redact any
+ * connection string, host:port, known hostnames and IPs from the message.
+ */
+export function sanitizeRedisError(err: unknown): string {
+  const code = (err as { code?: unknown } | null)?.code;
+  if (typeof code === 'string' && code.length > 0) {
+    return code;
+  }
+  const raw = err instanceof Error ? err.message : String(err);
+  return raw
+    .replace(/rediss?:\/\/[^\s'"]+/gi, '[redacted-url]')
+    .replace(/@[^\s:'"]+/g, '@[redacted-host]')
+    .replace(/\b[\w.-]+\.(?:upstash\.io|amazonaws\.com|cache\.\w+)\b/gi, '[redacted-host]')
+    .replace(/\b\d{1,3}(?:\.\d{1,3}){3}(?::\d{2,5})?\b/g, '[redacted-ip]')
+    .replace(/\b[a-z0-9-]+(?::\d{2,5})\b/gi, '[redacted-host]')
+    .slice(0, 160);
+}
+
+/**
+ * Read-only snapshot of the circuit breaker state (no side effects, no connect
+ * attempt). Derived from the existing breaker vars — does NOT change its logic.
+ */
+export function getRedisCircuitState(): RedisCircuitState {
+  const now = Date.now();
+  let state: RedisCircuitState['state'];
+  if (redisClient && redisClient.isOpen) {
+    state = 'up';
+  } else if (circuitOpenUntil > now) {
+    state = 'cooldown';
+  } else {
+    state = 'down';
+  }
+  return {
+    state,
+    circuitOpenUntil: circuitOpenUntil > now ? circuitOpenUntil : null,
+    cooldownMs: COOLDOWN_MS,
+    lastError,
+  };
 }
 
 /**
@@ -92,6 +150,7 @@ export async function getRedisClient(): Promise<RedisClientType> {
       redisClient = client;
       connectionFailed = false;
       circuitOpenUntil = 0;
+      lastError = null;
       pendingConnect = null;
       return client;
     },
@@ -99,6 +158,7 @@ export async function getRedisClient(): Promise<RedisClientType> {
       // Arm the circuit, log once, dispose the orphan client to stop background reconnects.
       circuitOpenUntil = Date.now() + COOLDOWN_MS;
       connectionFailed = true;
+      lastError = sanitizeRedisError(err);
       pendingConnect = null;
       const message = err instanceof Error ? err.message : String(err);
       logger.warn('[Redis] Connect failed; circuit open', {
