@@ -1,10 +1,18 @@
+import { twMerge } from 'tailwind-merge';
+
 /**
- * Minimal class-joining helper. Not as powerful as clsx+tailwind-merge but
- * zero-dependency — we keep the bundle slim. If later we need conflict
- * resolution, swap in tailwind-merge behind the same signature.
+ * Class-joining helper with Tailwind conflict resolution. Filters falsy parts,
+ * then runs the result through `twMerge` so a later class WINS over an earlier
+ * one of the same family (e.g. `cn('rounded-2xl', 'rounded-xl') → 'rounded-xl'`)
+ * — this is what makes §4 "extend a primitive by props" actually work: a
+ * call-site `className` now overrides the primitive's baked classes instead of
+ * merely being appended (the old `join(' ')` left both and let CSS source-order
+ * decide). Same signature as before; `clsx` is unnecessary — the variadic
+ * falsy-filter already covers it. Blast radius audited in #233 (1 intended
+ * change: CatalogPage sort Select) and netted by `primitives-visual` (#234).
  */
 export function cn(...parts: Array<string | false | null | undefined | 0>): string {
-  return parts.filter((p): p is string => typeof p === 'string' && p.length > 0).join(' ');
+  return twMerge(parts.filter((p): p is string => typeof p === 'string' && p.length > 0).join(' '));
 }
 
 /**
