@@ -347,7 +347,7 @@ export default function CatalogPage(): React.ReactElement {
               <Select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="!h-9 w-auto"
+                className="h-9 w-auto"
               >
                 <option value="relevance">Pertinence</option>
                 <option value="price_asc">Prix croissant</option>
