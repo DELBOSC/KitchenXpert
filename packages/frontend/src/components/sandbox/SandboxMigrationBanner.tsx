@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
 import { tagConversion } from '../../hooks/useABVariant';
 import { migrateSandboxToAccount } from '../../sandbox/migrateSandbox';
 import { clearPersistedSandbox, readPersistedSandbox } from '../../sandbox/store';
@@ -60,10 +62,15 @@ export function SandboxMigrationBanner(): React.ReactElement | null {
   };
 
   return (
-    <div
+    // twMerge (#235) lets the call-site className override Card's baked look:
+    // rounded-2xl→rounded-xl, border-white/10→indigo-400/20, and bg-transparent
+    // strips Card's bg-white/[0.03] so only the aurora gradient paints (else the
+    // 3% white bg-color would tint the gradient's transparent end). Pixel-identical
+    // to the previous hand-rolled <div> — proven by the before/after screenshot.
+    <Card
       role="region"
       aria-label="Projet en mode démo détecté"
-      className="mb-6 rounded-xl border border-indigo-400/20 bg-gradient-to-r from-indigo-500/10 via-fuchsia-500/10 to-transparent p-4 backdrop-blur-sm"
+      className="mb-6 rounded-xl border-indigo-400/20 bg-transparent bg-gradient-to-r from-indigo-500/10 via-fuchsia-500/10 to-transparent p-4 backdrop-blur-sm"
     >
       <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -82,31 +89,36 @@ export function SandboxMigrationBanner(): React.ReactElement | null {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
+          {/* Button primitives; className overrides the pill look (rounded-full/halo/h-8)
+              back to the banner's original flat rounded-lg — enabled by twMerge (#235). */}
+          <Button
+            variant="primary"
+            size="sm"
             onClick={handleImport}
             disabled={busy}
-            className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-gray-900 transition hover:bg-white/90 disabled:opacity-50"
+            className="h-auto rounded-lg py-1.5 shadow-none"
           >
             {busy ? 'Import…' : 'Importer dans mon compte'}
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setDismissed(true)}
-            className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80 transition hover:bg-white/10"
+            className="h-auto rounded-lg bg-white/5 py-1.5 text-white/80 hover:bg-white/10"
           >
             Ignorer
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleDelete}
-            className="rounded-lg px-3 py-1.5 text-xs text-white/50 transition hover:text-rose-300"
+            className="h-auto rounded-lg py-1.5 text-white/50 hover:bg-transparent hover:text-rose-300"
           >
             Supprimer la démo
-          </button>
+          </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
