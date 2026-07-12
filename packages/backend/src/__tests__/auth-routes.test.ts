@@ -630,10 +630,17 @@ describe('Auth Routes', () => {
       expect(mockBlacklist.addToBlacklist).toHaveBeenCalledTimes(2);
     });
 
-    it('should return 401 when not authenticated', async () => {
-      const response = await request(app).post('/auth/logout').expect(401);
+    // Since #223 `/auth/logout` is PUBLIC (`optionalAuth`, not `authenticate`): a
+    // stale/rotated cookie must ALWAYS be clearable. It used to 401 here, which made
+    // a stuck session a catch-22 (you needed a valid token to drop an invalid one).
+    // The route now answers 200 and purges the cookies whatever the auth state — this
+    // test asserts that contract instead of the removed 401.
+    it('returns 200 and still purges the cookies when NOT authenticated (public logout, #223)', async () => {
+      const response = await request(app).post('/auth/logout').expect(200);
 
-      expect(response.body.success).toBe(false);
+      expect(response.body.success).toBe(true);
+      // The purge is the whole point of the public route — it must happen anyway.
+      expect(response.headers['set-cookie']).toBeDefined();
     });
 
     it('should handle logout with Authorization header', async () => {
