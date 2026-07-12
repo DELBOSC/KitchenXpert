@@ -3,6 +3,7 @@ import { Router, type Request, type Response, type Router as RouterType } from '
 import { z } from 'zod';
 
 import { prisma } from '../../database/client';
+import { searchProductsStructured } from '../../services/ai/catalog-search.service';
 import {
   assertQuota,
   recordUsage,
@@ -589,6 +590,8 @@ const SHOPPING_MODEL = 'claude-sonnet-4-6';
 const SHOPPING_MAX_TOKENS = 1024;
 const SHOPPING_MAX_TOOL_ROUNDS = 4; // guard against runaway tool loops
 const SHOPPING_PROJECTED_USD = 0.02;
+/** Tool contract says "up to 5 best matches" — keep the payload small for Claude. */
+const SEARCH_CATALOG_MAX_RESULTS = 5;
 
 const anthropic = new Anthropic(); // reads ANTHROPIC_API_KEY
 
@@ -618,14 +621,53 @@ export async function executeShoppingTool(
   ctx: { userId: string; kitchenContext?: z.infer<typeof ChatRequestSchema>['kitchenContext'] }
 ): Promise<unknown> {
   switch (name) {
-    case 'searchCatalog':
-      // TODO: replace with the catalog retrieval service (pgvector or
-      // ElasticSearch when the catalog gets bigger). Returns a stable
-      // schema so Claude can reason on it.
-      return {
-        results: [],
-        note: 'Catalog search not wired yet — returning empty list. See use-cases/catalog/search.use-case.ts.',
-      };
+    case 'searchCatalog': {
+      // Deterministic catalog lookup — the ONLY product/price fact source the
+      // assistant has (with resolve_colors). Same Prisma WHERE as the public
+      // GET /catalog/products/search path, minus the LLM filter-extraction:
+      // Claude already hands us the filters structured in the tool input, so a
+      // second LLM pass would pay twice for the same thing.
+      //
+      // Rate limiting: this in-process call does not traverse the HTTP
+      // searchRateLimiter (30/min). It doesn't need to — the AI path is far
+      // stricter: authenticate + aiRateLimiter (20/HOUR) + the per-tier AI
+      // quota + SHOPPING_MAX_TOOL_ROUNDS. No bypass, a tighter gate.
+      const query = typeof input.query === 'string' ? input.query.trim() : '';
+      if (!query) {
+        return { count: 0, results: [], note: 'query is required' };
+      }
+      const f = (input.filters ?? {}) as Record<string, unknown>;
+      try {
+        const rows = await searchProductsStructured(
+          {
+            query,
+            // The tool's English enum (cabinet/appliance/worktop…) is bridged to
+            // the real FR category slugs by catalog-type-mapping.
+            ...(typeof f.category === 'string' ? { type: f.category } : {}),
+            ...(typeof f.brand === 'string' ? { brand: f.brand } : {}),
+            ...(typeof f.maxPriceEur === 'number' ? { maxPrice: f.maxPriceEur } : {}),
+          },
+          SEARCH_CATALOG_MAX_RESULTS
+        );
+        // Only real, verifiable fields. An empty list stays empty — the system
+        // prompt forbids inventing a product when nothing is found.
+        return {
+          count: rows.length,
+          results: rows.map((p) => ({
+            sku: p.sku,
+            name: p.name,
+            brand: p.brand,
+            priceEur: Number(p.price),
+            category: p.category?.name ?? null,
+          })),
+        };
+      } catch (err) {
+        // Graceful degradation (same contract as resolve_colors): a DB hiccup
+        // must not 500 the chat turn — Claude gets a readable error instead.
+        logger.error('shopping-chat: searchCatalog failed', { err, query });
+        return { error: 'catalog search failed' };
+      }
+    }
 
     case 'swapItem':
       // TODO: call the kitchen-item swap use case ; here we just echo back.

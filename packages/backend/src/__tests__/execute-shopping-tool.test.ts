@@ -10,10 +10,16 @@
  * registration), so the heavy deps are mocked just to let the module load.
  */
 
-// The unit under test only depends on this — control it.
+// The unit under test only depends on these — control them.
 const mockResolveColors = jest.fn();
 jest.mock('../services/variant-resolver', () => ({
   variantResolver: { resolveColors: (...args: unknown[]) => mockResolveColors(...args) },
+}));
+
+const mockSearchProducts = jest.fn();
+jest.mock('../services/ai/catalog-search.service', () => ({
+  searchProductsStructured: (...args: unknown[]) => mockSearchProducts(...args),
+  AICatalogSearchService: jest.fn().mockImplementation(() => ({})),
 }));
 
 // Neutralize the module-level `new Anthropic()` (no API key in tests).
@@ -119,5 +125,82 @@ describe('executeShoppingTool — resolve_colors dispatch', () => {
     const out = await executeShoppingTool('resolve_colors', { sku: 'CASTORAMA-CANON' }, ctx);
 
     expect(out).toEqual({ error: 'color lookup failed' });
+  });
+});
+
+describe('executeShoppingTool — searchCatalog dispatch', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const ROW = {
+    sku: 'CASTORAMA-4251421945043',
+    name: 'Façade blanche 60 cm',
+    brand: 'GoodHome',
+    price: 44.9, // Prisma Decimal in prod; Number() normalises either way
+    category: { name: 'Façades' },
+  };
+
+  it('(a) returns REAL rows mapped to verifiable facts (sku, price) — never []', async () => {
+    mockSearchProducts.mockResolvedValue([ROW]);
+
+    const out = await executeShoppingTool('searchCatalog', { query: 'façade blanche' }, ctx);
+
+    expect(out).toEqual({
+      count: 1,
+      results: [
+        {
+          sku: 'CASTORAMA-4251421945043',
+          name: 'Façade blanche 60 cm',
+          brand: 'GoodHome',
+          priceEur: 44.9,
+          category: 'Façades',
+        },
+      ],
+    });
+  });
+
+  it('(b) forwards the structured filters (category→type bridge, brand, maxPrice) + caps at 5', async () => {
+    mockSearchProducts.mockResolvedValue([]);
+
+    await executeShoppingTool(
+      'searchCatalog',
+      { query: 'four', filters: { category: 'appliance', brand: 'BOSCH', maxPriceEur: 600 } },
+      ctx
+    );
+
+    expect(mockSearchProducts).toHaveBeenCalledWith(
+      { query: 'four', type: 'appliance', brand: 'BOSCH', maxPrice: 600 },
+      5
+    );
+  });
+
+  it('(c) ANTI-HALLUCINATION: no match stays empty — the tool never fabricates a fallback', async () => {
+    mockSearchProducts.mockResolvedValue([]);
+
+    const out = await executeShoppingTool(
+      'searchCatalog',
+      { query: 'licorne en titane' },
+      ctx
+    );
+
+    // count: 0 + results: [] is the ONLY honest answer. The system prompt then
+    // forces Claude to say it found nothing rather than invent a product/price.
+    expect(out).toEqual({ count: 0, results: [] });
+  });
+
+  it('(d) an empty query short-circuits without touching the DB', async () => {
+    const out = await executeShoppingTool('searchCatalog', { query: '  ' }, ctx);
+
+    expect(out).toEqual({ count: 0, results: [], note: 'query is required' });
+    expect(mockSearchProducts).not.toHaveBeenCalled();
+  });
+
+  it('(e) a DB failure degrades gracefully to { error } (does NOT reject the chat turn)', async () => {
+    mockSearchProducts.mockRejectedValueOnce(new Error('db down'));
+
+    const out = await executeShoppingTool('searchCatalog', { query: 'façade' }, ctx);
+
+    expect(out).toEqual({ error: 'catalog search failed' });
   });
 });
