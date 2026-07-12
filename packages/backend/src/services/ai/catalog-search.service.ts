@@ -1,3 +1,4 @@
+import { type Product, type ProductCategory } from '@prisma/client';
 import { z } from 'zod';
 
 import { AnthropicService } from './anthropic.service';
@@ -103,6 +104,91 @@ const searchResultSchema = z.object({
 type SearchFilters = z.infer<typeof searchFiltersSchema>;
 type SearchResult = z.infer<typeof searchResultSchema>;
 
+/** A real, purchasable catalog row (the only thing the assistant is allowed to cite). */
+export type ProductSearchHit = Product & { category: ProductCategory | null };
+
+const DEFAULT_SEARCH_LIMIT = 20;
+
+/**
+ * Build the Prisma WHERE from ALREADY-structured filters. Single source of truth,
+ * shared by `AICatalogSearchService.search()` (which extracts the filters with an
+ * LLM first) and by the shopping-chat `searchCatalog` tool (whose filters arrive
+ * structured from Claude's tool input — re-extracting them would pay for a second
+ * LLM call for nothing).
+ *
+ * `type` is mapped to the REAL category slugs by `buildTypeWhereOr` (the tool's
+ * English enum — cabinet/appliance/worktop… — does not match the French DB slugs
+ * meubles-bas/plans-de-travail/…; the mapping is what bridges them).
+ */
+function buildProductWhere(filters: Partial<SearchFilters>): Record<string, unknown> {
+  const where: Record<string, unknown> = { isActive: true, deletedAt: null };
+  // OR-groups combinés via AND (évite la collision de clé `OR` entre type et query).
+  const and: Record<string, unknown>[] = [];
+
+  if (filters.type) {
+    and.push({ OR: buildTypeWhereOr(filters.type) });
+  }
+  if (filters.brand) {
+    where.brand = { contains: filters.brand, mode: 'insensitive' };
+  }
+  if (filters.minPrice || filters.maxPrice) {
+    const price: Record<string, unknown> = {};
+    if (filters.minPrice) {
+      price.gte = filters.minPrice;
+    }
+    if (filters.maxPrice) {
+      price.lte = filters.maxPrice;
+    }
+    where.price = price;
+  }
+  if (filters.minWidth || filters.maxWidth) {
+    const width: Record<string, unknown> = {};
+    if (filters.minWidth) {
+      width.gte = filters.minWidth;
+    }
+    if (filters.maxWidth) {
+      width.lte = filters.maxWidth;
+    }
+    where.width = width;
+  }
+  if (filters.material) {
+    where.material = { contains: filters.material, mode: 'insensitive' };
+  }
+  if (filters.color) {
+    where.color = { contains: filters.color, mode: 'insensitive' };
+  }
+  if (filters.query) {
+    and.push({
+      OR: [
+        { name: { contains: filters.query, mode: 'insensitive' } },
+        { description: { contains: filters.query, mode: 'insensitive' } },
+      ],
+    });
+  }
+
+  if (and.length > 0) {
+    where.AND = and;
+  }
+  return where;
+}
+
+/**
+ * Deterministic catalog lookup — NO LLM. Returns real rows (or an empty array).
+ * This is the only fact source the shopping assistant has for products/prices:
+ * if it returns nothing, the assistant must say so, never invent (system prompt).
+ */
+export async function searchProductsStructured(
+  filters: Partial<SearchFilters>,
+  limit: number = DEFAULT_SEARCH_LIMIT
+): Promise<ProductSearchHit[]> {
+  return prisma.product.findMany({
+    where: buildProductWhere(filters) as never,
+    take: limit,
+    orderBy: { name: 'asc' },
+    include: { category: true },
+  });
+}
+
 export class AICatalogSearchService {
   private anthropic: AnthropicService;
 
@@ -119,66 +205,11 @@ export class AICatalogSearchService {
     // Sanitize user query before processing
     const sanitizedQuery = sanitizeSearchQuery(options.query);
 
-    // Step 1: Extract structured filters from natural language
+    // Step 1: Extract structured filters from natural language (LLM).
     const extracted = await this.extractFilters(sanitizedQuery, options.userId);
 
-    // Step 2: Build Prisma query from filters
-    const where: Record<string, unknown> = { isActive: true, deletedAt: null };
-    // OR-groups combinés via AND (évite la collision de clé `OR` entre type et query).
-    const and: Record<string, unknown>[] = [];
-
-    // type -> category.name (legacy) OU specifications.applianceGroup/productType
-    // (débloque les SKU ingérés avec categoryId NULL, cf catalog-type-mapping).
-    if (extracted.filters.type) {
-      and.push({ OR: buildTypeWhereOr(extracted.filters.type) });
-    }
-    if (extracted.filters.brand) {
-      where.brand = { contains: extracted.filters.brand, mode: 'insensitive' };
-    }
-    if (extracted.filters.minPrice || extracted.filters.maxPrice) {
-      where.price = {} as Record<string, unknown>;
-      if (extracted.filters.minPrice) {
-        (where.price as Record<string, unknown>).gte = extracted.filters.minPrice;
-      }
-      if (extracted.filters.maxPrice) {
-        (where.price as Record<string, unknown>).lte = extracted.filters.maxPrice;
-      }
-    }
-    if (extracted.filters.minWidth || extracted.filters.maxWidth) {
-      where.width = {} as Record<string, unknown>;
-      if (extracted.filters.minWidth) {
-        (where.width as Record<string, unknown>).gte = extracted.filters.minWidth;
-      }
-      if (extracted.filters.maxWidth) {
-        (where.width as Record<string, unknown>).lte = extracted.filters.maxWidth;
-      }
-    }
-    if (extracted.filters.material) {
-      where.material = { contains: extracted.filters.material, mode: 'insensitive' };
-    }
-    if (extracted.filters.color) {
-      where.color = { contains: extracted.filters.color, mode: 'insensitive' };
-    }
-    if (extracted.filters.query) {
-      and.push({
-        OR: [
-          { name: { contains: extracted.filters.query, mode: 'insensitive' } },
-          { description: { contains: extracted.filters.query, mode: 'insensitive' } },
-        ],
-      });
-    }
-
-    if (and.length > 0) {
-      where.AND = and;
-    }
-
-    // Step 3: Query DB
-    const results = await prisma.product.findMany({
-      where: where as any,
-      take: 20,
-      orderBy: { name: 'asc' },
-      include: { category: true },
-    });
+    // Steps 2+3 — shared with the shopping-chat `searchCatalog` tool.
+    const results = await searchProductsStructured(extracted.filters, DEFAULT_SEARCH_LIMIT);
 
     return {
       filters: extracted.filters,
