@@ -204,3 +204,55 @@ describe('executeShoppingTool — searchCatalog dispatch', () => {
     expect(out).toEqual({ error: 'catalog search failed' });
   });
 });
+
+describe('executeShoppingTool — context allowlist (defence in depth, Palier 1)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('refuses a tool the context does not allow — and never touches its source', async () => {
+    // An unanchored context: allowedTools is empty. Claude cannot even emit this
+    // block (the `tools` param is omitted upstream), which is exactly why we also
+    // refuse here: the guardrail must not rest on a single layer.
+    const out = await executeShoppingTool(
+      'searchCatalog',
+      { query: 'meuble haut' },
+      { userId: 'u1', allowedTools: [] }
+    );
+
+    expect(out).toEqual({ error: 'tool searchCatalog is not available in this context' });
+    expect(mockSearchProducts).not.toHaveBeenCalled();
+  });
+
+  it('refuses a tool from ANOTHER context (catalog does not get the designer tools)', async () => {
+    const out = await executeShoppingTool(
+      'resolve_colors',
+      { sku: 'CASTORAMA-CANON' },
+      { userId: 'u1', allowedTools: ['searchCatalog'] }
+    );
+
+    expect(out).toEqual({ error: 'tool resolve_colors is not available in this context' });
+    expect(mockResolveColors).not.toHaveBeenCalled();
+  });
+
+  it('allows a tool the context DOES declare', async () => {
+    mockSearchProducts.mockResolvedValue([]);
+
+    const out = await executeShoppingTool(
+      'searchCatalog',
+      { query: 'four' },
+      { userId: 'u1', allowedTools: ['searchCatalog'] }
+    );
+
+    expect(out).toEqual({ count: 0, results: [] });
+    expect(mockSearchProducts).toHaveBeenCalled();
+  });
+
+  it('no allowlist (legacy /shopping) = full tool-set, unchanged', async () => {
+    mockResolveColors.mockResolvedValue([]);
+
+    const out = await executeShoppingTool('resolve_colors', { sku: 'X' }, { userId: 'u1' });
+
+    expect(out).toEqual({ sku: 'X', colors: [] });
+  });
+});

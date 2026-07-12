@@ -296,6 +296,21 @@ L'IX actuelle est minimaliste et fonctionnelle. **Pas d'imposition** du curseur-
 5. **Solliciter le skill `bencium-innovative-ux-designer`** pour décisions de design structurantes (nouvel écran marketing, refonte de section).
 6. **Tester systématiquement** les composants visuels en : keyboard nav, `prefers-reduced-motion`, light + dark, contrast ratio ≥ 4.5:1 sur textes principaux.
 
+### 10.1 Réflexe — « avant de construire dessus, vérifier que ça dit encore la vérité »
+
+**L'échec honnête est le plus difficile à voir.** Rien ne crie, tout a l'air de fonctionner, et le système **ment par omission**. Quatre instances de la même signature en quelques jours :
+
+| Ce qui mentait | Ce qu'on voyait | Ce qui était vrai |
+|---|---|---|
+| Tool LLM `searchCatalog` (stub `[]`) | l'assistant dit honnêtement « rien trouvé » | il n'avait **aucune source** ; le garde-fou « pas de prix hors `searchCatalog` » pointait le **vide** — il tenait par accident |
+| Pont enum EN (`cabinet`) → slugs FR (`meubles-hauts`) jamais fait | un filtre catégorie renverrait 0 | un assistant **inutile**, et **aucune alerte** (le silence est « honnête ») |
+| Job CI **Unit Tests rouge** (test logout périmé depuis #223) | « la CI est rouge, comme d'hab » | un **gate aveugle** : n'importe quelle régression passait sans être vue |
+| Test `payment-routes` **flaky** en suite complète | rouge intermittent | le gate **ment une fois sur deux** |
+
+**Le réflexe** : avant de construire sur un composant, un tool, un endpoint **ou un gate CI**, vérifier qu'il **dit encore la vérité**. Un stub qui retourne `[]`, un mapping absent, un test périmé, un job rouge par habitude : tous **fonctionnent** au sens où rien ne plante. Ils **mentent juste sur ce qu'ils font**.
+
+**Corollaire** (appliqué en #238) : **on ne plie jamais un test pour faire passer du code cassé — mais on met à jour un test quand le contrat a changé exprès.** C'est la ligne entre l'honnêteté et la complaisance.
+
 ---
 
 ## 11. Dette technique design (Plan de Polish)
@@ -342,6 +357,7 @@ Issues à traiter par ordre de priorité, validées par l'audit du 14/05/2026 :
 
 ### Priorité P3 (futur, opportunité)
 
+- [ ] **Test `payment-routes` FLAKY en suite complète (découvert 12/07)** : `Payment Routes › Edge Cases › should handle concurrent payment intent creation` attend `pi_1` et reçoit `pi_2` — **uniquement quand la suite complète tourne** (isolé : 64/64 vert, ×2). Prouvé indépendant de tout changement applicatif (échoue aussi avec `--testPathIgnorePatterns` sur les fichiers de la PR en cours). Cause probable : ordre/parallélisme des workers Jest + état de mock partagé sur les intents concurrents. **Un gate qui ment une fois sur deux est presque pire qu'un gate rouge en permanence** (cf réflexe §10.1) : on prend l'habitude de « relancer pour voir ». À corriger (isoler l'état du mock Stripe par test, ou rendre l'assertion indépendante de l'ordre).
 - [ ] Tester Fraunces / Inter Tight si données conversion l'exigent
 - [ ] Enrichissement IX (curseur-lampe, boutons magnétiques) en option sections marketing premium
 - [ ] Évaluer mode dark-only forcé selon usage réel des modes light/system
