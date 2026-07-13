@@ -1,8 +1,10 @@
+import { History, MessageSquare, Mic, MicOff, Trash2, X } from 'lucide-react';
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as THREE from 'three';
 
 import { useAIChat } from '../../hooks/useAIChat';
+import ChatShell from '../assistant/ChatShell';
 
 import type { SceneContext, ToolUseEntry, SessionInfo } from '../../hooks/useAIChat';
 import type { KitchenEngine } from '@kitchenxpert/3d-engine';
@@ -41,6 +43,14 @@ interface ChatPanelProps {
   engine: KitchenEngine | null;
   onClose?: () => void;
   onToolAction?: (toolName: string, toolInput: Record<string, unknown>) => void;
+  /**
+   * The mode switch, injected by AssistantSurface. Forwarded to ChatShell so the
+   * two modes share ONE header — the user reads a single assistant showing two
+   * faces, not two stacked chrome bars.
+   */
+  headerSlot?: React.ReactNode;
+  /** One name for both modes — two names would read as two features. */
+  title?: string;
 }
 
 // ─── Voice-to-Scene: Local Command Parsing ────────────────────────────────────
@@ -288,6 +298,8 @@ export default function ChatPanel({
   engine,
   onClose,
   onToolAction,
+  headerSlot,
+  title,
 }: ChatPanelProps): React.ReactElement {
   const { t, i18n } = useTranslation();
 
@@ -519,15 +531,7 @@ export default function ChatPanel({
     setInput('');
   }, [input, isStreaming, engine, sendMessage, executeLocalVoiceCommand]);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSend();
-      }
-    },
-    [handleSend]
-  );
+  // Enter-to-send now lives in ChatShell — one keyboard contract for both modes.
 
   const handleQuickSuggestion = useCallback(
     (suggestion: string) => {
@@ -548,72 +552,37 @@ export default function ChatPanel({
   );
 
   return (
-    <div
-      className="flex flex-col h-full bg-white dark:bg-gray-800"
-      role="complementary"
-      aria-label={t('designer.chat.title', 'Chat IA')}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <svg
-            className="w-5 h-5 text-purple-500"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-            />
-          </svg>
-          <h2 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {t('designer.chat.title', 'Chat IA')}
-          </h2>
-          {isStreaming && (
-            <span className="flex items-center gap-1 text-xs text-purple-500">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500" />
-              </span>
-              {t('designer.chat.thinking', 'Reflexion...')}
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1">
-          {/* Session dropdown toggle */}
+    <ChatShell
+      title={title ?? t('designer.chat.title', 'Chat IA')}
+      icon={
+        <MessageSquare
+          className="h-5 w-5 text-kx-brand-strong dark:text-kx-brand-from"
+          aria-hidden
+        />
+      }
+      headerSlot={headerSlot}
+      headerActions={
+        <>
+          {/* Session history */}
           <div className="relative" ref={dropdownRef}>
             <button
+              type="button"
               onClick={handleOpenSessionDropdown}
-              className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded transition-colors"
+              className="kx-focus rounded p-1.5 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
               title={t('designer.chat.sessions', 'Conversations')}
               aria-label={t('designer.chat.sessions', 'Conversations')}
             >
-              <svg
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <History className="h-4 w-4" aria-hidden />
             </button>
 
             {showSessionDropdown && (
-              <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+              <div className="absolute right-0 top-full z-50 mt-1 max-h-64 w-64 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-700">
                 <button
+                  type="button"
                   onClick={handleNewConversation}
-                  className="w-full px-3 py-2 text-left text-xs font-medium text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 border-b border-gray-200 dark:border-gray-600"
+                  className="w-full border-b border-gray-200 px-3 py-2 text-left text-xs font-medium text-kx-brand-strong hover:bg-gray-50 dark:border-gray-600 dark:text-kx-brand-from dark:hover:bg-gray-600"
                 >
-                  + {t('designer.chat.newConversation', 'Nouvelle conversation')}
+                  {t('designer.chat.newConversation', 'Nouvelle conversation')}
                 </button>
                 {sessions.length === 0 ? (
                   <div className="px-3 py-2 text-xs text-gray-400">
@@ -622,18 +591,19 @@ export default function ChatPanel({
                 ) : (
                   sessions.map((session) => (
                     <button
+                      type="button"
                       key={session.id}
                       onClick={() => handleSelectSession(session.id)}
-                      className={`w-full px-3 py-2 text-left text-xs hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors ${
+                      className={`w-full px-3 py-2 text-left text-xs transition-colors hover:bg-gray-50 dark:hover:bg-gray-600 ${
                         session.id === sessionId
-                          ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
+                          ? 'bg-gray-50 text-kx-brand-strong dark:bg-gray-600 dark:text-kx-brand-from'
                           : 'text-gray-700 dark:text-gray-300'
                       }`}
                     >
-                      <div className="font-medium truncate">
+                      <div className="truncate font-medium">
                         {session.title || t('designer.chat.untitled', 'Sans titre')}
                       </div>
-                      <div className="text-gray-400 dark:text-gray-500 mt-0.5">
+                      <div className="mt-0.5 text-gray-400 dark:text-gray-500">
                         {new Date(session.updatedAt).toLocaleDateString()}
                       </div>
                     </button>
@@ -645,282 +615,120 @@ export default function ChatPanel({
 
           {messages.length > 0 && (
             <button
+              type="button"
               onClick={clearHistory}
               disabled={isStreaming}
-              className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded transition-colors disabled:opacity-50"
+              className="kx-focus rounded p-1.5 text-gray-400 transition-colors hover:text-gray-600 disabled:opacity-50 dark:hover:text-gray-300"
               title={t('designer.chat.clear', "Effacer l'historique")}
               aria-label={t('designer.chat.clear', "Effacer l'historique")}
             >
-              <svg
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
+              <Trash2 className="h-4 w-4" aria-hidden />
             </button>
           )}
           {onClose && (
             <button
+              type="button"
               onClick={onClose}
-              className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded transition-colors"
+              className="kx-focus rounded p-1.5 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
               title={t('common.close', 'Fermer')}
               aria-label={t('common.close', 'Fermer')}
             >
-              <svg
-                className="w-4 h-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="h-4 w-4" aria-hidden />
             </button>
           )}
-        </div>
-      </div>
-
-      {/* Messages area */}
-      <div
-        className="flex-1 overflow-y-auto px-4 py-3 space-y-3"
-        role="log"
-        aria-live="polite"
-        aria-label={t('designer.chat.messages', 'Messages')}
-      >
-        {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full gap-4 py-6">
-            <div className="text-center">
-              <svg
-                className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
-              </svg>
-              <p className="text-sm text-gray-400 dark:text-gray-500">
-                {t('designer.chat.placeholder', 'Posez une question sur votre cuisine...')}
-              </p>
-            </div>
-
-            {/* Quick suggestions */}
-            <div className="flex flex-wrap gap-2 justify-center max-w-sm">
-              {quickSuggestions.map((suggestion) => (
-                <button
-                  key={suggestion}
-                  onClick={() => handleQuickSuggestion(suggestion)}
-                  disabled={!engine || isStreaming}
-                  className="px-3 py-1.5 text-xs text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {suggestion}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <>
-            {messages.map((msg, idx) => (
-              <div
-                key={`${msg.role}-${idx}`}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className="max-w-[80%]">
-                  <div
-                    className={`rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
-                      msg.role === 'user'
-                        ? 'bg-blue-600 text-white rounded-br-md'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-bl-md'
-                    }`}
-                  >
-                    {msg.content ||
-                      (isStreaming && idx === messages.length - 1 ? (
-                        <span className="flex items-center gap-1.5 text-gray-400">
-                          <span className="flex gap-1">
-                            <span
-                              className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                              style={{ animationDelay: '0ms' }}
-                            />
-                            <span
-                              className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                              style={{ animationDelay: '150ms' }}
-                            />
-                            <span
-                              className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
-                              style={{ animationDelay: '300ms' }}
-                            />
-                          </span>
-                        </span>
-                      ) : null)}
-                  </div>
-
-                  {/* Tool action cards */}
-                  {msg.toolUse && msg.toolUse.length > 0 && (
-                    <div className="space-y-2">
-                      {msg.toolUse.map((tool, toolIdx) => (
-                        <ToolActionCard
-                          key={`${tool.name}-${toolIdx}`}
-                          tool={tool}
-                          onApply={() => handleToolApply(tool.name, tool.input)}
-                          onDismiss={() => {
-                            /* noop - card hides itself */
-                          }}
-                          t={t}
-                          toolLabels={toolLabels}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </>
-        )}
-      </div>
-
-      {/* Voice command toast */}
-      {voiceCommandToast && (
-        <div className="px-4 py-2 bg-green-50 dark:bg-green-900/20 border-t border-green-200 dark:border-green-800 flex-shrink-0 flex items-center gap-2 transition-all duration-300">
-          <svg
-            className="w-4 h-4 text-green-500 flex-shrink-0"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-          <p className="text-xs text-green-700 dark:text-green-300 font-medium">
-            {t('designer.chat.voiceCommandExecuted', 'Voice command executed:')} {voiceCommandToast}
-          </p>
-        </div>
-      )}
-
-      {/* Error display */}
-      {error && !dismissedError && (
-        <div className="px-4 py-2 bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-800 flex-shrink-0 flex items-center justify-between">
-          <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
-          <button
-            onClick={() => setDismissedError(true)}
-            className="ml-2 text-red-500 hover:text-red-700 flex-shrink-0"
-            aria-label={t('common.close', 'Fermer')}
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
+        </>
+      }
+      messages={messages.map((m) => ({ role: m.role, content: m.content }))}
+      renderMessageExtra={(_msg, idx) => {
+        const source = messages[idx];
+        if (!source?.toolUse?.length) {
+          return null;
+        }
+        return (
+          <div className="space-y-2">
+            {source.toolUse.map((tool, toolIdx) => (
+              <ToolActionCard
+                key={`${tool.name}-${toolIdx}`}
+                tool={tool}
+                onApply={() => handleToolApply(tool.name, tool.input)}
+                onDismiss={() => {
+                  /* noop - card hides itself */
+                }}
+                t={t}
+                toolLabels={toolLabels}
               />
-            </svg>
-          </button>
-        </div>
-      )}
-
-      {/* Input area */}
-      <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-        <div className="flex items-end gap-2">
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t('designer.chat.inputPlaceholder', 'Ecrivez votre message...')}
-            disabled={!engine || isStreaming}
-            rows={1}
-            className="flex-1 resize-none px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label={t('designer.chat.inputPlaceholder', 'Ecrivez votre message...')}
-          />
-
-          {/* Voice input button */}
-          {voiceSupported && (
-            <button
-              onClick={toggleVoiceInput}
-              disabled={!engine || isStreaming}
-              className={`flex-shrink-0 p-2 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                isListening
-                  ? 'bg-red-100 dark:bg-red-900/30 text-red-500 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-              title={
-                isListening
-                  ? t('chat.listening', 'Listening...')
-                  : t('chat.voiceInput', 'Voice input')
-              }
-              aria-label={
-                isListening
-                  ? t('chat.listening', 'Listening...')
-                  : t('chat.voiceInput', 'Voice input')
-              }
-              aria-pressed={isListening}
-            >
-              {isListening ? (
-                <svg className="w-5 h-5 animate-pulse" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
-                  <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-                </svg>
-              ) : (
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
-                  />
-                </svg>
-              )}
-            </button>
-          )}
-
-          {isStreaming ? (
-            <button
-              onClick={stopStreaming}
-              className="flex-shrink-0 p-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors"
-              title={t('designer.chat.stop', 'Arreter')}
-              aria-label={t('designer.chat.stop', 'Arreter')}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="6" y="6" width="12" height="12" rx="2" />
-              </svg>
-            </button>
-          ) : (
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || !engine || isStreaming}
-              className="flex-shrink-0 p-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              title={t('designer.chat.send', 'Envoyer')}
-              aria-label={t('designer.chat.send', 'Envoyer')}
-            >
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
+            ))}
+          </div>
+        );
+      }}
+      emptyState={
+        <div className="flex h-full flex-col items-center justify-center gap-4 py-6">
+          <div className="text-center">
+            <MessageSquare
+              className="mx-auto mb-2 h-9 w-9 text-gray-300 dark:text-gray-600"
+              aria-hidden
+            />
+            <p className="text-sm text-gray-400 dark:text-gray-500">
+              {t('designer.chat.placeholder', 'Posez une question sur votre cuisine...')}
+            </p>
+          </div>
+          <div className="flex max-w-sm flex-wrap justify-center gap-2">
+            {quickSuggestions.map((suggestion) => (
+              <button
+                type="button"
+                key={suggestion}
+                onClick={() => handleQuickSuggestion(suggestion)}
+                disabled={!engine || isStreaming}
+                className="kx-focus rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700/60 dark:text-gray-300 dark:hover:bg-gray-700"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5M5 12l7-7 7 7" />
-              </svg>
-            </button>
-          )}
+                {suggestion}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      }
+      busy={isStreaming}
+      error={error && !dismissedError ? error : null}
+      onDismissError={() => setDismissedError(true)}
+      footer={
+        voiceCommandToast ? (
+          <p className="flex-shrink-0 border-t border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300">
+            {t('designer.chat.voiceCommandExecuted', 'Commande vocale executee :')}{' '}
+            {voiceCommandToast}
+          </p>
+        ) : null
+      }
+      value={input}
+      onChange={setInput}
+      onSend={handleSend}
+      onStop={stopStreaming}
+      inputDisabled={!engine || isStreaming}
+      inputPlaceholder={t('designer.chat.inputPlaceholder', 'Ecrivez votre message...')}
+      inputActions={
+        voiceSupported ? (
+          <button
+            type="button"
+            onClick={toggleVoiceInput}
+            disabled={!engine || isStreaming}
+            className={`kx-focus flex-shrink-0 rounded-xl p-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+              isListening
+                ? 'bg-rose-100 text-rose-500 hover:bg-rose-200 dark:bg-rose-900/30 dark:text-rose-400'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600'
+            }`}
+            title={isListening ? t('chat.listening', 'Ecoute...') : t('chat.voiceInput', 'Dictee')}
+            aria-label={
+              isListening ? t('chat.listening', 'Ecoute...') : t('chat.voiceInput', 'Dictee')
+            }
+            aria-pressed={isListening}
+          >
+            {isListening ? (
+              <MicOff className="h-5 w-5 animate-pulse motion-reduce:animate-none" aria-hidden />
+            ) : (
+              <Mic className="h-5 w-5" aria-hidden />
+            )}
+          </button>
+        ) : null
+      }
+    />
   );
 }

@@ -11,10 +11,11 @@ import {
   mmToM,
 } from '@kitchenxpert/3d-engine';
 
+import AssistantIntro from '../components/assistant/AssistantIntro';
+import AssistantSurface from '../components/assistant/AssistantSurface';
 import AIAssistantPanel from '../components/designer/AIAssistantPanel';
 import BudgetBar from '../components/designer/BudgetBar';
 import CatalogPanel from '../components/designer/CatalogPanel';
-import ChatPanel from '../components/designer/ChatPanel';
 import CollaboratorCursors from '../components/designer/CollaboratorCursors';
 import DesignDiffOverlay from '../components/designer/DesignDiffOverlay';
 import DimensionWizard from '../components/designer/DimensionWizard';
@@ -1182,6 +1183,18 @@ function KitchenDesigner({
           className={`${showProperties ? 'flex' : 'hidden'} lg:flex ${showProperties ? 'fixed right-0 top-28 bottom-0 z-20 shadow-lg lg:relative lg:top-0 lg:shadow-none' : ''}`}
         >
           <div className="w-72 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto flex flex-col">
+            {!showChatPanel && (
+              <div className="px-3 pt-3">
+                <AssistantIntro
+                  surface="designer"
+                  layout="stack"
+                  message="L'assistant voit ta cuisine : couleurs réellement disponibles, budget réel."
+                  ctaLabel="Ouvrir"
+                  onOpen={() => setShowChatPanel(true)}
+                />
+              </div>
+            )}
+
             <PropertiesPanel
               selectedObject={selectedObject}
               engine={engine}
@@ -1339,10 +1352,17 @@ function KitchenDesigner({
         </div>
       )}
 
-      {/* AI Chat Panel (floating right side) */}
+      {/* The assistant — ONE surface, two modes (Concevoir / Choisir & acheter).
+          Docked on the right, never an overlay on the canvas (§8.1). */}
       {showChatPanel && (
-        <div className="fixed right-0 top-28 bottom-0 w-80 z-20 border-l border-gray-200 dark:border-gray-700 shadow-lg">
-          <ChatPanel engine={engine} onClose={() => setShowChatPanel(false)} />
+        <div className="fixed right-0 top-28 bottom-0 z-20 w-80 border-l border-gray-200 shadow-lg dark:border-gray-700">
+          <AssistantSurface
+            engine={engine}
+            selectedObject={selectedObject}
+            layout={kitchen?.layout ?? 'open_plan'}
+            onClose={() => setShowChatPanel(false)}
+            onUpgrade={() => navigate('/pricing')}
+          />
         </div>
       )}
 

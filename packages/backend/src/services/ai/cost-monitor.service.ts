@@ -125,6 +125,44 @@ interface UsageSummary {
   resetAtMonth: Date;
 }
 
+/** What the assistant surface needs to state the rules of the game honestly. */
+export interface QuotaState {
+  /** null = unlimited (studio). Otherwise: how many exchanges are left. */
+  remaining: number | null;
+  unlimited: boolean;
+  resetAt: string;
+}
+
+/**
+ * How many exchanges the user has left, in EXCHANGES — not in dollars.
+ *
+ * The surface announces the rule once ("tu as N échanges par mois") and warns
+ * near the end; it must therefore speak the user's unit, not ours. Two caps bind:
+ * the monthly budget (usd) and the daily request count — the real allowance is
+ * the smaller of the two.
+ */
+export function quotaState(tier: AiTier, usage: UsageSummary, costPerTurnUsd: number): QuotaState {
+  const limits = TIER_LIMITS[tier];
+  if (limits.monthlyUsdCap === null && limits.dailyRequestCap === null) {
+    return { remaining: null, unlimited: true, resetAt: usage.resetAtMonth.toISOString() };
+  }
+
+  const byMonth =
+    limits.monthlyUsdCap === null
+      ? Number.POSITIVE_INFINITY
+      : Math.floor(Math.max(0, limits.monthlyUsdCap - usage.monthlyUsd) / costPerTurnUsd);
+  const byDay =
+    limits.dailyRequestCap === null
+      ? Number.POSITIVE_INFINITY
+      : Math.max(0, limits.dailyRequestCap - usage.dailyRequests);
+
+  return {
+    remaining: Math.max(0, Math.min(byMonth, byDay)),
+    unlimited: false,
+    resetAt: usage.resetAtMonth.toISOString(),
+  };
+}
+
 /** First day of next month UTC. */
 function nextMonthReset(): Date {
   const now = new Date();

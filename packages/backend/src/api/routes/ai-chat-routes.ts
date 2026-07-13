@@ -14,10 +14,12 @@ import {
 import { searchProductsStructured } from '../../services/ai/catalog-search.service';
 import {
   assertQuota,
+  quotaState,
   recordUsage,
   QuotaExceededError,
   DailyQuotaExceededError,
   type AiTier,
+  type QuotaState,
 } from '../../services/ai/cost-monitor.service';
 import { SHOPPING_CHAT_SYSTEM_PROMPT, SHOPPING_CHAT_TOOLS } from '../../services/ai/prompts';
 import { ChatRequestSchema } from '../../services/ai/schemas';
@@ -985,8 +987,13 @@ router.post(
     }
 
     const tier = deriveAiTier(req);
+    // assertQuota already returns the usage summary — we used to throw it away.
+    // The surface needs it: it announces the rule ONCE and warns near the end,
+    // so it must know how many exchanges are left, in exchanges.
+    let quota: QuotaState;
     try {
-      await assertQuota({ userId, tier, projectedUsd: SHOPPING_PROJECTED_USD });
+      const usage = await assertQuota({ userId, tier, projectedUsd: SHOPPING_PROJECTED_USD });
+      quota = quotaState(tier, usage, SHOPPING_PROJECTED_USD);
     } catch (e) {
       if (e instanceof QuotaExceededError) {
         res.status(402).json({
@@ -1064,6 +1071,9 @@ router.post(
         reply: turn.reply,
         toolCalls: turn.toolCalls,
         toolRounds: turn.toolRounds,
+        // Counted BEFORE this turn — the surface states the rule, it does not
+        // have to guess it (and never shows a permanent counter).
+        quota,
         ...(verified && verified.unverifiedSkus.length > 0
           ? { unverifiedSkus: verified.unverifiedSkus }
           : {}),
