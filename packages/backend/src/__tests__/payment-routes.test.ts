@@ -1239,21 +1239,37 @@ describe('Payment Routes', () => {
 
   describe('Edge Cases', () => {
     it('should handle concurrent payment intent creation', async () => {
-      mockStripeService.createPaymentIntent
-        .mockResolvedValueOnce({
+      // The mock answers the REQUEST (keyed on `amount`), not the call ORDER.
+      //
+      // It used to chain `mockResolvedValueOnce(pi_1).mockResolvedValueOnce(pi_2)`,
+      // which serves values in the order the mock is CALLED. With two concurrent
+      // requests that order is not guaranteed: whichever handler reaches Stripe
+      // first takes `pi_1`. Under load (full suite, parallel workers) request #2
+      // could overtake #1 → `res1.body.data.id === 'pi_2'` → flaky red.
+      //
+      // Keying on `amount` makes the correlation deterministic AND makes the test
+      // stronger: it now actually asserts what it claims — that two concurrent
+      // requests each get THEIR OWN intent, with no cross-talk. The old version
+      // could not tell a real response-swap bug from timing jitter.
+      const intents: Record<number, Record<string, unknown>> = {
+        1000: {
           id: 'pi_1',
           client_secret: 'secret_1',
           amount: 1000,
           currency: 'eur',
           status: 'requires_payment_method',
-        })
-        .mockResolvedValueOnce({
+        },
+        2000: {
           id: 'pi_2',
           client_secret: 'secret_2',
           amount: 2000,
           currency: 'eur',
           status: 'requires_payment_method',
-        });
+        },
+      };
+      mockStripeService.createPaymentIntent.mockImplementation(
+        ({ amount }: { amount: number }) => Promise.resolve(intents[amount])
+      );
 
       const [res1, res2] = await Promise.all([
         authedRequest(app).post('/payments/intent').send({ amount: 1000, currency: 'eur' }),
@@ -1262,6 +1278,8 @@ describe('Payment Routes', () => {
 
       expect(res1.status).toBe(201);
       expect(res2.status).toBe(201);
+      // Each response carries the intent of ITS OWN request — whatever order the
+      // two handlers happened to reach Stripe in.
       expect(res1.body.data.id).toBe('pi_1');
       expect(res2.body.data.id).toBe('pi_2');
     });
