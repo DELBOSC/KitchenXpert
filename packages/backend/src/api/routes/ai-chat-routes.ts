@@ -3,6 +3,14 @@ import { Router, type Request, type Response, type Router as RouterType } from '
 import { z } from 'zod';
 
 import { prisma } from '../../database/client';
+import {
+  AssistantRequestSchema,
+  CONTEXT_REGISTRY,
+  isAnchored,
+  verifyDesignerPayload,
+  type AssistantRequest,
+  type VerifiedKitchenContext,
+} from '../../services/ai/assistant-context';
 import { searchProductsStructured } from '../../services/ai/catalog-search.service';
 import {
   assertQuota,
@@ -615,11 +623,42 @@ function deriveAiTier(req: Request): AiTier {
  * (returns realistic JSON) — wire each one to its real service when
  * the catalog + designer mutation APIs are ready.
  */
+/**
+ * Structural context for a tool call. Accepts BOTH the legacy /shopping
+ * kitchenContext (client-supplied) and the /assistant VerifiedKitchenContext
+ * (server-re-priced from the DB).
+ */
+export interface ShoppingToolCtx {
+  userId: string;
+  kitchenContext?: {
+    items: Array<{ sku: string; unitPriceEur: number }>;
+    budgetTotalEur?: number;
+    budgetLimitEur?: number;
+  };
+  /**
+   * Tool allowlist for the current assistant context. `undefined` = no restriction
+   * (legacy /shopping, which exposes the full set). An empty/omitting list is the
+   * architectural guardrail: a context with no tool has no fact source.
+   */
+  allowedTools?: readonly string[];
+}
+
 export async function executeShoppingTool(
   name: string,
   input: Record<string, unknown>,
-  ctx: { userId: string; kitchenContext?: z.infer<typeof ChatRequestSchema>['kitchenContext'] }
+  ctx: ShoppingToolCtx
 ): Promise<unknown> {
+  // Defence in depth. The Anthropic call already OMITS the tools a context is not
+  // allowed to use, so Claude cannot even emit this block — which is precisely why
+  // it must also be refused here: the guardrail must not depend on one layer.
+  if (ctx.allowedTools && !ctx.allowedTools.includes(name)) {
+    logger.warn('assistant: tool refused — not allowed in this context', {
+      tool: name,
+      allowed: ctx.allowedTools,
+    });
+    return { error: `tool ${name} is not available in this context` };
+  }
+
   switch (name) {
     case 'searchCatalog': {
       // Deterministic catalog lookup — the ONLY product/price fact source the
@@ -721,6 +760,106 @@ export async function executeShoppingTool(
   }
 }
 
+interface AssistantTurn {
+  reply: string;
+  toolCalls: Array<{ name: string; input: unknown; output: unknown }>;
+  toolRounds: number;
+}
+
+/**
+ * One assistant turn: initial Anthropic call + bounded tool-use loop + usage
+ * accounting. Shared by /shopping (legacy, full tool-set) and /assistant (context
+ * router) so there is ONE loop, not two that drift.
+ *
+ * `tools` is ALREADY filtered by the caller. When it is EMPTY the `tools` param is
+ * omitted entirely: the model is handed no tool at all, so it has no fact source
+ * and CANNOT cite a product, a SKU or a price. That is the whole guardrail —
+ * structural, not rhetorical.
+ */
+async function runAssistantTurn(params: {
+  userId: string;
+  systemPrompt: string;
+  tools: readonly unknown[];
+  firstMessage: string;
+  toolCtx: ShoppingToolCtx;
+}): Promise<AssistantTurn> {
+  const { userId, systemPrompt, tools, firstMessage, toolCtx } = params;
+
+  const start = Date.now();
+  let totalInputTokens = 0;
+  let totalOutputTokens = 0;
+
+  const messages: Anthropic.MessageParam[] = [{ role: 'user', content: firstMessage }];
+  const toolCallsLog: AssistantTurn['toolCalls'] = [];
+
+  const call = (): Promise<Anthropic.Message> =>
+    anthropic.messages.create({
+      model: SHOPPING_MODEL,
+      max_tokens: SHOPPING_MAX_TOKENS,
+      system: systemPrompt,
+      ...(tools.length > 0 ? { tools: tools as unknown as Anthropic.Tool[] } : {}),
+      messages,
+    });
+
+  let response = await call();
+  totalInputTokens += response.usage.input_tokens;
+  totalOutputTokens += response.usage.output_tokens;
+
+  let rounds = 0;
+  while (response.stop_reason === 'tool_use' && rounds < SHOPPING_MAX_TOOL_ROUNDS) {
+    rounds++;
+    const toolBlocks = response.content.filter(
+      (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use'
+    );
+
+    // Run all tools in parallel — they're independent reads/writes.
+    const results = await Promise.all(
+      toolBlocks.map(async (block) => {
+        const output = await executeShoppingTool(
+          block.name,
+          block.input as Record<string, unknown>,
+          toolCtx
+        );
+        toolCallsLog.push({ name: block.name, input: block.input, output });
+        return {
+          type: 'tool_result' as const,
+          tool_use_id: block.id,
+          content: JSON.stringify(output),
+        };
+      })
+    );
+
+    messages.push({ role: 'assistant', content: response.content });
+    messages.push({ role: 'user', content: results });
+
+    response = await call();
+    totalInputTokens += response.usage.input_tokens;
+    totalOutputTokens += response.usage.output_tokens;
+  }
+
+  if (rounds >= SHOPPING_MAX_TOOL_ROUNDS && response.stop_reason === 'tool_use') {
+    logger.warn('assistant: hit tool-use round cap', { userId, rounds });
+  }
+
+  const durationMs = Date.now() - start;
+  const reply = response.content
+    .filter((b): b is Anthropic.TextBlock => b.type === 'text')
+    .map((b) => b.text)
+    .join('\n');
+
+  await recordUsage({
+    userId,
+    service: 'chat',
+    model: SHOPPING_MODEL,
+    inputTokens: totalInputTokens,
+    outputTokens: totalOutputTokens,
+    durationMs,
+    metadata: { toolRounds: rounds, toolsCalled: toolCallsLog.map((t) => t.name) },
+  });
+
+  return { reply, toolCalls: toolCallsLog, toolRounds: rounds };
+}
+
 /**
  * POST /api/v1/ai-chat/shopping
  *
@@ -781,93 +920,154 @@ router.post(
       throw e;
     }
 
-    // Initial Anthropic call with tools enabled
-    const start = Date.now();
-    let totalInputTokens = 0;
-    let totalOutputTokens = 0;
-
-    const messages: Anthropic.MessageParam[] = [
-      {
-        role: 'user',
-        content: body.kitchenContext
-          ? `<kitchen_snapshot>${JSON.stringify(body.kitchenContext)}</kitchen_snapshot>\n\n${body.message}`
-          : body.message,
-      },
-    ];
-
-    const toolCallsLog: Array<{ name: string; input: unknown; output: unknown }> = [];
-    let response = await anthropic.messages.create({
-      model: SHOPPING_MODEL,
-      max_tokens: SHOPPING_MAX_TOKENS,
-      system: SHOPPING_CHAT_SYSTEM_PROMPT,
-      tools: SHOPPING_CHAT_TOOLS as unknown as Anthropic.Tool[],
-      messages,
-    });
-    totalInputTokens += response.usage.input_tokens;
-    totalOutputTokens += response.usage.output_tokens;
-
-    // Tool-use loop — bounded by SHOPPING_MAX_TOOL_ROUNDS.
-    let rounds = 0;
-    while (response.stop_reason === 'tool_use' && rounds < SHOPPING_MAX_TOOL_ROUNDS) {
-      rounds++;
-      const toolBlocks = response.content.filter(
-        (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use'
-      );
-
-      // Run all tools in parallel — they're independent reads/writes.
-      const results = await Promise.all(
-        toolBlocks.map(async (block) => {
-          const output = await executeShoppingTool(
-            block.name,
-            block.input as Record<string, unknown>,
-            { userId, kitchenContext: body.kitchenContext }
-          );
-          toolCallsLog.push({ name: block.name, input: block.input, output });
-          return {
-            type: 'tool_result' as const,
-            tool_use_id: block.id,
-            content: JSON.stringify(output),
-          };
-        })
-      );
-
-      messages.push({ role: 'assistant', content: response.content });
-      messages.push({ role: 'user', content: results });
-
-      response = await anthropic.messages.create({
-        model: SHOPPING_MODEL,
-        max_tokens: SHOPPING_MAX_TOKENS,
-        system: SHOPPING_CHAT_SYSTEM_PROMPT,
-        tools: SHOPPING_CHAT_TOOLS as unknown as Anthropic.Tool[],
-        messages,
-      });
-      totalInputTokens += response.usage.input_tokens;
-      totalOutputTokens += response.usage.output_tokens;
-    }
-
-    if (rounds >= SHOPPING_MAX_TOOL_ROUNDS && response.stop_reason === 'tool_use') {
-      logger.warn('shopping-chat: hit tool-use round cap', { userId, rounds });
-    }
-
-    const durationMs = Date.now() - start;
-    const replyText = response.content
-      .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('\n');
-
-    await recordUsage({
+    const turn = await runAssistantTurn({
       userId,
-      service: 'chat',
-      model: SHOPPING_MODEL,
-      inputTokens: totalInputTokens,
-      outputTokens: totalOutputTokens,
-      durationMs,
-      metadata: { toolRounds: rounds, toolsCalled: toolCallsLog.map((t) => t.name) },
+      systemPrompt: SHOPPING_CHAT_SYSTEM_PROMPT,
+      tools: SHOPPING_CHAT_TOOLS,
+      firstMessage: body.kitchenContext
+        ? `<kitchen_snapshot>${JSON.stringify(body.kitchenContext)}</kitchen_snapshot>\n\n${body.message}`
+        : body.message,
+      // No allowlist → the legacy surface keeps its full tool-set, unchanged.
+      toolCtx: { userId, kitchenContext: body.kitchenContext },
     });
 
     res.status(200).json({
       success: true,
-      data: { reply: replyText, toolCalls: toolCallsLog, toolRounds: rounds },
+      data: { reply: turn.reply, toolCalls: turn.toolCalls, toolRounds: turn.toolRounds },
+    });
+  })
+);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ASSISTANT — context router (Palier 1)
+// ───────────────────────────────────────────────────────────────────────────
+// The anti-hallucination stops being a prompt rule and becomes a property of the
+// system: the SERVER picks the tool-set for the context. No tool ⇒ no fact source
+// ⇒ nothing citable. See services/ai/assistant-context.ts.
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * POST /api/v1/ai-chat/assistant
+ *
+ * Body: { message, conversationId?, context: 'designer'|'catalog'|'quote'|…, payload? }
+ * Response: { reply, toolCalls[], toolRounds, context, anchored, toolsAvailable }
+ */
+router.post(
+  '/assistant',
+  authenticate,
+  aiRateLimiter,
+  validateBody(AssistantRequestSchema),
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
+
+    const body = req.body as AssistantRequest;
+    const spec = CONTEXT_REGISTRY[body.context];
+
+    // The context comes from the CLIENT → never trusted. Its payload is validated
+    // against THIS context's schema. A malformed anchored payload is a hard 400: it
+    // must not silently degrade into "no data" (that would hide a client bug), and
+    // it must certainly not unlock tools it cannot feed.
+    const parsed = spec.payloadSchema.safeParse(body.payload);
+    if (!parsed.success) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'ASSISTANT_BAD_PAYLOAD',
+          message: `Invalid payload for context "${body.context}"`,
+          issues: parsed.error.issues.slice(0, 5),
+        },
+      });
+      return;
+    }
+
+    const tier = deriveAiTier(req);
+    try {
+      await assertQuota({ userId, tier, projectedUsd: SHOPPING_PROJECTED_USD });
+    } catch (e) {
+      if (e instanceof QuotaExceededError) {
+        res.status(402).json({
+          success: false,
+          error: {
+            code: 'AI_QUOTA_EXCEEDED',
+            message: e.message,
+            tier: e.tier,
+            limit: e.limit,
+            currentUsd: e.currentUsd,
+            resetAt: e.resetAt,
+          },
+        });
+        return;
+      }
+      if (e instanceof DailyQuotaExceededError) {
+        res.status(429).json({
+          success: false,
+          error: {
+            code: 'AI_DAILY_LIMIT',
+            message: e.message,
+            tier: e.tier,
+            limit: e.limit,
+            current: e.current,
+          },
+        });
+        return;
+      }
+      throw e;
+    }
+
+    // Server-side VERIFICATION: the designer snapshot is re-priced from the DB and
+    // unknown SKUs are dropped. A forged price never reaches the model — the budget
+    // it states is the catalog's, not the client's arithmetic.
+    let verified: VerifiedKitchenContext | undefined;
+    if (body.context === 'designer') {
+      verified = await verifyDesignerPayload(
+        parsed.data as Parameters<typeof verifyDesignerPayload>[0]
+      );
+      if (verified.unverifiedSkus.length > 0) {
+        logger.warn('assistant: designer payload had unverifiable SKUs (dropped)', {
+          userId,
+          count: verified.unverifiedSkus.length,
+        });
+      }
+    }
+
+    // Only the tools this context is allowed to use are handed to Claude. For an
+    // unanchored context this is an EMPTY list → the `tools` param is omitted →
+    // the model literally has nowhere to get a fact from.
+    const tools = SHOPPING_CHAT_TOOLS.filter((t) =>
+      (spec.tools as readonly string[]).includes(t.name)
+    );
+
+    const turn = await runAssistantTurn({
+      userId,
+      systemPrompt: spec.systemPrompt,
+      tools,
+      firstMessage: verified
+        ? `<kitchen_snapshot_verified>${JSON.stringify(verified)}</kitchen_snapshot_verified>\n\n${body.message}`
+        : body.message,
+      toolCtx: {
+        userId,
+        ...(verified ? { kitchenContext: verified } : {}),
+        allowedTools: spec.tools, // enforced again in executeShoppingTool
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        context: body.context,
+        anchored: isAnchored(body.context),
+        toolsAvailable: spec.tools,
+        reply: turn.reply,
+        toolCalls: turn.toolCalls,
+        toolRounds: turn.toolRounds,
+        ...(verified && verified.unverifiedSkus.length > 0
+          ? { unverifiedSkus: verified.unverifiedSkus }
+          : {}),
+      },
     });
   })
 );
