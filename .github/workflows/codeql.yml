@@ -42,16 +42,18 @@ jobs:
       - name: 🏗️ Autobuild
         uses: github/codeql-action/autobuild@v3
 
+      # analyze@v3 UPLOADS THE RESULTS ITSELF ("Successfully uploaded results").
+      # Do NOT add an upload-sarif step after it: the one that used to live here
+      # pointed at ./results — a directory that never existed — and, being
+      # `if: always()`, it turned a FULLY SUCCESSFUL scan red on every single run
+      # since February. 30/30 failures. The red was read as "CodeQL is broken",
+      # the docs froze that reading as "BLOCKED — Advanced Security required", and
+      # nobody opened the Security tab. 246 alerts (4 HIGH) had been waiting there
+      # for five months. The detector was shouting into an empty room.
       - name: 🔍 Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
-
-      - name: 📊 Upload SARIF results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ./results
 
       - name: 📝 Summary
         if: always()
