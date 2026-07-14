@@ -28,6 +28,7 @@ import { StyleTransferService } from '../../services/ai/style-transfer.service';
 import { ToolUse3DService } from '../../services/ai/tool-use-3d.service';
 import { variantResolver } from '../../services/variant-resolver';
 import logger from '../../utils/logger';
+import { fetchImageSafely, SsrfBlockedError } from '../../utils/safe-fetch';
 import { aiChatController } from '../controllers/ai-chat-controller';
 import { authenticate } from '../middleware/auth-middleware';
 import { asyncHandler } from '../middleware/error-middleware';
@@ -556,20 +557,26 @@ router.post(
     if (image) {
       imageBase64 = image;
     } else {
-      // Fetch image from URL and convert to base64
-      const response = await fetch(imageUrl);
-      if (!response.ok) {
+      // Fetch image from URL — through the SSRF guard, NOT a bare fetch(). The URL is
+      // client-supplied and z.string().url() validates syntax only; fetchImageSafely
+      // resolves + pins the IP, refuses private/metadata ranges, non-HTTPS, and
+      // redirects into internal space. See utils/safe-fetch (CodeQL js/request-forgery).
+      let img: { buffer: Buffer; contentType: string };
+      try {
+        img = await fetchImageSafely(imageUrl);
+      } catch (err) {
+        if (err instanceof SsrfBlockedError) {
+          logger.warn('[AI:style-transfer] blocked image URL', { userId, reason: err.message });
+        }
         res.status(400).json({ success: false, error: 'Failed to fetch image from URL' });
         return;
       }
-      const contentType = response.headers.get('content-type') || 'image/jpeg';
-      if (contentType.includes('png')) {
+      if (img.contentType.includes('png')) {
         resolvedMediaType = 'image/png';
-      } else if (contentType.includes('webp')) {
+      } else if (img.contentType.includes('webp')) {
         resolvedMediaType = 'image/webp';
       }
-      const buffer = Buffer.from(await response.arrayBuffer());
-      imageBase64 = buffer.toString('base64');
+      imageBase64 = img.buffer.toString('base64');
     }
 
     logger.info('[AI:style-transfer] Analyzing photo', { userId, hasUrl: !!imageUrl });
