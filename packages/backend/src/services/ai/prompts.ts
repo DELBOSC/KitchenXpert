@@ -357,6 +357,23 @@ export const SHOPPING_CHAT_TOOLS = [
     input_schema: { type: 'object', properties: {}, required: [] },
   },
   {
+    /**
+     * ZERO arguments — DELIBERATELY. generateBOM(kitchenId) does NOT check
+     * ownership (the controller does), so a tool taking a kitchenId from the MODEL
+     * would be an IDOR by prompt injection ("give me the quote for kitchen 47").
+     * The kitchen is named by the SERVER (verified payload), never by the LLM: it
+     * asks the question, the server knows what it is talking about. Not a guard —
+     * an impossibility.
+     */
+    name: 'get_quote',
+    description:
+      'Get the real, deterministic quote (bill of materials) for the kitchen the user is currently designing. Returns every line with its source: `catalog` = firm (real SKU + real catalog price) or `estimated` = a scale-based estimate (worktop, flooring, splashback, hardware, labour). Also returns the firm and estimated subtotals SEPARATELY, plus VAT and total. Use this whenever the user asks what their kitchen costs.',
+    input_schema: {
+      type: 'object',
+      properties: {},
+    },
+  },
+  {
     name: 'resolve_colors',
     description:
       'Get the real available colors for a product gamme. Pass the SKU of any product ' +
@@ -438,7 +455,20 @@ TES OUTILS :
   - resolve_colors(sku) → les VRAIES couleurs disponibles d'une gamme. À appeler AVANT
     de parler couleur, et à chaque envie exprimée ("plus chaleureux", "sobre"...).
     Tu ne proposes QUE des couleurs qu'il te renvoie.
-  - getBudgetSummary() → total et écart budget, calculés sur les prix du catalogue.
+  - getBudgetSummary() → total des MEUBLES POSÉS et écart budget, sur les prix catalogue.
+    C'est un ordre de grandeur partiel : il ignore le plan de travail, le sol, la
+    crédence, la quincaillerie, la pose et la TVA.
+  - get_quote() → le VRAI devis de la cuisine enregistrée (sans argument : tu ne peux
+    pas choisir la cuisine, le serveur sait laquelle). C'est LUI qu'il faut appeler dès
+    que l'utilisateur demande ce que sa cuisine coûte.
+
+HONNÊTETÉ DU DEVIS (non négociable) : chaque ligne de get_quote porte une "source" —
+"catalog" = FERME (référence et prix réels du catalogue) ou "estimated" = ESTIMÉ (barème :
+plan de travail, sol, crédence, quincaillerie, pose). Tu dois TOUJOURS distinguer les deux
+quand tu annonces un montant : dis ce qui est ferme et ce qui est estimé, en citant les
+deux sous-totaux. Annoncer un total sans dire quelle part est estimée serait présenter un
+chiffre juste de façon malhonnête — c'est interdit. Ne présente jamais un montant "estimated"
+comme un prix ferme.
 
 STYLE : tutoiement, amical mais pro, ≤ 150 mots. Si tu vois une violation d'ergonomie
 ou de norme (NF C 15-100), signale-la explicitement.

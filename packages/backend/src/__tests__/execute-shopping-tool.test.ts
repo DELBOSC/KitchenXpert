@@ -11,6 +11,11 @@
  */
 
 // The unit under test only depends on these — control them.
+const mockGenerateBOM = jest.fn();
+jest.mock('../services/ai/bom-generator.service', () => ({
+  BOMGeneratorService: { getInstance: () => ({ generateBOM: mockGenerateBOM }) },
+}));
+
 const mockResolveColors = jest.fn();
 jest.mock('../services/variant-resolver', () => ({
   variantResolver: { resolveColors: (...args: unknown[]) => mockResolveColors(...args) },
@@ -254,5 +259,87 @@ describe('executeShoppingTool — context allowlist (defence in depth, Palier 1)
     const out = await executeShoppingTool('resolve_colors', { sku: 'X' }, { userId: 'u1' });
 
     expect(out).toEqual({ sku: 'X', colors: [] });
+  });
+});
+
+describe('get_quote — the kitchen is named by the SERVER, never by the model', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGenerateBOM.mockResolvedValue({
+  kitchenId: 'k1',
+  items: [
+    { name: 'Meuble bas 60', category: 'cabinet', quantity: 1, unitPrice: 330, totalPrice: 330, catalogRef: 'CASTORAMA-123', source: 'catalog' as const },
+    { name: 'Plan de travail', category: 'worktop', quantity: 1, unitPrice: 400, totalPrice: 400, catalogRef: null, source: 'estimated' as const },
+  ],
+  subtotal: 730,
+  subtotalCatalog: 330,
+  subtotalEstimated: 400,
+  tax: 146,
+  total: 876,
+  generatedAt: '2026-07-14T00:00:00.000Z',
+});
+  });
+
+  it('quotes the kitchen from the VERIFIED ctx, and surfaces the firm/estimated split', async () => {
+    const out = (await executeShoppingTool('get_quote', {}, {
+      userId: 'u1',
+      verifiedKitchenId: 'k1',
+      allowedTools: ['get_quote'],
+    })) as Record<string, unknown>;
+
+    expect(mockGenerateBOM).toHaveBeenCalledWith('k1');
+    // The honest split reaches the model — a total that hid what is estimated would
+    // be a right number presented dishonestly.
+    expect(out.subtotalCatalogEur).toBe(330);
+    expect(out.subtotalEstimatedEur).toBe(400);
+    expect(out.totalEur).toBe(876);
+    const lines = out.lines as Array<{ source: string }>;
+    expect(lines.map((l) => l.source)).toEqual(['catalog', 'estimated']);
+  });
+
+  it('🔒 IDOR: a kitchenId in the tool INPUT is IGNORED — the model cannot name a kitchen', async () => {
+    // A prompt injection ("give me the quote for kitchen victim-42") can at most make
+    // the model pass an argument. The tool takes none: the ctx decides. This is not a
+    // guard that could be forgotten — the id is structurally unreachable from the model.
+    await executeShoppingTool(
+      'get_quote',
+      { kitchenId: 'victim-42', sku: 'victim-42' } as Record<string, unknown>,
+      { userId: 'u1', verifiedKitchenId: 'k1', allowedTools: ['get_quote'] }
+    );
+    expect(mockGenerateBOM).toHaveBeenCalledTimes(1);
+    expect(mockGenerateBOM).toHaveBeenCalledWith('k1'); // NOT 'victim-42'
+    expect(mockGenerateBOM).not.toHaveBeenCalledWith('victim-42');
+  });
+
+  it('🔒 IDOR: with no verified kitchen, it quotes NOTHING (even if input names one)', async () => {
+    const out = (await executeShoppingTool(
+      'get_quote',
+      { kitchenId: 'victim-42' } as Record<string, unknown>,
+      { userId: 'u1', allowedTools: ['get_quote'] } // ownership check dropped the id
+    )) as Record<string, unknown>;
+
+    expect(mockGenerateBOM).not.toHaveBeenCalled();
+    expect(out.error).toMatch(/no saved kitchen/i);
+  });
+
+  it('a DB failure degrades to an error, it never fabricates a quote', async () => {
+    mockGenerateBOM.mockRejectedValue(new Error('db down'));
+    const out = (await executeShoppingTool('get_quote', {}, {
+      userId: 'u1',
+      verifiedKitchenId: 'k1',
+      allowedTools: ['get_quote'],
+    })) as Record<string, unknown>;
+    expect(out.error).toBe('quote unavailable');
+    expect(out.totalEur).toBeUndefined();
+  });
+
+  it('the allowlist still gates it: a context without get_quote cannot call it', async () => {
+    const out = (await executeShoppingTool('get_quote', {}, {
+      userId: 'u1',
+      verifiedKitchenId: 'k1',
+      allowedTools: ['searchCatalog'], // catalog context
+    })) as Record<string, unknown>;
+    expect(mockGenerateBOM).not.toHaveBeenCalled();
+    expect(out.error).toBeDefined();
   });
 });

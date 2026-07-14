@@ -11,6 +11,7 @@ import {
   type AssistantRequest,
   type VerifiedKitchenContext,
 } from '../../services/ai/assistant-context';
+import { BOMGeneratorService } from '../../services/ai/bom-generator.service';
 import { searchProductsStructured } from '../../services/ai/catalog-search.service';
 import {
   assertQuota,
@@ -632,6 +633,12 @@ function deriveAiTier(req: Request): AiTier {
  */
 export interface ShoppingToolCtx {
   userId: string;
+  /**
+   * Set by the SERVER after an ownership check (verifyDesignerPayload). get_quote
+   * reads the kitchen from here — the tool takes no argument, so the model has no
+   * way to name a different one. Absent = no saved kitchen in scope.
+   */
+  verifiedKitchenId?: string;
   kitchenContext?: {
     items: Array<{ sku: string; unitPriceEur: number }>;
     budgetTotalEur?: number;
@@ -724,6 +731,37 @@ export async function executeShoppingTool(
         echoed: input,
         note: 'Add stub — wire to kitchenItemRepository.create().',
       };
+
+    case 'get_quote': {
+      // The kitchen comes from the ctx (server-verified), NEVER from `input`.
+      if (!ctx.verifiedKitchenId) {
+        return { error: 'no saved kitchen in scope — the quote needs a saved kitchen' };
+      }
+      try {
+        const bom = await BOMGeneratorService.getInstance().generateBOM(ctx.verifiedKitchenId);
+        return {
+          // The firm/estimated split (#203) is surfaced AS-IS. A total that hides
+          // what is estimated would be a right number presented dishonestly.
+          currency: 'EUR',
+          subtotalCatalogEur: bom.subtotalCatalog,
+          subtotalEstimatedEur: bom.subtotalEstimated,
+          taxEur: bom.tax,
+          totalEur: bom.total,
+          lines: bom.items.map((i) => ({
+            source: i.source, // 'catalog' = firm | 'estimated' = scale-based
+            catalogRef: i.catalogRef,
+            name: i.name,
+            category: i.category,
+            quantity: i.quantity,
+            unitPriceEur: i.unitPrice,
+            totalEur: i.totalPrice,
+          })),
+        };
+      } catch (e) {
+        logger.error('assistant: get_quote failed', { err: String(e) });
+        return { error: 'quote unavailable' };
+      }
+    }
 
     case 'getBudgetSummary': {
       const k = ctx.kitchenContext;
@@ -1035,7 +1073,8 @@ router.post(
     let verified: VerifiedKitchenContext | undefined;
     if (body.context === 'designer') {
       verified = await verifyDesignerPayload(
-        parsed.data as Parameters<typeof verifyDesignerPayload>[0]
+        parsed.data as Parameters<typeof verifyDesignerPayload>[0],
+        userId
       );
       if (verified.unverifiedSkus.length > 0) {
         logger.warn('assistant: designer payload had unverifiable SKUs (dropped)', {
@@ -1060,6 +1099,7 @@ router.post(
       toolCtx: {
         userId,
         ...(verified ? { kitchenContext: verified } : {}),
+        ...(verified?.verifiedKitchenId ? { verifiedKitchenId: verified.verifiedKitchenId } : {}),
         allowedTools: spec.tools, // enforced again in executeShoppingTool
       },
     });

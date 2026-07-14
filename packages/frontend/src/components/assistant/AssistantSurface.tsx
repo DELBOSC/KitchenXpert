@@ -27,7 +27,11 @@ import type * as THREE from 'three';
 type Mode = 'design' | 'shop';
 
 /** Scene → the payload the server will RE-VERIFY (prices come from the DB, not us). */
-function buildDesignerPayload(engine: KitchenEngine | null, layout: string): DesignerPayload {
+function buildDesignerPayload(
+  engine: KitchenEngine | null,
+  layout: string,
+  kitchenId?: string
+): DesignerPayload {
   const items: DesignerPayload['items'] = [];
 
   if (engine) {
@@ -42,7 +46,7 @@ function buildDesignerPayload(engine: KitchenEngine | null, layout: string): Des
     });
   }
 
-  return { layout, items };
+  return { ...(kitchenId ? { kitchenId } : {}), layout, items };
 }
 
 interface ModeSwitchProps {
@@ -84,6 +88,12 @@ function ModeSwitch({ mode, onChange }: ModeSwitchProps): React.ReactElement {
 
 interface AssistantSurfaceProps {
   engine: KitchenEngine | null;
+  /**
+   * The saved kitchen (route /designer/:id). Sent so get_quote has something to
+   * quote — the SERVER re-checks it belongs to the caller, so a forged one is
+   * simply dropped. Absent in the sandbox: no saved kitchen, no quote.
+   */
+  kitchenId?: string;
   selectedObject: THREE.Object3D | null;
   /** The kitchen's real layout — never invented. */
   layout: string;
@@ -96,6 +106,7 @@ export default function AssistantSurface({
   engine,
   selectedObject,
   layout,
+  kitchenId,
   onClose,
   onToolAction,
   onUpgrade,
@@ -114,8 +125,8 @@ export default function AssistantSurface({
 
   const upperLayout = useMemo(() => (layout || 'open_plan').toUpperCase(), [layout]);
   const payload = useCallback(
-    () => buildDesignerPayload(engine, upperLayout),
-    [engine, upperLayout]
+    () => buildDesignerPayload(engine, upperLayout, kitchenId),
+    [engine, upperLayout, kitchenId]
   );
 
   const switchEl = <ModeSwitch mode={mode} onChange={handleMode} />;
