@@ -140,21 +140,47 @@ function verifyTimestamp(timestamp: string): boolean {
 // ==================== INBOUND VERIFICATION MIDDLEWARE ====================
 
 /**
- * Verify incoming webhook request
+ * Verify an incoming webhook.
+ *
+ * THE SECRET COMES FROM THE SERVER. NEVER FROM THE REQUEST.
+ *
+ * This used to read the shared secret out of an `X-Webhook-Secret` header — i.e. the
+ * caller supplied BOTH the signature AND the key used to verify it. Sign your own body
+ * with `hunter2`, send `X-Webhook-Secret: hunter2`, and the HMAC checked out: a total
+ * authentication bypass wearing the costume of a rigorous one (HMAC-SHA256, timing-safe
+ * compare, replay window). And it was worse than that: the check lived inside
+ * `if (secret) { … }`, so sending NO secret header at all skipped verification entirely
+ * and fell through to `next()`. A middleware named `verifyWebhook` that verified nothing
+ * unless you politely handed it the key — and let you in if you didn't.
+ *
+ * The header option is not guarded, it is DELETED: there is no longer any way to tell
+ * this middleware which key to trust. It knows, or it refuses to exist.
+ *
+ * Fail-CLOSED at MOUNT time: with no configured secret this throws while the routes are
+ * being wired, so a webhook route that cannot verify anything cannot be mounted at all.
+ * A boot failure, not a silent open door. (`verifyPartnerWebhook`, just below, already
+ * did this right: it looks the secret up in the DB from the partner's API key.)
  */
 export function verifyWebhook(options?: {
-  secretHeader?: string;
+  /** The shared secret — from server config ONLY. Defaults to `WEBHOOK_SECRET`. */
+  secret?: string;
   signatureHeader?: string;
   timestampHeader?: string;
 }) {
-  const secretHeader = options?.secretHeader || 'X-Webhook-Secret';
+  const secret = options?.secret ?? process.env.WEBHOOK_SECRET;
+  if (!secret) {
+    throw new Error(
+      'verifyWebhook: no secret configured (pass `options.secret` or set WEBHOOK_SECRET). ' +
+        'Refusing to mount a webhook route that cannot verify anything.'
+    );
+  }
+
   const signatureHeader = options?.signatureHeader || 'X-Webhook-Signature';
   const timestampHeader = options?.timestampHeader || 'X-Webhook-Timestamp';
 
   return async (req: WebhookRequest, res: Response, next: NextFunction): Promise<void> => {
     const signature = req.get(signatureHeader);
     const timestamp = req.get(timestampHeader);
-    const secret = req.get(secretHeader);
 
     if (!signature || !timestamp) {
       res.status(401).json({
@@ -164,7 +190,7 @@ export function verifyWebhook(options?: {
       return;
     }
 
-    // Verify timestamp
+    // Replay window
     if (!verifyTimestamp(timestamp)) {
       res.status(401).json({
         success: false,
@@ -173,18 +199,14 @@ export function verifyWebhook(options?: {
       return;
     }
 
-    // Get raw body for signature verification
+    // ALWAYS verified, against the SERVER's secret. No branch can skip this.
     const rawBody = JSON.stringify(req.body);
-
-    // If secret provided in header, use it directly
-    if (secret) {
-      if (!verifySignature(rawBody, signature, secret, timestamp)) {
-        res.status(401).json({
-          success: false,
-          error: 'Invalid webhook signature',
-        });
-        return;
-      }
+    if (!verifySignature(rawBody, signature, secret, timestamp)) {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid webhook signature',
+      });
+      return;
     }
 
     req.webhookPayload = req.body;
