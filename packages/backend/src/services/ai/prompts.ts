@@ -1,3 +1,5 @@
+import type Anthropic from '@anthropic-ai/sdk';
+
 /**
  * System prompts — Claude.
  *
@@ -280,6 +282,12 @@ INTERDIT — LIGNE ROUGE (ancrage) :
 /**
  * Tool definitions JSON Schema — passed to Claude as `tools:` array.
  * Keep names + descriptions stable (Claude indexes on them).
+ *
+ * `satisfies readonly Anthropic.Tool[]` is the GUARDRAIL, not decoration: the whole
+ * anti-hallucination of #239 rests on this array reaching Claude intact. Without it,
+ * a break in the SDK's Tool contract would pass silently (it used to be laundered by
+ * a `as unknown as Anthropic.Tool[]` at the call site). `as const` is kept so the
+ * tool NAMES stay literal — ShoppingToolName is derived from them.
  */
 export const SHOPPING_CHAT_TOOLS = [
   {
@@ -365,7 +373,7 @@ export const SHOPPING_CHAT_TOOLS = [
       required: ['sku'],
     },
   },
-] as const;
+] as const satisfies readonly Anthropic.Tool[];
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 6. ASSISTANT — per-context system prompts (Palier 1)

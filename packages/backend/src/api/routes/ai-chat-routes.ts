@@ -781,7 +781,11 @@ interface AssistantTurn {
 async function runAssistantTurn(params: {
   userId: string;
   systemPrompt: string;
-  tools: readonly unknown[];
+  /**
+   * TYPED, not `unknown[]`: this is the param the whole anchoring rests on, so the
+   * compiler must shout on our behalf if the Tool contract ever breaks.
+   */
+  tools: readonly Anthropic.Tool[];
   firstMessage: string;
   toolCtx: ShoppingToolCtx;
 }): Promise<AssistantTurn> {
@@ -799,7 +803,7 @@ async function runAssistantTurn(params: {
       model: SHOPPING_MODEL,
       max_tokens: SHOPPING_MAX_TOKENS,
       system: systemPrompt,
-      ...(tools.length > 0 ? { tools: tools as unknown as Anthropic.Tool[] } : {}),
+      ...(tools.length > 0 ? { tools: [...tools] } : {}),
       messages,
     });
 
@@ -1044,9 +1048,7 @@ router.post(
     // Only the tools this context is allowed to use are handed to Claude. For an
     // unanchored context this is an EMPTY list → the `tools` param is omitted →
     // the model literally has nowhere to get a fact from.
-    const tools = SHOPPING_CHAT_TOOLS.filter((t) =>
-      (spec.tools as readonly string[]).includes(t.name)
-    );
+    const tools = SHOPPING_CHAT_TOOLS.filter((t) => spec.tools.includes(t.name));
 
     const turn = await runAssistantTurn({
       userId,

@@ -24,6 +24,8 @@ import { ASSISTANT_PROMPTS, buildUnanchoredPrompt } from './prompts';
 import { KitchenLayoutEnum } from './schemas';
 import { prisma } from '../../database/client';
 
+import type { SHOPPING_CHAT_TOOLS } from './prompts';
+
 // ── Contexts ────────────────────────────────────────────────────────────────
 
 /** Contexts backed by a REAL tool (a verifiable fact source). */
@@ -48,13 +50,14 @@ export const UNANCHORED_CONTEXTS = [
 export const ASSISTANT_CONTEXTS = [...ANCHORED_CONTEXTS, ...UNANCHORED_CONTEXTS] as const;
 export type AssistantContext = (typeof ASSISTANT_CONTEXTS)[number];
 
-/** The 5 tools declared in SHOPPING_CHAT_TOOLS. */
-export type ShoppingToolName =
-  | 'searchCatalog'
-  | 'swapItem'
-  | 'addItem'
-  | 'getBudgetSummary'
-  | 'resolve_colors';
+/**
+ * DERIVED from the tool declarations - never hand-copied. A hand-written union
+ * decouples silently: rename a tool in SHOPPING_CHAT_TOOLS and the allowlist below
+ * stops matching it, the context falls to `tools: []`, and the assistant loses its
+ * anchor while still sounding healthy ("I have no access to that data"). Deriving it
+ * turns that silent degradation into a compile error.
+ */
+export type ShoppingToolName = (typeof SHOPPING_CHAT_TOOLS)[number]['name'];
 
 // ── Payloads (client-supplied → validated, then verified) ────────────────────
 
