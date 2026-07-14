@@ -80,5 +80,5 @@
     "node": ">=20.0.0"
   },
   "author": "KitchenXpert",
-  "license": "PROPRIETARY"
+  "license": "AGPL-3.0-only"
 }
