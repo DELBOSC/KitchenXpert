@@ -70,6 +70,13 @@ const designerItemSchema = z.object({
 });
 
 const designerPayloadSchema = z.object({
+  /**
+   * The saved kitchen the user is designing (route /designer/:id). CLIENT-SUPPLIED,
+   * therefore NOT trusted: verifyDesignerPayload re-checks that it belongs to the
+   * caller. A kitchenId that fails that check is DROPPED — it never reaches the
+   * model, and the get_quote tool then has nothing to name.
+   */
+  kitchenId: z.string().uuid().optional(),
   layout: KitchenLayoutEnum,
   items: z.array(designerItemSchema).max(60),
   budgetLimitEur: z.number().positive().max(500_000).optional(),
@@ -109,7 +116,7 @@ function unanchored(pageLabel: string): ContextSpec {
 
 export const CONTEXT_REGISTRY: Record<AssistantContext, ContextSpec> = {
   designer: {
-    tools: ['resolve_colors', 'getBudgetSummary'],
+    tools: ['resolve_colors', 'getBudgetSummary', 'get_quote'],
     systemPrompt: ASSISTANT_PROMPTS.designer,
     payloadSchema: designerPayloadSchema,
   },
@@ -144,6 +151,12 @@ export interface VerifiedKitchenContext {
   budgetLimitEur?: number;
   /** SKUs the client sent that do NOT exist in the catalog. Surfaced, never priced. */
   unverifiedSkus: string[];
+  /**
+   * Set ONLY when the client-supplied kitchenId exists AND belongs to the caller.
+   * This is the sole channel by which a kitchen can be named — get_quote reads it
+   * from here, never from the model.
+   */
+  verifiedKitchenId?: string;
 }
 
 /**
@@ -156,8 +169,23 @@ export interface VerifiedKitchenContext {
  * cited) and reported, and the total is computed server-side.
  */
 export async function verifyDesignerPayload(
-  payload: z.infer<typeof designerPayloadSchema>
+  payload: z.infer<typeof designerPayloadSchema>,
+  userId: string
 ): Promise<VerifiedKitchenContext> {
+  // OWNERSHIP. generateBOM(kitchenId) trusts its caller (the REST controller does the
+  // 403), so this is where the check has to live for the assistant path. A kitchenId
+  // belonging to someone else is silently dropped: get_quote then has no kitchen to
+  // name, and answers that it has none. No leak, and nothing for a prompt injection
+  // to grab — the model was never able to name a kitchen in the first place.
+  let verifiedKitchenId: string | undefined;
+  if (payload.kitchenId) {
+    const kitchen = await prisma.kitchen.findFirst({
+      where: { id: payload.kitchenId, userId, deletedAt: null },
+      select: { id: true },
+    });
+    verifiedKitchenId = kitchen?.id;
+  }
+
   const skus = [...new Set(payload.items.map((i) => i.sku))];
 
   const rows =
@@ -185,6 +213,7 @@ export async function verifyDesignerPayload(
 
   return {
     layout: payload.layout,
+    ...(verifiedKitchenId ? { verifiedKitchenId } : {}),
     items,
     budgetTotalEur: Number(items.reduce((s, i) => s + i.unitPriceEur, 0).toFixed(2)),
     ...(payload.budgetLimitEur !== undefined ? { budgetLimitEur: payload.budgetLimitEur } : {}),

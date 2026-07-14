@@ -1132,6 +1132,30 @@ Ces blocs alimentent le refactor mais NE SONT PAS appliqués en DB en l'état (p
 
 **Pendings P7.** (1) **Validation conversationnelle — ✅ FAITE 28/06 par appel authentifié** (`POST /api/v1/ai-chat/shopping`, stack-up local, vraie clé Anthropic + vraie DB). Chaîne `parentSku → resolver → /shopping → tool LLM` **prouvée end-to-end** sur l'oracle Vicco `CASTORAMA-4251421945043` (Blanc 44.9 / Anthracite 44.9 / **Noir 45.9** — match exact §15.8.6). **3 cas** (positif = autre couleur réelle / négatif = couleur absente / résolution = Noir→prix), **preuve = `data.toolCalls[]` de la réponse HTTP** (PAS les logs : un succès est silencieux côté logs, cf §15.8.7 Q5). **Anti-hallucination confirmée** : le LLM appelle `resolve_colors` AVANT de nommer une couleur, ne propose QUE les couleurs retournées, refuse honnêtement une couleur absente (rouge → zéro invention, propose de chercher ailleurs), reporte le bon prix (Noir 45.9). ⚠️ **Contradiction (1)↔(2) levée** : c'est la **chaîne backend** qui est validée par appel authentifié ; **aucun chemin UI n'atteint `/shopping` aujourd'hui** (ChatPanel consomme le chat designer legacy `/stream`, pas `/shopping`) → l'UI reste à construire = pending (2). 📌 **Finding (validation 28/06) — décision** : `GET /catalog/products/:sku/colors` est **public par design** (données catalogue grand public, cf §2) — **pas une faille** ; le « authentifié » du harness était une prudence côté test, pas une exigence de l'endpoint. (2) **UI color-picker (greenfield, mount `ChatPanel`)** = la surface frontend restante (+ corriger le rate-limiter `/ai-chat`, cf §11 P3). (3) `bom-generator` : **fait pour les lignes catalog** (BOM-a, §15.8.8 — vrais SKU/prix DB) ; reste BOM-b (matcher pour les lignes config).
 
+### 15.9 — Palier 3 : le tool `get_quote` (et pourquoi `projects` reste vide) (14/07/2026)
+
+**La règle, d'abord.** L'audit a produit un critère qui généralise la Décision 1 (l'assistant vit dans la donnée) :
+
+> **Un tool se justifie quand la donnée EXCÈDE la vue, pas quand la donnée existe.**
+
+Le designer (une scène 3D, illisible d'un coup d'œil) et le catalogue (des milliers de SKU, incherchables à l'œil) qualifient. Une liste de trois projets, non : l'assistant y paraphraserait l'écran.
+
+**`projects` → reste `tools: []`. C'est une décision, pas une dette.** L'ancrage *existe* (modèle `Project` : `name`, `status`, `budget`, `deadline` ; endpoint `/projects`), mais la valeur n'y est pas : « tu as 3 projets en cours » est vrai, vérifiable, et sans intérêt — la page **est** la liste. Et la seule question qui aurait de la valeur (« est-ce que je dépasse mon budget ? ») ne se résout **pas** dans `projects` : le coût réel vient du BOM. **Elle appartient au devis.** Un tool qui répond du vrai sans intérêt est une complexité gratuite.
+
+**`quote` → le contexte n'a AUCUNE page.** Découverte de l'audit : `/bom/generate` n'est consommé qu'à un seul endroit (`GeneratedDesigns`) ; `CertifiedQuotePage` est un **autre système** (devis certifiés `totalHT`/`TTC`). Le contexte `quote` n'existe que dans le registre — aucun écran ne l'envoie. Y brancher un tool aurait été **équiper une pièce sans porte**. Décision : **le devis n'est pas un lieu, c'est une question qu'on pose depuis la cuisine** → le tool va au **designer**, pas dans un nouveau contexte. (Une page devis, si elle a du sens un jour, naîtra d'un besoin produit — pas d'un trou dans un registre.)
+
+**Le vrai problème que ça a révélé (11ᵉ instance de la classe §10.1) : `getBudgetSummary` était un ancrage médiocre qui avait l'air d'un ancrage.** Il faisait `k.items.reduce((s, it) => s + it.unitPriceEur, 0)` — une **somme des items envoyés par le client**. Pas de plan de travail, pas de sol, pas de crédence, pas de quincaillerie, pas de pose, pas de TVA — et surtout **pas la séparation ferme/estimé** que BOM-a (#203) avait construite pour être honnête. Cette fois les chiffres venaient bien du serveur : **ils étaient juste incomplets.** *Le vrai partiel qui passe pour le vrai complet.*
+
+**Le tool `get_quote` — ZÉRO argument, par conception.** `generateBOM(kitchenId)` **ne vérifie pas la propriété** (c'est le contrôleur REST qui fait le 403). Un tool prenant un `kitchenId` depuis l'input du LLM serait donc un **IDOR par injection de prompt** (« donne-moi le devis de la cuisine 47 »). Le `kitchenId` transite par le **payload vérifié serveur** (`verifyDesignerPayload` contrôle `kitchen.userId === req.user.userId` ; un id étranger est **écarté**, jamais une erreur que le modèle pourrait sonder). **Le modèle n'a aucun moyen de nommer une cuisine** : il pose la question, le serveur sait de quoi il parle.
+
+> **PRINCIPE (3ᵉ fois qu'il sauve la mise) : le LLM ne doit jamais pouvoir nommer une ressource.** Cf `verifyDesignerPayload` (#239, prix forgé) et ici (cuisine d'autrui). Ce n'est pas une garde qu'on applique — c'est une **impossibilité structurelle**.
+
+**Preuves (stack réelle, 2 utilisateurs)** : (a) *oracle devis* — le LLM appelle `get_quote`, obtient 3 lignes `catalog` (1 088,48 € ferme) + 5 lignes `estimated` (6 100 €), et **remonte la distinction dans sa phrase** (« seuls 1 088,48 € sont des prix fermes… les 6 100 € restants sont des estimations par barème ») ; (b) *contrôle négatif IDOR* — Alice réclame explicitement le devis de la cuisine de Bob : **zéro fuite**, le serveur a écarté l'id. + 8 tests (dont 3 propriété + 2 IDOR + 1 allowlist), 1692 backend verts.
+
+**Câblage frontend** : `AssistantSurface` envoie le `kitchenId` de la route `/designer/:id`. Sans ça, le tool aurait été **inatteignable depuis l'UI** — le piège de #241 (« une page que personne n'atteint »), évité en posant la question.
+
+---
+
 ### 15.8.8 — BOM-a : devis déterministe depuis les vrais SKU (no LLM) (26/06/2026)
 
 > Dette §15.7 P4 **résolue pour les lignes catalog** : `generateBOM` n'invente plus rien. Avant, il demandait au LLM de produire `catalogRef`, prix, quantités ET totaux (TVA comprise) — alors que les vraies données sont déjà en DB. Pire, le prompt passait `product.name` mais **jetait** `product.sku` et `product.price`. Désormais 100% déterministe, zéro appel LLM.

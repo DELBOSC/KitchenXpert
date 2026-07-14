@@ -1359,6 +1359,7 @@ function KitchenDesigner({
           <AssistantSurface
             engine={engine}
             selectedObject={selectedObject}
+            kitchenId={kitchenId}
             layout={kitchen?.layout ?? 'open_plan'}
             onClose={() => setShowChatPanel(false)}
             onUpgrade={() => navigate('/pricing')}

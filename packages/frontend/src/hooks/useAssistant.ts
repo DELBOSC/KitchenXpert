@@ -18,6 +18,8 @@ export type AssistantContext = 'designer' | 'catalog';
 
 /** Sent for the designer context. Prices are re-derived server-side from the DB. */
 export interface DesignerPayload {
+  /** The saved kitchen (route /designer/:id). The SERVER re-checks ownership. */
+  kitchenId?: string;
   layout: string;
   items: Array<{ id: string; sku: string; label?: string }>;
   budgetLimitEur?: number;
