@@ -89,35 +89,11 @@ jest.mock('../auth/jwt.service', () => ({
 
 let currentTestUser = { userId: 'test-user-id', email: 'test@test.com', role: 'user' };
 
-// compliance-routes imports auth from ../../middleware/auth-middleware,
-// NOT from ../api/middleware/auth-middleware. Mock BOTH paths since
-// hoisting makes function references unavailable.
+// compliance-routes now imports auth from the ONE real middleware
+// (../api/middleware/auth-middleware). The old duplicate (../middleware/auth-middleware,
+// blacklist-free) is deleted — see auth-revocation.test.ts, which proves the real
+// middleware rejects a revoked token (the divergence this used to mock both paths around).
 jest.mock('../api/middleware/auth-middleware', () => {
-  const { UnauthorizedError } = require('@kitchenxpert/common');
-  return {
-    authenticate: jest.fn((req: any, _res: any, next: any) => {
-      if (req.cookies?.accessToken || req.headers.authorization) {
-        req.user = { ...currentTestUser };
-        next();
-      } else {
-        next(new UnauthorizedError('Authentication required'));
-      }
-    }),
-    requireRole:
-      (...roles: string[]) =>
-      (req: any, _res: any, next: any) => {
-        if (!req.user) {
-          return next(new UnauthorizedError('Authentication required'));
-        }
-        if (!roles.includes(req.user.role)) {
-          const { ForbiddenError } = require('@kitchenxpert/common');
-          return next(new ForbiddenError('Access denied'));
-        }
-        next();
-      },
-  };
-});
-jest.mock('../middleware/auth-middleware', () => {
   const { UnauthorizedError } = require('@kitchenxpert/common');
   return {
     authenticate: jest.fn((req: any, _res: any, next: any) => {
