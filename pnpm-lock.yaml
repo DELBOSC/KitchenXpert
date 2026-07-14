@@ -411,7 +411,7 @@ importers:
         version: link:../ui-components
       '@reduxjs/toolkit':
         specifier: ^2.0.1
-        version: 2.11.2(react-redux@9.2.0)(react@18.3.1)
+        version: 2.11.2(react-redux@9.3.0)(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5.17.19
         version: 5.90.18(react@18.3.1)
@@ -446,8 +446,8 @@ importers:
         specifier: ^16.5.4
         version: 16.5.4(i18next@25.8.6)(react-dom@18.3.1)(react@18.3.1)(typescript@5.9.3)
       react-redux:
-        specifier: ^9.1.0
-        version: 9.2.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1)
+        specifier: ^9.3.0
+        version: 9.3.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1)
       react-router-dom:
         specifier: ^6.30.4
         version: 6.30.4(react-dom@18.3.1)(react@18.3.1)
@@ -469,7 +469,7 @@ importers:
     devDependencies:
       '@axe-core/playwright':
         specifier: ^4.11.3
-        version: 4.11.3(playwright-core@1.58.2)
+        version: 4.11.3(playwright-core@1.60.0)
       '@playwright/test':
         specifier: ^1.58.2
         version: 1.58.2
@@ -593,7 +593,7 @@ importers:
         version: link:../ui-components
       '@reduxjs/toolkit':
         specifier: ^2.0.1
-        version: 2.11.2(react-redux@9.2.0)(react@18.3.1)
+        version: 2.11.2(react-redux@9.3.0)(react@18.3.1)
       axios:
         specifier: ^1.17.0
         version: 1.17.0
@@ -613,8 +613,8 @@ importers:
         specifier: ^7.49.3
         version: 7.71.0(react@18.3.1)
       react-redux:
-        specifier: ^9.1.0
-        version: 9.2.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1)
+        specifier: ^9.3.0
+        version: 9.3.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1)
       react-router-dom:
         specifier: ^6.30.4
         version: 6.30.4(react-dom@18.3.1)(react@18.3.1)
@@ -1830,13 +1830,13 @@ packages:
     resolution: {integrity: sha512-iY8yvjE0y651BixKNPgmv1WrQc+GZ142sb0z4gYnChDDY2YqI4P/jsSopBWrKfAt7LOJAkOXt7rC/hms+WclQQ==}
     engines: {node: '>=18.0.0'}
 
-  /@axe-core/playwright@4.11.3(playwright-core@1.58.2):
+  /@axe-core/playwright@4.11.3(playwright-core@1.60.0):
     resolution: {integrity: sha512-h/kfksv4F0cVIDlKpT4700OehdRgpvuVskuQ2nb7/JmtWUXpe9ftHAPtwyXGvVSsa6SJ64A9ER7Zrzc/sIvC4w==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
     dependencies:
       axe-core: 4.11.4
-      playwright-core: 1.58.2
+      playwright-core: 1.60.0
     dev: true
 
   /@babel/code-frame@7.29.7:
@@ -2279,24 +2279,24 @@ packages:
       kuler: 2.0.0
     dev: false
 
-  /@emnapi/core@1.10.0:
-    resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
+  /@emnapi/core@1.11.0:
+    resolution: {integrity: sha512-l9Oo58x0HOP5znGzVhYW9U3e5wVuA4LAZU2AGezTmkhO1CgQRFDhDg4nneHsu/t3WniXg9QrG2nIXL/ZS8ln8Q==}
     requiresBuild: true
     dependencies:
-      '@emnapi/wasi-threads': 1.2.1
+      '@emnapi/wasi-threads': 1.2.2
       tslib: 2.8.1
     dev: true
     optional: true
 
-  /@emnapi/runtime@1.10.0:
-    resolution: {integrity: sha512-ewvYlk86xUoGI0zQRNq/mC+16R1QeDlKQy21Ki3oSYXNgLb45GV1P6A0M+/s6nyCuNDqe5VpaY84BzXGwVbwFA==}
+  /@emnapi/runtime@1.11.0:
+    resolution: {integrity: sha512-55coeOFKHv1ywEcUXJtWU5f+Jr/W5tZDvZig8DLKSwUN1JpROQ4rk/SNOQiFWmaR/VKF4zuFyW1B8JduOSv6Pg==}
     requiresBuild: true
     dependencies:
       tslib: 2.8.1
     optional: true
 
-  /@emnapi/wasi-threads@1.2.1:
-    resolution: {integrity: sha512-uTII7OYF+/Mes/MrcIOYp5yOtSMLBWSIoLPpcgwipoiKbli6k322tcoFsxoIIxPDqW01SQGAgko4EzZi2BNv2w==}
+  /@emnapi/wasi-threads@1.2.2:
+    resolution: {integrity: sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA==}
     requiresBuild: true
     dependencies:
       tslib: 2.8.1
@@ -3660,7 +3660,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@emnapi/runtime': 1.10.0
+      '@emnapi/runtime': 1.11.0
     dev: false
     optional: true
 
@@ -3670,7 +3670,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@emnapi/runtime': 1.10.0
+      '@emnapi/runtime': 1.11.0
     dev: false
     optional: true
 
@@ -4111,8 +4111,8 @@ packages:
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
     requiresBuild: true
     dependencies:
-      '@emnapi/core': 1.10.0
-      '@emnapi/runtime': 1.10.0
+      '@emnapi/core': 1.11.0
+      '@emnapi/runtime': 1.11.0
       '@tybys/wasm-util': 0.10.2
     dev: true
     optional: true
@@ -4321,7 +4321,7 @@ packages:
       '@redis/client': 1.6.1
     dev: false
 
-  /@reduxjs/toolkit@2.11.2(react-redux@9.2.0)(react@18.3.1):
+  /@reduxjs/toolkit@2.11.2(react-redux@9.3.0)(react@18.3.1):
     resolution: {integrity: sha512-Kd6kAHTA6/nUpp8mySPqj3en3dm0tdMIgbttnQ1xFMVpufoj+ADi8pXLBsd4xzTRHQa7t/Jv8W5UnCuW4kuWMQ==}
     peerDependencies:
       react: ^16.9.0 || ^17.0.0 || ^18 || ^19
@@ -4336,7 +4336,7 @@ packages:
       '@standard-schema/utils': 0.3.0
       immer: 11.1.3
       react: 18.3.1
-      react-redux: 9.2.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1)
+      react-redux: 9.3.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1)
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.1.1
@@ -7278,8 +7278,8 @@ packages:
         optional: true
     dev: false
 
-  /bare-fs@4.7.1:
-    resolution: {integrity: sha512-WDRsyVN52eAx/lBamKD6uyw8H4228h/x0sGGGegOamM2cd7Pag88GfMQalobXI+HaEUxpCkbKQUDOQqt9wawRw==}
+  /bare-fs@4.7.2:
+    resolution: {integrity: sha512-aTvMFUWkBmjzKtEQMDGGDNF8bkfpD5N1b/FCwt7A3wrU4t1o/e/85Wzkluh6JlODCjqVESYCkQCdTXqZ9G7VFg==}
     engines: {bare: '>=1.16.0'}
     requiresBuild: true
     peerDependencies:
@@ -7289,7 +7289,7 @@ packages:
         optional: true
     dependencies:
       bare-events: 2.8.2
-      bare-path: 3.0.0
+      bare-path: 3.0.1
       bare-stream: 2.7.0(bare-events@2.8.2)
       bare-url: 2.3.2
       fast-fifo: 1.3.2
@@ -7306,8 +7306,8 @@ packages:
     dev: false
     optional: true
 
-  /bare-path@3.0.0:
-    resolution: {integrity: sha512-tyfW2cQcB5NN8Saijrhqn0Zh7AnFNsnczRcuWODH0eYAXBsJ5gVxAUuNr7tsHSC6IZ77cA0SitzT+s47kot8Mw==}
+  /bare-path@3.0.1:
+    resolution: {integrity: sha512-ghj2DSK/2e99a1anTVPCV4m4YIYtrbXhfM7V3D7XZLOTsybnYyaJloymGqssQc8l/or0UoDyRtNQkmkEF/ysgQ==}
     requiresBuild: true
     dependencies:
       bare-os: 3.6.2
@@ -7338,7 +7338,7 @@ packages:
     resolution: {integrity: sha512-ZMq4gd9ngV5aTMa5p9+UfY0b3skwhHELaDkhEHetMdX0LRkW9kzaym4oo/Eh+Ghm0CCDuMTsRIGM/ytUc1ZYmw==}
     requiresBuild: true
     dependencies:
-      bare-path: 3.0.0
+      bare-path: 3.0.1
     dev: false
     optional: true
 
@@ -8647,8 +8647,8 @@ packages:
       domelementtype: 2.3.0
     dev: false
 
-  /dompurify@3.4.7:
-    resolution: {integrity: sha512-2jBxDJY4RR06tQNy4w5FlFH7kfxsQZlufd0sbv+chfHCxeJwrFw2baUDsSwvBISD4K4RDbd0PTfy3uNXsR6siA==}
+  /dompurify@3.4.9:
+    resolution: {integrity: sha512-4dPSRMRDqHvs0V4YDFCsaIZo4if5u0xM+llyxiM2fwuZFdKArUBAF3VtI2+n8NKg9P870WMdYk0UhqQNoWXbfQ==}
     requiresBuild: true
     optionalDependencies:
       '@types/trusted-types': 2.0.7
@@ -11677,7 +11677,7 @@ packages:
     optionalDependencies:
       canvg: 3.0.11
       core-js: 3.49.0
-      dompurify: 3.4.7
+      dompurify: 3.4.9
       html2canvas: 1.4.1
     dev: false
 
@@ -13412,6 +13412,12 @@ packages:
     hasBin: true
     dev: true
 
+  /playwright-core@1.60.0:
+    resolution: {integrity: sha512-9bW6zvX/m0lEbgTKJ6YppOKx8H3VOPBMOCFh2irXFOT4BbHgrx5hPjwJYLT40Lu+4qtD36qKc/Hn56StUW57IA==}
+    engines: {node: '>=18'}
+    hasBin: true
+    dev: true
+
   /playwright@1.58.2:
     resolution: {integrity: sha512-vA30H8Nvkq/cPBnNw4Q8TWz1EJyqgpuinBcHET0YVJVFldr8JDNiU9LaWAE1KqSkRYazuaBhTpB5ZzShOezQ6A==}
     engines: {node: '>=18'}
@@ -13849,8 +13855,8 @@ packages:
   /react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  /react-redux@9.2.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1):
-    resolution: {integrity: sha512-ROY9fvHhwOD9ySfrF0wmvu//bKCQ6AeZZq1nJNtbDC+kk5DuSuNX/n6YWYF/SYy7bSba4D4FSz8DJeKY/S/r+g==}
+  /react-redux@9.3.0(@types/react@18.3.27)(react@18.3.1)(redux@5.0.1):
+    resolution: {integrity: sha512-KQopgqFo/p/fgmAs5qz6p5RWaNAzq40WAu7fJIXnQpYxFPbJYtsJPWvGeF2rOBaY/kEuV77AVsX8TsQzKm+A/g==}
     peerDependencies:
       '@types/react': ^18.2.25 || ^19
       react: ^18.0 || ^19
@@ -15311,8 +15317,8 @@ packages:
       pump: 3.0.3
       tar-stream: 3.1.7
     optionalDependencies:
-      bare-fs: 4.7.1
-      bare-path: 3.0.0
+      bare-fs: 4.7.2
+      bare-path: 3.0.1
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
