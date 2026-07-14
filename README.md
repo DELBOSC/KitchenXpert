@@ -412,7 +412,25 @@ Langues supportées:
 
 ## 📄 Licence
 
-MIT © KitchenXpert
+**GNU Affero General Public License v3.0** (AGPL-3.0-only) — Copyright © 2026
+Laurent Delbosc. Texte intégral : [LICENSE](LICENSE).
+
+Le code est **libre et réutilisable**. Concrètement :
+
+- ✅ **Utiliser, étudier, modifier, redistribuer** — y compris commercialement.
+- ⚠️ **Si vous déployez une version modifiée en service réseau** (SaaS), l'AGPL
+  (§13, _Remote Network Interaction_) vous oblige à **mettre le code source de
+  vos modifications à disposition de vos utilisateurs**. C'est la différence
+  avec la GPL, et c'est délibéré : on peut construire sur KitchenXpert, mais on
+  ne peut pas **fermer** ce qu'on y construit.
+- ⚠️ **Toute œuvre dérivée reste sous AGPL-3.0** (copyleft).
+
+Ce choix est assumé : le projet est ouvert à la réutilisation, pas à
+l'appropriation.
+
+> **Note** : les marques, le nom « KitchenXpert », les visuels et les données de
+> catalogue tierces (SKU, prix, images des fournisseurs) ne sont **pas**
+> couverts par cette licence — ils appartiennent à leurs détenteurs respectifs.
 
 ## 👥 Équipe
 
