@@ -247,7 +247,7 @@ jobs:
     if: always()
     steps:
       - name: 📢 Notify Slack
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v2
         with:
           payload: |
             {
@@ -330,7 +330,7 @@ jobs:
           EOF
 
       - name: 📢 Notify rollback
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v2
         with:
           payload: |
             {
