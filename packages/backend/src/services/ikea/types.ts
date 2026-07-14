@@ -10,9 +10,17 @@
 export interface IkeaConfig {
   country: string;
   language: string;
-  baseUrl?: string;
   userAgent?: string;
 }
+
+/**
+ * The IKEA web host, fixed. Was a `config.baseUrl` override with NO validation and NO
+ * call site — a dormant SSRF footgun (CodeQL js/request-forgery on the pip endpoint):
+ * the day anyone wired baseUrl to request input, the host became attacker-controlled.
+ * Removed the capability rather than guarding it — there is no way to point this client
+ * at another host. A test mock uses a factory or a validated env var, not a bare `||`.
+ */
+export const IKEA_WEB_BASE = 'https://www.ikea.com';
 
 export type IkeaCountry =
   | 'fr'
