@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
-import { Search, Package, ArrowLeft, ArrowUpRight, Ruler } from 'lucide-react';
+import { Search, Package, ArrowLeft, ArrowUpRight, Ruler, Sparkles, X } from 'lucide-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import ImportToDesignDialog from './ImportToDesignDialog';
+import AssistantIntro from '../../components/assistant/AssistantIntro';
+import AssistantPanel from '../../components/assistant/AssistantPanel';
 import {
   Badge,
   Card,
@@ -81,6 +83,7 @@ export default function ProviderCatalog(): React.ReactElement {
   const [items, setItems] = useState<CatalogItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [showAssistant, setShowAssistant] = useState(false);
   const [sortBy, setSortBy] = useState<'name' | 'price_asc' | 'price_desc'>('name');
   const [importTarget, setImportTarget] = useState<ImportTarget | null>(null);
 
@@ -191,6 +194,17 @@ export default function ProviderCatalog(): React.ReactElement {
           }
         />
 
+        {!showAssistant && (
+          <div className="dark mb-4">
+            <AssistantIntro
+              surface="catalog"
+              message="L'assistant connaît ce catalogue : références et prix réels, jamais inventés."
+              ctaLabel="Ouvrir"
+              onOpen={() => setShowAssistant(true)}
+            />
+          </div>
+        )}
+
         <Card variant="elevated" className="mb-6 p-4">
           <div className="flex flex-col gap-3 sm:flex-row">
             <Input
@@ -201,6 +215,17 @@ export default function ProviderCatalog(): React.ReactElement {
               onChange={(e) => setSearch(e.target.value)}
               leftIcon={<Search className="h-4 w-4" />}
             />
+            {/* The assistant is a capability of THIS surface — it lives where the
+                intent to search lives, not in a floating bubble that would have to
+                justify its absence elsewhere. */}
+            <Button
+              variant="outline"
+              onClick={() => setShowAssistant(true)}
+              leftIcon={<Sparkles className="h-4 w-4 flex-shrink-0" />}
+              className="w-full flex-shrink-0 whitespace-nowrap sm:w-auto"
+            >
+              Demander à l&apos;assistant
+            </Button>
             <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
@@ -262,6 +287,36 @@ export default function ProviderCatalog(): React.ReactElement {
 
       {importTarget && (
         <ImportToDesignDialog open onClose={() => setImportTarget(null)} target={importTarget} />
+      )}
+
+      {/* Same component as the designer's — ONE assistant, two homes. Forced dark:
+          this page is hard-coded dark while the shell is theme-aware. */}
+      {/* top-16: starts BELOW the app header (measured: 64px, sticky, z-50). The panel
+          must not swallow the navigation, and its own header must stay reachable. */}
+      {showAssistant && (
+        <div className="dark fixed bottom-0 right-0 top-16 z-30 w-96 max-w-[90vw] border-l border-gray-700 shadow-2xl">
+          <AssistantPanel
+            context="catalog"
+            title="Assistant catalogue"
+            emptyHint="Je cherche dans le vrai catalogue. Je ne cite que ce que j'y trouve."
+            suggestions={[
+              'Une façade blanche à moins de 100 €',
+              'Un four encastrable Bosch',
+              'Un plan de travail en bois',
+            ]}
+            headerActions={
+              <button
+                type="button"
+                onClick={() => setShowAssistant(false)}
+                className="kx-focus rounded p-1.5 text-gray-400 transition-colors hover:text-gray-200"
+                aria-label="Fermer"
+                title="Fermer"
+              >
+                <X className="h-4 w-4" aria-hidden />
+              </button>
+            }
+          />
+        </div>
       )}
     </div>
   );
