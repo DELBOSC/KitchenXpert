@@ -1,5 +1,5 @@
 import { AnthropicService } from './anthropic.service';
-import { sanitizePromptField } from './prompt-safety';
+import { sanitizePromptField, num } from './prompt-safety';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
 
@@ -120,37 +120,39 @@ export class AIChatService {
 
   // Build context from scene state
   private buildSceneDescription(context: SceneContext): string {
-    // type/name/style are client-supplied free text landing in the SYSTEM prompt —
-    // sanitize every one before interpolation (see prompt-safety). Numeric fields are
-    // number-typed and pass through .toFixed()/arithmetic, so they cannot inject.
+    // sceneContext is z.object({}).passthrough() → NOTHING here is runtime-checked. The
+    // numeric type annotations are lies: a client can send roomWidth: "5\n\nINJECT". So
+    // EVERY interpolated field is hardened at the point of interpolation — strings via
+    // sanitizePromptField, numbers via num() (finite-or-fallback, can't carry a newline).
+    // (b)-style belt; the real fix is validating sceneContext at the boundary (tracked).
     const items = context.items
       .map(
         (i) =>
-          `- ${sanitizePromptField(i.type)}${i.name ? ` (${sanitizePromptField(i.name)})` : ''} a position (${i.position.x.toFixed(0)}, ${i.position.y.toFixed(0)}, ${i.position.z.toFixed(0)})${i.dimensions ? ` [${i.dimensions.width}x${i.dimensions.height}x${i.dimensions.depth}mm]` : ''}`
+          `- ${sanitizePromptField(i.type)}${i.name ? ` (${sanitizePromptField(i.name)})` : ''} a position (${num(i.position.x).toFixed(0)}, ${num(i.position.y).toFixed(0)}, ${num(i.position.z).toFixed(0)})${i.dimensions ? ` [${num(i.dimensions.width)}x${num(i.dimensions.height)}x${num(i.dimensions.depth)}mm]` : ''}`
       )
       .join('\n');
 
     let desc = `ETAT ACTUEL DE LA CUISINE:
-Dimensions piece: ${context.roomWidth}mm x ${context.roomDepth}mm, hauteur ${context.roomHeight}mm
-Surface: ${((context.roomWidth / 1000) * (context.roomDepth / 1000)).toFixed(1)} m2
+Dimensions piece: ${num(context.roomWidth)}mm x ${num(context.roomDepth)}mm, hauteur ${num(context.roomHeight)}mm
+Surface: ${((num(context.roomWidth) / 1000) * (num(context.roomDepth) / 1000)).toFixed(1)} m2
 Style: ${context.style ? sanitizePromptField(context.style) : 'non defini'}
-${context.budget ? `Budget: ${context.budget.min}EUR - ${context.budget.max}EUR` : ''}
+${context.budget ? `Budget: ${num(context.budget.min)}EUR - ${num(context.budget.max)}EUR` : ''}
 
-ELEMENTS PLACES (${context.items.length}):
+ELEMENTS PLACES (${num(context.items.length)}):
 ${items || '(aucun element place)'}`;
 
     if (context.scores) {
       desc += `\n\nSCORES ACTUELS:
-- Global: ${context.scores.overall}/100
-- Ergonomie: ${context.scores.ergonomics}/100
-- Rangement: ${context.scores.storage}/100
-- Esthetique: ${context.scores.aesthetics}/100
-- Budget: ${context.scores.budgetEfficiency}/100
-- Espace: ${context.scores.spaceUtilization}/100`;
+- Global: ${num(context.scores.overall)}/100
+- Ergonomie: ${num(context.scores.ergonomics)}/100
+- Rangement: ${num(context.scores.storage)}/100
+- Esthetique: ${num(context.scores.aesthetics)}/100
+- Budget: ${num(context.scores.budgetEfficiency)}/100
+- Espace: ${num(context.scores.spaceUtilization)}/100`;
     }
 
     if (context.suggestions && context.suggestions.length > 0) {
-      desc += `\n\nSUGGESTIONS SYSTEME:\n${context.suggestions.map((s) => `- ${s}`).join('\n')}`;
+      desc += `\n\nSUGGESTIONS SYSTEME:\n${context.suggestions.map((s) => `- ${sanitizePromptField(s)}`).join('\n')}`;
     }
 
     return desc;
