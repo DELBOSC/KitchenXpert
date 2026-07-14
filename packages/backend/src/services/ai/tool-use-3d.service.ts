@@ -1,4 +1,5 @@
 import { AnthropicService } from './anthropic.service';
+import { sanitizePromptField } from './prompt-safety';
 import { SYSTEM_PROMPTS } from './prompt-templates';
 import logger from '../../utils/logger';
 
@@ -356,17 +357,20 @@ export class ToolUse3DService {
    * Build a textual description of the current 3D scene for the AI system prompt.
    */
   private buildSceneDescription(context: SceneContext): string {
+    // id/type/name/style are client-supplied free text landing in the SYSTEM prompt —
+    // sanitize each before interpolation (see prompt-safety). Numeric fields are
+    // number-typed and pass through .toFixed()/arithmetic, so they cannot inject.
     const items = context.items
       .map(
         (i) =>
-          `- [${i.id}] ${i.type}${i.name ? ` (${i.name})` : ''} @ (${i.position.x.toFixed(0)}, ${i.position.y.toFixed(0)}, ${i.position.z.toFixed(0)})${i.dimensions ? ` [${i.dimensions.width}x${i.dimensions.height}x${i.dimensions.depth}mm]` : ''}`
+          `- [${sanitizePromptField(i.id, 64)}] ${sanitizePromptField(i.type)}${i.name ? ` (${sanitizePromptField(i.name)})` : ''} @ (${i.position.x.toFixed(0)}, ${i.position.y.toFixed(0)}, ${i.position.z.toFixed(0)})${i.dimensions ? ` [${i.dimensions.width}x${i.dimensions.height}x${i.dimensions.depth}mm]` : ''}`
       )
       .join('\n');
 
     let desc = `ETAT ACTUEL DE LA CUISINE:
 Dimensions piece: ${context.roomWidth}mm x ${context.roomDepth}mm, hauteur ${context.roomHeight}mm
 Surface: ${((context.roomWidth / 1000) * (context.roomDepth / 1000)).toFixed(1)} m2
-Style: ${context.style || 'non defini'}
+Style: ${context.style ? sanitizePromptField(context.style) : 'non defini'}
 ${context.budget ? `Budget: ${context.budget.min}EUR - ${context.budget.max}EUR` : ''}
 
 ELEMENTS PLACES (${context.items.length}):
