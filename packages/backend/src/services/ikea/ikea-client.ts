@@ -3,7 +3,7 @@
  * Main client for interacting with IKEA APIs
  */
 
-import { IKEA_CLIENT_IDS, IKEA_AUTH_SECRET, IKEA_ENDPOINTS } from './types';
+import { IKEA_CLIENT_IDS, IKEA_AUTH_SECRET, IKEA_ENDPOINTS, IKEA_WEB_BASE } from './types';
 import {
   getDefaultHeaders,
   buildUrl,
@@ -38,10 +38,16 @@ export class IkeaClient {
   private tokenExpiry: number = 0;
 
   constructor(config: IkeaConfig) {
+    // country/language are interpolated into request PATHS on every IKEA endpoint
+    // (.../${country}/${language}/...). Constrain them to ISO 2-letter codes at the ONE
+    // point they enter the client, so no call site can inject path segments (../, @, …).
+    // Fail closed on anything else.
+    if (!/^[a-z]{2}$/.test(config.country) || !/^[a-z]{2}$/.test(config.language)) {
+      throw new Error('IkeaClient: country and language must be ISO 2-letter lowercase codes');
+    }
     this.config = {
       country: config.country,
       language: config.language,
-      baseUrl: config.baseUrl || 'https://www.ikea.com',
       userAgent:
         config.userAgent || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15',
     };
@@ -375,7 +381,7 @@ export class IkeaClient {
 
     // Try as combination first (SPR), then as regular item (ART)
     for (const prefix of ['s', '']) {
-      const url = `${this.config.baseUrl}/${this.config.country}/${this.config.language}/products/${codeNoDelim.slice(5)}/${prefix}${codeNoDelim}.json`;
+      const url = `${IKEA_WEB_BASE}/${this.config.country}/${this.config.language}/products/${codeNoDelim.slice(5)}/${prefix}${codeNoDelim}.json`;
 
       try {
         const response = await fetch(url, {
@@ -420,7 +426,7 @@ export class IkeaClient {
       price: parsePrice(obj.price),
       currency: getCurrencyForCountry(this.config.country),
       url: buildProductUrl(
-        this.config.baseUrl,
+        IKEA_WEB_BASE,
         this.config.country,
         this.config.language,
         itemCode,
@@ -489,7 +495,7 @@ export class IkeaClient {
       price: 0, // Ingka endpoint doesn't include price
       currency: getCurrencyForCountry(this.config.country),
       url: buildProductUrl(
-        this.config.baseUrl,
+        IKEA_WEB_BASE,
         this.config.country,
         this.config.language,
         itemCode
