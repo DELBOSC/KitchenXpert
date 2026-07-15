@@ -1,3 +1,6 @@
+
+/** Property names that corrupt an object's prototype when written via bracket access. */
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 /**
  * Object Transformation Utilities
  * Provides utility functions for transforming objects.
@@ -151,6 +154,14 @@ export function set<T extends object>(obj: T, path: string | string[], value: un
 
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i]!;
+    // Prototype-pollution guard. Without it, set(obj, '__proto__.x', v) walks INTO
+    // Object.prototype: '__proto__' in current is true, isPlainObject(Object.prototype)
+    // is true (its own proto is null), so the reset is skipped and the final write lands
+    // on Object.prototype — global pollution, proven by runtime. Refuse the dangerous
+    // segments; a path that names one simply does nothing.
+    if (UNSAFE_KEYS.has(key)) {
+      return result;
+    }
     if (!(key in current) || !isPlainObject(current[key])) {
       current[key] = {};
     }
@@ -158,7 +169,7 @@ export function set<T extends object>(obj: T, path: string | string[], value: un
   }
 
   const lastKey = keys[keys.length - 1];
-  if (lastKey !== undefined) {
+  if (lastKey !== undefined && !UNSAFE_KEYS.has(lastKey)) {
     current[lastKey] = value;
   }
   return result;
