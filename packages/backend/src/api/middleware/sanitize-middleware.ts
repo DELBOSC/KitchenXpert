@@ -1,5 +1,9 @@
 import { type Request, type Response, type NextFunction } from 'express';
 
+/** Property names that corrupt an object's prototype when written via bracket access. */
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+
 /**
  * Input Sanitization Middleware
  *
@@ -164,6 +168,9 @@ function sanitizeValue(value: unknown, options: SanitizeOptions, path: string = 
 
     const sanitizedObj: Record<string, unknown> = {};
     for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      // Drop __proto__/constructor/prototype: a request body's own __proto__ key would
+      // otherwise rebind this object's prototype (js/remote-property-injection).
+      if (UNSAFE_KEYS.has(key)) continue;
       const newPath = path ? `${path}.${key}` : key;
       sanitizedObj[key] = sanitizeValue(val, options, newPath);
     }
@@ -192,6 +199,7 @@ export function createSanitizeMiddleware(customOptions: SanitizeOptions = {}) {
         // Create a new query object since req.query might be read-only
         const sanitizedQuery: Record<string, unknown> = {};
         for (const [key, val] of Object.entries(req.query)) {
+          if (UNSAFE_KEYS.has(key)) continue;
           sanitizedQuery[key] = sanitizeValue(val, options, `query.${key}`);
         }
         req.query = sanitizedQuery as typeof req.query;
@@ -201,6 +209,7 @@ export function createSanitizeMiddleware(customOptions: SanitizeOptions = {}) {
       if (req.params && typeof req.params === 'object') {
         const sanitizedParams: Record<string, string> = {};
         for (const [key, val] of Object.entries(req.params)) {
+          if (UNSAFE_KEYS.has(key)) continue;
           const sanitized = sanitizeValue(val, options, `params.${key}`);
           sanitizedParams[key] = typeof sanitized === 'string' ? sanitized : String(sanitized);
         }
@@ -220,15 +229,13 @@ export function createSanitizeMiddleware(customOptions: SanitizeOptions = {}) {
  */
 export const sanitizeInput = createSanitizeMiddleware();
 
-/**
- * Light sanitization - only strip dangerous patterns, don't escape HTML
- * Use this when you need to preserve some HTML formatting
- */
-export const sanitizeInputLight = createSanitizeMiddleware({
-  escapeHtml: false,
-  stripDangerous: true,
-  trim: true,
-});
+// REMOVED: sanitizeInputLight (escapeHtml: false). It was never mounted on any route, and
+// it was a footgun: escape-off makes the hand-rolled stripDangerousPatterns the SOLE XSS
+// defense — and that stripper is single-pass (CodeQL js/incomplete-multi-character-
+// sanitization / bad-tag-filter), so `<scr<script>ipt>` survives it. The mounted paths
+// (sanitizeInput / sanitizeInputStrict) run escapeHtml AFTER, which neutralises anything
+// the stripper misses. Nothing needed the escape-off variant, so the capability is gone
+// rather than guarded — a route that mounted it would have turned those alerts real.
 
 /**
  * Strict sanitization - escape HTML and limit string length
