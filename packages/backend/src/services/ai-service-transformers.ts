@@ -10,6 +10,11 @@
 /**
  * Convert a camelCase string to snake_case
  */
+// Keys that, written via bracket notation, corrupt an object's prototype
+// (CodeQL js/remote-property-injection). Both transformers below write
+// result[fn(key)] where key comes from an untrusted body, so both skip these.
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
 function camelToSnake(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
@@ -34,7 +39,9 @@ export function toSnakeCase(obj: any): any {
   if (typeof obj === 'object' && !(obj instanceof Date)) {
     const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(obj)) {
-      result[camelToSnake(key)] = toSnakeCase(value);
+      const k = camelToSnake(key);
+      if (UNSAFE_KEYS.has(k)) {continue;}
+      result[k] = toSnakeCase(value);
     }
     return result;
   }
@@ -54,7 +61,9 @@ export function toCamelCase(obj: any): any {
   if (typeof obj === 'object' && !(obj instanceof Date)) {
     const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(obj)) {
-      result[snakeToCamel(key)] = toCamelCase(value);
+      const k = snakeToCamel(key);
+      if (UNSAFE_KEYS.has(k)) {continue;}
+      result[k] = toCamelCase(value);
     }
     return result;
   }

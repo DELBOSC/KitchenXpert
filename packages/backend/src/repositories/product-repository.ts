@@ -118,6 +118,13 @@ export class ProductRepository {
     pagination: PaginationOptions = {}
   ): Promise<{ data: Product[]; total: number; page: number; totalPages: number }> {
     const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc' } = pagination;
+    // sortBy is client-supplied and flows into `orderBy: { [sortBy]: ... }` — an
+    // arbitrary property write (CodeQL js/remote-property-injection). Prisma rejects an
+    // unknown column with a 500, so it never leaked, but a 500 on a query string is a
+    // defect, not a defense. Whitelist the sortable columns; anything else → createdAt.
+    const SORTABLE = new Set(['name', 'sku', 'brand', 'price', 'createdAt', 'updatedAt']);
+    const safeSortBy = SORTABLE.has(sortBy) ? sortBy : 'createdAt';
+    const safeSortOrder = sortOrder === 'asc' ? 'asc' : 'desc';
     const skip = (page - 1) * limit;
 
     const where: Prisma.ProductWhereInput = {
@@ -150,7 +157,7 @@ export class ProductRepository {
         where,
         skip,
         take: limit,
-        orderBy: { [sortBy]: sortOrder },
+        orderBy: { [safeSortBy]: safeSortOrder },
         include: { category: true },
       }),
       this.prisma.product.count({ where }),
