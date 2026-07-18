@@ -205,8 +205,16 @@ export class MetricRepository {
       distinct: ['name'],
     });
 
+    // `names` is untrusted (POST /monitoring/metrics/latest → req.body.names, no schema).
+    // Writing result[name] with name === '__proto__' would rebind this object's prototype
+    // (js/remote-property-injection). A metric named after one of these can't exist anyway,
+    // so skipping them changes no legitimate output.
+    const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
     const result: Record<string, number | null> = {};
     for (const name of names) {
+      if (UNSAFE_KEYS.has(name)) {
+        continue;
+      }
       const metric = metrics.find((m) => m.name === name);
       result[name] = metric ? Number(metric.value) : null;
     }
