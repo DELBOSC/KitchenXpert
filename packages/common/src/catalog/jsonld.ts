@@ -9,8 +9,11 @@
  * Strategy.
  */
 
+import { capHtml } from './html-fetcher';
+
 /** Retourne les noeuds JSON-LD `@type: *Product*` trouvés dans une page HTML. */
-export function extractJsonLdProducts(html: string): Record<string, unknown>[] {
+export function extractJsonLdProducts(rawHtml: string): Record<string, unknown>[] {
+  const html = capHtml(rawHtml); // bound the regex input (js/redos, cf capHtml)
   const out: Record<string, unknown>[] = [];
   const re = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
   let m: RegExpExecArray | null;

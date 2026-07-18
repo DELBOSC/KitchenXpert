@@ -15,6 +15,8 @@
  * la LONGUEUR du plan (course 1.5-4 m) est stockée dans `widthMm`. Donc sur un
  * worktop, `widthMm` represente la LONGUEUR, pas une largeur frontale.
  */
+import { capHtml } from './html-fetcher';
+
 import type { ProductType } from './unified-product.schema';
 
 export interface SpecTableResult {
@@ -177,7 +179,7 @@ function specRows(html: string): Array<{ label: string; value: string }> {
  * ambigue est ignoree (avec un qualityFlag), jamais une exception.
  */
 export function parseSpecTable(html: string, type: ProductType): SpecTableResult {
-  const rows = specRows(html);
+  const rows = specRows(capHtml(html)); // bound the regex input (js/redos, cf capHtml)
   if (rows.length === 0) {
     return { ...EMPTY };
   }
