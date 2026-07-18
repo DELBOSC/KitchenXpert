@@ -12,21 +12,28 @@ router.use(authenticate);
 
 // --- Zod Schemas ---
 
+// SKUs/provider ids are short identifiers. The bounds below are not cosmetic: the mock
+// stock helpers iterate `productId.length` (js/loop-bound-injection), so an unbounded
+// productId is a CPU-DoS on an authenticated route. Cap every client-controlled length
+// and the batch size — a real SKU is well under 128 chars, a real bulk check well under 500.
+const ID_MAX = 128;
+
 const checkStockSchema = z.object({
-  productId: z.string().min(1, 'productId is required'),
-  providerId: z.string().min(1, 'providerId is required'),
-  storeId: z.string().optional(),
+  productId: z.string().min(1, 'productId is required').max(ID_MAX),
+  providerId: z.string().min(1, 'providerId is required').max(ID_MAX),
+  storeId: z.string().max(ID_MAX).optional(),
 });
 
 const bulkStockSchema = z.object({
   items: z
     .array(
       z.object({
-        productId: z.string().min(1, 'productId is required'),
-        providerId: z.string().min(1, 'providerId is required'),
+        productId: z.string().min(1, 'productId is required').max(ID_MAX),
+        providerId: z.string().min(1, 'providerId is required').max(ID_MAX),
       })
     )
-    .min(1, 'items array must not be empty'),
+    .min(1, 'items array must not be empty')
+    .max(500, 'items array is too large'),
 });
 
 /**

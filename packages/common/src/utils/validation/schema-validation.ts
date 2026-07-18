@@ -500,6 +500,14 @@ export function nullable(schemaField: SchemaField): SchemaField {
  * @returns True if valid email
  */
 function isValidEmail(value: string): boolean {
+  // Length guard BEFORE the regex. `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` is polynomial-backtracking
+  // (js/polynomial-redos): on a long `a@` + `a.a.a…` string it degrades quadratically —
+  // measured 20k→0.65s, 40k→2.5s, 80k→10.3s. RFC 5321 caps an address at 254 chars, so any
+  // input past that is not an email anyway; rejecting it up front bounds the regex to a
+  // constant ceiling. No valid email is affected.
+  if (value.length > 254) {
+    return false;
+  }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(value);
 }
