@@ -11,11 +11,7 @@
  * The load-bearing, honest assertions here are: the cap truncates past the bound, content
  * beyond the cap never reaches the parser, and legit pages parse identically (no change).
  */
-import {
-  capHtml,
-  MAX_PARSE_HTML_LEN,
-  extractJsonLdProducts,
-} from '@kitchenxpert/common';
+import { capHtml, MAX_PARSE_HTML_LEN, extractJsonLdProducts } from '@kitchenxpert/common';
 
 describe('common HTML parsers — regex input is length-bounded (js/polynomial-redos)', () => {
   it('capHtml truncates only past MAX_PARSE_HTML_LEN', () => {
@@ -42,8 +38,7 @@ describe('common HTML parsers — regex input is length-bounded (js/polynomial-r
     // proves the truncation happens before the regex, not merely alongside it.
     const filler = 'z'.repeat(MAX_PARSE_HTML_LEN);
     const beyond =
-      filler +
-      '<script type="application/ld+json">{"@type":"Product","name":"PAST_CAP"}</script>';
+      filler + '<script type="application/ld+json">{"@type":"Product","name":"PAST_CAP"}</script>';
     const nodes = extractJsonLdProducts(beyond);
     expect(nodes).toEqual([]); // the block after the cap was sliced off, so no node
   });
