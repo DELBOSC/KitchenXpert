@@ -675,7 +675,13 @@ function KitchenDesigner({
     };
     void fetchKitchen();
     return () => controller.abort();
-  }, [kitchenId, navigate, toast, t]);
+    // kitchenId is the ONLY thing that should re-fetch the kitchen. navigate/toast/t were
+    // in the deps but aren't stable — useToast() returns a NEW object every ToastProvider
+    // render (its value isn't memoized), so showing any toast re-fired this effect →
+    // duplicate GET /kitchens/<id>. They're only used on the error path and resolve to
+    // stable useCallbacks underneath, so capturing them is safe.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kitchenId]);
 
   // ─── Build Kitchen Scene ──────────────────────
   const buildKitchenScene = useCallback(() => {
