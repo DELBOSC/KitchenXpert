@@ -77,6 +77,11 @@ export default defineConfig(async () => {
       host: '127.0.0.1',
       proxy: {
         '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },
+        // Collaboration WebSocket lives on the backend (:4000/ws/collaboration).
+        // `ws: true` makes Vite relay the WS upgrade; without it the client falls
+        // back to ws://<front-origin> (:3005), which never upgrades → connection
+        // failed → reconnection storm.
+        '/ws': { target: 'ws://127.0.0.1:4000', ws: true, changeOrigin: true },
       },
     },
     // `vite preview` serves the production build (used by the E2E suite via
@@ -89,6 +94,7 @@ export default defineConfig(async () => {
       host: '127.0.0.1',
       proxy: {
         '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },
+        '/ws': { target: 'ws://127.0.0.1:4000', ws: true, changeOrigin: true },
       },
     },
     build: {

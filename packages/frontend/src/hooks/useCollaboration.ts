@@ -45,6 +45,9 @@ const WS_BASE_URL =
   (import.meta.env.VITE_WS_URL as string) ||
   `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`;
 
+/** Stop hammering the server after this many failed reconnects. */
+const MAX_RECONNECT_ATTEMPTS = 8;
+
 export function useCollaboration(
   kitchenId: string | undefined,
   engine: KitchenEngine | null
@@ -59,6 +62,9 @@ export function useCollaboration(
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const staleCursorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Gates auto-reconnect. Set false in cleanup BEFORE close() so the intentional
+  // close's onclose does not schedule a reconnect that outlives the unmount.
+  const shouldReconnectRef = useRef(true);
 
   const connect = useCallback(() => {
     if (!kitchenId) {
@@ -107,13 +113,30 @@ export function useCollaboration(
         setIsConnected(false);
         wsRef.current = null;
 
-        if (event.code !== 4001 && event.code !== 4002) {
-          // Auto-reconnect with exponential backoff
+        const isAuthReject = event.code === 4001 || event.code === 4002;
+        const isNormalClose = event.code === 1000; // intentional (unmount) or server-clean
+        const canReconnect =
+          shouldReconnectRef.current &&
+          !isAuthReject &&
+          !isNormalClose &&
+          reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS;
+
+        if (canReconnect) {
+          // Exponential backoff (capped 30s). reconnectTimeoutRef holds the single
+          // pending attempt; cleanup clears it and flips shouldReconnectRef first.
           const delay = Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000);
           reconnectAttemptsRef.current += 1;
           reconnectTimeoutRef.current = setTimeout(connect, delay);
-        } else {
+        } else if (isAuthReject) {
           setError(event.reason || 'Connection refused');
+        } else if (
+          shouldReconnectRef.current &&
+          !isNormalClose &&
+          reconnectAttemptsRef.current >= MAX_RECONNECT_ATTEMPTS
+        ) {
+          setError(
+            i18next.t('collaboration.reconnectFailed', 'Reconnexion au serveur impossible')
+          );
         }
       };
 
@@ -195,6 +218,11 @@ export function useCollaboration(
       return;
     }
 
+    // Fresh (re)mount — re-arm reconnect and reset the backoff counter (also handles
+    // StrictMode's mount→cleanup→mount so the second mount can connect cleanly).
+    shouldReconnectRef.current = true;
+    reconnectAttemptsRef.current = 0;
+
     connect();
 
     // Periodically clean up stale cursors (older than 30 seconds)
@@ -214,6 +242,10 @@ export function useCollaboration(
     }, 5000);
 
     return () => {
+      // Disarm reconnect BEFORE close(): the close below fires onclose (code 1000),
+      // and without this flag onclose would schedule a reconnect that survives the
+      // clearTimeout above — the orphaned-reconnect storm (worse under StrictMode).
+      shouldReconnectRef.current = false;
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
       }
