@@ -77,7 +77,10 @@ export function openingsToSpans(
     const wallLength = isSide ? room.depth : room.width;
     const start = isSide ? wallLength - o.offset - o.width : o.offset;
     const end = isSide ? wallLength - o.offset : o.offset + o.width;
-    spans.push({ wallSide: side, start, end });
+    // A window only blocks tall items (base cabinets may go underneath); everything else
+    // (door, porte-fenêtre) must be kept fully clear.
+    const kind = o.type === 'window' ? 'window' : 'door';
+    spans.push({ wallSide: side, start, end, kind });
   }
   return spans;
 }

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { BrandProfile } from '../config/brand-profiles';
 import { mmToM } from '../config/brand-profiles';
 import type { PlacedItem3D } from './ai-assistant';
-import type { WallSegment, WallSide } from './wall-analysis';
+import type { WallSegment, WallSide, WallOpeningSpan } from './wall-analysis';
 
 interface PlacementConstraints {
   budget?: { min: number; max: number };
@@ -125,7 +125,8 @@ export class CabinetSolver {
   placeEssentialAppliances(
     segments: WallSegment[],
     constraints: PlacementConstraints,
-    existingItems: PlacedItem3D[]
+    existingItems: PlacedItem3D[],
+    windowSpans: WallOpeningSpan[] = []
   ): PlacedItem3D[] {
     const items: PlacedItem3D[] = [];
     const usableSegments = segments.filter((s) => s.usable && s.length >= 0.6);
@@ -136,14 +137,17 @@ export class CabinetSolver {
     const hasCooktop = existingItems.some((i) => ['cooktop', 'stove', 'hob'].includes(i.type));
     const hasFridge = existingItems.some((i) => ['refrigerator', 'fridge'].includes(i.type));
 
-    let segIndex = 0;
+    const segIndex = 0;
 
-    // Place sink
-    if (!hasSink && constraints.mustHave.includes('sink') && segIndex < usableSegments.length) {
-      const seg = usableSegments[segIndex]!;
+    // Place sink — UNDER a window when one exists (classic kitchen principle), else the first
+    // usable segment.
+    if (!hasSink && constraints.mustHave.includes('sink') && usableSegments.length > 0) {
+      const underWindow = this.findWindowSegment(usableSegments, windowSpans);
+      const seg = underWindow?.segment ?? usableSegments[segIndex]!;
+      const alongWall = underWindow ? underWindow.center : seg.startX + 0.3;
       const pos = this.segmentToWorldPosition(
         seg.wallSide,
-        seg.startX + 0.3,
+        alongWall,
         mmToM(this.brandProfile.base.defaultDepth)
       );
       items.push({
@@ -179,11 +183,15 @@ export class CabinetSolver {
       });
     }
 
-    // Place fridge on a different wall if possible
+    // Place fridge on a different wall if possible — and keep it OFF windows (it is tall).
     if (!hasFridge && constraints.mustHave.includes('refrigerator')) {
+      const differentWall = usableSegments.filter(
+        (s) => s.wallSide !== usableSegments[0]?.wallSide && s.length >= 0.6
+      );
+      const candidates = differentWall.length > 0 ? differentWall : usableSegments;
       const fridgeSeg =
-        usableSegments.find((s) => s.wallSide !== usableSegments[0]?.wallSide && s.length >= 0.6) ||
-        usableSegments[usableSegments.length - 1]!;
+        candidates.find((s) => !this.positionInWindow(s.wallSide, s.startX + 0.3, windowSpans)) ??
+        candidates[candidates.length - 1]!;
 
       const pos = this.segmentToWorldPosition(fridgeSeg.wallSide, fridgeSeg.startX + 0.3, 0.325);
       items.push({
@@ -197,6 +205,38 @@ export class CabinetSolver {
     }
 
     return items;
+  }
+
+  /**
+   * Find a usable segment that spans a window's centre (with room for a ~0.6m sink), so the
+   * sink can be placed directly under the window. Returns the segment and the along-wall
+   * coordinate to place at (the window centre, clamped inside the segment).
+   */
+  private findWindowSegment(
+    segments: WallSegment[],
+    windowSpans: WallOpeningSpan[]
+  ): { segment: WallSegment; center: number } | null {
+    for (const w of windowSpans) {
+      const center = (w.start + w.end) / 2;
+      const seg = segments.find(
+        (s) => s.wallSide === w.wallSide && center >= s.startX + 0.3 && center <= s.endX - 0.3
+      );
+      if (seg) {
+        return { segment: seg, center };
+      }
+    }
+    return null;
+  }
+
+  /** Whether an along-wall position on a given side falls within any window footprint. */
+  private positionInWindow(
+    wallSide: WallSide,
+    alongWall: number,
+    windowSpans: WallOpeningSpan[]
+  ): boolean {
+    return windowSpans.some(
+      (w) => w.wallSide === wallSide && alongWall >= w.start && alongWall <= w.end
+    );
   }
 
   /**

@@ -11,6 +11,12 @@ export interface WallOpeningSpan {
   wallSide: WallSide;
   start: number;
   end: number;
+  /**
+   * A door must be kept clear of ALL furniture (blocks base segments). A window only blocks
+   * TALL items (fridge, wall cabinets) — base cabinets, sink and cooktop may go underneath.
+   * Absent = treated as a door (block), for backward compatibility.
+   */
+  kind?: 'door' | 'window';
 }
 
 export interface WallSegment {
@@ -100,11 +106,14 @@ export class WallAnalyzer {
         const halfW = item.dimensions.width / 2;
         return { start: pos - halfW, end: pos + halfW, id: item.id };
       }),
-      ...openingSpans.map((s, i) => ({
-        start: s.start,
-        end: s.end,
-        id: `opening-${wallSide}-${i}`,
-      })),
+      // Only doors block base segments; windows let base cabinets pass underneath (Slice 3b).
+      ...openingSpans
+        .filter((s) => s.kind !== 'window')
+        .map((s, i) => ({
+          start: s.start,
+          end: s.end,
+          id: `opening-${wallSide}-${i}`,
+        })),
     ].sort((a, b) => a.start - b.start);
 
     if (blocked.length === 0) {

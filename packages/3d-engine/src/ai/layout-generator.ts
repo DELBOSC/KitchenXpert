@@ -137,6 +137,7 @@ export class LayoutGenerator {
     const { room } = constraints;
     const items: PlacedItem3D[] = [];
     const openings = constraints.openings ?? [];
+    const windowSpans = openings.filter((o) => o.kind === 'window');
 
     // Analyze walls for this strategy (openings are kept clear — Slice 3)
     const analysis = this.wallAnalyzer.analyzeRoom(room, [], openings);
@@ -158,7 +159,8 @@ export class LayoutGenerator {
             : ['sink', 'cooktop', 'refrigerator'],
         budget: constraints.budget,
       },
-      []
+      [],
+      windowSpans
     );
     items.push(...essentials);
 
@@ -179,7 +181,7 @@ export class LayoutGenerator {
     }
 
     // Add wall cabinets above base cabinets
-    this.addWallCabinets(items, strategy);
+    this.addWallCabinets(items, strategy, windowSpans);
 
     // Add island if strategy requires it
     if (strategy.type === 'island') {
@@ -231,7 +233,11 @@ export class LayoutGenerator {
     };
   }
 
-  private addWallCabinets(items: PlacedItem3D[], strategy: LayoutStrategy): void {
+  private addWallCabinets(
+    items: PlacedItem3D[],
+    strategy: LayoutStrategy,
+    windowSpans: WallOpeningSpan[] = []
+  ): void {
     // Only add wall cabinets above base cabinets that are on the strategy's walls
     const strategyWallRotations = new Set(
       strategy.walls.map((wall) => {
@@ -248,10 +254,34 @@ export class LayoutGenerator {
       })
     );
 
+    // A base cabinet under a window must NOT get a wall cabinet above it — that would cover
+    // the window (Slice 3b). Derive the wall side + along-wall coordinate from the rotation.
+    const underWindow = (base: PlacedItem3D): boolean => {
+      let wallSide: WallSide;
+      let alongWall: number;
+      if (Math.abs(base.rotation - Math.PI / 2) < 0.01) {
+        wallSide = 'left';
+        alongWall = base.position.z;
+      } else if (Math.abs(base.rotation + Math.PI / 2) < 0.01) {
+        wallSide = 'right';
+        alongWall = base.position.z;
+      } else if (Math.abs(base.rotation - Math.PI) < 0.01) {
+        wallSide = 'front';
+        alongWall = base.position.x;
+      } else {
+        wallSide = 'back';
+        alongWall = base.position.x;
+      }
+      return windowSpans.some(
+        (w) => w.wallSide === wallSide && alongWall >= w.start && alongWall <= w.end
+      );
+    };
+
     const baseCabinets = items.filter(
       (i) =>
         ['base_cabinet', 'base'].includes(i.type) &&
         strategyWallRotations.has(i.rotation) &&
+        !underWindow(i) &&
         !items.some(
           (other) =>
             other.type === 'wall_cabinet' && Math.abs(other.position.x - i.position.x) < 0.3

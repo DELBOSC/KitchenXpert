@@ -65,9 +65,9 @@ describe('openingsToSpans (Slice 3 — generator keeps openings clear)', () => {
     const openings: Opening[] = [
       { id: 'a', wallIndex: 0, type: 'door', offset: 0.7, sill: 0, width: 0.9, height: 2.03 },
     ];
-    // l_shaped: wall 0 = back
+    // l_shaped: wall 0 = back ; a door blocks everything → kind 'door'
     const [span] = openingsToSpans(openings, 'l_shaped', room);
-    expect(span).toEqual({ wallSide: 'back', start: 0.7, end: 1.6 });
+    expect(span).toEqual({ wallSide: 'back', start: 0.7, end: 1.6, kind: 'door' });
   });
 
   it('maps a SIDE-wall opening WITH reversal (the load-bearing case)', () => {
@@ -78,7 +78,7 @@ describe('openingsToSpans (Slice 3 — generator keeps openings clear)', () => {
     const [span] = openingsToSpans(openings, 'l_shaped', room);
     // depth 3 : start = 3 - 0.7 - 0.9 = 1.4 ; end = 3 - 0.7 = 2.3
     // A non-reversed mapping would give start=0.7,end=1.6 → this assert fails.
-    expect(span).toEqual({ wallSide: 'left', start: 1.4, end: 2.3 });
+    expect(span).toEqual({ wallSide: 'left', start: 1.4, end: 2.3, kind: 'window' });
   });
 
   it('drops openings that target a wall the layout does not build', () => {
