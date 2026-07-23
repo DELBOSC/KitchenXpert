@@ -62,12 +62,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
         } else {
           setUser(null);
         }
+        setIsLoading(false);
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') {
+          // Superseded (StrictMode remount / unmount): DO NOT touch isLoading here.
+          // A `return` inside catch still runs `finally`, so putting setIsLoading(false)
+          // there flipped isLoading→false while user was still null — a transient
+          // "unauthenticated" window that ProtectedRoute turned into /login → /dashboard.
+          // On a StrictMode remount the next checkAuth resolves isLoading; on a real
+          // unmount the component is gone, so leaving it as-is leaks nothing.
           return;
         }
         setUser(null);
-      } finally {
         setIsLoading(false);
       }
     };
