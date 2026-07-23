@@ -315,6 +315,15 @@ L'IX actuelle est minimaliste et fonctionnelle. **Pas d'imposition** du curseur-
 
 **Corollaire** (appliqué en #238) : **on ne plie jamais un test pour faire passer du code cassé — mais on met à jour un test quand le contrat a changé exprès.** C'est la ligne entre l'honnêteté et la complaisance.
 
+### 10.2 Point de vigilance — **un chemin de démontage/annulation n'est pas un état réel**
+
+Signature récurrente du projet (3 bugs en 2 jours, 20-23/07, tous du même moule) : **un cleanup/abort traité comme un vrai changement d'état**. Le double-montage React StrictMode (dev) fait `mount → cleanup(abort) → remount` ; si le chemin d'abort écrit un état applicatif, il ment.
+- **#260** (collaboration WS) : le `close(1000)` du cleanup replanifiait un reconnect → tempête.
+- **#261** (init moteur 3D) : l'effet keyé sur une ref stable ne se rejouait jamais → spinner éternel.
+- **Auth reload → /dashboard** : `checkAuth` mettait `setIsLoading(false)` dans un **`finally`** — or **un `return` dans un `catch` exécute quand même le `finally`**. L'abort du 1ᵉʳ `/auth/me` (cleanup StrictMode) posait donc `isLoading=false` avec `user=null` → fenêtre transitoire « non authentifié » que `ProtectedRoute` transformait en `/login → /dashboard`. Le `return` disait « cet abort ne compte pas », le `finally` faisait l'inverse.
+
+**Réflexe** : dans tout `try/catch/finally` autour d'un fetch avec `signal`, **le chemin AbortError sort SANS toucher à l'état** (pas de `setLoading`/`setError`/`setState` dans un `finally` qui s'applique aussi à l'abort). Distinguer explicitement « annulé/superseded » de « échoué/résolu ». Prouver par un contrôle négatif qui **rejoue la séquence StrictMode** (mount→abort→remount) et vérifie que l'état interdit n'apparaît jamais — un test qui ne reproduit pas l'abort ne prouve rien.
+
 ---
 
 ## 11. Dette technique design (Plan de Polish)
