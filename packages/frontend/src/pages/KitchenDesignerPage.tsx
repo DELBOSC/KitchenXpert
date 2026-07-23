@@ -27,6 +27,7 @@ import KeyboardShortcutsModal from '../components/designer/KeyboardShortcutsModa
 import LayoutProposalsDialog from '../components/designer/LayoutProposalsDialog';
 import {
   doubleLeaves,
+  openingsToSpans,
   openingWorldTransform,
   toWallOpening,
   type Opening,
@@ -1701,6 +1702,10 @@ function KitchenDesigner({
         open={showProposals}
         onClose={() => setShowProposals(false)}
         onApplied={() => setHasChanges(true)}
+        openings={openingsToSpans(openings, layout, {
+          width: width / 1000,
+          depth: length / 1000,
+        })}
       />
 
       {/* Ouvertures (portes / portes-fenêtres / fenêtres) */}

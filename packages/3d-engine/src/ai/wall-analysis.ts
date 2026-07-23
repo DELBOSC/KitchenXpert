@@ -2,6 +2,17 @@ import type { RoomConfig, PlacedItem3D } from './ai-assistant';
 
 export type WallSide = 'back' | 'left' | 'right' | 'front';
 
+/**
+ * A door/window footprint along a wall, in the WallAnalyzer coordinate (start/end metres
+ * from the wall origin, 0…wallLength). The layout generator treats this span as unusable so
+ * it never places furniture across an opening (Slice 3).
+ */
+export interface WallOpeningSpan {
+  wallSide: WallSide;
+  start: number;
+  end: number;
+}
+
 export interface WallSegment {
   wallSide: WallSide;
   startX: number; // metres (along wall)
@@ -24,7 +35,11 @@ export class WallAnalyzer {
   /**
    * Analyse complete de la piece
    */
-  analyzeRoom(room: RoomConfig, existingItems: PlacedItem3D[]): WallAnalysis {
+  analyzeRoom(
+    room: RoomConfig,
+    existingItems: PlacedItem3D[],
+    openings: WallOpeningSpan[] = []
+  ): WallAnalysis {
     const wallLengths: Record<WallSide, number> = {
       back: room.width,
       front: room.width,
@@ -36,7 +51,8 @@ export class WallAnalyzer {
     const sides: WallSide[] = ['back', 'left', 'right', 'front'];
 
     for (const side of sides) {
-      const wallSegs = this.findUsableSegments(side, room, existingItems);
+      const sideOpenings = openings.filter((o) => o.wallSide === side);
+      const wallSegs = this.findUsableSegments(side, room, existingItems, sideOpenings);
       segments.push(...wallSegs);
     }
 
@@ -53,7 +69,8 @@ export class WallAnalyzer {
   findUsableSegments(
     wallSide: WallSide,
     room: RoomConfig,
-    obstacles: PlacedItem3D[]
+    obstacles: PlacedItem3D[],
+    openingSpans: WallOpeningSpan[] = []
   ): WallSegment[] {
     const wallLength = this.calculateWallLength(wallSide, room);
     const margin = 0.05; // 5cm de marge
@@ -75,7 +92,22 @@ export class WallAnalyzer {
       }
     });
 
-    if (wallItems.length === 0) {
+    // Blocked spans = furniture footprints + openings (doors/windows). Both are unusable:
+    // the generator must not place a cabinet across an opening (Slice 3).
+    const blocked = [
+      ...wallItems.map((item) => {
+        const pos = wallSide === 'left' || wallSide === 'right' ? item.position.z : item.position.x;
+        const halfW = item.dimensions.width / 2;
+        return { start: pos - halfW, end: pos + halfW, id: item.id };
+      }),
+      ...openingSpans.map((s, i) => ({
+        start: s.start,
+        end: s.end,
+        id: `opening-${wallSide}-${i}`,
+      })),
+    ].sort((a, b) => a.start - b.start);
+
+    if (blocked.length === 0) {
       return [
         {
           wallSide,
@@ -87,19 +119,10 @@ export class WallAnalyzer {
       ];
     }
 
-    // Trier les items par position le long du mur
-    const sorted = wallItems
-      .map((item) => {
-        const pos = wallSide === 'left' || wallSide === 'right' ? item.position.z : item.position.x;
-        const halfW = item.dimensions.width / 2;
-        return { start: pos - halfW, end: pos + halfW, id: item.id };
-      })
-      .sort((a, b) => a.start - b.start);
-
     const segments: WallSegment[] = [];
     let current = margin;
 
-    for (const item of sorted) {
+    for (const item of blocked) {
       if (item.start > current + 0.1) {
         segments.push({
           wallSide,
@@ -119,7 +142,7 @@ export class WallAnalyzer {
         obstacleIds: [item.id],
       });
 
-      current = item.end;
+      current = Math.max(current, item.end);
     }
 
     if (current < wallLength - margin - 0.1) {

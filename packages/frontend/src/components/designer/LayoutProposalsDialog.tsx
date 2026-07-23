@@ -7,7 +7,7 @@ import ProposalCard from './ProposalCard';
 import { Dialog } from '../ui/Dialog';
 import { useToast } from '../ui/Toast';
 
-import type { KitchenEngine, LayoutProposal } from '@kitchenxpert/3d-engine';
+import type { KitchenEngine, LayoutProposal, WallOpeningSpan } from '@kitchenxpert/3d-engine';
 
 interface LayoutProposalsDialogProps {
   engine: KitchenEngine | null;
@@ -15,6 +15,8 @@ interface LayoutProposalsDialogProps {
   onClose: () => void;
   /** Called after a proposal is applied to the scene (e.g. to mark the design dirty). */
   onApplied?: () => void;
+  /** Door/window footprints the generator must keep clear (Slice 3). */
+  openings?: WallOpeningSpan[];
 }
 
 /**
@@ -27,6 +29,7 @@ export default function LayoutProposalsDialog({
   open,
   onClose,
   onApplied,
+  openings,
 }: LayoutProposalsDialogProps): React.ReactElement {
   const { t } = useTranslation();
   const toast = useToast();
@@ -38,11 +41,13 @@ export default function LayoutProposalsDialog({
       return;
     }
     try {
-      setProposals(generateLayoutProposals(engine).slice(0, 3));
+      setProposals(
+        generateLayoutProposals(engine, openings ? { openings } : {}).slice(0, 3)
+      );
     } catch {
       setProposals([]);
     }
-  }, [open, engine]);
+  }, [open, engine, openings]);
 
   const handleApply = (proposal: LayoutProposal): void => {
     if (!engine) {

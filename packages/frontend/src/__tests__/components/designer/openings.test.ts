@@ -2,8 +2,10 @@ import { describe, it, expect } from 'vitest';
 
 import {
   doubleLeaves,
+  openingsToSpans,
   openingWorldTransform,
   toWallOpening,
+  wallSidesForLayout,
   type Opening,
 } from '../../../components/designer/openings';
 import { wallPlacement } from '../../../components/designer/wall-geometry';
@@ -53,6 +55,47 @@ describe('doubleLeaves', () => {
     // The two leaves tile the full opening without gap or overlap.
     expect(left.offset + left.width).toBeCloseTo(right.offset);
     expect(right.offset + right.width).toBeCloseTo(o.offset + o.width);
+  });
+});
+
+describe('openingsToSpans (Slice 3 — generator keeps openings clear)', () => {
+  const room = { width: 4, depth: 3 };
+
+  it('maps a BACK-wall opening without reversal', () => {
+    const openings: Opening[] = [
+      { id: 'a', wallIndex: 0, type: 'door', offset: 0.7, sill: 0, width: 0.9, height: 2.03 },
+    ];
+    // l_shaped: wall 0 = back
+    const [span] = openingsToSpans(openings, 'l_shaped', room);
+    expect(span).toEqual({ wallSide: 'back', start: 0.7, end: 1.6 });
+  });
+
+  it('maps a SIDE-wall opening WITH reversal (the load-bearing case)', () => {
+    const openings: Opening[] = [
+      { id: 'b', wallIndex: 1, type: 'window', offset: 0.7, sill: 1, width: 0.9, height: 1 },
+    ];
+    // l_shaped: wall 1 = left ; side wall reverses: z = depth - offset - width … depth - offset
+    const [span] = openingsToSpans(openings, 'l_shaped', room);
+    // depth 3 : start = 3 - 0.7 - 0.9 = 1.4 ; end = 3 - 0.7 = 2.3
+    // A non-reversed mapping would give start=0.7,end=1.6 → this assert fails.
+    expect(span).toEqual({ wallSide: 'left', start: 1.4, end: 2.3 });
+  });
+
+  it('drops openings that target a wall the layout does not build', () => {
+    const openings: Opening[] = [
+      { id: 'c', wallIndex: 2, type: 'door', offset: 0.5, sill: 0, width: 0.9, height: 2 },
+    ];
+    // l_shaped has only walls 0,1 → wallIndex 2 has no side
+    expect(openingsToSpans(openings, 'l_shaped', room)).toEqual([]);
+  });
+});
+
+describe('wallSidesForLayout', () => {
+  it('mirrors buildKitchenScene wall order', () => {
+    expect(wallSidesForLayout('u_shaped')).toEqual(['back', 'left', 'right']);
+    expect(wallSidesForLayout('galley')).toEqual(['back', 'front']);
+    expect(wallSidesForLayout('l_shaped')).toEqual(['back', 'left']);
+    expect(wallSidesForLayout('open_plan')).toEqual(['back']);
   });
 });
 

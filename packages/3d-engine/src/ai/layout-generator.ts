@@ -4,7 +4,7 @@ import { mmToM } from '../config/brand-profiles';
 import { AIAssistant } from './ai-assistant';
 import type { PlacedItem3D, RoomConfig, ConfigurationScore } from './ai-assistant';
 import { WallAnalyzer } from './wall-analysis';
-import type { WallSide } from './wall-analysis';
+import type { WallSide, WallOpeningSpan } from './wall-analysis';
 import { CabinetSolver } from './cabinet-solver';
 
 export type LayoutStrategyType = 'linear' | 'l_shape' | 'u_shape' | 'galley' | 'island';
@@ -21,6 +21,8 @@ export interface GenerationConstraints {
   budget: { min: number; max: number };
   mustHave: string[];
   priority: 'ergonomics' | 'storage' | 'budget' | 'aesthetics';
+  /** Door/window footprints to keep clear of furniture (Slice 3). */
+  openings?: WallOpeningSpan[];
 }
 
 export interface LayoutProposal {
@@ -134,9 +136,10 @@ export class LayoutGenerator {
   ): LayoutProposal | null {
     const { room } = constraints;
     const items: PlacedItem3D[] = [];
+    const openings = constraints.openings ?? [];
 
-    // Analyze walls for this strategy
-    const analysis = this.wallAnalyzer.analyzeRoom(room, []);
+    // Analyze walls for this strategy (openings are kept clear — Slice 3)
+    const analysis = this.wallAnalyzer.analyzeRoom(room, [], openings);
 
     // Get usable segments for the strategy's walls
     const strategySegments = analysis.segments.filter(
@@ -160,7 +163,7 @@ export class LayoutGenerator {
     items.push(...essentials);
 
     // Recalculate available segments after placing essentials
-    const updatedAnalysis = this.wallAnalyzer.analyzeRoom(room, items);
+    const updatedAnalysis = this.wallAnalyzer.analyzeRoom(room, items, openings);
     const remainingSegments = updatedAnalysis.segments.filter(
       (s) => strategy.walls.includes(s.wallSide) && s.usable && s.length >= 0.3
     );

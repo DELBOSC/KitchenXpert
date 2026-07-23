@@ -1,12 +1,19 @@
 import { LayoutGenerator } from '@kitchenxpert/3d-engine';
 
-import type { KitchenEngine, LayoutProposal, RoomConfig } from '@kitchenxpert/3d-engine';
+import type {
+  KitchenEngine,
+  LayoutProposal,
+  RoomConfig,
+  WallOpeningSpan,
+} from '@kitchenxpert/3d-engine';
 import type * as THREE from 'three';
 
 export interface ProposalOptions {
   budget?: { min: number; max: number };
   mustHave?: string[];
   priority?: 'ergonomics' | 'storage' | 'budget' | 'aesthetics';
+  /** Door/window footprints the generator must keep clear (Slice 3). */
+  openings?: WallOpeningSpan[];
 }
 
 /**
@@ -48,5 +55,6 @@ export function generateLayoutProposals(
     budget: opts.budget ?? { min: 0, max: Number.MAX_SAFE_INTEGER },
     mustHave: opts.mustHave ?? [],
     priority: opts.priority ?? 'ergonomics',
+    ...(opts.openings ? { openings: opts.openings } : {}),
   });
 }

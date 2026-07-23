@@ -202,7 +202,7 @@ export type {
   LayoutStrategyType,
 } from './ai/layout-generator';
 export { WallAnalyzer } from './ai/wall-analysis';
-export type { WallSide, WallSegment, WallAnalysis } from './ai/wall-analysis';
+export type { WallSide, WallSegment, WallAnalysis, WallOpeningSpan } from './ai/wall-analysis';
 export { CabinetSolver } from './ai/cabinet-solver';
 
 // Realistic lighting
