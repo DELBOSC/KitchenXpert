@@ -1,7 +1,7 @@
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import AuthLayout from './AuthLayout';
 import { SeoHead } from '../../components/seo/SeoHead';
@@ -16,6 +16,7 @@ export default function LoginPage(): React.ReactElement {
   const toast = useToast();
   const navigate = useNavigate();
   const { withPrefix } = useLanguage();
+  const [searchParams] = useSearchParams();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -62,10 +63,15 @@ export default function LoginPage(): React.ReactElement {
     try {
       await login(email, password);
       toast.success(t('auth.loginSuccess', 'Connexion réussie'));
-      // Redirect to the dashboard on success. Locale-aware so we land on
-      // /<lang>/dashboard (a bare /dashboard would be read as a bad locale by
-      // LocaleAwareShell). Without this the user stayed on /login after login.
-      navigate(withPrefix('/dashboard'));
+      // returnTo (set by ProtectedRoute) sends the user back where they were before the
+      // session died. Only accept a same-origin internal path (leading single '/') to
+      // avoid an open-redirect; it is already locale-prefixed, so no withPrefix. Otherwise
+      // land on /<lang>/dashboard (a bare /dashboard is read as a bad locale by
+      // LocaleAwareShell).
+      const raw = searchParams.get('returnTo');
+      const returnTo = raw ? decodeURIComponent(raw) : null;
+      const safe = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//');
+      navigate(safe ? returnTo : withPrefix('/dashboard'));
     } catch (err) {
       const message =
         err instanceof Error ? err.message : t('auth.loginError', 'Identifiants invalides');

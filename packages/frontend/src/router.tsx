@@ -111,13 +111,17 @@ const PrivacySettings = lazy(() => import('./pages/Legal/PrivacySettings'));
 // Protected Route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }): React.ReactElement {
   const { isAuthenticated, isLoading } = useAuth();
+  const { pathname, search } = useLocation();
 
   if (isLoading) {
     return <LoadingSpinner fullScreen />;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // Preserve where the user was so login can send them back (returnTo), instead of
+    // always dumping them on /dashboard after a re-auth.
+    const returnTo = encodeURIComponent(`${pathname}${search}`);
+    return <Navigate to={`/login?returnTo=${returnTo}`} replace />;
   }
 
   return <>{children}</>;

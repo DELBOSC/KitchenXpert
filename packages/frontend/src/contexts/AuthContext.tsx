@@ -46,11 +46,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
 
     const checkAuth = async (): Promise<void> => {
       try {
-        const response = await fetch('/api/v1/auth/me', {
+        const init: RequestInit = {
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           signal: controller.signal,
-        });
+        };
+        let response = await fetch('/api/v1/auth/me', init);
+
+        // The accessToken lives 15 min; the refreshToken lives 7 days (httpOnly cookie).
+        // A raw /auth/me here bypasses api.ts's 401→refresh, so an expired accessToken at
+        // boot logged the user out despite a valid refreshToken (the session-loss bug).
+        // Try ONE refresh, then retry /auth/me. Kept as a raw fetch — NOT api.get — so the
+        // AbortError guard below still works: api.get ignores the caller signal, which
+        // would reopen the #263 transient (isLoading=false + user=null → /login → /dashboard).
+        if (response.status === 401) {
+          const refreshed = await fetch('/api/v1/auth/refresh', { ...init, method: 'POST' });
+          if (refreshed.ok) {
+            response = await fetch('/api/v1/auth/me', init);
+          }
+        }
 
         if (response.ok) {
           const data = (await response.json()) as UserEnvelope;
@@ -80,6 +94,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
 
     void checkAuth();
     return () => controller.abort();
+  }, []);
+
+  // api.ts dispatches `auth:unauthorized` when a 401 survives a refresh attempt (real
+  // session death: refreshToken expired at 7d, or revoked). Nobody listened, so the app
+  // stayed in a stale "authenticated" state. Clear the user → ProtectedRoute redirects to
+  // /login?returnTo=<current> (so login can send the user back where they were).
+  useEffect(() => {
+    const onUnauthorized = () => setUser(null);
+    window.addEventListener('auth:unauthorized', onUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', onUnauthorized);
   }, []);
 
   const login = useCallback(async (email: string, password: string): Promise<void> => {
