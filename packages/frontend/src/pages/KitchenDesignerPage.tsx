@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { AlertTriangle, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
@@ -485,9 +486,9 @@ function KitchenDesigner({
   const [showCatalog, setShowCatalog] = useState(true);
   const [showProperties, setShowProperties] = useState(true);
 
-  // 3D Engine
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
-  const engineHook = useKitchenEngine(canvasContainerRef, {
+  // 3D Engine — init is driven by the canvas node attaching (setContainer callback ref),
+  // not by an effect flush, so it survives the loading→designer branch swap.
+  const engineHook = useKitchenEngine({
     width: width / 1000,
     depth: length / 1000,
     height: height / 1000,
@@ -498,6 +499,10 @@ function KitchenDesigner({
   const {
     engine,
     isReady,
+    setContainer,
+    containerRef: canvasContainerRef,
+    initError,
+    retry: retryEngineInit,
     brandProfile,
     selectedObject,
     addObject,
@@ -1091,7 +1096,7 @@ function KitchenDesigner({
         {/* 3D Canvas */}
         <main className="flex-1 relative">
           <div
-            ref={canvasContainerRef}
+            ref={setContainer}
             className={`absolute inset-0 transition-all duration-200 ${isDragOver ? 'ring-2 ring-blue-500 ring-inset bg-blue-500/5' : ''}`}
             onDragOver={handleCanvasDragOver}
             onDrop={handleCanvasDrop}
@@ -1142,32 +1147,61 @@ function KitchenDesigner({
             </div>
           )}
 
-          {/* Loading overlay */}
+          {/* Loading / error overlay — never spins forever in silence (init has a
+              timeout + .catch that flip initError, surfacing this retryable state). */}
           {!isReady && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50 z-20">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 max-w-xs w-full mx-4">
-                <div className="flex flex-col items-center gap-3">
-                  <div
-                    className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"
-                    role="status"
-                    aria-label={t('designer.loading.engine', 'Initialisation du moteur 3D...')}
-                  />
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {t('designer.loading.engine', 'Initialisation du moteur 3D...')}
-                  </p>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                    <div
-                      className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 animate-pulse"
-                      style={{ width: '60%' }}
-                    />
+                {initError ? (
+                  <div className="flex flex-col items-center gap-3 text-center">
+                    <AlertTriangle className="h-10 w-10 text-red-500" aria-hidden="true" />
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {t('designer.initError.title', 'Le moteur 3D n’a pas pu démarrer')}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {initError === 'timeout'
+                        ? t(
+                            'designer.initError.timeout',
+                            'L’initialisation a expiré (assets ou WebGL). Réessayez.'
+                          )
+                        : t(
+                            'designer.initError.failed',
+                            'Une erreur est survenue au chargement de la scène.'
+                          )}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={retryEngineInit}
+                      className="mt-1 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                    >
+                      <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                      {t('designer.initError.retry', 'Réessayer')}
+                    </button>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t(
-                      'designer.loading.hint',
-                      'Preparation de la scene, chargement des assets...'
-                    )}
-                  </p>
-                </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-3">
+                    <div
+                      className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"
+                      role="status"
+                      aria-label={t('designer.loading.engine', 'Initialisation du moteur 3D...')}
+                    />
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {t('designer.loading.engine', 'Initialisation du moteur 3D...')}
+                    </p>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                      <div
+                        className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 animate-pulse"
+                        style={{ width: '60%' }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {t(
+                        'designer.loading.hint',
+                        'Preparation de la scene, chargement des assets...'
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}

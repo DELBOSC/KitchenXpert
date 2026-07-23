@@ -36,6 +36,14 @@ export interface UseKitchenEngineOptions {
 export interface UseKitchenEngineReturn {
   engine: KitchenEngine | null;
   isReady: boolean;
+  /** Callback ref to attach to the canvas container div; init fires on attachment. */
+  setContainer: (node: HTMLDivElement | null) => void;
+  /** Live ref to the container node (for children that need the DOM element). */
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  /** Non-null when init failed or timed out (drives the error overlay). */
+  initError: 'failed' | 'timeout' | null;
+  /** Re-attempt engine init after a failure/timeout. */
+  retry: () => void;
   brandProfile: BrandProfile | null;
   // Selection
   selectedObjects: THREE.Object3D[];
@@ -84,12 +92,26 @@ export interface UseKitchenEngineReturn {
   handleDragLeave: () => void;
 }
 
-export function useKitchenEngine(
-  canvasRef: React.RefObject<HTMLDivElement | null>,
-  options: UseKitchenEngineOptions = {}
-): UseKitchenEngineReturn {
+export function useKitchenEngine(options: UseKitchenEngineOptions = {}): UseKitchenEngineReturn {
   const engineRef = useRef<KitchenEngine | null>(null);
+  // State-backed callback ref: the init effect is keyed on the DOM node ATTACHING,
+  // not on an arbitrary effect flush. `containerRef` mirrors the node for the sync
+  // handlers; `containerNode` (state) drives the init effect so it (re)runs the moment
+  // the canvas attaches — even if it mounts after a loading branch (the real bug).
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [containerNode, setContainerNode] = useState<HTMLDivElement | null>(null);
+  const setContainer = useCallback((node: HTMLDivElement | null) => {
+    containerRef.current = node;
+    setContainerNode(node);
+  }, []);
   const [isReady, setIsReady] = useState(false);
+  const [initError, setInitError] = useState<'failed' | 'timeout' | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const retry = useCallback(() => {
+    setInitError(null);
+    setIsReady(false);
+    setRetryCount((n) => n + 1);
+  }, []);
   const [selectedObjects, setSelectedObjects] = useState<THREE.Object3D[]>([]);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -106,12 +128,19 @@ export function useKitchenEngine(
   const modelLoaderRef = useRef<ModelLoader>(new ModelLoader());
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Initialize engine
+  // Initialize engine — keyed on containerNode (the ATTACHED node) + retryCount.
   useEffect(() => {
-    const container = canvasRef.current;
+    const container = containerNode;
     if (!container) {
       return;
     }
+
+    // Robustness: never let the loading overlay spin forever in silence. If controls
+    // don't resolve within the budget (missing asset, stalled import, refused WebGL…),
+    // surface an error instead. Cleared when init resolves or the effect tears down.
+    const initTimeout = setTimeout(() => {
+      setInitError((prev) => prev ?? 'timeout');
+    }, 15000);
 
     const engine = new KitchenEngine(
       container,
@@ -141,66 +170,76 @@ export function useKitchenEngine(
     };
 
     // Initialize async controls
-    void engine.initializeControls().then(() => {
-      // Selection callback
-      engine.selection.onSelectionChanged((event: SelectionEvent) => {
-        setSelectedObjects(event.objects);
+    void engine
+      .initializeControls()
+      .then(() => {
+        clearTimeout(initTimeout);
+        // Selection callback
+        engine.selection.onSelectionChanged((event: SelectionEvent) => {
+          setSelectedObjects(event.objects);
 
-        // Attach/detach TransformControls
-        if (event.objects.length === 1 && event.objects[0]) {
-          engine.controls.attach(event.objects[0]);
-          engine.dimensionLabels.showObjectDimensions(event.objects[0]);
-        } else {
-          engine.controls.detach();
-          engine.dimensionLabels.clear();
-        }
-      });
-
-      // Transform end callback (create undo command)
-      engine.controls.onTransform((event: TransformEvent) => {
-        if (event.type === 'end') {
-          const start = engine.controls.getTransformStart();
-
-          if (event.mode === 'translate' && start.position) {
-            const cmd = new MoveObjectCommand(event.object, start.position, event.position);
-            engine.history.execute(cmd);
-          } else if (event.mode === 'rotate' && start.rotation) {
-            const cmd = new RotateObjectCommand(event.object, start.rotation, event.rotation);
-            engine.history.execute(cmd);
-          } else if (event.mode === 'scale' && start.scale) {
-            const cmd = new ScaleObjectCommand(event.object, start.scale, event.scale);
-            engine.history.execute(cmd);
+          // Attach/detach TransformControls
+          if (event.objects.length === 1 && event.objects[0]) {
+            engine.controls.attach(event.objects[0]);
+            engine.dimensionLabels.showObjectDimensions(event.objects[0]);
+          } else {
+            engine.controls.detach();
+            engine.dimensionLabels.clear();
           }
-        }
+        });
 
-        // Update dimensions during transform
-        if (event.type === 'change' && dimensionsVisible) {
-          engine.dimensionLabels.clear();
-          engine.dimensionLabels.showObjectDimensions(event.object);
-          // Show distances to walls
-          const walls: THREE.Object3D[] = [];
-          engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
-            if (child.userData.type === 'wall') {
-              walls.push(child);
+        // Transform end callback (create undo command)
+        engine.controls.onTransform((event: TransformEvent) => {
+          if (event.type === 'end') {
+            const start = engine.controls.getTransformStart();
+
+            if (event.mode === 'translate' && start.position) {
+              const cmd = new MoveObjectCommand(event.object, start.position, event.position);
+              engine.history.execute(cmd);
+            } else if (event.mode === 'rotate' && start.rotation) {
+              const cmd = new RotateObjectCommand(event.object, start.rotation, event.rotation);
+              engine.history.execute(cmd);
+            } else if (event.mode === 'scale' && start.scale) {
+              const cmd = new ScaleObjectCommand(event.object, start.scale, event.scale);
+              engine.history.execute(cmd);
             }
-          });
-          engine.dimensionLabels.showDistancesToWalls(event.object, walls);
-          engine.dimensionLabels.showDistancesToNeighbors(
-            event.object,
-            engine.scene.getAllObjects()
-          );
-        }
-      });
+          }
 
-      // History change callback — auto-update generators
-      engine.history.onChangeCallback(() => {
-        setCanUndo(engine.history.canUndo);
-        setCanRedo(engine.history.canRedo);
-        updateGenerators();
-      });
+          // Update dimensions during transform
+          if (event.type === 'change' && dimensionsVisible) {
+            engine.dimensionLabels.clear();
+            engine.dimensionLabels.showObjectDimensions(event.object);
+            // Show distances to walls
+            const walls: THREE.Object3D[] = [];
+            engine.scene.getThreeScene().traverse((child: THREE.Object3D) => {
+              if (child.userData.type === 'wall') {
+                walls.push(child);
+              }
+            });
+            engine.dimensionLabels.showDistancesToWalls(event.object, walls);
+            engine.dimensionLabels.showDistancesToNeighbors(
+              event.object,
+              engine.scene.getAllObjects()
+            );
+          }
+        });
 
-      setIsReady(true);
-    });
+        // History change callback — auto-update generators
+        engine.history.onChangeCallback(() => {
+          setCanUndo(engine.history.canUndo);
+          setCanRedo(engine.history.canRedo);
+          updateGenerators();
+        });
+
+        setIsReady(true);
+      })
+      .catch((err: unknown) => {
+        // No .catch used to exist here — any init failure produced an eternal silent
+        // spinner. Now it surfaces as a retryable error overlay.
+        clearTimeout(initTimeout);
+        console.error('[useKitchenEngine] engine init failed', err);
+        setInitError('failed');
+      });
 
     // Start render loop
     engine.start();
@@ -310,6 +349,7 @@ export function useKitchenEngine(
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
+      clearTimeout(initTimeout);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('keydown', handleKeyDown);
       container.removeEventListener('pointerdown', handlePointerDown);
@@ -322,7 +362,7 @@ export function useKitchenEngine(
       setIsReady(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasRef]);
+  }, [containerNode, retryCount]);
 
   const undo = useCallback(() => {
     engineRef.current?.history.undo();
@@ -638,59 +678,56 @@ export function useKitchenEngine(
   }, []);
 
   // Drag & Drop handlers
-  const handleDragOver = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'copy';
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
 
-      const engine = engineRef.current;
-      if (!engine) {
-        return;
-      }
+    const engine = engineRef.current;
+    if (!engine) {
+      return;
+    }
 
-      const data = e.dataTransfer.types.includes('application/json')
-        ? null // Can't read during dragover, only on drop
-        : null;
+    const data = e.dataTransfer.types.includes('application/json')
+      ? null // Can't read during dragover, only on drop
+      : null;
 
-      // Get mouse position in NDC
-      const container = canvasRef.current;
-      if (!container) {
-        return;
-      }
+    // Get mouse position in NDC
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
 
-      const rect = container.getBoundingClientRect();
-      const ndc = new THREE.Vector2(
-        ((e.clientX - rect.left) / rect.width) * 2 - 1,
-        -((e.clientY - rect.top) / rect.height) * 2 + 1
-      );
+    const rect = container.getBoundingClientRect();
+    const ndc = new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width) * 2 - 1,
+      -((e.clientY - rect.top) / rect.height) * 2 + 1
+    );
 
-      // Raycast to floor plane
-      const raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(ndc, engine.camera.getThreeCamera());
-      const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-      const intersection = new THREE.Vector3();
-      raycaster.ray.intersectPlane(floorPlane, intersection);
+    // Raycast to floor plane
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(ndc, engine.camera.getThreeCamera());
+    const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const intersection = new THREE.Vector3();
+    raycaster.ray.intersectPlane(floorPlane, intersection);
 
-      // Create or update ghost
-      if (!ghostRef.current) {
-        const geometry = new THREE.BoxGeometry(0.6, 0.88, 0.6);
-        const material = new THREE.MeshStandardMaterial({
-          color: 0x4488ff,
-          transparent: true,
-          opacity: 0.4,
-        });
-        ghostRef.current = new THREE.Mesh(geometry, material);
-        ghostRef.current.name = '__drag_ghost__';
-        engine.scene.getThreeScene().add(ghostRef.current);
-      }
+    // Create or update ghost
+    if (!ghostRef.current) {
+      const geometry = new THREE.BoxGeometry(0.6, 0.88, 0.6);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0x4488ff,
+        transparent: true,
+        opacity: 0.4,
+      });
+      ghostRef.current = new THREE.Mesh(geometry, material);
+      ghostRef.current.name = '__drag_ghost__';
+      engine.scene.getThreeScene().add(ghostRef.current);
+    }
 
-      if (intersection && data === null) {
-        ghostRef.current.position.copy(intersection);
-        ghostRef.current.position.y = mmToM(engineRef.current!.brandProfile.base.totalHeight) / 2;
-      }
-    },
-    [canvasRef]
-  );
+    if (intersection && data === null) {
+      ghostRef.current.position.copy(intersection);
+      ghostRef.current.position.y = mmToM(engineRef.current!.brandProfile.base.totalHeight) / 2;
+    }
+  }, []);
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -733,7 +770,7 @@ export function useKitchenEngine(
       }
 
       // Calculate drop position via raycast
-      const container = canvasRef.current;
+      const container = containerRef.current;
       if (!container) {
         return;
       }
@@ -782,7 +819,7 @@ export function useKitchenEngine(
       // Add via command for undo support
       addObject(uniqueId, mesh);
     },
-    [canvasRef, addObject]
+    [addObject]
   );
 
   const handleDragLeave = useCallback(() => {
@@ -802,6 +839,10 @@ export function useKitchenEngine(
   return {
     engine: engineRef.current,
     isReady,
+    setContainer,
+    containerRef,
+    initError,
+    retry,
     brandProfile: engineRef.current?.brandProfile ?? null,
     selectedObjects,
     selectedObject: selectedObjects[0] || null,
