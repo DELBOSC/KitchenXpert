@@ -45,10 +45,10 @@ export default function ProposalCard({
   return (
     <div className="border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden bg-white dark:bg-gray-800 hover:shadow-lg transition-shadow">
       {/* Header with strategy name */}
-      <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-b border-gray-100 dark:border-gray-700">
+      <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200">{proposal.name}</h3>
-          <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+          <span className="text-lg font-bold text-kx-brand-strong dark:text-kx-brand-from">
             {proposal.score.overall}
             <span className="text-[10px] text-gray-400">/100</span>
           </span>
@@ -90,7 +90,7 @@ export default function ProposalCard({
         <button
           onClick={() => onApply(proposal)}
           disabled={isApplying}
-          className="w-full py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+          className="w-full py-2 text-xs font-semibold bg-kx-brand-strong text-white rounded-lg hover:bg-kx-brand-from disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
         >
           {isApplying ? (
             <span className="flex items-center justify-center gap-1.5">

@@ -568,6 +568,60 @@ router.post(
 
 /**
  * @swagger
+ * /api/v1/kitchens/{id}/items:
+ *   put:
+ *     summary: Replace ALL items of a kitchen (save the 3D arrangement)
+ *     tags: [Kitchens]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Items saved
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Kitchen not found
+ */
+// Persisted item = DB unit convention (cm, degrees). Unlike POST /:id/items (which
+// requires a catalog productId uuid), this accepts free-standing furniture (generated,
+// auto-complete, procedural) keyed by type + geometry, with an optional sku in `model`.
+router.put(
+  '/:id/items',
+  validateParams(commonSchemas.idParam),
+  validateBody(
+    z.object({
+      items: z
+        .array(
+          z.object({
+            type: z.string().min(1).max(64),
+            name: z.string().max(200).optional(),
+            brand: z.string().max(200).optional(),
+            model: z.string().max(200).optional(),
+            positionX: z.number().finite(),
+            positionY: z.number().finite(),
+            positionZ: z.number().finite(),
+            rotationY: z.number().finite(),
+            width: z.number().positive().max(2_000),
+            depth: z.number().positive().max(2_000),
+            height: z.number().positive().max(2_000),
+            price: z.number().nonnegative().optional(),
+            metadata: z.record(z.unknown()).optional(),
+          })
+        )
+        .max(200),
+    })
+  ),
+  kitchenController.setItems
+);
+
+/**
+ * @swagger
  * /api/v1/kitchens/{kitchenId}/items/{itemId}:
  *   put:
  *     summary: Update a kitchen item

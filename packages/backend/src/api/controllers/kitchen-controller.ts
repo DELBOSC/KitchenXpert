@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { type Request, type Response } from 'express';
 
 import { prisma } from '../../database/client';
-import { KitchenRepository } from '../../repositories/kitchen-repository';
+import { KitchenRepository, type KitchenItemInput } from '../../repositories/kitchen-repository';
 import { ProjectRepository } from '../../repositories/project-repository';
 import { asyncHandler } from '../middleware/error-middleware';
 
@@ -311,6 +311,31 @@ export class KitchenController {
       success: true,
       data: item,
       message: 'Item added successfully',
+    });
+  });
+
+  /**
+   * PUT /kitchens/:id/items
+   * Replace the entire set of items (the saved 3D arrangement). Ownership-checked.
+   */
+  setItems = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400).json({ success: false, error: 'Kitchen ID is required' });
+      return;
+    }
+    const existing = await verifyKitchenOwnership(req, res, id);
+    if (!existing) {
+      return;
+    }
+
+    const { items } = req.body as { items: KitchenItemInput[] };
+    const result = await kitchenRepository.replaceItems(id, items);
+
+    res.status(200).json({
+      success: true,
+      data: { count: result.count },
+      message: 'Items saved',
     });
   });
 

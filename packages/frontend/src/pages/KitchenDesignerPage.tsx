@@ -1,5 +1,5 @@
 import { AlertTriangle, RotateCcw } from 'lucide-react';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
@@ -15,6 +15,7 @@ import {
 import AssistantIntro from '../components/assistant/AssistantIntro';
 import AssistantSurface from '../components/assistant/AssistantSurface';
 import AIAssistantPanel from '../components/designer/AIAssistantPanel';
+import { applyChatStyleSuggestion } from '../components/designer/apply-chat-style';
 import BudgetBar from '../components/designer/BudgetBar';
 import CatalogPanel from '../components/designer/CatalogPanel';
 import CollaboratorCursors from '../components/designer/CollaboratorCursors';
@@ -23,16 +24,34 @@ import DimensionWizard from '../components/designer/DimensionWizard';
 import EcoScorePanel from '../components/designer/EcoScorePanel';
 import ExportPanel from '../components/designer/ExportPanel';
 import KeyboardShortcutsModal from '../components/designer/KeyboardShortcutsModal';
+import LayoutProposalsDialog from '../components/designer/LayoutProposalsDialog';
+import {
+  doubleLeaves,
+  openingWorldTransform,
+  toWallOpening,
+  type Opening,
+} from '../components/designer/openings';
+import OpeningsPanel from '../components/designer/OpeningsPanel';
 import PlanView2DOverlay from '../components/designer/PlanView2DOverlay';
 import PresenceBar from '../components/designer/PresenceBar';
 import PricingPanel from '../components/designer/PricingPanel';
 import ProductPairingsPanel from '../components/designer/ProductPairingsPanel';
 import PropertiesPanel from '../components/designer/PropertiesPanel';
 import QuoteToPartnerModal from '../components/designer/QuoteToPartnerModal';
+import {
+  serializeScene,
+  restoreScene,
+  normalizePersistedItem,
+} from '../components/designer/scene-persistence';
 import ShoppingListPanel from '../components/designer/ShoppingListPanel';
 import StyleTransferModal from '../components/designer/StyleTransferModal';
 import Toolbar from '../components/designer/Toolbar';
 import VersionHistoryPanel from '../components/designer/VersionHistoryPanel';
+import {
+  buildWallGeometry,
+  wallPlacement,
+  type WallPlacement,
+} from '../components/designer/wall-geometry';
 import LiDARScanner from '../components/scanner/LiDARScanner';
 import { useToast } from '../components/ui/Toast';
 import { useCollaboration } from '../hooks/useCollaboration';
@@ -469,6 +488,23 @@ function KitchenDesigner({
   // UI panels
   const [isDragOver, setIsDragOver] = useState(false);
   const [showAI, setShowAI] = useState(false);
+  const [showProposals, setShowProposals] = useState(false);
+  const [showOpenings, setShowOpenings] = useState(false);
+  const [openings, setOpenings] = useState<Opening[]>([]);
+  // How many walls the current layout builds (matches buildKitchenScene's switch) — drives
+  // the Openings panel's wall picker.
+  const wallCount = useMemo(() => {
+    switch (layout) {
+      case 'u_shaped':
+        return 3;
+      case 'one_wall':
+      case 'open_plan':
+      case 'island':
+        return 1;
+      default:
+        return 2; // galley, l_shaped, peninsula
+    }
+  }, [layout]);
   const [showChatPanel, setShowChatPanel] = useState(false);
   const [showExport, setShowExport] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
@@ -672,6 +708,10 @@ function KitchenDesigner({
         if (k.metadata?.brandId) {
           setBrandId(k.metadata.brandId as BrandId);
         }
+        // Restore the wall openings (doors/windows) saved in metadata.
+        if (Array.isArray(k.metadata?.openings)) {
+          setOpenings(k.metadata.openings as Opening[]);
+        }
       } else {
         toast.error(t('designer.kitchenNotFound'));
         navigate('/dashboard');
@@ -719,17 +759,75 @@ function KitchenDesigner({
     floor.userData.type = 'floor';
     scene.add(floor);
 
-    // Wall creation helper
+    // Clear the previously-rendered door/window frames so a rebuild (dims/layout/openings
+    // change) doesn't accumulate duplicates — architecturalElements manages its own scene
+    // objects, which are NOT tagged isKitchenStructure and so survive the removal above.
+    engine.architecturalElements.clear();
+
+    // Render one opening's door/window frame at its world position on the wall. The wall is
+    // cut once (full width); a double french door fills that single hole with two half-width
+    // leaves hinged on the outer edges (meeting in the middle).
+    const renderOpening = (p: WallPlacement, o: Opening): void => {
+      if (o.type === 'window') {
+        const t = openingWorldTransform(p, o.offset, o.width);
+        engine.architecturalElements.addWindow({
+          id: o.id,
+          width: o.width,
+          height: o.height,
+          sillHeight: o.sill,
+          position: new THREE.Vector3(...t.position),
+          rotation: t.rotationY,
+          type: 'single',
+        });
+        return;
+      }
+
+      const doorType = o.type === 'door' ? 'standard' : 'french';
+      const addLeaf = (id: string, offset: number, width: number, dir: 'left' | 'right'): void => {
+        const t = openingWorldTransform(p, offset, width);
+        engine.architecturalElements.addDoor({
+          id,
+          width,
+          height: o.height,
+          position: new THREE.Vector3(...t.position),
+          rotation: t.rotationY,
+          type: doorType,
+          openDirection: dir,
+          isOpen: false,
+          openAngle: 0,
+        });
+      };
+
+      if (o.type === 'french_door_double') {
+        doubleLeaves(o).forEach((leaf, i) =>
+          addLeaf(`${o.id}-${i === 0 ? 'L' : 'R'}`, leaf.offset, leaf.width, leaf.direction)
+        );
+      } else {
+        addLeaf(o.id, o.offset, o.width, 'left');
+      }
+    };
+
+    // Wall creation helper. Walls are indexed by creation order so an Opening can target a
+    // specific wall by `wallIndex`. Each wall is cut (ExtrudeGeometry holes, native — no CSG)
+    // and its openings are rendered. With no openings this is a zero-regression swap for the
+    // old BoxGeometry (proven in wall-geometry.test.ts).
+    let wallCount = 0;
     const createWall = (wx: number, wh: number, wd: number, px: number, py: number, pz: number) => {
-      const geo = new THREE.BoxGeometry(wx, wh, wd);
+      const wallIndex = wallCount;
+      wallCount += 1;
+      const wallOpenings = openings.filter((o) => o.wallIndex === wallIndex);
+      const p = wallPlacement(wx, wh, wd, px, py, pz);
+      const geo = buildWallGeometry(p.width, p.height, p.thickness, wallOpenings.map(toWallOpening));
       const mat = new THREE.MeshStandardMaterial({ color: WALL_COLOR, roughness: 0.5 });
       const wall = new THREE.Mesh(geo, mat);
-      wall.position.set(px, py, pz);
+      wall.position.set(...p.position);
+      wall.rotation.y = p.rotationY;
       wall.castShadow = true;
       wall.receiveShadow = true;
       wall.userData.isKitchenStructure = true;
       wall.userData.type = 'wall';
       scene.add(wall);
+      wallOpenings.forEach((o) => renderOpening(p, o));
       return wall;
     };
 
@@ -804,7 +902,7 @@ function KitchenDesigner({
       depth: d,
     });
     engine.controls.setOrbitTarget(new THREE.Vector3(w / 2, h * 0.3, d / 2));
-  }, [engine, width, length, height, layout]);
+  }, [engine, width, length, height, layout, openings]);
 
   // Rebuild scene when dimensions/layout change
   useEffect(() => {
@@ -824,16 +922,50 @@ function KitchenDesigner({
       width: width / 1000,
       length: length / 1000,
       height: height / 1000,
-      metadata: { brandId },
+      metadata: { brandId, openings },
     });
     if (res.success) {
+      // Persist the 3D arrangement (furniture) alongside the kitchen scalars, so it
+      // survives a reload. Without this, everything placed in the scene is lost.
+      if (engine) {
+        const itemsRes = await api.put(API_ENDPOINTS.KITCHENS.ITEMS(kitchenId), {
+          items: serializeScene(engine),
+        });
+        if (!itemsRes.success) {
+          toast.error(
+            itemsRes.error?.message ??
+              t('designer.saveItemsError', "L'agencement n'a pas pu être sauvegardé")
+          );
+          setSaving(false);
+          return;
+        }
+      }
       toast.success(t('designer.saved'));
       setHasChanges(false);
     } else {
       toast.error(res.error?.message || t('designer.saveError'));
     }
     setSaving(false);
-  }, [kitchenId, kitchenName, style, layout, width, length, height, brandId, t, toast]);
+  }, [kitchenId, kitchenName, style, layout, width, length, height, brandId, openings, engine, t, toast]);
+
+  // ─── Restore the saved 3D arrangement on load (once per kitchen) ─────────────
+  // Runs after the engine is ready and the kitchen has loaded. buildKitchenScene rebuilds
+  // only the room shell (structure); it never removes furniture, so restored items survive
+  // subsequent shell rebuilds. The ref guards against React StrictMode double-invoke and
+  // dimension-change re-renders (set synchronously BEFORE the async fetch).
+  const restoredForKitchenRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!engine || !kitchenId || loading || restoredForKitchenRef.current === kitchenId) {
+      return;
+    }
+    restoredForKitchenRef.current = kitchenId;
+    void (async () => {
+      const res = await api.get(API_ENDPOINTS.KITCHENS.ITEMS(kitchenId));
+      if (res.success && Array.isArray(res.data)) {
+        restoreScene(engine, (res.data as unknown[]).map(normalizePersistedItem));
+      }
+    })();
+  }, [engine, kitchenId, loading]);
 
   // ─── Global Keyboard Shortcuts ──────────────────
   useEffect(() => {
@@ -901,6 +1033,35 @@ function KitchenDesigner({
     setter(value);
     setHasChanges(true);
   };
+
+  // Assistant "Appliquer" on a style suggestion → apply it to the scene. Until now this
+  // was wired to nothing (onToolAction never passed down), so the button did nothing.
+  const handleAssistantToolAction = useCallback(
+    (toolName: string, toolInput: Record<string, unknown>) => {
+      if (!engine) {
+        return;
+      }
+      const res = applyChatStyleSuggestion(engine, toolName, toolInput);
+      if (res.applied) {
+        setHasChanges(true);
+        toast.success(
+          t('designer.chat.colorApplied', {
+            defaultValue: 'Couleur {{color}} appliquée à {{count}} meuble(s)',
+            color: res.colorKey,
+            count: res.count,
+          })
+        );
+      } else {
+        toast.error(
+          t(
+            'designer.chat.styleNotApplicable',
+            "Cette suggestion n'a pas pu être appliquée automatiquement"
+          )
+        );
+      }
+    },
+    [engine, toast, t]
+  );
 
   if (loading) {
     return (
@@ -1043,6 +1204,12 @@ function KitchenDesigner({
               className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
             >
               {t('designer.dimensionWizard', 'Wizard')}
+            </button>
+            <button
+              onClick={() => setShowOpenings(true)}
+              className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+            >
+              {t('designer.openings', 'Ouvertures')}
             </button>
             <button
               onClick={handleSave}
@@ -1388,7 +1555,7 @@ function KitchenDesigner({
       {/* AI Panel (bottom) */}
       {showAI && (
         <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 h-64 overflow-y-auto">
-          <AIAssistantPanel engine={engine} />
+          <AIAssistantPanel engine={engine} onOpenProposals={() => setShowProposals(true)} />
         </div>
       )}
 
@@ -1403,6 +1570,7 @@ function KitchenDesigner({
             layout={kitchen?.layout ?? 'open_plan'}
             onClose={() => setShowChatPanel(false)}
             onUpgrade={() => navigate('/pricing')}
+            onToolAction={handleAssistantToolAction}
           />
         </div>
       )}
@@ -1526,6 +1694,26 @@ function KitchenDesigner({
           }}
         />
       )}
+
+      {/* 3 implantations idéales (générateur algorithmique) */}
+      <LayoutProposalsDialog
+        engine={engine}
+        open={showProposals}
+        onClose={() => setShowProposals(false)}
+        onApplied={() => setHasChanges(true)}
+      />
+
+      {/* Ouvertures (portes / portes-fenêtres / fenêtres) */}
+      <OpeningsPanel
+        open={showOpenings}
+        onClose={() => setShowOpenings(false)}
+        openings={openings}
+        wallCount={wallCount}
+        onChange={(next) => {
+          setOpenings(next);
+          setHasChanges(true);
+        }}
+      />
 
       {/* Design Diff Overlay */}
       <DesignDiffOverlay

@@ -17,6 +17,7 @@ const mockRepository = {
   upsertConfiguration: jest.fn(),
   getItems: jest.fn(),
   addItem: jest.fn(),
+  replaceItems: jest.fn(),
   updateItem: jest.fn(),
   removeItem: jest.fn(),
   getUserStats: jest.fn(),
@@ -252,6 +253,51 @@ describe('KitchenController', () => {
         data: mockUpdated,
         message: 'Kitchen updated successfully',
       });
+    });
+  });
+
+  describe('setItems', () => {
+    const items = [
+      {
+        type: 'base_cabinet',
+        positionX: 50,
+        positionY: 40,
+        positionZ: -190,
+        rotationY: 0,
+        width: 60,
+        depth: 60,
+        height: 80,
+      },
+    ];
+
+    it('replaces the kitchen items for the owner', async () => {
+      mockReq.params = { id: 'k1' };
+      mockReq.body = { items };
+      mockRepository.findById.mockResolvedValue({ id: 'k1', userId: 'user-1' });
+      mockRepository.replaceItems.mockResolvedValue({ count: 1 });
+
+      await controller.setItems(mockReq as Request, mockRes as Response);
+
+      expect(mockRepository.replaceItems).toHaveBeenCalledWith('k1', items);
+      expect(statusMock).toHaveBeenCalledWith(200);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: true,
+        data: { count: 1 },
+        message: 'Items saved',
+      });
+    });
+
+    it('refuses to touch a kitchen owned by someone else (IDOR guard)', async () => {
+      mockReq.params = { id: 'k1' };
+      mockReq.body = { items };
+      // kitchen belongs to another user
+      mockRepository.findById.mockResolvedValue({ id: 'k1', userId: 'someone-else' });
+
+      await controller.setItems(mockReq as Request, mockRes as Response);
+
+      // Load-bearing: the write must NOT happen, and the response is 403 — not 200.
+      expect(mockRepository.replaceItems).not.toHaveBeenCalled();
+      expect(statusMock).toHaveBeenCalledWith(403);
     });
   });
 

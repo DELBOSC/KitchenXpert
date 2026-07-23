@@ -18,6 +18,8 @@ import {
   type AccessibilityViolation,
 } from '@kitchenxpert/3d-engine';
 
+import { deOverlapAndRegister } from './deoverlap-placement';
+
 /** Shape stored on Three.js Object3D.userData for placed kitchen items. */
 interface KitchenItemUserData {
   id?: string;
@@ -311,6 +313,12 @@ export default function AIAssistantPanel({
             name: item.type,
             dimensions: item.dimensions,
           };
+
+          // Stop generated items from stacking on top of each other (and on existing
+          // furniture): push each to the nearest free spot, then register it so the next
+          // item in this pass avoids it too. See deoverlap-placement.ts. The BatchCommand
+          // below re-registers on execute — idempotent (collisionObjects is a Set).
+          deOverlapAndRegister(engine.collisionSystem, mesh, engine.scene.getThreeScene());
 
           commands.push(
             new AddObjectCommand(

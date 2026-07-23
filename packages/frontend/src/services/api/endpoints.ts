@@ -47,6 +47,7 @@ export const API_ENDPOINTS = {
     BY_ID: (id: string) => `/kitchens/${id}`,
     COMPONENTS: (id: string) => `/kitchens/${id}/components`,
     MODEL: (id: string) => `/kitchens/${id}/model`,
+    ITEMS: (id: string) => `/kitchens/${id}/items`,
     DUPLICATE: (id: string) => `/kitchens/${id}/duplicate`,
     ARCHIVE: (id: string) => `/kitchens/${id}/archive`,
     RESTORE: (id: string) => `/kitchens/${id}/restore`,

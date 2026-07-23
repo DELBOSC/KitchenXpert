@@ -16,6 +16,23 @@ import type {
   LayoutType,
 } from '@prisma/client';
 
+/** One placed furniture item as persisted (DB unit convention: cm, degrees). */
+export interface KitchenItemInput {
+  type: string;
+  name?: string;
+  brand?: string;
+  model?: string;
+  positionX: number;
+  positionY: number;
+  positionZ: number;
+  rotationY: number;
+  width: number;
+  depth: number;
+  height: number;
+  price?: number;
+  metadata?: Record<string, unknown>;
+}
+
 export interface KitchenWithRelations {
   id: string;
   projectId: string;
@@ -349,6 +366,30 @@ export class KitchenRepository {
   async clearItems(kitchenId: string): Promise<{ count: number }> {
     return this.prisma.kitchenItem.deleteMany({
       where: { kitchenId },
+    });
+  }
+
+  /**
+   * Replace ALL items of a kitchen in one transaction (clear + createMany). This is the
+   * write path used when the designer saves the whole 3D arrangement — mirrors the
+   * sandbox import (project-controller import-sandbox). Atomic: a failure leaves the
+   * previous items intact. `items` are already in the DB unit convention (cm, degrees).
+   */
+  async replaceItems(
+    kitchenId: string,
+    items: KitchenItemInput[]
+  ): Promise<{ count: number }> {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.kitchenItem.deleteMany({ where: { kitchenId } });
+      if (items.length === 0) {
+        return { count: 0 };
+      }
+      const created = await tx.kitchenItem.createMany({
+        // KitchenItem.name is required in the schema — default it to `type` so a name-less
+        // payload can never break the write (belt-and-suspenders with the client serializer).
+        data: items.map((it) => ({ kitchenId, ...it, name: it.name ?? it.type })) as any,
+      });
+      return { count: created.count };
     });
   }
 
