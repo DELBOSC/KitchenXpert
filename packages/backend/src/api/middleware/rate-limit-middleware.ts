@@ -129,14 +129,29 @@ export const authRateLimiter: RateLimitRequestHandler = rateLimit({
 
 /**
  * Login-specific rate limiter
- * 5 failed attempts per 15 minutes, then block
+ * 10 FAILED attempts per 15 minutes (successful logins don't count). 5 was aggressive for
+ * a legitimate user behind a NAT/shared IP (keyed by IP) who mistypes a couple of times.
  */
 export const loginRateLimiter: RateLimitRequestHandler = rateLimit({
   ...baseOptions,
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 10,
   message: 'Too many login attempts, please try again after 15 minutes',
   skipSuccessfulRequests: true, // Only count failed attempts
+});
+
+/**
+ * Refresh rate limiter — dedicated, generous.
+ * The client refreshes the 15-min accessToken via the 7-day refreshToken on boot/reload
+ * (checkAuth), so a user reloading the app legitimately hits /refresh repeatedly. The old
+ * shared authRateLimiter (5/15min, counts all) would lock them out. 60/15min is still a
+ * hard brute-force ceiling for a cookie-authenticated, side-effect-light endpoint.
+ */
+export const refreshRateLimiter: RateLimitRequestHandler = rateLimit({
+  ...baseOptions,
+  windowMs: 15 * 60 * 1000,
+  max: 60,
+  message: 'Too many refresh attempts, please try again later',
 });
 
 /**

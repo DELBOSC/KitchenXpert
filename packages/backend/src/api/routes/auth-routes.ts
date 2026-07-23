@@ -8,6 +8,7 @@ import { authenticate, optionalAuth } from '../middleware/auth-middleware';
 import {
   loginRateLimiter,
   authRateLimiter,
+  refreshRateLimiter,
   passwordResetRateLimiter,
 } from '../middleware/rate-limit-middleware';
 import { validateBody, validateParams, commonSchemas } from '../middleware/validation-middleware';
@@ -167,7 +168,7 @@ router.post('/login', loginRateLimiter, validateBody(loginSchema), authControlle
  *       401:
  *         description: Invalid or expired refresh token
  */
-router.post('/refresh', authRateLimiter, authController.refresh);
+router.post('/refresh', refreshRateLimiter, authController.refresh);
 
 /**
  * @swagger
