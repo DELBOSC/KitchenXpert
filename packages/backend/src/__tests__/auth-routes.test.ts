@@ -142,6 +142,7 @@ jest.mock('../config/app-config', () => ({
 jest.mock('../api/middleware/rate-limit-middleware', () => ({
   authRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   loginRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
+  refreshRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   passwordResetRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   generalRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
 }));
